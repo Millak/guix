@@ -12714,6 +12714,28 @@ name is in a variable, something you can't do with the @code{require}
 built-in.")
     (license (package-license perl))))
 
+(define-public perl-user
+  ;; This is a trivial Perl module that appears to be maintained by Debian
+  ;; internally for use in debbugs.
+  (package
+    (name "perl-user")
+    (version "1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://deb.debian.org/debian/pool/main/libu/libuser-perl/"
+             "libuser-perl_" version ".orig.tar.gz"))
+       (sha256
+        (base32
+         "1ncgr0sxkmqr33ias3yv6cnr3l6mcyxcsbr9n6y0g6mx9h1iiasv"))))
+    (build-system perl-build-system)
+    (home-page "https://tracker.debian.org/pkg/libuser-perl")
+    (synopsis "Provides user data in an OS independent manner")
+    (description "This module is allows applications to retrieve per-user
+characteristics.")
+    (license (package-license perl))))
+
 (define-public perl-variable-magic
   (package
     (name "perl-variable-magic")
