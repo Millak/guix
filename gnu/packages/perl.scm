@@ -3874,6 +3874,33 @@ format of RSS 1.0.  It can be used to parse these formats in order to create
 the appropriate objects.")
     (license (package-license perl))))
 
+(define-public perl-datetime-format-pg
+  (package
+    (name "perl-datetime-format-pg")
+    (version "0.16014")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DM/DMAKI/DateTime-Format-Pg-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1f8fpv655x8w9zaa65lp1yn0pianjv5l4qvg6v1q9hsda9k9dfrq"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build-tiny))
+    (propagated-inputs (list perl-datetime
+                             perl-datetime-format-builder
+                             perl-datetime-timezone))
+    (home-page "https://metacpan.org/release/DateTime-Format-Pg")
+    (synopsis "Parse and format PostgreSQL dates and times")
+    (description
+     "This module understands the formats used by PostgreSQL for its DATE,
+TIME, TIMESTAMP, and INTERVAL data types. It can be used to parse these
+formats in order to create DateTime or DateTime::Duration objects, and it can
+take a DateTime or @code{DateTime::Duration} object and produce a string
+representing it in a format accepted by PostgreSQL.")
+    (license license:perl-license)))
+
 (define-public perl-devel-callchecker
   (package
     (name "perl-devel-callchecker")
