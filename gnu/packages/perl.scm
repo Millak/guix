@@ -5631,6 +5631,29 @@ Linux, fsevents on OS X, @code{kqueue} on FreeBSD, and
 back to a full directory scan if none of these are available.")
     (license license:perl-license)))
 
+(define-public perl-function-parameters
+  (package
+    (name "perl-function-parameters")
+    (version "2.002003")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MA/MAUKE/Function-Parameters-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0ba317h659jrvnqf816ygyh656j8n524985na42irhzbx0qkqlak"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-fatal))
+    (home-page "https://metacpan.org/release/Function-Parameters")
+    (synopsis
+     "Define functions and methods with parameter lists")
+    (description
+     "This module provides two new keywords, @code{fun} and @code{method}, for
+defining functions and methods with parameter lists. At minimum this saves you
+from having to unpack @code{@@_} manually, but this module can do much more.")
+    (license license:perl-license)))
+
 (define-public perl-getopt-argvfile
   (package
     (name "perl-getopt-argvfile")
