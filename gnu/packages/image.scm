@@ -2142,7 +2142,7 @@ losslessly translates between SNG and PNG.")
 (define-public blurhash
   (package
     (name "blurhash")
-    (version "0.0.1")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2151,10 +2151,10 @@ losslessly translates between SNG and PNG.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jy2iigarskwfhskyladbb6l92x1fb3i3vz4bvcks0za4w5hfxk5"))))
+        (base32 "0hx15fspava43z47kv17ivxv56g03fb2zf45dl07v3shickqxw0x"))))
     (build-system meson-build-system)
     (native-inputs
-     (list cmake doctest))
+     (list doctest pkg-config))
     (home-page "https://github.com/Nheko-Reborn/blurhash")
     (synopsis "C++ blurhash encoder/decoder")
     (description "Simple encoder and decoder for blurhashes.  Contains a
