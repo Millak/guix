@@ -43076,6 +43076,20 @@ Concretely, these files are concatenated and made available as
 running on this machine, then it @emph{may} take this file into account:
 this is what @command{sshd} does by default, but be aware that it can
 also be configured to ignore it.
+
+@item @code{add-keys-to-agent} (default: @code{``no''})
+This string specifies whether keys should be automatically added to a
+running ssh-agent.  If this option is set to @code{``yes''} and a key is
+loaded from a file, the key and its passphrase are added to the agent
+with the default lifetime, as if by @code{ssh-add}.  If this option is
+set to @code{``ask''}, @code{ssh} will require confirmation.  If this
+option is set to @code{``confirm''}, each use of the key must be
+confirmed.  If this option is set to @code{``no''}, no keys are added to
+the agent.  Alternately, this option may be specified as a time interval
+to specify the key's lifetime in @code{ssh-agent}, after which it will
+automatically be removed.  The argument must be @code{``no''},
+@code{``yes''}, @code{``confirm''} (optionally followed by a time
+interval), @code{``ask''} or a time interval.
 @end table
 @end deftp
 

@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,10 +39,12 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
+  #:autoload   (ice-9 regex) (string-match match:substring)
   #:export (home-openssh-configuration
             home-openssh-configuration-authorized-keys
             home-openssh-configuration-known-hosts
             home-openssh-configuration-hosts
+            home-openssh-configuration-add-keys-to-agent
             home-ssh-agent-configuration
 
             openssh-host
@@ -248,17 +251,45 @@ through before connecting to the server.")
 (define-record-type* <home-openssh-configuration>
   home-openssh-configuration make-home-openssh-configuration
   home-openssh-configuration?
-  (authorized-keys home-openssh-configuration-authorized-keys ;list of file-like
-                   (default #f))
-  (known-hosts     home-openssh-configuration-known-hosts ;unspec | list of file-like
-                   (default *unspecified*))
-  (hosts           home-openssh-configuration-hosts   ;list of <openssh-host>
-                   (default '())))
+  (authorized-keys   home-openssh-configuration-authorized-keys ;list of file-like
+                     (default #f))
+  (known-hosts       home-openssh-configuration-known-hosts ;unspec | list of file-like
+                     (default *unspecified*))
+  (hosts             home-openssh-configuration-hosts   ;list of <openssh-host>
+                     (default '()))
+  (add-keys-to-agent home-openssh-configuration-add-keys-to-agent ;string with limited values
+                     (default "no")))
+
+(define (serialize-add-keys-to-agent value)
+  (define (valid-time-string? str)
+    (and (> (string-length str) 0)
+         (equal?
+          str
+          (match:substring
+           (string-match "\
+[0-9]+|([0-9]+[Ww])?([0-9]+[Dd])?([0-9]+[Hh])?([0-9]+[Mm])?([0-9]+[Ss])?"
+                         str)))))
+
+  (string-append "AddKeysToAgent "
+                 (cond ((member value '("yes" "no" "confirm" "ask")) value)
+                       ((valid-time-string? value) value)
+                       ((and (string-prefix? "confirm" value)
+                             (valid-time-string?
+                              (cdr (string-split value #\ )))) value)
+                       ;; The 'else' branch is unreachable.
+                       (else
+                        (raise
+                         (formatted-message
+                          (G_ "~s: invalid 'add-keys-to-agent' value")
+                          value))))))
 
 (define (openssh-configuration->string config)
-  (string-join (map serialize-openssh-host
-                    (home-openssh-configuration-hosts config))
-               "\n"))
+  (string-join
+   (cons* (serialize-add-keys-to-agent
+           (home-openssh-configuration-add-keys-to-agent config))
+          (map serialize-openssh-host
+               (home-openssh-configuration-hosts config)))
+   "\n"))
 
 (define* (file-join name files #:optional (delimiter " "))
   "Return a file in the store called @var{name} that is the concatenation
