@@ -43100,10 +43100,20 @@ Available @code{openssh-host} fields are:
 
 @table @asis
 @item @code{name} (type: string)
-Name of this host declaration.
+Name of this host declaration.  A @code{openssh-host} must define only
+@code{name} or @code{match-criteria}.  Use host-name @code{\"*\"} for
+top-level options.
 
 @item @code{host-name} (type: maybe-string)
 Host name---e.g., @code{"foo.example.org"} or @code{"192.168.1.2"}.
+
+@item @code{match-criteria} (type: maybe-match-criteria)
+When specified, this string denotes the set of hosts to which the entry
+applies, superseding the @code{host-name} field.  Its first element must be
+all or one of @code{ssh-match-keywords}.  The rest of the elements are
+arguments for the keyword, or other criteria.  A @code{openssh-host} must
+define only @code{name} or @code{match-criteria}.  Other host configuration
+options will apply to all hosts matching @code{match-criteria}.
 
 @item @code{address-family} (type: maybe-address-family)
 Address family to use when connecting to this host: one of

@@ -49,6 +49,7 @@
 
             openssh-host
             openssh-host-host-name
+            openssh-host-match-criteria
             openssh-host-identity-file
             openssh-host-name
             openssh-host-port
@@ -96,7 +97,11 @@
                      (cond ((= family AF_INET) "inet")
                            ((= family AF_INET6) "inet6")
                            ;; The 'else' branch is unreachable.
-                           (else (raise (condition (&error)))))
+                           (else
+                            (raise
+                             (formatted-message
+                              (G_ "~s: invalid address family value")
+                              family))))
                      "\n")
       ""))
 
@@ -174,13 +179,40 @@
     (configuration-field-error (source-properties->location properties) 'proxy-command value))
   value))
 
+(define ssh-match-keywords
+  '(canonical final exec host originalhost user localuser))
+
+(define (match-criteria? str)
+  ;; Rule out the case of "all" keyword.
+  (if (member str '("all"
+                    "canonical all"
+                    "final all"))
+      #t
+      (let* ((first (string-take str (string-index str #\ )))
+             (keyword (string->symbol (if (string-prefix? "!" first)
+                                          (string-drop first 1)
+                                          first))))
+        (memq keyword ssh-match-keywords))))
+
+(define-maybe match-criteria)
+
 (define-configuration openssh-host
   (name
-   (string)
-   "Name of this host declaration.")
+   maybe-string
+   "Name of this host declaration.  A @code{openssh-host} must define only
+@code{name} or @code{match-criteria}.  Use host-name @code{\"*\"} for
+top-level options.")
   (host-name
    maybe-string
    "Host name---e.g., @code{\"foo.example.org\"} or @code{\"192.168.1.2\"}.")
+  (match-criteria ;TODO implement stricter match-criteria rules
+   maybe-match-criteria
+   "When specified, this string denotes the set of hosts to which the entry
+applies, superseding the @code{host-name} field.  Its first element must be
+all or one of @code{ssh-match-keywords}.  The rest of the elements are
+arguments for the keyword, or other criteria.  A @code{openssh-host} must
+define only @code{name} or @code{match-criteria}.  Other host configuration
+options will apply to all hosts matching @code{match-criteria}.")
   (address-family
    maybe-address-family
    "Address family to use when connecting to this host: one of
@@ -235,17 +267,29 @@ through before connecting to the server.")
 @file{~/.ssh/config}."))
 
 (define (serialize-openssh-host config)
-  (define (openssh-host-name-field? field)
-    (eq? (configuration-field-name field) 'name))
+  (define (openssh-host-name-or-match-field? field)
+    (or (eq? (configuration-field-name field) 'name)
+        (eq? (configuration-field-name field) 'match-criteria)))
 
   (string-append
-   "Host " (openssh-host-name config) "\n"
+   (if (maybe-value-set? (openssh-host-name config))
+       (if (maybe-value-set? (openssh-host-match-criteria config))
+           (raise
+            (formatted-message
+             (G_ "define either 'name' or 'match-criteria', not both")))
+           (string-append "Host " (openssh-host-name config) "\n"))
+       (if (maybe-value-set? (openssh-host-match-criteria config))
+           (string-append
+            "Match " (string-join (openssh-host-match-criteria config) " ") "\n")
+           (raise
+            (formatted-message
+             (G_ "define either 'name' or 'match-criteria' once")))))
    (string-concatenate
     (map (lambda (field)
            ((configuration-field-serializer field)
             (configuration-field-name field)
             ((configuration-field-getter field) config)))
-         (remove openssh-host-name-field?
+         (remove openssh-host-name-or-match-field?
                  openssh-host-fields)))))
 
 (define-record-type* <home-openssh-configuration>
