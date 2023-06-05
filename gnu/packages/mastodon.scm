@@ -144,68 +144,7 @@ seamlessly with your desktop environment.")
     (license license:gpl3)))
 
 (define-public tootle
-  (package
-    (name "tootle")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/bleakgrey/tootle")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1nm57239mhdq462an6bnhdlijpijxmjs9mqbyirwxwa048d3n4rm"))
-       (patches
-        (search-patches
-         ;; https://github.com/bleakgrey/tootle/pull/339
-         "tootle-glib-object-naming.patch"
-         ;; https://github.com/bleakgrey/tootle/pull/322
-         "tootle-reason-phrase.patch"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson/post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* "src/Dialogs/NewAccount.vala"
-               (("xdg-mime") (which "xdg-mime")))
-             ;; Patch for building on glib < 2.64
-             (substitute* "src/Build.vala"
-               (("(os_name = ).*" _ first) (string-append first "\"GNU\";\n"))
-               (("(os_ver = ).*" _ first) (string-append first "\"Guix\";\n"))
-               (("GLib.Environment.get_os_info.*") "\"unknown\";\n"))))
-         (add-after 'install 'symlink-package
-           (lambda* (#:key outputs #:allow-other-keys)
-             (symlink "com.github.bleakgrey.tootle"
-                      (string-append (assoc-ref outputs "out")
-                                     "/bin/tootle")))))))
-    (native-inputs
-     (list gettext-minimal
-           `(,glib "bin") ; for glib-compile-resources
-           gsettings-desktop-schemas pkg-config))
-    (inputs
-     (list glib-networking
-           gtk+
-           json-glib
-           libgee
-           libhandy
-           libsoup-minimal-2
-           vala
-           xdg-utils))
-    (home-page "https://github.com/bleakgrey/tootle")
-    (synopsis "GTK3 client for Mastodon")
-    (description "Tootle is a GTK client for Mastodon.  It provides a clean,
-native interface that allows you to integrate Mastodon's social experience
-seamlessly with your desktop environment.")
-    (license license:gpl3+)))
+  (deprecated-package "tootle" tuba))
 
 (define-public python-mastodon-py
   (package
