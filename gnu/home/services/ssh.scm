@@ -45,7 +45,9 @@
             home-openssh-configuration-known-hosts
             home-openssh-configuration-hosts
             home-openssh-configuration-add-keys-to-agent
+            home-openssh-configuration?
             home-ssh-agent-configuration
+            home-ssh-agent-configuration?
 
             openssh-host
             openssh-host-host-name
