@@ -3213,6 +3213,35 @@ and anniversaries.")
      "This is the official AWS SDK for the Go programming language.")
     (license license:asl2.0)))
 
+(define-public go-gopkg-in-square-go-jose-v2
+  (package
+    (name "go-gopkg-in-square-go-jose-v2")
+    (version "2.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/square/go-jose")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b1nhqxfmhzwrfk7pkvp2w3z3d0pf5ir00vizmy2d4xdbnldn70r"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "gopkg.in/square/go-jose.v2"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (native-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-stretchr-testify))
+    (home-page "https://gopkg.in/square/go-jose.v2")
+    (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
+    (description
+     "This package aims to provide an implementation of the Javascript Object
+Signing and Encryption set of standards.  This includes support for JSON Web
+Encryption, JSON Web Signature, and JSON Web Token standards.")
+    (license license:asl2.0)))
+
 (define-public go-gopkg.in-tomb.v2
   (let ((commit "d5d1b5820637886def9eef33e03a27a9f166942c")
         (revision "0"))
