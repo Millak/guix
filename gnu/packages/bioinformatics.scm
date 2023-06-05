@@ -1337,6 +1337,74 @@ pretty, publication-quality figures for next-generation sequencing
 experiments.")
     (license license:expat)))
 
+(define-public python-bulkvis
+  (let ((commit "00a82a90c7e748a34af896e779d27e78a2c82b5e")
+        (revision "2"))
+    (package
+      (name "python-bulkvis")
+      (version (git-version "2.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/LooseLab/bulkVis")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02blai158xyyqcg0ljzkmfa6ci05m4awrl4njvp9nwfp717xq8n0"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(substitute* '("requirements.txt"
+                                 "setup.py")
+                    (("tqdm~=4.46.1") "tqdm")
+                    (("tornado~=6.0.4") "tornado")
+                    (("pandas~=1.0.5") "pandas")
+                    (("h5py~=2.10.0") "h5py")
+                    ;; See below for com
+                    (("bokeh~=2.1.0") "bokeh")))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f                ;There are no tests
+             #:phases
+             '(modify-phases %standard-phases
+                (add-after 'unpack 'bokeh-compatibility
+                  (lambda _
+                    (substitute* "bulkvis/bulkvis.py"
+                      (("import importlib" m)
+                       (string-append m "
+from bokeh.command.subcommand import Argument
+from bokeh.util.dataclasses import entries\n"))
+                      (("( *)_parser.add_argument" m indent)
+                       (string-append
+                        (string-join (list "if isinstance(opts, Argument):\n"
+                                           "  opts = dict(entries(opts))\n")
+                                     indent 'prefix)
+                        m))))))))
+      (propagated-inputs (list python-bokeh
+                               python-dill
+                               python-h5py
+                               python-joblib
+                               python-matplotlib
+                               python-numpy
+                               python-pandas
+                               python-plotly
+                               python-readpaf
+                               python-scikit-learn
+                               python-scikit-image
+                               python-scipy
+                               python-seaborn
+                               python-tornado-6
+                               python-tqdm
+                               python-umap-learn))
+      (native-inputs (list python-pytest))
+      (home-page "https://github.com/LooseLab/bulkVis")
+      (synopsis "Interactive visualization of bulk RNA-seq data")
+      (description
+       "This is a Python package for the interactive visualization of bulk
+RNA-seq data.  It provides a range of plotting functions and interactive tools
+to explore and analyze bulk RNA-seq data.")
+      (license license:expat))))
+
 (define-public python-cell2cell
   (package
     (name "python-cell2cell")
