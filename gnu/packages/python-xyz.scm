@@ -1344,7 +1344,7 @@ threads.")
                 "0bwkvjpjfyi9dgszzad9aww2vc00w3bczjnbifi92cp7wch2l923"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-setuptools-scm python-tornado python-typeguard
+     (list python-setuptools-scm python-tornado-6 python-typeguard
            python-pytest))
     (arguments
      (list #:phases
