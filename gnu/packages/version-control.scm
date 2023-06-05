@@ -3114,7 +3114,7 @@ file contents on a remote server.")
 (define-public lfs-s3
   (package
     (name "lfs-s3")
-    (version "0.1")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3123,7 +3123,7 @@ file contents on a remote server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nkxivb356f1zjlj34px601zy86w4398db9s2ivd178jp4v69raw"))))
+                "0ncfy3lgc7dik9k71xk9l5f2llsh2jk33aaqb8dkslschc1mx4g6"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3133,8 +3133,7 @@ file contents on a remote server.")
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
-           go-github-com-aws-aws-sdk-go-v2-service-s3
-           go-github-com-spf13-cobra))
+           go-github-com-aws-aws-sdk-go-v2-service-s3))
     (home-page "https://git.sr.ht/~ngraves/lfs-s3/")
     (synopsis "Git extension for versioning large files in S3")
     (description
