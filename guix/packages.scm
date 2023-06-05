@@ -168,6 +168,9 @@
             package-error-invalid-license
             &package-input-error
             package-input-error?
+            &package-cyclic-dependency-error
+            package-cyclic-dependency-error?
+            package-error-dependency-cycle
             package-error-invalid-input
             &package-cross-build-system-error
             package-cross-build-system-error?
@@ -806,6 +809,10 @@ exist, return #f instead."
   package-input-error?
   (input package-error-invalid-input))
 
+(define-condition-type &package-cyclic-dependency-error &package-error
+  package-cyclic-dependency-error?
+  (cycle package-error-dependency-cycle))
+
 (define-condition-type &package-cross-build-system-error &package-error
   package-cross-build-system-error?)
 
@@ -1317,17 +1324,29 @@ in INPUTS and their transitive propagated inputs."
   (let ()
     (define (supported-systems-procedure system)
       (define supported-systems
-        (mlambdaq (package)
-          (parameterize ((%current-system system))
-            (fold (lambda (input systems)
-                    (match input
-                      ((label (? package? package) . _)
-                       (lset-intersection string=? systems
-                                          (supported-systems package)))
-                      (_
-                       systems)))
-                  (package-supported-systems package)
-                  (bag-direct-inputs (package->bag package system #f))))))
+        ;; The VISITED parameter allows for cycle detection.  This is a pretty
+        ;; strategic place to do that: most commands call it upfront, yet it's
+        ;; not on the hot path of 'package->derivation'.  The downside is that
+        ;; only package-level cycles are detected.
+        (let ((visited (make-parameter (setq))))
+          (mlambdaq (package)
+            (when (set-contains? (visited) package)
+              (raise (condition
+                      (&package-cyclic-dependency-error
+                       (package package)
+                       (cycle (set->list (visited)))))))
+
+            (parameterize ((visited (set-insert package (visited)))
+                           (%current-system system))
+              (fold (lambda (input systems)
+                      (match input
+                        ((label (? package? package) . _)
+                         (lset-intersection string=? systems
+                                            (supported-systems package)))
+                        (_
+                         systems)))
+                    (package-supported-systems package)
+                    (bag-direct-inputs (package->bag package system #f)))))))
 
       supported-systems)
 
