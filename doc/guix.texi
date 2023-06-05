@@ -4660,7 +4660,7 @@ pull} ensures that the code it downloads is @emph{authentic} by
 verifying that commits are signed by Guix developers.
 
 Specifically, @command{guix pull} downloads code from the @dfn{channels}
-(@pxref{Channels}) specified by one of the followings, in this order:
+(@pxref{Channels}) specified by one of the following, in this order:
 
 @enumerate
 @item
@@ -12475,7 +12475,7 @@ shows build events only, and higher levels print build logs.
 @end deffn
 
 @deffn {REPL command} run-in-store @var{exp}
-Run @var{exp}, a monadic expresssion, through the store monad.
+Run @var{exp}, a monadic expression, through the store monad.
 @xref{The Store Monad}, for more information.
 @end deffn
 
@@ -19440,7 +19440,7 @@ Extra environment variables to set on login.
 @item @code{xdg-env?} (default: @code{#t})
 If true @code{XDG_RUNTIME_DIR} and @code{XDG_SESSION_TYPE} will be set
 before starting command. One should note that, @code{extra-env} variables
-are set right after mentioned variables, so that they can be overriden.
+are set right after mentioned variables, so that they can be overridden.
 
 @end table
 @end deftp
@@ -34062,7 +34062,7 @@ syslog daemon or @code{%unset-value} to omit this directive from the
 configuration file.
 
 @item @code{log-level} (type: maybe-string)
-Supress any messages below this threshold.  Available values:
+Suppress any messages below this threshold.  Available values:
 @code{notice}, @code{info}, @code{verbose}, @code{warning} and
 @code{error}.
 
@@ -39155,7 +39155,7 @@ UID (integer) or user name (string) for the user owner of the program,
 defaults to root.
 
 @item @code{group} (default: @code{0})
-GID (integer) goup name (string) for the group owner of the program,
+GID (integer) group name (string) for the group owner of the program,
 defaults to root.
 
 @end table
@@ -42517,7 +42517,7 @@ following format:
 
 Each nested list contains two values: a subdirectory and file-like
 object.  After building a home environment @file{~/.guix-home/files}
-will be populated with apropiate content and all nested directories will
+will be populated with appropriate content and all nested directories will
 be created accordingly, however, those files won't go any further until
 some other service will do it.  By default a
 @code{home-symlink-manager-service-type}, which creates necessary
@@ -42529,7 +42529,7 @@ read-only home.  Feel free to experiment and share your results.
 @end defvar
 
 @defvar home-xdg-configuration-files-service-type
-The service is very similiar to @code{home-files-service-type} (and
+The service is very similar to @code{home-files-service-type} (and
 actually extends it), but used for defining files, which will go to
 @file{~/.guix-home/files/.config}, which will be symlinked to
 @file{$XDG_CONFIG_DIR} by @code{home-symlink-manager-service-type} (for
@@ -43753,7 +43753,7 @@ The @uref{https://znc.in, ZNC bouncer} can be run as a daemon to manage
 your IRC presence.  With the @code{(gnu home services messaging)} service, you
 can configure ZNC to run upon login.
 
-You will have to provide a @file{~/.znc/configs/znc.conf} seperately.
+You will have to provide a @file{~/.znc/configs/znc.conf} separately.
 
 Here is an example of a service and its configuration that you could add
 to the @code{services} field of your @code{home-environment}:
@@ -44413,7 +44413,7 @@ which is the default, means that the image size will be inferred based
 on the image content.
 
 @item @code{operating-system}
-The image's @code{operating-system} record that is instanciated.
+The image's @code{operating-system} record that is instantiated.
 
 @item @code{partition-table-type} (default: @code{'mbr})
 The image partition table type as a symbol.  Possible values are
@@ -45330,7 +45330,7 @@ space-separated hexadecimal digits (nibbles) from a file, possibly
 including comments, and emits on standard output the bytes corresponding
 to those hexadecimal numbers.  The source code of this initial hex0
 program is a file called
-@c XXX TODO: udpate to savannah url, once accepted there
+@c XXX TODO: update to savannah url, once accepted there
 @url{https://github.com/oriansj/bootstrap-seeds/blob/master/POSIX/x86/hex0_x86.hex0,@file{hex0_x86.hex0}}
 and is written in the @code{hex0} language.
 
@@ -45355,7 +45355,7 @@ The bootstrap then continues: @code{hex0} builds @code{hex1} and then on
 to @code{M0}, @code{hex2}, @code{M1}, @code{mescc-tools} and finally
 @code{M2-Planet}.  Then, using @code{mescc-tools}, @code{M2-Planet} we
 build Mes (@pxref{Top, GNU Mes Reference Manual,, mes, GNU Mes}, a
-Scheme interpreter and C compiler in Scheme).  Frome here on starts
+Scheme interpreter and C compiler in Scheme).  From here on starts
 the more traditional @code{C}-based bootstrap of the GNU System.
 
 Another step that Guix has taken is to replace the shell and all its
