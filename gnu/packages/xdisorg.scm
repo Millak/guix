@@ -103,6 +103,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -2052,6 +2053,46 @@ The taskbar includes transparency and color settings for the font, icons,
 border, and background.  It also supports multihead setups, customized mouse
 actions, a built-in clock, a battery monitor and a system tray.")
     (license license:gpl2)))
+
+(define-public stalonetray
+  (package
+    (name "stalonetray")
+    (version "0.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/kolbusa/stalonetray")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "074wy1xppfycillbxq6fwrq87ik9glc95083df5vgm20mhzni7pz"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-docbook-root
+            (lambda _
+              (substitute* "configure.ac"
+                (("AC_SUBST\\(DOCBOOK_ROOT\\)" all)
+                 (string-append "DOCBOOK_ROOT="
+                                #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/docbook-xsl-"
+                                #$(package-version (this-package-native-input "docbook-xsl"))
+                                "; " all))))))))
+    (inputs (list libx11 libxpm))
+    (native-inputs (list autoconf automake docbook-xsl libxslt))
+    (build-system gnu-build-system)
+    (home-page "https://kolbusa.github.io/stalonetray")
+    (synopsis "Standalone freedesktop.org and KDE systray implementation")
+    (description
+     "Stalonetray is a stand-alone freedesktop.org and KDE system
+tray (notification area) for X Window System/X11 (e.g. X.Org or XFree86).  It
+has full XEMBED support and minimal dependencies: an X11 lib only.  Stalonetray
+works with virtually any EWMH-compliant window manager.")
+    (license license:gpl2+)))
 
 (define-public tofi
   (package
