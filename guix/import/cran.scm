@@ -601,6 +601,7 @@ META."
   "Return the list of <upstream-input> corresponding to all the dependencies
 of META, a package in REPOSITORY."
   (let* ((url    (cran-package-source-url meta repository))
+         (name   (assoc-ref meta "Package"))
          (source (download-source url
                                   #:method
                                   (cond ((assoc-ref meta 'git) 'git)
@@ -608,17 +609,21 @@ of META, a package in REPOSITORY."
                                         (else #f))))
          (tarball? (not (or (assoc-ref meta 'git)
                             (assoc-ref meta 'hg)))))
-    (sort (append (source->dependencies source tarball?)
-                  (filter-map (lambda (name)
-                                (and (not (member name invalid-packages))
-                                     (upstream-input
-                                      (name name)
-                                      (downstream-name
-                                       (transform-sysname name)))))
-                              (map string-downcase
-                                   (listify meta "SystemRequirements")))
-                  (cran-package-propagated-inputs meta)
-                  (vignette-builders meta))
+    (sort (filter
+           ;; Prevent tight cycles.
+           (lambda (input)
+             ((negate string=?) name (upstream-input-name input)))
+           (append (source->dependencies source tarball?)
+                   (filter-map (lambda (name)
+                                 (and (not (member name invalid-packages))
+                                      (upstream-input
+                                       (name name)
+                                       (downstream-name
+                                        (transform-sysname name)))))
+                               (map string-downcase
+                                    (listify meta "SystemRequirements")))
+                   (cran-package-propagated-inputs meta)
+                   (vignette-builders meta)))
           (lambda (input1 input2)
             (string<? (upstream-input-downstream-name input1)
                       (upstream-input-downstream-name input2))))))
