@@ -3384,6 +3384,33 @@ per-goroutine.")
     (description "The @code{walker} function is a faster, parallel version, of
 @code{filepath.Walk}")))
 
+(define-public go-github-com-tdewolff-minify-v2
+  (package
+    (name "go-github-com-tdewolff-minify-v2")
+    (version "2.12.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tdewolff/minify")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h006wpfkl0ls0skqxblwcanrhmphgq5q0ii26l2ayh7s99cgmy3"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/tdewolff/minify/v2"))
+    (propagated-inputs
+     (list go-github-com-tdewolff-parse-v2))
+    (native-inputs
+     (list go-github-com-tdewolff-test))
+    (home-page "https://go.tacodewolff.nl/minify")
+    (synopsis "Go minifiers for web formats")
+    (description
+     "This package provides HTML5, CSS3, JS, JSON, SVG and XML minifiers and
+an interface to implement any other minifier.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-parse-v2
   (package
     (name "go-github-com-tdewolff-parse-v2")
