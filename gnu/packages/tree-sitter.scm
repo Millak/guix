@@ -266,6 +266,17 @@ will be used in description and synopsis."
    #:inputs (list tree-sitter-javascript)
    #:grammar-directories '("typescript" "tsx")))
 
+(define-public tree-sitter-bibtex
+  (let ((commit "ccfd77db0ed799b6c22c214fe9d2937f47bc8b34")
+        (revision "0"))
+    (tree-sitter-grammar
+     "bibtex" "Bibtex"
+     "0m7f3dkqbmy8x1bhl11m8f4p6n76wfvh99rp46zrqv39355nw1y2"
+     (git-version "0.1.0" revision commit)
+     #:repository-url "https://github.com/latex-lsp/tree-sitter-bibtex"
+     #:commit commit
+     #:license license:expat)))
+
 (define-public tree-sitter-css
   (tree-sitter-grammar
    "css" "CSS"
