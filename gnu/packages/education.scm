@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
@@ -150,7 +150,7 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "2.3")
+    (version "3.2")
     (source
      (origin
        (method url-fetch)
@@ -158,7 +158,7 @@ of categories with some of the activities available in that category.
              "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "0qncknaaf168anh4cjp7dqz6qzgx948kvgr32j2vga8mjakqn1aj"))))
+        (base32 "06yisr5qd2ri8qgpmlri0yic45fdfcdjn12anp17f6kvv83lk2js"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -183,13 +183,13 @@ of categories with some of the activities available in that category.
      (list openssl
            python-wrapper
            qtbase-5
+           qtcharts
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
-           qtquickcontrols-5
+           qtquickcontrols2-5
            qtsensors
-           qtsvg-5
-           qtxmlpatterns))
+           qtsvg-5))
     (home-page "https://gcompris.net/index-en.html")
     (synopsis "Educational games for small children")
     (description
