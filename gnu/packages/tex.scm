@@ -10424,17 +10424,21 @@ a counter to be reset when another is incremented) and
               "1sbh4fnxxymh7lmvldp1ll8p6adcf3jhvqf47jvrayqr91zp4hh9")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs (list texlive-amsfonts
-                             texlive-lm
-                             texlive-lm-math
-                             texlive-luatex
-                             texlive-manfnt-font
-                             texlive-metapost
-                             texlive-mflogo-font
-                             texlive-mptopdf
-                             texlive-pdftex
-                             texlive-stmaryrd
-                             texlive-xetex))
+    (arguments
+     (list #:create-formats
+           #~(list "cont-en" "cont-fr" "cont-it" "cont-nl" "cont-ro")))
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-lm
+           texlive-lm-math
+           texlive-luatex
+           texlive-manfnt-font
+           texlive-metapost
+           texlive-mflogo-font
+           texlive-mptopdf
+           texlive-pdftex
+           texlive-stmaryrd
+           texlive-xetex))
     (home-page "https://ctan.org/pkg/context")
     (synopsis "Full featured, parameter driven macro package for TeX")
     (description "ConTeXt is a full featured, parameter driven macro package,
