@@ -1998,6 +1998,25 @@ alignments and perform the following operations:
 ")
     (license license:expat)))
 
+(define-public python-readpaf
+  (package
+    (name "python-readpaf")
+    (version "0.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "readpaf" version))
+              (sha256
+               (base32
+                "15m6ffks4zwpp1ycwk6n02py6mw2yh7qr0vhpc178b91gldr97ia"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pandas))
+    (home-page "https://github.com/alexomics/read-paf")
+    (synopsis "Minimap2 PAF file reader")
+    (description
+     "This is a fast parser for minimap2 PAF (Pairwise mApping Format)
+files.")
+    (license license:expat)))
+
 (define-public bioperl-minimal
   (package
     (name "bioperl-minimal")
