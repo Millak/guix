@@ -185,6 +185,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages skribilo)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -318,6 +319,60 @@ and its related documentation.")
                (sha256
                 (base32
                  "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1")))))))
+
+(define-public miniflux
+  (package
+    (name "miniflux")
+    (version "2.0.44")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/miniflux/v2")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18ggk71nk3zylgkwq32glggdcapgsj772qn2y4i9hbk374l6h61w"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:go go-1.19
+           #:install-source? #f
+           #:import-path "miniflux.app"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'rename-binary
+                 (lambda _
+                   (let ((bindir (string-append #$output "/bin/")))
+                     (rename-file (string-append bindir "miniflux.app")
+                                  (string-append bindir "miniflux"))))))))
+    (inputs
+     (list go-github-com-coreos-go-oidc
+           go-github-com-go-telegram-bot-api-telegram-bot-api
+           go-github-com-gorilla-mux
+           go-github-com-lib-pq
+           go-github-com-matrix-org-gomatrix
+           go-github-com-prometheus-client-golang
+           go-github-com-puerkitobio-goquery
+           go-github-com-rylans-getlang
+           go-github-com-tdewolff-minify-v2
+           go-github-com-yuin-goldmark
+           go-golang-org-x-term
+           go-mvdan-cc-xurls))
+    (home-page "https://miniflux.app/")
+    (synopsis "Minimalist and opinionated feed reader")
+    (description
+     "Miniflux is a minimalist and opinionated feed reader:
+
+@itemize
+@item Written in Go (Golang)
+@item Works only with Postgresql
+@item Doesn't use any ORM
+@item Doesn't use any complicated framework
+@item Use only modern vanilla Javascript (ES6 and Fetch API)
+@item Single binary compiled statically without dependency
+@item The number of features is voluntarily limited
+@end itemize\n")
+    (license license:asl2.0)))
 
 (define-public mod-wsgi
   (package
