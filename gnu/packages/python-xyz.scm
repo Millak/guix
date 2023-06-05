@@ -1342,15 +1342,10 @@ threads.")
               (sha256
                (base32
                 "0bwkvjpjfyi9dgszzad9aww2vc00w3bczjnbifi92cp7wch2l923"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools-scm python-tornado-6 python-typeguard
            python-pytest))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda _ (invoke "pytest" "-vv"))))))
     (home-page "https://github.com/jd/tenacity")
     (synopsis "Retrying library for python")
     (description "Tenacity is a general-purpose python library to simplify the
