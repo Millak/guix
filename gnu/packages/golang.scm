@@ -9407,6 +9407,33 @@ templates on ANSI compatible terminals.  You can create your own stylesheet or
 use one of our glamorous default themes.")
     (license license:expat)))
 
+(define-public go-github-com-coreos-go-oidc
+  (package
+    (name "go-github-com-coreos-go-oidc")
+    (version "2.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/coreos/go-oidc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11m6slbpi33ynffml7812piq4anhjlf1qszjlsf26f5y7x3qh8n5"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/coreos/go-oidc"))
+    (propagated-inputs
+     (list go-github-com-pquerna-cachecontrol
+           go-golang-org-x-oauth2
+           go-gopkg-in-square-go-jose-v2))
+    (home-page "https://github.com/coreos/go-oidc")
+    (synopsis "OpenID Connect support for Go")
+    (description
+     "This package enables OpenID Connect support for the
+@code{go-golang-org-x-oauth2} package.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coreos-go-semver
   (package
     (name "go-github-com-coreos-go-semver")
