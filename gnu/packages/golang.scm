@@ -3384,6 +3384,30 @@ per-goroutine.")
     (description "The @code{walker} function is a faster, parallel version, of
 @code{filepath.Walk}")))
 
+(define-public go-github-com-tdewolff-parse-v2
+  (package
+    (name "go-github-com-tdewolff-parse-v2")
+    (version "2.6.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tdewolff/parse")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dqki9ima079k9a3l72igmx5dml8qsl9z8rzw8a433f4gjhlv320"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/tdewolff/parse/v2"))
+    (native-inputs
+     (list go-github-com-tdewolff-test))
+    (home-page "https://github.com/tdewolff/parse")
+    (synopsis "Go parsers for web formats")
+    (description
+     "This package contains several lexers and parsers written in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-test
   (package
     (name "go-github-com-tdewolff-test")
