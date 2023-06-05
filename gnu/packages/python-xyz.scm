@@ -16408,7 +16408,7 @@ enhancements to optimization and data fitting problems.")
            python-packaging
            python-pillow
            python-pyyaml
-           python-tornado
+           python-tornado-6
            python-typing-extensions))
     (native-inputs
      (list python-beautifulsoup4
