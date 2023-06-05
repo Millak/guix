@@ -9648,6 +9648,30 @@ which it is called.")
 @code{median()}, @code{mean()}, @code{variance()} and @code{stddev()}.")
     (license license:lgpl2.0)))
 
+(define-public perl-statistics-distributions
+  (package
+    (name "perl-statistics-distributions")
+    (version "1.02")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MI/MIKEK/Statistics-Distributions-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "1j1kswl98f4i9dn176f9aa3y9bissx2sscga5jm3gjl4pxm3k7zr"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/pod/Statistics::Distributions")
+    (synopsis "Calculating some values of common statistical distributions")
+    (description
+     "@code{Statistics::Distributions} calculates percentage points (5
+significant digits) of the u (standard normal) distribution, the student's t
+distribution, the chi-square distribution and the F distribution.  It can also
+calculate the upper probability (5 significant digits) of the u (standard
+normal), the chi-square, the t and the F distribution.")
+    (license license:perl-license)))
+
 (define-public perl-statistics-pca
   (package
     (name "perl-statistics-pca")
