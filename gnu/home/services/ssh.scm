@@ -46,7 +46,11 @@
             home-openssh-configuration-hosts
             home-openssh-configuration-add-keys-to-agent
             home-openssh-configuration?
+
             home-ssh-agent-configuration
+            home-ssh-agent-openssh
+            home-ssh-agent-socket-directory
+            home-ssh-agent-extra-options
             home-ssh-agent-configuration?
 
             openssh-host
