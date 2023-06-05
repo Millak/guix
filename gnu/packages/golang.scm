@@ -3384,6 +3384,29 @@ per-goroutine.")
     (description "The @code{walker} function is a faster, parallel version, of
 @code{filepath.Walk}")))
 
+(define-public go-github-com-tdewolff-test
+  (package
+    (name "go-github-com-tdewolff-test")
+    (version "1.0.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tdewolff/test")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10myz3zdkqmx37cvj507h7l2ncb0rq9shqvz9ggq1swijbsvazff"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/tdewolff/test"))
+    (home-page "https://github.com/tdewolff/test")
+    (synopsis "Go test helper functions")
+    (description
+     "This package implements a few functions that are useful for io testing,
+such as readers and writers that fail after N consecutive reads/writes.")
+    (license license:expat)))
+
 (define-public go-github-com-tj-docopt
   (package
     (name "go-github-com-tj-docopt")
