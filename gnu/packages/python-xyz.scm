@@ -17230,19 +17230,23 @@ checking library.")
 (define-public python-codespell
   (package
     (name "python-codespell")
-    (version "2.1.0")
+    (version "2.2.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "codespell" version))
         (sha256
-          (base32 "1r9y714cz8m894rxp7pyvicr1lw2iid24vz6fxbl5wzy8ibgxlqr"))))
-    (build-system python-build-system)
+          (base32 "0fp8ihlj8q23qdfryj5pq8srl85vn8k8p6gq3zg9qz957i3j0ihb"))))
+    (build-system pyproject-build-system)
     (inputs
       (list python-chardet))
     (native-inputs
-      (list python-check-manifest python-flake8 python-pytest
-            python-pytest-cov python-pytest-dependency))
+      (list python-flake8
+            python-pygments
+            python-pytest
+            python-pytest-cov
+            python-pytest-dependency
+            python-tomli))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
