@@ -1367,6 +1367,7 @@ experiments.")
        (list #:tests? #f                ;There are no tests
              #:phases
              '(modify-phases %standard-phases
+                ;; See https://github.com/LooseLab/bulkvis/issues/58
                 (add-after 'unpack 'bokeh-compatibility
                   (lambda _
                     (substitute* "bulkvis/bulkvis.py"
