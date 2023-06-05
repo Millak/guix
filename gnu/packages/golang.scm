@@ -5484,6 +5484,27 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
 1.1 for backwards compatibility.")
     (license license:asl2.0)))
 
+(define-public go-github-com-matrix-org-gomatrix
+  (package
+    (name "go-github-com-matrix-org-gomatrix")
+    (version "0.0.0-20220926102614-ceba4d9f7530")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/matrix-org/gomatrix")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vq29bdswvffxsmwvi20wnk73xk92dva0fdr2k3zshr4z10ypm2x"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/matrix-org/gomatrix"))
+    (home-page "https://github.com/matrix-org/gomatrix")
+    (synopsis "Golang Matrix client")
+    (description "This package provides a Golang Matrix client.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mattn-go-isatty
   (package
     (name "go-github-com-mattn-go-isatty")
