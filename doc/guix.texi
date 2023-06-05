@@ -42991,6 +42991,135 @@ for example).
 
 @end deftp
 
+@subsubheading Inputrc Profile Service
+@cindex inputrc
+@cindex readline
+
+The @uref{https://tiswww.cwru.edu/php/chet/readline/rltop.html, GNU
+Readline package} includes Emacs and vi editing modes, with the ability
+to customize the configuration with settings in the @file{~/.inputrc}
+file.  With the @code{gnu home services shells} module, you can setup
+your readline configuration in a predictable manner, as shown below.
+For more information about configuring an @file{~/.inputrc} file,
+@pxref{Readline Init File,,, readline, GNU Readline}.
+
+@defvar home-inputrc-service-type
+
+This is the service to setup various @file{.inputrc} configurations. The
+settings in @file{.inputrc} are read by all programs which are linked
+with GNU Readline.
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-inputrc-service-type
+         (home-inputrc-configuration
+           (key-bindings
+            `(("Control-l" . "clear-screen")))
+           (variables
+            `(("bell-style" . "visible")
+              ("colored-completion-prefix" . #t)
+              ("editing-mode" . "vi")
+              ("show-mode-in-prompt" . #t)))
+           (conditional-constructs
+            `(("$if mode=vi" .
+               ,(home-inputrc-configuration
+                  (variables
+                   `(("colored-stats" . #t)
+                     ("enable-bracketed-paste" . #t)))))
+              ("$else" .
+               ,(home-inputrc-configuration
+                  (variables
+                   `(("show-all-if-ambiguous" . #t)))))
+              ("endif" . #t)
+              ("$include" . "/etc/inputrc")
+              ("$include" . ,(file-append
+                               (specification->package "readline")
+                               "/etc/inputrc"))))))
+@end lisp
+
+The example above starts with a combination of @code{key-bindings} and
+@code{variables}.  The @code{conditional-constructs} show how it is
+possible to add conditionals and includes.  In the example above
+@code{colored-stats} is only enabled if the editing mode is @code{vi}
+style, and it also reads any additional configuration located in
+@file{/etc/inputrc} or in @file{/gnu/store/@dots{}-readline/etc/inputrc}.
+
+The value associated with a @code{home-inputrc-service-type} instance
+must be a @code{home-inputrc-configuration} record, as described below.
+
+@end defvar
+
+@anchor{home-inputrc-configuration}
+@deftp {Data Type} home-inputrc-configuration
+Available @code{home-inputrc-configuration} fields are:
+
+@table @asis
+@item @code{key-bindings} (default: @code{'()}) (type: alist)
+Association list of readline key bindings to be added to the
+@file{~/.inputrc} file.
+
+@lisp
+'((\"Control-l\" . \"clear-screen\"))
+@end lisp
+
+turns into
+
+@example
+Control-l: clear-screen
+@end example
+
+@item @code{variables} (default: @code{'()}) (type: alist)
+Association list of readline variables to set.
+
+@lisp
+'((\"bell-style\" . \"visible\")
+  (\"colored-completion-prefix\" . #t))
+@end lisp
+
+turns into
+
+@example
+set bell-style visible
+set colored-completion-prefix on
+@end example
+
+@item @code{conditional-constructs} (default: @code{'()}) (type: alist)
+Association list of conditionals to add to the initialization file.  This
+includes @command{$if}, @command{else}, @command{endif} and @command{include}
+and they receive a value of another @command{home-inputrc-configuration}.
+
+@lisp
+(conditional-constructs
+ `((\"$if mode=vi\" .
+     ,(home-inputrc-configuration
+        (variables
+         `((\"show-mode-in-prompt\" . #t)))))
+   (\"$else\" .
+     ,(home-inputrc-configuration
+        (key-bindings
+         `((\"Control-l\" . \"clear-screen\")))))
+   (\"$endif\" . #t)))
+@end lisp
+
+turns into
+
+@example
+$if mode=vi
+set show-mode-in-prompt on
+$else
+Control-l: clear-screen
+$endif
+@end example
+
+@item @code{extra-content} (default: @code{""}) (type: text-config)
+Extra content appended as-is to the configuration file.  Run @command{man
+readline} for more information about all the configuration options.
+
+@end table
+@end deftp
+
 @node Mcron Home Service
 @subsection Scheduled User's Job Execution
 

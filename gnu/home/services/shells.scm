@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,10 @@
 
             home-fish-service-type
             home-fish-configuration
-            home-fish-extension))
+            home-fish-extension
+
+            home-inputrc-service-type
+            home-inputrc-configuration))
 
 ;;; Commentary:
 ;;;
@@ -625,6 +629,134 @@ end\n\n")
                 (default-value (home-fish-configuration))
                 (description "\
 Install and configure Fish, the friendly interactive shell.")))
+
+
+;;;
+;;; Readline.
+;;;
+
+(define (serialize-inputrc-key-bindings field-name val)
+  #~(string-append
+     #$@(map
+         (match-lambda
+           ((key . value)
+            #~(string-append #$key ": " #$value "\n")))
+         val)))
+
+(define (serialize-inputrc-variables field-name val)
+  #~(string-append
+     #$@(map
+         (match-lambda
+           ((key . #f)
+            #~(string-append "set " #$key " off\n"))
+           ((key . #t)
+            #~(string-append "set " #$key " on\n"))
+           ((key . value)
+            #~(string-append "set " #$key " " #$value "\n")))
+         val)))
+
+(define (serialize-inputrc-conditional-constructs field-name val)
+  #~(string-append
+     #$@(map
+         (match-lambda
+           (("$endif" . _)
+            "$endif\n")
+           (("$include" . value)
+            #~(string-append "$include " #$value "\n"))
+           ;; TODO: key can only be "$if" or "$else".
+           ((key . value)
+            #~(string-append #$key "\n"
+                             #$(serialize-configuration
+                                 value
+                                 home-inputrc-configuration-fields))))
+         val)))
+
+(define (serialize-inputrc-extra-content field-name value)
+  #~(if (string=? #$value "") "" (string-append #$value "\n")))
+
+(define-configuration home-inputrc-configuration
+  (key-bindings
+   (alist '())
+   "Association list of readline key bindings to be added to the
+@code{~/.inputrc} file.  This is where code like this:
+
+@lisp
+'((\"Control-l\" . \"clear-screen\"))
+@end lisp
+
+turns into
+
+@example
+Control-l: clear-screen
+@end example"
+   (serializer serialize-inputrc-key-bindings))
+  (variables
+   (alist '())
+   "Association list of readline variables to set.  This is where configuration
+options like this:
+
+@lisp
+'((\"bell-style\" . \"visible\")
+  (\"colored-completion-prefix\" . #t))
+@end lisp
+
+turns into
+
+@example
+set bell-style visible
+set colored-completion-prefix on
+@end example"
+   (serializer serialize-inputrc-variables))
+  (conditional-constructs
+   (alist '())
+   "Association list of conditionals to add to the initialization file.  This
+includes @command{$if}, @command{else}, @command{endif} and @command{include}
+and they receive a value of another @command{home-inputrc-configuration}.
+
+@lisp
+(conditional-constructs
+ `((\"$if mode=vi\" .
+     ,(home-inputrc-configuration
+        (variables
+         `((\"show-mode-in-prompt\" . #t)))))
+   (\"$else\" .
+     ,(home-inputrc-configuration
+        (key-bindings
+         `((\"Control-l\" . \"clear-screen\")))))
+   (\"$endif\" . #t)))
+@end lisp
+
+turns into
+
+@example
+$if mode=vi
+set show-mode-in-prompt on
+$else
+Control-l: clear-screen
+$endif
+@end example"
+   (serializer serialize-inputrc-conditional-constructs))
+  (extra-content
+   (string "")
+   "Extra content appended as-is to the configuration file.  Run @command{man
+readline} for more information about all the configuration options."
+   (serializer serialize-inputrc-extra-content)))
+
+(define (home-inputrc-files config)
+  (list
+   `(".inputrc"
+     ,(mixed-text-file "inputrc"
+                       (serialize-configuration
+                         config
+                         home-inputrc-configuration-fields)))))
+
+(define home-inputrc-service-type
+  (service-type (name 'inputrc)
+                (extensions
+                 (list (service-extension home-files-service-type
+                                          home-inputrc-files)))
+                (default-value (home-inputrc-configuration))
+                (description "Configure readline in @code{.inputrc}.")))
 
 
 (define (generate-home-shell-profile-documentation)
