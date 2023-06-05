@@ -585,7 +585,12 @@ OpenSSL for TARGET."
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (setenv "HASHBANGPERL"
                         (search-input-file (or native-inputs inputs)
-                                           "/bin/perl"))))))))
+                                           "/bin/perl"))))))
+       ((#:configure-flags flags #~'())
+        (if (system-hurd?)
+            #~(append #$flags '("hurd-x86")) ;must not be used when
+                                             ;cross-compiling!
+            flags))))
     (license license:asl2.0)))
 
 (define-public openssl openssl-3.0)
