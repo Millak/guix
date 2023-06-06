@@ -112,6 +112,7 @@
            libsecret
            libsm
            libtiff
+           libxtst                      ;for wxUIActionSimulator
            mesa
            pcre2
            sdl2
