@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (gnu packages crypto))
 
 (define-public libbsd
@@ -64,7 +66,15 @@
                             ;; build container.
                             (substitute* "test/Makefile"
                               (("pwcache\\$\\(EXEEXT\\) ")
-                               "")))))))
+                               ""))))
+                        #$@(if (system-hurd?)
+                               #~((add-after 'unpack 'skip-tests
+                                  (lambda _
+                                    (substitute* "test/explicit_bzero.c"
+                                      (("(^| )main *\\(.*" all)
+                                       (string-append all
+                                                      "{\n  exit (77);//"))))))
+                               #~()))))
     (inputs
      (list libmd))
     (synopsis "Utility functions from BSD systems")
