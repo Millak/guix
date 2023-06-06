@@ -8543,3 +8543,39 @@ statistical analysis, image enhancement, fluid dynamics simulations, numerical
 optimization, and modeling, simulation of explicit and implicit dynamical
 systems and symbolic manipulations.")
     (license license:cecill)))                    ;CeCILL v2.1
+
+(define-public ruy
+  (let ((commit "caa244343de289f913c505100e6a463d46c174de")
+        (version "0")
+        (revision "1"))
+    (package
+      (name "ruy")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/google/ruy")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0j2g90nzam4h52zwx2vpanj8m17068cfb1zi4hcy0pyk52kb11dy"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DRUY_FIND_CPUINFO=ON"
+                ;; Needed to make sure code is relocatable for use in
+                ;; tensorflow.
+                "-DCMAKE_CXX_FLAGS=-fPIC ")))
+      (inputs (list cpuinfo))
+      (native-inputs (list googletest))
+      (home-page "https://github.com/google/ruy")
+      (synopsis "Matrix multiplication library")
+      (description
+       "Ruy is a matrix multiplication library.  Its focus is to cover the
+matrix multiplication needs of neural network inference engines.  Its initial
+user has been TensorFlow Lite, where it is used by default on the ARM CPU
+architecture.")
+      (license license:asl2.0))))
+
