@@ -204,7 +204,15 @@ Daemon and possibly more in the future.")
              ,@(if (%current-target-system)
                    ;; When cross-compiling, _gcry_mpih_lshift etc are undefined.
                    `("--disable-asm")
-                   '()))))
+                   '()))
+       ,@(if (system-hurd?)
+             (list
+              #:phases
+              #~(modify-phases %standard-phases
+                  (add-before 'configure 'setenv
+                    (lambda _
+                      (setenv "GCRYPT_NO_BENCHMARKS" "t")))))
+             '())))
     (outputs '("out" "debug"))
     (home-page "https://gnupg.org/")
     (synopsis "Cryptographic function library")
