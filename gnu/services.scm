@@ -343,12 +343,14 @@ used."
       ((head . tail)
        (let ((service clauses
                       (fold2 (lambda (clause service remainder)
-                               (match clause
-                                 ((kind proc properties)
-                                  (if (eq? kind (service-kind service))
-                                      (values (proc service) remainder)
-                                      (values service
-                                              (cons clause remainder))))))
+                               (if service
+                                   (match clause
+                                     ((kind proc properties)
+                                      (if (eq? kind (service-kind service))
+                                          (values (proc service) remainder)
+                                          (values service
+                                                  (cons clause remainder)))))
+                                   (values #f (cons clause remainder))))
                              head
                              '()
                              clauses)))
