@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,8 +20,8 @@
 (define-module (guix records)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-71)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:autoload (system base target) (target-most-positive-fixnum)
@@ -622,9 +622,11 @@ to thunked values.  Raise a syntax violation when the field is not found."
                        (syntax-rules ()
 			 ((_ f)
                           (lookup-field+wrapper record field 0 f)))))
-           (let* ((offset wrap (type (map-fields type match-record)
-                                     field-offset+wrapper))
-                  (variable (wrap (struct-ref record offset))))
+           (let*-values (((offset wrap)
+                          (type (map-fields type match-record)
+                                field-offset+wrapper))
+                         ((variable)
+                          (wrap (struct-ref record offset))))
              (match-record-inner record type (rest ...) body ...))))
       ((_ record type (field rest ...) body ...)
        ;; Redirect to the canonical form above.
