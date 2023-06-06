@@ -92,6 +92,7 @@
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
@@ -783,10 +784,10 @@ Unix-style DSV format and RFC 4180 format.")
     (inputs (list guile-2.2))
     (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
 
-(define-public guile-fibers-1.1
+(define-public guile-fibers-1.3
   (package
     (name "guile-fibers")
-    (version "1.1.1")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -795,11 +796,9 @@ Unix-style DSV format and RFC 4180 format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
+                "0wvdi4l58f9a5c9wi3cdc9l1bniscsixb6w2zj86mch7j7j814lc"))
               (patches
-               (search-patches "guile-fibers-wait-for-io-readiness.patch"
-                               "guile-fibers-epoll-instance-is-dead.patch"
-                               "guile-fibers-fd-finalizer-leak.patch"))))
+               (search-patches "guile-fibers-libevent-32-bit.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -817,17 +816,15 @@ Unix-style DSV format and RFC 4180 format.")
                      (substitute* "Makefile"
                        (("tests/speedup.scm") ""))))))))
     (native-inputs
-     (list texinfo pkg-config autoconf automake libtool
+     (list texinfo pkg-config autoconf-2.71 automake libtool
            guile-3.0            ;for 'guild compile
            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
            gettext-minimal))
     (inputs
-     (list guile-3.0))                            ;for libguile-3.0.so
-    (supported-systems
-     ;; This version requires 'epoll' and is thus limited to Linux-based
-     ;; systems, but this may change soon:
-     ;; <https://github.com/wingo/fibers/pull/53>.
-     (filter (cut string-suffix? "-linux" <>) %supported-systems))
+     (append (list guile-3.0)                     ;for libguile-3.0.so
+             (if (hurd-target?)
+                 (list libevent)
+                 '())))
     (synopsis "Lightweight concurrency facility for Guile")
     (description
      "Fibers is a Guile library that implements a a lightweight concurrency
@@ -843,6 +840,36 @@ is not available for Guile 2.0.")
     (home-page "https://github.com/wingo/fibers")
     (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
+
+(define-public guile-fibers-1.1
+  (package
+    (inherit guile-fibers-1.3)
+    (version "1.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wingo/fibers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "guile-fibers" version))
+              (sha256
+               (base32
+                "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
+              (patches
+               (search-patches "guile-fibers-wait-for-io-readiness.patch"
+                               "guile-fibers-epoll-instance-is-dead.patch"
+                               "guile-fibers-fd-finalizer-leak.patch"))))
+    (native-inputs
+     (list texinfo pkg-config autoconf automake libtool
+           guile-3.0            ;for 'guild compile
+           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
+           gettext-minimal))
+    (inputs
+     (list guile-3.0))                            ;for libguile-3.0.so
+    (supported-systems
+     ;; This version requires 'epoll' and is thus limited to Linux-based
+     ;; systems, which is fixed in 1.2.0:
+     ;; <https://github.com/wingo/fibers/pull/53>.
+     (filter (cut string-suffix? "-linux" <>) %supported-systems))))
 
 (define-public guile-fibers-next
   (let ((commit "99fc3e38048f732de67c43fde52e949fa294aa7d")
