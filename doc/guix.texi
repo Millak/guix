@@ -22772,7 +22772,7 @@ and setuid enabled.  One can thus disable setuid:
 (service screen-locker-service-type
          (screen-locker-configuration
            (name "swaylock")
-           (program (file-append xlockmore "/bin/xlock"))
+           (program (file-append swaylock "/bin/swaylock"))
            (using-pam? #t)
            (using-setuid? #f)))
 @end lisp
