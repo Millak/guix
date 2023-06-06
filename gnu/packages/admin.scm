@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
@@ -378,7 +378,11 @@ interface and is based on GNU Guile.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))))
+                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))
+    (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
+                     (replace "guile-fibers" guile-fibers-1.3)))
+    (inputs (modify-inputs (package-inputs shepherd-0.9)
+              (replace "guile-fibers" guile-fibers-1.3)))))
 
 (define-public shepherd shepherd-0.9)
 
