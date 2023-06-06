@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
@@ -69,7 +69,13 @@
                        ;; Programs such as Ghostscript rely on it.
                        (with-directory-excursion bin
                          (symlink (car (find-files "." "tclsh"))
-                                  "tclsh"))))))
+                                  "tclsh")))))
+                 ,@(if (system-hurd?)
+                       '((add-after 'unpack 'delete-tests
+                           (lambda _
+                             (delete-file "tests/chanio.test")
+                             (delete-file "tests/socket.test"))))
+                       '()))
 
        ;; By default, man pages are put in PREFIX/man, but we want them in
        ;; PREFIX/share/man.  The 'validate-documentation-location' phase is
