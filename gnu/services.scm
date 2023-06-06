@@ -51,6 +51,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 match)
   #:autoload   (ice-9 pretty-print) (pretty-print)
@@ -297,35 +298,65 @@ singleton service type NAME, of which the returned service is an instance."
                                   (description "This is a simple service."))))
     (service type value)))
 
-(define (%delete-service kind services)
-  (let loop ((found #f)
-             (return '())
-             (services services))
-    (match services
-      ('()
-       (if found
-           (values return found)
-           (raise (formatted-message
-                   (G_ "modify-services: service '~a' not found in service list")
-                   (service-type-name kind)))))
-      ((service . rest)
-       (if (eq? (service-kind service) kind)
-           (loop service return rest)
-           (loop found (cons service return) rest))))))
-
-(define-syntax %apply-clauses
+(define-syntax clause-alist
   (syntax-rules (=> delete)
-    ((_ ((delete kind) . rest) services)
-     (%apply-clauses rest (%delete-service kind services)))
-    ((_ ((kind param => exp ...) . rest) services)
-     (call-with-values (lambda () (%delete-service kind services))
-       (lambda (svcs found)
-         (let ((param (service-value found)))
-           (cons (service (service-kind found)
-                          (begin exp ...))
-                 (%apply-clauses rest svcs))))))
-    ((_ () services)
-     services)))
+    "Build an alist of clauses.  Each element has the form (KIND PROC LOC)
+where PROC is the service transformation procedure to apply for KIND, and LOC
+is the source location information."
+    ((_ (delete kind) rest ...)
+     (cons (list kind
+                 (lambda (service)
+                   #f)
+                 (current-source-location))
+           (clause-alist rest ...)))
+    ((_ (kind param => exp ...) rest ...)
+     (cons (list kind
+                 (lambda (svc)
+                   (let ((param (service-value svc)))
+                     (service (service-kind svc)
+                              (begin exp ...))))
+                 (current-source-location))
+           (clause-alist rest ...)))
+    ((_)
+     '())))
+
+(define (apply-clauses clauses services)
+  "Apply CLAUSES, an alist as returned by 'clause-alist', to SERVICES, a list
+of services.  Use each clause at most once; raise an error if a clause was not
+used."
+  (let loop ((services services)
+             (clauses clauses)
+             (result '()))
+    (match services
+      (()
+       (match clauses
+         (()                                      ;all clauses fired, good
+          (reverse result))
+         (((kind _ properties) _ ...)        ;one or more clauses didn't match
+          (raise (make-compound-condition
+                  (condition
+                   (&error-location
+                    (location (source-properties->location properties))))
+                  (formatted-message
+                   (G_ "modify-services: service '~a' not found in service list")
+                   (service-type-name kind)))))))
+      ((head . tail)
+       (let ((service clauses
+                      (fold2 (lambda (clause service remainder)
+                               (match clause
+                                 ((kind proc properties)
+                                  (if (eq? kind (service-kind service))
+                                      (values (proc service) remainder)
+                                      (values service
+                                              (cons clause remainder))))))
+                             head
+                             '()
+                             clauses)))
+         (loop tail
+               (reverse clauses)
+               (if service
+                   (cons service result)
+                   result)))))))
 
 (define-syntax modify-services
   (syntax-rules ()
@@ -358,11 +389,9 @@ Consider this example:
 
 It changes the configuration of the GUIX-SERVICE-TYPE instance, and that of
 all the MINGETTY-SERVICE-TYPE instances, and it deletes instances of the
-UDEV-SERVICE-TYPE.
-
-This is a shorthand for (filter-map (lambda (svc) ...) %base-services)."
-    ((_ services . clauses)
-     (%apply-clauses clauses services))))
+UDEV-SERVICE-TYPE."
+    ((_ services clauses ...)
+     (apply-clauses (clause-alist clauses ...) services))))
 
 
 ;;;
