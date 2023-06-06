@@ -40,6 +40,7 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages aspell)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
@@ -1450,7 +1451,8 @@ system.")
     (native-inputs
      (list extra-cmake-modules pkg-config qttools-5))
     (inputs
-     (list hunspell
+     (list aspell
+           hunspell
            ;; TODO: hspell (for Hebrew), Voikko (for Finish)
            qtdeclarative-5
            qtbase-5))
