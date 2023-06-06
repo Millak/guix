@@ -2256,7 +2256,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "3.2")
+    (version "3.4")
     (source
      (origin
        (method git-fetch)
@@ -2265,7 +2265,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0jwddazvp9rv88dd2b67rn2y23grycnl539abl5ax6b8a89wm7i8"))
+       (sha256 (base32 "190dyyscmb71jnz0yb4l2ahsmz9wp7mcnn81yajv01bajgwnbl16"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
@@ -2290,6 +2290,8 @@ mining.")
                      (chdir "tests")
                      (invoke "cmake" "../../source/tests")
                      (invoke "make" "-j" (number->string (parallel-job-count)))
+                     (invoke "gzip" "-d" "sidechain_dump.dat.gz")
+                     (invoke "gzip" "-d" "sidechain_dump_mini.dat.gz")
                      (invoke "./p2pool_tests")
                      (chdir ".."))))
                (replace 'install
