@@ -125,6 +125,33 @@
                                (chr (char-downcase chr)))
                              name)))
 
+(define* (translate-depends depends #:optional texlive-only)
+  "Translate TeX Live packages DEPENDS into their equivalent Guix names
+in `(gnu packages tex)' module, without \"texlive-\" prefix.  The function
+also removes packages not necessary in Guix.
+
+When TEXLIVE-ONLY is true, only TeX Live packages are returned."
+  (delete-duplicates
+   (filter-map (match-lambda
+                 ;; Hyphenation.  Every TeX Live package is replaced with
+                 ;; "hyphen-complete", unless "hyphen-base" is the sole
+                 ;; dependency.
+                 ("hyphen-base"
+                  (and (not (member "hyph-utf8" depends))
+                       "hyphen-base"))
+                 ((or (? (cut string-prefix? "hyphen-" <>))
+                      "hyph-utf8" "dehyph" "dehyph-exptl" "ruhyphen" "ukrhyph")
+                  (and (not texlive-only) "hyphen-complete"))
+                 ;; Binaries placeholders are ignored.
+                 ((? (cut string-suffix? ".ARCH" <>)) #f)
+                 ;; So are TeX Live specific packages.
+                 ((or (? (cut string-prefix? "texlive-" <>))
+                      "tlshell" "texlive.infra")
+                  #f)
+                 ;; Others.
+                 (name name))
+               depends)))
+
 (define (tlpdb-file)
   (define texlive-bin
     ;; Resolve this variable lazily so that (gnu packages ...) does not end up
@@ -293,11 +320,7 @@ of those files are returned that are unexpectedly installed."
                    (locations locs)
                    (revision %texlive-revision)))
              ;; Ignore arch-dependent packages.
-             (filtered-depends
-              (or (and=> (assoc-ref data 'depend)
-                         (lambda (inputs)
-                           (remove (cut string-suffix? ".ARCH" <>) inputs)))
-                  '()))
+             (depends (or (assoc-ref data 'depend) '()))
              (source (with-store store
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
@@ -352,16 +375,12 @@ of those files are returned that are unexpectedly installed."
                                  runfiles)))
                   '((native-inputs (list texlive-metafont))))
                 '())
-          ,@(match filtered-depends
+          ,@(match (translate-depends depends)
               (() '())
               (inputs
                `((propagated-inputs
-                  (list ,@(filter-map
-                           (lambda (tex-name)
-                             (let ((name (guix-name tex-name)))
-                               (string->symbol name)))
-                           ;; Sort inputs alphabetically.
-                           (reverse inputs)))))))
+                  (list ,@(map (compose string->symbol guix-name)
+                               (sort inputs string<?)))))))
           (home-page
            ,(cond
              (meta-package? "https://www.tug.org/texlive/")
@@ -376,7 +395,7 @@ of those files are returned that are unexpectedly installed."
               '(license:fsf-free "https://www.tug.org/texlive/copying.html"))
              ((assoc-ref data 'catalogue-license) => string->license)
              (else #f))))
-       filtered-depends))))
+       (translate-depends depends #t)))))
 
 (define texlive->guix-package
   (memoize

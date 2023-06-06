@@ -81,6 +81,12 @@
          .
          ("texmf-dist/tex/latex/chs-physics-report/chs-physics-report.sty"))
         (catalogue-license . "pd cc-by-sa-3")))
+    ("collection-basic"
+     (name . "collection-basic")
+     (shortdesc . "Essential programs and files")
+     (longdesc . "These files are regarded as basic...")
+     (depend "amsfonts" "hyph-utf8" "hyphen-base" "texlive-common"
+             "texlive.infra" "tlshell"))
     ("collection-texworks"
      (name . "collection-texworks")
      (shortdesc . "TeXworks editor...")
@@ -146,6 +152,17 @@ stuff like \\newcommand\\pi'12{\\pi '_{12}}.")
          . ("texmf-dist/tex/lualatex/stricttex/stricttex.lua"
             "texmf-dist/tex/lualatex/stricttex/stricttex.sty"))
         (catalogue-license . "lppl1.3c")))
+    ("tex"
+     (name . "tex")
+     (shortdesc . "A sophisticated typesetting engine")
+     (longdesc . "TeX is a typesetting system that incorporates...")
+     (depend "cm" "hyphen-base" "tex.ARCH")
+     (docfiles
+      "texmf-dist/doc/man/man1/initex.1"
+      "texmf-dist/doc/man/man1/initex.man1.pdf"
+      "texmf-dist/doc/man/man1/tex.1"
+      "texmf-dist/doc/man/man1/tex.man1.pdf")
+     (catalogue-license . "knuth"))
     ("texsis"
      . ((name
          . "texsis")
@@ -551,6 +568,72 @@ completely compatible with Plain TeX.")
                ('source _)
                ('outputs ''("out" "doc"))
                ('build-system 'texlive-build-system)
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, translate dependencies"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "collection-basic"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-collection-basic")
+               ('version _)
+               ('source _)
+               ('build-system 'texlive-build-system)
+               ('propagated-inputs
+                ('list 'texlive-amsfonts 'texlive-hyphen-complete))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, lonely `hyphen-base' dependency and ARCH"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "tex"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-tex")
+               ('version _)
+               ('source _)
+               ('build-system 'texlive-build-system)
+               ('propagated-inputs
+                ('list 'texlive-cm 'texlive-hyphen-base))
                ('home-page (? string?))
                ('synopsis (? string?))
                ('description (? string?))
