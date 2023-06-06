@@ -1118,6 +1118,31 @@ expression navigating and manipulating.  It supports many major modes
 out of the box.")
       (license license:gpl3+))))
 
+(define-public emacs-pug-mode
+  (package
+    (name "emacs-pug-mode")
+    (version "1.0.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hlissner/emacs-pug-mode")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1f6bhdr1a72x94dlz2i1fwwln8crc2mbpc2iq23hvsbsfmj7xfzp"))))
+    (native-inputs (list emacs-ert-runner))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "ert-runner")))
+    (home-page "https://github.com/hlissner/emacs-pug-mode")
+    (synopsis "Pug support for Emacs")
+    (description "Pug mode offers Emacs support for Pug.  Unlike Jade mode, it
+is based off of Slim mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-spaceline-all-the-icons
   (package
     (name "emacs-spaceline-all-the-icons")
