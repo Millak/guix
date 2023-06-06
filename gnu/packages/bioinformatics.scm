@@ -1549,6 +1549,69 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
 and sequence consensus.")
     (license license:expat)))
 
+(define-public python-decoupler-py
+  ;; This latest commit fixes a bug in test_omnip.py.
+  (let ((commit "b84c524ec4a9280a56c0db963e2c7b010316ce8f")
+        (revision "1"))
+    (package
+      (name "python-decoupler-py")
+      (version (git-version "1.3.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saezlab/decoupler-py")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0d74yr5jqc52vcxaca84kxqw7m5rbazpmvnrcp2y4xxrj6yr1sfc"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        '(list "-k"
+               ;; These tests require internet access
+               (string-append "not test_get_resource"
+                              " and not test_show_resources"
+                              " and not test_get_dorothea"
+                              " and not test_get_progeny"
+                              ;; XXX This one fails because the "texts" list
+                              ;; is empty, so there are no texts to adjust.
+                              ;; It is not clear whether this a compatibility
+                              ;; problem with our adjusttext package.
+                              " and not test_plot_volcano"))
+        #:phases
+        '(modify-phases %standard-phases
+           (add-before 'check 'set-home
+             ;; Some tests require a home directory to be set.
+             (lambda _ (setenv "HOME" "/tmp")))
+           ;; Numba needs a writable dir to cache functions.
+           (add-before 'build 'set-numba-cache-dir
+             (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+      (propagated-inputs (list python-adjusttext
+                               python-anndata
+                               python-ipython
+                               python-matplotlib
+                               python-nbsphinx
+                               python-numba
+                               python-numpy
+                               python-numpydoc
+                               python-omnipath
+                               python-scanpy
+                               python-scikit-learn
+                               python-scipy
+                               python-skranger
+                               python-tqdm
+                               python-typing-extensions))
+      (native-inputs (list python-pytest))
+      (home-page "https://github.com/saezlab/decoupler-py")
+      (synopsis
+       "Framework for modeling, analyzing and interpreting single-cell RNA-seq data")
+      (description
+       "This package provides different statistical methods to extract
+biological activities from omics data within a unified framework.")
+      (license license:gpl3+))))
+
 (define-public python-demuxem
   (package
     (name "python-demuxem")
