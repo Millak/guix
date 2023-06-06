@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
@@ -120,6 +120,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
@@ -917,7 +918,34 @@ transactions from C or Python.")
        (sha256
         (base32
          "1vyk0g0gci4z9psisb8h50zi3j1nwfdg1jw3j76cxv0brln0v3fw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require a network connection
+      '(append (map (lambda (file)
+                      (string-append "--ignore=binstar_client/" file))
+                    (list "tests/test_upload.py"
+                          "tests/test_authorizations.py"
+                          "tests/test_login.py"
+                          "tests/test_whoami.py"
+                          "utils/notebook/tests/test_data_uri.py"
+                          "utils/notebook/tests/test_base.py"
+                          "utils/notebook/tests/test_downloader.py"
+                          "inspect_package/tests/test_conda.py"))
+               ;; get_conda_root returns None
+               (list "-k"
+                     "not test_conda_root \
+and not test_conda_root_outside_root_environment"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'python3.10-compatibility
+           (lambda _
+             (substitute* "binstar_client/utils/config.py"
+               (("collections.Mapping") "collections.abc.Mapping"))))
+         ;; This is needed for some tests.
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-clyent python-nbformat python-pyyaml python-requests))
     (native-inputs
@@ -926,27 +954,8 @@ transactions from C or Python.")
            python-freezegun
            python-mock
            python-pillow
+           python-pytest
            python-pytz))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This is needed for some tests.
-         (add-before 'check 'set-up-home
-           (lambda* _ (setenv "HOME" "/tmp") #t))
-         (add-before 'check 'remove-network-tests
-           (lambda* _
-             ;; Remove tests requiring a network connection
-             (let ((network-tests '("tests/test_upload.py"
-                                    "tests/test_authorizations.py"
-                                    "tests/test_login.py"
-                                    "tests/test_whoami.py"
-                                    "utils/notebook/tests/test_data_uri.py"
-                                    "utils/notebook/tests/test_base.py"
-                                    "utils/notebook/tests/test_downloader.py"
-                                    "inspect_package/tests/test_conda.py")))
-               (with-directory-excursion "binstar_client"
-                 (for-each delete-file network-tests)))
-             #t)))))
     (home-page "https://github.com/Anaconda-Platform/anaconda-client")
     (synopsis "Anaconda Cloud command line client library")
     (description
