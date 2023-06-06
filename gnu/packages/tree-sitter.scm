@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
 
 (define-module (gnu packages tree-sitter)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages graphviz)
@@ -29,11 +31,67 @@
   #:use-module (gnu packages node)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system tree-sitter)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public python-tree-sitter
+  (package
+    (name "python-tree-sitter")
+    (version "0.20.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tree-sitter/py-tree-sitter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rc8zqiry4n52xlf7pwx4s56ka9vwjzwgn7blwbkiscqdwvsai92"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-tree-sitter-lib-path
+            (lambda _
+              (let ((tree-sitter #$(this-package-input "tree-sitter")))
+                (substitute* "setup.py"
+                  (((string-append
+                     "( *)\\[\"tree_sitter\\/core\\/lib\\/src\\/lib\\.c\", "
+                     "\"tree_sitter\\/binding\\.c\"\\],") all tabs)
+                   (string-append
+                    tabs "[\"tree_sitter/binding.c\"],\n"
+                    tabs "library_dirs=[\"" tree-sitter "/lib\"],\n"
+                    tabs "libraries=[\"tree-sitter\"],"))
+                  (("include_dirs=.*")
+                   (string-append
+                    "include_dirs=[\"" tree-sitter "/include\"],\n"))))))
+          (add-before 'check 'set-test-lib-paths
+            (lambda _
+              (let ((py #$(this-package-native-input "tree-sitter-python"))
+                    (js #$(this-package-native-input "tree-sitter-javascript")))
+                (substitute* "tests/test_tree_sitter.py"
+                  (("Language\\.build_library")
+                   "_ =")
+                  (("LIB_PATH(, \"python\")" all name)
+                   (string-append
+                    "\"" py "/lib/tree-sitter/libtree-sitter-python.so\"" name))
+                  (("LIB_PATH(, \"javascript\")" all name)
+                   (string-append
+                    "\"" js "/lib/tree-sitter/libtree-sitter-javascript.so\""
+                    name)))))))))
+    (inputs (list tree-sitter))
+    (native-inputs
+     (list tree-sitter-python tree-sitter-javascript))
+    (home-page "https://github.com/tree-sitter/py-tree-sitter")
+    (synopsis "Python bindings to the Tree-sitter parsing library")
+    (description "This package provides Python bindings to the
+Tree-sitter parsing library.")
+    (license license:expat)))
 
 (define-public tree-sitter
   (package
