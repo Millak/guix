@@ -27921,6 +27921,37 @@ it may be seen by an animal with less acute vision.")
 classification and regression models.")
     (license license:gpl2+)))
 
+(define-public r-caretensemble
+  (package
+    (name "r-caretensemble")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "caretEnsemble" version))
+              (sha256
+               (base32
+                "0kagw1ilfz1yy1q0ysmkp3f13k08hiq84xk7d0xp5p7d5dsg7z6q"))))
+    (properties `((upstream-name . "caretEnsemble")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-caret
+                             r-data-table
+                             r-digest
+                             r-ggplot2
+                             r-gridextra
+                             r-lattice
+                             r-pbapply
+                             r-plyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zachmayer/caretEnsemble")
+    (synopsis "Ensembles of caret models")
+    (description
+     "This is a framework for fitting multiple caret models.  It uses the same
+re-sampling strategy as well as creating ensembles of such models.  Use
+@code{caretList} to fit multiple models and then use @code{caretEnsemble} to
+combine them greedily or @code{caretStack} to combine them using a caret
+model.")
+    (license license:expat)))
+
 (define-public r-adabag
   (package
     (name "r-adabag")
