@@ -26681,32 +26681,29 @@ the syntactic logic to configure and launch jobs in an execution environment.")
 (define-public python-flit
   (package
     (name "python-flit")
-    (version "3.5.1")
+    (version "3.8.0") ;same as python-flit-core
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flit" version))
        (sha256
-        (base32 "04152qj46sqbnlrj7ch9p7svjrrlpzbk0qr39g2yr0s4f5vp6frf"))))
-    (build-system python-build-system)
+        (base32 "0dz9sp2zlhkmk6sm5gapbbb30f7xq3n3jn5zxx5pkp25ppsaiwnh"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; These tests fail when FLIT_NO_NETWORK is set
+      '(list "-k" "not test_invalid_classifier \
+and not test_install_requires \
+and not test_install_requires_extra \
+and not test_validate_classifiers_private")
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
+          (add-before 'check 'pre-check
             (lambda* (#:key tests? inputs outputs #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")
-                (setenv "FLIT_NO_NETWORK" "1"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+                (setenv "FLIT_NO_NETWORK" "1")))))))
     (propagated-inputs
      (list python-pypa-build
            python-tomli-w
