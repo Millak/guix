@@ -26,6 +26,55 @@
 (channel-news
  (version 0)
 
+ (entry (commit "1b7aabbc79969a89141aadd3d41d7a5329a3462e")
+        (title
+         (en "New @command{guix locate} command")
+         (de "Neuer Befehl @command{guix locate}")
+         (fr "Nouvelle command @command{guix locate}"))
+        (body
+         (en "The new @command{guix locate} command lets you search for
+packages containing a given file---at long last!  For instance, to find which
+package(s) provide a file named @file{ls}, run:
+
+@example
+guix locate ls
+@end example
+
+Currently the command relies on purely local information.  It is thus unable
+to find packages that have not reached your store.  This limitation will be
+lifted in a future revision.
+
+Run @command{info \"(guix) Invoking guix locate\"} for more info.")
+         (de "Mit dem neuen Befehl @command{guix locate} können Sie nach
+Paketen suchen, die eine angegebene Datei enthalten — endlich ist es
+soweit!  Um zum Beispiel das Paket bzw.@: die Pakete zu finden, die eine
+Datei namens @file{ls} bereitstellen, führen Sie aus:
+
+@example
+guix locate ls
+@end example
+
+Derzeit benutzt der Befehl ausschließlich lokal vorliegende
+Informationen.  Daher können Sie damit nur Pakete finden, die sich in
+Ihrem Store-Verzeichnis befinden.  Diese Einschränkung werden wir in
+einer zukünftigen Version aufheben.
+
+Führen Sie @command{info \"(guix) Invoking guix locate\"} aus, um mehr zu
+erfahren.")
+         (fr "La nouvelle commande @command{guix locate} permet de chercher le
+ou les paquets contenant un fichier donné---enfin !  Par exemple, pour trouver
+quel paquet fournit un fichier nommé @file{ls}, on lance :
+
+@example
+guix locate ls
+@end example
+
+Pour le moment la commande se base uniquement sur des informations locales.
+Elle ne peut donc pas trouver des paquets dans votre dépôt.  Cette limitation
+sera levée dans une prochaine version.
+
+Lancer @command{info \"(guix) Invoking guix locate\"} pour plus d'informations.")))
+
  (entry (commit "ba5da5125a81307500982517e2f458d57b024668")
         (title
          (en "New @code{arguments} rule for @command{guix style}")
