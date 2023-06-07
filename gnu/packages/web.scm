@@ -4849,7 +4849,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers-next
+             guile-fibers-1.3
              guile-json-4
              guile-email
              guile-prometheus

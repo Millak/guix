@@ -871,23 +871,6 @@ is not available for Guile 2.0.")
      ;; <https://github.com/wingo/fibers/pull/53>.
      (filter (cut string-suffix? "-linux" <>) %supported-systems))))
 
-(define-public guile-fibers-next
-  (let ((commit "99fc3e38048f732de67c43fde52e949fa294aa7d")
-        (revision "1"))
-    (package
-      (inherit guile-fibers-1.1)
-      (name "guile-fibers-next")
-      (version (git-version "1.3.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/wingo/fibers")
-                      (commit commit)))
-                (file-name (git-file-name "guile-fibers" version))
-                (sha256
-                 (base32
-                  "1950nf0qa52m1hhc33z0snci5azbdcv4m6hklk5rpqchc90x9h4p")))))))
-
 (define-public guile-fibers
   (package
     (inherit guile-fibers-1.1)

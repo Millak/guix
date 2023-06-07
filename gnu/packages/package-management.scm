@@ -1444,7 +1444,7 @@ environments.")
                                          "guile-gnutls"
                                          ,@(if (hurd-target?)
                                                '()
-                                               '("guile-fibers-next")))))
+                                               '("guile-fibers")))))
                       (wrap-program file
                         `("PATH" ":" prefix
                           (,bin
@@ -1485,7 +1485,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers-next
+             guile-fibers-1.3
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1503,7 +1503,7 @@ environments.")
              guile-sqlite3
              guix
              guile-gnutls
-             guile-fibers-next))
+             guile-fibers-1.3))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1686,7 +1686,7 @@ in an isolated environment, in separate namespaces.")
                                          "guile-prometheus"
                                          "guile-sqlite3"
                                          "guile-gnutls"
-                                         "guile-fibers-next")))
+                                         "guile-fibers")))
                       (wrap-program file
                         `("GUILE_LOAD_PATH" ":" prefix
                           (,scm ,(string-join
@@ -1719,7 +1719,7 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-next
+             guile-fibers-1.3
              guile-prometheus
              guile-lib
              guile-lzlib
@@ -1732,7 +1732,7 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-next
+             guile-fibers-1.3
              guile-prometheus
              guile-lib
              guile-lzlib
