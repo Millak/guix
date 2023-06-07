@@ -20515,6 +20515,59 @@ from the header, as well as section details and data available.")
 Mustache templating language renderer.")
     (license license:expat)))
 
+(define-public python-duckdb
+  (package
+    (name "python-duckdb")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "duckdb" version))
+              (sha256
+               (base32
+                "13y1gs565q51li5fi9m7fpf0sqns8frsaii6v95acwjhmdds73f6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore=tests/slow/test_h2oai_arrow.py"
+             ;; Don't install anything, thank you.
+             "-k" "not test_install_non_existent_extension")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests need this
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              (substitute* "setup.py"
+                (("\"setuptools_scm<7.0.0\",") ""))))
+          ;; Later versions of pybind replace "_" with "const_name".
+          (add-after 'unpack 'pybind-compatibility
+            (lambda _
+              (with-directory-excursion "src/include/duckdb_python"
+                (substitute* '("python_objects.hpp"
+                               "pyfilesystem.hpp"
+                               "pybind11/conversions/pyconnection_default.hpp")
+                  (("const_name") "_"))))))))
+    (native-inputs
+     (list pybind11
+           python-fsspec
+           python-google-cloud-storage
+           python-mypy
+           python-numpy
+           python-pandas
+           python-psutil
+           python-pyarrow
+           python-pytest
+           python-pytest-runner
+           python-setuptools-scm))
+    (home-page "https://www.duckdb.org")
+    (synopsis "DuckDB embedded database")
+    (description "DuckDB is an in-process SQL OLAP database management
+system.")
+    (license license:expat)))
+
 (define-public python-dulwich
   (package
     (name "python-dulwich")
