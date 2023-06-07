@@ -11,7 +11,7 @@
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Dale Mellor <guix-devel-0brg6b@rdmp.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -125,7 +125,22 @@
                 ;; The top-level "make check" does "make -C tests quiet-test", which
                 ;; is too quiet.  Use the "test" target instead, which is more
                 ;; verbose.
-                (invoke "make" "-C" "tests" "test")))))))
+                (invoke "make" "-C" "tests" "test"))))
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'skip-tests
+                      (lambda _
+                        (let ((port (open-file "tests/data/DISABLED" "a")))
+                          (display "526\n" port)
+                          (display "527\n" port)
+                          (display "532\n" port)
+                          (display "533\n" port)
+                          (display "537\n" port)
+                          (display "546\n" port)
+                          (display "575\n" port)
+                          (display "1021\n" port)
+                          (display "1501\n" port)
+                          (close port)))))
+                 #~()))))
     (synopsis "Command line tool for transferring data with URL syntax")
     (description
      "curl is a command line tool for transferring data with URL syntax,
