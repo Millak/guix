@@ -4397,6 +4397,58 @@ with sensible defaults out of the box.")
 clickgen is using @code{anicursorgen} and @code{xcursorgen} under the hood.")
     (license license:expat)))
 
+(define-public python-clickhouse-connect
+  (package
+    (name "python-clickhouse-connect")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ClickHouse/clickhouse-connect")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1s0lk7xdq8f351cmpbp6jidqi5zdazrdba7w7fxph0w8sd74amry"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; All these tests require docker-compose
+      '(list "--ignore-glob=tests/integration_tests/*")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-pyproject
+           (lambda _
+             ;; Our version of pytest is confused by this field.
+             (substitute* "pyproject.toml"
+               (("^env_files.*") ""))))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-arrow
+           python-certifi
+           python-lz4
+           python-numpy
+           python-orjson
+           python-pandas
+           python-pytz
+           python-sqlalchemy
+           python-urllib3
+           python-zstandard))
+    (native-inputs
+     (list python-cython
+           python-pytest))
+    (home-page "https://github.com/ClickHouse/clickhouse-connect")
+    (synopsis
+     "ClickHouse database core driver for Python, Pandas, and Superset")
+    (description
+     "This package provides a high performance core database driver for
+connecting ClickHouse to Python, Pandas, and Superset.")
+    (license license:asl2.0)))
+
 (define-public python-cligj
   (package
     (name "python-cligj")
