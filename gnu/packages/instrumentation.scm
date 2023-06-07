@@ -314,14 +314,14 @@ coverage.")
 (define-public lttng-modules
   (package
     (name "lttng-modules")
-    (version "2.13.5")
+    (version "2.13.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-modules/"
                                   "lttng-modules-" version ".tar.bz2"))
               (sha256
                (base32
-                "0277yfp57psnvn5g40mk09zryp0r4saynns213qak18fv0l39szc"))))
+                "19xh8nm19vx6c2i1adqpa8q2xsvxn59qxa6z186iywbhr0dgpaqk"))))
     (build-system linux-module-build-system)
     (arguments
      `(#:tests? #f ; no tests
