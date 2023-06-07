@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -47,7 +47,7 @@
     (source
      (origin
       (method url-fetch)
-      (uri (string-append "http://fltk.org/pub/fltk/"
+      (uri (string-append "https://www.fltk.org/pub/fltk/"
                           (first (string-split version #\-))
                           "/fltk-" version "-source.tar.gz"))
       (sha256
