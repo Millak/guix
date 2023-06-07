@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,7 +48,11 @@
               (patches (search-patches "tbb-other-arches.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DTBB_STRICT=OFF"))) ;; Don't fail on warnings
+     `(#:configure-flags
+       '(,@(if (target-riscv64?)
+            '("-DTBB_TEST_LINK_FLAGS=-latomic")
+            `())
+         "-DTBB_STRICT=OFF"))) ;; Don't fail on warnings
     (home-page "https://www.threadingbuildingblocks.org")
     (synopsis "C++ library for parallel programming")
     (description
