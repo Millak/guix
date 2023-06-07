@@ -23,7 +23,6 @@
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -441,8 +440,6 @@ an interpreter, a compiler, a debugger, and much more.")
        (sha256
         (base32 "11ji5n65l31249r0v7hm0wc0yk2ila0y746nj36xn1cxrwh0gjc9"))
        (modules '((guix build utils)))
-       ;; backport from upstream.
-       (patches (search-patches "sbcl-riscv-Make-contribs-build-again.patch"))
        (snippet
         '(begin
            ;; Don't force ARMv5.
