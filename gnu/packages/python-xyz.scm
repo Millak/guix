@@ -10335,6 +10335,36 @@ you're careful.  The @code{backcall} package provides a way of specifying the
 callback signature using a prototype function.")
     (license license:bsd-3)))
 
+(define-public python-pubmed-parser
+  (package
+    (name "python-pubmed-parser")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/titipata/pubmed_parser")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "195cmjjg7xdwjj5455h78q7jnxnccia07a19xwndhlkxv7vk9v60"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-lxml
+           python-numpy
+           python-requests
+           python-six
+           python-unidecode))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov))
+    (home-page "https://github.com/titipata/pubmed_parser")
+    (synopsis "Parser for Pubmed Open-Access Subset and MEDLINE XML repository")
+    (description
+     "This package provides a Python parser for Pubmed Open-Access Subset and
+MEDLINE XML repository.")
+    (license license:expat)))
+
 (define-public python-pure-eval
   (package
     (name "python-pure-eval")
