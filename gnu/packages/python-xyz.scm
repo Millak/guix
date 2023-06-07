@@ -15411,6 +15411,27 @@ provide an easy to use, pythonic and comprehensive Python interface to dialog.
 This allows one to make simple text-mode user interfaces on Unix-like systems")
     (license license:lgpl2.1)))
 
+(define-public python-confection
+  (package
+    (name "python-confection")
+    (version "0.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "confection" version))
+              (sha256
+               (base32
+                "1ksfn10zhnpkcj3y0c3xs4dznvc062bk62x4c3ig0dd6bn4gbpdi"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pydantic python-srsly
+                             python-typing-extensions))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/explosion/confection")
+    (synopsis "Config system for Python")
+    (description "Confection is a lightweight library that offers a
+configuration system letting you conveniently describe arbitrary trees of
+objects.")
+    (license license:expat)))
+
 (define-public python-configobj
   (package
     (name "python-configobj")
