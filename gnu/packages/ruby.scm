@@ -1306,9 +1306,27 @@ script.")
                (base32
                 "0kvd2nsxffbza61d3q4j94wrbnbv50r1zy3a7q26f6k706fw1f19"))))
     (build-system ruby-build-system)
-    ;; FIXME: There are no unit tests.  The tests are demonstrations of the
-    ;; "saikuro" tool.
-    (arguments `(#:tests? #f))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-module-resolution
+            (lambda _
+              (substitute* "lib/saikuro.rb"
+                ;; irb 1.2.0 or later doesn't have RubyToken
+                (("require 'irb/ruby-lex'")
+                 "require 'rubygems'\ngem 'irb', '=1.1.1'\nrequire 'irb/ruby-lex'"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (saikuro (string-append out "/bin/saikuro")))
+                (setenv "GEM_PATH" (string-append
+                                    (getenv "GEM_PATH") ":"
+                                    #$output "/lib/ruby/vendor_ruby"))
+                (invoke saikuro "--cyclo" "--token" "--input_directory" "tests")))))))
+    (propagated-inputs (list ruby-irb-1.1.1
+                             ruby-e2mmap)) ;required by rubygems
     (synopsis "Cyclomatic complexity analyzer")
     (description "Saikuro is a Ruby cyclomatic complexity analyzer.  When
 given Ruby source code Saikuro will generate a report listing the cyclomatic
