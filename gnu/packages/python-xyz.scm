@@ -31881,6 +31881,40 @@ uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
 
+(define-public python-srsly
+  (package
+    (name "python-srsly")
+    (version "2.4.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "srsly" version))
+              (sha256
+               (base32
+                "0vsafkvk4g0p5m0dqrczqvlyza837i20xxmb24rrqk5s78r1zd27"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-catalogue))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-timeout
+           python-mock
+           python-numpy
+           python-psutil))
+    (home-page "https://github.com/explosion/srsly")
+    (synopsis "Serialization utilities for Python")
+    (description "This package bundles some of the best Python serialization
+libraries into one standalone package, with a high-level API that makes it
+easy to write code that's correct across platforms and Pythons.")
+    (license license:expat)))
+
 (define-public python-pyperf
   (package
     (name "python-pyperf")
