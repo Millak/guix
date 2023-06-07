@@ -562,6 +562,17 @@ Eval Print Loop).")
     (home-page "https://github.com/ruby/irb")
     (license license:bsd-2)))
 
+(define-public ruby-irb-1.1.1
+  (package
+    (inherit ruby-irb)
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "irb" version))
+              (sha256
+               (base32
+                "0h605w798s2bg9wg681ynvvzgdz1yy69gh387bl0khw9ll7wkn8v"))))))
+
 (define-public ruby-iruby
   (package
     (name "ruby-iruby")
