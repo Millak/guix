@@ -1314,13 +1314,12 @@ computations.")
        #:phases
        (modify-phases %standard-phases
          ;; This is inspired by two of Debian's patches.
-         (add-before 'configure 'add-more-aarch64-support
+         (add-before 'configure 'add-more-architecture-support
            (lambda _
              (substitute* '("mfhdf/ncgen/ncgen.l"
                             "mfhdf/ncgen/ncgenyy.c"
                             "mfhdf/libsrc/netcdf.h.in")
-               (("AIX5L64") "__aarch64__"))
-             #t))
+               (("AIX5L64") "__aarch64__ || ( __riscv && __riscv_xlen == 64)"))))
          (add-before 'configure 'patchbuild
            (lambda _
              (substitute*
