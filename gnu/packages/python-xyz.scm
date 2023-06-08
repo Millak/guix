@@ -3906,6 +3906,28 @@ a certain expected condition.")
 Cython for speed.")
     (license license:expat)))
 
+(define-public python-portalocker
+  (package
+    (name "python-portalocker")
+    (version "2.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "portalocker" version))
+              (sha256
+               (base32
+                "0lawjm736vs86wlnxc3qqh37l11z0yx81xq3dmrw33m86kaq2bh3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-pytest-mypy
+                         python-pytest-timeout
+                         python-redis))
+    (home-page "https://github.com/WoLpH/portalocker")
+    (synopsis "Python library for file locking")
+    (description "Portalocker is a library to provide an easy API to file
+locking..")
+    (license license:bsd-3)))
+
 (define-public python-poyo
   (package
     (name "python-poyo")
