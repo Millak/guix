@@ -748,6 +748,26 @@ unsupervised text tokenizer.")
 compatibility.")
     (license license:expat)))
 
+(define-public python-spacy-loggers
+  (package
+    (name "python-spacy-loggers")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spacy-loggers" version))
+              (sha256
+               (base32
+                "0a5zjfxd0mci7pwda24ihg55whalpmjby4bvpgar2013f6zq7yg6"))))
+    (build-system pyproject-build-system)
+    ;; This package depends on spacy, which depends on this package.
+    (arguments (list #:tests? #false))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/explosion/spacy-loggers")
+    (synopsis "Logging utilities for SpaCy")
+    (description "This package provides logging utilities for the SpaCy
+natural language processing framework.")
+    (license license:expat)))
+
 (define-public shogun
   (package
     (name "shogun")
