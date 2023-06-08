@@ -31,6 +31,7 @@
 ;;; Copyright © 2021–2023 Alice BRENON <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8602,6 +8603,26 @@ of functions that implement regular expression pattern matching using the same
 syntax and semantics as Perl 5.")
     (license license:bsd-3)))
 
+(define-public ghc-peano
+  (package
+    (name "ghc-peano")
+    (version "0.1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "peano" version))
+              (sha256
+               (base32
+                "0yzcxrl41dacvx2wkyxjj7hgvz56l4qb59r4h9rmaqd7jcwx5z9i"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("3"
+                         "0wl22dnz6ld300cg6id3lw991bp8kdfi8h0nbv37vn79i1zdcj5n")))
+    (home-page "http://hackage.haskell.org/package/peano")
+    (synopsis "Peano numbers")
+    (description "Provides an efficient Haskell implementation of Peano
+numbers")
+    (license license:bsd-3)))
+
 (define-public ghc-persistent
   (package
     (name "ghc-persistent")
@@ -13307,6 +13328,27 @@ You would first use the @code{Builder} abstraction to specify the structure of
 the vector; then you can execute the builder to actually produce the
 vector.")
     (license license:expat)))
+
+(define-public ghc-vector-hashtables
+  (package
+    (name "ghc-vector-hashtables")
+    (version "0.1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "vector-hashtables" version))
+              (sha256
+               (base32
+                "0hrjvy9qg1m5g3w91zxy4syqmp8jk7ajjbxbzkhy282dwfigkyd2"))))
+    (build-system haskell-build-system)
+    (inputs (list ghc-primitive ghc-vector ghc-hashable))
+    (native-inputs (list ghc-hspec ghc-quickcheck ghc-quickcheck-instances
+                         hspec-discover))
+    (home-page "https://github.com/klapaucius/vector-hashtables#readme")
+    (synopsis "Efficient vector-based mutable hashtables implementation")
+    (description
+     "This package provides efficient vector-based hashtable implementation
+similar to .NET Generic Dictionary implementation (at the time of 2015).")
+    (license license:bsd-3)))
 
 (define-public ghc-vector-th-unbox
   (package

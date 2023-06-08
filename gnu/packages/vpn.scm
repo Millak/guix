@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
@@ -677,35 +677,31 @@ the user specifically asks to proxy, so the @dfn{VPN} interface no longer
 
 (define-public openconnect
   (package
-   (name "openconnect")
-   (version "9.01")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "ftp://ftp.infradead.org/pub/openconnect/"
-                                "openconnect-" version ".tar.gz"))
-            (sha256
-             (base32 "1iz4j00031a5ircrx30lkiwf58yl9kc827m4ssck4yg963wgmmxk"))))
-   (build-system gnu-build-system)
-   (propagated-inputs
-    (list libxml2 gnutls zlib))
-   (inputs
-    (list lz4 vpnc-scripts))
-   (native-inputs
-    `(("gettext" ,gettext-minimal)
-      ("pkg-config" ,pkg-config)))
-   (arguments
-    `(#:configure-flags
-      `(,(string-append "--with-vpnc-script="
-                        (assoc-ref %build-inputs "vpnc-scripts")
-                        "/etc/vpnc/vpnc-script"))))
-   (synopsis "Client for Cisco VPN")
-   (description
-    "OpenConnect is a client for Cisco's AnyConnect SSL VPN, which is
-supported by the ASA5500 Series, by IOS 12.4(9)T or later on Cisco SR500,
-870, 880, 1800, 2800, 3800, 7200 Series and Cisco 7301 Routers,
-and probably others.")
-   (license license:lgpl2.1)
-   (home-page "https://www.infradead.org/openconnect/")))
+    (name "openconnect")
+    (version "9.12")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "ftp://ftp.infradead.org/pub/openconnect/"
+                                  "openconnect-" version ".tar.gz"))
+              (sha256
+               (base32 "0gj1nba1pygvcjasqdakxxnx94dwx3l4hzj0dvipbzjdmbixrgm2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-vpnc-script="
+                                  (search-input-file %build-inputs
+                                                     "etc/vpnc/vpnc-script")))))
+    (native-inputs (list gettext-minimal pkg-config))
+    (inputs (list lz4 vpnc-scripts))
+    (propagated-inputs (list libxml2 gnutls zlib))
+    (synopsis "Client for Cisco VPN")
+    (description
+     "OpenConnect is a client for Cisco's AnyConnect SSL VPN, which is
+supported by the ASA5500 Series, by IOS 12.4(9)T or later on Cisco SR500, 870,
+880, 1800, 2800, 3800, 7200 Series and Cisco 7301 Routers, and probably
+others.")
+    (license license:lgpl2.1)
+    (home-page "https://www.infradead.org/openconnect/")))
 
 (define-public openconnect-sso
   (package

@@ -1,0 +1,49 @@
+From 457bc7438a4f0801dbf332fa2369248bddf5da0c Mon Sep 17 00:00:00 2001
+Message-Id: <457bc7438a4f0801dbf332fa2369248bddf5da0c.1678309546.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Wed, 8 Mar 2023 18:31:52 +0100
+Subject: [PATCH] Add environment variable for library directories
+
+AGDA_LIBDIRS is a new environment colon-separated variable for site libraries.
+Agda will look for .agda-lib files directly inside direct descendants of these.
+---
+ src/full/Agda/Interaction/Library.hs | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/src/full/Agda/Interaction/Library.hs b/src/full/Agda/Interaction/Library.hs
+index 09c1f2a82..774cc3e74 100644
+--- a/src/full/Agda/Interaction/Library.hs
++++ b/src/full/Agda/Interaction/Library.hs
+@@ -323,13 +323,25 @@ getInstalledLibraries overrideLibFile = mkLibM [] $ do
+         raiseErrors' [ LibrariesFileNotFound theOverrideLibFile ]
+         return []
+       Right file -> do
+-        if not (lfExists file) then return [] else do
++        siteLibDirs <- liftIO $ fromMaybe [] . fmap splitAtColon . lookup "AGDA_LIBDIRS" <$> getEnvironment
++        siteLibs <- liftIO $ concat <$> mapM findSiteLibs siteLibDirs
++        if not (lfExists file) then parseLibFiles Nothing $ nubOn snd ((0,) <$> siteLibs) else do
+           ls    <- liftIO $ stripCommentLines <$> UTF8.readFile (lfPath file)
+           files <- liftIO $ sequence [ (i, ) <$> expandEnvironmentVariables s | (i, s) <- ls ]
+-          parseLibFiles (Just file) $ nubOn snd files
++          parseLibFiles (Just file) $ nubOn snd (files ++ fmap (0,) siteLibs)
+   `catchIO` \ e -> do
+     raiseErrors' [ ReadError e "Failed to read installed libraries." ]
+     return []
++  where splitAtColon :: String -> [String]
++        splitAtColon "" = []
++        splitAtColon str = case break (==':') str of
++          (a, _:b) -> a : splitAtColon b
++          (a, "")    -> [a]
++        findSiteLibs :: String -> IO [String]
++        findSiteLibs dir = do
++          subDirs <- filterM doesDirectoryExist =<< map (dir </>) <$> listDirectory dir
++          subFiles <- mapM (\dir -> map (dir </>) <$> listDirectory dir) subDirs
++          return $ concatMap (filter (List.isSuffixOf ".agda-lib")) subFiles
+ 
+ -- | Parse the given library files.
+ --
+
+base-commit: 183534bc41af5a53daf685122997dc98883f2be2
+-- 
+2.39.1
+

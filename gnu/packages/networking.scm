@@ -59,6 +59,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3097,7 +3098,10 @@ The filters can be aggregated and exported in the most common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07kwika1zdq62s5p5z94xznm77dxjxdg8k0hrg7wygz50151nzmx"))))
+        (base32 "07kwika1zdq62s5p5z94xznm77dxjxdg8k0hrg7wygz50151nzmx"))
+       (modules '((guix build utils)))
+       (snippet '(begin (substitute* '("Makefile")
+                          (("-march=native") ""))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3126,6 +3130,7 @@ The filters can be aggregated and exported in the most common formats.")
            libpcap
            openssl
            perl))
+    (properties '((tunable? . #t)))
     (home-page "https://github.com/vanhauser-thc/thc-ipv6")
     (synopsis "IPv6 security research toolkit")
     (description "The THC IPv6 Toolkit provides command-line tools and a library

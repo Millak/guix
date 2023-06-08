@@ -97,7 +97,7 @@ Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
 Copyright @copyright{} 2021, 2022 Josselin Poiret@*
-Copyright @copyright{} 2021 muradm@*
+Copyright @copyright{} 2021, 2023 muradm@*
 Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
@@ -442,6 +442,7 @@ Home Services
 * Guix: Guix Home Services.     Services for Guix.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
+* Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
 
@@ -4660,7 +4661,7 @@ pull} ensures that the code it downloads is @emph{authentic} by
 verifying that commits are signed by Guix developers.
 
 Specifically, @command{guix pull} downloads code from the @dfn{channels}
-(@pxref{Channels}) specified by one of the followings, in this order:
+(@pxref{Channels}) specified by one of the following, in this order:
 
 @enumerate
 @item
@@ -8963,6 +8964,27 @@ of @code{gnu-build-system}, and differ mainly in the set of inputs
 implicitly added to the build process, and in the list of phases
 executed.  Some of these build systems are listed below.
 
+@defvar agda-build-system
+This variable is exported by @code{(guix build-system agda)}.  It
+implements a build procedure for Agda libraries.
+
+It adds @code{agda} to the set of inputs.  A different Agda can be
+specified with the @code{#:agda} key.
+
+The @code{#:plan} key is a list of cons cells @code{(@var{regexp}
+. @var{parameters})}, where @var{regexp} is a regexp that should match
+the @code{.agda} files to build, and @var{parameters} is an optional
+list of parameters that will be passed to @code{agda} when type-checking
+it.
+
+When the library uses Haskell to generate a file containing all imports,
+the convenience @code{#:gnu-and-haskell?} can be set to @code{#t} to add
+@code{ghc} and the standard inputs of @code{gnu-build-system} to the
+input list.  You will still need to manually add a phase or tweak the
+@code{'build} phase, as in the definition of @code{agda-stdlib}.
+
+@end defvar
+
 @defvar ant-build-system
 This variable is exported by @code{(guix build-system ant)}.  It
 implements the build procedure for Java packages that can be built with
@@ -12454,7 +12476,7 @@ shows build events only, and higher levels print build logs.
 @end deffn
 
 @deffn {REPL command} run-in-store @var{exp}
-Run @var{exp}, a monadic expresssion, through the store monad.
+Run @var{exp}, a monadic expression, through the store monad.
 @xref{The Store Monad}, for more information.
 @end deffn
 
@@ -19419,7 +19441,7 @@ Extra environment variables to set on login.
 @item @code{xdg-env?} (default: @code{#t})
 If true @code{XDG_RUNTIME_DIR} and @code{XDG_SESSION_TYPE} will be set
 before starting command. One should note that, @code{extra-env} variables
-are set right after mentioned variables, so that they can be overriden.
+are set right after mentioned variables, so that they can be overridden.
 
 @end table
 @end deftp
@@ -22530,36 +22552,62 @@ Usually the X server is started by a login manager.
 
 @defvar screen-locker-service-type
 Type for a service that adds a package for a screen locker or screen
-saver to the set of setuid programs and add a PAM entry for it.  The
+saver to the set of setuid programs and/or add a PAM entry for it.  The
 value for this service is a @code{<screen-locker-configuration>} object.
+
+While the default behavior is to setup both a setuid program and PAM
+entry, these two methods are redundant.  Screen locker programs may not
+execute when PAM is configured and @code{setuid} is set on their
+executable.  In this case, @code{using-setuid?} can be set to @code{#f}.
 
 For example, to make XlockMore usable:
 
 @lisp
 (service screen-locker-service-type
          (screen-locker-configuration
-           "xlock" (file-append xlockmore "/bin/xlock") #f))
+           (name "xlock")
+           (program (file-append xlockmore "/bin/xlock"))))
 @end lisp
 
 makes the good ol' XlockMore usable.
+
+For example, swaylock fails to execute when compiled with PAM support
+and setuid enabled.  One can thus disable setuid:
+
+@lisp
+(service screen-locker-service-type
+         (screen-locker-configuration
+           (name "swaylock")
+           (program (file-append xlockmore "/bin/xlock"))
+           (using-pam? #t)
+           (using-setuid? #f)))
+@end lisp
+
 @end defvar
 
 @deftp {Data Type} screen-locker-configuration
-Data type representing the configuration of
-@code{screen-locker-service-type}.
+Available @code{screen-locker-configuration} fields are:
 
 @table @asis
 @item @code{name} (type: string)
 Name of the screen locker.
 
-@item @code{program} (type: gexp)
+@item @code{program} (type: file-like)
 Path to the executable for the screen locker as a G-Expression.
 
-@item @code{allow-empty-password?} (type: boolean)
+@item @code{allow-empty-password?} (default: @code{#f}) (type: boolean)
 Whether to allow empty passwords.
 
+@item @code{using-pam?} (default: @code{#t}) (type: boolean)
+Whether to setup PAM entry.
+
+@item @code{using-setuid?} (default: @code{#t}) (type: boolean)
+Whether to setup program as setuid binary.
+
 @end table
+
 @end deftp
+
 
 @node Printing Services
 @subsection Printing Services
@@ -34015,7 +34063,7 @@ syslog daemon or @code{%unset-value} to omit this directive from the
 configuration file.
 
 @item @code{log-level} (type: maybe-string)
-Supress any messages below this threshold.  Available values:
+Suppress any messages below this threshold.  Available values:
 @code{notice}, @code{info}, @code{verbose}, @code{warning} and
 @code{error}.
 
@@ -39108,7 +39156,7 @@ UID (integer) or user name (string) for the user owner of the program,
 defaults to root.
 
 @item @code{group} (default: @code{0})
-GID (integer) goup name (string) for the group owner of the program,
+GID (integer) group name (string) for the group owner of the program,
 defaults to root.
 
 @end table
@@ -42470,7 +42518,7 @@ following format:
 
 Each nested list contains two values: a subdirectory and file-like
 object.  After building a home environment @file{~/.guix-home/files}
-will be populated with apropiate content and all nested directories will
+will be populated with appropriate content and all nested directories will
 be created accordingly, however, those files won't go any further until
 some other service will do it.  By default a
 @code{home-symlink-manager-service-type}, which creates necessary
@@ -42482,7 +42530,7 @@ read-only home.  Feel free to experiment and share your results.
 @end defvar
 
 @defvar home-xdg-configuration-files-service-type
-The service is very similiar to @code{home-files-service-type} (and
+The service is very similar to @code{home-files-service-type} (and
 actually extends it), but used for defining files, which will go to
 @file{~/.guix-home/files/.config}, which will be symlinked to
 @file{$XDG_CONFIG_DIR} by @code{home-symlink-manager-service-type} (for
@@ -43706,7 +43754,7 @@ The @uref{https://znc.in, ZNC bouncer} can be run as a daemon to manage
 your IRC presence.  With the @code{(gnu home services messaging)} service, you
 can configure ZNC to run upon login.
 
-You will have to provide a @file{~/.znc/configs/znc.conf} seperately.
+You will have to provide a @file{~/.znc/configs/znc.conf} separately.
 
 Here is an example of a service and its configuration that you could add
 to the @code{services} field of your @code{home-environment}:
@@ -44366,7 +44414,7 @@ which is the default, means that the image size will be inferred based
 on the image content.
 
 @item @code{operating-system}
-The image's @code{operating-system} record that is instanciated.
+The image's @code{operating-system} record that is instantiated.
 
 @item @code{partition-table-type} (default: @code{'mbr})
 The image partition table type as a symbol.  Possible values are
@@ -45283,7 +45331,7 @@ space-separated hexadecimal digits (nibbles) from a file, possibly
 including comments, and emits on standard output the bytes corresponding
 to those hexadecimal numbers.  The source code of this initial hex0
 program is a file called
-@c XXX TODO: udpate to savannah url, once accepted there
+@c XXX TODO: update to savannah url, once accepted there
 @url{https://github.com/oriansj/bootstrap-seeds/blob/master/POSIX/x86/hex0_x86.hex0,@file{hex0_x86.hex0}}
 and is written in the @code{hex0} language.
 
@@ -45308,7 +45356,7 @@ The bootstrap then continues: @code{hex0} builds @code{hex1} and then on
 to @code{M0}, @code{hex2}, @code{M1}, @code{mescc-tools} and finally
 @code{M2-Planet}.  Then, using @code{mescc-tools}, @code{M2-Planet} we
 build Mes (@pxref{Top, GNU Mes Reference Manual,, mes, GNU Mes}, a
-Scheme interpreter and C compiler in Scheme).  Frome here on starts
+Scheme interpreter and C compiler in Scheme).  From here on starts
 the more traditional @code{C}-based bootstrap of the GNU System.
 
 Another step that Guix has taken is to replace the shell and all its

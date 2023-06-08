@@ -571,9 +571,27 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
       (sha256
        (base32 "06f6d08xvmsiki4mc1qs985gsjqmsxx793a93b72y25q84wbg9x9"))))
    (build-system gnu-build-system)
-   (inputs (list libjpeg-turbo))
    (arguments
-    '(#:tests? #f))                     ; no tests
+    `(#:tests? #f                       ; no tests
+      ,@(if (and (target-riscv64?)
+                 (%current-target-system))
+          (list #:phases
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'update-config-scripts
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (for-each (lambda (file)
+                                    (install-file
+                                      (search-input-file
+                                        (or native-inputs inputs)
+                                        (string-append "/bin/" file)) "./tools"))
+                                  '("config.guess" "config.sub"))))))
+          '())))
+   (inputs (list libjpeg-turbo))
+   (native-inputs
+    (if (and (target-riscv64?)
+             (%current-target-system))
+      (list config)
+      '()))
    (synopsis "Optimize JPEG images")
    (description
     "jpegoptim provides lossless optimization (based on optimizing
@@ -595,6 +613,25 @@ maximum quality factor.")
                (base32
                 "1hjm8lwap7bjyyxsyi94fh5817xzqhk4kb5y0b7mb6675xw10prk"))))
     (build-system gnu-build-system)
+    (arguments
+     (if (and (target-riscv64?)
+              (%current-target-system))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'update-config-scripts
+                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                     (for-each (lambda (file)
+                                 (install-file
+                                   (search-input-file
+                                     (or native-inputs inputs)
+                                     (string-append "/bin/" file)) "."))
+                               '("config.guess" "config.sub"))))) )
+       '()))
+    (native-inputs
+     (if (and (target-riscv64?)
+              (%current-target-system))
+       (list config)
+       '()))
     (inputs
      (list libpng jasper))
     (home-page "https://icns.sourceforge.io/")
@@ -2105,7 +2142,7 @@ losslessly translates between SNG and PNG.")
 (define-public blurhash
   (package
     (name "blurhash")
-    (version "0.0.1")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2114,10 +2151,10 @@ losslessly translates between SNG and PNG.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jy2iigarskwfhskyladbb6l92x1fb3i3vz4bvcks0za4w5hfxk5"))))
+        (base32 "0hx15fspava43z47kv17ivxv56g03fb2zf45dl07v3shickqxw0x"))))
     (build-system meson-build-system)
     (native-inputs
-     (list cmake doctest))
+     (list doctest pkg-config))
     (home-page "https://github.com/Nheko-Reborn/blurhash")
     (synopsis "C++ blurhash encoder/decoder")
     (description "Simple encoder and decoder for blurhashes.  Contains a

@@ -118,7 +118,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.23.12")
+    (version "0.23.13")
     (source (origin
               (method url-fetch)
               (uri
@@ -127,12 +127,13 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1rq2hyfvwwri3sivab747csza2i096y7m8563rl5mhpchhiadz5p"))))
+                "06fmy68lfrsi5y03l53dnwcynqhwh5f5vhdpbsr8lzmvzgk02sx9"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags #~(list "-Ddocumentation=enabled"
-                                "-Dsystemd=enabled")
+                                "-Dsystemd=enabled"
+                                "-Dtest=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enable-elogind
@@ -145,7 +146,15 @@ interfacing MPD in the C, C++ & Objective C languages.")
                 (("systemd_dep = declare_dependency" all)
                  (string-append "_" all)))
               (substitute* "meson.build"
-                (("systemd_dep,") "systemd_dep, _systemd_dep,")))))))
+                (("systemd_dep,") "systemd_dep, _systemd_dep,"))))
+          (add-after 'install 'split-package
+            (lambda _
+              ;; The HTML manual accounts for over 40% of the disk
+              ;; space used by the package.
+              (let* ((old (string-append #$output "/share/doc"))
+                     (new (string-append #$output:doc "/share/doc")))
+                (mkdir-p (dirname new))
+                (rename-file old new)))))))
     (inputs (append
              (if (target-linux?) (list liburing) '())
              (list ao
@@ -182,7 +191,13 @@ interfacing MPD in the C, C++ & Objective C languages.")
                    yajl
                    zlib
                    zziplib)))
-    (native-inputs (list cmake pkg-config python-sphinx))
+    (native-inputs (list pkg-config python-sphinx googletest
+                         ;; See test/meson.build for information about these
+                         ;; additional dependencies.
+                         ;;
+                         ;; Used when zziplib feature is enabled.
+                         zip))
+    (outputs (list "out" "doc"))
     ;; Missing optional inputs:
     ;;   libcdio_paranoia
     ;;   libmms

@@ -9,7 +9,7 @@
 ;;; Copyright © 2016, 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -2603,24 +2603,20 @@ characters can be replaced as well, as can UTF-8 characters.")
 (define-public tree
   (package
     (name "tree")
-    (version "2.1.0")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://mama.indstate.edu/users/ice/tree/src/tree-"
                     version ".tgz"))
               (sha256
-               (base32 "1xmbxgx72w7ddjlqsx1yys076hp3h7ll968bhdmdrc7jpwswaq01"))))
+               (base32 "1mchmdkq77d4c2mx7xmarccbk46a3sm2aqslarjwgxrs81gxbhyk"))))
     (build-system gnu-build-system)
     (arguments
      (list
        #:phases
        #~(modify-phases %standard-phases
-           (delete 'configure)          ; No configure script.
-           (add-after 'unpack 'fix-manpage-version
-             (lambda _
-               (substitute* "doc/tree.1"
-                 (("Tree 2\\.0\\.0") (string-append "Tree " #$version))))))
+           (delete 'configure))         ; No configure script.
        #:tests? #f                      ; No check target.
        #:make-flags
        #~(list (string-append "PREFIX=" #$output)

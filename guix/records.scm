@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,6 +20,7 @@
 (define-module (guix records)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
@@ -30,7 +31,8 @@
             alist->record
             object->fields
             recutils->alist
-            match-record))
+            match-record
+            match-record-lambda))
 
 ;;; Commentary:
 ;;;
@@ -105,7 +107,12 @@ error-reporting purposes."
 
 (define-syntax map-fields
   (lambda (x)
-    (syntax-violation 'map-fields "bad use of syntactic keyword" x x)))
+    (syntax-case x ()
+      ((_ type within)
+       (syntax-violation (syntax->datum #'within)
+                         "undefined guix record-type"
+                         #'type))
+      (_ (syntax-violation 'map-fields "bad use of syntactic keyword" x x)))))
 
 (define-syntax-parameter this-record
   (lambda (s)
@@ -423,10 +430,19 @@ inherited."
               (defaults   (filter-map field-default-value
                                       #'((field properties ...) ...)))
               (sanitizers (filter-map field-sanitizer
-                                        #'((field properties ...) ...)))
+                                      #'((field properties ...) ...)))
               (cookie     (compute-abi-cookie field-spec)))
          (with-syntax (((field-spec* ...)
                         (map field-spec->srfi-9 field-spec))
+                       ((field-type ...)
+                        (map (match-lambda
+                               ((? thunked-field?)
+                                (datum->syntax s 'thunked))
+                               ((? delayed-field?)
+                                (datum->syntax s 'delayed))
+                               (else
+                                (datum->syntax s 'normal)))
+                             field-spec))
                        ((thunked-field-accessor ...)
                         (filter-map (lambda (field)
                                       (and (thunked-field? field)
@@ -459,8 +475,8 @@ inherited."
                    "This macro lets us query record type info at
 macro-expansion time."
                    (syntax-case s (map-fields)
-                     ((_ map-fields macro)
-                      #'(macro (field ...)))
+                     ((_ (map-fields _ _) macro)
+                      #'(macro ((field field-type) ...)))
                      (id
                       (identifier? #'id)
                       #'#,(rtd-identifier #'type)))))
@@ -573,30 +589,44 @@ pairs.  Stop upon an empty line (after consuming it) or EOF."
 ;;; Pattern matching.
 ;;;
 
-(define-syntax lookup-field
+(define-syntax lookup-field+wrapper
   (lambda (s)
-    "Look up FIELD in the given list and return an expression that represents
-its offset in the record.  Raise a syntax violation when the field is not
-found."
-    (syntax-case s ()
-      ((_ field offset ())
-       (syntax-violation 'lookup-field "unknown record type field"
-                         s #'field))
-      ((_ field offset (head tail ...))
+    "Look up FIELD in the given list and return both an expression that represents
+its offset in the record and a procedure that wraps it to return its \"true\" value
+(for instance, FORCE is returned in the case of a delayed field).  RECORD is passed
+to thunked values.  Raise a syntax violation when the field is not found."
+    (syntax-case s (normal delayed thunked)
+      ((_ record field offset ())
+       (syntax-violation 'match-record
+                         "unknown record type field"
+                         ;; Attach the local source data to the field.
+                         (datum->syntax #f (syntax->datum #'field) #:source s)))
+      ((_ record field offset ((head normal) tail ...))
        (free-identifier=? #'field #'head)
-       #'offset)
-      ((_ field offset (_ tail ...))
-       #'(lookup-field field (+ 1 offset) (tail ...))))))
+       #'(values offset identity))
+      ((_ record field offset ((head delayed) tail ...))
+       (free-identifier=? #'field #'head)
+       #'(values offset force))
+      ((_ record field offset ((head thunked) tail ...))
+       (free-identifier=? #'field #'head)
+       #'(values offset (cut <> record)))
+      ((_ record field offset (_ tail ...))
+       #'(lookup-field+wrapper record field
+                               (+ 1 offset) (tail ...))))))
 
 (define-syntax match-record-inner
   (lambda (s)
     (syntax-case s ()
       ((_ record type ((field variable) rest ...) body ...)
-       #'(let-syntax ((field-offset (syntax-rules ()
-			              ((_ f)
-                                       (lookup-field field 0 f)))))
-           (let* ((offset (type map-fields field-offset))
-                  (variable (struct-ref record offset)))
+       #'(let-syntax ((field-offset+wrapper
+                       (syntax-rules ()
+			 ((_ f)
+                          (lookup-field+wrapper record field 0 f)))))
+           (let*-values (((offset wrap)
+                          (type (map-fields type match-record)
+                                field-offset+wrapper))
+                         ((variable)
+                          (wrap (struct-ref record offset))))
              (match-record-inner record type (rest ...) body ...))))
       ((_ record type (field rest ...) body ...)
        ;; Redirect to the canonical form above.
@@ -608,13 +638,21 @@ found."
   (syntax-rules ()
     "Bind each FIELD of a RECORD of the given TYPE to it's FIELD name.
 The order in which fields appear does not matter.  A syntax error is raised if
-an unknown field is queried.
-
-The current implementation does not support thunked and delayed fields."
-    ;; TODO support thunked and delayed fields
+an unknown field is queried."
     ((_ record type (fields ...) body ...)
      (if (eq? (struct-vtable record) type)
          (match-record-inner record type (fields ...) body ...)
          (throw 'wrong-type-arg record)))))
+
+(define-syntax match-record-lambda
+  (syntax-rules ()
+    "Return a procedure accepting a single record of the given TYPE for which each
+FIELD will be bound to its FIELD name within the returned procedure.  A syntax error
+is raised if an unknown field is queried."
+    ((_ type (field ...) body ...)
+     (lambda (record)
+       (if (eq? (struct-vtable record) type)
+           (match-record-inner record type (field ...) body ...)
+           (throw 'wrong-type-arg record))))))
 
 ;;; records.scm ends here

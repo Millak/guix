@@ -1,5 +1,6 @@
 ;;; Copyright © 2021 Blake Shaw <blake@nonconstructivism.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +36,7 @@
 (define-public notcurses
   (package
     (name "notcurses")
-    (version "3.0.8")
+    (version "3.0.9")
     (source
      (origin
        (method url-fetch)
@@ -48,7 +49,7 @@
                            "+dfsg.1.orig.tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "1nz32nqh7fn4i06hvl8ndkm0z4g08a6wzhilvv8ggx2hc5axsz89"))))
+        (base32 "1sj2m7sil2i3yw73z15947kypsp0rnapwpwanwzam15lbicc8c3y"))))
     (build-system cmake-build-system)
     (arguments
      `(#:make-flags
@@ -59,6 +60,10 @@
          "-DUSE_COVERAGE=off"
          ;; Do not build HTML documentation
          "-DUSE_DOXYGEN=off"
+         ;; Unfortunately this disables the manpages.
+         ,@(if (supported-package? pandoc)
+             '()
+             '("-DUSE_PANDOC=off"))
          ;; Don't include mouse support
          "-DUSE_GPM=off"
          ;; Use FFmpeg for multimedia support
@@ -66,9 +71,12 @@
          ;; Follow the Debian Free Software Guidelines, omitting nonfree content.
          "-DDFSG_BUILD=ON")))
     (native-inputs
-     (list pkg-config
-           pandoc
-           doctest))
+     (append
+       (list pkg-config)
+       (if (supported-package? pandoc)
+         (list pandoc)
+         '())
+       (list doctest)))
     (inputs
      (list ffmpeg
            libdeflate

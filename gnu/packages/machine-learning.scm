@@ -727,6 +727,112 @@ depend on language-specific pre- or post-processing.")
 unsupervised text tokenizer.")
     (license license:asl2.0)))
 
+(define-public python-spacy-legacy
+  (package
+    (name "python-spacy-legacy")
+    (version "3.0.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spacy-legacy" version))
+              (sha256
+               (base32
+                "0x57aw1qgjrzgapsv1cwymqlck2anqm1bisvryhpq7bfkc66wzdk"))))
+    (build-system pyproject-build-system)
+    ;; This package depends on spacy, which depends on this package.
+    (arguments (list #:tests? #false))
+    (native-inputs (list python-pytest))
+    (home-page "https://spacy.io")
+    (synopsis "Legacy registered functions for spaCy backwards compatibility")
+    (description
+     "This package contains legacy registered functions for spaCy backwards
+compatibility.")
+    (license license:expat)))
+
+(define-public python-spacy-loggers
+  (package
+    (name "python-spacy-loggers")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spacy-loggers" version))
+              (sha256
+               (base32
+                "0a5zjfxd0mci7pwda24ihg55whalpmjby4bvpgar2013f6zq7yg6"))))
+    (build-system pyproject-build-system)
+    ;; This package depends on spacy, which depends on this package.
+    (arguments (list #:tests? #false))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/explosion/spacy-loggers")
+    (synopsis "Logging utilities for SpaCy")
+    (description "This package provides logging utilities for the SpaCy
+natural language processing framework.")
+    (license license:expat)))
+
+(define-public python-spacy
+  (package
+    (name "python-spacy")
+    (version "3.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spacy" version))
+              (sha256
+               (base32
+                "13141hc966d8nxbnlwj01vhndgq0rq4nmii3qkb3hrap45kiv5rm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; We don't do that around here.
+              "not test_download_compatibility"
+              ;; This needs to download a model.
+              " and not test_validate_compatibility_table"
+              ;; This tries to run the application with typer, which fails
+              ;; with an unspecified error, possibly because the build
+              ;; container doesn't have /bin/sh.
+              " and not test_project_assets"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"
+                     "-j" (number->string (parallel-job-count))))))))
+    (propagated-inputs (list python-catalogue
+                             python-cymem
+                             python-jinja2
+                             python-langcodes
+                             python-murmurhash
+                             python-numpy
+                             python-packaging
+                             python-pathy
+                             python-preshed
+                             python-pydantic
+                             python-requests
+                             python-setuptools
+                             python-smart-open
+                             python-spacy-legacy
+                             python-spacy-loggers
+                             python-srsly
+                             python-thinc
+                             python-tqdm
+                             python-typer
+                             python-typing-extensions
+                             python-wasabi))
+    (native-inputs
+     (list python-cython python-pytest python-mock))
+    (home-page "https://spacy.io")
+    (synopsis "Natural Language Processing (NLP) in Python")
+    (description
+     "SpaCy is a library for advanced Natural Language Processing in Python
+and Cython.  It comes with pretrained pipelines and currently supports
+tokenization and training for 70+ languages. It features state-of-the-art
+speed and neural network models for tagging, parsing, named entity
+recognition, text classification and more, multi-task learning with pretrained
+transformers like BERT, as well as a production-ready training system and easy
+model packaging, deployment and workflow management.")
+    (license license:expat)))
+
 (define-public shogun
   (package
     (name "shogun")
@@ -1275,6 +1381,46 @@ computing environments.")
      "Scikit-learn provides simple and efficient tools for data mining and
 data analysis.")
     (license license:bsd-3)))
+
+(define-public python-thinc
+  (package
+    (name "python-thinc")
+    (version "8.1.10")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "thinc" version))
+              (sha256
+               (base32
+                "14drmwa2sh8fqszv1fm2jl4lky1j5yrbkjv89bl49q07vbblhjkc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"
+                     "-j" (number->string (parallel-job-count))))))))
+    (propagated-inputs (list python-blis-for-thinc
+                             python-catalogue
+                             python-confection
+                             python-contextvars
+                             python-cymem
+                             python-dataclasses
+                             python-murmurhash
+                             python-numpy
+                             python-packaging
+                             python-preshed
+                             python-pydantic
+                             python-srsly
+                             python-typing-extensions
+                             python-wasabi))
+    (native-inputs (list python-cython python-mock python-pytest))
+    (home-page "https://github.com/explosion/thinc")
+    (synopsis "Functional take on deep learning")
+    (description
+     "This package provides a functional take on deep learning, compatible
+with your favorite libraries.")
+    (license license:expat)))
 
 (define-public python-threadpoolctl
   (package

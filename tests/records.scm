@@ -561,4 +561,58 @@ Description: 1st line,
             (make-fresh-user-module)))
     (lambda (key . args) key)))
 
+(test-equal "match-record, delayed field"
+  "foo bar bar foo"
+  (begin
+    (define-record-type* <with-delayed> with-delayed make-with-delayed
+      with-delayed?
+      (delayed  with-delayed-delayed
+                (delayed)))
+
+    (let ((rec (with-delayed
+                (delayed "foo bar bar foo"))))
+      (match-record rec <with-delayed> (delayed)
+        delayed))))
+
+(test-equal "match-record, thunked field"
+  '("foo" "foobar")
+  (begin
+    (define-record-type* <with-thunked> with-thunked make-with-thunked
+      with-thunked?
+      (normal   with-thunked-normal)
+      (thunked  with-thunked-thunked
+                (thunked)))
+
+    (let ((rec (with-thunked
+                (normal  "foo")
+                (thunked (string-append (with-thunked-normal this-record)
+                                        "bar")))))
+      (match-record rec <with-thunked> (normal thunked)
+        (list normal thunked)))))
+
+(test-equal "match-record, ellipsis in body"
+  #t
+  (begin
+    (define-record-type* <foo> foo make-foo foo?
+      (value foo-value))
+    (define bar (foo (value '(1 2 3))))
+    (match-record bar <foo> (value)
+      (match value
+        ((one two ...)
+         #t)
+        (_
+         #f)))))
+
+(test-equal "match-record-lambda"
+  '("thing: foo" "thing: bar")
+  (begin
+    (define-record-type* <with-text> with-text make-with-text
+      with-text?
+      (text with-text-text))
+
+    (map (match-record-lambda <with-text> (text)
+           (string-append "thing: " text))
+         (list (with-text (text "foo"))
+               (with-text (text "bar"))))))
+
 (test-end)

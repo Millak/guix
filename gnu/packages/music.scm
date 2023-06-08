@@ -3215,7 +3215,7 @@ capabilities, custom envelopes, effects, etc.")
 (define-public yoshimi
   (package
     (name "yoshimi")
-    (version "2.2.2.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
@@ -3223,7 +3223,7 @@ capabilities, custom envelopes, effects, etc.")
                            (version-major+minor version)
                            "/yoshimi-" version ".tar.bz2"))
        (sha256
-        (base32 "1axrbk1qwsiq77g5957db744481zb2v158psnk2w530wxhls2442"))))
+        (base32 "0rkwz545bipanyl8kcp6rgdqppiad7s0j409a4n8dd97maislsa0"))))
     (build-system cmake-build-system)
     (arguments
      (list

@@ -96,6 +96,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
@@ -1314,13 +1315,12 @@ computations.")
        #:phases
        (modify-phases %standard-phases
          ;; This is inspired by two of Debian's patches.
-         (add-before 'configure 'add-more-aarch64-support
+         (add-before 'configure 'add-more-architecture-support
            (lambda _
              (substitute* '("mfhdf/ncgen/ncgen.l"
                             "mfhdf/ncgen/ncgenyy.c"
                             "mfhdf/libsrc/netcdf.h.in")
-               (("AIX5L64") "__aarch64__"))
-             #t))
+               (("AIX5L64") "__aarch64__ || ( __riscv && __riscv_xlen == 64)"))))
          (add-before 'configure 'patchbuild
            (lambda _
              (substitute*
@@ -4682,90 +4682,85 @@ library.")
 (define-public blis
   (package
     (name "blis")
-    (version "0.8.1")
+    (version "0.9.0")
     (home-page "https://github.com/flame/blis")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (sha256
                (base32
-                "05ifil6jj9424sr8kmircl8k4bmxnl3y12a79vwj1kxxva5gz50g"))
+                "14v2awhxma6nzas42hq97702672f2njrskqhsv9kl23hvrvci8fm"))
               (file-name (git-file-name "blis" version))))
     (native-inputs
      (list python perl))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules
-       ((guix build gnu-build-system)
+     (list
+      #:modules
+      '((guix build gnu-build-system)
         (guix build utils)
         (srfi srfi-1))
-        #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs
-                           target
-                           system
-                           (configure-flags '())
-                           #:allow-other-keys)
-             ;; This is a home-made 'configure' script.
-             (let* ((out (assoc-ref outputs "out"))
-                     ;; Guix-specific support for choosing the configuration
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs target system (configure-flags '())
+                      #:allow-other-keys)
+              ;; This is a home-made 'configure' script.
+              (let* (;; Guix-specific support for choosing the configuration
                      ;; via #:configure-flags: see below for details.
-                    (config-flag-prefix "--blis-config=")
-                    (maybe-config-flag (find
-                                        (lambda (s)
-                                          (string-prefix? config-flag-prefix s))
-                                        configure-flags))
-                    (configure-flags (if maybe-config-flag
-                                         (delete maybe-config-flag
-                                                 configure-flags)
+                     (config-flag-prefix "--blis-config=")
+                     (maybe-config-flag (find
+                                         (lambda (s)
+                                           (string-prefix? config-flag-prefix s))
                                          configure-flags))
-                    ;; Select the "configuration" to build.
-                    ;; The "generic" configuration is non-optimized but
-                    ;; portable (no assembly).
-                    ;; The "x86_64" configuration family includes
-                    ;; sub-configurations for all supported
-                    ;; x86_64 microarchitectures.
-                    ;; BLIS currently lacks runtime hardware detection
-                    ;; for other architectures: see
-                    ;; <https://github.com/flame/blis/commit/c534da6>.
-                    ;; Conservatively, we stick to "generic" on armhf,
-                    ;; aarch64, and ppc64le for now. (But perhaps
-                    ;; "power9", "cortexa9", and "cortexa57" might be
-                    ;; general enough to use?)
-                    ;; Another approach would be to use the "auto"
-                    ;; configuration and make this package
-                    ;; non-substitutable.
-                    ;; The build is fairly intensive, though.
-                    (blis-config
-                     (cond
-                      (maybe-config-flag
-                       (substring maybe-config-flag
-                                  (string-length config-flag-prefix)))
-                      ((string-prefix? "x86_64" (or target system))
-                       "x86_64")
-                      (else
-                       "generic")))
-                    (configure-args
-                     `("-p" ,out
-                       "-d" "opt"
-                       "--disable-static"
-                       "--enable-shared"
-                       "--enable-threading=openmp"
-                       "--enable-verbose-make"
-                       ,@configure-flags
-                       ,blis-config)))
-               (format #t "configure args: ~s~%" configure-args)
-               (apply invoke
-                      "./configure"
-                      configure-args)
-               #t)))
-         (add-before 'check 'show-test-output
-           (lambda _
-             ;; By default "make check" is silent.  Make it verbose.
-             (system "tail -F output.testsuite &")
-             #t)))))
+                     (configure-flags (if maybe-config-flag
+                                          (delete maybe-config-flag
+                                                  configure-flags)
+                                          configure-flags))
+                     ;; Select the "configuration" to build.
+                     ;; The "generic" configuration is non-optimized but
+                     ;; portable (no assembly).
+                     ;; The "x86_64" configuration family includes
+                     ;; sub-configurations for all supported
+                     ;; x86_64 microarchitectures.
+                     ;; BLIS currently lacks runtime hardware detection
+                     ;; for other architectures: see
+                     ;; <https://github.com/flame/blis/commit/c534da6>.
+                     ;; Conservatively, we stick to "generic" on armhf,
+                     ;; aarch64, and ppc64le for now. (But perhaps
+                     ;; "power9", "cortexa9", and "cortexa57" might be
+                     ;; general enough to use?)
+                     ;; Another approach would be to use the "auto"
+                     ;; configuration and make this package
+                     ;; non-substitutable.
+                     ;; The build is fairly intensive, though.
+                     (blis-config
+                      (cond
+                       (maybe-config-flag
+                        (substring maybe-config-flag
+                                   (string-length config-flag-prefix)))
+                       ((string-prefix? "x86_64" (or target system))
+                        "x86_64")
+                       (else
+                        "generic")))
+                     (configure-args
+                      `("-p" ,#$output
+                        "-d" "opt"
+                        "--disable-static"
+                        "--enable-shared"
+                        "--enable-threading=openmp"
+                        "--enable-verbose-make"
+                        ,@configure-flags
+                        ,blis-config)))
+                (format #t "configure args: ~s~%" configure-args)
+                (apply invoke
+                       "./configure"
+                       configure-args))))
+          (add-before 'check 'show-test-output
+            (lambda _
+              ;; By default "make check" is silent.  Make it verbose.
+              (system "tail -F output.testsuite &"))))))
     (synopsis "High-performance basic linear algebra (BLAS) routines")
     (description
      "BLIS is a portable software framework for instantiating high-performance
@@ -4778,6 +4773,47 @@ access to BLIS implementations via traditional BLAS routine calls.")
     (license license:bsd-3)))
 
 (define ignorance blis)
+
+;; It is unfortunate that we cannot just link with the existing blis package.
+(define-public python-blis
+  (package
+    (name "python-blis")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "blis" version))
+              (sha256
+               (base32
+                "0vrnzk9jx7fcl56q6zpa4w4mxkr4iknxs42fngn9g78zh1kc9skw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"
+                     "-j" (number->string (parallel-job-count))))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://github.com/explosion/cython-blis")
+    (synopsis "Blis as a self-contained C-extension for Python")
+    (description
+     "This package provides the Blis BLAS-like linear algebra library, as a
+self-contained C-extension for Python.")
+    (license license:bsd-3)))
+
+(define-public python-blis-for-thinc
+  (package
+    (inherit python-blis)
+    (name "python-blis")
+    (version "0.7.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "blis" version))
+              (sha256
+               (base32
+                "0mvcif9g69424bk8xiflacxzpvz802ns791v2r8a6fij0sxl3mgp"))))))
 
 (define-public openlibm
   (package

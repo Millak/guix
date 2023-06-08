@@ -885,6 +885,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/aegisub-icu59-include-unistr.patch	\
   %D%/packages/patches/aegisub-boost68.patch			\
   %D%/packages/patches/aegisub-make43.patch			\
+  %D%/packages/patches/agda-categories-remove-incompatible-flags.patch	\
+  %D%/packages/patches/agda-categories-use-find.patch	\
+  %D%/packages/patches/agda-libdirs-env-variable.patch	\
+  %D%/packages/patches/agda-stdlib-use-runhaskell.patch	\
   %D%/packages/patches/agg-am_c_prototype.patch			\
   %D%/packages/patches/agg-2.5-gcc8.patch			\
   %D%/packages/patches/akonadi-paths.patch		\
@@ -1033,6 +1037,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/curl-use-ssl-cert-env.patch		\
   %D%/packages/patches/cursynth-wave-rand.patch			\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\
+  %D%/packages/patches/d-feet-drop-unused-meson-argument.patch	\
   %D%/packages/patches/date-output-pkg-config-files.patch	\
   %D%/packages/patches/datefudge-gettimeofday.patch		\
   %D%/packages/patches/dbacl-include-locale.h.patch		\
@@ -1750,6 +1755,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/procmail-ambiguous-getline-debian.patch  \
   %D%/packages/patches/procmail-CVE-2014-3618.patch		\
   %D%/packages/patches/procmail-CVE-2017-16844.patch		\
+  %D%/packages/patches/proj-7-initialize-memory.patch		\
+  %D%/packages/patches/proot-add-clone3.patch			\
   %D%/packages/patches/protobuf-fix-build-on-32bit.patch	\
   %D%/packages/patches/psm-arch.patch				\
   %D%/packages/patches/psm-disable-memory-stats.patch		\
@@ -1889,6 +1896,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-clml-fix-types.patch		\
   %D%/packages/patches/sbcl-eazy-gnuplot-skip-path-check.patch	\
   %D%/packages/patches/sbcl-png-fix-sbcl-compatibility.patch	\
+  %D%/packages/patches/sbcl-riscv-Make-contribs-build-again.patch	\
   %D%/packages/patches/scalapack-gcc-10-compilation.patch	\
   %D%/packages/patches/scheme48-tests.patch			\
   %D%/packages/patches/scons-test-environment.patch		\

@@ -524,7 +524,10 @@ be used when cross-compiling."
                                           "/_giscanner"))))
                 #~()))))
     (native-inputs
-     `(("glib" ,glib "bin")
+     `(,@(if (%current-target-system)
+           `(("python" ,python))
+           '())
+       ("glib" ,glib "bin")
        ("pkg-config" ,pkg-config)
        ("bison" ,bison)
        ("flex" ,flex)))

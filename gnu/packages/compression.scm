@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -2687,12 +2687,8 @@ to their original, binary CD format.")
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "-DLIBDEFLATE_BUILD_STATIC_LIB=NO")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda _
-                   (invoke "../source/scripts/run_tests.sh"))))))
+           #~(list "-DLIBDEFLATE_BUILD_STATIC_LIB=NO"
+                   "-DLIBDEFLATE_BUILD_TESTS=YES")))
     (inputs
      (list zlib))
     (home-page "https://github.com/ebiggers/libdeflate")

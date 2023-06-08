@@ -2866,14 +2866,16 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.21")
+    (version "2.22")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "0a5czn18clfnw0a9nd5v98ah4h47i32423s6jdf126ni4aj20ny2"))))
-    (properties `((upstream-name . "rmarkdown")))
+          (base32 "1f47ccph09ilqlr0bnyrxkadja4ddp4klvb933aws3rya0cmaqy6"))))
+    (properties
+     `((upstream-name . "rmarkdown")
+       (updater-extra-propagated-inputs . ("pandoc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bslib
@@ -4172,13 +4174,13 @@ vignettes.")
 (define-public r-mvtnorm
   (package
     (name "r-mvtnorm")
-    (version "1.1-3")
+    (version "1.2-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mvtnorm" version))
               (sha256
                (base32
-                "0j14q2bkc14v35s5k03sw44zsssrd2qjljlwzj014qxs74hk0kpz"))))
+                "1q1bmsvd10iz003xlsd40dj5bhmy2069p88ydf9f4gj56mysnlpm"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
@@ -4191,13 +4193,13 @@ t-probabilities, quantiles, random deviates and densities.")
 (define-public r-matrixstats
   (package
     (name "r-matrixstats")
-    (version "0.63.0")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "matrixStats" version))
               (sha256
                (base32
-                "0pqz6mn5l7inh464yj45i6rf8ycab0zdvvjczwsv0bkl442bc060"))))
+                "0vxd7g1fm4x0f72bs1xfik1d4yklvpjdyg1hpx86pl8fwr86i1wl"))))
     (properties `((upstream-name . "matrixStats")))
     (build-system r-build-system)
     (arguments
@@ -4505,14 +4507,14 @@ data behind them) can be viewed and modified in a web browser.")
 (define-public r-biased-urn
   (package
    (name "r-biased-urn")
-   (version "2.0.9")
+   (version "2.0.10")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "BiasedUrn" version))
      (sha256
       (base32
-       "02bb81x1hfvhm6qlcvp88bdpm1fhqak9cjbqz1r7fhg2qfxjpims"))))
+       "0jv0zvz1zs34h12zdgn3lqmn7hfkk2z6fkwbd9mlyddf34rkvfqv"))))
    (properties `((upstream-name . "BiasedUrn")))
    (build-system r-build-system)
    (home-page "https://www.agner.org/random/")

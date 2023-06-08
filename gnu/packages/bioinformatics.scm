@@ -1337,6 +1337,75 @@ pretty, publication-quality figures for next-generation sequencing
 experiments.")
     (license license:expat)))
 
+(define-public python-bulkvis
+  (let ((commit "00a82a90c7e748a34af896e779d27e78a2c82b5e")
+        (revision "2"))
+    (package
+      (name "python-bulkvis")
+      (version (git-version "2.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/LooseLab/bulkVis")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02blai158xyyqcg0ljzkmfa6ci05m4awrl4njvp9nwfp717xq8n0"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(substitute* '("requirements.txt"
+                                 "setup.py")
+                    (("tqdm~=4.46.1") "tqdm")
+                    (("tornado~=6.0.4") "tornado")
+                    (("pandas~=1.0.5") "pandas")
+                    (("h5py~=2.10.0") "h5py")
+                    ;; See below for com
+                    (("bokeh~=2.1.0") "bokeh")))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f                ;There are no tests
+             #:phases
+             '(modify-phases %standard-phases
+                ;; See https://github.com/LooseLab/bulkvis/issues/58
+                (add-after 'unpack 'bokeh-compatibility
+                  (lambda _
+                    (substitute* "bulkvis/bulkvis.py"
+                      (("import importlib" m)
+                       (string-append m "
+from bokeh.command.subcommand import Argument
+from bokeh.util.dataclasses import entries\n"))
+                      (("( *)_parser.add_argument" m indent)
+                       (string-append
+                        (string-join (list "if isinstance(opts, Argument):\n"
+                                           "  opts = dict(entries(opts))\n")
+                                     indent 'prefix)
+                        m))))))))
+      (propagated-inputs (list python-bokeh
+                               python-dill
+                               python-h5py
+                               python-joblib
+                               python-matplotlib
+                               python-numpy
+                               python-pandas
+                               python-plotly
+                               python-readpaf
+                               python-scikit-learn
+                               python-scikit-image
+                               python-scipy
+                               python-seaborn
+                               python-tornado-6
+                               python-tqdm
+                               python-umap-learn))
+      (native-inputs (list python-pytest))
+      (home-page "https://github.com/LooseLab/bulkVis")
+      (synopsis "Interactive visualization of bulk RNA-seq data")
+      (description
+       "This is a Python package for the interactive visualization of bulk
+RNA-seq data.  It provides a range of plotting functions and interactive tools
+to explore and analyze bulk RNA-seq data.")
+      (license license:expat))))
+
 (define-public python-cell2cell
   (package
     (name "python-cell2cell")
@@ -1479,6 +1548,69 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
      "CMSeq is a set of commands to provide an interface to .bam files for coverage
 and sequence consensus.")
     (license license:expat)))
+
+(define-public python-decoupler-py
+  ;; This latest commit fixes a bug in test_omnip.py.
+  (let ((commit "b84c524ec4a9280a56c0db963e2c7b010316ce8f")
+        (revision "1"))
+    (package
+      (name "python-decoupler-py")
+      (version (git-version "1.3.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saezlab/decoupler-py")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0d74yr5jqc52vcxaca84kxqw7m5rbazpmvnrcp2y4xxrj6yr1sfc"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        '(list "-k"
+               ;; These tests require internet access
+               (string-append "not test_get_resource"
+                              " and not test_show_resources"
+                              " and not test_get_dorothea"
+                              " and not test_get_progeny"
+                              ;; XXX This one fails because the "texts" list
+                              ;; is empty, so there are no texts to adjust.
+                              ;; It is not clear whether this a compatibility
+                              ;; problem with our adjusttext package.
+                              " and not test_plot_volcano"))
+        #:phases
+        '(modify-phases %standard-phases
+           (add-before 'check 'set-home
+             ;; Some tests require a home directory to be set.
+             (lambda _ (setenv "HOME" "/tmp")))
+           ;; Numba needs a writable dir to cache functions.
+           (add-before 'build 'set-numba-cache-dir
+             (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+      (propagated-inputs (list python-adjusttext
+                               python-anndata
+                               python-ipython
+                               python-matplotlib
+                               python-nbsphinx
+                               python-numba
+                               python-numpy
+                               python-numpydoc
+                               python-omnipath
+                               python-scanpy
+                               python-scikit-learn
+                               python-scipy
+                               python-skranger
+                               python-tqdm
+                               python-typing-extensions))
+      (native-inputs (list python-pytest))
+      (home-page "https://github.com/saezlab/decoupler-py")
+      (synopsis
+       "Framework for modeling, analyzing and interpreting single-cell RNA-seq data")
+      (description
+       "This package provides different statistical methods to extract
+biological activities from omics data within a unified framework.")
+      (license license:gpl3+))))
 
 (define-public python-demuxem
   (package
@@ -1996,6 +2128,25 @@ alignments and perform the following operations:
 @item restore @code{.sam} alignments from Hi-C pairs.
 @end itemize
 ")
+    (license license:expat)))
+
+(define-public python-readpaf
+  (package
+    (name "python-readpaf")
+    (version "0.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "readpaf" version))
+              (sha256
+               (base32
+                "15m6ffks4zwpp1ycwk6n02py6mw2yh7qr0vhpc178b91gldr97ia"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pandas))
+    (home-page "https://github.com/alexomics/read-paf")
+    (synopsis "Minimap2 PAF file reader")
+    (description
+     "This is a fast parser for minimap2 PAF (Pairwise mApping Format)
+files.")
     (license license:expat)))
 
 (define-public bioperl-minimal

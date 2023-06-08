@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
@@ -821,7 +821,7 @@ tools:
   ;; header
   (package
     (name "cpp-httplib")
-    (version "0.8.8")
+    (version "0.12.5")
     (source
      (origin
        (method git-fetch)
@@ -829,16 +829,19 @@ tools:
              (url "https://github.com/yhirose/cpp-httplib")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0c0gyfbvm34bgrqy9fhfxw1f8nb9zhf063j7xq91k892flb7qm1c"))
+        (base32 "1m1p6h1dsxg4kg5zziffb6xl8zgjbkw7gmgmmlnrhpl3bswam87n"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        '("-DBUILD_SHARED_LIBS=ON"
+         "-DHTTPLIB_TEST=ON"
          "-DHTTPLIB_COMPILE=ON"
          "-DHTTPLIB_REQUIRE_BROTLI=ON"
          "-DHTTPLIB_REQUIRE_OPENSSL=ON"
          "-DHTTPLIB_REQUIRE_ZLIB=ON")
+       #:make-flags
+       '(,(string-append "CXX=" (cxx-for-target)))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-network-tests
@@ -850,21 +853,19 @@ tools:
                    (string-append "(DISABLED_" test))))
               ;; There are tests requiring network access, disable them
               '("AbsoluteRedirectTest" "BaseAuthTest" "CancelTest"
+                "ConnectionErrorTest"
                 "ChunkedEncodingTest" "ChunkedEncodingTest"
+                "ClientDefaultHeadersTest"
                 "DecodeWithChunkedEncoding" "DefaultHeadersTest"
                 "DigestAuthTest" "HttpsToHttpRedirectTest"
+                "HostnameToIPConversionTest"
                 "RangeTest" "RedirectTest" "RelativeRedirectTest"
-                "SSLClientTest" "SendAPI" "TooManyRedirectTest" "UrlWithSpace"
-                "YahooRedirectTest" "YahooRedirectTest"))))
-         (replace 'check
-           (lambda* (#:key source tests? #:allow-other-keys)
-             ;; openssl genrsa wants to write a file in the git checkout
-             (when tests?
-               (with-directory-excursion "../source/test"
-                 (invoke "make"))))))))
+                "SSLClientTest" "SendAPI"
+                "SpecifyServerIPAddressTest"
+                "TooManyRedirectTest" "UrlWithSpace"
+                "YahooRedirectTest" "YahooRedirectTest")))))))
     (native-inputs
-     ;; required to build shared lib
-     (list python))
+     (list googletest python))
     (inputs
      (list brotli openssl zlib))
     (home-page "https://github.com/yhirose/cpp-httplib")

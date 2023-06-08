@@ -41,7 +41,7 @@
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -768,7 +768,28 @@ and Matrox.")
          (base32
           "1q700h9dqcm3zl6c3gj0qxxjcx6ibw2c51wjijydhwdcm26v5mqm"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--disable-static")))
+    (arguments
+     `(#:configure-flags
+       '("--disable-static")
+       ,@(if (and (target-riscv64?)
+                  (%current-target-system))
+           `(#:phases
+             (modify-phases %standard-phases
+               (add-after 'unpack 'update-config-scripts
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                   ;; Replace outdated config.guess and config.sub.
+                   (for-each (lambda (file)
+                               (install-file
+                                 (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "./config-aux"))
+                             '("config.guess" "config.sub"))))))
+           '())))
+    (native-inputs
+     (if (and (target-riscv64?)
+              (%current-target-system))
+       (list config)
+       '()))
     (home-page "https://bitmath.org/code/mtdev/")
     (synopsis "Multitouch protocol translation library")
     (description "Mtdev is a stand-alone library which transforms all

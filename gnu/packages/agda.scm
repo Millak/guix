@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,9 +23,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages agda)
+  #:use-module (gnu packages)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages texinfo)
+  #:use-module (guix build-system agda)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
@@ -37,15 +44,18 @@
 (define-public agda
   (package
     (name "agda")
-    (version "2.6.2.2")
+    (version "2.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (hackage-uri "Agda" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/agda/agda.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yjjbhc593ylrm4mq4j01nkdvh7xqsg5in30wxj4y53vf5hkggp5"))))
+        (base32 "1s7zd01i8pmvi90ywx497kc07z50nah7h0fc2dn6jzb132k5sh1q"))
+       (patches (search-patches "agda-libdirs-env-variable.patch"))))
     (build-system haskell-build-system)
-    (properties '((upstream-name . "Agda")))
     (inputs
      (list ghc-aeson
            ghc-alex
@@ -68,7 +78,14 @@
            ghc-strict
            ghc-unordered-containers
            ghc-uri-encode
+           ghc-vector-hashtables
            ghc-zlib))
+    (native-inputs
+     (list python
+           python-sphinx
+           python-sphinx-rtd-theme
+           texinfo
+           imagemagick))
     (arguments
      (list #:modules `((guix build haskell-build-system)
                        (guix build utils)
@@ -85,7 +102,22 @@
                    (let ((agda-compiler (string-append #$output "/bin/agda")))
                      (for-each (cut invoke agda-compiler <>)
                                (find-files (string-append #$output "/share")
-                                           "\\.agda$"))))))))
+                                           "\\.agda$")))))
+               (add-after 'agda-compile 'install-info
+                 (lambda _
+                   (with-directory-excursion "doc/user-manual"
+                     (invoke "sphinx-build" "-b" "texinfo"
+                             "." "_build_texinfo")
+                     (with-directory-excursion "_build_texinfo"
+                       (setenv "infodir" (string-append #$output
+                                                        "/share/info"))
+                       (invoke "make" "install-info"))))))))
+    (search-paths
+     (list (search-path-specification
+            (variable "AGDA_LIBDIRS")
+            (files (list "lib/agda")))))
+    (native-search-paths
+     search-paths)
     (home-page "https://wiki.portal.chalmers.se/agda/")
     (synopsis
      "Dependently typed functional programming language and proof assistant")
@@ -106,58 +138,184 @@ such as Coq, Epigram and NuPRL.")
 
 (define-public emacs-agda2-mode
   (package
-    (inherit agda)
     (name "emacs-agda2-mode")
+    (version (package-version agda))
+    (source (package-source agda))
     (build-system emacs-build-system)
-    (inputs '())
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-elisp-dir
-           (lambda _ (chdir "src/data/emacs-mode") #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-elisp-dir
+            (lambda _ (chdir "src/data/emacs-mode"))))))
     (home-page "https://agda.readthedocs.io/en/latest/tools/emacs-mode.html")
     (synopsis "Emacs mode for Agda")
     (description "This Emacs mode enables interactive development with
-Agda.  It also aids the input of Unicode characters.")))
+Agda.  It also aids the input of Unicode characters.")
+    (license (package-license agda))))
 
 (define-public agda-ial
-  (package
-    (name "agda-ial")
-    (version "1.5.0")
-    (home-page "https://github.com/cedille/ial")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0dlis6v6nzbscf713cmwlx8h9n2gxghci8y21qak3hp18gkxdp0g"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list agda))
-    (arguments
-     `(#:parallel-build? #f
+  (let ((revision "1")
+        ;; There hasn't been a release in a long time, and the last one
+        ;; doesn't build with Agda 2.6.
+        (commit "ded30c410d5d40142249686572aa1acd1b2f8cc7"))
+   (package
+     (name "agda-ial")
+     (version (git-version "1.5.0" revision commit))
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference (url "https://github.com/cedille/ial")
+                                   (commit commit)))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0xn6zvp1wnm0i84pz1rfbzfmayd15ch4i5s11ycd88d22pxd55dc"))))
+     (build-system agda-build-system)
+     (arguments
+      (list
+       #:gnu-and-haskell? #t
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'patch-dependencies
-           (lambda _ (patch-shebang "find-deps.sh") #t))
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (include (string-append out "/include/agda/ial")))
-               (for-each (lambda (file)
-                           (make-file-writable file)
-                           (install-file file include))
-                         (find-files "." "\\.agdai?(-lib)?$"))
-               #t))))))
-    (synopsis "The Iowa Agda Library")
-    (description
-     "The goal is to provide a concrete library focused on verification
+       #~(modify-phases %standard-phases
+           (add-before 'build 'patch-dependencies
+             (lambda _ (patch-shebang "find-deps.sh")))
+           (replace 'build
+             (lambda _
+               (invoke "make"))))))
+     (home-page "https://github.com/cedille/ial")
+     (synopsis "The Iowa Agda Library")
+     (description
+      "The goal is to provide a concrete library focused on verification
 examples, as opposed to mathematics.  The library has a good number
 of theorems for booleans, natural numbers, and lists.  It also has
 trees, tries, vectors, and rudimentary IO.  A number of good ideas
 come from Agda's standard library.")
+     (license license:expat))))
+
+(define-public agda-stdlib
+  (package
+    (name "agda-stdlib")
+    (version "1.7.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agda/agda-stdlib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "065hf24xjpciwdrvk4isslgcgi01q0k93ql0y1sjqqvy5ryg5xmy"))))
+    (build-system agda-build-system)
+    (arguments
+     (list
+      #:plan '(("^\\./README.agda$" "-i."))
+      #:gnu-and-haskell? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'generate-everything
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (invoke
+               (search-input-file (or native-inputs inputs) "/bin/runhaskell")
+               "GenerateEverything.hs"))))))
+    (native-inputs (list ghc-filemanip))
+    (synopsis "The Agda Standard Library")
+    (description
+     "The standard library aims to contain all the tools needed to write
+both programs and proofs easily.  While we always try and write efficient
+code, we prioritize ease of proof over type-checking and normalization
+performance.  If computational performance is important to you, then perhaps
+try agda-prelude instead.")
+    (home-page "https://wiki.portal.chalmers.se/agda/pmwiki.php")
     (license license:expat)))
+
+(define-public agda-categories
+  (package
+    (name "agda-categories")
+    (version "0.1.7.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agda/agda-categories.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xwgm2mfl2pxipsv31bin8p14y1yhd9n27lv3clvsxd4z9yc034m"))
+              (patches (search-patches "agda-categories-remove-incompatible-flags.patch"
+                                       "agda-categories-use-find.patch"))))
+    (build-system agda-build-system)
+    (arguments
+     (list
+      #:gnu-and-haskell? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (invoke "make"))))))
+    (propagated-inputs
+     (list agda-stdlib))
+    (synopsis "New Categories library for Agda")
+    (description "A new Categories library for Agda")
+    (home-page "https://github.com/agda/agda-categories")
+    (license license:expat)))
+
+(define-public agda-cubical
+  ;; Upstream's HEAD follows the latest Agda release, but they don't release
+  ;; until a newer Agda release comes up, so their releases are always one
+  ;; version late.
+  (let* ((revision "1")
+         (commit "814d54b08b360b8e80828065f54b80e3a98a0092"))
+    (package
+      (name "agda-cubical")
+      (version (git-version "0.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/agda/cubical.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0d25gb1qzpx539k62qjsjq4xmzp34qk7n3hmd9y6v8slhrrxw312"))))
+      (build-system agda-build-system)
+      (arguments
+       (list
+        #:gnu-and-haskell? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'build
+              (lambda _
+                (invoke "make"))))))
+      (synopsis "Standard library for Cubical Agda")
+      (description "A standard library for Cubical Agda, comparable to
+agda-stdlib but using cubical methods.")
+      (home-page "https://github.com/agda/cubical")
+      (license license:expat))))
+
+(define-public agda-1lab
+  ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.3,
+  ;; since they use Agda HEAD.
+  (let* ((revision "1")
+         (commit "47ca1d23640a6f49a3abe3c2fe27738bcc10c9c6"))
+    (package
+      (name "agda-1lab")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/plt-amy/1lab.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0j7mp6c0xd0849skdxzncklkxynxnyfrbpcjv4qp5p1xfn0dnfqx"))))
+      (build-system agda-build-system)
+      (arguments
+       (list #:plan '(("src/index\\.lagda\\.md$"))))
+      (synopsis "Reference resource for mathematics done in Homotopy Type Theory")
+      (description "A formalised, cross-linked reference resource for
+mathematics done in Homotopy Type Theory.  Unlike the HoTT book, the 1lab is
+not a “linear” resource: Concepts are presented as a directed graph, with
+links indicating dependencies.")
+      (home-page "https://1lab.dev")
+      (license license:agpl3))))

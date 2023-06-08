@@ -156,12 +156,14 @@
 (define-module (gnu packages python-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
-  #:use-module (gnu packages algebra)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -177,28 +179,28 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages file)
-  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fonts)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
-  #:use-module (gnu packages gdb)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
-  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
-  #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages inkscape)
   #:use-module (gnu packages java)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
@@ -214,10 +216,10 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages multiprecision)
-  #:use-module (gnu packages networking)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages node)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
@@ -236,14 +238,15 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
-  #:use-module (gnu packages sdl)
   #:use-module (gnu packages scanner)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -254,24 +257,20 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages tcl)
-  #:use-module (gnu packages bdw-gc)
-  #:use-module (gnu packages serialization)
+  #:use-module (gnu packages xorg)
   #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
-  #:use-module (guix hg-download)
-  #:use-module (guix gexp)
-  #:use-module (guix utils)
-  #:use-module (guix build-system gnu)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix download)
+  #:use-module (guix hg-download)
+  #:use-module (guix git-download)
+  #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
@@ -1342,15 +1341,10 @@ threads.")
               (sha256
                (base32
                 "0bwkvjpjfyi9dgszzad9aww2vc00w3bczjnbifi92cp7wch2l923"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm python-tornado python-typeguard
+     (list python-setuptools-scm python-tornado-6 python-typeguard
            python-pytest))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda _ (invoke "pytest" "-vv"))))))
     (home-page "https://github.com/jd/tenacity")
     (synopsis "Retrying library for python")
     (description "Tenacity is a general-purpose python library to simplify the
@@ -2693,48 +2687,32 @@ class.")
 (define-public python-can
   (package
     (name "python-can")
-    (version "4.0.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-can" version))
        (sha256
         (base32
-         "0pcbdgdw94lc2sxd56w6wdsshrs9dd5d3wp0x4sfd0drzx32inar"))))
-    (build-system python-build-system)
+         "1w5sdzxivpd3pw4pypwnjlksvfimdb93qnlddbrh5f13flhsgg8g"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-version-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("mock~=2\\.0") "mock")
-                        (("coverage<5") "coverage")
-                        (("pytest~=4\\.6") "pytest")
-                        (("pytest-timeout~=1\\.3") "pytest-timeout")
-                        (("pytest-cov.*") "pytest-cov\n")
-                        (("hypothesis~=4\\.56") "hypothesis"))))
-                  (add-after 'unpack 'fix-broken-tests
-                    ;; The tests try to run two scripts it expects should be
-                    ;; in PATH, but they aren't at this time (see:
-                    ;; https://github.com/hardbyte/python-can/issues/805).
-                    (lambda _
-                      (substitute* "test/test_scripts.py"
-                        (("\"can_logger\\.py --help\"") "")
-                        (("\"can_player\\.py --help\"") ""))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv" "test"
-                                ;; Disable tests which require specific CAN
-                                ;; drivers we have no package for in Guix.
-                                "--ignore" "test/test_interface_canalystii.py"
-                                ;; These tests fail with "OSError: [Errno 19]
-                                ;; No such device".
-                                "-k" "not BasicTestUdpMulticastBusIPv")))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; TODO: Check if it could be packed:
+         ;; https://github.com/projectgus/python-canalystii
+         ;;
+         ;; Disable tests which require specific CAN drivers we have no
+         ;; package for in Guix.
+         "--ignore" "test/test_interface_canalystii.py"
+         ;; These tests fail with "OSError: [Errno 19] No such device".
+         "-k" "not BasicTestUdpMulticastBusIPv")))
     (propagated-inputs
      (list python-msgpack python-typing-extensions python-wrapt))
     (native-inputs
-     (list python-codecov
+     (list ;; python-canalystii ; Not packed yet
+           python-codecov
            python-coverage
            python-future
            python-hypothesis
@@ -4418,6 +4396,58 @@ with sensible defaults out of the box.")
      "Clickgen is an API for building X11 and Windows cursors from .png files.
 clickgen is using @code{anicursorgen} and @code{xcursorgen} under the hood.")
     (license license:expat)))
+
+(define-public python-clickhouse-connect
+  (package
+    (name "python-clickhouse-connect")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ClickHouse/clickhouse-connect")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1s0lk7xdq8f351cmpbp6jidqi5zdazrdba7w7fxph0w8sd74amry"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; All these tests require docker-compose
+      '(list "--ignore-glob=tests/integration_tests/*")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-pyproject
+           (lambda _
+             ;; Our version of pytest is confused by this field.
+             (substitute* "pyproject.toml"
+               (("^env_files.*") ""))))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-arrow
+           python-certifi
+           python-lz4
+           python-numpy
+           python-orjson
+           python-pandas
+           python-pytz
+           python-sqlalchemy
+           python-urllib3
+           python-zstandard))
+    (native-inputs
+     (list python-cython
+           python-pytest))
+    (home-page "https://github.com/ClickHouse/clickhouse-connect")
+    (synopsis
+     "ClickHouse database core driver for Python, Pandas, and Superset")
+    (description
+     "This package provides a high performance core database driver for
+connecting ClickHouse to Python, Pandas, and Superset.")
+    (license license:asl2.0)))
 
 (define-public python-cligj
   (package
@@ -9411,6 +9441,28 @@ all the newest features of the standard @code{pathlib} can be used also on
 older Python versions.")
     (license license:expat)))
 
+(define-public python-pathy
+  (package
+    (name "python-pathy")
+    (version "0.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pathy" version))
+              (sha256
+               (base32
+                "12v196q3rai33cfzrmb9pqfqv7ailngssjdrzdf8gzym9hdygmjc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-dataclasses python-smart-open python-typer))
+    (native-inputs (list python-mock python-pytest))
+    (home-page "https://github.com/justindujardin/pathy")
+    (synopsis "Path interface for local and cloud bucket storage")
+    (description "Pathy is a python package (with type annotations) for
+working with Cloud Bucket storage providers using a @code{pathlib} interface.
+It provides @code{pathlib.Path} subclasses for local and cloud bucket
+storage.")
+    (license license:asl2.0)))
+
 (define-public python-importlib-resources
   (package
     (name "python-importlib-resources")
@@ -10304,6 +10356,36 @@ that.  Adding extra parameters later would break other peoples code unless
 you're careful.  The @code{backcall} package provides a way of specifying the
 callback signature using a prototype function.")
     (license license:bsd-3)))
+
+(define-public python-pubmed-parser
+  (package
+    (name "python-pubmed-parser")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/titipata/pubmed_parser")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "195cmjjg7xdwjj5455h78q7jnxnccia07a19xwndhlkxv7vk9v60"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-lxml
+           python-numpy
+           python-requests
+           python-six
+           python-unidecode))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov))
+    (home-page "https://github.com/titipata/pubmed_parser")
+    (synopsis "Parser for Pubmed Open-Access Subset and MEDLINE XML repository")
+    (description
+     "This package provides a Python parser for Pubmed Open-Access Subset and
+MEDLINE XML repository.")
+    (license license:expat)))
 
 (define-public python-pure-eval
   (package
@@ -15351,6 +15433,27 @@ provide an easy to use, pythonic and comprehensive Python interface to dialog.
 This allows one to make simple text-mode user interfaces on Unix-like systems")
     (license license:lgpl2.1)))
 
+(define-public python-confection
+  (package
+    (name "python-confection")
+    (version "0.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "confection" version))
+              (sha256
+               (base32
+                "1ksfn10zhnpkcj3y0c3xs4dznvc062bk62x4c3ig0dd6bn4gbpdi"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pydantic python-srsly
+                             python-typing-extensions))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/explosion/confection")
+    (synopsis "Config system for Python")
+    (description "Confection is a lightweight library that offers a
+configuration system letting you conveniently describe arbitrary trees of
+objects.")
+    (license license:expat)))
+
 (define-public python-configobj
   (package
     (name "python-configobj")
@@ -16408,7 +16511,7 @@ enhancements to optimization and data fitting problems.")
            python-packaging
            python-pillow
            python-pyyaml
-           python-tornado
+           python-tornado-6
            python-typing-extensions))
     (native-inputs
      (list python-beautifulsoup4
@@ -17235,19 +17338,23 @@ checking library.")
 (define-public python-codespell
   (package
     (name "python-codespell")
-    (version "2.1.0")
+    (version "2.2.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "codespell" version))
         (sha256
-          (base32 "1r9y714cz8m894rxp7pyvicr1lw2iid24vz6fxbl5wzy8ibgxlqr"))))
-    (build-system python-build-system)
+          (base32 "0fp8ihlj8q23qdfryj5pq8srl85vn8k8p6gq3zg9qz957i3j0ihb"))))
+    (build-system pyproject-build-system)
     (inputs
       (list python-chardet))
     (native-inputs
-      (list python-check-manifest python-flake8 python-pytest
-            python-pytest-cov python-pytest-dependency))
+      (list python-flake8
+            python-pygments
+            python-pytest
+            python-pytest-cov
+            python-pytest-dependency
+            python-tomli))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -20479,6 +20586,59 @@ from the header, as well as section details and data available.")
     (synopsis "Mustache templating language renderer")
     (description "This package provides a Python implementation of the
 Mustache templating language renderer.")
+    (license license:expat)))
+
+(define-public python-duckdb
+  (package
+    (name "python-duckdb")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "duckdb" version))
+              (sha256
+               (base32
+                "13y1gs565q51li5fi9m7fpf0sqns8frsaii6v95acwjhmdds73f6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore=tests/slow/test_h2oai_arrow.py"
+             ;; Don't install anything, thank you.
+             "-k" "not test_install_non_existent_extension")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests need this
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              (substitute* "setup.py"
+                (("\"setuptools_scm<7.0.0\",") ""))))
+          ;; Later versions of pybind replace "_" with "const_name".
+          (add-after 'unpack 'pybind-compatibility
+            (lambda _
+              (with-directory-excursion "src/include/duckdb_python"
+                (substitute* '("python_objects.hpp"
+                               "pyfilesystem.hpp"
+                               "pybind11/conversions/pyconnection_default.hpp")
+                  (("const_name") "_"))))))))
+    (native-inputs
+     (list pybind11
+           python-fsspec
+           python-google-cloud-storage
+           python-mypy
+           python-numpy
+           python-pandas
+           python-psutil
+           python-pyarrow
+           python-pytest
+           python-pytest-runner
+           python-setuptools-scm))
+    (home-page "https://www.duckdb.org")
+    (synopsis "DuckDB embedded database")
+    (description "DuckDB is an in-process SQL OLAP database management
+system.")
     (license license:expat)))
 
 (define-public python-dulwich
@@ -26647,32 +26807,29 @@ the syntactic logic to configure and launch jobs in an execution environment.")
 (define-public python-flit
   (package
     (name "python-flit")
-    (version "3.5.1")
+    (version "3.8.0") ;same as python-flit-core
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flit" version))
        (sha256
-        (base32 "04152qj46sqbnlrj7ch9p7svjrrlpzbk0qr39g2yr0s4f5vp6frf"))))
-    (build-system python-build-system)
+        (base32 "0dz9sp2zlhkmk6sm5gapbbb30f7xq3n3jn5zxx5pkp25ppsaiwnh"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; These tests fail when FLIT_NO_NETWORK is set
+      '(list "-k" "not test_invalid_classifier \
+and not test_install_requires \
+and not test_install_requires_extra \
+and not test_validate_classifiers_private")
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
+          (add-before 'check 'pre-check
             (lambda* (#:key tests? inputs outputs #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")
-                (setenv "FLIT_NO_NETWORK" "1"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+                (setenv "FLIT_NO_NETWORK" "1")))))))
     (propagated-inputs
      (list python-pypa-build
            python-tomli-w
@@ -31766,6 +31923,40 @@ match a given regular expression, or count possible matches efficiently. It
 uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
+
+(define-public python-srsly
+  (package
+    (name "python-srsly")
+    (version "2.4.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "srsly" version))
+              (sha256
+               (base32
+                "0vsafkvk4g0p5m0dqrczqvlyza837i20xxmb24rrqk5s78r1zd27"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-catalogue))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-timeout
+           python-mock
+           python-numpy
+           python-psutil))
+    (home-page "https://github.com/explosion/srsly")
+    (synopsis "Serialization utilities for Python")
+    (description "This package bundles some of the best Python serialization
+libraries into one standalone package, with a high-level API that makes it
+easy to write code that's correct across platforms and Pythons.")
+    (license license:expat)))
 
 (define-public python-pyperf
   (package

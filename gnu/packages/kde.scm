@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018 Mark Meyer <mark@ofosos.org>
@@ -516,15 +516,16 @@ the functionality of the KDE resource and network access abstractions.")
 (define-public kirigami-addons
   (package
     (name "kirigami-addons")
-    (version "0.3")
+    (version "0.8.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://invent.kde.org/libraries/kirigami-addons/-/archive/v"
-                    version "/kirigami-addons-v" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://invent.kde.org/libraries/kirigami-addons")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zr8dpc7bzw6g3y0jaxsr2lqlxqwlcphchpk8iah6g1f3n9fq73r"))))
+                "1bi6sc1fpycxj1ydd08gkbw1x1pi2ab6p9bk4175hm0mb0rykdir"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f)) ; failing test

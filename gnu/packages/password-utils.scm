@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Steve Sprang <scs@stevesprang.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Jessica Tallon <tsyesika@tsyesika.se>
@@ -142,7 +142,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.4")
+    (version "2.7.5")
     (source
      (origin
        (method url-fetch)
@@ -150,7 +150,7 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "1knywp38byq0jq9vdyp1ykha9prh09k1y5srwwkr6f503nb5402n"))))
+        (base32 "03002fncllr658mgl5s6an5wnh0a333qnkxad6aw85hqj004iqpd"))))
     (build-system cmake-build-system)
     (arguments
      (list

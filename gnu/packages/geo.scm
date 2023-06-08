@@ -738,7 +738,9 @@ lets developers use the functionality of Proj in their own software.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))))
+         "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))
+       (patches
+        (search-patches "proj-7-initialize-memory.patch"))))
     (arguments
      `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")
        #:phases

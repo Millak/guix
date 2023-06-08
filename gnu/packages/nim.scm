@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
+;;; Copyright © 2023 Gruruya <greytest@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,14 +37,14 @@
 (define-public nim
   (package
     (name "nim")
-    (version "1.6.6")
+    (version "1.6.12")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://nim-lang.org/download/"
                           name "-" version ".tar.xz"))
       (sha256
-       (base32 "0lm4450ig8k4l3rzxv6kcqji5l1lzicsw76ckwxm0q9qdz713cb7"))))
+       (base32 "1hjd9dxhqzn2ifr988li8q7v6kxpxlcqbdllfd6lsq3knw50pvxc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f          ; TODO: Investigate tests failures.
@@ -55,6 +56,7 @@
                (let ((out (assoc-ref outputs "out")))
                  (substitute* "install.sh"
                   (("/usr/local") out)
+                  (("/lib/nim") "/lib")
                   (("/opt/nimble") (string-append out "/share/nimble"))
                   (("configdir=/etc/nim")
                    (string-append "configdir=" out "/etc/nim"))))))
@@ -102,7 +104,7 @@
                                 "lib/pure/osproc.nim"
                                 "lib/pure/strscans.nim")
                    (("/bin/sh") sh))
-                 (substitute* (find-files "c_code" "stdlib_osproc\\.nim\\.c")
+                 (substitute* (find-files "c_code" "@m\\.\\.@slib@spure@sosproc\\.nim\\.c")
                    (("\"/bin/sh\", 7") (format #f "~s, ~s" sh (string-length sh)))))))
            (replace 'build
              (lambda* (#:key (parallel-build? #t) #:allow-other-keys)

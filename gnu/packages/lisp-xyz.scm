@@ -4978,7 +4978,7 @@ is a library for creating graphical user interfaces.")
 (define-public sbcl-cl-webkit
   (package
     (name "sbcl-cl-webkit")
-    (version "3.5.7")
+    (version "3.5.9")
     (source
      (origin
        (method git-fetch)
@@ -4988,7 +4988,7 @@ is a library for creating graphical user interfaces.")
        (file-name (git-file-name "cl-webkit" version))
        (sha256
         (base32
-         "0aqkqcs0n5wkgjx3lb513fvm7f2jw3d5daisc9mw1bmbbcqh2sba"))))
+         "00h61p5mrvvbycp703isy0wvgqlfb7k0cidw4vg75y7s29m3k6k0"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      `(("cffi" ,sbcl-cffi)
@@ -21176,9 +21176,10 @@ window it creates as just another output for your graphics, analogous to how
   (sbcl-package->cl-source-package sbcl-cepl))
 
 (define-public sbcl-stmx
-  ;; No release for years and recent commits contain fixes for revent SBCL versions.
-  (let ((commit "a7bb44082cd53ee968965adff03d4351750711a1")
-        (revision "1"))
+  ;; No release for years and recent commits contain fixes for recent SBCL
+  ;; versions.
+  (let ((commit "f71e742a50b85e3abc0af9bb5f02802f218a1705")
+        (revision "2"))
     (package
      (name "sbcl-stmx")
      (version (git-version "2.0.5" revision commit))
@@ -21190,11 +21191,22 @@ window it creates as just another output for your graphics, analogous to how
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hfmh4vj271jdilir97qs6nqbi5nmn5alyls0w3d3xxqwi6ffqjs"))))
+        (base32 "0q739mlw3s3z5kclzccz4r64ag38ks11fmd38109qwjv5knn69jv"))))
      (build-system asdf-build-system/sbcl)
      (inputs
       (list sbcl-alexandria sbcl-bordeaux-threads sbcl-log4cl
             sbcl-closer-mop sbcl-trivial-garbage))
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-build
+             (lambda _
+               (substitute* "asm/transaction.lisp"
+                 (("\\(ftype \\(function \\(\\) fixnum\\)        transaction-begin\\)")
+                  "(ftype (function () (unsigned-byte 32))        transaction-begin)")
+                 (("\\(values fixnum  &optional\\)")
+                  "(unsigned-byte 32)")))))))
      (home-page "https://stmx.org/")
      (synopsis "High performance Transactional Memory for Common Lisp")
      (description

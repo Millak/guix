@@ -4677,13 +4677,11 @@ algorithm implementations.")
          (delete 'build) ; XXX the build is performed again during the install phase
          (add-after 'unpack 'enter-source-directory
            (lambda _ (chdir "python")))
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
-         (add-before 'install 'set-PYARROW_WITH_PARQUET
+         (add-before 'install 'set-pyarrow-build-options
            (lambda _
              (setenv "PYARROW_BUNDLE_ARROW_CPP_HEADERS" "0")
-             (setenv "PYARROW_WITH_PARQUET" "1"))))))
+             (setenv "PYARROW_WITH_PARQUET" "1")
+             (setenv "PYARROW_WITH_DATASET" "1"))))))
     (propagated-inputs
      (list (list apache-arrow "lib")
            (list apache-arrow "include")

@@ -185,7 +185,7 @@ storage system.")
 (define-public libxfce4ui
   (package
     (name "libxfce4ui")
-    (version "4.18.3")
+    (version "4.18.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -193,7 +193,7 @@ storage system.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1g8a067xbazgh0qc25nc7k1zc6aqmznhh4vy5wnn3aykxrpa98xg"))))
+                "0k6b8al8cy2w5zi8iywkzjsz2cgiz9r8ir2dflzxw9kdgiwzxvl7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -398,7 +398,7 @@ management D-Bus specification.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.18.3")
+    (version "4.18.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -406,7 +406,7 @@ management D-Bus specification.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "06sy6vjydx1p8rx8z94ya6szvmvyarijl5x0pm5ij4cqbihviq2a"))
+                "0m7vmk7rc2sjfqba0flgnw77kn1j222xqs7r86bpg8sf1614yc1j"))
               (patches (search-patches "xfce4-panel-plugins.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -498,7 +498,7 @@ matching them against regular expressions.")
 (define-public xfce4-pulseaudio-plugin
   (package
     (name "xfce4-pulseaudio-plugin")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
@@ -507,7 +507,7 @@ matching them against regular expressions.")
                            (version-major+minor version) "/"
                            "xfce4-pulseaudio-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "05k02ilvffddgbp6in9wpjvg6vzlcxxw09nmj29hzba44klc04bf"))))
+        (base32 "0b4fjvrrah0b97cbv8ds7r6cwnj392ya2r7703ixf724f43hkpah"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config dbus-glib dbus))
@@ -630,7 +630,7 @@ your system in categories, so you can quickly find and launch them.")
 (define-public xfce4-session
   (package
     (name "xfce4-session")
-    (version "4.18.2")
+    (version "4.18.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -638,7 +638,7 @@ your system in categories, so you can quickly find and launch them.")
                                   "xfce4-session-" version ".tar.bz2"))
               (sha256
                (base32
-                "12pbppyhg0jdwswwk59fffh2n5ckpfvwc999zkg1l2f2skl7zzq1"))
+                "1v4lfgz7az8iqp01a1ww8sxxjfmr676bijhrhw4r6r7cjvh96brq"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1222,7 +1222,7 @@ system resources, while still being visually appealing and user friendly.")
 (define-public xfce4-power-manager
   (package
     (name "xfce4-power-manager")
-    (version "4.18.1")
+    (version "4.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -1230,7 +1230,7 @@ system resources, while still being visually appealing and user friendly.")
                                   "xfce4-power-manager-" version ".tar.bz2"))
               (sha256
                (base32
-                "00zz9bhzsf2vww8mym9c093sz7va5716qb6kvdvn6ldp9h6b223b"))))
+                "0kfzvhb1hnr16fcplm7bdpp4fcxr3irzq3w4q0lpbc5n6kaqyq71"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -1453,7 +1453,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.10.3")
+   (version "1.10.4")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1463,7 +1463,7 @@ of data to either CD/DVD/BD.")
                                 version ".tar.bz2"))
             (sha256
              (base32
-              "061qixpz8krvpixs6ickl9ha5m0pb078rdd5fjifrkxy8yc1am54"))))
+              "1534h1a3a8b9pl20zpccaifrlsrbsihdcdjndn9nmqalgrl9kwd2"))))
    (build-system gnu-build-system)
    (native-inputs
     (list pkg-config intltool
@@ -1482,7 +1482,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-screensaver
   (package
     (name "xfce4-screensaver")
-    (version "4.18.1")
+    (version "4.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1492,7 +1492,7 @@ A plugin for the Xfce panel is also available.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0p2an3g5jlhmr60if319cfgkqacziym52csj7dfwq64assmyhcdp"))))
+                "161bdsvkbknaf9fpz4b1r4amnm72hzfmx9c6krg2396k2k2d5z74"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

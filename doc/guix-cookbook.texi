@@ -844,12 +844,12 @@ another, more sophisticated package (slightly modified from the source):
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
-  #:use-module (gnu packages ssh)
-  #:use-module (gnu packages web)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages tls))
+  #:use-module (gnu packages ssh)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages web))
 
 (define-public my-libgit2
   (let ((commit "e98d0a37c93574d2c6107bf7f31140b548c6a7bf")
@@ -886,9 +886,11 @@ another, more sophisticated package (slightly modified from the source):
                  (("/bin/rm") (which "rm")))))
            ;; Run checks more verbosely.
            (replace 'check
-             (lambda _ (invoke "./libgit2_clar" "-v" "-Q")))
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "./libgit2_clar" "-v" "-Q"))))
            (add-after 'unpack 'make-files-writable-for-tests
-             (lambda _ (for-each make-file-writable (find-files "." ".*")))))))
+             (lambda _ (for-each make-file-writable (find-files ".")))))))
       (inputs
        (list libssh2 http-parser python-wrapper))
       (native-inputs
@@ -2147,7 +2149,10 @@ be made setuid-root so it can authenticate users, and it needs a PAM service. Th
 can be achieved by adding the following service to your @file{config.scm}:
 
 @lisp
-(screen-locker-service slock)
+(service screen-locker-services-type
+         (screen-locker-configuration
+          (name "slock")
+          (program (file-append slock "/bin/slock"))))
 @end lisp
 
 If you manually lock your screen, e.g. by directly calling slock when you want to lock

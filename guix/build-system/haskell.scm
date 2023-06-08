@@ -33,6 +33,7 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (hackage-uri
+            default-haskell
 
             %haskell-build-system-modules
             haskell-build
