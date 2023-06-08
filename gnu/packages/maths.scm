@@ -96,6 +96,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
@@ -4772,6 +4773,35 @@ access to BLIS implementations via traditional BLAS routine calls.")
     (license license:bsd-3)))
 
 (define ignorance blis)
+
+;; It is unfortunate that we cannot just link with the existing blis package.
+(define-public python-blis
+  (package
+    (name "python-blis")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "blis" version))
+              (sha256
+               (base32
+                "0vrnzk9jx7fcl56q6zpa4w4mxkr4iknxs42fngn9g78zh1kc9skw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"
+                     "-j" (number->string (parallel-job-count))))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://github.com/explosion/cython-blis")
+    (synopsis "Blis as a self-contained C-extension for Python")
+    (description
+     "This package provides the Blis BLAS-like linear algebra library, as a
+self-contained C-extension for Python.")
+    (license license:bsd-3)))
 
 (define-public openlibm
   (package
