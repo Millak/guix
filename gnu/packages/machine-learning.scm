@@ -768,6 +768,71 @@ compatibility.")
 natural language processing framework.")
     (license license:expat)))
 
+(define-public python-spacy
+  (package
+    (name "python-spacy")
+    (version "3.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spacy" version))
+              (sha256
+               (base32
+                "13141hc966d8nxbnlwj01vhndgq0rq4nmii3qkb3hrap45kiv5rm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; We don't do that around here.
+              "not test_download_compatibility"
+              ;; This needs to download a model.
+              " and not test_validate_compatibility_table"
+              ;; This tries to run the application with typer, which fails
+              ;; with an unspecified error, possibly because the build
+              ;; container doesn't have /bin/sh.
+              " and not test_project_assets"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"
+                     "-j" (number->string (parallel-job-count))))))))
+    (propagated-inputs (list python-catalogue
+                             python-cymem
+                             python-jinja2
+                             python-langcodes
+                             python-murmurhash
+                             python-numpy
+                             python-packaging
+                             python-pathy
+                             python-preshed
+                             python-pydantic
+                             python-requests
+                             python-setuptools
+                             python-smart-open
+                             python-spacy-legacy
+                             python-spacy-loggers
+                             python-srsly
+                             python-thinc
+                             python-tqdm
+                             python-typer
+                             python-typing-extensions
+                             python-wasabi))
+    (native-inputs
+     (list python-cython python-pytest python-mock))
+    (home-page "https://spacy.io")
+    (synopsis "Natural Language Processing (NLP) in Python")
+    (description
+     "SpaCy is a library for advanced Natural Language Processing in Python
+and Cython.  It comes with pretrained pipelines and currently supports
+tokenization and training for 70+ languages. It features state-of-the-art
+speed and neural network models for tagging, parsing, named entity
+recognition, text classification and more, multi-task learning with pretrained
+transformers like BERT, as well as a production-ready training system and easy
+model packaging, deployment and workflow management.")
+    (license license:expat)))
+
 (define-public shogun
   (package
     (name "shogun")
