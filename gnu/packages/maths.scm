@@ -4803,6 +4803,18 @@ access to BLIS implementations via traditional BLAS routine calls.")
 self-contained C-extension for Python.")
     (license license:bsd-3)))
 
+(define-public python-blis-for-thinc
+  (package
+    (inherit python-blis)
+    (name "python-blis")
+    (version "0.7.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "blis" version))
+              (sha256
+               (base32
+                "0mvcif9g69424bk8xiflacxzpvz802ns791v2r8a6fij0sxl3mgp"))))))
+
 (define-public openlibm
   (package
     (name "openlibm")
