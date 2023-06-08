@@ -5242,7 +5242,9 @@ C.  It is developed as part of the NetSurf project.")
        (sha256
         (base32
          "1dimfyblmym98qa1b80c5jslv2zk8r44xbdrgrsrw1n9wr9y4yly"))
-       (patches (search-patches "hubbub-sort-entities.patch"))))
+       (patches (search-patches
+         "hubbub-sort-entities.patch"
+         "hubbub-maybe-uninitialized.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem

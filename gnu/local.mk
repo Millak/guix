@@ -58,6 +58,7 @@
 # Copyright © 2022 jgart <jgart@dismail.de>
 # Copyright © 2023 Zheng Junjie <873216071@qq.com>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
+# Copyright © 2023 Andy Tai <atai@atai.org>
 #
 # This file is part of GNU Guix.
 #
@@ -1352,6 +1353,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/http-parser-CVE-2020-8287.patch		\
   %D%/packages/patches/htslib-for-stringtie.patch		\
   %D%/packages/patches/hubbub-sort-entities.patch		\
+  %D%/packages/patches/hubbub-maybe-uninitialized.patch         \
   %D%/packages/patches/hueplusplus-mbedtls.patch		\
   %D%/packages/patches/hurd-add-without-rump-configure-option.patch \
   %D%/packages/patches/hurd-fix-types-of-read-write-and-readables-methods-2.patch \

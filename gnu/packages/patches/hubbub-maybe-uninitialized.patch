@@ -1,0 +1,40 @@
+From 69d81a8a4d4c223aad67cde0fdf64d64351b9802 Mon Sep 17 00:00:00 2001
+From: Andy Tai <atai@atai.org>
+Date: Sat, 27 May 2023 00:01:34 -0700
+Subject: [PATCH] prevent -Werror=maybe-uninitialized build failure with gcc 11
+ when building tests tokeniser2 and tokeniser3
+
+---
+ test/tokeniser2.c | 2 +-
+ test/tokeniser3.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/tokeniser2.c b/test/tokeniser2.c
+index c8ab9c0..4caae38 100644
+--- a/test/tokeniser2.c
++++ b/test/tokeniser2.c
+@@ -438,7 +438,7 @@ hubbub_error token_handler(const hubbub_token *token, void *pw)
+ 			/* Expected token only contained part of the data
+ 			 * Calculate how much is left, then try again with
+ 			 * the next expected token */
+-			hubbub_token t;
++			hubbub_token t = { 0 };
+ 
+ 			t.type = HUBBUB_TOKEN_CHARACTER;
+ 			t.data.character.ptr += len;
+diff --git a/test/tokeniser3.c b/test/tokeniser3.c
+index e33d018..b3be901 100644
+--- a/test/tokeniser3.c
++++ b/test/tokeniser3.c
+@@ -447,7 +447,7 @@ hubbub_error token_handler(const hubbub_token *token, void *pw)
+ 			/* Expected token only contained part of the data
+ 			 * Calculate how much is left, then try again with
+ 			 * the next expected token */
+-			hubbub_token t;
++			hubbub_token t = { 0 };
+ 
+ 			t.type = HUBBUB_TOKEN_CHARACTER;
+ 			t.data.character.ptr += len;
+-- 
+2.40.1
+
