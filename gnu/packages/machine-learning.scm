@@ -708,6 +708,51 @@ SentencePiece allows us to make a purely end-to-end system that does not
 depend on language-specific pre- or post-processing.")
     (license license:asl2.0)))
 
+(define-public python-sacrebleu
+  (package
+    (name "python-sacrebleu")
+    (version "2.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mjpost/sacrebleu")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1al4qf9wsq5l453qqb6clims62ns0s07wb9rfbf4hbpr1f2iv7zv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These all need internet access.
+      '(list "-k" "not test_api_get_source \
+and not test_api_get_reference \
+and not test_maybe_download \
+and not test_process_to_text \
+and not test_get_files_and_fieldnames \
+and not test_source_and_references \
+and not test_wmt22_references")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for tests.
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-colorama
+                             python-lxml
+                             python-numpy
+                             python-portalocker
+                             python-regex
+                             python-tabulate))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/mjpost/sacrebleu")
+    (synopsis
+     "Compute shareable, comparable, and reproducible BLEU, chrF, and TER scores")
+    (description
+     "This is a package for hassle-free computation of shareable, comparable,
+and reproducible BLEU, chrF, and TER scores for natural language processing.")
+    (license license:asl2.0)))
+
 (define-public python-sentencepiece
   (package
     (name "python-sentencepiece")
