@@ -3492,6 +3492,38 @@ upgrade smoothly to the new support structure.")
      "The package provides emulation of pdfTeX primitives for LuaTeX v0.85+.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luahbtex
+  (package
+    (name "texlive-luahbtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/luahbtex.1"
+                   "doc/man/man1/luahbtex.man1.pdf")
+             (base32
+              "0w4hfjmjgiw42bpz1b59cla8v4s6kik54q6wdhmdjy6jp91rfl2i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:texlive-latex-base #f
+      #:create-formats #~(list "luahbtex")))
+    (propagated-inputs
+     (list texlive-cm
+           texlive-etex
+           texlive-hyphen-complete
+           texlive-knuth-lib
+           texlive-luatex
+           texlive-plain
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/luahbtex")
+    (synopsis "LuaTeX with HarfBuzz library for glyph shaping")
+    (description
+     "LuaHBTeX is a LuaTeX variant that can use the HarfBuzz engine for glyph
+shaping, instead of LuaTeX's built-in shaper.")
+    (license (package-license texlive-luatex))))
+
 ;; TODO: We should be able to build this from the sources on Github with
 ;; texlive-l3build, but I haven't been able to get it to work.
 (define-public texlive-luaotfload
