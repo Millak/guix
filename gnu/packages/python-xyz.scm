@@ -9441,6 +9441,28 @@ all the newest features of the standard @code{pathlib} can be used also on
 older Python versions.")
     (license license:expat)))
 
+(define-public python-pathy
+  (package
+    (name "python-pathy")
+    (version "0.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pathy" version))
+              (sha256
+               (base32
+                "12v196q3rai33cfzrmb9pqfqv7ailngssjdrzdf8gzym9hdygmjc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-dataclasses python-smart-open python-typer))
+    (native-inputs (list python-mock python-pytest))
+    (home-page "https://github.com/justindujardin/pathy")
+    (synopsis "Path interface for local and cloud bucket storage")
+    (description "Pathy is a python package (with type annotations) for
+working with Cloud Bucket storage providers using a @code{pathlib} interface.
+It provides @code{pathlib.Path} subclasses for local and cloud bucket
+storage.")
+    (license license:asl2.0)))
+
 (define-public python-importlib-resources
   (package
     (name "python-importlib-resources")
