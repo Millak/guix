@@ -447,7 +447,7 @@ an interpreter, a compiler, a debugger, and much more.")
         '(begin
            ;; Don't force ARMv5.
            (substitute* "src/runtime/Config.arm-linux"
-             (("-march=armv5") ""))))))
+             (("-march=armv5t") ""))))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
