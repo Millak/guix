@@ -38,7 +38,7 @@
   #:use-module (guix cache)
   #:use-module (gcrypt pk-crypto)
   #:use-module (guix pki)
-  #:use-module ((guix build utils) #:select (mkdir-p))
+  #:autoload   (guix build utils) (mkdir-p delete-file-recursively)
   #:use-module ((guix build download)
                 #:select (uri-abbreviation nar-uri-abbreviation
                           (open-connection-for-uri
@@ -445,6 +445,11 @@ server certificates."
   "Bind PORT with EXP... to a socket connected to URI."
   (call-with-cached-connection uri (lambda (port) exp ...)))
 
+(define-syntax-rule (catch-system-error exp)
+  (catch 'system-error
+    (lambda () exp)
+    (const #f)))
+
 (define* (download-nar narinfo destination
                        #:key status-port
                        deduplicate? print-build-trace?)
@@ -502,6 +507,10 @@ STATUS-PORT."
        (leave (G_ "no valid nar URLs for ~a at ~a~%")
               (narinfo-path narinfo)
               (narinfo-uri-base narinfo)))))
+
+  ;; Delete DESTINATION first--necessary when starting over after a failed
+  ;; download.
+  (catch-system-error (delete-file-recursively destination))
 
   (let ((choices (narinfo-preferred-uris narinfo
                                          #:fast-decompression?

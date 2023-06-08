@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2014-2015, 2017-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2015, 2017-2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -632,6 +632,29 @@ System: mips64el-linux\n")))
         (const #t)
         (lambda ()
           (parameterize ((substitute-urls (list (%local-url))))
+            (request-substitution (string-append (%store-prefix)
+                                                 "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                                  "substitute-retrieved"))
+          (call-with-input-file "substitute-retrieved" get-string-all))
+        (lambda ()
+          (false-if-exception (delete-file "substitute-retrieved")))))))
+
+(test-equal "substitute, previous partial download around"
+  "Substitutable data."
+  (with-narinfo* (string-append %narinfo "Signature: " (signature-field %narinfo))
+      %main-substitute-directory
+
+    (with-http-server `((200 ,(string-append %narinfo "Signature: "
+                                             (signature-field %narinfo)))
+                        (200 ,(call-with-input-file
+                                  (string-append %main-substitute-directory
+                                                 "/example.nar")
+                                get-bytevector-all)))
+      (dynamic-wind
+        (const #t)
+        (lambda ()
+          (parameterize ((substitute-urls (list (%local-url))))
+            (mkdir-p "substitute-retrieved/a/b/c/d") ;add stale data
             (request-substitution (string-append (%store-prefix)
                                                  "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
                                   "substitute-retrieved"))
