@@ -727,6 +727,27 @@ depend on language-specific pre- or post-processing.")
 unsupervised text tokenizer.")
     (license license:asl2.0)))
 
+(define-public python-spacy-legacy
+  (package
+    (name "python-spacy-legacy")
+    (version "3.0.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spacy-legacy" version))
+              (sha256
+               (base32
+                "0x57aw1qgjrzgapsv1cwymqlck2anqm1bisvryhpq7bfkc66wzdk"))))
+    (build-system pyproject-build-system)
+    ;; This package depends on spacy, which depends on this package.
+    (arguments (list #:tests? #false))
+    (native-inputs (list python-pytest))
+    (home-page "https://spacy.io")
+    (synopsis "Legacy registered functions for spaCy backwards compatibility")
+    (description
+     "This package contains legacy registered functions for spaCy backwards
+compatibility.")
+    (license license:expat)))
+
 (define-public shogun
   (package
     (name "shogun")
