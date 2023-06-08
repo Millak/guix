@@ -1317,6 +1317,46 @@ computing environments.")
 data analysis.")
     (license license:bsd-3)))
 
+(define-public python-thinc
+  (package
+    (name "python-thinc")
+    (version "8.1.10")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "thinc" version))
+              (sha256
+               (base32
+                "14drmwa2sh8fqszv1fm2jl4lky1j5yrbkjv89bl49q07vbblhjkc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"
+                     "-j" (number->string (parallel-job-count))))))))
+    (propagated-inputs (list python-blis-for-thinc
+                             python-catalogue
+                             python-confection
+                             python-contextvars
+                             python-cymem
+                             python-dataclasses
+                             python-murmurhash
+                             python-numpy
+                             python-packaging
+                             python-preshed
+                             python-pydantic
+                             python-srsly
+                             python-typing-extensions
+                             python-wasabi))
+    (native-inputs (list python-cython python-mock python-pytest))
+    (home-page "https://github.com/explosion/thinc")
+    (synopsis "Functional take on deep learning")
+    (description
+     "This package provides a functional take on deep learning, compatible
+with your favorite libraries.")
+    (license license:expat)))
+
 (define-public python-threadpoolctl
   (package
     (name "python-threadpoolctl")
