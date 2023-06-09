@@ -10859,6 +10859,55 @@ Arguments may contain verbatim material or other special use of characters.
 The macros were designed for use within other macros.")
     (license license:lppl1.3)))
 
+(define-public texlive-collection-basic
+  (package
+    (name "texlive-collection-basic")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+   (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-bibtex
+           texlive-cm
+           texlive-colorprofiles
+           texlive-dvipdfmx
+           texlive-dvips
+           texlive-ec
+           texlive-enctex
+           texlive-etex
+           texlive-etex-pkg
+           texlive-glyphlist
+           texlive-graphics-def
+           texlive-hyphen-complete
+           texlive-hyphenex
+           texlive-ifplatform
+           texlive-iftex
+           texlive-knuth-lib
+           texlive-knuth-local
+           texlive-kpathsea
+           texlive-lua-alt-getopt
+           texlive-luahbtex
+           texlive-luatex
+           texlive-makeindex
+           texlive-metafont
+           texlive-mflogo
+           texlive-mfware
+           texlive-modes
+           texlive-pdftex
+           texlive-plain
+           texlive-tex
+           texlive-tex-ini-files
+           texlive-unicode-data
+           texlive-xdvi))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Essential programs and files")
+    (description
+     "These files are regarded as basic for any TeX system, covering plain TeX
+macros, Computer Modern fonts, and configuration for common drivers; no
+LaTeX.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-grfext
   (package
     (name "texlive-grfext")
