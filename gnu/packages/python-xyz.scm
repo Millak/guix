@@ -24125,8 +24125,10 @@ based on the CPython 2.7 and 3.7 parsers.")
                         ;; XXX: These fail when installed as a library:
                         ;; https://github.com/agronholm/typeguard/issues/176
                         "not usefixtures and not test_cached_module")))))))
-    (native-inputs
-     (list python-mypy python-pytest python-typing-extensions))
+    (native-inputs (list python-mypy
+                         python-pytest
+                         python-setuptools-scm
+                         python-typing-extensions))
     (home-page "https://github.com/agronholm/typeguard")
     (synopsis "Run-time type checker for Python")
     (description
