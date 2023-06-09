@@ -194,7 +194,7 @@
     (scm->json-port
      (list->vector (filter-map argument-list->json sorted-argument-lists))))
   (mock ((guix http-client) http-fetch
-         (lambda* (url #:key headers)
+         (lambda* (url #:key headers timeout)
            (unless (string-prefix? "mock://api/packages/" url)
              (error "the URL ~a should not be used" url))
            (define resource
