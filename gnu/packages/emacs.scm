@@ -97,17 +97,23 @@
 (define-public emacs
   (package
     (name "emacs")
-    (version "28.2")
+    (version "29.0.91")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/emacs/emacs-"
-                                  version ".tar.xz"))
+              ;; TODO: Restore url-fetch when serving 29.1
+              ;; (method url-fetch)
+              ;; (uri (string-append "mirror://gnu/emacs/emacs-"
+              ;;                     version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/emacs.git/")
+                    (commit (string-append "emacs-" version))))
               (sha256
                (base32
-                "12144dcaihv2ymfm7g2vnvdl4h71hqnsz1mljzf34cpg6ci1h8gf"))
+                "09jm1q5pvd1dc0xq5rhn66v1j235zlr72kwv5i27xigvi9nfqkv1"))
               (patches (search-patches "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
-                                       "emacs-source-date-epoch.patch"))
+                                       "emacs-native-comp-driver-options.patch"
+                                       "emacs-pgtk-super-key-fix.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "lisp"
@@ -145,9 +151,8 @@
       #:modules (%emacs-modules build-system)
       #:configure-flags #~(list "--with-modules"
                                 "--with-cairo"
-                                "--with-native-compilation"
+                                "--with-native-compilation=aot"
                                 "--disable-build-details")
-      #:make-flags #~(list "NATIVE_FULL_AOT=1")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'set-paths 'set-libgccjit-path
@@ -340,6 +345,8 @@
            ghostscript
            poppler
            elogind
+           sqlite
+           tree-sitter
 
            ;; When looking for libpng `configure' links with `-lpng -lz', so we
            ;; must also provide zlib as an input.
@@ -368,11 +375,6 @@
            (search-path-specification
             (variable "INFOPATH")
             (files '("share/info")))
-           ;; tree-sitter support is not yet available in emacs 28, but this
-           ;; search path won't harm and also will be beneficial for
-           ;; emacs-next and other emacs-* packages, which have tree-sitter
-           ;; support enabled.  Please, remove this comment, when emacs
-           ;; package is updated to 29.
            (search-path-specification
             (variable "TREE_SITTER_GRAMMAR_PATH")
             (files '("lib/tree-sitter")))))
@@ -390,72 +392,29 @@ large Lisp programs.  It has full Unicode support for nearly all human
 languages.")
     (license license:gpl3+)))
 
-(define-public emacs-next
+(define-public emacs-pgtk
   (package
     (inherit emacs)
-    (name "emacs-next")
-    (version "29.0.91")
-    (source
-     (origin
-       (inherit (package-source emacs))
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/emacs.git/")
-             (commit (string-append "emacs-" version))))
-       (file-name (git-file-name name version))
-       ;; emacs-source-date-epoch.patch is no longer necessary
-       (patches (search-patches "emacs-exec-path.patch"
-                                "emacs-fix-scheme-indent-function.patch"
-                                "emacs-native-comp-driver-options.patch"))
-       (sha256
-        (base32
-         "09jm1q5pvd1dc0xq5rhn66v1j235zlr72kwv5i27xigvi9nfqkv1"))))
-    (inputs
-     (modify-inputs (package-inputs emacs)
-       (prepend sqlite)))
-    (native-inputs
-     (modify-inputs (package-native-inputs emacs)
-       (prepend autoconf)))))
-
-(define-public emacs-next-tree-sitter
-  (package
-    (inherit emacs-next)
-    (name "emacs-next-tree-sitter")
-    (inputs
-     (modify-inputs (package-inputs emacs-next)
-       (prepend sqlite tree-sitter)))
-    (synopsis "Emacs text editor with @code{tree-sitter} support")
-    (description "This Emacs build supports tree-sitter.")))
-
-(define-public emacs-next-pgtk
-  (package
-    (inherit emacs-next-tree-sitter)
-    (name "emacs-next-pgtk")
-    (source
-     (origin
-       (inherit (package-source emacs-next-tree-sitter))
-       (patches
-        (append (search-patches "emacs-pgtk-super-key-fix.patch")
-                (origin-patches (package-source emacs-next-tree-sitter))))))
+    (name "emacs-pgtk")
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-next-tree-sitter)
+     (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
         #~(cons* "--with-pgtk" #$flags))))
-    (synopsis "Emacs text editor with @code{pgtk} and @code{tree-sitter} support")
+    (synopsis "Emacs text editor with @code{pgtk} frames")
     (description "This Emacs build implements graphical UI purely in terms
-of GTK and supports tree-sitter.")))
+of GTK.")))
 
-(define-public emacs-next-pgtk-xwidgets
+(define-public emacs-pgtk-xwidgets
   (package
-    (inherit emacs-next-pgtk)
-    (name "emacs-next-pgtk-xwidgets")
+    (inherit emacs-pgtk)
+    (name "emacs-pgtk-xwidgets")
     (synopsis "Emacs text editor with @code{xwidgets} and @code{pgtk} support")
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-next-pgtk)
+     (substitute-keyword-arguments (package-arguments emacs-pgtk)
        ((#:configure-flags flags #~'())
         #~(cons "--with-xwidgets" #$flags))))
     (inputs
-     (modify-inputs (package-inputs emacs-next-pgtk)
+     (modify-inputs (package-inputs emacs-pgtk)
        (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
 
 (define-public emacs-minimal
@@ -477,23 +436,17 @@ of GTK and supports tree-sitter.")))
             (delete 'restore-emacs-pdmp)
             (delete 'strip-double-wrap)))))
     (inputs (list ncurses coreutils gzip))
-    (native-inputs (list autoconf pkg-config))))
+    (native-inputs (list autoconf pkg-config texinfo))))
 
 (define-public emacs-xwidgets
   (package/inherit emacs
     (name "emacs-xwidgets")
     (synopsis "The extensible, customizable, self-documenting text
 editor (with xwidgets support)")
-    (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
-        #~(cons "--with-xwidgets" #$flags))
-       ((#:modules _) (%emacs-modules build-system))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'restore-emacs-pdmp)
-            (delete 'strip-double-wrap)))))
+        #~(cons "--with-xwidgets" #$flags))))
     (inputs
      (modify-inputs (package-inputs emacs)
        (prepend webkitgtk-with-libsoup2 libxcomposite)))))
