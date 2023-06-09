@@ -10899,6 +10899,25 @@ whether an argument is empty.")
 page (also known as end notes).")
     (license license:lppl1.3c+)))
 
+(define-public texlive-pagesel
+  (package
+    (name "texlive-pagesel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pagesel/" "source/latex/pagesel/"
+                   "tex/latex/pagesel/")
+             (base32
+              "1x4nb53d5gm0vrhiinaqf6ai63bgjpbw0b5kk3c2f6j6gfvp0n53")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pagesel")
+    (synopsis "Select pages of a document for output")
+    (description
+     "This package selects single pages, ranges of pages, odd pages or even
+pages for output.  The package is part of the @code{oberdiek} bundle.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-titling
   (package
     (name "texlive-titling")
