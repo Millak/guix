@@ -461,13 +461,15 @@ type '<elpa-package>'."
                       (and uri
                            (cond
                             ((string=? (uri-host uri) "elpa.gnu.org")
-                             'gnu)
+                             (if (eq? (uri-scheme uri) 'http)
+                                 'gnu/http        ;for testing
+                                 'gnu))
                             ((string=? (uri-host uri) "elpa.nongnu.org")
                              'nongnu)
                             (else #f))))))))
 
 (define (package-from-elpa-repository? package)
-  (member (elpa-repository package) '(gnu nongnu)))
+  (member (elpa-repository package) '(gnu gnu/http nongnu)))
 
 (define %elpa-updater
   ;; The ELPA updater.  We restrict it to packages hosted on elpa.gnu.org
