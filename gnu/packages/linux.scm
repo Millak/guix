@@ -2505,7 +2505,7 @@ module.")
                          perl
                          procps))
     (arguments
-     '(;; util-linux is the preferred source for some of the libraries and
+     `(;; util-linux is the preferred source for some of the libraries and
        ;; commands, so disable them (see, e.g.,
        ;; <http://git.buildroot.net/buildroot/commit/?id=e1ffc2f791b33633>.)
        #:configure-flags (list "--disable-libblkid"
@@ -2552,7 +2552,77 @@ module.")
                  (let ((archives (find-files lib "\\.a$")))
                    (for-each (lambda (file)
                                (chmod file #o666))
-                             archives))))))))
+                             archives)))))
+           ,@(if (system-hurd?)
+                 '((add-after 'unpack 'skip-tests
+                     (lambda _
+                       (with-directory-excursion "tests"
+                         (for-each
+                          (lambda (directory)
+                            (delete-file-recursively directory))
+                          '("d_bad_ostype"
+                            "f_detect_junk"
+                            "f_extent_oobounds"
+                            "j_ext_long_revoke_trans"
+                            "j_ext_long_trans"
+                            "j_long_revoke_trans"
+                            "j_long_revoke_trans_mcsum_32bit"
+                            "j_long_revoke_trans_mcsum_64bit"
+                            "j_long_trans"
+                            "j_long_trans_mcsum_32bit"
+                            "j_long_trans_mcsum_64bit"
+                            "j_short_revoke_trans"
+                            "j_short_revoke_trans_mcsum_64bit"
+                            "j_short_trans_64bit"
+                            "j_short_trans"
+                            "j_short_trans_mcsum_64bit"
+                            "j_short_trans_old_csum"
+                            "j_short_trans_open_recover"
+                            "j_short_trans_recover"
+                            "j_short_trans_recover_mcsum_64bit"
+                            "j_short_uncommitted_trans"
+                            "j_short_uncommitted_trans_mcsum_64bit"
+                            "m_error_behavior"
+                            "m_minrootdir"
+                            "m_rootdir"
+                            "r_32to64bit_expand_full"
+                            "r_expand_full"
+                            "r_fixup_lastbg_big"
+                            "t_change_uuid"
+                            "t_change_uuid_mcsum"
+                            "t_change_uuid_mcsum_mounted"
+                            "t_change_uuid_mcsum_seed_mounted"
+                            "t_change_uuid_mounted"
+                            "t_disable_changed_csum_seed"
+                            "t_disable_changed_csum_seed_mounted"
+                            "t_disable_csum_seed"
+                            "t_disable_meta_csum_and_seed"
+                            "t_enable_csum_seed"
+                            "t_format_csum_seed"
+                            "t_replay_and_set"
+                            "u_compound_rollback"
+                            "u_corrupt_blk_csum"
+                            "u_corrupt_blk_csum_force"
+                            "u_corrupt_key_csum"
+                            "u_debugfs_opt"
+                            "u_dryrun"
+                            "u_e2fsck_opt"
+                            "u_errorout"
+                            "u_force"
+                            "u_force_dryrun"
+                            "u_incomplete"
+                            "u_mke2fs_opt"
+                            "u_mke2fs_opt_oddsize"
+                            "u_offset"
+                            "u_onefile_bad"
+                            "u_resize2fs_opt"
+                            "u_revert_64bitmcsum_onefile"
+                            "u_revert_all_onefile"
+                            "u_revert_upgrade_to_64bitmcsum"
+                            "u_tune2fs_opt"
+                            "u_undo_undo"
+                            "u_wrong_fs"))))))
+                 '()))))
     (home-page "https://e2fsprogs.sourceforge.net/")
     (synopsis "Creating and checking ext2/ext3/ext4 file systems")
     (description
