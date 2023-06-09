@@ -3357,6 +3357,32 @@ It provides convenience functions to load and visualize factor models trained
 with MOFA+ in Python.")
       (license license:expat))))
 
+(define-public python-mudata
+  (package
+    (name "python-mudata")
+    (version "0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/scverse/mudata")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02h0k1q57589r0hdv8nwg1vk7g2ljvn5g66c47fy5gdilbm3gjws"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-anndata python-h5py python-pandas))
+    (native-inputs
+     (list python-flit-core python-numpy python-pytest python-zarr))
+    (home-page "https://github.com/scverse/mudata")
+    (synopsis "Python package for multi-omics data analysis")
+    (description
+     "Mudata is a Python package for multi-omics data analysis.
+It is designed to provide functionality to load, process, and store multimodal
+omics data.")
+    (license license:bsd-3)))
+
 (define-public python-pyega3
   (package
     (name "python-pyega3")
