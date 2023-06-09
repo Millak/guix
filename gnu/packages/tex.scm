@@ -11034,6 +11034,7 @@ The macros were designed for use within other macros.")
     (propagated-inputs
      (list texlive-amsfonts
            texlive-bibtex
+           texlive-bin                  ;set GUIX TEXMF and engines
            texlive-cm
            texlive-colorprofiles
            texlive-dvipdfmx
@@ -13042,6 +13043,23 @@ the loop may be prematurely terminated.  The action is akin to the C/Java
 break statement, except that the loop does not terminate until the end of the
 current iteration.")
     (license license:lppl)))
+
+(define-public texlive-scheme-basic
+  (package
+    (name "texlive-scheme-basic")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs (list texlive-collection-basic texlive-collection-latex))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Basic scheme (plain and latex)")
+    (description
+     "This is the basic TeX Live scheme: it is a small set of files sufficient
+to typeset plain TeX or LaTeX documents in PostScript or PDF, using the
+Computer Modern fonts.  This scheme corresponds to @code{collection-basic} and
+@code{collection-latex}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
