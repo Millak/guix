@@ -157,11 +157,7 @@ stuff like \\newcommand\\pi'12{\\pi '_{12}}.")
      (shortdesc . "A sophisticated typesetting engine")
      (longdesc . "TeX is a typesetting system that incorporates...")
      (depend "cm" "hyphen-base" "tex.ARCH")
-     (docfiles
-      "texmf-dist/doc/man/man1/initex.1"
-      "texmf-dist/doc/man/man1/initex.man1.pdf"
-      "texmf-dist/doc/man/man1/tex.1"
-      "texmf-dist/doc/man/man1/tex.man1.pdf")
+     (docfiles "texmf-dist/doc/man/man1/tex.1")
      (catalogue-license . "knuth"))
     ("texsis"
      . ((name
@@ -495,7 +491,9 @@ completely compatible with Plain TeX.")
                ('name "texlive-collection-texworks")
                ('version _)
                ('source #f)
-               ('build-system 'texlive-build-system)
+               ('build-system 'trivial-build-system)
+               ('arguments
+                ('list '#:builder ('gexp ('mkdir ('ungexp 'output)))))
                ('propagated-inputs
                 ('list 'texlive-collection-basic 'texlive-texworks))
                ('home-page "https://www.tug.org/texlive/")
@@ -598,7 +596,9 @@ completely compatible with Plain TeX.")
                ('name "texlive-collection-basic")
                ('version _)
                ('source _)
-               ('build-system 'texlive-build-system)
+               ('build-system 'trivial-build-system)
+               ('arguments
+                ('list '#:builder ('gexp ('mkdir ('ungexp 'output)))))
                ('propagated-inputs
                 ('list 'texlive-amsfonts 'texlive-hyphen-complete))
                ('home-page (? string?))
@@ -631,6 +631,7 @@ completely compatible with Plain TeX.")
                ('name "texlive-tex")
                ('version _)
                ('source _)
+               ('outputs _)
                ('build-system 'texlive-build-system)
                ('propagated-inputs
                 ('list 'texlive-cm 'texlive-hyphen-base))

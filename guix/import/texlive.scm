@@ -342,24 +342,30 @@ of those files are returned that are unexpectedly installed."
           ,@(if (assoc-ref data 'docfiles)
                 '((outputs '("out" "doc")))
                 '())
-          (build-system texlive-build-system)
+          (build-system ,(if meta-package?
+                             'trivial-build-system
+                             'texlive-build-system))
           ;; Translate AddFormat execute actions into a `#:create-formats'
           ;; argument.
-          ,@(or (and-let*
-                    ((actions (assoc-ref data 'execute))
-                     (formats
-                      (delete-duplicates
-                       (filter-map (lambda (action)
-                                     (match (string-split action #\space)
-                                       (("AddFormat" name . _)
-                                        (string-drop name
-                                                     (string-length "name=")))
-                                       (  #f)))
-                                   actions)))
-                     ((not (null? formats))))
-                  `((arguments
-                     (list #:create-formats #~(list ,@(reverse formats))))))
-                '())
+          ,@(cond
+             (meta-package? '((arguments (list #:builder #~(mkdir #$output)))))
+             ((and-let* ((actions (assoc-ref data 'execute))
+                         (formats
+                          (delete-duplicates
+                           (filter-map
+                            (lambda (action)
+                              (match (string-split action #\space)
+                                (("AddFormat" name . _)
+                                 (string-drop name (string-length "name=")))
+                                (  #f)))
+                            actions)))
+                         ((not (null? formats))))
+                formats)
+              =>
+              (lambda (formats)
+                `((arguments
+                   (list #:create-formats #~(list ,@(reverse formats)))))))
+             (else '()))
           ;; Texlive build system generates font metrics whenever a font
           ;; metrics file has the same base name as a Metafont file.
           ,@(or (and-let* ((runfiles (assoc-ref data 'runfiles))
