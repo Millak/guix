@@ -12121,6 +12121,39 @@ attribute.  Pages with this attribute will be displayed in landscape
 orientation by conforming PDF viewers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pslatex
+  (package
+    (name "texlive-pslatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/map/dvips/pslatex/"
+                   "fonts/tfm/public/pslatex/"
+                   "fonts/vf/public/pslatex/"
+                   "source/latex/pslatex/fontinst/"
+                   "source/latex/pslatex/shell/"
+                   "tex/latex/pslatex/")
+             (base32
+              "1jazd3wl614c7nxl89aj7bhdahhq3h6rrs3p5cyzwqmw3b8h2zrl")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pslatex")
+    (synopsis "Use PostScript fonts by default")
+    (description
+     "This package provides a small package that makes LaTeX default to
+standard PostScript fonts.  It is basically a merger of the @code{times} and
+the (obsolete) @code{mathptm} packages from the @code{psnfss} suite.  You must
+have installed standard LaTeX and the @code{psnfss} PostScript fonts to use
+this package.  The main novel feature is that the @code{pslatex} package tries
+to compensate for the visual differences between the Adobe fonts by scaling
+Helvetica by 90%, and condensing Courier (i.e.  scaling horizontally) by 85%.
+The package is supplied with a (unix) shell file for a @command{pslatex}
+command that allows standard LaTeX documents to be processed, without needing
+to edit the file.  Note that current @code{psnfss} uses a different technique
+for scaling Helvetica, and treats Courier as a lost cause (there are better
+free fixed-width available now, than there were when @code{pslatex} was
+designed).  As a result, @code{pslatex} is widely considered obsolete.")
+    (license license:lppl)))
+
 (define-public texlive-datetime2
   (package
     (name "texlive-datetime2")
