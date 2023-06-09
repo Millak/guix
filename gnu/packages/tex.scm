@@ -1187,6 +1187,28 @@ word in the phrase, where the words are separated by regular
 spaces.  (Exceptions can be made for words that shouldn't be converted.)")
     (license license:lppl1.3+)))
 
+(define-public texlive-mfnfss
+  (package
+    (name "texlive-mfnfss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mfnfss/" "source/latex/mfnfss/"
+                   "tex/latex/mfnfss/")
+             (base32
+              "1775vg12sk38givqq2zjapx4nxlyl95rf596r2inf8mv5phsi704")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mfnfss")
+    (synopsis "Packages to typeset old german and Pandora fonts in LaTeX")
+    (description
+     "This bundle contains two packages: @code{oldgerm}, a package to typeset
+with old german fonts designed by Yannis Haralambous, and @code{pandora},
+a package to typeset with Pandora fonts designed by Neena Billawala.  Note
+that support for the Pandora fonts is also available via the
+@code{pandora-latex} package.")
+    (license license:lppl)))
+
 (define-public texlive-modes
   (package
     (name "texlive-modes")
