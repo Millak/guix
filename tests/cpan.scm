@@ -102,21 +102,22 @@
                (downstream-name "perl-test-script")
                (type 'propagated))))
   (with-http-server `((200 ,test-json)
-                      (200 ,test-source)
-                      (200 "{ \"distribution\" : \"Test-Script\" }"))
-    (define source
-      (parameterize ((%metacpan-base-url (%local-url)))
+                      (200 "{ \"distribution\" : \"Test-Script\" }")
+                      (200 ,test-source))
+    (parameterize ((%metacpan-base-url (%local-url))
+                   (current-http-proxy (%local-url)))
+      (define source
         (package-latest-release
          (dummy-package "perl-test-script"
-                        (version "0.0.0")
-                        (source (dummy-origin
-                                 (method url-fetch)
-                                 (uri "mirror://cpan/Foo-Bar-0.0.0.tgz"))))
-         (list %cpan-updater))))
+           (version "0.0.0")
+           (source (dummy-origin
+                    (method url-fetch)
+                    (uri "mirror://cpan/Foo-Bar-0.0.0.tgz"))))
+         (list %cpan-updater)))
 
-    (list (upstream-source-urls source)
-          (upstream-source-signature-urls source)
-          (upstream-source-inputs source))))
+      (list (upstream-source-urls source)
+            (upstream-source-signature-urls source)
+            (upstream-source-inputs source)))))
 
 (test-equal "metacpan-url->mirror-url, http"
   "mirror://cpan/authors/id/T/TE/TEST/Foo-Bar-0.1.tar.gz"
