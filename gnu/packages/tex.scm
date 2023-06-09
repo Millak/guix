@@ -12592,6 +12592,28 @@ reporting the number of the last page, as does @code{lastpage}).  The counter
 itself may be shipped out to the DVI file.")
     (license license:lppl)))
 
+(define-public texlive-xdvi
+  (package
+    (name "texlive-xdvi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/xdvi.1"
+                   "doc/man/man1/xdvi.man1.pdf" "dvips/xdvi/"
+                   "xdvi/")
+             (base32
+              "17cqim8dwsbpcr7cd97fklsyaiwj7d7d0k2zkcv7981fcqinw5pn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xdvi")
+    (synopsis "DVI previewer for the X Window System")
+    (description
+     "Xdvi is the canonical DVI previewer for use on Unix and other X-windows
+based systems.  The distribution has been integrated with that of Xdvik, so
+that it will build with web2c out of the box.")
+    ;; Xdvi is under MIT terms, whereas Xdvik extensions use BS2-2.
+    (license (list license:expat license:bsd-2))))
+
 (define-public texlive-xetexconfig
   (package
     (name "texlive-xetexconfig")
