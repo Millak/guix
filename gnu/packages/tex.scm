@@ -5501,6 +5501,30 @@ always (re)defines a command.  There is also @code{\\makeenvironment} and
 @code{\\provideenvironment} for environments.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-makeindex
+  (package
+    (name "texlive-makeindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/makeindex.1"
+                   "doc/man/man1/makeindex.man1.pdf"
+                   "doc/man/man1/mkindex.1"
+                   "doc/man/man1/mkindex.man1.pdf"
+                   "doc/support/makeindex/"
+                   "makeindex/base/"
+                   "tex/plain/makeindex/")
+             (base32
+              "197zgsrca14paavzknjx2q4ayl0lrma0z8q78ir6536s9xwn0w33")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makeindexk")
+    (synopsis "Makeindex development sources")
+    (description
+     "The package contains the development sources of MakeIndex.")
+    (license
+     (license:fsf-free "https://mirrors.ctan.org/indexing/makeindex/COPYING"))))
+
 (define-public texlive-marginfix
   (package
     (name "texlive-marginfix")
