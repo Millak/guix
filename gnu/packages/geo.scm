@@ -1681,6 +1681,53 @@ extension.")
                ;; doc
                license:cc-by-sa3.0))))
 
+(define-public python-cf-units
+  (package
+    (name "python-cf-units")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cf_units" version))
+       (sha256
+        (base32 "1nqzlrzxwhvm7z2pl70bwlr37fz95hcm0n8v7y503krh5x4xl9r3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list 
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'udunits-path
+            (lambda _
+              (setenv "UDUNITS2_XML_PATH"
+                      (format #f "~a/share/udunits/udunits2.xml"
+                              #$(this-package-input "udunits")))))
+          (replace 'check
+          ;; To load built module and bypath error: ImportError: cannot import
+          ;; name '_udunits2' from partially initialized module 'cf_units'.
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (with-directory-excursion #$output
+                (apply invoke "pytest" "-vv" test-flags)))))))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (inputs
+     (list udunits))
+    (propagated-inputs
+     (list java-antlr4-runtime-python
+           python-cftime
+           python-jinja2
+           python-numpy))
+    (home-page "https://github.com/SciTools/cf-units")
+    (synopsis "Units of measure as required by the CF metadata conventions")
+    (description
+     "This package provids units of measure as required by the Climate and
+Forecast (CF) metadata conventions.  Provision of a wrapper class to support
+Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
+    (license license:lgpl3+)))
+
 (define-public tegola
   (package
     (name "tegola")
