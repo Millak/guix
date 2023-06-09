@@ -2267,6 +2267,57 @@ the required packages, constitutes what every LaTeX distribution should
 contain.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-latex-bin
+  (package
+    (name "texlive-latex-bin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvilualatex.1"
+                   "doc/man/man1/dvilualatex.man1.pdf"
+                   "doc/man/man1/latex.1"
+                   "doc/man/man1/latex.man1.pdf"
+                   "doc/man/man1/lualatex.1"
+                   "doc/man/man1/lualatex.man1.pdf"
+                   "doc/man/man1/pdflatex.1"
+                   "doc/man/man1/pdflatex.man1.pdf")
+             (base32
+              "1mkiqwq28lbw9iaisfza1xg9wss4zazx9i2szprqgjfkw5c0yipi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:texlive-latex-base #f
+      #:create-formats #~(list "dvilualatex" "latex" "lualatex" "pdflatex")))
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-everyshi
+           texlive-firstaid
+           texlive-graphics
+           texlive-hyphen-complete
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-latexconfig
+           texlive-lm
+           texlive-luahbtex
+           texlive-luaotfload
+           texlive-luatex
+           texlive-pdftex
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/latex-bin")
+    (synopsis "LaTeX formats and man pages")
+    (description
+     "This package provides LaTeX format files and man pages along with
+several packages that are considered as part of the LaTeX kernel.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-atenddvi
   (package
     (name "texlive-atenddvi")
