@@ -4567,6 +4567,31 @@ but non-expandable ones.")
 
 (define-deprecated-package texlive-latex-filemod texlive-filemod)
 
+(define-public texlive-fix2col
+  (package
+    (name "texlive-fix2col")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fix2col/" "source/latex/fix2col/"
+                   "tex/latex/fix2col/")
+             (base32
+              "04mzs1qn9ish5sdp1v9adqvl92ljbs9rjxxfsqskalm4g9ckn8dy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fix2col")
+    (synopsis "Fix miscellaneous two column mode features")
+    (description
+     "This package is obsolete; do not use in new documents.  It will do
+nothing in LaTeX formats after 2015/01/01 as the fixes that it implements were
+incorporated into the @code{fixltx2e} package, which is itself obsolete as
+since the 2015/01/01 release these fixes are in the LaTeX format itself.
+
+Fix mark handling so that @code{\\firstmark} is taken from the first column if
+that column has any marks at all; keep two column floats like @code{figure*}
+in sequence with single column floats like figure.")
+    (license license:lppl)))
+
 (define-public texlive-hanging
   (package
     (name "texlive-hanging")
