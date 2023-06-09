@@ -9050,6 +9050,32 @@ plain TeX.")
 
 (define-deprecated-package texlive-generic-ltxcmds texlive-ltxcmds)
 
+(define-public texlive-ltxmisc
+  (package
+    (name "texlive-ltxmisc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/ltxmisc/")
+             (base32
+              "14llkpla8gpx7q6a53sd8a0a42wgk93fg4mbl6pc0v7v1kjblr5m")))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'delete-non-free-file
+                 ;; This file has a non-commercial license.
+                 (lambda _ (delete-file "tex/latex/ltxmisc/vrbexin.sty"))))))
+    (home-page "https://ctan.org/pkg/ltxmisc")
+    (synopsis "Miscellaneous LaTeX packages")
+    (description
+     "This package provides miscellaneous LaTeX packages and classes.")
+    (license (list license:public-domain ;beletter.cls
+                   license:gpl2+         ;bibcheck.sty
+                   license:lppl          ;iagproc.cls
+                   (license:fsf-free "file:/linsys.sty")
+                   license:lppl1.0+)))) ;topcapt.sty
+
 (define-public texlive-pdfescape
   (package
     (name "texlive-pdfescape")
