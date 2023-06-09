@@ -253,6 +253,52 @@ numerical software for solving convex second-order cone programs (SOCPs).")
 formulas for Python.")
     (license license:expat)))
 
+(define-public python-imagehash
+  (package
+    (name "python-imagehash")
+    (version "4.3.1")
+    (source
+     (origin
+       (method git-fetch) ;no tests in PyPI
+       (uri (git-reference
+             ;; It's an effective and maintained fork of
+             ;; <https://github.com/bunchesofdonald/photohash> project, which
+             ;; has the latest release in 2016.
+             (url "https://github.com/JohannesBuchner/imagehash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lw9lxzrzy9s5v3xc35vmh97hlyavnla087fp19k77va6v8vbjjf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-pillow
+           python-pywavelets
+           python-scipy))
+    (home-page "https://github.com/JohannesBuchner/imagehash")
+    (synopsis "Perceptual Image Hashing library")
+    (description
+     "This package implements a functinoality to tell whether two images look
+nearly identical.  The image hash algorithms (average, perceptual, difference,
+wavelet) analyse the image structure on luminance (without color information).
+The color hash algorithm analyses the color distribution and black & gray
+fractions (without position information).
+
+Features:
+@itemize
+@item average hashing
+@item perceptual hashing
+@item difference hashing
+@item wavelet hashing
+@item HSV color hashing (colorhash)
+@item crop-resistant hashing
+@end itemize")
+    (license license:bsd-2)))
+
 (define-public python-osqp
   (package
     (name "python-osqp")
