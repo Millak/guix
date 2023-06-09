@@ -3744,6 +3744,28 @@ polyglossia package rather than Babel.")
 
 (define-deprecated-package texlive-latex-babel texlive-babel)
 
+(define-public texlive-babelbib
+  (package
+    (name "texlive-babelbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/babelbib/"
+                   "doc/bibtex/babelbib/" "tex/latex/babelbib/")
+             (base32
+              "0q65qy0jmy98zfaha26b09hzr7v02jn8i6942y51hfaphbgh8kpx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babelbib")
+    (synopsis "Multilingual bibliographies")
+    (description
+     "This package enables the user to generate multilingual bibliographies in
+cooperation with @code{babel}.  Two approaches are possible: each citation may
+be written in another language, or the whole bibliography can be typeset in
+a language chosen by the user.  In addition, the package supports commands to
+change the typography of the bibliographies.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-cmexb
   (package
     (name "texlive-cmexb")
