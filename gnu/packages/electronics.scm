@@ -79,49 +79,48 @@ to take care of the OS-specific details when writing software that uses serial p
     (license license:lgpl3+)))
 
 (define-public libsigrokdecode
-  (package
-    (name "libsigrokdecode")
-    (version "0.5.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "1h1zi1kpsgf6j2z8j8hjpv1q7n49i3fhqjn8i178rka3cym18265"))
-              (patches
-               (search-patches "libsigrokdecode-python3.9-fix.patch"))))
-    (outputs '("out" "doc"))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda _
-             (invoke "autoconf")
-             (invoke "aclocal")
-             (invoke "automake" "-ac")))
-         (add-after 'build 'build-doc
-           (lambda _
-             (invoke "doxygen")
-             #t))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively "doxy/html-api"
-                               (string-append (assoc-ref outputs "doc")
-                                              "/share/doc/libsigrokdecode"))
-             #t)))))
-    (native-inputs
-     (list check doxygen graphviz pkg-config automake autoconf))
-    ;; libsigrokdecode.pc lists "python" in Requires.private, and "glib" in Requires.
-    (propagated-inputs
-     (list glib python))
-    (build-system gnu-build-system)
-    (home-page "https://www.sigrok.org/wiki/Libsigrokdecode")
-    (synopsis "Library providing (streaming) protocol decoding functionality")
-    (description "Libsigrokdecode is a shared library written in C, which provides
+  (let ((commit "e6962b3fe8260382bb9932a1cfdd7ee7090ce267")
+        (revision "0"))
+    (package
+      (name "libsigrokdecode")
+      (version (git-version "0.5.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sigrokproject/libsigrokdecode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ik93p6k8hpv8ahchjnmir8paz2w718y1j8pnmrmagjx8vvqd9y6"))))
+      (outputs '("out" "doc"))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'build 'build-doc
+             (lambda _
+               (invoke "doxygen")
+               #t))
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (copy-recursively "doxy/html-api"
+                                 (string-append (assoc-ref outputs "doc")
+                                                "/share/doc/libsigrokdecode"))
+               #t)))))
+      (native-inputs
+       (list check doxygen graphviz pkg-config automake autoconf libtool))
+      ;; libsigrokdecode.pc lists "python" in Requires.private, and "glib" in
+      ;; Requires.
+      (propagated-inputs
+       (list glib python))
+      (build-system gnu-build-system)
+      (home-page "https://www.sigrok.org/wiki/Libsigrokdecode")
+      (synopsis
+       "Library providing (streaming) protocol decoding functionality")
+      (description
+       "Libsigrokdecode is a shared library written in C, which provides
 (streaming) protocol decoding functionality.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public sigrok-firmware-fx2lafw
   (package
