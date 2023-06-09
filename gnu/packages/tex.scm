@@ -11073,6 +11073,78 @@ macros, Computer Modern fonts, and configuration for common drivers; no
 LaTeX.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-latex
+  (package
+    (name "texlive-collection-latex")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-ae
+           texlive-amscls
+           texlive-amsmath
+           texlive-atbegshi
+           texlive-atveryend
+           texlive-auxhook
+           texlive-babel
+           texlive-babel-english
+           texlive-babelbib
+           texlive-bigintcalc
+           texlive-bitset
+           texlive-bookmark
+           texlive-carlisle
+           texlive-collection-basic
+           texlive-colortbl
+           texlive-epstopdf-pkg
+           texlive-etexcmds
+           texlive-fancyhdr
+           texlive-firstaid
+           texlive-fix2col
+           texlive-geometry
+           texlive-gettitlestring
+           texlive-graphics
+           texlive-graphics-cfg
+           texlive-grfext
+           texlive-hopatch
+           texlive-hycolor
+           texlive-hyperref
+           texlive-intcalc
+           texlive-kvdefinekeys
+           texlive-kvoptions
+           texlive-kvsetkeys
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-bin
+           texlive-latex-fonts
+           texlive-latexconfig
+           texlive-letltxmacro
+           texlive-ltxcmds
+           texlive-ltxmisc
+           texlive-mfnfss
+           texlive-mptopdf
+           texlive-natbib
+           texlive-oberdiek
+           texlive-pagesel
+           texlive-pdfescape
+           texlive-pslatex
+           texlive-psnfss
+           texlive-pspicture
+           texlive-refcount
+           texlive-rerunfilecheck
+           texlive-stringenc
+           texlive-tools
+           texlive-uniquecounter
+           texlive-url))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "LaTeX fundamental packages")
+    (description
+     "These packages are either mandated by the core LaTeX team, or very widely
+used and strongly recommended in practice.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-grfext
   (package
     (name "texlive-grfext")
