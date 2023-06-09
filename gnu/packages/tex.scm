@@ -12154,6 +12154,27 @@ free fixed-width available now, than there were when @code{pslatex} was
 designed).  As a result, @code{pslatex} is widely considered obsolete.")
     (license license:lppl)))
 
+(define-public texlive-pspicture
+  (package
+    (name "texlive-pspicture")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pspicture/" "dvips/pspicture/"
+                   "source/latex/pspicture/"
+                   "tex/latex/pspicture/")
+             (base32
+              "06wlnwyn45873zghnbw16lzmfj98r9il218z84p1ixw6jwkwlkh8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pspicture")
+    (synopsis "PostScript picture support")
+    (description
+     "This package provides a replacement for LaTeX's picture macros, that
+uses PostScript @code{\\special} commands.  The package is now largely
+superseded by @code{pict2e}.")
+    (license license:lppl)))
+
 (define-public texlive-datetime2
   (package
     (name "texlive-datetime2")
