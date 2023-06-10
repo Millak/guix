@@ -28,14 +28,14 @@
 (define-public freeipmi
   (package
     (name "freeipmi")
-    (version "1.6.10")
+    (version "1.6.11")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/freeipmi/freeipmi-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0zbszq9nn60vqm2gmwy6hmcz9yqb3lk064ib7l89q65n07ja3r7w"))))
+               "15x861i8r1gk44924d2pszlb8mapgkr18m3991vla4601y8xdyv5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static"
