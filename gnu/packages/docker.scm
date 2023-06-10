@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
@@ -664,7 +664,7 @@ provisioning etc.")
 (define-public cqfd
   (package
     (name "cqfd")
-    (version "5.3.0")
+    (version "5.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -673,25 +673,18 @@ provisioning etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gy4kjy6v52acfk6ffbg5sp02k6176khhkms7zlwmywq8591bpww"))))
+                "1kilrh4ahza19lka9218s2wkfcbk5r2cq9adczhlnlfggdrqnglg"))))
     (build-system gnu-build-system)
     (arguments
      ;; The test suite requires a docker daemon and connectivity.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Fix the directory of the bash completion.
-               (substitute* "Makefile"
-                 (("completionsdir=.*$")
-                  (string-append "completionsdir=" out
-                                 "/etc/bash_completion.d; \\\n")))
-               (invoke "make" "install"
-                       (string-append "PREFIX=" out))))))))
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "COMPLETIONSDIR="
+                                          #$output "/etc/bash_completion.d")
+                           (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (delete 'build))))
     (home-page "https://github.com/savoirfairelinux/cqfd")
     (synopsis "Convenience wrapper for Docker")
     (description "cqfd is a Bash script that provides a quick and convenient
