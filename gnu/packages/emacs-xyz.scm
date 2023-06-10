@@ -31361,20 +31361,18 @@ programming in Emacs Lisp easy and fun.")
 (define-public emacs-excorporate
   (package
     (name "emacs-excorporate")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "excorporate-" version ".tar"))
        (sha256
-        (base32 "1il51gfgvkxjj7vdi5kdmzi87hl9853ck8s45p0cxrddlaiqbmwy"))))
+        (base32 "06ilfkrlx6ca0qfqq3w1w07kdwak556i1wgf1875py2d5xkg4r90"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-fsm
-           emacs-soap-client
-           emacs-url-http-oauth
-           emacs-url-http-ntlm))
+     (list emacs-fsm emacs-soap-client emacs-url-http-ntlm
+           emacs-url-http-oauth))
     (home-page "https://elpa.gnu.org/packages/excorporate.html")
     (synopsis "Exchange integration")
     (description "This package provides Exchange integration for Emacs.")
