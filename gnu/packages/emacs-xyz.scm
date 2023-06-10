@@ -20929,7 +20929,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
 (define-public emacs-jupyter
   (package
     (name "emacs-jupyter")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -20938,7 +20938,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sr007wsl2y6wqpzkmv3inbpwhvgdcb2nmqzgfg7w1awapi2r13p"))))
+        (base32 "0acn964xlpn265vry35lrkkpf9z5y4ml96xg8ifadkxwxymm1sh2"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-company ;optional
@@ -20949,9 +20949,9 @@ the pipeline, featuring the support for running @code{emacsclient}.")
     (home-page "https://github.com/nnicandro/emacs-jupyter")
     (synopsis "Emacs interface to communicate with Jupyter kernels")
     (description "This package provides an Emacs interface to communicate with
-Jupyter kernels.  It provides REPL and @code{org-mode} source code block
-frontends to Jupyter kernels and kernel interactions integrated with Emacs'
-built-in features.")
+Jupyter kernels.  It provides REPL and Org mode source code block frontends to
+Jupyter kernels and kernel interactions integrated with Emacs' built-in
+features.")
     (license license:gpl3+)))
 
 (define-public emacs-hcl-mode
