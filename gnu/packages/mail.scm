@@ -275,14 +275,14 @@ example, modify the message headers or body, or encrypt or sign the message.")
 (define-public mailutils
   (package
     (name "mailutils")
-    (version "3.15")
+    (version "3.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/mailutils/mailutils-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1nrd9wsidxami3wa86l9z8hnnwv6rhbxdkvqg7dcgz2jqf3c5l5p"))
+               "1h02l0zilxsak1sxpm15vhfaahd8rwvcksc88cc7c0wc626ia784"))
              (patches
               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
