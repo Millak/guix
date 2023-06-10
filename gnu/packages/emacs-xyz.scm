@@ -2390,6 +2390,45 @@ different tools.  It highlights errors and warnings inline in the buffer, and
 provides an optional IDE-like error list.")
     (license license:gpl3+)))                     ;+GFDLv1.3+ for the manual
 
+(define-public emacs-fb2-reader
+  (let ((commit "9836db284749e0cef4c43c2cb5358c82ae9b8589")) ; version bump
+    (package
+      (name "emacs-fb2-reader")
+      (version "0.1.1")
+      (source
+       (origin
+	 (method git-fetch)
+	 (uri (git-reference
+	       (url "https://github.com/jumper047/fb2-reader")
+	       (commit commit)))
+	 (file-name (git-file-name name version))
+	 (sha256
+	  (base32 "0vx4b9wnmx1bng8wak5r7yryyvgib4m46l6b877xzkdhsjr3rbsi"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command
+        #~(list "emacs" "-Q" "--batch" "-L" "."
+                "--eval" "(load-file \"tests/test-fb2-reader.el\")")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'qualify-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((unzip (search-input-file inputs "/bin/unzip")))
+                  (substitute* "fb2-reader.el"
+                    (("unzip") unzip))))))))
+      (inputs (list unzip))
+      (native-inputs
+       (list emacs-async emacs-buttercup emacs-dash emacs-s))
+      (propagated-inputs
+       (list emacs-f emacs-visual-fill-column))
+      (home-page "https://github.com/jumper047/fb2-reader")
+      (synopsis "Emacs plugin to read FictionBook2 ebooks")
+      (description "FB2 Reader provides a major mode for reading
+FictionBook2 (@file{.fb2} and @file{.fb2.zip} files) ebooks.")
+      (license license:gpl3+))))
+
 (define-public emacs-flymake-collection
   (package
     (name "emacs-flymake-collection")
