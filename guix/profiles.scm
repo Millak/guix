@@ -1868,8 +1868,8 @@ MANIFEST."
               (invoke mktexlsr b)
               (install-file (string-append b "/ls-R") a))))))
 
-  (mlet %store-monad ((texlive-base (manifest-lookup-package manifest "texlive-base")))
-    (if (and texlive-base (pair? texlive-inputs))
+  (with-monad %store-monad
+    (if (pair? texlive-inputs)
         (gexp->derivation "texlive-font-maps" build
                           #:substitutable? #f
                           #:local-build? #t

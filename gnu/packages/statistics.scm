@@ -4837,9 +4837,8 @@ from within R.")
      (list hevea
            perl
            swig
-           ;;texlive-aeguill    ;;FIXME: package me!
-           texlive-base
-           texlive-jknapltx))
+           (texlive-updmap.cfg
+            (list texlive-aeguill texlive-jknapltx))))
     (propagated-inputs
      (list r-lattice
            r-matrix))

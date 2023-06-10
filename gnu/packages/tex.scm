@@ -4135,52 +4135,6 @@ part of the LaTeX required set of packages.")
 
 (define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
-;; For user profiles
-(define-public texlive-base
-  (let ((default-packages
-          (list texlive-bin
-                texlive-cm
-                texlive-cm-super        ; to avoid bitmap fonts
-                texlive-dvips
-                texlive-fontname
-                texlive-graphics
-                texlive-kpathsea        ;for mktex.opt
-                texlive-latex-base
-                texlive-latex-fonts
-                texlive-metafont
-                ;; LaTeX packages from the "required" set.
-                texlive-amsmath
-                texlive-amscls
-                texlive-babel
-                texlive-babel-english
-                texlive-cyrillic
-                texlive-psnfss
-                texlive-tools)))
-    (package
-      (name "texlive-base")
-      (version (number->string %texlive-revision))
-      (source #f)
-      (build-system trivial-build-system)
-      (arguments
-       '(#:builder
-         (begin (mkdir (assoc-ref %outputs "out")))))
-      (propagated-inputs
-       (map (lambda (package)
-              (list (package-name package) package))
-            default-packages))
-      (home-page (package-home-page texlive-bin))
-      (synopsis "TeX Live base packages")
-      (description "This is a very limited subset of the TeX Live distribution.
-It includes little more than the required set of LaTeX packages.")
-      (license (fold (lambda (package result)
-                       (match (package-license package)
-                         ((lst ...)
-                          (append lst result))
-                         ((? license:license? license)
-                          (cons license result))))
-                     '()
-                     default-packages)))))
-
 (define-public texlive-default-updmap.cfg
   (origin
     (method url-fetch)
@@ -4193,15 +4147,29 @@ It includes little more than the required set of LaTeX packages.")
      (base32
       "0zhpyld702im6352fwp41f2hgfkpj2b4j1kfsjqbkijlcmvb6w2c"))))
 
-;;; TODO: Add a TeX Live profile hook computing fonts maps (and others?)
-;;; configuration from the packages in the profile, similar to what's done
-;;; below.
 (define-public texlive-updmap.cfg
   (lambda* (#:optional (packages '()))
     "Return a 'texlive-updmap.cfg' package which contains the fonts map
 configuration of a base set of packages plus PACKAGES."
-    (let ((default-packages (match (package-propagated-inputs texlive-base)
-                              (((labels packages) ...) packages))))
+    (let ((default-packages
+            (list texlive-bin
+                  texlive-cm
+                  texlive-cm-super
+                  texlive-dvips
+                  texlive-fontname
+                  texlive-graphics
+                  texlive-kpathsea
+                  texlive-latex-base
+                  texlive-latex-fonts
+                  texlive-metafont
+                  ;; LaTeX packages from the "required" set.
+                  texlive-amsmath
+                  texlive-amscls
+                  texlive-babel
+                  texlive-babel-english
+                  texlive-cyrillic
+                  texlive-psnfss
+                  texlive-tools)))
       (package
         (version (number->string %texlive-revision))
         (source (origin
@@ -13081,6 +13049,8 @@ to typeset plain TeX or LaTeX documents in PostScript or PDF, using the
 Computer Modern fonts.  This scheme corresponds to @code{collection-basic} and
 @code{collection-latex}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
+(define-deprecated-package texlive-base texlive-scheme-basic)
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

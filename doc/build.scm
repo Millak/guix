@@ -912,11 +912,10 @@ makeinfo OPTIONS."
                      sed
                      tar
                      texinfo
-                     texlive-base
-                     texlive-bin        ;for GUIX_TEXMF
-                     texlive-epsf
-                     texlive-ec
-                     texlive-texinfo)))))
+                     (texlive-updmap.cfg
+                      (list texlive-ec
+                            texlive-epsf
+                            texlive-texinfo)))))))
 
   (define build
     (with-imported-modules '((guix build utils))
