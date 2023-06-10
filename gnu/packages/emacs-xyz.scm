@@ -13967,16 +13967,16 @@ restrict the text width to 80 characters.")
 (define-public emacs-wucuo
   (package
     (name "emacs-wucuo")
-    (version "0.2.9")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/redguardtoo/wucuo")
-             (commit "89b99166768afb811c48a7db7c93c02d51a32b09")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03a6jlbv9axrd9yr0xscq3ni7fipm20ppc51kxy0sn241rplv0pg"))))
+        (base32 "0za3mxssx48shdaqwn8akxrshkqn92dd0s06h6abqk9mfzdd67ng"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
