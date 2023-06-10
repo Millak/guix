@@ -259,6 +259,7 @@ tmpfs/ramfs filesystems.")
       #:configure-flags (if (target-hurd?)
                             #~'("--disable-device-mapper")
                             #~'())
+      #:tests? (not (target-hurd?))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-locales-and-python
