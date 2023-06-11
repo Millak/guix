@@ -34328,6 +34328,33 @@ generate random passwords and insert them into the current buffer.  It also
 supports generation of phonetic and numeric passwords.")
     (license license:artistic2.0)))
 
+(define-public emacs-qrencode
+  (package
+    (name "emacs-qrencode")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruediger/qrencode-el")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yrshahci319lnjdpsksdy11a69k1n91qk9r2zfyhqmng09s6i0y"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #t
+           #:test-command #~(list "emacs" "-Q" "--batch"
+                                  "-l" "qrencode.el"
+                                  "-l" "qrencode-tests.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
+    (home-page "https://github.com/ruediger/qrencode-el")
+    (synopsis "QRCode encoder for Emacs in pure elisp")
+    (description
+     "This package provides two user facing interactive functions, that will encode
+text into a QR Code and show it in a separate buffer.")
+    (license license:gpl3+)))
+
 (define-public emacs-csv
   (package
     (name "emacs-csv")
