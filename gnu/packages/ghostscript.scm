@@ -9,7 +9,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,9 +89,11 @@ Consortium standard (ICC), approved as ISO 15076-1.")
     (native-inputs
      (list help2man))
     (arguments
-     '(#:configure-flags '("--disable-static"
-                           ;; Tests require a relocatable build.
-                           "--enable-relocatable")))
+     (list #:configure-flags ''("--disable-static"
+                                 ;; Tests require a relocatable build.
+                                 "--enable-relocatable")
+           ;; --enable-relocate is broken on the Hurd
+           #:tests? (not (target-hurd?))))
     (outputs '("out" "debug"))
     (home-page "https://github.com/rrthomas/libpaper")
     (synopsis "Library for handling paper sizes")
