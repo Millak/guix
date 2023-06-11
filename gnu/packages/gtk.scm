@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -194,15 +195,21 @@ such as mate-panel and xfce4-panel.")
                        (assoc-ref %outputs "doc")
                        "/share/gtk-doc/html"))))
     (native-inputs
-     `(("gobject-introspection" ,gobject-introspection)
+     `(,@(if (target-hurd?)
+             '()
+             `(("gobject-introspection" ,gobject-introspection)))
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)))
     (inputs
      `(("bash-minimal" ,bash-minimal)   ;for glib-or-gtk-wrap
-       ("drm" ,libdrm)
+       ,@(if (target-hurd?)
+             '()
+             `(("drm" ,libdrm)))
        ("ghostscript" ,ghostscript)
        ("libspectre" ,libspectre)
-       ("poppler" ,poppler)))
+       ,@(if (target-hurd?)
+             '()
+             `(("poppler" ,poppler)))))
     (propagated-inputs
      `( ;; ("cogl" ,cogl)
        ;; ("directfb" ,directfb)
