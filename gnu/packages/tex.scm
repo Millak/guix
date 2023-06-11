@@ -6488,6 +6488,26 @@ fonts.  Note that direct substitutes for the bitmapped EC fonts are available,
 via the CM-super, Latin Modern and (in a restricted way) CM-LGC font sets.")
     (license license:lppl1.3+)))
 
+(define-public texlive-aeguill
+  (package
+    (name "texlive-aeguill")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aeguill/" "tex/latex/aeguill/")
+             (base32
+              "0dbl2dky8gbax9blj0nvk23y2pwkmyikxnbbn27zivpamwc0j8nc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aeguill")
+    (synopsis "Add several kinds of guillemets to the @code{ae} fonts")
+    (description
+     "The package enables the user to add guillemets from several
+source (Polish cmr, Cyrillic cmr, lasy and ec) to the @code{ae} fonts.  This
+was useful when the @code{ae} fonts were used to produce PDF files, since the
+additional guillemets exist in fonts available in Adobe Type 1 format.")
+    (license license:lppl)))
+
 (define-public texlive-incgraph
   (package
     (name "texlive-incgraph")
