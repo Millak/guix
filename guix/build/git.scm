@@ -52,7 +52,7 @@ recursively.  Return #t on success, #f otherwise."
              (delete-file-recursively directory)
              #f))
     (with-directory-excursion directory
-      (invoke git-command "init")
+      (invoke git-command "init" "--initial-branch=main")
       (invoke git-command "remote" "add" "origin" url)
       (if (zero? (system* git-command "fetch" "--depth" "1" "origin" commit))
           (invoke git-command "checkout" "FETCH_HEAD")
