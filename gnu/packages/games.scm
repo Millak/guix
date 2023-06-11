@@ -78,6 +78,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2043,20 +2044,46 @@ scriptable with Guile.")
   (package
     (name "gnushogi")
     (version "1.4.2")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/gnushogi/gnushogi-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "0a9bsl2nbnb138lq0h14jfc5xvz7hpb2bcsj4mjn6g1hcsl4ik0y"))))
-    (arguments `(#:tests? #f)) ;; No check target.
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gnushogi/gnushogi-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0a9bsl2nbnb138lq0h14jfc5xvz7hpb2bcsj4mjn6g1hcsl4ik0y"))
+              (modules '((guix build utils)))
+              ;; Fix "warning: ISO C90 does not support ‘__func__’ predefined
+              ;; identifier [-Wpedantic]"
+              (snippet '(begin
+                          (substitute* "gnushogi/dspwrappers.c"
+                            (("__FUNCTION__")
+                             "__extension__ __FUNCTION__"))))))
+    (arguments
+     `(#:configure-flags (list (string-append
+                                "CFLAGS="
+                                (string-join '("-Wno-format"
+                                               "-Wno-unused-but-set-variable"
+                                               "-Wno-bool-compare")
+                                             " ")))
+       #:make-flags '("LDFLAGS=-z muldefs")
+       #:phases (modify-phases %standard-phases
+                  ;; Skip --enable-fast-install flag
+                  (replace 'configure
+                    (lambda* (#:key outputs configure-flags #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (setenv "CONFIG_SHELL"
+                                (which "sh"))
+                        (setenv "SHELL"
+                                (which "sh"))
+                        (apply invoke "./configure"
+                               (string-append "--prefix=" out) configure-flags)))))
+       #:test-target "sizetest"))
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org/software/gnushogi/")
-    (synopsis "The game of Shogi (Japanese chess)")
-    (description  "GNU Shogi is a program that plays the game Shogi (Japanese
-Chess).  It is similar to standard chess but this variant is far more complicated.")
+    (synopsis "Game of Shogi (Japanese chess)")
+    (description
+     "GNU Shogi is a program that plays the game Shogi (Japanese Chess).
+It is similar to standard chess but this variant is far more complicated.")
     (license license:gpl3+)))
 
 (define-public ltris
