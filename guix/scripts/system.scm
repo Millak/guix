@@ -1035,8 +1035,6 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "
       --skip-checks      skip file system and initrd module safety checks"))
   (display (G_ "
-      --target=TRIPLET   cross-build for TRIPLET--e.g., \"armel-linux-gnu\""))
-  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (newline)
   (display (G_ "
