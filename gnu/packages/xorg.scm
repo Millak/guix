@@ -798,10 +798,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-screen-cyrillic
   (package
     (name "font-screen-cyrillic")
-    (version "1.0.4")
-    (source (xorg-font-origin
-             name version
-             "0yayf1qlv7irf58nngddz2f1q04qkpr5jwp4aja2j5gyvzl32hl2"))
+    (version "1.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-screen-cyrillic-" version ".tar.xz"))
+              (sha256 "1h75zn1rp7bdv6av4cnrajpaq6fkd7dx1lc7aijpw32qrnw8nxcg")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
