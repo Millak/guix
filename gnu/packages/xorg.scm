@@ -874,10 +874,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-winitzki-cyrillic
   (package
     (name "font-winitzki-cyrillic")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "181n1bgq8vxfxqicmy1jpm1hnr6gwn1kdhl6hr4frjigs1ikpldb"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-winitzki-cyrillic-" version ".tar.xz"))
+              (sha256 "1a4pz8f7hz6nn9xirz2k1j81ykl3lwrpi1ydmzipciy15l984v9v")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
