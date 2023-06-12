@@ -675,10 +675,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-micro-misc
   (package
     (name "font-micro-misc")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "1dldxlh54zq1yzfnrh83j5vm0k4ijprrs5yl18gm3n9j1z0q2cws"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-micro-misc-" version ".tar.xz"))
+              (sha256 "0hzryqyml0bzzw91vqdmzdlb7dm18jmyz0mxy6plks3sppbbkq1f")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
