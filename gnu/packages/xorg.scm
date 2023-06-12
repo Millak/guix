@@ -713,10 +713,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-misc-ethiopic
   (package
     (name "font-misc-ethiopic")
-    (version "1.0.4")
-    (source (xorg-font-origin
-             name version
-             "1q2azkdwc4x3kh53xclwpf9q654k70lhiyns1cjq594wvxnhz339"))
+    (version "1.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-misc-ethiopic-" version ".tar.xz"))
+              (sha256 "04mnd620s9wkdid9wnf181yh5vf0n7l096nc3z4zdvm1w7kafja7")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir mkfontscale))
