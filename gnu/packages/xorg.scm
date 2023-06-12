@@ -817,10 +817,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-sony-misc
   (package
     (name "font-sony-misc")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "1xfgcx4gsgik5mkgkca31fj3w72jw9iw76qyrajrsz1lp8ka6hr0"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-sony-misc-" version ".tar.xz"))
+              (sha256 "0swlhjmmagrfkip4i9yq7cr56hains1j41mjs05nxc6c7y19zc76")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
