@@ -606,10 +606,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-cronyx-cyrillic
   (package
     (name "font-cronyx-cyrillic")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "0ai1v4n61k8j9x2a1knvfbl2xjxk3xxmqaq3p9vpqrspc69k31kf"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-cronyx-cyrillic-" version ".tar.xz"))
+              (sha256 "12dpsvif85z1m6jvq9g91lmzj0rll5rh3871mbvdpzyb1p7821yw")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
