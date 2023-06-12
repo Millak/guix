@@ -631,10 +631,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-dec-misc
   (package
     (name "font-dec-misc")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "0yzza0l4zwyy7accr1s8ab7fjqkpwggqydbm2vc19scdby5xz7g1"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-dec-misc-" version ".tar.xz"))
+              (sha256 "1xqs2qg21h5xg519810hw4bvykjdpf0xgk0xwp0bxy4g3lh6inc2")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
