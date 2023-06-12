@@ -653,10 +653,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-isas-misc
   (package
     (name "font-isas-misc")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "0rx8q02rkx673a7skkpnvfkg28i8gmqzgf25s9yi0lar915sn92q"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-isas-misc-" version ".tar.xz"))
+              (sha256 "1z1qqi64hbp297f6ryiswa4ikfn7mcwnb8nadyglni6swsxrbra7")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
