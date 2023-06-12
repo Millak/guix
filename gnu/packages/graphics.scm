@@ -189,13 +189,29 @@ framebuffer graphics, audio output and input event.")
            (lambda _
              (substitute* "src/core/core.c"
                (("..BUILDTIME..") ""))))
+         ;; TODO: Move patch to source.
+         ,@(if (target-arm32?)
+             `((add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (invoke "patch" "--force" "-p1" "-i"
+                           (assoc-ref inputs "patch-file")))))
+             '())
          (add-after 'unpack 'disable-configure-during-bootstrap
            (lambda _
              (substitute* "autogen.sh"
                (("^.*\\$srcdir/configure.*") ""))
              #t)))))
     (native-inputs
-     (list autoconf automake libtool perl pkg-config))
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("perl" ,perl)
+       ("pkg-config" ,pkg-config)
+       ,@(if (target-arm32?)
+         `(("patch" ,patch)
+           ("patch-file"
+            ,(search-patch "directfb-davinci-glibc-228-compat.patch")))
+         '())))
     (inputs
      (list alsa-lib
            ffmpeg
