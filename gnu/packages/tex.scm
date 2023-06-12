@@ -4136,16 +4136,11 @@ part of the LaTeX required set of packages.")
 (define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
 (define-public texlive-default-updmap.cfg
-  (origin
-    (method url-fetch)
-    (uri (string-append "https://tug.org/svn/texlive/tags/"
-                        %texlive-tag "/Master/texmf-dist/web2c/updmap.cfg"
-                        "?revision=" (number->string %texlive-revision)))
-    (file-name (string-append "updmap.cfg-"
-                              (number->string %texlive-revision)))
-    (sha256
-     (base32
-      "0zhpyld702im6352fwp41f2hgfkpj2b4j1kfsjqbkijlcmvb6w2c"))))
+  (texlive-origin
+   "updmap.cfg" (number->string %texlive-revision)
+   (list "web2c/updmap.cfg")
+   (base32
+    "1bb9nmvr14f3lam627mq030hh08h7wsy8i6884q2kvppbpf2a3mf")))
 
 (define-public texlive-updmap.cfg
   (lambda* (#:optional (packages '()))
@@ -4172,16 +4167,7 @@ configuration of a base set of packages plus PACKAGES."
                   texlive-tools)))
       (package
         (version (number->string %texlive-revision))
-        (source (origin
-                  (method url-fetch)
-                  (uri (string-append "https://tug.org/svn/texlive/tags/"
-                                      %texlive-tag
-                                      "/Master/texmf-dist/web2c/updmap.cfg"
-                                      "?revision=" version))
-                  (file-name "updmap.cfg")
-                  (sha256
-                   (base32
-                    "0zhpyld702im6352fwp41f2hgfkpj2b4j1kfsjqbkijlcmvb6w2c"))))
+        (source texlive-default-updmap.cfg)
         (name "texlive-updmap.cfg")
         (build-system copy-build-system)
         (arguments
@@ -4189,33 +4175,34 @@ configuration of a base set of packages plus PACKAGES."
                       (guix build utils)
                       (ice-9 popen)
                       (ice-9 textual-ports))
-           #:install-plan '(("updmap.cfg" "share/texmf-config/web2c/")
-                            ("map" "share/texmf-dist/fonts/map"))
+           #:install-plan '(("web2c/updmap.cfg" "share/texmf-config/web2c/")
+                            ("web2c/map" "share/texmf-dist/fonts/map"))
            #:phases
            (modify-phases %standard-phases
              (add-before 'install 'regenerate-updmap.cfg
                (lambda _
-                 (make-file-writable "updmap.cfg")
+                 (with-directory-excursion "web2c"
+                   (make-file-writable "updmap.cfg")
 
-                 ;; Disable unavailable map files.
-                 (let* ((port (open-pipe* OPEN_WRITE "updmap-sys"
-                                          "--syncwithtrees"
-                                          "--nohash"
-                                          "--cnffile" "updmap.cfg")))
-                   (display "Y\n" port)
-                   (when (not (zero? (status:exit-val (close-pipe port))))
-                     (error "failed to filter updmap.cfg")))
+                   ;; Disable unavailable map files.
+                   (let* ((port (open-pipe* OPEN_WRITE "updmap-sys"
+                                            "--syncwithtrees"
+                                            "--nohash"
+                                            "--cnffile" "updmap.cfg")))
+                     (display "Y\n" port)
+                     (when (not (zero? (status:exit-val (close-pipe port))))
+                       (error "failed to filter updmap.cfg")))
 
-                 ;; Set TEXMFSYSVAR to a sane and writable value; updmap fails
-                 ;; if it cannot create its log file there.
-                 (setenv "TEXMFSYSVAR" (getcwd))
+                   ;; Set TEXMFSYSVAR to a sane and writable value; updmap fails
+                   ;; if it cannot create its log file there.
+                   (setenv "TEXMFSYSVAR" (getcwd))
 
-                 ;; Generate maps.
-                 (invoke "updmap-sys"
-                         "--cnffile"           "updmap.cfg"
-                         "--dvipdfmxoutputdir" "map/dvipdfmx/updmap/"
-                         "--dvipsoutputdir"    "map/dvips/updmap/"
-                         "--pdftexoutputdir"   "map/pdftex/updmap/"))))))
+                   ;; Generate maps.
+                   (invoke "updmap-sys"
+                           "--cnffile"           "updmap.cfg"
+                           "--dvipdfmxoutputdir" "map/dvipdfmx/updmap/"
+                           "--dvipsoutputdir"    "map/dvips/updmap/"
+                           "--pdftexoutputdir"   "map/pdftex/updmap/")))))))
         (propagated-inputs (map (lambda (package)
                                   (list (package-name package) package))
                                 (append default-packages packages)))

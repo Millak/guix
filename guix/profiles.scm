@@ -1831,8 +1831,7 @@ MANIFEST."
           (let* ((web2c (string-append #$output "/share/texmf-dist/web2c/"))
                  (maproot (string-append #$output "/share/texmf-dist/fonts/map/"))
                  (updmap.cfg (string-append web2c "updmap.cfg")))
-            (mkdir-p web2c)
-            (copy-file #$updmap.cfg updmap.cfg)
+            (install-file #$(file-append updmap.cfg "/web2c/updmap.cfg") web2c)
             (make-file-writable updmap.cfg)
             (let* ((port (open-pipe* OPEN_WRITE
                                      #$(file-append texlive-bin "/bin/updmap-sys")
