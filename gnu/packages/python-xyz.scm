@@ -4109,6 +4109,33 @@ accuracy scores for various music/audio information retrieval/signal
 processing tasks.")
     (license license:expat)))
 
+(define-public python-mizani
+  (package
+    (name "python-mizani")
+    (version "0.9.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/has2k1/mizani")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13aisfc98nvypb4mglpdphp2r627cjzpdriw4dhlx55f3b2m0dza"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pandas python-scipy))
+    (native-inputs
+     (list python-setuptools python-pytest python-pytest-cov tzdata))
+    (home-page "https://github.com/has2k1/mizani")
+    (synopsis "Create data visualizations in Python")
+    (description
+     "Mizani is a Python package for creating data visualizations.  It
+provides functions and tools to help with the creation of visually appealing
+and informative visualizations, including scales, transformations and color
+palettes.")
+    (license license:bsd-3)))
+
 (define-public python-pafy
   (package
     (name "python-pafy")
