@@ -836,10 +836,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-sun-misc
   (package
     (name "font-sun-misc")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "1q6jcqrffg9q5f5raivzwx9ffvf7r11g6g0b125na1bhpz5ly7s8"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-sun-misc-" version ".tar.xz"))
+              (sha256 "17yvhk1hlajm3q57r09q8830zz7cnckrg8hgzajgyyljdl8xv16x")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
