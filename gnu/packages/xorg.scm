@@ -776,10 +776,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-schumacher-misc
   (package
     (name "font-schumacher-misc")
-    (version "1.1.2")
-    (source (xorg-font-origin
-             name version
-             "0nkym3n48b4v36y4s927bbkjnsmicajarnf6vlp7wxp0as304i74"))
+    (version "1.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-schumacher-misc-" version ".tar.xz"))
+              (sha256 "0w40lr214n39al449fnm4k1bpyj3fjrhz2yxqd6a6m8yvc69z14b")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir font-util bdftopcf))
