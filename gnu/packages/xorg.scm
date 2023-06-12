@@ -515,10 +515,12 @@ Resources file.")
 (define-public font-adobe75dpi
   (package
     (name "font-adobe75dpi")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             "font-adobe-75dpi" version
-             "02advcv9lyxpvrjv8bjh1b797lzg6jvhipclz49z8r8y98g4l0n6"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-adobe-75dpi-" version ".tar.xz"))
+              (sha256 "04drk4wi176524lxjwfrnkr3dwz1hysabqfajpj6klfypqnsd08j")))
     (build-system gnu-build-system)
     (inputs
       (list bdftopcf font-util mkfontdir))
