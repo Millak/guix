@@ -324,7 +324,10 @@ and workspaces that can be used in the compiler environment of your choice.")
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
               (let ((skipped-tests (list #$@%common-disabled-tests
                                          ;; This test requires the bundled libuv.
-                                         "BootstrapTest")))
+                                         "BootstrapTest"
+                                         #$@(if (system-hurd?)
+                                                %common-disabled-tests/hurd
+                                                #~()))))
                 (if tests?
                     (begin
                       (invoke "ctest" "-j" (if parallel-tests?
