@@ -468,26 +468,6 @@ Resources file.")
     (description "Xorg font encoding files.")
     (license license:public-domain)))
 
-(define (%xorg-font-origin font version hash)
-  (origin
-    (method url-fetch)
-    (uri (string-append "mirror://xorg/individual/font/" font "-"
-                        version ".tar.bz2"))
-    (sha256 hash)
-    (modules '((guix build utils)))
-    (snippet
-     ;; Do not include timestamps in '.pcf.gz' files.
-     '(begin
-        (substitute* "Makefile.in"
-          (("^COMPRESS = (.*)$" _ rest)
-           (string-append "COMPRESS = " (string-trim-right rest)
-                          " --no-name\n")))
-        #t))))
-
-(define-syntax-rule (xorg-font-origin font version hash)
-  "Expand to the 'origin' form for the given Xorg font package."
-  (%xorg-font-origin font version (base32 hash)))
-
 (define-public font-adobe100dpi
   (package
     (name "font-adobe100dpi")
@@ -893,10 +873,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-xfree86-type1
   (package
     (name "font-xfree86-type1")
-    (version "1.0.4")
-    (source (xorg-font-origin
-             name version
-             "0jp3zc0qfdaqfkgzrb44vi9vi0a8ygb35wp082yz7rvvxhmg9sya"))
+    (version "1.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-xfree86-type1-" version ".tar.xz"))
+              (sha256 "0ds8xbgxy9h0bqn2p38vylfzn8cqkp7n51kwmw1c18ayi9w2qg59")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir mkfontscale))
