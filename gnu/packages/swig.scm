@@ -4,6 +4,7 @@
 ;;; Copyright © 2018, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (guix download)
   #:use-module (guix licenses)
   #:use-module (guix build-system gnu)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages guile)
@@ -54,6 +56,7 @@
                          perl))
                      ;;("python" ,python-wrapper)
     (inputs (list pcre))
+    (arguments (list #:tests? (not (target-hurd?))))
     (home-page "https://swig.org/")
     (synopsis
      "Interface compiler that connects C/C++ code to higher-level languages")
