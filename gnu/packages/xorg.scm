@@ -577,10 +577,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-arabic-misc
   (package
     (name "font-arabic-misc")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "1x246dfnxnmflzf0qzy62k8jdpkb6jkgspcjgbk8jcq9lw99npah"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-arabic-misc-" version ".tar.xz"))
+              (sha256 "0rrlcqbyx9y7hnhbkjir8rs6jkfqyalj1zvhr8niv2n7a8dydzs6")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
