@@ -757,10 +757,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-mutt-misc
   (package
     (name "font-mutt-misc")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "13qghgr1zzpv64m0p42195k1kc77pksiv059fdvijz1n6kdplpxx"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-mutt-misc-" version ".tar.xz"))
+              (sha256 "095vd33kqd157j6xi4sjxwdsjpwpgqliifa8nkybq8rcw7s5j8xi")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
