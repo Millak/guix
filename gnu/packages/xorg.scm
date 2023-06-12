@@ -694,10 +694,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-misc-cyrillic
   (package
     (name "font-misc-cyrillic")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             name version
-             "0q2ybxs8wvylvw95j6x9i800rismsmx4b587alwbfqiw6biy63z4"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-misc-cyrillic-" version ".tar.xz"))
+              (sha256 "14z9x174fidjn65clkd2y1l6pxspmvphizap9a8h2h06adzil0kn")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir bdftopcf))
