@@ -108,6 +108,16 @@
   (define-deprecated/public old-name name
     (deprecated-package (symbol->string 'old-name) name)))
 
+(define texlive-scripts
+  (texlive-origin
+   "texlive-scripts" (number->string %texlive-revision)
+   (list "dvips/tetex/"
+         "fonts/enc/dvips/tetex/"
+         "fonts/map/dvips/tetex/"
+         "scripts/texlive/")
+   (base32
+    "0y571gddch111r2chjfkyjsm4zk24xxiv2rcczb5apf6d0g211b9")))
+
 (define-public texlive-hyphen-complete
   (package
     (name "texlive-hyphen-complete")
@@ -369,20 +379,7 @@ and should be preferred to it whenever a package would otherwise depend on
     (inputs
      `(("texlive-extra-src" ,texlive-extra-src)
        ("config" ,config)
-       ("texlive-scripts"
-        ,(origin
-           (method svn-fetch)
-           (uri (svn-reference
-                 (url (string-append "svn://www.tug.org/texlive/tags/"
-                                     %texlive-tag "/Master/texmf-dist/"
-                                     "/scripts/texlive"))
-                 (revision %texlive-revision)))
-           (file-name (string-append "texlive-scripts-"
-                                     (number->string %texlive-revision)
-                                     "-checkout"))
-           (sha256
-            (base32
-             "1jrphfjhmw17rp1yqsl70shmvka3vg0g8841q6zx2lfn48p7vqf3"))))
+       ("texlive-scripts" ,texlive-scripts)
        ("cairo" ,cairo)
        ("fontconfig" ,fontconfig)
        ("fontforge" ,fontforge)
@@ -505,12 +502,14 @@ and should be preferred to it whenever a package would otherwise depend on
              (with-directory-excursion "texlive-extra"
                (apply (assoc-ref %standard-phases 'unpack)
                       (list #:source (assoc-ref inputs "texlive-extra-src"))))))
-         (add-after 'unpack-texlive-extra 'unpack-texlive-scripts
+         (add-after 'unpack-texlive-extra 'copy-texlive-scripts
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir "texlive-scripts")
              (with-directory-excursion "texlive-scripts"
-               (apply (assoc-ref %standard-phases 'unpack)
-                      (list #:source (assoc-ref inputs "texlive-scripts")))
+               (let ((scripts (string-append
+                               (assoc-ref inputs "texlive-scripts")
+                               "/scripts/texlive")))
+                 (copy-recursively scripts "."))
                ;; Configure the version string for some scripts.
                ;; Normally this would be done by Subversion.
                ;; See <https://issues.guix.gnu.org/43442#15>.
@@ -536,7 +535,7 @@ and should be preferred to it whenever a package would otherwise depend on
                            "tlmgr.pl"
                            "tlmgrgui.pl"
                            "updmap.pl")))))
-         (add-after 'unpack-texlive-scripts 'patch-scripts
+         (add-after 'copy-texlive-scripts 'patch-scripts
            (lambda _
              (let* ((scripts (append (find-files "texk/kpathsea" "^mktex")
                                      (find-files "texk/texlive/linked_scripts"
@@ -640,10 +639,17 @@ and should be preferred to it whenever a package would otherwise depend on
                ;; Install tlpkg.
                (copy-recursively tlpkg-src (string-append share "/tlpkg"))
 
-               ;; Install texlive-scripts.
-               (copy-recursively (string-append
-                                  source "/texlive-scripts/source/")
+               ;; Install texlive-scripts and associated files.
+               (copy-recursively (string-append source "/texlive-scripts")
                                  scripts)
+               (for-each
+                (lambda (dir)
+                  (mkdir-p dir)
+                  (copy-recursively (string-append
+                                     (assoc-ref inputs "texlive-scripts")
+                                     "/" dir)
+                                    (string-append share "/texmf-dist/" dir)))
+                '("dvips" "fonts"))
 
                ;; Patch them.
                (let ((dirs (map dirname (list (which "sed") (which "awk")))))
@@ -3089,27 +3095,6 @@ of file names.")
 
 (define-deprecated-package texlive-latex-url texlive-url)
 
-(define-public texlive-tetex
-  (package
-    (name "texlive-tetex")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "dvips/tetex/"
-                   "fonts/enc/dvips/tetex/"
-                   "fonts/map/dvips/tetex/")
-             (base32
-              "05mf8yqdj2wrc1zm3al2j4aam2wx0ky6a7slxw17pkd1c7rmvjrq")))
-    (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
-    (home-page "https://www.ctan.org/pkg/tetex")
-    (synopsis "Font maps originally from teTeX")
-    (description
-     "This package provides font maps that were originally part of the now
-obsolete teTeX distributions but are still used at the core of the TeX Live
-distribution.")
-    (license license:public-domain)))
-
 (define-public texlive-l3kernel
   (package
     (name "texlive-l3kernel")
@@ -4170,8 +4155,7 @@ part of the LaTeX required set of packages.")
                 texlive-babel-english
                 texlive-cyrillic
                 texlive-psnfss
-                texlive-tools
-                texlive-tetex)))
+                texlive-tools)))
     (package
       (name "texlive-base")
       (version (number->string %texlive-revision))
