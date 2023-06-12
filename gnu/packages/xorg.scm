@@ -735,10 +735,12 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-misc-misc
   (package
     (name "font-misc-misc")
-    (version "1.1.2")
-    (source (xorg-font-origin
-             name version
-             "150pq6n8n984fah34n3k133kggn9v0c5k07igv29sxp1wi07krxq"))
+    (version "1.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-misc-misc-" version ".tar.xz"))
+              (sha256 "1vcgc6lbc53fqaz8alhxcb6f231hhvj9hn2nkzg1mclbymhy7avr")))
     (build-system gnu-build-system)
     (inputs
       (list mkfontdir font-util bdftopcf))
