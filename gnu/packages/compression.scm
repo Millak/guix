@@ -24,7 +24,7 @@
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2021 Lars-Dominik Braun <lars@6xq.net>
@@ -1660,7 +1660,8 @@ or junctions, and always follows hard links.")
              "HAVE_LZMA=0"
              ;; Not currently detected, but be explicit & avoid surprises later.
              "HAVE_LZ4=0"
-             "HAVE_ZLIB=0")))
+             "HAVE_ZLIB=0")
+       #:tests? ,(not (target-hurd?))))
     (home-page "https://facebook.github.io/zstd/")
     (synopsis "Zstandard real-time compression algorithm")
     (description "Zstandard (@command{zstd}) is a lossless compression algorithm
