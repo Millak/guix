@@ -491,10 +491,12 @@ Resources file.")
 (define-public font-adobe100dpi
   (package
     (name "font-adobe100dpi")
-    (version "1.0.3")
-    (source (xorg-font-origin
-             "font-adobe-100dpi" version
-             "0m60f5bd0caambrk8ksknb5dks7wzsg7g7xaf0j21jxmx8rq9h5j"))
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/font/"
+                                  "font-adobe-100dpi-" version ".tar.xz"))
+              (sha256 "1kwwbaiqnfm3pcysy9gw0g9xhpgmhjcd6clp7zajhqq5br2gyymn")))
     (build-system gnu-build-system)
     (inputs
       (list bdftopcf font-util mkfontdir))
