@@ -385,7 +385,10 @@ many popular formats.")
                "-DVTK_SMP_ENABLE_OPENNMP=ON"
                "-DVTK_SMP_ENABLE_TBB=ON"
                "-DVTK_USE_MPI=ON"
-               )
+               #$@(if (target-riscv64?)
+                    '("-DCMAKE_SHARED_LINKER_FLAGS=-latomic"
+                      "-DCMAKE_EXE_LINKER_FLAGS=-latomic")
+                    '()))
 
            #:phases
            #~(modify-phases %standard-phases
