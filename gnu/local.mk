@@ -1065,6 +1065,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/doc++-segfault-fix.patch			\
   %D%/packages/patches/dovecot-opensslv3.patch			\
   %D%/packages/patches/dovecot-trees-support-dovecot-2.3.patch	\
+  %D%/packages/patches/doxygen-hurd.patch			\
   %D%/packages/patches/dstat-fix-crash-when-specifying-delay.patch	\
   %D%/packages/patches/dstat-skip-devices-without-io.patch	\
   %D%/packages/patches/dune-common-skip-failing-tests.patch	\
