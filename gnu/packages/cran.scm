@@ -10960,6 +10960,33 @@ It is a replacement for the @code{zip} function, that does not require any
 additional external tools on any platform.")
     (license license:cc0)))
 
+(define-public r-openai
+  (package
+    (name "r-openai")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "openai" version))
+              (sha256
+               (base32
+                "1fi1nc9c7kfnig6b5ifpb1v9r3gxszk984rwyq7i1lb6s5jv0b9z"))))
+    (properties `((upstream-name . "openai")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-assertthat
+                             r-glue
+                             r-httr
+                             r-jsonlite
+                             r-lifecycle
+                             r-magrittr))
+    (home-page "https://github.com/irudnyts/openai")
+    (synopsis "R Wrapper for OpenAI API")
+    (description
+     "This package provides an R wrapper of OpenAI API endpoints (see
+@url{https://platform.openai.com/docs/introduction} for details).  This
+package covers Models, Completions, Chat, Edits, Images, Embeddings, Audio,
+Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
+    (license license:expat)))
+
 (define-public r-openxlsx
   (package
     (name "r-openxlsx")
