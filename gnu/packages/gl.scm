@@ -518,6 +518,7 @@ svga,swrast,virgl")))
      (list (search-path-specification
             ;; Ensure the Mesa VDPAU drivers can be found.
             (variable "VDPAU_DRIVER_PATH")
+            (separator #f)
             (files '("lib/vdpau")))))
     (home-page "https://mesa3d.org/")
     (synopsis "OpenGL and Vulkan implementations")
