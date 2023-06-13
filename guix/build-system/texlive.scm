@@ -88,24 +88,24 @@ level package ID."
   (let ((tex-mod (resolve-interface '(gnu packages tex))))
     (module-ref tex-mod 'texlive-bin)))
 
-(define (default-texlive-latex-base)
-  "Return the default texlive-latex-base package."
+(define (texlive-latex-bin)
+  "Return the default texlive-latex-bin package."
   ;; Lazily resolve the binding to avoid a circular dependency.
   (let ((tex-mod (resolve-interface '(gnu packages tex))))
-    (module-ref tex-mod 'texlive-latex-base)))
+    (module-ref tex-mod 'texlive-latex-bin)))
 
 (define* (lower name
                 #:key
                 source inputs native-inputs outputs
                 system target
-                (texlive-latex-base (default-texlive-latex-base))
+                (texlive-latex-bin? #true)
                 (texlive-bin (default-texlive-bin))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
   (define private-keywords
     '(#:target #:inputs #:native-inputs
-      #:texlive-latex-base #:texlive-bin))
+      #:texlive-latex-bin? #:texlive-bin))
 
   (bag
     (name name)
@@ -118,8 +118,8 @@ level package ID."
                    ;; Keep the standard inputs of 'gnu-build-system'.
                    ,@(standard-packages)))
     (build-inputs `(("texlive-bin" ,texlive-bin)
-                    ,@(if texlive-latex-base
-                          `(("texlive-latex-base" ,texlive-latex-base))
+                    ,@(if texlive-latex-bin?
+                          `(("texlive-latex-bin" ,(texlive-latex-bin)))
                           '())
                     ,@native-inputs))
     (outputs outputs)

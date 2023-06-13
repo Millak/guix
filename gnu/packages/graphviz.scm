@@ -388,8 +388,7 @@ graphs in Graphviz's DOT language, written in pure Python.")
            texlive-amsmath
            texlive-bin
            texlive-geometry
-           texlive-graphics
-           texlive-latex-base
+           texlive-latex-bin
            texlive-pgf
            texlive-pstricks
            texlive-preview

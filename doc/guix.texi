@@ -10012,10 +10012,16 @@ files whenever possible.  Likewise, it can also create TeX formats
 (i.e., @file{.fmt} files) listed in the @code{#:create-formats}
 argument.
 
-The build system adds only @code{texlive-bin} and
-@code{texlive-latex-base} (both from @code{(gnu packages tex}) to the
-inputs.  Both can be overridden with the arguments @code{#:texlive-bin}
-and @code{#:texlive-latex-base}, respectively.
+The build system adds @code{texlive-bin} from @code{(gnu packages tex)}
+to the native inputs.  It can be overridden with the
+@code{#:texlive-bin} argument.
+
+The package @code{texlive-latex-bin}, from the same module, contains
+most of the tools for building TeX Live packages; for convenience, it is
+also added by default to the native inputs.  However, this can be
+troublesome when building a dependency of @code{texlive-latex-bin}
+itself.  In this particular situation, the @code{#:texlive-latex-bin?}
+argument should be set to @code{#f}.
 @end defvar
 
 @defvar ruby-build-system

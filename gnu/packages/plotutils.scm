@@ -312,14 +312,11 @@ colors, styles, options and details.")
                   texlive-epsf
                   texlive-etoolbox
                   texlive-geometry
-                  texlive-graphics
                   texlive-grfext
                   texlive-hyperref
                   texlive-infwarerr
                   texlive-kvdefinekeys
                   texlive-kvoptions
-                  texlive-l3backend
-                  texlive-latex-base
                   texlive-media9
                   texlive-oberdiek      ;for ifluatex
                   texlive-ocgx2

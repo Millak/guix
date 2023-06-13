@@ -147,7 +147,7 @@
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:tex-engine "tex"
       #:phases
       #~(modify-phases %standard-phases
@@ -715,7 +715,7 @@ This package contains the binaries.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list #:texlive-latex-base #f
+     (list #:texlive-latex-bin? #f
            #:create-formats #~(list "tex")))
     (propagated-inputs
      (list texlive-cm
@@ -751,7 +751,7 @@ it should not be processed without Knuth's direct permission.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:tex-engine "tex"
       #:tex-format #f
       #:build-targets #~(list "unpack.ins")
@@ -879,7 +879,7 @@ a replacement for LaTeX's @code{\\@@alph} and @code{\\@@Alph} macros.")
               "1pxbqbia0727vg01xv8451szm55z2w8sb0vv3kf4iqx5ibb6m0d2")))
     (build-system texlive-build-system)
     (arguments
-     (list #:texlive-latex-base #f))
+     (list #:texlive-latex-bin? #f))
     (home-page "https://www.ctan.org/texlive")
     (synopsis "Utility to strip documentation from TeX files")
     (description "This package provides the docstrip utility to strip
@@ -921,7 +921,7 @@ affected).")
               "1d41zvjsig7sqf2j2m89dnbv3gicpb16r04b4ikps4gabhbky83k")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/unicode-data")
     (synopsis "Unicode data and loaders for TeX")
     (description "This bundle provides generic access to Unicode Consortium
@@ -979,7 +979,7 @@ until the package appears.")
              (base32
               "1nad1bqpjsywm49hlv7d75mqvgha3j5vayvkvfhv8wwzgdb3mk84")))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://tug.org/texlive/")
     (synopsis "Core hyphenation support files")
     (description "This package includes Knuth's original @file{hyphen.tex},
@@ -1094,7 +1094,7 @@ PostScript.")
               "0a18k27fz1vjha5blwskxpnd715k08hmfm7d1yc2f7adaf0rwl3m")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://www.ctan.org/pkg/tex-ini-files")
     (synopsis "Files for creating TeX formats")
     (description
@@ -1128,7 +1128,7 @@ adapt the plain e-TeX source file to work with XeTeX and LuaTeX.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'build 'generate-mf.base
@@ -1228,7 +1228,7 @@ that support for the Pandora fonts is also available via the
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list #:texlive-latex-base #f))
+     (list #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/modes")
     (synopsis "Collection of Metafont @code{mode_def}'s")
     (description
@@ -1426,7 +1426,7 @@ part of the cite bundle of the author's citation-related packages.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'generate-font-metrics 'generate-pk
@@ -1632,6 +1632,7 @@ in LuaTeX.  It is required by the @code{luatexbase} package which uses
               "0yyk0dr4yms82mwy4dc03zf5igyhgcb65icdah042rk23rlpxygv")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/lm")
     (synopsis "Latin Modern family of fonts")
     (description "The Latin Modern fonts are derived from the famous Computer
@@ -1709,7 +1710,7 @@ conversion software and word processors.")
              (base32
               "0dl8z340n6m6xn7wari4hir0syxqi0kl2fhnf0bvnmkqhqwyzpca")))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments (list #:texlive-latex-bin? #f))
     (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/knuth-lib")
     (synopsis "Small library of METAFONT sources")
@@ -1755,7 +1756,7 @@ directories.")
               "1bzqzzhs15w7dqz90hfjnaffjqh24q14w2h1h8vnxzvrlsyv21vq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments (list #:texlive-latex-bin? #f))
     (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/latex-fonts")
     (synopsis "Collection of fonts used in LaTeX distributions")
@@ -1943,7 +1944,7 @@ features generation of clean UTF-8 patterns.")
               "17pvh7i9zw8qa5hr53kci7di64fqzx4j35gsn28s36b74x6xj4bc")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments (list #:texlive-latex-bin? #f))
     (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://www.ctan.org/pkg/etex")
     (synopsis "Extended version of TeX")
@@ -1991,7 +1992,7 @@ e-TeX's facilities.")
      (list
       #:tex-engine "tex"
       #:tex-format #f
-      #:texlive-latex-base #f))
+      #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/plain")
     (synopsis "Plain TeX format and supporting files")
     (description
@@ -2174,7 +2175,7 @@ replacement for the @code{inputenc} package.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-references
@@ -2240,60 +2241,12 @@ default and narrow versions of multiple integrals.")
              (base32
               "1x5fyr2185nx3qlyariykdz44hcy5azimrk9db2p707dg08bjhsd")))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/latexconfig")
     (synopsis "Configuration files for LaTeX-related formats")
     (description "The package provides configuration files for LaTeX-related
 formats.")
     (license license:lppl)))
-
-(define-public texlive-latex-base
-  (package
-    (name "texlive-latex-base")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/latex/base/" "makeindex/latex/"
-                   "source/latex/base/" "tex/latex/base/")
-             (base32
-              "0k2b6qi281cl4zml6l537iyps1zwaq7pip81qq8vlkhb9h5ggpnw")))
-    (build-system texlive-build-system)
-    (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:texlive-latex-base #f
-      #:tex-engine "tex"
-      #:tex-format #f
-      #:build-targets #~(list "unpack.ins")
-      #:create-formats #~(list "dvilualatex" "latex" "lualatex" "pdflatex")))
-    (propagated-inputs
-     (list texlive-babel
-           texlive-cm
-           texlive-etex
-           texlive-hyphen-complete
-           texlive-knuth-lib
-           texlive-kpathsea
-           texlive-l3backend
-           texlive-l3kernel
-           texlive-latex-fonts
-           texlive-latexconfig
-           texlive-luatex
-           texlive-pdftex
-           texlive-plain
-           texlive-tex-ini-files
-           texlive-unicode-data
-           ;; TODO: This dependency isn't needed for LaTeX version 2021-06-01
-           ;; and later. See:
-           ;; <https://tug.org/pipermail/tex-live/2021-June/047180.html>
-           texlive-l3packages))
-    (home-page "https://www.ctan.org/pkg/latex-base")
-    (synopsis "Base sources of LaTeX")
-    (description
-     "This bundle comprises the source of LaTeX itself, together with several
-packages which are considered part of the kernel.  This bundle, together with
-the required packages, constitutes what every LaTeX distribution should
-contain.")
-    (license license:lppl1.3c+)))
 
 (define-public texlive-latex-bin
   (package
@@ -2315,7 +2268,7 @@ contain.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:create-formats #~(list "dvilualatex" "latex" "lualatex" "pdflatex")))
     (propagated-inputs
      (list texlive-atbegshi
@@ -2345,6 +2298,8 @@ contain.")
      "This package provides LaTeX format files and man pages along with
 several packages that are considered as part of the LaTeX kernel.")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-latex-base texlive-latex-bin)
 
 (define-public texlive-atenddvi
   (package
@@ -2416,6 +2371,8 @@ customize their appearance in the enclosing document.")
               "1rp805h0m99rxs107a798l951lyahlnp7irfklfadn2a2ljzhafn")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
+    (native-inputs (list texlive-docstrip texlive-pdftex))
     (home-page "https://ctan.org/pkg/atveryend")
     (synopsis "Hooks at the very end of a document")
     (description
@@ -2636,6 +2593,7 @@ Unicode points; it is maintained by Adobe.  The additional
               "0b66fy06safyrd717rfr476g1gz6nqfv1vqvam7ac2yy0g0djb17")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/graphics-def")
     (synopsis "Colour and graphics option files")
     (description
@@ -2657,6 +2615,7 @@ packages.")
               "00n63adb2laf43lzix39xl68aq0k5k80mmrw602w99w5n7f96gsf")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/graphics-cfg")
     (synopsis "Sample configuration files for LaTeX color and graphics")
     (description
@@ -2677,6 +2636,8 @@ set default \"driver\" options for the color and graphics packages.")
               "0prw1zcv4fcj3zg0kyhj0k7ax0530adl60bajzvbv3fi16d7rqlq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
+    (native-inputs (list texlive-docstrip texlive-pdftex))
     (propagated-inputs
      (list texlive-graphics-def texlive-graphics-cfg))
     (home-page "https://ctan.org/macros/latex/required/graphics")
@@ -3112,7 +3073,7 @@ of file names.")
      (list
       #:tex-engine "tex"
       #:tex-format #f
-      #:texlive-latex-base #f))
+      #:texlive-latex-bin? #f))
     (native-inputs
      (list texlive-docstrip))
     (propagated-inputs
@@ -3147,7 +3108,7 @@ LaTeX3 conventions can be used with regular LaTeX2e packages.")
      (list
       #:tex-engine "tex"
       #:tex-format #f
-      #:texlive-latex-base #f))
+      #:texlive-latex-bin? #f))
     (native-inputs
      (list texlive-docstrip))
     (home-page "https://ctan.org/pkg/l3backend")
@@ -3194,7 +3155,7 @@ an independent schedule.")
              "xtemplate.ins")
       #:tex-engine "tex"
       #:tex-format #f
-      #:texlive-latex-base #f))
+      #:texlive-latex-bin? #f))
     (native-inputs
      (list texlive-docstrip))
     (propagated-inputs
@@ -3450,6 +3411,8 @@ they are not directly related to Unicode mathematics typesetting.")
               "0gf60vj9y75a7dlrmpbyqgsa00s1717r6if3lm5ldm41i9fm8ywz")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
+    (native-inputs (list texlive-docstrip texlive-pdftex))
     (home-page "https://ctan.org/pkg/lualibs")
     (synopsis "Additional Lua functions for LuaTeX macro programmers")
     (description
@@ -3472,6 +3435,7 @@ this bundle for use independent of ConTeXt.")
               "0cizxzn33n3pn98xkqnxb8s6vdwkar3xrwhraqrs05pjfdn9d4wz")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://ctan.org/pkg/lua-alt-getopt")
     (synopsis "Process application arguments as @code{getopt_long}")
     (description
@@ -3502,7 +3466,7 @@ in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list #:texlive-latex-base #f
+     (list #:texlive-latex-bin? #f
            #:create-formats #~(list "dviluatex" "luatex")))
     (propagated-inputs
      (list texlive-cm
@@ -3585,7 +3549,7 @@ upgrade smoothly to the new support structure.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:create-formats #~(list "luahbtex")))
     (propagated-inputs
      (list texlive-cm
@@ -3623,6 +3587,7 @@ shaping, instead of LuaTeX's built-in shaper.")
               "15xhnb4kyzmr11lj0md1d502cqrxyq6zdcq738z9394k6bas377f")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
     (propagated-inputs (list texlive-lm texlive-lua-alt-getopt texlive-lualibs))
     (home-page "https://ctan.org/pkg/luaotfload")
     (synopsis "OpenType font loader for LuaTeX")
@@ -3772,7 +3737,7 @@ available as part of the AMS-LaTeX distribution.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:phases
       #~(modify-phases %standard-phases
           ;; This package tries to produce babel.aux twice but refuses to
@@ -4029,8 +3994,7 @@ German.")
     (arguments
      (list
       #:tex-engine "tex"
-      #:tex-format #f
-      #:texlive-latex-base #f))
+      #:tex-format #f))
     (native-inputs
      (list texlive-docstrip))
     (home-page "https://ctan.org/pkg/cyrillic")
@@ -4148,13 +4112,11 @@ part of the LaTeX required set of packages.")
 configuration of a base set of packages plus PACKAGES."
     (let ((default-packages
             (list texlive-bin
-                  texlive-cm
                   texlive-cm-super
                   texlive-dvips
                   texlive-fontname
-                  texlive-graphics
                   texlive-kpathsea
-                  texlive-latex-base
+                  texlive-latex-bin
                   texlive-latex-fonts
                   texlive-metafont
                   ;; LaTeX packages from the "required" set.
@@ -4673,6 +4635,8 @@ corresponding italics: light, regular, medium, bold, ...")
               "1ahn47kz8a2qdmzdfdgjanf6h5bn8f2rzp1zvwgjpk1plcix8k90")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
+    (native-inputs (list texlive-docstrip texlive-pdftex))
     (home-page "https://ctan.org/pkg/firstaid")
     (synopsis
      "First aid for external LaTeX files and packages that need updating")
@@ -7772,7 +7736,7 @@ e-TeX.")
     (build-system texlive-build-system)
     (arguments
      (list
-      #:texlive-latex-base #f
+      #:texlive-latex-bin? #f
       #:create-formats #~(list "etex" "pdfetex" "pdftex")))
     (propagated-inputs
      (list texlive-cm
@@ -8733,8 +8697,8 @@ not only with KOMA-Script classes but also with the standard classes.")
               "0vd90wdjwj5w4g4xka4nms3rgixjw63iwf0hj0v1akcfflwvgn69")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex texlive-infwarerr texlive-ltxcmds))
+    (arguments (list #:texlive-latex-bin? #f))
+    (native-inputs (list texlive-docstrip texlive-pdftex))
     (home-page "https://ctan.org/pkg/atbegshi")
     (synopsis "Execute commands at @code{\\shipout} time")
     (description
@@ -12422,8 +12386,37 @@ compatibility reasons.")
               "11y6xazv1nk0m2hzsainjr8ijn5cff04xfccm6a65hzg7ipggraj")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    ;; Building `texlive-everyshi' requires "latex" format, provided by
+    ;; `texlive-latex-bin'.  However, `texlive-everyshi' is also a propagated
+    ;; inputs from `texlive-latex-bin'.  To work around this cycle, build
+    ;; a temporary "latex.fmt" format file, and use it to build the package.
+    ;; At the end of the process, remove that temporary format file.
     (arguments
-     (list #:tex-format "latex"))
+     (list
+      #:texlive-latex-bin? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'create-latex-format
+            (lambda* (#:key inputs #:allow-other-keys)
+              (apply (assoc-ref %standard-phases 'create-formats)
+                     (list #:inputs inputs #:create-formats '("latex")))))
+          (replace 'build
+            (lambda* (#:key inputs build-targets tex-engine #:allow-other-keys)
+              (apply (assoc-ref %standard-phases 'build)
+                     (list #:inputs inputs
+                           #:build-targets build-targets
+                           #:tex-engine tex-engine
+                           #:tex-format (string-append (getcwd)
+                                                       "/web2c/pdftex/latex")))))
+          (add-after 'build 'remove-latex-format
+            (lambda _
+              (delete-file-recursively "web2c"))))))
+    (native-inputs
+     (list texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latexconfig
+           texlive-tex-ini-files))
     (home-page "https://ctan.org/pkg/everyshi")
     (synopsis "Take action at every @code{\\shipout}")
     (description

@@ -117,10 +117,9 @@
            texlive-fncychap
            texlive-framed
            texlive-geometry
-           texlive-graphics             ;graphicx, color
            texlive-hyperref
            texlive-kvoptions
-           texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
+           texlive-latex-bin
            texlive-ltxcmds
            texlive-needspace
            texlive-oberdiek             ;hypcap
