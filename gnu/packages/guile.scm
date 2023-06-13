@@ -842,7 +842,20 @@ type system, elevating types to first-class status.")
                  (lambda _
                    (substitute* "Makefile.am"
                      ((".*tests/blob\\.scm.*") ""))))))
-           '())))
+           '())
+       ,@(if (system-hurd?)
+             (list
+              #:phases
+              #~(modify-phases %standard-phases
+                  (add-after 'unpack 'skip-tests/hurd
+                    (lambda _
+                      (substitute* "tests/proxy.scm"
+                        (("\\(test-begin.*" all)
+                         (string-append
+                          all
+                          "(when (string-ci= \"GNU\" (vector-ref (uname) 0))\n"
+                          "  (test-skip 1))\n")))))))
+             '())))
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
