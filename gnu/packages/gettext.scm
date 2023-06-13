@@ -279,7 +279,14 @@ from Markdown files.")
           (add-before 'check 'disable-failing-tests
             (lambda _
               ;; FIXME: fails despite of importing SGMLS
-              (delete-file "t/fmt-sgml.t"))))))
+              (delete-file "t/fmt-sgml.t")))
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'skip-tests/hurd
+                      (lambda _
+                        (delete-file "t/cfg-multi.t")
+                        (delete-file "t/cfg-single.t")
+                        (delete-file "t/cfg-split.t"))))
+                 #~()))))
     (native-inputs
      (list gettext-minimal
            perl-module-build
