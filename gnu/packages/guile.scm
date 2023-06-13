@@ -212,8 +212,13 @@ without requiring the source code to be rewritten.")
                     (rename-file "test-suite/tests/srfi-18.test" "srfi-18.test")
                     ;; failed to remove 't-guild-compile-7215.go.tdL7yC
                     (substitute* "test-suite/standalone/Makefile.in"
-                      (("test-guild-compile ") ""))
-                    #t)))
+                      (("test-guild-compile ") "")))))
+              '())
+        ,@(if (system-hurd?)
+              '((add-after 'unpack 'disable-threads.tests
+                  (lambda _
+                    ;; Many tests hang, esp. (join-thread ..), also others.
+                    (rename-file "test-suite/tests/threads.test" "threads.test"))))
               '())
         (add-before 'configure 'pre-configure
           (lambda* (#:key inputs #:allow-other-keys)
@@ -286,7 +291,12 @@ without requiring the source code to be rewritten.")
         (if (target-x86-32?)            ;<https://issues.guix.gnu.org/49368>
             `(append '("--disable-static")
                  '("CFLAGS=-g -O2 -fexcess-precision=standard"))
-            flags))))
+            flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            #$@(if (system-hurd?)
+                   #~((delete 'disable-threads.tests))
+                   '())))))
 
     (properties '((timeout . 72000)               ;20 hours
                   (max-silent-time . 36000)))     ;10 hours (needed on ARM
