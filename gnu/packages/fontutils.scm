@@ -1534,37 +1534,65 @@ definitions.")
              ("python"          ,python)
              ("zlib"            ,zlib)))
    (arguments
-    '(#:configure-flags '(;; TODO: Provide GTK+ for the Wayland-friendly GDK
-                          ;; backend, instead of the legacy X11 backend.
-                          ;; Currently it introduces a circular dependency.
-                          "-DENABLE_X11=ON")
+    (list
+     #:configure-flags #~'( ;; TODO: Provide GTK+ for the Wayland-friendly GDK
+                           ;; backend, instead of the legacy X11 backend.
+                           ;; Currently it introduces a circular dependency.
+                           "-DENABLE_X11=ON")
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'do-not-override-RPATH
-          (lambda _
-            ;; Do not attempt to set a default RPATH, as our ld-wrapper
-            ;; already does the right thing.
-            (substitute* "CMakeLists.txt"
-              (("^set_default_rpath\\(\\)")
-               ""))
-            #t))
-        (add-after 'install 'set-library-path
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out"))
-                  (potrace (dirname
-                            (search-input-file inputs "bin/potrace"))))
-              (wrap-program (string-append out "/bin/fontforge")
-                ;; Fontforge dynamically opens libraries.
-                `("LD_LIBRARY_PATH" ":" prefix
-                  ,(map (lambda (input)
-                          (string-append (assoc-ref inputs input)
-                                         "/lib"))
-                        '("libtiff" "libjpeg" "libpng" "libungif"
-                          "libxml2" "zlib" "libspiro" "freetype"
-                          "pango" "cairo" "fontconfig")))
-                ;; Checks for potrace program at runtime
-                `("PATH" ":" prefix (,potrace)))
-              #t))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-override-RPATH
+            (lambda _
+              ;; Do not attempt to set a default RPATH, as our ld-wrapper
+              ;; already does the right thing.
+              (substitute* "CMakeLists.txt"
+                (("^set_default_rpath\\(\\)")
+                 ""))
+              #t))
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'apply-hurd-patch
+                      (lambda _
+                        (let ((patch-file
+                               #$(local-file
+                                  (search-patch "fontforge-hurd.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i" patch-file)))))
+                 #~())
+          #$@(if (system-hurd?)
+                 #~((replace 'check
+                      ;; cmake-build-system ignores #:make-flags for make check
+                      (lambda* (#:key test-target tests? parallel-tests?
+                                #:allow-other-keys)
+                        (let ((skip '("test0001_py" "test0001_pyhook")))
+                          (if tests?
+                              (let ((jobs
+                                     (if parallel-tests?
+                                         (number->string (parallel-job-count))
+                                         "1")))
+                                (invoke "make"
+                                        (string-append "ARGS=-j " jobs
+                                                       " --exclude-regex ^"
+                                                       (string-join skip "\\|")
+                                                       "$")
+                                        test-target))
+                              (format #t "test suite not run~%"))))))
+                 #~())
+          (add-after 'install 'set-library-path
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (potrace (dirname
+                              (search-input-file inputs "bin/potrace"))))
+                (wrap-program (string-append out "/bin/fontforge")
+                  ;; Fontforge dynamically opens libraries.
+                  `("LD_LIBRARY_PATH" ":" prefix
+                    ,(map (lambda (input)
+                            (string-append (assoc-ref inputs input)
+                                           "/lib"))
+                          '("libtiff" "libjpeg" "libpng" "libungif"
+                            "libxml2" "zlib" "libspiro" "freetype"
+                            "pango" "cairo" "fontconfig")))
+                  ;; Checks for potrace program at runtime
+                  `("PATH" ":" prefix (,potrace)))
+                #t))))))
    (synopsis "Outline font editor")
    (description
     "FontForge allows you to create and modify postscript, truetype and
