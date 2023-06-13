@@ -276,11 +276,13 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
      ;; There are all in the Requires or Requires.private field of '.pc'.
      (list glib graphite2 icu4c))
     (native-inputs
-     (list `(,glib "bin")               ;for glib-mkenums
-           gobject-introspection
-           pkg-config
-           python-wrapper
-           which))
+     (append (list `(,glib "bin"))      ;for glib-mkenums
+             (if (target-hurd?)
+                 '()
+                 (list gobject-introspection))
+             (list pkg-config
+                   python-wrapper
+                   which)))
     (arguments
      (list #:configure-flags
            #~(list "--with-graphite2"
