@@ -416,6 +416,40 @@ Plenty of classic platforming in four nice colors guaranteed!
 The game includes a built-in editor so you can design and share your own maps.")
     (license license:gpl2+)))
 
+(define-public anarch
+  (let ((commit "2d78d0c69a3aac14dbd8f8aca62d0cbd9d27c860")
+        (revision "1"))
+    (package
+      (name "anarch")
+      (version (git-version "1.1d" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~drummyfish/Anarch")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lg9r6q1davn5yj181ccygmvaigvm8fr9q2s1bc77a1vkz68vzdk"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure) ;no configure script
+                          (replace 'build
+                            (lambda _
+                              (invoke "./make.sh" "sdl")))
+                          (replace 'install
+                            (lambda _
+                              (let ((bin (string-append #$output "/bin")))
+                                (install-file "anarch" bin)))))))
+      (inputs (list alsa-lib libxcursor libxrandr sdl2))
+      (home-page "https://drummyfish.gitlab.io/anarch/")
+      (synopsis "Public domain 90s-style shooter game")
+      (description "Anarch is a small, completely public domain, 90s-style
+Doom clone shooter game.")
+      (license license:cc0))))
+
 (define-public armagetronad
   (package
     (name "armagetronad")
