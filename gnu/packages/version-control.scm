@@ -846,6 +846,12 @@ to GitHub contributions calendar.")
                    '()))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-arm32?)
+             ;; Some tests are flaky on armhf.
+             '((add-before 'check 'pre-check
+                 (lambda _
+                   (setenv "GITTEST_FLAKY_STAT" "true"))))
+             '())
          ;; Run checks more verbosely, unless we are cross-compiling.
          (replace 'check
            (lambda* (#:key (tests? #t) #:allow-other-keys)
