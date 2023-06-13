@@ -401,12 +401,15 @@ applications.")
      (list bash-minimal
            zlib))
     (native-inputs
-     (list `(,glib "bin")               ;glib-mkenums, etc.
-           gobject-introspection        ;g-ir-compiler, etc.
-           help2man
-           perl
-           pkg-config
-           python-wrapper))
+     (append (list `(,glib "bin"))      ;glib-mkenums, etc.
+             (if (target-hurd?)
+                 '()
+                 (list gobject-introspection)) ;g-ir-compiler, etc.
+             (list
+              help2man
+              perl
+              pkg-config
+              python-wrapper)))
     (synopsis "Text and font handling library")
     (description "Pango is a library for laying out and rendering of text, with
 an emphasis on internationalization.  Pango can be used anywhere that text
