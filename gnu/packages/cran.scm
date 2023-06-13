@@ -17314,6 +17314,38 @@ manipulate tree data.")
 R packages (on CRAN, Bioconductor or Github).")
     (license license:artistic2.0)))
 
+(define-public r-doc2vec
+  (package
+    (name "r-doc2vec")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "doc2vec" version))
+              (sha256
+               (base32
+                "0249hm0103kxxsi4gks4h20wf6p00gbrk9jf8c148mbja1l56f6v"))))
+    (properties `((upstream-name . "doc2vec")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/bnosac/doc2vec")
+    (synopsis "Distributed representations of sentences, documents and topics")
+    (description
+     "Learn vector representations of sentences, paragraphs or documents by
+using the Paragraph Vector algorithms, namely the distributed bag of
+words (PV-DBOW) and the distributed memory (PV-DM) model.  Top2vec finds
+clusters in text documents by combining techniques to embed documents and
+words and density-based clustering.  It does this by embedding documents in
+the semantic space as defined by the doc2vec algorithm.  Next it maps these
+document embeddings to a lower-dimensional space using the Uniform Manifold
+Approximation and Projection (UMAP) clustering algorithm and finds dense areas
+in that space using a Hierarchical Density-Based Clustering
+technique (HDBSCAN).  These dense areas are the topic clusters which can be
+represented by the corresponding topic vector which is an aggregate of the
+document embeddings of the documents which are part of that topic cluster.  In
+the same semantic space similar words can be found which are representative of
+the topic.")
+    (license license:expat)))
+
 (define-public r-docopt
   (package
     (name "r-docopt")
