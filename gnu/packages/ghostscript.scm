@@ -201,6 +201,16 @@ printing, and psresize, for adjusting page sizes.")
                      '()))
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'patch-leptonica
+                      (lambda _
+                        (let ((patch-file
+                               #$(local-file
+                                  (search-patch
+                                   "ghostscript-leptonica-hurd.patch"))))
+                          (with-directory-excursion "leptonica"
+                            (invoke "patch" "--force" "-p1" "-i" patch-file))))))
+                 #~())
           (add-before 'configure 'create-output-directory
             (lambda _
               ;; The configure script refuses to function if the directory
