@@ -17215,6 +17215,29 @@ Kingsbury (1999, 2001) as implemented by Selesnick; and Hilbert wavelet
 pairs (Selesnick 2001, 2002).")
     (license license:bsd-3)))
 
+(define-public r-word2vec
+  (package
+    (name "r-word2vec")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "word2vec" version))
+              (sha256
+               (base32
+                "0qj39vms6zgwb8lpmfkppayizdmhakic3pkacglary3ain61vnsk"))))
+    (properties `((upstream-name . "word2vec")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcppprogress))
+    (home-page "https://github.com/bnosac/word2vec")
+    (synopsis "Distributed representations of words")
+    (description
+     "Learn vector representations of words by continuous bag of words and
+skip-gram implementations of the word2vec algorithm.  The techniques are
+detailed in the paper \"Distributed Representations of Words and Phrases and
+their Compositionality\" by Mikolov et al. (2013), available at
+<arXiv:1310.4546>.")
+    (license license:asl2.0)))
+
 (define-public r-wordcloud
   (package
     (name "r-wordcloud")
