@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1369,6 +1370,25 @@ applications should be.")
     (list python python-fonttools-minimal))
    (inputs
     (list freetype))
+   (arguments
+    (if (system-hurd?)
+        (list
+         #:phases
+         #~(modify-phases %standard-phases
+             (replace 'check
+               ;; cmake-build-system ignores #:make-flags for make check
+               (lambda* (#:key test-target tests? parallel-tests?
+                         #:allow-other-keys)
+                 (if tests?
+                     (let ((jobs (if parallel-tests?
+                                     (number->string (parallel-job-count))
+                                     "1")))
+                       (invoke "make"
+                               (string-append
+                                "ARGS=-j " jobs " --exclude-regex ^awamicmp3$")
+                               test-target))
+                     (format #t "test suite not run~%"))))))
+        '()))
    (synopsis "Reimplementation of the SIL Graphite text processing engine")
    (description
     "Graphite2 is a reimplementation of the SIL Graphite text processing
