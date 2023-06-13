@@ -418,7 +418,14 @@ used in the image."
               (with-imported-modules*
                (let ((initializer (or #$(partition-initializer partition)
                                       initialize-root-partition))
-                     (inputs '#+(list e2fsprogs fakeroot dosfstools mtools))
+                     (inputs '#+(cond
+                                  ((string-prefix? "ext" type)
+                                   (list e2fsprogs fakeroot))
+                                  ((or (string=? type "vfat")
+                                       (string-prefix? "fat" type))
+                                   (list dosfstools fakeroot mtools))
+                                  (else
+                                    '())))
                      (image-root "tmp-root"))
                  (sql-schema #$schema)
 
