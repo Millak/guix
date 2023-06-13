@@ -1716,14 +1716,22 @@ attacks or network discovery.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "1.8.4")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Shapely" version))
+       (uri (pypi-uri "shapely" version))
        (sha256
-        (base32 "130rqd0czi128wm5pdn47v4m6czxd7pkzanbya8q48gsm8ffb5d1"))))
-    (build-system python-build-system)
+        (base32 "14v88k0y7qhp8n5clip6w96pkdzrfqa2hsjkhpy9gkifwyiv39k6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-cython python-matplotlib python-pytest
            python-pytest-cov))
@@ -1731,25 +1739,6 @@ attacks or network discovery.")
      (list geos))
     (propagated-inputs
      (list python-numpy))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-geos-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((geos (assoc-ref inputs "geos"))
-                   (glibc (assoc-ref inputs ,(if (%current-target-system)
-                                                 "cross-libc" "libc"))))
-               (substitute* '("shapely/geos.py" "shapely/_buildcfg.py")
-                 (("_lgeos = load_dll\\('geos_c', fallbacks=.*\\)")
-                  (string-append "_lgeos = load_dll('geos_c', fallbacks=['"
-                                 geos "/lib/libgeos_c.so'])"))
-                 (("free = load_dll\\('c'\\)\\.free")
-                  (string-append "free = load_dll('c', fallbacks=['"
-                                 glibc "/lib/libc.so.6']).free"))
-                 (("free = load_dll\\('c', fallbacks=.*\\)\\.free")
-                  (string-append "free = load_dll('c', fallbacks=['"
-                                 glibc "/lib/libc.so.6']).free"))))
-             #t)))))
     (home-page "https://github.com/Toblerity/Shapely")
     (synopsis "Library for the manipulation and analysis of geometric objects")
     (description "Shapely is a Python package for manipulation and analysis of
