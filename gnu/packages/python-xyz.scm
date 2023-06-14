@@ -25242,19 +25242,21 @@ they use the same path.")
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "blosc/c-blosc")))))
     (build-system python-build-system)
-    ;; FIXME: all tests pass, but then this error is printed:
-    ;; TypeError: calling <function run at 0x7ffff2568d90> returned None, not a test
     (arguments
-     (list #:tests? #f
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'find-blosc
                  (lambda* (#:key inputs #:allow-other-keys)
                    (setenv "USE_SYSTEM_BLOSC" "1")
-                   (setenv "Blosc_ROOT" #$(this-package-input "c-blosc")))))))
+                   (setenv "Blosc_ROOT" #$(this-package-input "c-blosc"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "-m" "blosc.test")))))))
     (propagated-inputs
      (list python-scikit-build python-numpy))
     (inputs (list c-blosc))
+    (native-inputs (list cmake-minimal))
     (home-page "https://github.com/blosc/python-blosc")
     (synopsis "Python wrapper for the Blosc data compressor library")
     (description "Blosc is a high performance compressor optimized for binary
