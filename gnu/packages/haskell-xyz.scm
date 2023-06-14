@@ -2468,6 +2468,29 @@ They stopped crashing the compiler in GHC 7.6.  This package provides
 a vocabulary for working with them.")
     (license license:bsd-2)))
 
+(define-public ghc-constraints-extras
+  (package
+    (name "ghc-constraints-extras")
+    (version "0.4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "constraints-extras" version))
+              (sha256
+               (base32
+                "1irf4kd7a5h1glczbc73c3590m58azn4s68nfrjfg1h96i7mjfgn"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "constraints-extras")))
+    (inputs (list ghc-constraints ghc-aeson))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1fdabah3ilq9yf94916ml3c3rxgcgab1jhzl4mk1zgzsw78j53qf")))
+    (home-page "https://github.com/obsidiansystems/constraints-extras")
+    (synopsis "Utility package for constraints")
+    (description
+     "Convenience functions and TH for working with constraints.  See
+@file{README.md} for example usage.")
+    (license license:bsd-3)))
+
 (define-public ghc-contravariant
   (package
     (name "ghc-contravariant")
