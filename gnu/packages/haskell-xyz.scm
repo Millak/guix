@@ -9232,6 +9232,26 @@ API.")
     (description "This library provides profunctors for Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-indexed-profunctors
+  (package
+    (name "ghc-indexed-profunctors")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "indexed-profunctors" version))
+              (sha256
+               (base32
+                "1cbccbvrx73drr1jf3yyw0rp1mcfv3jc1rvdcby5xxx4ja543fjs"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "indexed-profunctors")))
+    (home-page "http://hackage.haskell.org/package/indexed-profunctors")
+    (synopsis "Utilities for indexed profunctors")
+    (description
+     "This package contains basic definitions related to indexed profunctors.  These
+are primarily intended as internal utilities to support the @code{optics} and
+@code{generic-lens} package families.")
+    (license license:bsd-3)))
+
 (define-public ghc-project-template
   (package
     (name "ghc-project-template")
