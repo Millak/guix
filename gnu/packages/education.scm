@@ -1102,16 +1102,16 @@ mentored learning for programming languages.")
 (define-public mazo
   (package
     (name "mazo")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/luis-felipe/mazo.git")
+             (url "https://codeberg.org/luis-felipe/mazo.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06246380i5rxycniwg5syn0aldd2zy10cbqk1lgyc0qfqb2lyrwj"))))
+        (base32 "14nk3qsj6lg7wp2ws8lxhb4hyjnczvw1cn9f3m466dkkfimp7ygf"))))
     (build-system python-build-system)
     (arguments
      `(#:use-setuptools? #f
@@ -1155,8 +1155,10 @@ mentored learning for programming languages.")
            python-pillow
            python-pycairo))
     (propagated-inputs
-     (list gstreamer
-           gtk+
+     (list adwaita-icon-theme
+           dbus
+           gstreamer
+           gtk
            python
            python-django
            python-django-cleanup
