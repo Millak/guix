@@ -16564,6 +16564,26 @@ same-and-increasingly-sized values.")
 to incorporate LeanCheck tests into test-framework test suites.")
     (license license:bsd-3)))
 
+(define-public ghc-prim-uniq
+  (package
+    (name "ghc-prim-uniq")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "prim-uniq" version))
+              (sha256
+               (base32
+                "1l7jlv3pfasn89n2wpgff972npy423vqsidkkn5crxfyqjyzxbdv"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "prim-uniq")))
+    (inputs (list ghc-dependent-sum ghc-primitive))
+    (home-page "https://github.com/obsidiansystems/prim-uniq")
+    (synopsis "Opaque unique identifiers in primitive state monads")
+    (description
+     "This library provides opaque unique identifiers in primitive state
+monads and a GADT-like type using them as witnesses of type equality.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
