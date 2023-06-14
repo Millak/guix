@@ -11812,13 +11812,13 @@ applications.")
 (define-public python-pyzmq
   (package
     (name "python-pyzmq")
-    (version "25.0.2")
+    (version "25.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyzmq" version))
        (sha256
-        (base32 "0jai5sbd4ypihsvr4ikq6d93nkmxwv53598sh24dqs78f2xip33b"))
+        (base32 "0mw9zf0h9sgn2cchw24vyxgyi2nfpyfacr0mh072hdjx8qii1i40"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
