@@ -6410,6 +6410,27 @@ possible.  The library exposes a van Laarhoven interface.  For an alternative
 interface, supporting an opaque optic type, see @code{generic-optics}.")
     (license license:bsd-3)))
 
+(define-public ghc-these-lens
+  (package
+    (name "ghc-these-lens")
+    (version "1.0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "these-lens" version))
+              (sha256
+               (base32
+                "1v3kj7j4bkywbmdbblwqs5gsj5s23d59sb3s27jf3bwdzf9d21p6"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "these-lens")))
+    (inputs (list ghc-these ghc-lens))
+    (arguments
+     `(#:cabal-revision ("2"
+                         "1mncy6mcwqxy4fwibrsfc3jcx183wfjfvfvbj030y86pfihvbwg3")))
+    (home-page "https://github.com/haskellari/these")
+    (synopsis "Lenses for These")
+    (description "This package provides Prism and Traversals for @code{These}.")
+    (license license:bsd-3)))
+
 (define-public ghc-libffi
   (package
     (name "ghc-libffi")
