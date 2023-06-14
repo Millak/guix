@@ -938,6 +938,41 @@ It's a terminal emulator with few dependencies, so you don't need a full GNOME
 desktop installed to have a decent terminal emulator.")
     (license license:gpl2)))
 
+(define-public xiate
+  (let ((commit "ae3cf30b345c64f097a747ac848e23ef5bae8b57")
+        (revision "0"))
+    (package
+      (name "xiate")
+      (version (git-version "22.12" revision commit))
+      (source (origin
+                (method git-fetch)
+                (file-name (git-file-name name version))
+                (uri (git-reference
+                      (url "https://www.uninformativ.de/git/xiate.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0bc205b1gs1jvp1a2cr814l32hmlm0sgv1drfw7ykbavslfpmg2d"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:make-flags #~(list (string-append "CC="
+                                                 #$(cc-for-target))
+                                  (string-append "prefix="
+                                                 #$output))
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure))))
+      (inputs (list gtk+ glib vte))
+      (native-inputs (list pkg-config))
+      (synopsis "Minimalist terminal emulator based on GTK+")
+      (description
+       "Xiate is a terminal emulator which tries to keep a balance
+between features and simplicity.  This is achieved by using VTE as a powerful
+backend, while UI, configuration, and code try to remain much more
+minimalistic.")
+      (home-page "https://www.uninformativ.de/git/xiate/file/README.html")
+      (license license:expat))))
+
 (define-public go-github.com-nsf-termbox-go
   (let ((commit "288510b9734e30e7966ec2f22b87c5f8e67345e3")
         (revision "1"))
