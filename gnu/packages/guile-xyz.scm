@@ -311,11 +311,11 @@ currently does not do much, but it might in the future.")
     (license license:gpl3+)))
 
 (define-public guile-openai
-  (let ((commit "9265b641dea0246609b7bd5031f3f6780ef6a167")
-        (revision "2"))
+  (let ((commit "751cd5db5f8bb7c00e60042a7ec86100930b0f02")
+        (revision "1"))
     (package
       (name "guile-openai")
-      (version (git-version "0.1" revision commit))
+      (version (git-version "0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -324,21 +324,16 @@ currently does not do much, but it might in the future.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0sydjsgdr6xxk1w5f8pf14wgimfy4fb1hpi8yml0nv83p7bfr1w3"))))
-      (build-system guile-build-system)
-      (arguments
-       (list
-        #:scheme-file-regexp
-        #~(lambda (file info)
-            (let ((name (basename file)))
-              (and (string-suffix? ".scm" name)
-                   (not (string=? (basename file) "guix.scm")))))))
-      (inputs (list guile-3.0-latest))
+                  "1rl15wkm682xwzj2fjn4czp1haxnxlcjsk3g69j2a9qlwc4w0g4a"))))
+      (build-system gnu-build-system)
+      (arguments (list #:strip-binaries? #f))
+      (inputs (list guile-3.0-latest imagemagick))
       (propagated-inputs
        (list guile-colorized
              guile-gnutls
              guile-json-4
              guile-picture-language))
+      (native-inputs (list autoconf automake pkg-config))
       (home-page "https://gitlab.com/flatwhatson/guile-openai")
       (synopsis "Guile implementation of the OpenAI API")
       (description
