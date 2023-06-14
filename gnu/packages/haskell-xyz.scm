@@ -12634,6 +12634,28 @@ transformers 0.2 or 0.3 compatibility to run on old versions of the platform,
 but also need those types.")
     (license license:bsd-3)))
 
+(define-public ghc-exception-transformers
+  (package
+    (name "ghc-exception-transformers")
+    (version "0.4.0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "exception-transformers" version))
+              (sha256
+               (base32
+                "1zmd2s40m86c9mhv32l5bvvf5r52cgpxvb4v5phyc3pjwlr7m8g5"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "exception-transformers")))
+    (inputs (list ghc-fail ghc-transformers-compat))
+    (native-inputs (list ghc-hunit ghc-test-framework ghc-test-framework-hunit))
+    (home-page "http://hackage.haskell.org/package/exception-transformers")
+    (synopsis "Type classes and monads for unchecked extensible exceptions")
+    (description
+     "This package provides type classes, a monad and a monad transformer that support
+unchecked extensible exceptions as well as asynchronous exceptions.  It is
+compatible with the transformers package.")
+    (license license:bsd-3)))
+
 (define-public ghc-tree-diff
   (package
     (name "ghc-tree-diff")
