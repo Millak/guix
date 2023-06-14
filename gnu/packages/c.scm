@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -240,6 +241,47 @@ standard.")
       ;; An attempt to re-licence tcc under the Expat licence is underway but not
       ;; (if ever) complete.  See the RELICENSING file for more information.
       (license license:lgpl2.1+))))
+
+(define-public tomlc99
+  (let ((revision "0")
+        (commit "52e9c039c5418a100605c2db1282590511fa891b"))
+    (package
+      (name "tomlc99")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/cktan/tomlc99")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1zrn5mmd1ysxma96jzrq50xqypbs3rhk6dwlj1wcjpjz1a4h9wgg"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags #~(list (string-append "CC="
+                                                 #$(cc-for-target))
+                                  (string-append "prefix="
+                                                 #$output))
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure)
+                          (replace 'check
+                            (lambda* (#:key tests? make-flags
+                                      #:allow-other-keys)
+                              (when tests?
+                                (apply invoke
+                                       `("make" "-C" "unittest"
+                                         ,@make-flags))
+                                (invoke "./unittest/t1")))))))
+      (home-page "https://github.com/cktan/tomlc99")
+      (synopsis "TOML library for C")
+      (description
+       "This library is a C99 implementation to read
+@acronym{TOML, Tom's Obvious Minimal Language} text documents.
+
+This library is compatible with the @url{https://toml.io/en/v1.0.0,v1.0.0}
+specification of the language.")
+      (license license:expat))))
 
 (define-public pcc
   (package
