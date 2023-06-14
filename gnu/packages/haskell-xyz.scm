@@ -13146,6 +13146,25 @@ and high speed.")
     (native-inputs '())
     (properties '((hidden? #t)))))
 
+(define-public ghc-commutative-semigroups
+  (package
+    (name "ghc-commutative-semigroups")
+    (version "0.1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "commutative-semigroups" version))
+              (sha256
+               (base32
+                "1bmafx363gfsd9wwrf3xyrw9mnw6anmc1zdfv0p8597y4lxxach7"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "commutative-semigroups")))
+    (home-page "http://hackage.haskell.org/package/commutative-semigroups")
+    (synopsis "Commutative semigroups")
+    (description
+     "This package provides a commutative semigroup is a semigroup where the order of
+arguments to mappend does not matter.")
+    (license license:bsd-3)))
+
 (define-public ghc-unsafe
   (package
     (name "ghc-unsafe")
