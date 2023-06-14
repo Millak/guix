@@ -11847,16 +11847,19 @@ applications.")
              ;; FIXME: The test_draft.TestDraftSockets test fails with:
              ;;   zmq.error.Again: Resource temporarily unavailable
              (delete-file "zmq/tests/test_draft.py")
-             ;; These tests fail for unknown reasons (see:
+             ;; These tests appear to depend on a working name resolver (see:
              ;; https://github.com/zeromq/pyzmq/issues/1853).
              (delete-file "zmq/tests/test_auth.py")
              (delete-file "zmq/tests/test_zmqstream.py")))
          (add-before 'check 'build-extensions
            (lambda _
              ;; Cython extensions have to be built before running the tests.
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (inputs
-     (list zeromq))
+             (invoke "python" "setup.py" "build_ext" "--inplace")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (inputs (list zeromq))
     (native-inputs
      (list pkg-config
            python-cython
