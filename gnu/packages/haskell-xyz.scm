@@ -10444,6 +10444,27 @@ programming.")
 library.")
     (license license:bsd-3)))
 
+(define-public ghc-sdl2-gfx
+  (package
+    (name "ghc-sdl2-gfx")
+    (version "0.3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "sdl2-gfx" version))
+              (sha256
+               (base32
+                "0r9m54ffkp1dv2ffz9i9318qhvpinc76iih7vg1dwq3siwgpxaxw"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "sdl2-gfx")))
+    (inputs (list ghc-lifted-base ghc-monad-control ghc-sdl2 ghc-vector sdl2-gfx))
+    (native-inputs (list pkg-config))
+    (home-page "http://hackage.haskell.org/package/sdl2-gfx")
+    (synopsis "Haskell bindings to SDL2_gfx")
+    (description
+     "This package provides Haskell bindings to the SDL2_gfx graphics
+library.")
+    (license license:expat)))
+
 (define-public ghc-sdl-image
   (package
     (name "ghc-sdl-image")
