@@ -5210,7 +5210,7 @@ locations.")
 (define-public guile-netlink
   (package
     (name "guile-netlink")
-    (version "1.1.2")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -5220,7 +5220,7 @@ locations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1s06xbyj0yd49aivfpc9l73c8c12r3zjmskkyislrfwkbpd74hjr"))))
+         "06ls830nrshzi2j532di5vdf03fp8cy1275ll4ms93x1hv2g8dk0"))))
     (build-system gnu-build-system)
     (inputs
      (list guile-3.0))
