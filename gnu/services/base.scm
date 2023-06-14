@@ -2799,6 +2799,12 @@ to CONFIG."
 
                        #$@(map (lambda (address)
                                  #~(begin
+                                     ;; Before going any further, wait for the
+                                     ;; device to show up.
+                                     (wait-for-link
+                                      #$(network-address-device address)
+                                      #:blocking? #f)
+
                                      (addr-add #$(network-address-device address)
                                                #$(network-address-value address)
                                                #:ipv6?
