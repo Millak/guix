@@ -70,7 +70,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022, 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
-;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022, 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
@@ -155,6 +155,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
+  #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
@@ -223,6 +224,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
@@ -11339,6 +11341,45 @@ liquid and you have to try and eat your opponents.  Rules are very simple yet
 original, they have been invented by Thomas Colcombet.")
     (home-page "https://www.gnu.org/software/liquidwar6/")
     (license license:gpl3+)))
+
+(define-public plunder
+  (let ((commit "026ded7083df5134bdf05b1ec7e5a0099ac9b9d2")
+        (revision "1"))
+    (package
+      (name "plunder")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jappeace/plunder")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0m0v8x6q9iq4zihwmysbxjwkq18nar6xhq4g18p2g8c6azj2mgd6"))))
+      (build-system haskell-build-system)
+      (inputs (list ghc-monadrandom
+                    ghc-quickcheck
+                    ghc-file-embed
+                    ghc-generic-lens
+                    ghc-lens
+                    ghc-random
+                    ghc-reflex
+                    ghc-reflex-sdl2
+                    ghc-sdl2
+                    ghc-sdl2-gfx
+                    ghc-sdl2-image
+                    ghc-sdl2-ttf
+                    ghc-vector
+                    ghc-witherable))
+      (native-inputs (list ghc-hspec ghc-hspec-core hspec-discover))
+      (home-page "https://github.com/jappeace/plunder")
+      (synopsis "Game about looting a hexagonal-tile world")
+      (description
+       "This package provides a work-in-progress game where you control a
+Viking and your objective is to loot all of the occupied hexagonal tiles in
+the map.")
+      (license license:expat))))
 
 (define-public freerct
   (package
