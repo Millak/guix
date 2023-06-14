@@ -13165,6 +13165,34 @@ and high speed.")
 arguments to mappend does not matter.")
     (license license:bsd-3)))
 
+(define-public ghc-dependent-sum
+  (package
+    (name "ghc-dependent-sum")
+    (version "0.7.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "dependent-sum" version))
+              (sha256
+               (base32
+                "1frw5965v8i6xqdgs95gg8asgdqcqnmfahz0pmbwiaw5ybn62rc2"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "dependent-sum")))
+    (inputs (list ghc-constraints-extras ghc-some))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "0qybk8x6gyvg8pgf84mywlfajlcvg9pp4rs1wfn9fa7ns6sms88n")))
+    (home-page "https://github.com/obsidiansystems/dependent-sum")
+    (synopsis "Dependent sum type")
+    (description
+     "This package provides a dependent sum is a generalization of a
+particular way of thinking about the @code{Either} type.  @code{Either a b}
+can be thought of as a 2-tuple @code{(tag, value)}, where the value of the tag
+determines the type of the value.  In particular, either @code{tag = Left} and
+@code{value :: a} or @code{tag = Right} and @code{value :: b}.  This package
+allows you to define your own dependent sum types by using your own \"tag\"
+types.")
+    (license license:public-domain)))
+
 (define-public ghc-unsafe
   (package
     (name "ghc-unsafe")
