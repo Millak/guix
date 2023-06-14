@@ -1029,7 +1029,7 @@ The basic features of Text Pieces are:
                 (for-each (lambda (f) (install-file f lib))
                           (find-files "bin/" "\\.so$"))
                 (for-each (lambda (f) (install-file f inc))
-                          (find-files "include/" "."))))))))
+                          (find-files "include/" "\\.h$"))))))))
     (native-inputs (list pkg-config python-wrapper))
     (inputs (list gtk+))
     (home-page "https://www.scintilla.org/")
