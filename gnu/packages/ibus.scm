@@ -59,10 +59,12 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages serialization)
@@ -348,18 +350,44 @@ Chinese pinyin input methods.")
                     version "/ibus-anthy-" version ".tar.gz"))
               (sha256
                (base32
-                "16vd0k8wm13s38869jqs3dnwmjvywgn0snnpyi41m28binhlssf8"))))
+                "16vd0k8wm13s38869jqs3dnwmjvywgn0snnpyi41m28binhlssf8"))
+              (patches (search-patches "ibus-anthy-fix-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
+      ;; The test suite hangs (see:
+      ;; https://github.com/ibus/ibus-anthy/issues/28).
+      #:tests? #f
       #:configure-flags
       ;; Use absolute exec path in the anthy.xml.
       #~(list (string-append "--libexecdir=" #$output "/libexec"))
       ;; The test suite fails (see:
       ;; https://github.com/ibus/ibus-anthy/issues/28).
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-check
+            (lambda _
+              (substitute* "data/Makefile.in"
+                ;; Use a year current at the time the release was made, to
+                ;; avoid the "This year ２０２３ is not included in era.y"
+                ;; error.
+                (("`date '\\+%Y'`")
+                 "2021"))))
+          (add-after 'unpack 'do-not-override-GI_TYPELIB_PATH
+            ;; Do not override the GI_TYPELIB_PATH to avoid the pygobject
+            ;; error: "ValueError: Namespace Gdk not available".
+            (lambda _
+              (substitute* "tests/test-build.sh"
+                (("GI_TYPELIB_PATH=\\$BUILDDIR/../gir" all)
+                 (string-append all ":$GI_TYPELIB_PATH")))))
+          (add-before 'check 'prepare-for-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; IBus requires write access to the HOME directory.
+                (setenv "HOME" "/tmp")
+                ;; The single test is skipped if no actual display is found.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1"))))
           (add-after 'install 'wrap-programs
             (lambda* (#:key inputs #:allow-other-keys)
               (for-each
@@ -376,7 +404,11 @@ Chinese pinyin input methods.")
            `(,glib "bin")
            intltool
            pkg-config
-           python))
+           procps                       ;for ps
+           python
+           python-pycotap
+           util-linux                   ;for getopt
+           xorg-server-for-tests))
     (inputs
      (list anthy
            gtk+
