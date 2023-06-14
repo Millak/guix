@@ -16618,6 +16618,26 @@ analogous to a function, and which distinguishes returning the argument it was
 provided from returning something else.")
     (license license:bsd-3)))
 
+(define-public ghc-ref-tf
+  (package
+    (name "ghc-ref-tf")
+    (version "0.5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "ref-tf" version))
+              (sha256
+               (base32
+                "0isilgcbw12zyh8s2liaj5r9r5m3yg1xskyhag6f36qi60y29hx5"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "ref-tf")))
+    (home-page "http://hackage.haskell.org/package/ref-tf")
+    (synopsis "Type class for monads with references using type families")
+    (description
+     "This package contains a @code{MonadRef} type class that abstracts over
+the details of manipulating references, allowing one to write code that can
+operate in either the @code{ST} monad or the @code{IO} monad.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
