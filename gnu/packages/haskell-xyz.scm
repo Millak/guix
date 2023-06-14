@@ -13193,6 +13193,33 @@ allows you to define your own dependent sum types by using your own \"tag\"
 types.")
     (license license:public-domain)))
 
+(define-public ghc-dependent-map
+  (package
+    (name "ghc-dependent-map")
+    (version "0.4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "dependent-map" version))
+              (sha256
+               (base32
+                "0b0zhyl3wkl4kkrxvq7vwjz3gn0ndxjjgyw9cky8a6xyv190pkjk"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "dependent-map")))
+    (inputs (list ghc-dependent-sum ghc-constraints-extras))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "160p9crvlx1sn60inkwxa6mv1h2d4fgqnpsb2km67zrkpdfyd2s2")))
+    (home-page "https://github.com/obsidiansystems/dependent-map")
+    (synopsis "Dependent finite maps (partial dependent products)")
+    (description
+     "This package provides a type called @@DMap@@ which generalizes @@Data.Map.Map@@,
+allowing keys to specify the type of value that can be associated with them.")
+
+    ;; XXX: The 'LICENSE' file lists several licenses, stating "I have no idea
+    ;; which, if any, of the following licenses apply […].  Any modifications
+    ;; by myself I release into the public domain […]"."
+    (license license:public-domain)))
+
 (define-public ghc-unsafe
   (package
     (name "ghc-unsafe")
