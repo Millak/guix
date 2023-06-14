@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -3214,7 +3214,12 @@ with image data, text data, and sequence data.")
        (patches (search-patches "python-keras-integration-test.patch"))
        (sha256
         (base32
-         "1j8bsqzh49vjdxy6l1k4iwax5vpjzniynyd041xjavdzvfii1dlh"))))
+         "1j8bsqzh49vjdxy6l1k4iwax5vpjzniynyd041xjavdzvfii1dlh"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "keras/callbacks.py"
+                   (("from collections import Iterable")
+                    "from collections.abc import Iterable"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
