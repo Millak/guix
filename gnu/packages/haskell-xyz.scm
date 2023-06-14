@@ -10424,6 +10424,26 @@ programming.")
 @code{SDL2_mixer}.")
     (license license:bsd-3)))
 
+(define-public ghc-sdl2-ttf
+  (package
+    (name "ghc-sdl2-ttf")
+    (version "2.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "sdl2-ttf" version))
+              (sha256
+               (base32
+                "0sm5lrdif5wmz3iah1658zlr7yr45d1hfihb2hdxdia4h7z1j0mn"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "sdl2-ttf")))
+    (inputs (list ghc-sdl2 ghc-th-abstraction sdl2-ttf))
+    (native-inputs (list pkg-config))
+    (home-page "http://hackage.haskell.org/package/sdl2-ttf")
+    (synopsis "Bindings to SDL2_ttf")
+    (description "This package provides Haskell bindings to SDL2_ttf C++
+library.")
+    (license license:bsd-3)))
+
 (define-public ghc-sdl-image
   (package
     (name "ghc-sdl-image")
