@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1180,3 +1181,26 @@ result of golden tests.")
      "Integrate @@inspection-testing@@ into @@tasty@@ test suites.")
     (license license:expat)))
 
+(define-public ghc-proctest
+  (package
+    (name "ghc-proctest")
+    (version "0.1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "proctest" version))
+              (sha256
+               (base32
+                "02iz323arx9zwclvspgaaqz81bp6jdnj89pjm08n2gamg39zsbdn"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "proctest")))
+    (inputs (list ghc-hunit ghc-hspec ghc-quickcheck))
+    (home-page "https://github.com/nh2/proctest")
+    (synopsis "IO library for testing interactive command line programs")
+    (description
+     "This package provides an IO library for testing interactive command line
+programs.  Proctest aims to simplify interacting with and testing terminal
+programs, providing convenience functions for starting programs and reading
+their output.  All blocking operations support timeouts so that misbehaving
+programs cannot block your test pipeline.  Find more examples and contribute
+at @url{https://github.com/nh2/proctest}.")
+    (license license:expat)))
