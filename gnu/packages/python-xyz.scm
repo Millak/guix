@@ -29794,13 +29794,13 @@ and frame grabber interface.")
 (define-public python-scikit-build
   (package
     (name "python-scikit-build")
-    (version "0.17.1")
+    (version "0.17.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit_build" version))
        (sha256
-        (base32 "0v1qcn3nsjxqdl6fa07b7acq6xndqbvvic5dvsgbjgldkjr1drqp"))))
+        (base32 "17awdvpzj4bn50gk4gmj20r2xcjr5y8lfl2bk582di1pdfim26mm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -29839,11 +29839,7 @@ and frame grabber interface.")
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
                               "and not test_generator_cleanup "
-                              "and not test_generator_selection "
-                              ;; The compiler test fails with a
-                              ;; SKBuildGeneratorNotFoundError error (see:
-                              ;; https://github.com/scikit-build/scikit-build/issues/945).
-                              "and not test_cxx_compiler "))))))))
+                              "and not test_generator_selection "))))))))
     (native-inputs
      (list cmake-minimal
            gfortran
@@ -29863,7 +29859,8 @@ and frame grabber interface.")
            python-pytest-virtualenv
            python-pytest-xdist
            python-requests
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-virtualenv))
     (propagated-inputs
      (list python-distro python-packaging python-tomli python-wheel))
     (home-page "https://github.com/scikit-build/scikit-build")
