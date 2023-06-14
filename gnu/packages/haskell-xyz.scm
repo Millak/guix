@@ -9710,6 +9710,72 @@ configurations to coexist without resorting to mutable global variables or
 @code{System.IO.Unsafe.unsafePerformIO}.")
     (license license:bsd-3)))
 
+(define-public ghc-reflex
+  (package
+    (name "ghc-reflex")
+    (version "0.8.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "reflex" version))
+              (sha256
+               (base32
+                "1add5bcsyq2k02w2q0ifbyfcvcic1hmjdbgxg8ajd5riam0lhb16"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "reflex")))
+    (inputs (list ghc-memotrie
+                  ghc-bifunctors
+                  ghc-comonad
+                  ghc-commutative-semigroups
+                  ghc-constraints
+                  ghc-constraints-extras
+                  ghc-data-default
+                  ghc-dependent-map
+                  ghc-exception-transformers
+                  ghc-lens
+                  ghc-mmorph
+                  ghc-monad-control
+                  ghc-patch
+                  ghc-prim-uniq
+                  ghc-primitive
+                  ghc-profunctors
+                  ghc-random
+                  ghc-ref-tf
+                  ghc-reflection
+                  ghc-semigroupoids
+                  ghc-syb
+                  ghc-unbounded-delays
+                  ghc-witherable
+                  ghc-these
+                  ghc-semialign
+                  ghc-monoidal-containers
+                  ghc-dependent-sum
+                  ghc-haskell-src-exts
+                  ghc-haskell-src-meta))
+    (native-inputs (list hlint
+                         ghc-split
+                         ghc-filemanip
+                         ghc-these-lens
+                         ghc-hspec
+                         ghc-proctest))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'update-constraints
+           (lambda _
+             (substitute* "reflex.cabal"
+               (("\\bmmorph >= 1\\.0 && < 1\\.2,") "mmorph,")))))))
+    (home-page "https://reflex-frp.org")
+    (synopsis "Higher-order functional reactive programming")
+    (description
+     "This library lets you write interactive programs without callbacks or
+side-effects.  Functional Reactive Programming (FRP) uses composable events
+and time-varying values to describe interactive systems as pure functions.
+Just like other pure functional code, functional reactive code is easier to
+get right on the first try, maintain, and reuse.  Reflex is a
+fully-deterministic, higher-order FRP interface and an engine that efficiently
+implements that interface.")
+    (license license:bsd-3)))
+
 (define-public ghc-regex
   (package
     (name "ghc-regex")
