@@ -241,6 +241,29 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
                          (loop all (record key value current field-type) key))))
                      (loop all current #false))))))))))))
 
+;; Packages listed below are used to build "latex-bin" package, and therefore
+;; cannot provide it automatically as a native input.  Consequently, the
+;; importer sets TEXLIVE-LATEX-BIN? argument to #F for all of them.
+(define latex-bin-dependency-tree
+  (memoize
+   (lambda (package-database)
+     ;; Start out with "latex-bin", but also provide native inputs, which do
+     ;; not appear as dependents, as roots for the search.
+     (let loop ((packages
+                 (list "latex-bin" "metafont" "modes" "tex"))
+                (deps '()))
+       (if (null? packages)
+           ;; `translate-depends' will always translate "hyphen-base" into
+           ;; "hyphen-complete".  Make sure plain hyphen-base appears in the
+           ;; dependency tree.
+           (cons "hyphen-base" (translate-depends deps))
+           (loop (append-map (lambda (name)
+                               (let ((data (assoc-ref package-database name)))
+                                 (or (assoc-ref data 'depend)
+                                     '())))
+                             packages)
+                 (append packages deps)))))))
+
 (define* (files-differ? directory package-name
                         #:key
                         (package-database tlpdb)
@@ -310,6 +333,7 @@ of those files are returned that are unexpectedly installed."
                                 (append (or (assoc-ref data 'docfiles) (list))
                                         (or (assoc-ref data 'runfiles) (list))
                                         (or (assoc-ref data 'srcfiles) (list))))))
+             (texlive-name name)
              (name (guix-name name))
              ;; TODO: we're ignoring the VERSION argument because that
              ;; information is distributed across %texlive-tag and
@@ -345,27 +369,38 @@ of those files are returned that are unexpectedly installed."
           (build-system ,(if meta-package?
                              'trivial-build-system
                              'texlive-build-system))
-          ;; Translate AddFormat execute actions into a `#:create-formats'
-          ;; argument.
-          ,@(cond
-             (meta-package? '((arguments (list #:builder #~(mkdir #$output)))))
-             ((and-let* ((actions (assoc-ref data 'execute))
-                         (formats
-                          (delete-duplicates
-                           (filter-map
-                            (lambda (action)
-                              (match (string-split action #\space)
-                                (("AddFormat" name . _)
-                                 (string-drop name (string-length "name=")))
-                                (  #f)))
-                            actions)))
-                         ((not (null? formats))))
-                formats)
-              =>
-              (lambda (formats)
-                `((arguments
-                   (list #:create-formats #~(list ,@(reverse formats)))))))
-             (else '()))
+          ,@(if meta-package?
+                '((arguments (list #:builder #~(mkdir #$output))))
+                (let* ((formats
+                        ;; Translate AddFormat execute actions into
+                        ;; a #:create-formats argument.
+                        (and-let*
+                            ((actions (assoc-ref data 'execute))
+                             (formats
+                              (delete-duplicates
+                               (filter-map
+                                (lambda (action)
+                                  (match (string-split action #\space)
+                                    (("AddFormat" fmt . _)
+                                     (string-drop fmt (string-length "name=")))
+                                    (_ #f)))
+                                actions)))
+                             ((pair? formats)))
+                          (reverse formats)))
+                       ;; Check if setting #:texlive-latex-bin? is appropriate.
+                       (latex-bin-dependency?
+                        (member texlive-name
+                                (latex-bin-dependency-tree package-database)))
+                       (arguments
+                        (append (if latex-bin-dependency?
+                                    '(#:texlive-latex-bin? #f)
+                                    '())
+                                (if formats
+                                    `(#:create-formats #~(list ,@formats))
+                                    '()))))
+                  (if (pair? arguments)
+                      `((arguments (list ,@arguments)))
+                      '())))
           ;; Texlive build system generates font metrics whenever a font
           ;; metrics file has the same base name as a Metafont file.
           ,@(or (and-let* ((runfiles (assoc-ref data 'runfiles))

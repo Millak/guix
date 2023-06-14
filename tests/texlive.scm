@@ -633,6 +633,7 @@ completely compatible with Plain TeX.")
                ('source _)
                ('outputs _)
                ('build-system 'texlive-build-system)
+               ('arguments ('list '#:texlive-latex-bin? #f))
                ('propagated-inputs
                 ('list 'texlive-cm 'texlive-hyphen-base))
                ('home-page (? string?))
