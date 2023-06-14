@@ -392,10 +392,6 @@ silently and reliably flow across to every other.")
        #~(list (string-append "CC=" #$(cc-for-target)))
        #:phases
        #~(modify-phases %standard-phases
-         (add-after 'unpack 'link-to-external-libraries
-           (lambda _
-             ;; Only link necessary libraries.
-             (setenv "DCFLAGS" "-L--as-needed")))
          (add-after 'configure 'adjust-makefile
            (lambda _
              (substitute* "Makefile"
