@@ -9776,6 +9776,44 @@ fully-deterministic, higher-order FRP interface and an engine that efficiently
 implements that interface.")
     (license license:bsd-3)))
 
+(define-public ghc-reflex-sdl2
+  (let ((commit "6dadf2c4f383b8a58fcd73616996b219c4f93972")
+        (revision "1"))
+    (package
+      (name "ghc-reflex-sdl2")
+      (version (git-version "0.3.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/schell/reflex-sdl2")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06lxfgp18l1car6wd07mbjn4yblnp89acf1i67nd815p2hx0ihbz"))))
+      (build-system haskell-build-system)
+      (properties '((upstream-name . "reflex-sdl2")))
+      (inputs (list ghc-async
+                    ghc-dependent-sum
+                    ghc-exception-transformers
+                    ghc-ref-tf
+                    ghc-primitive
+                    ghc-reflex
+                    ghc-sdl2))
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'update-constraints
+             (lambda _
+               (substitute* "reflex-sdl2.cabal"
+                 (("\\bref-tf +>= 0\\.4 +&& < 0\\.5\\b") "ref-tf")))))))
+      (home-page "https://github.com/schell/reflex-sdl2")
+      (synopsis "SDL2 and Reflex functional reactive programming")
+      (description
+       "This package provides a minimal host for SDL2-based Reflex
+applications.")
+      (license license:expat))))
+
 (define-public ghc-regex
   (package
     (name "ghc-regex")
