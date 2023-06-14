@@ -6360,6 +6360,32 @@ polymorphism.  @code{Lens.Family.Clone} allows for first-class support of
 lenses and traversals for those who require Haskell 98.")
     (license license:bsd-3)))
 
+(define-public ghc-generic-lens-core
+  (package
+    (name "ghc-generic-lens-core")
+    (version "2.2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "generic-lens-core" version))
+              (sha256
+               (base32
+                "08i4c9yb6z84iknrnl9f3f343121j7ilp0a679v81nsjm9xz3rlf"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "generic-lens-core")))
+    (inputs (list ghc-indexed-profunctors))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1dbjhd6k7ypqa9f4h9v2xndgb4mjhfli3n1vjm8r8ga0kfndbqfn")))
+    (home-page "https://github.com/kcsongor/generic-lens")
+    (synopsis "Generically derive traversals, lenses and prisms.")
+    (description
+     "This library uses GHC.Generics to derive efficient optics (traversals,
+lenses and prisms) for algebraic data types in a type-directed way, with a
+focus on good type inference and error messages when possible.  This package
+is the shared internal logic of the @code{generic-lens} and
+@code{generic-optics} libraries.")
+    (license license:bsd-3)))
+
 (define-public ghc-libffi
   (package
     (name "ghc-libffi")
