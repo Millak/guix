@@ -6386,6 +6386,30 @@ is the shared internal logic of the @code{generic-lens} and
 @code{generic-optics} libraries.")
     (license license:bsd-3)))
 
+(define-public ghc-generic-lens
+  (package
+    (name "ghc-generic-lens")
+    (version "2.2.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "generic-lens" version))
+              (sha256
+               (base32
+                "0s4b51s11ssmndmx9m9zbwgv9rb27ajwihsrk10hn582rp4ck3c6"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "generic-lens")))
+    (inputs (list ghc-generic-lens-core ghc-profunctors))
+    (native-inputs (list ghc-lens ghc-inspection-testing ghc-hunit ghc-doctest))
+    (home-page "https://github.com/kcsongor/generic-lens")
+    (synopsis "Generically derive traversals, lenses and prisms.")
+    (description
+     "This library uses @code{GHC.Generics} to derive efficient
+optics (traversals, lenses and prisms) for algebraic data types in a
+type-directed way, with a focus on good type inference and error messages when
+possible.  The library exposes a van Laarhoven interface.  For an alternative
+interface, supporting an opaque optic type, see @code{generic-optics}.")
+    (license license:bsd-3)))
+
 (define-public ghc-libffi
   (package
     (name "ghc-libffi")
