@@ -25237,13 +25237,23 @@ they use the same path.")
        (uri (pypi-uri "blosc" version))
        (sha256
         (base32
-         "1cm91c6r431yla2mbs4895bgiianjf30dfz14vvv99dslygd65jw"))))
+         "1cm91c6r431yla2mbs4895bgiianjf30dfz14vvv99dslygd65jw"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "c-blosc")))))
     (build-system python-build-system)
     ;; FIXME: all tests pass, but then this error is printed:
     ;; TypeError: calling <function run at 0x7ffff2568d90> returned None, not a test
-    (arguments '(#:tests? #f))
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'find-blosc
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "BLOSC_DIR" #$(this-package-input "c-blosc")))))))
     (propagated-inputs
      (list python-numpy))
+    (inputs (list c-blosc))
     (home-page "https://github.com/blosc/python-blosc")
     (synopsis "Python wrapper for the Blosc data compressor library")
     (description "Blosc is a high performance compressor optimized for binary
