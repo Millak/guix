@@ -16584,6 +16584,40 @@ to incorporate LeanCheck tests into test-framework test suites.")
 monads and a GADT-like type using them as witnesses of type equality.")
     (license license:public-domain)))
 
+(define-public ghc-patch
+  (package
+    (name "ghc-patch")
+    (version "0.0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "patch" version))
+              (sha256
+               (base32
+                "15r2sjlpvp22iwd7qa1lqdq7n8nvqv2klvzrlm3phqq3j5n5x5y5"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "patch")))
+    (inputs (list ghc-constraints-extras
+                  ghc-commutative-semigroups
+                  ghc-dependent-map
+                  ghc-dependent-sum
+                  ghc-lens
+                  ghc-indexed-traversable
+                  ghc-semigroupoids
+                  ghc-witherable
+                  ghc-these
+                  ghc-semialign
+                  ghc-monoidal-containers))
+    (native-inputs (list ghc-hedgehog ghc-hunit ghc-filemanip hlint))
+    (home-page "https://obsidian.systems")
+    (synopsis
+     "Data structures for describing changes to other data structures")
+    (description
+     "This library provides data structures for describing changes to other
+data structures.  In this library, a patch is something that can be applied,
+analogous to a function, and which distinguishes returning the argument it was
+provided from returning something else.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
