@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2046,6 +2047,27 @@ nothing.")
 Colours can be blended and composed.  Various colour spaces are
 supported.  A module of colour names (\"Data.Colour.Names\") is provided.")
     (license license:expat)))
+
+(define-public ghc-hscolour
+  (package
+    (name "ghc-hscolour")
+    (version "1.24.4")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hscolour" version))
+              (sha256
+               (base32
+                "079jwph4bwllfp03yfr26s5zc6m6kw3nhb1cggrifh99haq34cr4"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "hscolour")))
+    (home-page "http://code.haskell.org/~malcolm/hscolour/")
+    (synopsis "Colourise Haskell code")
+    (description
+     "hscolour is a small Haskell script to colourise Haskell code.  It currently has
+six output formats: ANSI terminal codes (optionally XTerm-256colour codes), HTML
+3.2 with <font> tags, HTML 4.01 with CSS, HTML 4.01 with CSS and mouseover
+annotations, XHTML 1.0 with inline CSS styling, LaTeX, and mIRC chat codes.")
+    (license license:lgpl2.1)))
 
 (define-public ghc-comonad
   (package
