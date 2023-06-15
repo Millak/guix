@@ -505,14 +505,14 @@ assorted menu related utility programs.")
 (define-public mate-applets
   (package
     (name "mate-applets")
-    (version "1.24.1")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-applets-" version ".tar.xz"))
        (sha256
-        (base32 "0h70i4x3bk017pgv4zn280682wm58vwdjm7kni91ni8rmblnnvyp"))))
+        (base32 "1hn22xxmkm3s1477war7w7lb7yh77b3251y1why37p3nncfzdf1s"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config
@@ -533,6 +533,7 @@ assorted menu related utility programs.")
            gtksourceview-3
            libgtop
            libmateweather
+           libnl
            libnotify
            libx11
            libxml2
