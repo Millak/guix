@@ -1763,3 +1763,28 @@ to images.")
 including ANSI (.ANS) and many others.  The library primarily serves to support
 the ansilove tool.")
     (license license:bsd-2)))
+
+(define-public ansilove
+  (package
+    (name "ansilove")
+    (version "4.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ansilove/ansilove")
+                    (commit (string-append version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h9r759krjl8wi68yxs1d46qfrx6v89a8vmmv3aqym8vn9x430kh"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list libansilove))
+    (home-page "https://www.ansilove.org/")
+    (synopsis "ANSI and ASCII art to PNG converter")
+    (description
+     "AnsiLove is an ANSI and ASCII art to PNG converter, allowing to convert
+ANSI and artscene-related file formats into PNG images, supporting ANSI (.ANS),
+PCBoard (.PCB), Binary (.BIN), Artworx (.ADF), iCE Draw (.IDF), Tundra (.TND)
+and XBin (.XB) formats.")
+    (license license:bsd-2)))
