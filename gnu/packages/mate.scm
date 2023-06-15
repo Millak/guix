@@ -198,14 +198,14 @@ from Mint-X-F and Faenza-Fresh icon packs.")
 (define-public mate-themes
   (package
     (name "mate-themes")
-    (version "3.22.21")
+    (version "3.22.24")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/themes/" (version-major+minor version)
                            "/mate-themes-" version ".tar.xz"))
        (sha256
-        (base32 "051g2vq817g84yrqzf7hjcqr4xrghnw1rprjd6jf5mhhzmwcas6n"))))
+        (base32 "0jkfrz5fp4qnixfpc1pjjlba3nj6v2fqqpfgqhjdwcak50m3m2rx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool gdk-pixbuf ; gdk-pixbuf+svg isn't needed
