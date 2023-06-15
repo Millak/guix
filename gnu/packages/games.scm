@@ -10595,14 +10595,14 @@ ChessX.")
 (define-public barrage
   (package
     (name "barrage")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/barrage/"
                            "barrage-" version ".tar.gz"))
        (sha256
-        (base32 "1bhx708s7viv01m6bmpjsdgr33wk5kqw4wf7bvgw73a07v6j8ncw"))))
+        (base32 "0j7j6n5h97xpw0h8zi5a8ziw1vjsbr5gk4dcsiwzh59qn0djnrkh"))))
     (build-system gnu-build-system)
     (inputs
      (list hicolor-icon-theme sdl sdl-mixer))
