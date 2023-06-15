@@ -502,7 +502,7 @@ code analysis tools.")
               "znver3")
             '())))))
 
-(define (make-clang-toolchain clang libomp)
+(define-public (make-clang-toolchain clang libomp)
   (package
     (name (string-append (package-name clang) "-toolchain"))
     (version (package-version clang))
