@@ -578,14 +578,14 @@ Interactive Weather Information Network (IWIN).
 (define-public mate-media
   (package
     (name "mate-media")
-    (version "1.24.1")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-media-" version ".tar.xz"))
        (sha256
-        (base32 "118i4w2i2g3hfgbfn3hjzjkfq8vjj6049r7my3vna9js23b7ab92"))))
+        (base32 "02zb4rgahs50pick4nw9xhycshc5kbs1dlnr0ry5r4bd54da5ci8"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool gettext-minimal gobject-introspection))
