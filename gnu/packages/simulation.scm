@@ -716,12 +716,14 @@ user interface to the FEniCS core components and external libraries.")
        ("ply" ,python-ply)
        ("pytest" ,python-pytest)
        ("python-decorator" ,python-decorator)
-       ("python-pkgconfig" ,python-pkgconfig)
        ,@(package-native-inputs fenics-dolfin)))
     (propagated-inputs
      `(("dolfin" ,fenics-dolfin)
        ("petsc4py" ,python-petsc4py)
-       ("slepc4py" ,python-slepc4py)))
+       ("slepc4py" ,python-slepc4py)
+
+       ;; 'dolfin/jit/jit.py' parses 'dolfin.pc' at run time.
+       ("python-pkgconfig" ,python-pkgconfig)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -729,6 +731,15 @@ user interface to the FEniCS core components and external libraries.")
            (lambda _
              (substitute* "python/setup.py"
                (("pybind11==") "pybind11>="))))
+         (add-after 'unpack 'set-dolfin-pc-file-name
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Instead of cluttering the user's 'PKG_CONFIG_PATH' environment
+             ;; variable, hard-code the 'dolfin.pc' absolute file name.
+             (let ((pc-file (search-input-file inputs
+                                               "/lib/pkgconfig/dolfin.pc")))
+               (substitute* "python/dolfin/jit/jit.py"
+                 (("pkgconfig\\.parse\\(\"dolfin\"\\)")
+                  (string-append "pkgconfig.parse(\"" pc-file "\")"))))))
          (add-after 'patch-source-shebangs 'set-paths
            (lambda _
              ;; Define paths to store locations.
