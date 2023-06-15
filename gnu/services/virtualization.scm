@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
-;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
@@ -962,6 +962,11 @@ specified, the QEMU default path is used."))
     (list
      (shepherd-service
       (provision '(qemu-guest-agent))
+
+      ;; The service needs to depend on udev, which brings up devices like
+      ;; those under /dev/virtio-ports.
+      (requirement '(user-processes udev))
+
       (documentation "Run the QEMU guest agent.")
       (start #~(make-forkexec-constructor
                 `(,(string-append #$qemu "/bin/qemu-ga")
