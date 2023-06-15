@@ -1145,14 +1145,14 @@ Re-decorates windows on un-maximise.
 (define-public mate-screensaver
   (package
     (name "mate-screensaver")
-    (version "1.24.1")
+    (version "1.26.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-screensaver-" version ".tar.xz"))
        (sha256
-        (base32 "0imb1z2yvz1h95dzq396c569kkxys9mb2dyc6qxxxcnc5w02a2dw"))))
+        (base32 "0zpzlmbb6m2hqsr67rc6mqpabl1idpzfqzlj4ifxanql4k7015ys"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
