@@ -11879,11 +11879,7 @@ applications.")
            (lambda _
              ;; FIXME: The test_draft.TestDraftSockets test fails with:
              ;;   zmq.error.Again: Resource temporarily unavailable
-             (delete-file "zmq/tests/test_draft.py")
-             ;; These tests appear to depend on a working name resolver (see:
-             ;; https://github.com/zeromq/pyzmq/issues/1853).
-             (delete-file "zmq/tests/test_auth.py")
-             (delete-file "zmq/tests/test_zmqstream.py")))
+             (delete-file "zmq/tests/test_draft.py")))
          (add-before 'check 'build-extensions
            (lambda _
              ;; Cython extensions have to be built before running the tests.
