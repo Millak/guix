@@ -783,7 +783,7 @@ infamous 'Wanda the Fish'.")
 (define-public caja
   (package
     (name "caja")
-    (version "1.24.0")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
@@ -791,7 +791,7 @@ infamous 'Wanda the Fish'.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1cnfy481hcwjv3ia3kw0d4h7ga8cng0pqm3z349v4qcmfdapmqc0"))))
+         "01scw5wk4fgps8fk9l7ic2q6p1wplxzsv678wbv010m301pnxz9h"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags '("--disable-update-mimedb")
