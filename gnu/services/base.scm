@@ -44,6 +44,7 @@
   #:autoload   (guix diagnostics) (warning formatted-message &fix-hint)
   #:autoload   (guix i18n) (G_)
   #:use-module (guix combinators)
+  #:use-module (guix utils)
   #:use-module (gnu services)
   #:use-module (gnu services admin)
   #:use-module (gnu services shepherd)
@@ -2677,7 +2678,7 @@ NAME-udev-hardware."
      (with-imported-modules (source-module-closure '((gnu build file-systems)))
        (shepherd-service
         (provision (list (swap->shepherd-service-name swap)))
-        (requirement `(udev ,@requirements))
+        (requirement `(,@(if (target-hurd?) '() '(udev)) ,@requirements))
         (documentation "Enable the given swap space.")
         (modules `((gnu build file-systems)
                    ,@%default-modules))
@@ -2685,16 +2686,21 @@ NAME-udev-hardware."
                    (let ((device #$device-lookup))
                      (and device
                           (begin
-                            (restart-on-EINTR (swapon device
-                                                      #$(if (swap-space? swap)
-                                                            (swap-space->flags-bit-mask
-                                                             swap)
-                                                            0)))
+                            #$(if (target-hurd?)
+                                  #~(system* "swapon" device)
+                                  #~(restart-on-EINTR
+                                     (swapon device
+                                             #$(if (swap-space? swap)
+                                                   (swap-space->flags-bit-mask
+                                                    swap)
+                                                   0))))
                             #t)))))
         (stop #~(lambda _
                   (let ((device #$device-lookup))
                     (when device
-                      (restart-on-EINTR (swapoff device)))
+                      #$(if (target-hurd?)
+                            #~(system* "swapoff" device)
+                            #~(restart-on-EINTR (swapoff device))))
                     #f)))
         (respawn? #f))))
    (description "Turn on the virtual memory swap area.")))
