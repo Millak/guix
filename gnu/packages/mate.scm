@@ -1215,7 +1215,7 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public mate-utils
   (package
     (name "mate-utils")
-    (version "1.24.0")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
@@ -1223,7 +1223,7 @@ can be used as backgrounds in the MATE Desktop environment.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1b16n1628gcsym5mph6lr9x5xm4rgkxsa8xwr2wlx8g2gw2775i1"))))
+         "08066w98y45ilna6sn2kj8jnyhafra7sbpfrjdddv48939dlflrg"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal
