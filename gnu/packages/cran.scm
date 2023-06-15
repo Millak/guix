@@ -2262,16 +2262,37 @@ provides methods for automatically determining breaks and labels for axes and
 legends.")
     (license license:expat)))
 
+(define-public r-swagger
+  (package
+    (name "r-swagger")
+    (version "3.33.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "swagger" version))
+              (sha256
+               (base32
+                "1ldgmy5vjzd11z5yl5a518wkw6y0l469b2zf0lp12hk19jq6k0sj"))))
+    (properties `((upstream-name . "swagger")))
+    (build-system r-build-system)
+    (home-page "https://github.com/rstudio/swagger")
+    (synopsis
+     "Dynamically generate documentation from a Swagger-compliant API")
+    (description
+     "This package provides a collection of HTML, JavaScript, and CSS assets
+that dynamically generate beautiful documentation from a Swagger compliant
+API.")
+    (license license:asl2.0)))
+
 (define-public r-pacman
   (package
     (name "r-pacman")
     (version "0.5.1")
     (source (origin
-             (method url-fetch)
-             (uri (cran-uri "pacman" version))
-             (sha256
-              (base32
-               "0z7gngd6h83cpjhq1vg75wvzhdjbgjh7gj5d4zvvi9gd2lmagjcy"))))
+              (method url-fetch)
+              (uri (cran-uri "pacman" version))
+              (sha256
+               (base32
+                "0z7gngd6h83cpjhq1vg75wvzhdjbgjh7gj5d4zvvi9gd2lmagjcy"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-remotes))
