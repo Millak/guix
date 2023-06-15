@@ -965,14 +965,14 @@ of various aspects of your desktop.")
 (define-public marco
   (package
     (name "marco")
-    (version "1.24.1")
+    (version "1.26.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "109b41pjrc1b4slw6sx1lakdhrc46x829vczzk4bz3j15kcszg54"))))
+        (base32 "18q71r4bkrldscp414qm0457i0jnk841wwc490qg0whhzraa5w8j"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config
@@ -998,6 +998,7 @@ of various aspects of your desktop.")
            libxinerama
            libxrandr
            libxrender
+           libxres
            mate-desktop
            pango
            startup-notification))
