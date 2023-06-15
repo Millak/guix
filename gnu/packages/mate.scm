@@ -1417,14 +1417,14 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public mate-system-monitor
   (package
     (name "mate-system-monitor")
-    (version "1.24.1")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-system-monitor-" version ".tar.xz"))
        (sha256
-        (base32 "1i2r4lw6xsk972yp15g5hm8p8xx9pp6jmcvvzbdq80xyx3x898qz"))))
+        (base32 "13rkrk7c326ng8164aqfp6i7334n7zrmbg61ncpjprbrvlx2qiw3"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list autoconf gettext-minimal intltool pkg-config yelp-tools))
