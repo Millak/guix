@@ -342,25 +342,19 @@ and should be preferred to it whenever a package would otherwise depend on
 (define-deprecated-package texlive-ruhyphen texlive-hyphen-complete)
 (define-deprecated-package texlive-ukrhyph texlive-hyphen-complete)
 
-(define texlive-extra-src
-  (origin
-    (method url-fetch)
-    (uri "ftp://tug.org/historic/systems/texlive/2021/texlive-20210325-extra.tar.xz")
-    (sha256 (base32
-             "171kg1n9zapw3d2g47d8l0cywa99bl9m54xkqvp9625ks22z78s6"))))
-
 (define-public texlive-bin
   (package
     (name "texlive-bin")
-    (version "20210325")
+    (version "20230313")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "ftp://tug.org/historic/systems/texlive/2021/"
-                           "texlive-" version "-source.tar.xz"))
+       (uri (string-append "ftp://tug.org/historic/systems/texlive/"
+                           (string-take version 4)
+                           "/texlive-" version "-source.tar.xz"))
        (sha256
         (base32
-         "0jsq1p66l46k2qq0gbqmx25flj2nprsz4wrd1ybn286p11kdkvvs"))
+         "1fbrkv7g9j6ipmwjx27l8l9l974rmply8bhf7c2iqc6h3q7aly1q"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -377,7 +371,15 @@ and should be preferred to it whenever a package would otherwise depend on
                                        (eq? 'directory (stat:type (stat file))))))))))))
     (build-system gnu-build-system)
     (inputs
-     `(("texlive-extra-src" ,texlive-extra-src)
+     `(("texlive-extra-src"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "ftp://tug.org/historic/systems/texlive/"
+                               (string-take version 4)
+                               "/texlive-" version "-extra.tar.xz"))
+           (sha256
+            (base32
+             "1hiqvdg679yadygf23f37b3dz5ick258k1qcam9nhkhprkx7d9l0"))))
        ("config" ,config)
        ("texlive-scripts" ,texlive-scripts)
        ("cairo" ,cairo)
@@ -413,6 +415,7 @@ and should be preferred to it whenever a package would otherwise depend on
                   (srfi srfi-1)
                   (srfi srfi-26))
        #:out-of-source? #t
+       #:parallel-tests? #f             ;bibtex8.test fails otherwise
        #:configure-flags
        '("--disable-static"
          "--disable-native-texlive-build"
@@ -626,15 +629,12 @@ and should be preferred to it whenever a package would otherwise depend on
                     (config.guess (search-input-file inputs
                                                      "/bin/config.guess")))
 
-               ;; Create symbolic links for the latex variants and their man
-               ;; pages.  We link lualatex to luahbtex; see issue #51252 for
-               ;; details.
+               ;; Create symbolic links for the latex variants.  We link
+               ;; lualatex to luahbtex; see issue #51252 for details.
                (with-directory-excursion (string-append out "/bin/")
                  (for-each symlink
                            '("pdftex" "pdftex"   "xetex"   "luahbtex")
                            '("latex"  "pdflatex" "xelatex" "lualatex")))
-               (with-directory-excursion (string-append share "/man/man1/")
-                 (symlink "luatex.1" "lualatex.1"))
 
                ;; Install tlpkg.
                (copy-recursively tlpkg-src (string-append share "/tlpkg"))
@@ -684,7 +684,12 @@ and should be preferred to it whenever a package would otherwise depend on
                ;; time.
                (setenv "PATH" (string-append (getenv "PATH") ":" out "/bin"))
                (with-directory-excursion out
-                 (patch-source-shebangs))))))))
+                 (patch-source-shebangs))
+
+               ;; The line below generates an error when running "fmtutil".
+               (substitute*
+                   (string-append share "/texmf-dist/scripts/texlive/fmtutil.pl")
+                 (("require TeXLive::TLWinGoo if .*") ""))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_TEXMF")
@@ -7766,7 +7771,7 @@ documents as well as DVI output.")
                                   "/texlive-" version "-texmf.tar.xz"))
               (sha256
                (base32
-                "070gczcm1h9rx29w2f02xd3nhd84c4k28nfmm8qgp69yq8vd84pz"))))
+                "0lqjm11pr9vasvivaci3k9xcmdyd08ldnh31zf8avjjs09xcfkac"))))
     (build-system gnu-build-system)
     (inputs
      (list lua
