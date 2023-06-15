@@ -841,14 +841,14 @@ icons on the MATE desktop.  It works on local and remote file systems.")
 (define-public caja-extensions
   (package
     (name "caja-extensions")
-    (version "1.24.1")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "caja-extensions-" version ".tar.xz"))
        (sha256
-        (base32 "13jkynanqj8snys0if8lv6yx1y0jrm778s2152n4x65hsghc6cw5"))))
+        (base32 "086mw7650n8blnr2wkg9xdb6lhwqamcbkk5575i2s90hzbiik72q"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list "--enable-sendto"
