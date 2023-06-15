@@ -58,6 +58,7 @@
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pkg-config)
@@ -1054,14 +1055,14 @@ sessions, panels, menus, file management, and preferences.")
 (define-public mate-calc
   (package
     (name "mate-calc")
-    (version "1.24.1")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            "mate-calc-" version ".tar.xz"))
        (sha256
-        (base32 "0imdimq5d5rjq8mkjcrsd683a2bn9acmhc0lmvyw71y0040inbaw"))))
+        (base32 "0mddfh9ixhh60nfgx5kcprcl9liavwqyina11q3pnpfs3n02df3y"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal intltool pkg-config yelp-tools))
@@ -1071,6 +1072,8 @@ sessions, panels, menus, file management, and preferences.")
            gtk+
            libxml2
            libcanberra
+           mpc
+           mpfr
            pango))
     (home-page "https://mate-desktop.org/")
     (synopsis "Calculator for MATE")
