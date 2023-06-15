@@ -347,9 +347,17 @@ by the b43-open driver of Linux-libre.")
                (base32
                 "1a591dhr43mhwh09n2vlfpw6aajl6d1vkwniikjvwfjrmp01v6yq"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "udev/80-modem-eg25.rules"
+                 (("/bin/grep") (search-input-file inputs "/bin/grep"))))))))
     (native-inputs (list curl
                          `(,glib "bin") pkg-config))
-    (inputs (list libgpiod libgudev libusb))
+    (inputs (list grep libgpiod libgudev libusb))
     (synopsis "Manager daemon for the Quectel EG25 mobile broadband modem")
     (description
      "This package provides a manager daemon for the Quectel EG25 mobile
