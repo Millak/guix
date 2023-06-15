@@ -1368,14 +1368,14 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public pluma
   (package
     (name "pluma")
-    (version "1.24.1")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1sgc5f480icr2ans6gd3akvcax58mr4jp3zjk3xn7bx1mw9i299f"))))
+        (base32 "1wcl74pbmgwcrlm5vfmv1g8klxni1qnj0kgnb5k113hisziyqnar"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(; Tests can not succeed.
@@ -1395,7 +1395,7 @@ can be used as backgrounds in the MATE Desktop environment.")
            enchant-1.6
            glib
            gtk+
-           gtksourceview-3
+           gtksourceview-4
            gdk-pixbuf
            iso-codes
            libcanberra
