@@ -6284,38 +6284,48 @@ to reproduce user environments.")
 (define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.13.10")
+    (version "1.15.2")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "nokogiri" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sparklemotion/nokogiri")
+                    (commit "a6ad20b3edc8f020043ccfe5d9ec6ae9af103720")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0n79k78c5vdcyl0m3y3l5x9kxl6xf5lgriwi2vd665qmdkr01vnk"))))
+                "1n0vlg6v58jw3qzgyihz1dh5fvp4js1qgdh75j0kn47nvyiw3jxj"))
+              (patches (search-patches "ruby-nokogiri.patch"))))
     (build-system ruby-build-system)
     (arguments
-     ;; Tests fail because Nokogiri can only test with an installed extension,
-     ;; and also because many test framework dependencies are missing.
-     (list
-      #:tests? #f
-      #:gem-flags #~(list "--" "--use-system-libraries"
-                          (string-append "--with-xml2-include="
-                                         #$(this-package-input "libxml2")
-                                         "/include/libxml2" ))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'delete-mkmf.log
-            (lambda _
-              ;; Rubygems installs build log files that embed volatile file
-              ;; names (see:
-              ;; https://github.com/rubygems/rubygems/issues/6259).
-              (for-each delete-file (find-files #$output "^mkmf\\.log$")))))))
-    (native-inputs (list ruby-hoe))
+     (list #:gem-flags #~(list "--" "--use-system-libraries"
+                               (string-append "--with-xml2-include="
+                                              #$(this-package-input "libxml2")
+                                              "/include/libxml2"))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'delete-mkmf.log
+                          (lambda _
+                            ;; Rubygems installs build log files that embed volatile file
+                            ;; names (see:
+                            ;; https://github.com/rubygems/rubygems/issues/6259).
+                            (for-each delete-file
+                                      (find-files #$output "^mkmf\\.log$"))))
+                        (delete 'check)
+                        (add-after 'install 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (setenv "GEM_PATH" (string-append
+                                                (getenv "GEM_PATH") ":"
+                                                #$output "/lib/ruby/vendor_ruby"))
+                            (when tests?
+                              (for-each (lambda (file)
+                                          (invoke "ruby" "-Itest" file))
+                                        (find-files "test" "^test_.*\\.rb"))))))))
+    (native-inputs (list ruby-hoe ruby-rubyzip))
     (inputs (list zlib libxml2 libxslt))
     (propagated-inputs (list ruby-mini-portile-2 ruby-pkg-config))
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
-    (home-page "https://www.nokogiri.org/")
+    (home-page "https://nokogiri.org/")
     (license license:expat)))
 
 (define-public ruby-method-source
