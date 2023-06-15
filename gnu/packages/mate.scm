@@ -1084,7 +1084,7 @@ sessions, panels, menus, file management, and preferences.")
 (define-public mate-backgrounds
   (package
     (name "mate-backgrounds")
-    (version "1.24.1")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
@@ -1092,7 +1092,7 @@ sessions, panels, menus, file management, and preferences.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0b9yx68p9l867bqsl9z2g4wrs8p396ls673jgaliys5snmk8n8dn"))))
+         "0379hngy3ap1r5kmqvmzs9r710k2c9nal2ps3hq765df4ir15j8d"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool))
