@@ -336,7 +336,7 @@ by the b43-open driver of Linux-libre.")
 (define-public eg25-manager
   (package
     (name "eg25-manager")
-    (version "0.4.2")
+    (version "0.4.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -345,7 +345,7 @@ by the b43-open driver of Linux-libre.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1czq2yi852aqkdnrxdifzcq669bdvlm7j40xivxq77jq04fggpmf"))))
+                "1a591dhr43mhwh09n2vlfpw6aajl6d1vkwniikjvwfjrmp01v6yq"))))
     (build-system meson-build-system)
     (native-inputs (list curl
                          `(,glib "bin") pkg-config))
