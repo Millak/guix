@@ -3597,6 +3597,15 @@ two hashes.")
 It is a low-dependency variant of ruby-hydra.")
       (license license:expat))))
 
+;; Pinned variant for use by texlive
+(define-public ruby-hydra-minimal/pinned
+  (hidden-package
+   (package
+     (inherit ruby-hydra-minimal)
+     (arguments
+      (cons* #:ruby ruby-2.7
+             (package-arguments ruby-hydra-minimal))))))
+
 (define-public ruby-hydra
   (package
     (inherit ruby-hydra-minimal)
