@@ -6350,6 +6350,170 @@ keymaps for QWERTZ, QWERTY and AZERTY keyboards and also allows custom
 ones.")
    (license license:bsd-0)))
 
+(define-public distrho-ports
+  ;; From 2021-03-15 to this commit various important changes are made
+  ;; including improved directory structure and updated JUCE versions.
+  (let ((commit "f2dbaded0a05732e3499fa374a586e5b32370da5")
+        (revision "0"))
+    (package
+      (name "distrho-ports")
+      (version (git-version "2021-03-15" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/DISTRHO/DISTRHO-Ports")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rrnqwask2qg05ynisk6bpj118cl7c3w53rqrfg5x3sx847rjjgc"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin
+                    ;; Delete third party libraries, libraries without
+                    ;; licenses, and unneeded libraries.
+                    (for-each
+                     delete-file-recursively
+                     (list "ports-juce5/arctican-function"         ;no license
+                           "ports-juce5/arctican-pilgrim"          ;no license
+                           "ports-juce5/drowaudio-tremolo"         ;no license
+                           "ports-juce5/juce-demo-host"            ;not used
+                           "ports-juce5/juce-demo-plugin"          ;not used
+                           "ports-juce5/temper/source/faust"       ;bundled
+                           "ports-juce6/chow"                      ;not used
+                           "ports-juce6/swankyamp/thirdparty"      ;bundled
+                           "ports-juce6/vitalium/third_party"))    ;bundled
+                    ;; Exclude them from building.
+                    (substitute* (find-files "." "meson.build$")
+                      (("'arctican") "#'arctican")
+                      (("'drowaudio-tremolo") "#'drowaudio-tremolo")
+                      (("'third") "#'third"))
+                    ;; Use system provided "nlohmann/json.hpp".
+                    (with-directory-excursion "ports-juce6/vitalium/source"
+                      (substitute*
+                          (list "common/line_generator.h"
+                                "common/load_save.h"
+                                "common/tuning.h"
+                                "common/wavetable/wavetable_component.h"
+                                "common/wavetable/wavetable_creator.h"
+                                "common/wavetable/wavetable_keyframe.h"
+                                "interface/editor_sections/save_section.h"
+                                "interface/look_and_feel/skin.h"
+                                "synthesis/producers/sample_source.h")
+                        (("json/json\\.h") "nlohmann/json.hpp")))))))
+      (build-system meson-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test target
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-juce-fonts
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((fonts (search-input-directory inputs "/etc/fonts")))
+                  (with-directory-excursion "libs"
+                    (substitute* (find-files "." "juce_linux_Fonts.cpp$")
+                      (("/usr/share/fonts") fonts)))))))))
+      (native-inputs
+       (list cmake-minimal
+             concurrentqueue
+             faust
+             nlohmann-json
+             optional-lite
+             pkg-config))
+      (inputs
+       (list alsa-lib
+             fontconfig
+             freetype
+             fftwf
+             libx11
+             libxcursor
+             libxext
+             libxrender
+             mesa))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "LV2_PATH")
+              (files '("lib/lv2")))
+             (search-path-specification
+              (variable "VST2_PATH")
+              (files '("lib/vst")))
+             (search-path-specification
+              (variable "VST3_PATH")
+              (files '("lib/vst3")))))
+      (home-page "https://github.com/DISTRHO/DISTRHO-Ports")
+      (synopsis "Audio plugins and LV2 ports")
+      (description
+       "This package contains LV2 ports of the following audio plugins:
+@itemize
+@item Dexed,
+@item dRowAudio plugins (Distortion, Distortion Shaper, Flanger, Reverb,
+  Tremolo),
+@item DrumSynth,
+@item EasySSP,
+@item EQinox,
+@item HiReSam,
+@item JuceOPL,
+@item KlangFalter,
+@item LUFS Meter,
+@item Luftikus,
+@item Obxd,
+@item PitchedDelay,
+@item ReFine,
+@item StereoSourceSeperation,
+@item Swanky Amp,
+@item TAL plugins (Dub-3, Filter, Filter-2, Noize Mak3r, Reverb, Reverb-II,
+  Reverb-III, Vocoder-II),
+@item Temper,
+@item Vex,
+@item Vitalium, and
+@item Wolpertinger.
+@end itemize")
+      (license
+       (list license:asl2.0             ;used by Dexed
+             ;; mingw-std-threads and EasySSP (for dsp-utility) use FreeBSD.
+             license:bsd-2
+             ;; Licenses for dRowAudio is not found in this repository, but
+             ;; the upstream project is licensed under MIT:
+             ;; https://github.com/drowaudio/drowaudio.
+             ;; Luftikus, PitchedDelay and ReFine are ported from lkjb plugins
+             ;; which is licensed under MIT:
+             ;; https://github.com/lkjbdsp/lkjb-plugins.
+             license:expat
+             (license:fsf-free          ;used by Temper
+              "file:///ports-juce5/temper/source/TemperDsp.hpp")
+             ;; juce-plugin, LUFS Meter, Obxd and TAL plugins use GPLv2.
+             license:gpl2
+             ;; License for Wolpertinger is not found in this repository, but
+             ;; the upstream project is licensed under GPLv2+:
+             ;; https://github.com/jkroll20/wolpertinger.
+             ;; dRowAudio plugins, juced, HiReSam and Vex use this license.
+             ;; Packages using files from JUCETICE project use this license.
+             license:gpl2+
+             ;; License for EasySSP is not found in this repository, but the
+             ;; upstream project is licensed under GPLv3:
+             ;; https://github.com/automatl/audio-dsp-multi-visualize.
+             license:gpl3               ;used by JUCE
+             ;; Dexed, Swanky Amp, Vitalium and KlangFalter use GPLv3+.
+             license:gpl3+
+             ;; License for lv2-ttl-generator is not found in this repository,
+             ;; but is a part of DPF-Plugins and is licensed under ISC:
+             ;; https://github.com/DISTRHO/DPF.
+             ;; JUCE uses this license for juce_audio_basics,
+             ;; juce_audio_devices, juce_blocks_basics, juce_core and
+             ;; juce_events.
+             license:isc
+             license:lgpl2.0+           ;used by DrumSynth and EQinox
+             license:lgpl2.1+           ;used by SoundTouch and juce-opl
+             ;; StereoSourceSeperation uses a non-copyleft license.
+             (license:non-copyleft
+              "file:///ports-juce5/stereosourceseparation/\
+source/kiss_fft/kiss_fft.c")
+             ;; dRowAudio uses a non-copyleft license for curl.
+             (license:non-copyleft
+              "file:///libs/drowaudio/source/dRowAudio/network/\
+curl/include/curl/curl.h")
+             license:wtfpl2))))) ;used by dRowAudio for FFTReal
+
 (define-public dpf-plugins
   (package
     (name "dpf-plugins")
