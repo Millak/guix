@@ -316,7 +316,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
        ("pixman" ,pixman)
        ("potrace" ,potrace)
        ("python" ,python)
-       ("ruby" ,ruby)
+       ("ruby" ,ruby-2.7)
        ("tcsh" ,tcsh)
        ("teckit" ,teckit)
        ("zlib" ,zlib)
