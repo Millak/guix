@@ -9607,6 +9607,12 @@ endpoint and it understands SPARQL.")
            tracker
            upower
            zlib))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TRACKER_CLI_SUBCOMMANDS_DIR")
+            (separator #f)              ; single entry
+            (files `(,(string-append "libexec/tracker"
+                                     (version-major version)))))))
     (synopsis "Metadata database, indexer and search tool")
     (home-page "https://wiki.gnome.org/Projects/Tracker")
     (description
