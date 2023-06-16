@@ -6679,6 +6679,7 @@ and as an LV2 plugin.")
                    "-Dgraphviz=enabled" ;for exporting routing graphs
                    "-Dguile=enabled"    ;for Guile scripting
                    "-Djack=enabled"     ;for JACK audio/MIDI backend
+                   "-Drtaudio=enabled"  ;for RtAudio backend (ALSA)
                    "-Drtmidi=enabled"   ;for RtMidi backend (ALSA sequencer)
                    "-Dsdl=enabled")     ;for SDL audio backend (which uses ALSA)
            #:phases
@@ -6760,6 +6761,7 @@ success = io_mkdir (tmp_log_dir, &err);")))
            pipewire
            pulseaudio
            reproc
+           rtaudio
            rtmidi
            rubberband
            sdl2
