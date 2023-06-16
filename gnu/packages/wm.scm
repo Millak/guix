@@ -1924,7 +1924,7 @@ core/thread.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.7.1")
+    (version "1.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1933,7 +1933,7 @@ core/thread.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
+                "05g1gp61qd9n9w4lq925i4wgryagvah6x489g17j7rnw59q4qhdi"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
