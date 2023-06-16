@@ -860,7 +860,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.3.0-beta-1")            ;for ffmpeg 6 support
+    (version "3.3.3")            ;for ffmpeg 6 support
     (source
      (origin
        (method git-fetch)
@@ -869,7 +869,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j1fy8h3vvf3pbyy2vxahf7admcqfmx7m1mxm7g48n54i2f0n1h9"))
+        (base32 "07jbql4jl2198z0rsa1nsf4p045iv4gz6ym75a60yyznvg0h0zwv"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
