@@ -419,7 +419,7 @@ system, and the core design of Django is reused in Grantlee.")
            pkg-config
            python
            vulkan-headers
-           ruby))
+           ruby-2.7))
     (arguments
      `(#:configure-flags
        (let ((out (assoc-ref %outputs "out")))
