@@ -2376,6 +2376,29 @@ parsing with only a single memory allocation.")
        ((#:tests? _ #f) #f)))
     (properties '((hidden? . #t)))))
 
+(define-public optional-lite
+  (package
+    (name "optional-lite")
+    (version "3.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martinmoene/optional-lite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                 "0jpsm94kp1504yk9s2km86zv8xrszz30qanmhz2ljmvsdblz2l47"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/martinmoene/optional-lite")
+    (synopsis "Nullable object for C++98, C++11 and later")
+    (description
+     "Optional lite is a single-file header-only library to represent optional
+(nullable) objects and pass them by value.  The library aims to provide a
+C++17-like optional for use with C++98 and later.  If available,
+@code{std::optional} is used.")
+    (license license:boost1.0)))
+
 (define-public optionparser
   (package
     (name "optionparser")
