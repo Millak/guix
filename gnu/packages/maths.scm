@@ -973,7 +973,7 @@ halfspaces) or by their double description with both representations.")
 (define-public arpack-ng
   (package
     (name "arpack-ng")
-    (version "3.8.0")
+    (version "3.9.0")
     (home-page "https://github.com/opencollab/arpack-ng")
     (source (origin
               (method git-fetch)
@@ -981,10 +981,11 @@ halfspaces) or by their double description with both representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l7as5z6xvbxly8alam9s4kws70952qq35a6vkljzayi4b9gbklx"))))
-    (build-system gnu-build-system)
+                "09smxilyn8v9xs3kpx3nlj2s7ql3v8z40mpc09kccbb6smyd35iv"))
+              (patches (search-patches "arpack-ng-propagate-rng-state.patch"))))
+    (build-system cmake-build-system)
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list pkg-config))
     (inputs
      (list eigen lapack gfortran))
     (synopsis "Fortran subroutines for solving eigenvalue problems")
@@ -998,16 +999,16 @@ large scale eigenvalue problems.")
   (package (inherit arpack-ng)
     (name "arpack-ng-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ,@(package-inputs arpack-ng)))
+     (modify-inputs (package-inputs arpack-ng)
+       (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments arpack-ng)
-       ((#:configure-flags _ '())
-        ''("--enable-mpi"))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'mpi-setup
-             ,%openmpi-setup)))))
+       ((#:configure-flags _ #~())
+        #~'("-DMPI=ON"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              #$%openmpi-setup)))))
     (synopsis "Fortran subroutines for solving eigenvalue problems with MPI")))
 
 (define-public lapack
