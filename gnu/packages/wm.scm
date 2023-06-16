@@ -1779,7 +1779,7 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public swaynotificationcenter
   (package
     (name "swaynotificationcenter")
-    (version "0.7.3")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1787,7 +1787,7 @@ display a clock or apply image manipulation techniques to the background image."
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1xvr5m5sqznr3dd512i5pk0d56v7n0ywdcy6rnz85vbf2k7b6kj5"))))
+               (base32 "1c3gd6mlr209jzzrh5jmws2lawnn3gr6smvzcw74kkpi3wvs7l0k"))))
     (build-system meson-build-system)
     (arguments (list #:configure-flags #~(list "-Dsystemd-service=false")))
     (native-inputs
@@ -1803,6 +1803,8 @@ display a clock or apply image manipulation techniques to the background image."
            gtk+
            gtk-layer-shell
            libhandy
+           libgee
+           pulseaudio
            wayland-protocols))
     (synopsis "Notification daemon with a graphical interface")
     (description
