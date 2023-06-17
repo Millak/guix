@@ -2643,7 +2643,7 @@ linux/libcurl_wrapper.h")
            pkg-config
            python2-six
            python-2
-           ruby))
+           ruby-2.7))
     (inputs
      (list alsa-lib
            at-spi2-core
