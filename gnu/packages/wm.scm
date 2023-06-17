@@ -1073,7 +1073,8 @@ drags, snap-to-border support, and virtual desktops.")
                (base32
                 "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))
               (patches
-               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"))))
+               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"
+                               "fluxbox-1.3.7-gcc.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("CPPFLAGS=-U__TIME__") ;ugly, but for reproducibility
