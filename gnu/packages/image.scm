@@ -28,7 +28,7 @@
 ;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
@@ -2430,7 +2430,7 @@ Format) file format decoder and encoder.")
 (define-public libjxl
   (package
     (name "libjxl")
-    (version "0.7.0")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2440,23 +2440,24 @@ Format) file format decoder and encoder.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ysh7kd30wwnq0gc1l8c0j9b6wzd15k0kkvfaacjvjqcz11lnc7l"))
+        (base32 "1alhnnxkwy5bdwahfsdh87xk9rg1s2fm3r9y2w11ka8p3n1ccwr3"))
        (modules '((guix build utils)))
        (snippet
-        ;; Delete the bundles that will not be used. libjxl bundles LCMS,
-        ;; which is in Guix, but a newer version is required.
+        ;; Delete the bundles that will not be used.
         '(begin
            (for-each (lambda (directory)
                        (delete-file-recursively
                         (string-append "third_party/" directory)))
-                     '("brotli" "googletest" "highway"))))))
+                     '("brotli" "googletest" "highway" "lcms" "libpng"
+                       "zlib"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
              "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
-             ;; "-DJPEGXL_FORCE_SYSTEM_LCMS2=true" ; requires lcms@2.13
-             "-DJPEGXL_FORCE_SYSTEM_HWY=true")))
+             "-DJPEGXL_FORCE_SYSTEM_LCMS2=true"
+             "-DJPEGXL_FORCE_SYSTEM_HWY=true"
+             "-DJPEGXL_BUNDLE_LIBPNG=false")))
     (native-inputs
      (list asciidoc doxygen googletest pkg-config python))
     (inputs
@@ -2464,12 +2465,13 @@ Format) file format decoder and encoder.")
            gflags
            giflib
            imath
-           ;; lcms ; requires lcms@2.13
+           lcms
            libavif
            libjpeg-turbo
            libpng
            libwebp
-           openexr))
+           openexr
+           zlib))
     ;; These are in Requires.private of libjxl.pc.
     (propagated-inputs
      (list brotli google-highway))
