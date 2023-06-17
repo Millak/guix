@@ -20,6 +20,7 @@
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4660,6 +4661,9 @@ Brian 2 simulator.")
        (sha256
         (base32 "1jgmb5kl0bf4a2zfn94zlb117672r9lvvkkmwl86ihlyr1mpr3d0"))))
     (build-system cmake-build-system)
+    (arguments (if (target-riscv64?)
+                   (list #:configure-flags #~'("-DDNNL_CPU_RUNTIME=SEQ"))
+                   '()))
     (home-page "https://github.com/oneapi-src/oneDNN")
     (synopsis "Deep Neural Network Library")
     (description
