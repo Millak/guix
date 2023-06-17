@@ -249,7 +249,7 @@ encoding, supporting Unicode version 9.0.0.")
               (sha256
                (base32 "1g77s8g9443dd92f82pbkim7rk51s7xdwa3mxpzb1lcw8ryxvvg3"))))
           ;; For tests
-          ("ruby" ,ruby)))))))
+          ("ruby" ,ruby-2.7)))))))
 
 (define-public libconfuse
   (package
