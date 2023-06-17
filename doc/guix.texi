@@ -10003,11 +10003,12 @@ files in the inputs.
 
 By default it tries to run @code{luatex} on all @file{.ins} files, and
 if it fails to find any, on all @file{.dtx} files.  A different engine
-and format can be specified with the @code{#:tex-format} argument.
-Different build targets can be specified with the @code{#:build-targets}
-argument, which expects a list of file names.
+and format can be specified with, respectively, the @code{#:tex-engine}
+and @code{#:tex-format} arguments.  Different build targets can be
+specified with the @code{#:build-targets} argument, which expects a list
+of file names.
 
-It also generates font metrics (i.e., @file{.tfm} files) out of METAFONT
+It also generates font metrics (i.e., @file{.tfm} files) out of Metafont
 files whenever possible.  Likewise, it can also create TeX formats
 (i.e., @file{.fmt} files) listed in the @code{#:create-formats}
 argument.
