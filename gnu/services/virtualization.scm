@@ -478,6 +478,7 @@ potential infinite waits blocking libvirt."))
     (list (shepherd-service
            (documentation "Run the libvirt daemon.")
            (provision '(libvirtd))
+           (requirement '(dbus-system))
            (start #~(make-forkexec-constructor
                      (list (string-append #$libvirt "/sbin/libvirtd")
                            "-f" #$config-file
