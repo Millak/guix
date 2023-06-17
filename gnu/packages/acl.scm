@@ -5,7 +5,7 @@
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -28,14 +28,14 @@
   #:use-module (gnu packages attr)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages perl)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (guix utils))
 
 (define-public acl
   (package
@@ -55,7 +55,7 @@
                   ,@%gnu-build-system-modules)
        #:configure-flags '("--disable-static")
        #:tests? ,(not (or (%current-target-system)
-                          (hurd-target?)))
+                          (target-hurd?)))
        #:phases
        (modify-phases %standard-phases
          ;; XXX After repacking the sources the timestamps are reset to the

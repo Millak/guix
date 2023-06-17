@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -47,7 +47,6 @@
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gperf)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
@@ -202,7 +201,7 @@ without requiring the source code to be rewritten.")
 
       #:phases
       (modify-phases %standard-phases
-        ,@(if (hurd-system?)
+        ,@(if (system-hurd?)
               '((add-after 'unpack 'disable-tests
                   (lambda _
                     ;; Hangs at: "Running 00-repl-server.test"
@@ -345,7 +344,7 @@ without requiring the source code to be rewritten.")
         (not (%current-target-system)))
        ((#:configure-flags flags #~'())
         ;; XXX: JIT-enabled Guile crashes in obscure ways on GNU/Hurd.
-        #~(cons* #$@(if (hurd-target?)
+        #~(cons* #$@(if (target-hurd?)
                         #~("--disable-jit")
                         #~())
                  ;; -fexcess-precision=standard is required when compiling for

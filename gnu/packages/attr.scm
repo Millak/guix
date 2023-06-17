@@ -3,6 +3,7 @@
 ;;; Copyright © 2012, 2013, 2016, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,10 +24,10 @@
   #:use-module (guix licenses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages gettext)
-  #:use-module (gnu packages hurd)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix utils))
 
 (define-public attr
   (package
@@ -43,7 +44,7 @@
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ,@(if (hurd-target?)
+         ,@(if (target-hurd?)
                `((add-before 'configure 'skip-linux-syscalls
                    (lambda _
                      ;; Starting from 2.5.1, libattr includes Linux-specific

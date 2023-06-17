@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
@@ -2786,7 +2786,7 @@ memoized as a function of '%current-system'."
                               "/lib/python"
                               ,(version-major+minor version)
                               "/test"))))
-         ,@(if (hurd-system?)
+         ,@(if (system-hurd?)
                `((add-before 'build 'fix-regen
                    (lambda* (#:key inputs #:allow-other-keys)
                      (let ((libc (assoc-ref inputs "libc")))
@@ -2841,7 +2841,7 @@ memoized as a function of '%current-system'."
             `(append (list ,(string-append "--host=" (boot-triplet))
                            ,(string-append "--build="
                                            (nix-system->gnu-triplet))
-                           ,(if (hurd-system?) "--disable-werror"
+                           ,(if (system-hurd?) "--disable-werror"
                                 ""))
                      ,flags))
            ((#:phases phases)
@@ -2853,7 +2853,7 @@ memoized as a function of '%current-system'."
                    (unsetenv "CPLUS_INCLUDE_PATH")
 
                    ;; Tell 'libpthread' where to find 'libihash' on Hurd systems.
-                   ,@(if (hurd-system?)
+                   ,@(if (system-hurd?)
                        '((substitute* '("sysdeps/mach/Makefile"
                                         "sysdeps/mach/hurd/Makefile")
                            (("LDLIBS-pthread.so =.*")
@@ -2873,7 +2873,7 @@ memoized as a function of '%current-system'."
        ,@(%boot1-inputs)
 
        ;; A native MiG is needed to build Glibc on Hurd.
-       ,@(if (hurd-system?)
+       ,@(if (system-hurd?)
              `(("mig" ,mig-boot0))
              '())
 
@@ -3024,7 +3024,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
       (,(gexp-input gcc-boot0 "lib")
        ,(kernel-headers-boot0)
        ,static-bash-for-glibc
-       ,@(if (hurd-system?)
+       ,@(if (system-hurd?)
              `(,gnumach-headers-boot0
                ,hurd-headers-boot0)
              '())

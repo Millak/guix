@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
@@ -33,7 +33,6 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages base))
 
@@ -162,7 +161,7 @@ Each database is contained in a specific package output, such as the
     (native-inputs
      (list `(,hwdata "pci") pkg-config which))
     (inputs
-     `(,@(if (not (hurd-target?))
+     `(,@(if (not (target-hurd?))
              `(("kmod" ,kmod))
              '())
        ("zlib" ,zlib)))

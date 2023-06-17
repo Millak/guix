@@ -31,7 +31,7 @@
 ;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -130,7 +130,6 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages inkscape)
@@ -913,7 +912,7 @@ re-executing them as necessary.")
                            ,@(if (%current-target-system)
                                  '("--with-path-procnet-dev=/proc/net/dev")
                                  '())
-                           ,@(if (hurd-target?)
+                           ,@(if (target-hurd?)
                                  '("--disable-rcp"
                                    "--disable-rexec"
                                    "--disable-rexecd"
@@ -967,7 +966,7 @@ hostname.")
      `(;; Assume System V `setpgrp (void)', which is the default on GNU
        ;; variants (`AC_FUNC_SETPGRP' is not cross-compilation capable.)
        #:configure-flags
-       '(,@(if (hurd-target?)
+       '(,@(if (target-hurd?)
              '()
              '("--with-libpam"))
           "shadow_cv_logdir=/var/log"
@@ -1018,7 +1017,7 @@ hostname.")
                (delete-file (string-append bin "/groups"))
                (for-each delete-file (find-files man "^groups\\."))))))))
     (inputs
-     `(,@(if (hurd-target?)
+     `(,@(if (target-hurd?)
            '()
            `(("linux-pam" ,linux-pam)))
        ,@(if (%current-target-system)
@@ -1527,7 +1526,7 @@ connection alive.")
 
       (inputs `(("inetutils" ,inetutils)
                 ("bash" ,bash-minimal)
-                ,@(if (hurd-target?) '()
+                ,@(if (target-hurd?) '()
                       `(("net-tools" ,net-tools)
                         ("iproute" ,iproute)))
 
@@ -2037,7 +2036,7 @@ system administrator.")
      (list groff))
     (inputs
      `(("coreutils" ,coreutils)
-       ,@(if (hurd-target?)
+       ,@(if (target-hurd?)
            '()
            `(("linux-pam" ,linux-pam)))
        ("zlib" ,zlib)))

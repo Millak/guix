@@ -12,7 +12,7 @@
 ;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -216,7 +216,7 @@
                             ;; choose a fixed-width and short directory name
                             ;; for tests.
                             "ac_cv_guix_test_root=/tmp/guix-tests"
-                            ,@(if (hurd-target?) '("--with-courage") '()))
+                            ,@(if (target-hurd?) '("--with-courage") '()))
          #:parallel-tests? #f         ;work around <http://bugs.gnu.org/21097>
 
          #:modules ((guix build gnu-build-system)
@@ -416,7 +416,7 @@ $(prefix)/etc/openrc\n")))
                        ;; cross-compilation.
                        ("guile" ,guile-3.0-latest) ;for faster builds
                        ("guile-gnutls" ,guile-gnutls)
-                       ,@(if (hurd-target?)
+                       ,@(if (target-hurd?)
                              '()
                              `(("guile-avahi" ,guile-avahi)))
                        ("guile-gcrypt" ,guile-gcrypt)
@@ -476,7 +476,7 @@ $(prefix)/etc/openrc\n")))
       (propagated-inputs
        `(("guile-gnutls" ,guile-gnutls)
          ;; Avahi requires "glib" which doesn't cross-compile yet.
-         ,@(if (hurd-target?)
+         ,@(if (target-hurd?)
                '()
                `(("guile-avahi" ,guile-avahi)))
          ("guile-gcrypt" ,guile-gcrypt)
@@ -1442,7 +1442,7 @@ environments.")
                                          "guile-zlib"
                                          "guile-sqlite3"
                                          "guile-gnutls"
-                                         ,@(if (hurd-target?)
+                                         ,@(if (target-hurd?)
                                                '()
                                                '("guile-fibers")))))
                       (wrap-program file

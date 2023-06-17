@@ -7,7 +7,7 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
@@ -40,7 +40,6 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gettext)
-  #:use-module ((gnu packages hurd) #:select (hurd-target?))
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-compression)
@@ -77,7 +76,7 @@
             %standard-phases)
 
        ;; XXX: Work around <https://issues.guix.gnu.org/59616>.
-       #:tests? ,(and (not (hurd-target?))
+       #:tests? ,(and (not (target-hurd?))
                       (not (%current-target-system)))))
     (inputs (list ncurses perl))
     ;; When cross-compiling, texinfo will build some of its own binaries with

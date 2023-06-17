@@ -6,7 +6,7 @@
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2014, 2015 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -132,7 +132,7 @@ command-line arguments, multiple languages, and so on.")
                                  (string-append bin "/fgrep"))
                 (("^exec grep")
                  (string-append "exec " bin "/grep"))))))
-        ,@(if (hurd-target?)
+        ,@(if (target-hurd?)
               '((add-before 'check 'skip-triple-backref-test
                   (lambda _
                     ;; This test is marked as malfunctioning on glibc systems
@@ -144,7 +144,7 @@ command-line arguments, multiple languages, and so on.")
                       (("^warn_" all)
                        (string-append "exit 77\n" all))))))
               '()))
-      #:make-flags ,(if (hurd-target?)
+      #:make-flags ,(if (target-hurd?)
                         ''("XFAIL_TESTS=test-perror2 equiv-classes") ;XXX
                         ''())))
    (synopsis "Print lines matching a pattern")
@@ -186,7 +186,7 @@ including, for example, recursive directory searching.")
             (modules '((guix build utils)))))
    (build-system gnu-build-system)
    (arguments
-    `(#:make-flags ,(if (hurd-target?)
+    `(#:make-flags ,(if (target-hurd?)
                         ''("XFAIL_TESTS=test-perror2")
                         ''())))
    (synopsis "Stream editor")
@@ -217,7 +217,7 @@ implementation offers several extensions over the standard utility.")
    ;; Note: test suite requires ~1GiB of disk space.
    (arguments
     `(,@(cond
-          ((hurd-target?)
+          ((target-hurd?)
            '(#:make-flags
              (list (string-append
                      "TESTSUITEFLAGS= -k '"
@@ -309,7 +309,7 @@ differences.")
             (patches (search-patches "diffutils-fix-signal-processing.patch"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:make-flags ,(if (hurd-target?)
+    `(#:make-flags ,(if (target-hurd?)
                         ''("XFAIL_TESTS=test-perror2 large-subopt")
                         ''())))
    (native-inputs (list perl))
@@ -347,7 +347,7 @@ interactive means to merge two files.")
                                     "tests/find/exec-plus-last-file.sh")
                        (("#!/bin/sh")
                         (string-append "#!" (which "sh")))))))
-      #:make-flags ,(if (hurd-target?)
+      #:make-flags ,(if (target-hurd?)
                         ''("XFAIL_TESTS=test-strerror_r")
                         ''())))
    (synopsis "Operating on files matching given criteria")
@@ -395,7 +395,7 @@ used to apply commands with arbitrarily long arguments.")
    (outputs '("out" "debug"))
    (arguments
     `(#:parallel-build? #f            ; help2man may be called too early
-      ,@(if (hurd-target?)
+      ,@(if (target-hurd?)
             '(#:make-flags            ; these tests fail deterministically
               (list (string-append "XFAIL_TESTS=tests/misc/env-S.pl"
                                    " tests/misc/kill.sh"
@@ -433,7 +433,7 @@ used to apply commands with arbitrarily long arguments.")
                        (("#!/bin/sh") (string-append "#!" (which "sh"))))))
                  (add-after 'unpack 'remove-tests
                    (lambda _
-                     ,@(if (hurd-target?)
+                     ,@(if (target-hurd?)
                            '((substitute* "Makefile.in"
                                ;; this test hangs
                                (("^ *tests/misc/timeout-group.sh.*") ""))
@@ -511,7 +511,7 @@ standard.")
    (inputs (list guile-3.0))
    (outputs '("out" "debug"))
    (arguments
-    `(,@(if (hurd-target?)
+    `(,@(if (target-hurd?)
             '(#:configure-flags '("CFLAGS=-D__alloca=alloca"
                                   "ac_cv_func_posix_spawn=no"))
             '())
@@ -798,7 +798,7 @@ the store.")
    ;; libc provides <hurd.h>, which includes a bunch of Hurd and Mach headers,
    ;; so both should be propagated.
    (propagated-inputs
-    (if (hurd-target?)
+    (if (target-hurd?)
         `(("hurd-core-headers" ,hurd-core-headers))
         `(("kernel-headers" ,linux-libre-headers))))
 
@@ -864,7 +864,7 @@ the store.")
 
             ;; On GNU/Hurd we get discarded-qualifiers warnings for
             ;; 'device_write_inband' among other things.  Ignore them.
-            ,@(if (hurd-target?)
+            ,@(if (target-hurd?)
                   `("--disable-werror"
                     ,@%glibc/hurd-configure-flags)
                   '()))
@@ -992,7 +992,7 @@ the store.")
                                          (map (cut string-append slib "/" <>)
                                               files))))))
 
-                 ,@(if (hurd-target?)
+                 ,@(if (target-hurd?)
                        '((add-after 'install 'augment-libc.so
                            (lambda* (#:key outputs #:allow-other-keys)
                              (let* ((out (assoc-ref outputs "out")))
@@ -1012,7 +1012,7 @@ the store.")
                     ("gettext" ,gettext-minimal)
                     ("python" ,python-minimal)
 
-                    ,@(if (hurd-target?)
+                    ,@(if (target-hurd?)
                           `(("mig" ,mig)
                             ("perl" ,perl))
                           '())))

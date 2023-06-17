@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Miguel <rosen644835@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
@@ -42,7 +42,6 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages emacs)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -124,7 +123,7 @@
                                                "coreutils-gnulib-tests.patch")))))
                               '())
 
-                       #$@(if (hurd-target?)
+                       #$@(if (target-hurd?)
                               #~((substitute*
                                      "gettext-tools/gnulib-tests/Makefile.in"
                                    ;; See 'coreutils' for the rationale.
@@ -135,7 +134,7 @@
 
        ;; When tests fail, we want to know the details.
        #:make-flags #~'("VERBOSE=yes"
-                        #$@(if (hurd-target?)
+                        #$@(if (target-hurd?)
                                '("XFAIL_TESTS=test-perror2")
                                '()))))
     (home-page "https://www.gnu.org/software/gettext/")

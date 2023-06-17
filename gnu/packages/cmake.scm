@@ -46,7 +46,6 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages file)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)
@@ -214,7 +213,7 @@ using the CMake build system.")
               (apply invoke "./configure" configure-flags))))))
     (inputs
      (append
-      (if (hurd-target?)
+      (if (target-hurd?)
           '()
           (list libuv))                 ;not supported on the Hurd
       (list bzip2
