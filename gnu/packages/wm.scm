@@ -2044,7 +2044,11 @@ Wayland compositors supporting the wlr-output-management protocol.")
                 (invoke "./autogen.sh")
                 (invoke "sh" "./configure" "SHELL=sh")
                 (apply invoke "make" "stumpwm.info" make-flags)
-                (install-file "stumpwm.info" info)))))))
+                (install-file "stumpwm.info" info))))
+          (add-after 'install-manual 'remove-temporary-cache
+            (lambda* (#:key outputs #:allow-other-keys)
+              (delete-file-recursively (string-append (assoc-ref outputs "lib")
+                                                      "/.cache")))))))
     (synopsis "Window manager written in Common Lisp")
     (description
      "Stumpwm is a window manager written entirely in Common Lisp.
@@ -2087,6 +2091,7 @@ productive, customizable lisp based systems.")
            (delete 'copy-source)
            (delete 'build)
            (delete 'check)
+           (delete 'remove-temporary-cache)
            (delete 'cleanup)))))))
 
 (define stumpwm-contrib
