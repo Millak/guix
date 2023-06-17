@@ -79,6 +79,18 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
                            (basename file)))))
               (find-files dir regexp))))
 
+(define* (patch-shell-scripts #:rest _)
+  "Expand filenames for usual tools in shell scripts."
+  (when (file-exists? "scripts")
+    (let* ((commands '("awk" "basename" "cat" "grep" "mkdir" "rm" "sed" "sort"
+                       "uname"))
+           (command-regexp (format #f
+                                   "\\b(~a)\\b"
+                                   (string-join commands "|"))))
+      (substitute* (find-files "scripts" "\\.sh$")
+        ((command-regexp _ command)
+         (which command))))))
+
 (define* (delete-drv-files #:rest _)
   "Delete pre-generated \".drv\" files in order to prevent build failures."
   (when (file-exists? "source")
@@ -244,16 +256,46 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
                     (copy-recursively root destination)))
                 (runfiles-root-directories)))))
 
+(define* (link-scripts #:key link-scripts outputs #:allow-other-keys)
+  (when (pair? link-scripts)
+    (unless (file-exists? "scripts")
+      (error "missing \"scripts\" directory: no script to link"))
+    (let ((bin (string-append (assoc-ref outputs "out") "/bin"))
+          (filenames
+           (filter (lambda (f) (any (cut string-suffix? <> f) link-scripts))
+                   (find-files "scripts"))))
+      ;; Sanity check: make sure no provided script is ignored.
+      (let ((unknown (lset-difference string=?
+                                      (map basename link-scripts)
+                                      (map basename filenames))))
+        (when (pair? unknown)
+          (error (format #f "cannot find script(s): ~a~%"
+                         (string-join unknown)))))
+      ;; All lights are green.  Create "bin/" and the symlinks.
+      (mkdir-p bin)
+      (for-each
+       (lambda (script)
+         ;; Remove extension, if any.
+         (let ((name (match (string-split (basename script) #\.)
+                       ((name) name)
+                       (tokens (string-join (drop-right tokens 1)))))
+               (origin (string-append "../share/texmf-dist/" script)))
+           (format #t "linking bin/~s to ~s~%" name origin)
+           (symlink origin (string-append bin "/" name))))
+       filenames))))
+
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (delete 'bootstrap)
     (delete 'configure)
+    (add-after 'unpack 'patch-shell-scripts patch-shell-scripts)
     (add-before 'build 'delete-drv-files delete-drv-files)
     (add-after 'delete-drv-files 'generate-font-metrics generate-font-metrics)
     (replace 'build build)
     (add-after 'build 'create-formats create-formats)
     (delete 'check)
-    (replace 'install install)))
+    (replace 'install install)
+    (add-after 'install 'link-scripts link-scripts)))
 
 (define* (texlive-build #:key inputs (phases %standard-phases)
                         #:allow-other-keys #:rest args)

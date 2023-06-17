@@ -132,6 +132,7 @@ level package ID."
                         (tests? #f)
                         (build-targets #f)
                         (create-formats #f)
+                        (link-scripts #f)
                         (tex-engine #f)
 
                         ;; FIXME: This would normally default to "luatex" but
@@ -163,6 +164,7 @@ level package ID."
                                #:source #+source
                                #:build-targets #$build-targets
                                #:create-formats #$create-formats
+                               #:link-scripts #$link-scripts
                                #:tex-engine #$(if tex-engine
                                                   tex-engine
                                                   tex-format)

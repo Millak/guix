@@ -10011,7 +10011,9 @@ of file names.
 It also generates font metrics (i.e., @file{.tfm} files) out of Metafont
 files whenever possible.  Likewise, it can also create TeX formats
 (i.e., @file{.fmt} files) listed in the @code{#:create-formats}
-argument.
+argument, and generate a symbolic link from @file{bin/} directory to any
+script located in located in @file{texmf-dist/scripts/}, provided its
+file name is listed in @code{#:link-scripts} argument.
 
 The build system adds @code{texlive-bin} from @code{(gnu packages tex)}
 to the native inputs.  It can be overridden with the
