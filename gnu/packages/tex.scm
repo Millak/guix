@@ -176,7 +176,7 @@
                            "tlpkg/texlive.tlpdb"))
                     (revision %texlive-revision)))
               (sha256
-               "1igdbnp37c5ajdp17bmcdgkm5s2fyph5v9gk8svhwaamwazk7xg5")))
+               "191p4rznf19wl9sbjm61v143wap3izhsql6s1bpq1nnbf1p4bakq")))
     (outputs '("out" "doc"))
     (build-system copy-build-system)
     (arguments
@@ -272,7 +272,7 @@
                    "tex/generic/ukrhyph/"
                    "tex/luatex/hyph-utf8/")
              (base32
-              "1k7rsi1a74xqvbqr7a84fyqj38jan82sz6h8dcxkx5cg3wa43pji")))
+              "1vzv92jvmnnga1xz5vrv8i6cy0dvrrly5x9nfrfzshlkm9bi3g4c")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -706,7 +706,7 @@ This package contains the binaries.")
                    "doc/man/man1/tex.1"
                    "doc/man/man1/tex.man1.pdf")
              (base32
-              "0njmxc6l84j44k48qh7d79n3qznzriz2pf8lkj09i7mkkj9fw9lf")))
+              "1n4jybv4qghg74anpj7n7kj4l908f476q597vyvvq59fd9k5m7mm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -741,7 +741,7 @@ it should not be processed without Knuth's direct permission.")
              (list "doc/latex/base/" "makeindex/latex/"
                    "source/latex/base/" "tex/latex/base/")
              (base32
-              "0k2b6qi281cl4zml6l537iyps1zwaq7pip81qq8vlkhb9h5ggpnw")))
+              "0yqxf70rzhzyrr5jrcqmqay9zhjz8f3qhcxak01g5cywdgvzfmpq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -773,35 +773,21 @@ document formating commands extended by a wide range of packages.")
 (define-public texlive-bidi
   (package
     (name "texlive-bidi")
-    ;; Take the version from texlive-2022.0 as the one from texlive 2021.0 is
-    ;; buggy.
-    (version "36.4")
-    (source (origin
-              (method svn-multi-fetch)
-              (uri (svn-multi-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        "texlive-2022.0/Master/texmf-dist"))
-                    (locations (list "doc/xelatex/bidi/"
-                                     "source/xelatex/bidi/"
-                                     "tex/xelatex/bidi/"))
-                    (revision 62885)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1s2p6zp64q6nh8r8hrdx7bbpzj90sq51jbwslh6zj281yx9mv61s"))))
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bidi/" "source/xelatex/bidi/"
+                   "tex/xelatex/bidi/")
+             (base32
+              "0zrmdgzbd8shzv1m1xvfqz515mwy5igkjwnnc4jrm1csbjf7jnj8")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex
-           texlive-ltxcmds
-           texlive-hyperref
-           texlive-xkeyval
-           texlive-zref))
     (home-page "https://ctan.org/pkg/bidi")
     (synopsis "Bidirectional typesetting in plain TeX and LaTeX using XeTeX")
-    (description "The @code{bidi} package provides a convenient interface for
-typesetting bidirectional texts with plain TeX and LaTeX.  The package
-includes adaptations for use with many other commonly-used packages.")
+    (description
+     "The @code{bidi} package provides a convenient interface for typesetting
+bidirectional texts with plain TeX and LaTeX.  The package includes
+adaptations for use with many other commonly-used packages.")
     (license license:lppl1.3+)))
 
 (define-public texlive-libkpathsea
@@ -851,8 +837,6 @@ executables.  It is maintained as a part of TeX Live.")))
               "0ap59hmg0brg2wlh3bl77jxfxrk7hphhdal8cr05mby9bw35gffy")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-intcalc texlive-infwarerr))
     (home-page "https://ctan.org/pkg/alphalph")
     (synopsis "Convert numbers to letters")
     (description
@@ -871,7 +855,7 @@ a replacement for LaTeX's @code{\\@@alph} and @code{\\@@Alph} macros.")
              name version
              (list "/tex/latex/base/docstrip.tex")
              (base32
-              "1pxbqbia0727vg01xv8451szm55z2w8sb0vv3kf4iqx5ibb6m0d2")))
+              "04cwvqs8cx8l60lrwn60krpjg1ada7i8g5mh6cb6bxaz08yvx9i4")))
     (build-system texlive-build-system)
     (arguments
      (list #:texlive-latex-bin? #f))
@@ -913,7 +897,7 @@ affected).")
              (list "doc/generic/unicode-data/"
                    "tex/generic/unicode-data/")
              (base32
-              "1d41zvjsig7sqf2j2m89dnbv3gicpb16r04b4ikps4gabhbky83k")))
+              "13zff8fk0fwa1ab8wc5yfbay0022jkk1j9zq5azn6gzcxs9szm6q")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
@@ -941,11 +925,9 @@ out to date by @code{unicode-letters.tex}.")
              (list "doc/latex/hopatch/" "source/latex/hopatch/"
                    "tex/latex/hopatch/")
              (base32
-              "1yc9pzh8h4caaxii197jzd8wmvj754ymdq5x2hvmn171mxqp4d3v")))
+              "03hafzf0kpjhn5x392bziwyx0vf6fwcsy0xrn0c0jzn5cq5nqhap")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-ltxcmds))
     (home-page "https://ctan.org/pkg/hopatch")
     (synopsis "Load patches for packages")
     (description
@@ -972,7 +954,7 @@ until the package appears.")
                    "/tex/generic/hyphen/hypht1.tex"
                    "/tex/generic/hyphen/zerohyph.tex")
              (base32
-              "1nad1bqpjsywm49hlv7d75mqvgha3j5vayvkvfhv8wwzgdb3mk84")))
+              "0p3p12pm9gyrhr1zzvzazfmybhavqd9hdi77ygm3ygq8km7raq3h")))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
     (home-page "https://tug.org/texlive/")
@@ -1028,7 +1010,7 @@ and machine-readable files.")
                    "fonts/cmap/dvipdfmx/"
                    "fonts/map/dvipdfmx/")
              (base32
-              "16qvi1id9qb8l337kl182qkl1di7wf16qbjw5k67x38g3p18qqna")))
+              "0p6mlpymrhsalisfda0gbqg6b941fd164kcw0nc51pzc98aws1xz")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -1068,7 +1050,7 @@ does pdfTeX.")
                    "fonts/enc/dvips/base/"
                    "tex/generic/dvips/")
              (base32
-              "0l4rvnb0m5y9rqibrdlbg3dijdzixjdx0nf69qjncvng5694p48m")))
+              "0x11wx9p16z4nxhlbfqlgi5svnr96j1hnvdl9fpv1sr3n1j8m79g")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/dvips")
@@ -1118,7 +1100,7 @@ adapt the plain e-TeX source file to work with XeTeX and LuaTeX.")
                    "metafont/config/"
                    "metafont/misc/")
              (base32
-              "1zzab3b8h2xsp88jqjr64i7f0yiqzd9rmzyvpgbfpyhd4sdl4fk4")))
+              "18pp6vcg1cv38yi39q9rvkv6w11mnxxd79fvf1yy01743jn7ngjh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -1171,11 +1153,9 @@ build fonts using the Metafont system.")
                    "source/latex/mfirstuc/"
                    "tex/latex/mfirstuc/")
              (base32
-              "033ymwwc6q0v6saq0x2jc20vc94d38hna0vb8cymj3d8irqy97x2")))
+              "1fvdnfybfi7nych97i117s6wqf0w8drgzpf3qzfns9qxjxm0bv3l")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox))
     (home-page "https://ctan.org/pkg/mfirstuc")
     (synopsis "Uppercase the first letter of a word")
     (description
@@ -1248,13 +1228,15 @@ information in the TFM file.")
                    "doc/man/man1/mptopdf.1"
                    "doc/man/man1/mptopdf.man1.pdf"
                    "scripts/context/perl/"
-                   "scripts/context/stubs/mswin/"
                    "tex/context/base/mkii/"
                    "tex/generic/context/mptopdf/")
              (base32
-              "0gbc6si5i7pgh37lnh5fpgnjs9180vz0nxpj6qkz8z2yb84ikq7l")))
+              "08z0hxq0645lf8jyl0wq3kwn1f7xsvj736sqgfin9ldd89zc2ch3")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "mptopdf.pl")
+           #:create-formats #~(list "mptopdf")))
     (propagated-inputs (list texlive-plain))
     (home-page "https://ctan.org/pkg/mptopdf")
     (synopsis "mpost to PDF, native MetaPost graphics inclusion")
@@ -1277,7 +1259,6 @@ be used independently of the rest of ConTeXt.")
              (list "doc/fonts/fontinst/"
                    "doc/man/man1/fontinst.1"
                    "doc/man/man1/fontinst.man1.pdf"
-                   ;; Extract the sole script expected in the package.
                    "scripts/texlive-extra/fontinst.sh"
                    "source/fontinst/base/"
                    "tex/fontinst/base/"
@@ -1290,9 +1271,10 @@ be used independently of the rest of ConTeXt.")
                    "tex/fontinst/smblmtx/"
                    "tex/latex/fontinst/")
              (base32
-              "0fbfhjbp7gxbwsbybbb8gm4l6za17nrm2mx2i2xa66lmpqcjbgg7")))
+              "1qqggn44w07a0aslsf3jdygwv1gfs90qahkan0gnibxsz7i44kqm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "fontinst.sh")))
     (home-page "https://ctan.org/pkg/fontinst")
     (synopsis "Tools for converting and installing fonts for TeX and LaTeX")
     (description
@@ -1559,10 +1541,9 @@ font from Adobe's basic set.")
                    "source/fonts/tex-gyre/"
                    "tex/latex/tex-gyre/")
              (base32
-              "0229aa7cgw614zlc2n589fi4hfdfnv7dd83f5mfa358zdb8iw54j")))
+              "0bn8g6rav0v47zbf1gjwp64x0l5340wb5iiiw4kdg69qingkj5lq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs (list texlive-kvoptions))
     (home-page "https://ctan.org/pkg/tex-gyre")
     (synopsis "TeX fonts extending URW fonts")
     (description
@@ -1624,7 +1605,7 @@ in LuaTeX.  It is required by the @code{luatexbase} package which uses
                    "fonts/type1/public/lm/"
                    "tex/latex/lm/")
              (base32
-              "0yyk0dr4yms82mwy4dc03zf5igyhgcb65icdah042rk23rlpxygv")))
+              "1zgp0pc30n8jqr7kiv6j77i9i8dzzyh8zv72n24n74lb28k0sfmr")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
@@ -1671,11 +1652,10 @@ available from the @code{unicode-math} package.")
                    "source/latex/lwarp/"
                    "tex/latex/lwarp/")
              (base32
-              "0pv3gvy01zkhk39ybjix5lh3x6q4r9pvabrx1wvqr96ma8gyzr5n")))
+              "0r1hxihhd7yzhw4s3v9yn1wl36q6fs2cwbdc09z9c1mdz3pywzp6")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-minitoc))
+    (arguments (list #:link-scripts #~(list "lwarpmk.lua")))
     (home-page "https://ctan.org/pkg/lwarp")
     (synopsis "Converts LaTeX to HTML")
     (description
@@ -1807,9 +1787,9 @@ logos in LaTeX documents.")
     (home-page "https://ctan.org/pkg/mflogo-font")
     (synopsis "METAFONT logo font")
     (description
-     "These fonts were created in METAFONT by Knuth, for his own publications.
-At some stage, the letters P and S were added, so that the METAPOST logo could
-also be expressed.  The fonts were originally issued (of course) as METAFONT
+     "These fonts were created in Metafont by Knuth, for his own publications.
+At some stage, the letters P and S were added, so that the MetaPost logo could
+also be expressed.  The fonts were originally issued (of course) as Metafont
 source; they have since been autotraced and reissued in Adobe Type 1 format by
 Taco Hoekwater.")
     (license license:knuth)))
@@ -1836,7 +1816,7 @@ Taco Hoekwater.")
                    "doc/man/man1/pktype.man1.pdf"
                    "mft/base/")
              (base32
-              "0v8i6w5kinh11xm0vmgb75sxb4lxznf3l1j78dq6xh55a79330ha")))
+              "0l0xy2zl7yzb14wbzsg4sz5bdj22ggqlsw54d0yrm430wlr1s6sd")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/mfware")
@@ -1936,7 +1916,7 @@ features generation of clean UTF-8 patterns.")
                    "fonts/tfm/public/etex/"
                    "tex/plain/etex/")
              (base32
-              "17pvh7i9zw8qa5hr53kci7di64fqzx4j35gsn28s36b74x6xj4bc")))
+              "1q48645qgjcl2jmpd0x0ip5wwdan54y9vx06zyvpp51wia30sacy")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
@@ -2048,10 +2028,6 @@ rest of the mathematics produced by (AmS-)LaTeX.")
               "0ql3xml1ccll44q945n7w72p6d51y5wcrkawi7cg621gy5d6wzx5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-ifplatform
-           texlive-iftex
-           texlive-pdftexcmds))
     (home-page "https://ctan.org/pkg/hardwrap")
     (synopsis "Hard wrap text to a certain character length")
     (description
@@ -2165,7 +2141,7 @@ replacement for the @code{inputenc} package.")
                    "web2c/texmf.cnf"
                    "web2c/viscii-t5.tcx")
              (base32
-              "0wfixvszpmri2j19wbg69fqw2iiqmn7blrbxhq17qddbwinm1dbq")))
+              "104kn06vmk7ljpz3sjnsr7r69p0i6nwad2v8gimdl2f38a53s5n3")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -2200,15 +2176,15 @@ package provides supporting files.")
     (source (texlive-origin
              name version
              (list "doc/fonts/kpfonts/"
+                   "fonts/afm/public/kpfonts/"
                    "fonts/enc/dvips/kpfonts/"
                    "fonts/map/dvips/kpfonts/"
                    "fonts/tfm/public/kpfonts/"
                    "fonts/type1/public/kpfonts/"
                    "fonts/vf/public/kpfonts/"
-                   "source/fonts/kpfonts/"
                    "tex/latex/kpfonts/")
              (base32
-              "0inai1p9bbjd5x790nsamakjaj0imvwv21mp9f98dwvdlj58vkqb")))
+              "0m5waxqrkm1i59i9vbn9ai9zjn7cl0f36iccwn2d73lhrqhbn16q")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/kpfonts")
@@ -2258,7 +2234,7 @@ formats.")
                    "doc/man/man1/pdflatex.1"
                    "doc/man/man1/pdflatex.man1.pdf")
              (base32
-              "1mkiqwq28lbw9iaisfza1xg9wss4zazx9i2szprqgjfkw5c0yipi")))
+              "1mhdc8a37b9j64kc8c8171s8p7ixklbf1ijr4vfh7af2k416qf8d")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -2309,8 +2285,6 @@ several packages that are considered as part of the LaTeX kernel.")
               "1fwa5233mdgvixhl2rzn9s06zz52j6ml7hfzd4194bn389n9syhk")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-atbegshi texlive-zref))
     (home-page "https://ctan.org/pkg/atenddvi")
     (synopsis "Provide the @code{\\AtEndDvi} command for older LaTeX format")
     (description
@@ -2337,10 +2311,6 @@ This is the main difference to @code{\\AtEndDocument}.")
               "0340c4rvxhhk95wlhf54n9akiwhj6pj0bslys6bkq29x9903zx5h")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics
-           texlive-hyperref
-           texlive-iftex))
     (home-page "https://ctan.org/pkg/attachfile")
     (synopsis "Attach arbitrary files to a PDF document")
     (description
@@ -2402,6 +2372,44 @@ the @file{.aux} file.")
 
 (define-deprecated-package texlive-latex-auxhook texlive-auxhook)
 
+(define-public texlive-epstopdf
+  (package
+    (name "texlive-epstopdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/epstopdf.1"
+                   "doc/man/man1/epstopdf.man1.pdf"
+                   "doc/man/man1/repstopdf.1"
+                   "doc/man/man1/repstopdf.man1.pdf"
+                   "doc/support/epstopdf/"
+                   "scripts/epstopdf/")
+             (base32
+              "0r2dr8f8myc663hdzzrkaiddfqsmmf41xan9y6kd1n049hhw414l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:link-scripts #~(list "epstopdf.pl")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-gs-location
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gs (search-input-file inputs "/bin/gs")))
+                (substitute* "scripts/epstopdf/epstopdf.pl"
+                  (("\"gs\"") (string-append "\"" gs "\"")))))))))
+    (home-page "https://ctan.org/pkg/epstopdf")
+    (synopsis "Convert EPS to PDF using Ghostscript")
+    (inputs (list ghostscript perl))
+    (description
+     "Epstopdf is a Perl script that converts an EPS file to an encapsulated
+PDF file (a single page file whose media box is the same as the original EPS's
+bounding box). The resulting file suitable for inclusion by pdfTeX as an
+image.  LaTeX users may make use of the @code{epstopdf} package, which will
+run the @code{epstopdf} script on the fly, thus giving the illusion that
+pdfLaTeX is accepting EPS graphic files.")
+    (license license:bsd-3)))
+
 (define-public texlive-epstopdf-pkg
   (package
     (name "texlive-epstopdf-pkg")
@@ -2415,11 +2423,6 @@ the @file{.aux} file.")
               "1ajyc5pkn1niifz5asyf09vbdqvmy05xwl0vxcdl7ik0ll0jcaxp")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-grfext
-           texlive-infwarerr
-           texlive-kvoptions
-           texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/epstopdf-pkg")
     (synopsis "Call @command{epstopdf} on the fly")
     (description
@@ -2463,18 +2466,13 @@ overwrite existing files and letting you use @code{filecontents}
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/filehook/"
-                   "source/latex/filehook/"
+             (list "doc/latex/filehook/" "source/latex/filehook/"
                    "tex/latex/filehook/")
              (base32
-              "03dsnv8fn111kn8h2fa281w2jvcdrqag1im6mkkfahvjgl1apk6k")))
+              "1zg9svjhrnh52fa04n3pnb0hrijp0lrr939dacf90cjjzwk36sfn")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list texlive-ydoc))
-    (propagated-inputs
-     (list texlive-kvoptions
-           texlive-pgf))
+    (native-inputs (list texlive-ydoc))
     (home-page "https://ctan.org/pkg/filehook")
     (synopsis "Hooks for input files")
     (description
@@ -2518,7 +2516,7 @@ users, via its Plain TeX version.)")
              name version
              (list "doc/latex/fancyvrb/" "tex/latex/fancyvrb/")
              (base32
-              "0c7y3hfhsvn3qipkq0g5zl9r6aa7bhjvrafxn0w29rpxgs3mc4jj")))
+              "18nif609wp9y9bc3jn3cz07ihphp95mqa4bfpgqlxsy3m57295s7")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/fancyvrb")
@@ -2546,9 +2544,6 @@ verbatim source).")
               "1x6bsf445dp8wc5hfgyywlal8vky5w23d69zlpybkp2d9am9a71p")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-adjustbox
-           texlive-svn-prov))
     (home-page "https://ctan.org/pkg/gincltex")
     (synopsis "Include TeX files as graphics")
     (description
@@ -2585,7 +2580,7 @@ Unicode points; it is maintained by Adobe.  The additional
              (list "doc/latex/graphics-def/"
                    "tex/latex/graphics-def/")
              (base32
-              "0b66fy06safyrd717rfr476g1gz6nqfv1vqvam7ac2yy0g0djb17")))
+              "1kp28k3shsiv0a051lp4fcqadac41c942hxwn506yps7h9y4jg23")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
@@ -2628,13 +2623,12 @@ set default \"driver\" options for the color and graphics packages.")
                    "source/latex/graphics/"
                    "tex/latex/graphics/")
              (base32
-              "0prw1zcv4fcj3zg0kyhj0k7ax0530adl60bajzvbv3fi16d7rqlq")))
+              "024hncahwc07yd2l94znv7v72sbykxdri5lpg3w4ip0nf10ywyma")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
     (native-inputs (list texlive-docstrip texlive-pdftex))
-    (propagated-inputs
-     (list texlive-graphics-def texlive-graphics-cfg))
+    (propagated-inputs (list texlive-graphics-def texlive-graphics-cfg))
     (home-page "https://ctan.org/macros/latex/required/graphics")
     (synopsis "The LaTeX standard graphics bundle")
     (description
@@ -2654,10 +2648,9 @@ documents.  It comprises the packages @code{color}, @code{graphics},
     (source (texlive-origin
              name version
              (list "doc/latex/greek-fontenc/"
-                   "source/latex/greek-fontenc/"
                    "tex/latex/greek-fontenc/")
              (base32
-              "1ncsvj5mlnkgllrvqdnbkv0qwpv2y7jkq3x2wdmm7d3daqq0ka5h")))
+              "1vary0vdrg77r55lf6gbfsqiyxqkbvrx1ijk71q3yl2v6adml4iv")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/greek-fontenc")
@@ -2679,8 +2672,6 @@ definition files for Greek text font encodings for use with @code{fontenc}.")
               "0hmkx37wwmznxjqqnca87shy7qrgqrh2cn5r941ddgivnym31xbh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-hopatch))
     (home-page "https://ctan.org/pkg/hycolor")
     (synopsis "Colour for packages @code{hyperref} and @code{bookmark}")
     (description
@@ -2700,13 +2691,9 @@ for the user.")
              (list "doc/latex/xcolor/" "dvips/xcolor/"
                    "source/latex/xcolor/" "tex/latex/xcolor/")
              (base32
-              "1d7108b67fcaf1sgyk43ph18l0z5m35iqg3aahqs1ymzwdfnd3f7")))
+              "1sh0v60azjbl2fcmg4p77dqw052j59d9pg20saxvj4md32a345py")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-colortbl
-           texlive-hyperref
-           texlive-lwarp))
     (home-page "https://ctan.org/pkg/xcolor")
     (synopsis "Driver-independent color extensions for LaTeX and pdfLaTeX")
     (description
@@ -2799,17 +2786,15 @@ UTF-8 or a suitable 8-bit encoding.")
                    "source/latex/hyperref/"
                    "tex/latex/hyperref/")
              (base32
-              "052k1nygm4msaivn8245n86km4h41knivigw80q58b7rc13s6hrk")))
+              "034bdg1vy2yql4sq9i3i1ss1axh7apdyk5rz3s2ss8fydvvds726")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-atbegshi
            texlive-auxhook
            texlive-bitset
-           texlive-cm
            texlive-etexcmds
            texlive-gettitlestring
-           texlive-graphics             ;for keyval
            texlive-hycolor
            texlive-intcalc
            texlive-kvdefinekeys
@@ -2838,6 +2823,26 @@ pdf and HTML backends.  The package is distributed with the @code{backref} and
 
 (define-deprecated-package texlive-latex-hyperref texlive-hyperref)
 
+(define-public texlive-hypdoc
+  (package
+    (name "texlive-hypdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hypdoc/" "source/latex/hypdoc/"
+                   "tex/latex/hypdoc/")
+             (base32
+              "14qg7q9r4cx132m2mr132ml0r49psfy99g6my4wir4yaw7y0x6pp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hypdoc")
+    (synopsis "Hyper extensions for @file{doc.sty}")
+    (description
+     "This package adds hypertext features to the package @code{doc} that is
+used in the documentation system of LaTeX2e.  Bookmarks are added and
+references are linked as far as possible.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hyperxmp
   (package
     (name "texlive-hyperxmp")
@@ -2851,29 +2856,18 @@ pdf and HTML backends.  The package is distributed with the @code{backref} and
                    "source/latex/hyperxmp/"
                    "tex/latex/hyperxmp/")
              (base32
-              "177wx80mc6ipl0ciddnwgjjfg9vqv71y9ql0y69sviplyy533ng7")))
+              "0x2hif61a7bz1ymrc2qz0f9papfj2qx2w0smpihrcjxq73g9dm1b")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
      (list
+      #:link-scripts #~(list "hyperxmp-add-bytecount.pl")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-build
             (lambda _
               (delete-file "source/latex/hyperxmp/hyperxmp-stds.tex"))))))
-    (propagated-inputs
-     (list texlive-atenddvi
-           texlive-etoolbox
-           texlive-hyperref
-           texlive-ifmtarg
-           texlive-iftex
-           texlive-intcalc
-           texlive-kvoptions
-           texlive-luacode
-           texlive-oberdiek             ;for ifdraft
-           texlive-pdfescape
-           texlive-stringenc
-           texlive-totpages))
+    (inputs (list perl))
     (home-page "https://ctan.org/pkg/hyperxmp")
     (synopsis "Embed XMP metadata within a LaTeX document")
     (description
@@ -2895,7 +2889,7 @@ is compatible with pdfLaTeX, XeLaTeX, LaTeX+dvipdfm, and LaTeX+dvips+ps2pdf.")
                    "source/latex/oberdiek/"
                    "tex/generic/oberdiek/" "tex/latex/oberdiek/")
              (base32
-              "00lp24fckawpy997j7zagsxv89jif40wgjq8fw502v06d225ikp3")))
+              "1fm6bcrxr4bw49h5hzrlas6ihaavshp6yjjvdjn869bl6hm6pmlz")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
@@ -2929,9 +2923,6 @@ arrows; record information about document class(es) used; and many more.")
               "1jv8hvkvq0yvc8mh68ybj8fvhf6kcdzwjin1czs45i26s0dpsngj")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-l3kernel
-           texlive-l3packages))
     (home-page "https://ctan.org/pkg/regexpatch")
     (synopsis "High level patching of commands")
     (description
@@ -2952,15 +2943,10 @@ experimental packages.")
                    "source/latex/rerunfilecheck/"
                    "tex/latex/rerunfilecheck/")
              (base32
-              "0f53b6dlnlrxkzj7h7x750p0489i2gg3isfqn0dlpncpq23w1r36")))
+              "0m3rvjgw0hg3n7db8hpyq55lq7py4scm35bqbawpc5mn5pmh2zg1")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-atveryend
-           texlive-infwarerr
-           texlive-kvoptions
-           texlive-pdftexcmds
-           texlive-uniquecounter))
+    (propagated-inputs (list texlive-atveryend texlive-uniquecounter))
     (home-page "https://www.ctan.org/pkg/rerunfilecheck")
     (synopsis "Checksum based rerun checks on auxiliary files")
     (description
@@ -2980,7 +2966,7 @@ have changed.  It is based on MD5 checksum, provided by pdfTeX.")
                    "source/latex/onedown/"
                    "tex/latex/onedown/")
              (base32
-              "04ih7i4v96ggwk4k1mpfx3dzcpi2siqablv93wryg7dk4cks5wkl")))
+              "00yh6nyzzy6d2sj1ha7dgfbsicy2ip1irn3il5jhc29sn3crfahx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/onedown")
@@ -3005,7 +2991,7 @@ output of bridge terms.")
                    "source/latex/tools/"
                    "tex/latex/tools/")
              (base32
-              "0c0ixkcvrlzx6sdj25ak3bx0j65qghf51w66yg5wlnpg08d3awrs")))
+              "04zafcgdgiricq0l6lplfxa2qdspx5wbzpql5h7hw90lsdiw8awk")))
     (outputs '("out" "doc"))
     (arguments
      (list #:build-targets #~(list "tools.ins")))
@@ -3061,7 +3047,7 @@ of file names.")
                    "source/latex/l3kernel/"
                    "tex/latex/l3kernel/")
              (base32
-              "1y7wcb2643cfwda86f5zpbbw3hj01rji7r143ln77k8nr1919jj1")))
+              "1jbll1x3pdjpm1v70h7kpxgkjsw2mi2zbdilc7qvh251amn0hdbv")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -3069,10 +3055,8 @@ of file names.")
       #:tex-engine "tex"
       #:tex-format #f
       #:texlive-latex-bin? #f))
-    (native-inputs
-     (list texlive-docstrip))
-    (propagated-inputs
-     (list texlive-l3backend))
+    (native-inputs (list texlive-docstrip))
+    (propagated-inputs (list texlive-l3backend))
     (home-page "https://ctan.org/pkg/l3kernel")
     (synopsis "LaTeX3 programming conventions")
     (description
@@ -3096,16 +3080,14 @@ LaTeX3 conventions can be used with regular LaTeX2e packages.")
                    "source/latex/l3backend/"
                    "tex/latex/l3backend/")
              (base32
-              "18i6aczhj7pvqgdwfgkbmjz7a8xgd5w2jhibrv8khqlvxp62in94")))
+              "1pd2drks05k9w3fzgzg7vkj46plpw5z9r0zl43r1kzya9c4ldb38")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list
-      #:tex-engine "tex"
-      #:tex-format #f
-      #:texlive-latex-bin? #f))
-    (native-inputs
-     (list texlive-docstrip))
+     (list #:tex-engine "tex"
+           #:tex-format #f
+           #:texlive-latex-bin? #f))
+    (native-inputs (list texlive-docstrip))
     (home-page "https://ctan.org/pkg/l3backend")
     (synopsis "LaTeX3 backend drivers")
     (description
@@ -3137,24 +3119,21 @@ an independent schedule.")
                    "tex/latex/l3packages/xparse/"
                    "tex/latex/l3packages/xtemplate/")
              (base32
-              "1k9zms255qz6i24k74g7wnyrdvshl52jgb198pmg6mj9ajhw9sks")))
+              "0l7mfm8ziil59drqmb723n0wjbwdsx54iah051haxlbj7psqmbax")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list
-      #:build-targets
-      '(list "l3keys2e.ins"
-             "xparse.ins"
-             "xfrac.ins"
-             "xfp.ins"
-             "xtemplate.ins")
-      #:tex-engine "tex"
-      #:tex-format #f
-      #:texlive-latex-bin? #f))
-    (native-inputs
-     (list texlive-docstrip))
-    (propagated-inputs
-     (list texlive-l3kernel))
+     (list #:build-targets
+           '(list "l3keys2e.ins"
+                  "xparse.ins"
+                  "xfrac.ins"
+                  "xfp.ins"
+                  "xtemplate.ins")
+           #:tex-engine "tex"
+           #:tex-format #f
+           #:texlive-latex-bin? #f))
+    (native-inputs (list texlive-docstrip))
+    (propagated-inputs (list texlive-l3kernel))
     (home-page "https://ctan.org/pkg/l3packages")
     (synopsis "High-level LaTeX3 concepts")
     (description
@@ -3185,7 +3164,7 @@ a means of defining generic functions using a key-value syntax, and
                    "source/latex/fontspec/"
                    "tex/latex/fontspec/")
              (base32
-              "1k999jgdd4a9d20rywl53vzpvl3synqxik1fiskxwzlzibjlibv1")))
+              "0rh3x1h8glpmw0nmqv8lili3vf0zw2lcgffzk680c86k8jpjy4cm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
@@ -3241,7 +3220,7 @@ default is a stub that just loads @code{graphicx}.")
                    "fonts/vf/public/sansmathfonts/"
                    "tex/latex/sansmathfonts/")
              (base32
-              "1l6q26590kdr2b24psdwgjw199p3sgk2hh74gq6fd6qircc1z3cy")))
+              "19349dxvqiinhsihn83yfhl6pgcvkd48l37w5jh59myx7sc6p8j6")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (native-inputs
@@ -3307,9 +3286,11 @@ file name may also be given explicitly as an optional argument.")
                    "source/latex/l3build/"
                    "tex/latex/l3build/")
              (base32
-              "0xxzy3xnq71z3sbkdq8glgnqydvr9g11ih2jmg68fmn5m145w8pi")))
+              "19iq80vj1glf35zcrspj1bnk6bf6yr3r3b2c5rgqhz58m2znsla0")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "l3build.lua")))
+    (propagated-inputs (list texlive-luatex))
     (home-page "https://ctan.org/pkg/l3build")
     (synopsis "Testing and building system for LaTeX")
     (description
@@ -3332,9 +3313,6 @@ a @file{.tex} file which provides the testing environment.")
               "1dwdiwsdfhgwpx8r2271i5kqphcpkh69y3rx1wxfr9hl17lzw2cp")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bigfoot              ;for "perpage.sty"
-           texlive-etoolbox))
     (home-page "https://ctan.org/pkg/luabidi")
     (synopsis "Bidi functions for LuaTeX")
     (description
@@ -3355,9 +3333,6 @@ context of LuaTeX.")
               "1dyld5yb57p3j7wz591plbgjy7dk7ngn8cxw1lfmvx8iprgk1f8d")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex
-           texlive-luatexbase))
     (home-page "https://ctan.org/pkg/luacode")
     (synopsis "Helper for executing Lua code from within TeX")
     (description
@@ -3378,7 +3353,7 @@ environments to help with these problems.")
                    "source/lualatex/lualatex-math/"
                    "tex/lualatex/lualatex-math/")
              (base32
-              "1xfr31rwr7zc6d5bsc3v5lwvcfrg109rzfgvvs69w4xs61j06jcg")))
+              "0rzzlq6a0c7sj1x83wqn5iwaiz3w9prcpz4lqbjlkgr7my4m052z")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
@@ -3403,7 +3378,7 @@ they are not directly related to Unicode mathematics typesetting.")
              (list "doc/luatex/lualibs/" "source/luatex/lualibs/"
                    "tex/luatex/lualibs/")
              (base32
-              "0gf60vj9y75a7dlrmpbyqgsa00s1717r6if3lm5ldm41i9fm8ywz")))
+              "0x53z6072z8qpp5fh2g9blz95zg20906k82jk6hz1hibv70is0pk")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
@@ -3444,7 +3419,7 @@ in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/luatex/base/graphics/"
+             (list "doc/luatex/base/"
                    "doc/man/man1/dviluatex.1"
                    "doc/man/man1/dviluatex.man1.pdf"
                    "doc/man/man1/luatex.1"
@@ -3457,7 +3432,7 @@ in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
                    "tex/generic/config/luatexiniconfig.tex"
                    "web2c/texmfcnf.lua")
              (base32
-              "1iskvy3i7kq0m39x7k8bs3w2l9bvqzcyzyfllfqr4rwpk4373k30")))
+              "14ad9qr5dn0796f8gqbry5axdm2mciibcgzva8kas1vrqs5a9f19")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -3498,8 +3473,7 @@ assumed.")
               "1nz2k9czqdmn08v75qa2bwanvcvyp9jmqcgwaxcy4fy4mpbrn8ra")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-ctablestack))
+    (propagated-inputs (list texlive-ctablestack))
     (home-page "https://ctan.org/pkg/luatexbase")
     (synopsis "Basic resource management for LuaTeX code")
     (description
@@ -3539,7 +3513,7 @@ upgrade smoothly to the new support structure.")
              (list "doc/man/man1/luahbtex.1"
                    "doc/man/man1/luahbtex.man1.pdf")
              (base32
-              "0w4hfjmjgiw42bpz1b59cla8v4s6kik54q6wdhmdjy6jp91rfl2i")))
+              "1hfawh7vig7jsmd1y0qlbn80x6770q56sqd9rx638js4p5a4di3l")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -3562,8 +3536,37 @@ upgrade smoothly to the new support structure.")
 shaping, instead of LuaTeX's built-in shaper.")
     (license (package-license texlive-luatex))))
 
-;; TODO: We should be able to build this from the sources on Github with
-;; texlive-l3build, but I haven't been able to get it to work.
+(define-public texlive-lua-uni-algos
+  (package
+    (name "texlive-lua-uni-algos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/lua-uni-algos/"
+                   "tex/luatex/lua-uni-algos/")
+             (base32
+              "1dx70msqkj101mgj88b7fmb28bghlrrrcy5v66m74gqb5i41dnc2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-bin? #f))
+    (home-page "https://ctan.org/pkg/lua-uni-algos")
+    (synopsis "Unicode algorithms for LuaTeX")
+    (description
+     "Lua code working with Unicode data has to deal with quite some
+challenges.  For example there are many canonically equivalent sequences which
+should be treated in the same way, and even identifying a single character
+becomes quite different once you have to deal with all kinds of combining
+characters, emoji sequences and syllables in different scripts.  Therefore
+@code{lua-uni-algos} wants to build a collection of small libraries
+implementing algorithms to deal with lots of the details in Unicode, such that
+authors of LuaTeX packages can focus on their actual functionality instead of
+having to fight against the peculiarities of Unicode.  Given that this package
+provides Lua modules, it is only useful in Lua(HB)TeX.  Additionally, it
+expects an up-to-date version of the unicode-data package to be present.  This
+package is intended for package authors only; no user-level functionality
+provided.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-luaotfload
   (package
     (name "texlive-luaotfload")
@@ -3579,11 +3582,17 @@ shaping, instead of LuaTeX's built-in shaper.")
                    "source/luatex/luaotfload/"
                    "tex/luatex/luaotfload/")
              (base32
-              "15xhnb4kyzmr11lj0md1d502cqrxyq6zdcq738z9394k6bas377f")))
+              "0x0vigy6g5sf9n5113p8w885qy9w72skay09p3x6p510lpzaafj5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-bin? #f))
-    (propagated-inputs (list texlive-lm texlive-lua-alt-getopt texlive-lualibs))
+    (arguments
+     (list #:texlive-latex-bin? #f
+           #:link-scripts #~(list "luaotfload-tool.lua")))
+    (propagated-inputs
+     (list texlive-lm
+           texlive-lua-alt-getopt
+           texlive-lua-uni-algos
+           texlive-lualibs))
     (home-page "https://ctan.org/pkg/luaotfload")
     (synopsis "OpenType font loader for LuaTeX")
     (description
@@ -3605,11 +3614,9 @@ loading fonts by their proper names instead of file names.")
              (list "doc/latex/amsmath/" "source/latex/amsmath/"
                    "tex/latex/amsmath/")
              (base32
-              "0kqrgc1kbrgkw9kflazi5imdj8r2fbj2q44x6may362a6izzk2jq")))
+              "1x97wjj664hvj73k2ffg7xmllaqm25ikjm8rcfjs2q920f5ixw2h")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsfonts))
     (home-page "https://www.ctan.org/pkg/amsmath")
     (synopsis "AMS mathematical facilities for LaTeX")
     (description
@@ -3661,7 +3668,7 @@ the Knuth's manual font, such as the Dangerous Bend and Manual-errata Arrow.")
     (home-page "https://ctan.org/pkg/manual")
     (synopsis "Knuth's manual fonts")
     (description
-     "This package provides METAFONT (by Donald Knuth) and Adobe Type 1 (by
+     "This package provides Metafont (by Donald Knuth) and Adobe Type 1 (by
 Taco Hoekwater) versions of the font containing the odd symbols Knuth uses in
 his books.  LaTeX support is available using the @code{manfnt} package.")
     (license license:knuth)))
@@ -3701,10 +3708,6 @@ commands.  The commands may also be used in plain TeX.")
               "1chy1rqwici66p9brphb3gsprmcyhia9cvm5fn9wb5a9cchxqa08")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsfonts
-           texlive-amsmath
-           texlive-url))
     (home-page "https://www.ctan.org/pkg/amscls")
     (synopsis "AMS document classes for LaTeX")
     (description
@@ -3727,7 +3730,7 @@ available as part of the AMS-LaTeX distribution.")
                    "source/latex/babel/"
                    "tex/generic/babel/")
              (base32
-              "00gl0b55hg912bmrqkpzn5rfyds7hcbsfwdlsmqishq5gjp6pnr0")))
+              "18q99xgga4448vk7wf5r5ry79sx5ymqx0zd7v7l1c4wyyiv4riw9")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -3850,7 +3853,7 @@ available.")
                    "tex/csplain/fonts/"
                    "tex/csplain/opmac/")
              (base32
-              "068g31l2ralz03gsv58j67dm85vy0ad58dvdkh93ws0yzf0rnr5f")))
+              "14z479gkiwgw17pdghrxh5q0rlxnij7ccj49kgf3macwgmh5lm0r")))
     (arguments
      (list #:create-formats #~(list "csplain" "luacsplain" "pdfcsplain")))
     (build-system texlive-build-system)
@@ -3917,7 +3920,7 @@ Canadian and USA text.")
                    "source/generic/babel-french/"
                    "tex/generic/babel-french/")
              (base32
-              "0cgn4dq5wnlfh9wddjzxsf7p56pk29lyndg56zg6558y7xf67cw8")))
+              "1p0gprdfvfincbkvqbc4bpyx6jf483k798hz5psg04rhmx5hi4wl")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/babel-french")
@@ -3973,6 +3976,41 @@ German.")
      "The package provides the language definition file for Swedish.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cyrillic-bin
+  (package
+    (name "texlive-cyrillic-bin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/rubibtex.1"
+                   "doc/man/man1/rubibtex.man1.pdf"
+                   "doc/man/man1/rumakeindex.1"
+                   "doc/man/man1/rumakeindex.man1.pdf"
+                   "scripts/texlive-extra/rubibtex.sh"
+                   "scripts/texlive-extra/rumakeindex.sh")
+             (base32
+              "09l5f7l91ph6sqfp2ia3yn23pa3s4cyfgyn020ncqvapg00s0mmg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:link-scripts #~(list "rubibtex.sh" "rumakeindex.sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'patch-shell-scripts
+            (lambda _
+              (with-directory-excursion "scripts/texlive-extra/"
+                (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                  (substitute* (list "rubibtex.sh" "rumakeindex.sh")
+                    (("\\b(basename|cat|mkdir|rm|sed)\\b" _ command)
+                     (which command))))))))))
+    (home-page "https://ctan.org/pkg/cyrillic-bin")
+    (synopsis "Cyrillic BibTeX and MakeIndex")
+    (description
+     "This package provides scripts for Cyrillic versions of BibTeX and
+MakeIndex.")
+    (license license:public-domain)))
+
 (define-public texlive-cyrillic
   (package
     (name "texlive-cyrillic")
@@ -3983,15 +4021,14 @@ German.")
                    "source/latex/cyrillic/"
                    "tex/latex/cyrillic/")
              (base32
-              "0a1dcpdgnzf08cd1b9ihdk4229aw19ar0f5sfjr44fqqwkav3l5i")))
+              "08v670f7s74klnac7pzqsad9m4jsxfkckzkswxb94xxd61kanzdx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list
-      #:tex-engine "tex"
-      #:tex-format #f))
-    (native-inputs
-     (list texlive-docstrip))
+     (list #:tex-engine "tex"
+           #:tex-format #f))
+    (native-inputs (list texlive-docstrip))
+    (propagated-inputs (list texlive-cyrillic-bin))
     (home-page "https://ctan.org/pkg/cyrillic")
     (synopsis "Support for Cyrillic fonts in LaTeX")
     (description
@@ -4013,17 +4050,6 @@ language that is written in a Cyrillic alphabet.")
              (base32
               "1h49v6sqbm27isfwwcql9dzxn4vmcn2algkqh7f1pzj860xw3ygn")))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsfonts
-           texlive-graphics
-           texlive-hyperref
-           texlive-marvosym
-           texlive-psnfss
-           texlive-tipa
-           texlive-times
-           texlive-tools
-           texlive-ulem
-           texlive-url))
     (home-page "https://ctan.org/pkg/passivetex")
     (synopsis "Support package for XML/SGML typesetting")
     (description
@@ -4045,8 +4071,6 @@ Unicode entities, and common formatting object definitions for JadeTeX.")
               "0pazv1khsgjhxc673qrhjrbzlkgmcj53qccb9hw7ygdajxrjc2ba")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/pict2e")
     (synopsis "New implementation of @code{picture} commands")
     (description
@@ -4099,7 +4123,7 @@ part of the LaTeX required set of packages.")
    "updmap.cfg" (number->string %texlive-revision)
    (list "web2c/updmap.cfg")
    (base32
-    "1bb9nmvr14f3lam627mq030hh08h7wsy8i6884q2kvppbpf2a3mf")))
+    "10b9il84x6vwfns7cvf8jv0bfcjr7icph3mhci9cq088v216k3kb")))
 
 (define-public texlive-updmap.cfg
   (lambda* (#:optional (packages '()))
@@ -4229,8 +4253,6 @@ T3, and the set of addendum symbols as encoding TS3.  Times-like Adobe Type
               "12la66vz5ic6jc1cy96b2zh2fxsbaii9kbs4wrz1ii8v508wdkhv")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-hyperref texlive-url))
     (home-page "https://ctan.org/pkg/amsrefs")
     (synopsis "LaTeX-based replacement for BibTeX")
     (description
@@ -4255,8 +4277,6 @@ either in conjunction with BibTeX or as a replacement for BibTeX.")
               "140b4bbjcgajd1flznmi3ga6lx5pna2nxybr2dqm9515lny8gwf0")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etex texlive-ncctools))
     (home-page "https://ctan.org/pkg/bigfoot")
     (synopsis "Footnotes for critical editions")
     (description
@@ -4286,10 +4306,8 @@ packages.")
               "1gakawih3mzm5jh01kb44sjpsa4r8c3zwzig5bac37g4ha2vqska")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://ctan.org/pkg/blindtext")
-    (synopsis "Producing 'blind' text for testing")
+    (synopsis "Producing blind text for testing")
     (description
      "The package provides the commands @code{\\blindtext} and
 @code{\\Blindtext} for creating \"blind\" text useful in testing new classes
@@ -4355,8 +4373,6 @@ package.")
               "04l3gqiq0bhzbz8zxr7428fap2x1skkaq5ppbambc4lk8c7iw6da")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-everypage texlive-graphics texlive-kvoptions))
     (home-page "https://ctan.org/pkg/draftwatermark")
     (synopsis "Put a grey textual watermark on document pages")
     (description
@@ -4403,7 +4419,7 @@ example, translation of multibyte sequences, such as utf-8 encoding.")
     (build-system texlive-build-system)
     (propagated-inputs (list texlive-trimspaces))
     (home-page "https://ctan.org/pkg/environ")
-    (synopsis "A new interface for environments in LaTeX")
+    (synopsis "New interface for environments in LaTeX")
     (description
      "This package provides the @code{\\collect@@body} command (as in
 @code{amsmath}), as well as a @code{\\long} version @code{\\Collect@@Body},
@@ -4426,8 +4442,6 @@ define a new author interface to creating new environments.")
               "16c5dyd4bz45a2c1ppbq05h9ixg15srk5az5pld5gpv4j0zwzrqw")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-environ texlive-tools))
     (home-page "https://ctan.org/pkg/eqparbox")
     (synopsis "Create equal-widthed parboxes")
     (description
@@ -4451,11 +4465,10 @@ also provided.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/etoc/"
-                   "source/latex/etoc/"
+             (list "doc/latex/etoc/" "source/latex/etoc/"
                    "tex/latex/etoc/")
              (base32
-              "04vjfn4jadxbc38r08r9pwvpj7szvk88hiav35iqhl3p78xri7z4")))
+              "02xa9091vgz5gdzbsc202mzd4lalvvkh3b7slnzppx827sqbq917")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/etoc")
@@ -4472,8 +4485,7 @@ LaTeX document classes, but the package can also allow the user to delegate
 the details to packages dealing with list making environments (such as
 @code{enumitem}).  The package's default global style typesets tables of
 contents in a multi-column format, with either a standard heading, or a ruled
-title
-(optionally with a frame around the table).
+title (optionally with a frame around the table).
 
 The @code{\\tableofcontents} command may be used arbitrarily many times in the
 same document, while @code{\\localtableofcontents} provides a local table of
@@ -4519,8 +4531,6 @@ remain in sequence).")
               "1snsj7kblkj1ig3x3845lsypz7ab04lf0dcpdh946xakgjnz4fb5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/filemod")
     (synopsis "Provide file modification times, and compare them")
     (description
@@ -4567,11 +4577,10 @@ in sequence with single column floats like figure.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/hanging"
-                   "source/latex/hanging"
+             (list "doc/latex/hanging/" "source/latex/hanging/"
                    "tex/latex/hanging/")
              (base32
-              "1d9kr163vn9sm9p9dyppnnffdcdjlgrm7848d97s678hdb9cp962")))
+              "18ichpmmghz0nmv6m646r64y5jvyp52qz9hj7hadrf34xj1ijmlk")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://www.ctan.org/pkg/hanging")
@@ -4599,15 +4608,9 @@ by making punctuation characters active.")
                    "fonts/vf/public/fira/"
                    "tex/latex/fira/")
              (base32
-              "1v3688hziqz4jywfysiv19vsdzfkknrf83zfbi7lhiqpgkpsfsm2")))
+              "19sb6c1h1crhs1597i3nlvr2ahl20hxj7a1a5xkpfr5vj4n3x5kv")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontaxes
-           texlive-fontspec
-           texlive-iftex
-           texlive-mweights
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/fira")
     (synopsis "Fira fonts with LaTeX support")
     (description
@@ -4627,7 +4630,7 @@ corresponding italics: light, regular, medium, bold, ...")
              (list "doc/latex/firstaid/" "source/latex/firstaid/"
                    "tex/latex/firstaid/")
              (base32
-              "1ahn47kz8a2qdmzdfdgjanf6h5bn8f2rzp1zvwgjpk1plcix8k90")))
+              "1gpbl3l77mrrf88iqcnfvcgxwraqm2rsvisnngak9fbwbinc489v")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:texlive-latex-bin? #f))
@@ -4656,11 +4659,6 @@ meant to be loaded during format generation and not by the user.")
               "1llas0xwq3y9nk7gblg40l99cgmkl9r7rbfazrhpnbaz5cshl8pl")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-catchfile
-           texlive-iftex
-           texlive-pdftexcmds
-           texlive-tools))
     (home-page "https://ctan.org/pkg/ifplatform")
     (synopsis "Conditionals to test which platform is being used")
     (description
@@ -4707,15 +4705,12 @@ compatible with @code{natbib}.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/newfloat/"
-                   "source/latex/newfloat/"
+             (list "doc/latex/newfloat/" "source/latex/newfloat/"
                    "tex/latex/newfloat/")
              (base32
               "1hrackdfrzad8cgbl3f3yaagk4p4zjbvq710rm8b1z02fr9z2zkq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/newfloat")
     (synopsis "Define new floating environments")
     (description
@@ -4732,10 +4727,11 @@ the LaTeX standard foating environments @code{figure} and @code{table}.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/newunicodechar/" "source/latex/newunicodechar"
+             (list "doc/latex/newunicodechar/"
+                   "source/latex/newunicodechar/"
                    "tex/latex/newunicodechar/")
              (base32
-              "0mybqah1n9vmxvi6f587jlxbn7pv3624qw83psq5vwfnddw3n70y")))
+              "1b3n5mdfw9csp0ri1vw4jh1ibnpsllb5n6pwfkg1jad10ml9wavz")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://www.ctan.org/pkg/newunicodechar")
@@ -4757,11 +4753,31 @@ Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
              (list "doc/latex/newverbs/" "source/latex/newverbs/"
                    "tex/latex/newverbs/")
              (base32
-              "1m3afrpyc75g5gdxfknad565r5jgmwks98skkqycm66i92ky9dqr")))
+              "02mhqgsfd13i1llhm0rgq3f9qs067jih2s15q1zvsfd5bhzls1pq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'copy-ydocstrip.tex
+            ;; There's a circular dependency between `newverbs' (where `ydoc'
+            ;; should be a native input) and `ydoc' (where `newverbs' is
+            ;; a propagated input).  To work around this, install the specific
+            ;; "ydocstrip.tex" file from `ydoc' in the build directory and set
+            ;; TEXINPUTS variable accordingly so the process can find it.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (install-file (search-input-file inputs
+                                               "tex/generic/ydoc/ydocstrip.tex")
+                            "build/")
+              (setenv "TEXINPUTS" (string-append (getcwd) "/build:")))))))
     (native-inputs
-     (list texlive-ydoc))
+     (list
+      (texlive-origin
+       "ydocstrip.tex" (number->string %texlive-revision)
+       (list "tex/generic/ydoc/ydocstrip.tex")
+       (base32
+        "1nixgvmw8c6jznhxys3yfzr3qw1lci8kyx54rs0shm6i63xjgr9i"))))
     (home-page "https://ctan.org/pkg/newverbs")
     (synopsis "Define new versions of @code{\\verb}")
     (description
@@ -4788,8 +4804,6 @@ used to write the verbatim text to a file.")
               "0gad1vi0r5xw7gyj1cb2cp58j4dqrw4awcfxmfrna9xbz91g4sn9")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex texlive-infwarerr texlive-ltxcmds))
     (home-page "https://www.ctan.org/pkg/pdftexcmds")
     (synopsis "LuaTeX support for pdfTeX utility functions")
     (description
@@ -4813,8 +4827,6 @@ available for LuaTeX by reimplementing them using Lua.")
               "06vp5x6rnl4gqwxzzynbl169q23k8pmaxjhb0lbzdcm3ihvzp47z")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/psfrag")
     (synopsis "Replace strings in encapsulated PostScript figures")
     (description
@@ -4840,17 +4852,6 @@ rotated.")
               "12clzcw2cl7g2chr2phgmmiwxw4859cln1gbx1wgp8bl9iw590nc")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bigfoot              ; for suffix
-           texlive-filemod
-           texlive-graphics
-           texlive-ifplatform
-           texlive-l3kernel             ; for expl3
-           texlive-oberdiek
-           texlive-psfrag
-           texlive-tools                ; for shellesc
-           texlive-trimspaces
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/pstool")
     (synopsis "Support for @code{psfrag} within pdfLaTeX")
     (description
@@ -4874,8 +4875,6 @@ re-processing.")
               "128cvwdl4wcdshvs59yn5iljdxxdrc5jircbxav77y7kc3l33z7z")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-infwarerr texlive-ltxcmds))
     (home-page "https://www.ctan.org/pkg/refcount")
     (synopsis "Counter operations with label references")
     (description
@@ -4900,10 +4899,6 @@ corresponding thing with the page reference of the label.")
               "0x8l98r6xzyi4lc909bv7ii2nbpff8j7j3q4z86l7rrjk1jkx9qi")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-kvoptions
-           texlive-kvsetkeys
-           texlive-stringenc))
     (home-page "https://ctan.org/pkg/selinput")
     (synopsis "Semi-automatic detection of input encoding")
     (description
@@ -4949,13 +4944,9 @@ Adobe Type 1 formats.")
              name version
              (list "doc/latex/seminar/" "tex/latex/seminar/")
              (base32
-              "1clgw5xy867khzfn8d210rc5hsw5s7r0pznhk84niybvw4zc7r3f")))
+              "1xm78f9qsy3zr1vllb8mgp1azhn7a2jaqkj2lkrsgc3m7ag9w9hh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-geometry
-           texlive-hyperref
-           texlive-pstricks))
     (home-page "https://ctan.org/pkg/seminar")
     (synopsis "Make overhead slides")
     (description
@@ -5007,13 +4998,6 @@ user may consider the @code{dnaseq} as a rather more powerful alternative.")
               "0vff1yk7a3f4csxibfk6r37s3h6n4wdpnk3qj4dsx7kh5zrcysha")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-attachfile
-           texlive-float
-           texlive-graphics
-           texlive-listings
-           texlive-refcount
-           texlive-varwidth))
     (home-page "https://ctan.org/pkg/showexpl")
     (synopsis "Typesetting LaTeX source code")
     (description
@@ -5030,12 +5014,10 @@ result in the same document.")
              (list "doc/latex/stackengine/"
                    "tex/latex/stackengine/")
              (base32
-              "1rbw3dmb6kl3wlnpxacr8cmp2ivac1kpnb33k7r5s3lp1q59ck38")))
+              "0c12ygqxdb6vn1y03jzcjpmdp53r076hq3hgjzwy2ch1dw81cnpd")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox
-           texlive-listofitems))
+    (propagated-inputs (list texlive-listofitems))
     (home-page "https://ctan.org/pkg/stackengine")
     (synopsis "Customised stacking of objects")
     (description
@@ -5092,8 +5074,6 @@ create new @samp{List of ...}.  The ToC @code{\\parskip} may be changed.")
               ;; The "ins" file refers to the wrong source file.
               (substitute* "source/latex/trimspaces/trimspaces.ins"
                 (("pstool\\.tex") "trimspaces.tex")))))))
-    (propagated-inputs
-     (list texlive-filecontents))
     (home-page "https://ctan.org/pkg/trimspaces")
     (synopsis "Trim spaces around an argument or within a macro")
     (description
@@ -5114,14 +5094,10 @@ definition, or to define space-stripped macros.")
              (list "doc/latex/currfile/" "source/latex/currfile/"
                    "tex/latex/currfile/")
              (base32
-              "1l9win5msf80yzgzfx580d1hw8lza1advhqkhpz83i080020asji")))
+              "0g28y2bwqnc3xfcp0ak7rxx0c40b88vl85pj7x5dccmvx0yrxy9n")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list texlive-ydoc))
-    (propagated-inputs
-     (list texlive-filehook
-           texlive-kvoptions))
+    (native-inputs (list texlive-ydoc))
     (home-page "https://ctan.org/pkg/currfile")
     (synopsis "Provide file name and path of input files")
     (description
@@ -5183,12 +5159,9 @@ to something that's not a float.")
              (list "doc/latex/carlisle/" "source/latex/carlisle/"
                    "tex/latex/carlisle/")
              (base32
-              "139k4n8dv6pbal1mx4m8b239x3i9cw61f6digk9mxscbxwvxfngb")))
+              "0kgbs8k6ma3kng2srwpzkla1c51ylzgb7yn8bib2zy46rmysrk86")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics
-           texlive-tools))
     (home-page "https://ctan.org/pkg/carlisle")
     (synopsis "David Carlisle's small packages")
     (description
@@ -5212,10 +5185,6 @@ for physicists.")
               "1dpxy64hs0bjp8d2dmikflc995vazf7fi6z92w51fnj2fidgl8gx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etexcmds
-           texlive-infwarerr
-           texlive-ltxcmds))
     (home-page "https://ctan.org/macros/latex/contrib/catchfile")
     (synopsis "Catch an external file into a macro")
     (description
@@ -5233,14 +5202,6 @@ for physicists.")
               "1p02ai76nnh6042pnmqv4n30z6yxsvyyk2nb9jk7xlyyc87zzbdd")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox
-           texlive-hyperref
-           texlive-l3packages
-           texlive-listings
-           texlive-pgf
-           texlive-tools
-           texlive-xstring))
     (home-page "https://ctan.org/pkg/ddphonism")
     (synopsis "Dodecaphonic diagrams for LaTeX")
     (description
@@ -5261,8 +5222,6 @@ sequence, of variable length.")
               "18z9922lqb3hliqn95h883fndqs4lgyi5yqbnq2932ya0imc3j7h")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-hyperref))
     (home-page "https://ctan.org/pkg/doi")
     (synopsis "Create correct hyperlinks for DOI numbers")
     (description
@@ -5288,8 +5247,6 @@ hyperlink to the target of the DOI.")
               "070iaj540rglf0c80l0hjkwg6aa7qyskhh4iwyhf7n8vrg5cjjab")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etex))
     (home-page "https://ctan.org/pkg/etoolbox")
     (synopsis "e-TeX tools for LaTeX")
     (description
@@ -5316,8 +5273,6 @@ of the LaTeX kernel.")
               "1javlws18ncrf7rz7qfbx1db9jwk45lm6sa0s67hlr6hqnyjxf94")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/fncychap")
     (synopsis "Seven predefined chapter heading styles")
     (description
@@ -5370,10 +5325,6 @@ course of the framed/shaded matter.  There is also a command
               "0sicgf3wjw5jymh5xjxby2hsilakhw2lqgywx0f2zax1z854xc2m")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-babel
-           texlive-eurosym
-           texlive-marvosym))
     (home-page "https://www.ctan.org/pkg/g-brief")
     (synopsis "Letter document class")
     (description
@@ -5398,8 +5349,6 @@ and a new version of @code{g-brief}.")
               "1324nw1r1aj6khz6fvrhd1p1sinadrd83j0s2q2fhnsgwp6sw94f")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://www.ctan.org/pkg/galois")
     (synopsis "Typeset Galois connections")
     (description
@@ -5422,8 +5371,6 @@ in colour.")
               "0yb7sid13bx25yar3aw6pbf4jmmfi0gdmcd7ynf5hjh9qdfb3zyh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-biblatex))
     (home-page "https://www.ctan.org/pkg/gcite")
     (synopsis "Citations in a reader-friendly style")
     (description
@@ -5450,10 +5397,7 @@ BibLaTeX, and is considered experimental.")
               "09jwdrg4s1c0gqmx7s57byw5kc09cna3li85y9ix0vxa6f6iqzi1")))
     (build-system texlive-build-system)
     (outputs '("out" "doc"))
-    (propagated-inputs
-     (list texlive-atbegshi
-           texlive-graphics             ;for keyval
-           texlive-iftex))
+    (propagated-inputs (list texlive-graphics texlive-iftex))
     (home-page "https://www.ctan.org/pkg/geometry")
     (synopsis "Flexible and complete interface to document dimensions")
     (description
@@ -5533,7 +5477,7 @@ always (re)defines a command.  There is also @code{\\makeenvironment} and
                    "makeindex/base/"
                    "tex/plain/makeindex/")
              (base32
-              "197zgsrca14paavzknjx2q4ayl0lrma0z8q78ir6536s9xwn0w33")))
+              "0m01m0x1kf10yvzxgrkvpic0amsr0g6q2r2wsg5f4ngybq4y9gyi")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/makeindexk")
@@ -5580,10 +5524,6 @@ output routine.")
               "1xzy982kc7k5n7gy019rk4hbvxli2mlf4s7h7s11diasmh5fa2gf")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontspec
-           texlive-graphics
-           texlive-iftex))
     (home-page "https://ctan.org/pkg/metalogo")
     (synopsis "Extended TeX logo macros")
     (description
@@ -5606,11 +5546,11 @@ XeLaTeX users.")
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/paralist")
     (synopsis "@code{enumerate} and @code{itemize} within paragraphs")
-    (description "The @code{paralist} package provides @code{enumerate} and
-@code{itemize} environments that can be used within paragraphs to format the
-items either as running text or as separate paragraphs with a preceding number
-or symbol.  It also provides compacted versions of @code{enumerate} and
-@code{itemize}.")
+    (description
+     "The @code{paralist} package provides @code{enumerate} and @code{itemize}
+environments that can be used within paragraphs to format the items either as
+running text or as separate paragraphs with a preceding number or symbol.  It
+also provides compacted versions of @code{enumerate} and @code{itemize}.")
     (license license:lppl1.0+)))
 
 (define-public texlive-polyglossia
@@ -5624,7 +5564,7 @@ or symbol.  It also provides compacted versions of @code{enumerate} and
                    "source/latex/polyglossia/"
                    "tex/latex/polyglossia/")
              (base32
-              "1lkf06mr7p7p1fdkrnhmvj8iamzppjy952d79mc81cilkw5zskah")))
+              "15rqqf0yb09qcs6ibsrkg5jbpzicxkpbj211p6qkfl2fcrc1gndv")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
@@ -5634,11 +5574,15 @@ or symbol.  It also provides compacted versions of @code{enumerate} and
       #~(modify-phases %standard-phases
           (add-after 'unpack 'substitute-fonts
             (lambda _
+              ;; Use dummy fonts for documentation.  We will install
+              ;; pre-generated one anyway. Moreover, adding appropriate fonts
+              ;; would bring in some large dependencies, such as webkitgtk for
+              ;; Amiri.
               (substitute* "source/latex/polyglossia/polyglossia.dtx"
-                (("\\{Serto Jerusalem}") "{FreeSans}") ;non-free
-                ;; XXX: Amiri font would introduce a (native) dependency on
-                ;; webkitgtk!  No, thanks.
-                (("\\{Amiri}") "{FreeSans}"))))
+                (("\\{Serto Jerusalem}") "{FreeSans}")
+                (("\\{Amiri-Regular}") "{FreeSans}")
+                (("\\{Noto Serif CJK SC}") "{FreeSans}")
+                (("\\{GFSPolyglot.otf}") "{FreeSans}"))))
           (add-after 'unpack 'extend-texmf
             (lambda _
               ;; Extend the current TEXMF environment variable to make
@@ -5648,7 +5592,6 @@ or symbol.  It also provides compacted versions of @code{enumerate} and
                                      (getenv "GUIX_TEXMF"))))))))
     (native-inputs
      (list font-dejavu
-           font-gfs-ambrosia
            font-gnu-freefont
            font-linuxlibertine
            font-sil-ezra
@@ -5661,10 +5604,19 @@ or symbol.  It also provides compacted versions of @code{enumerate} and
            texlive-fancyvrb
            texlive-graphics
            texlive-hyperref
+           texlive-infwarerr
+           texlive-kvoptions
            texlive-latex-fonts
+           texlive-libertine
            texlive-metalogo
            texlive-microtype
-           texlive-paralist))
+           texlive-paralist
+           texlive-pdftexcmds
+           texlive-tex
+           texlive-tools
+           texlive-xcolor
+           texlive-xetex
+           texlive-zref))
     (propagated-inputs
      (list texlive-etoolbox
            texlive-filehook
@@ -5738,7 +5690,7 @@ a few situations where longtable has problems.")
              name version
              (list "tex/texinfo/")
              (base32
-              "0wbbhjr1jqiicnssiy6n5s4v5p6axhlilpkfhix4kavbj8mb6mfn")))
+              "1wdrqwksbhxxx275mzhcr3mc67f76nbflplqs4y1xx67iw724dmx")))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/texinfo")
     (synopsis "Texinfo documentation system")
@@ -5761,7 +5713,7 @@ hypertext linkages in some cases).")
              (list "doc/latex/textcase/" "source/latex/textcase/"
                    "tex/latex/textcase/")
              (base32
-              "185fibd41wd0v51gnai29ygi32snkk00p00110kcnk1bcnmpiw82")))
+              "15jb7r1p7vjm1i02lf5c9g5i7fcgkc7a6b59jhyzzk2l7ch41d7f")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/textcase")
@@ -5871,13 +5823,7 @@ be used, for example, for per chapter/section appendices.  An
               "111sjwabcbr8ry8fh94ywpzska032y8r4iz4waxa4kf5l3k0p4bs")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:build-targets #~(list "bookmark.dtx")))
-    (propagated-inputs
-     (list texlive-atenddvi
-           texlive-atveryend
-           texlive-auxhook
-           texlive-hyperref))
+    (arguments (list #:build-targets #~(list "bookmark.dtx")))
     (home-page "https://www.ctan.org/pkg/bookmark")
     (synopsis "Bookmark (outline) organization for @code{hyperref}")
     (description
@@ -5898,7 +5844,7 @@ action types are available (URI, GoToR, Named).")
                    "source/latex/changebar/"
                    "tex/latex/changebar/")
              (base32
-              "0y32inrdpki6v3dwyymfglf78wbfd29b6xa8vjn337dr4gxlma85")))
+              "0k6r3f6xqbl5gr3i2kwh82lkbwk76gwyfvj7nsvzi1awjk84hqd2")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://www.ctan.org/pkg/changebar")
@@ -5960,16 +5906,12 @@ LaTeX packages to access them.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/colortbl/"
-                   "source/latex/colortbl/"
+             (list "doc/latex/colortbl/" "source/latex/colortbl/"
                    "tex/latex/colortbl/")
              (base32
-              "0fb4a5l3yqk6l5gr0hlkqwpy004wi8zymyicdzjyhqwcib4jnzjs")))
+              "17hslagzpbi5jq08sjinrc3cv65m8g667mb2zlq89fq5ix9808vx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics
-           texlive-tools))
     (home-page "https://ctan.org/pkg/colortbl")
     (synopsis "Add colour to LaTeX tables")
     (description
@@ -6011,7 +5953,7 @@ floats, center, flushleft, and flushright, lists, and pages.")
              (list "doc/latex/fancyhdr/" "source/latex/fancyhdr/"
                    "tex/latex/fancyhdr/")
              (base32
-              "15fainwxs22gg4xhwsv1vmjgdhg34dbkir26nnk4pb6jprpwb83f")))
+              "0asx5l8kx1zsvja5arnbspr37hwmmjp01837kfrsy7dsm8wfclgr")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/fancyhdr")
@@ -6055,11 +5997,10 @@ modifier option of the obsolete @code{here} package.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/footmisc/"
-                   "source/latex/footmisc/"
+             (list "doc/latex/footmisc/" "source/latex/footmisc/"
                    "tex/latex/footmisc/")
              (base32
-              "1v1hkf0xcq6hyz3b32z3hvs53lmwrnkn79y9wxq6pqmhcgilqji3")))
+              "1vs69z6hqvx9rxqqr0aqs56wvl0y0102szq954hb9gyqzwj2q225")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/footmisc")
@@ -6088,8 +6029,6 @@ footnotes with symbols rather than numbers.")
               "16bmwsng9p80jf78sdmib24apwnw3raw306cs1ms50z5s9dsfdby")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox))
     (home-page "https://ctan.org/pkg/letltxmacro")
     (synopsis "Let assignment for LaTeX macros")
     (description
@@ -6151,8 +6090,6 @@ also takes care of the involved internal macros.")
                                                     (basename file ".stq")
                                                     ".sty")))
                         (find-files "build/tex" "\\.stq$")))))))
-    (propagated-inputs
-     (list texlive-relsize texlive-tools texlive-url))
     (home-page "https://ctan.org/pkg/frankenstein")
     (synopsis "Collection of LaTeX packages")
     (description
@@ -6181,9 +6118,6 @@ and a BibTeX bibliography style.  The individual packages are: @code{abbrevs},
               "1bz08i8b7ihzd2qi4v9r9kjl2kr5a3l516lqb36spxyyrlmmwv4p")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-l3kernel
-           texlive-l3packages))
     (home-page "https://ctan.org/pkg/kantlipsum")
     (synopsis "Generate sentences in Kant's style")
     (description
@@ -6202,12 +6136,9 @@ similar purposes.")
              (list "doc/latex/lipsum/" "source/latex/lipsum/"
                    "tex/latex/lipsum/")
              (base32
-              "1iwk2iqq5s5sn2z2kr7m59fm5j14dr4nsxivia3lhph8q38p5q6q")))
+              "07kcma66p3s68baygzvgcmb7jvwaan7jj6s3hxmx42npcfsp57s3")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-l3kernel
-           texlive-l3packages))
     (home-page "https://ctan.org/pkg/lipsum")
     (synopsis "Easy access to the Lorem Ipsum dummy text")
     (description
@@ -6226,14 +6157,11 @@ TeX-paragraphs.  All the paragraphs are taken with permission from
              (list "doc/latex/listings/" "source/latex/listings/"
                    "tex/latex/listings/")
              (base32
-              "15dnm0j86305x84ss3ymhhcczcw45b2liq01vrab6fj204wzsahk")))
+              "12db0jnambf3j2c2drnbjz369iwssbbcd7yqjcv0wrzq284lzc0m")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     ;; Do not build intermediate "lstdrvrs.ins".
-     (list #:build-targets '(list "listings.ins")))
-    (propagated-inputs
-     (list texlive-fancyvrb texlive-hyperref texlive-url))
+    ;; Do not build intermediate "lstdrvrs.ins".
+    (arguments (list #:build-targets '(list "listings.ins")))
     (home-page "https://ctan.org/pkg/listings")
     (synopsis "Typeset source code listings using LaTeX")
     (description
@@ -6256,10 +6184,6 @@ styles.  Support for @code{hyperref} is provided.")
               "152gzkzm7sl3bvggmmfcj1pw74vc40s2kpkbp01fd9i0d0v60wma")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-listings
-           texlive-pdftexcmds
-           texlive-stringenc))
     (home-page "https://ctan.org/pkg/listingsutf8")
     (synopsis "Allow UTF-8 in listings input")
     (description
@@ -6284,8 +6208,6 @@ output mode).")
               "0as43yqq123cacxhvp4sbdp4ka3cyp2spmxwayqny0fh5rsk6qaq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/jknapltx")
     (synopsis "Miscellaneous packages by Joerg Knappen")
     (description
@@ -6312,11 +6234,9 @@ in SGML; use maths minus in text as appropriate; simple Young tableaux.")
                    "source/latex/kvoptions/"
                    "tex/latex/kvoptions/")
              (base32
-              "1b8q93l54160b8gn3fq484n15n6cylrhmf2xk7p42czg2rqw7w3l")))
+              "14f19c53s5m067vp25h7yk1f209h1xm352zkhzv6qk5xc0ckkbxm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-kvsetkeys texlive-ltxcmds))
     (home-page "https://www.ctan.org/pkg/kvoptions")
     (synopsis "Key/value format for package options")
     (description
@@ -6360,8 +6280,6 @@ texlive-2019.3/Master/texmf-dist/doc/fonts/ec/copyrite.txt"))))
 
 (define-deprecated-package texlive-fonts-ec texlive-ec)
 
-;; FIXME: the fonts should be built from source, but running "tex aefonts.tex"
-;; fails with obscure TeX-typical error messages.
 (define-public texlive-ae
   (package
     (name "texlive-ae")
@@ -6414,13 +6332,9 @@ additional guillemets exist in fonts available in Adobe Type 1 format.")
              name version
              (list "doc/latex/incgraph/" "tex/latex/incgraph/")
              (base32
-              "1j5pzhzfbgzd21bq3dh7932pv0052g5l8r0qyx68n3cbsg46lcdk")))
+              "18ygl211wpnx433xy4v3jyl7wn9vn0dw23m709xs01kq7pwmsz3i")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bookmark
-           texlive-graphics
-           texlive-pgf))
     (home-page "https://ctan.org/pkg/incgraph")
     (synopsis "Sophisticated graphics inclusion in a PDF document")
     (description
@@ -6576,17 +6490,9 @@ format under XeTeX.")
              (list "doc/latex/zref/" "source/latex/zref/"
                    "tex/latex/zref/")
              (base32
-              "1lc83d4qyqljfnf2m3jhq36f3f1yjbi71ys1hc11b9x2a46xk4pf")))
+              "188m3xb2q471mmm54akpdbj65n9sz70n0krapnrbwa8glxjrvlxk")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-atbegshi
-           texlive-atveryend
-           texlive-gettitlestring
-           texlive-iftex
-           texlive-kvoptions
-           texlive-pdftexcmds
-           texlive-xkeyval))
     (home-page "https://github.com/ho-tex/zref")
     (synopsis "Reference scheme for LaTeX")
     (description "This package offers a means to remove the limitation, of
@@ -6664,8 +6570,6 @@ routine, which may be used to place the output at fixed positions.  The
               "16v8j3f8bgww9adddpfzpwd5q9kvak7xnp5kkvkrvhw8vshdspaa")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://www.ctan.org/pkg/eepic")
     (synopsis "Extensions to @code{epic} and the LaTeX drawing tools")
     (description
@@ -6684,15 +6588,11 @@ drawing ellipses, arcs, splines, and filled circles and ellipses.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/enotez/"
-                   "tex/latex/enotez/")
+             (list "doc/latex/enotez/" "tex/latex/enotez/")
              (base32
-              "1s1wyq6m5932gpbpvvkiw857q94jn1rp7xy9y7hysz9aafjqjyk2")))
+              "0498zr9niylpj9q5ndnj52lb06cj0b424yyq587vqhckxq4l24ik")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-l3packages
-           texlive-translations))
     (home-page "https://ctan.org/pkg/enotez")
     (synopsis "Support for end-notes")
     (description
@@ -6805,8 +6705,6 @@ advantage with @code{\\multirow} cells.")
               "0z6jkn54b4yfk2ia8cxcb5is3qyg64r0na05ixd8xbirrks9ir7w")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-eepic texlive-graphics))
     (home-page "https://www.ctan.org/pkg/overpic")
     (synopsis "Combine LaTeX commands over included graphics")
     (description
@@ -6832,9 +6730,6 @@ positions; a grid for orientation is available.")
               "18yygddxv3kblvf4jhzqa8h1js0n8g1bw723r6ss2hlz4lj64kf0")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox
-           texlive-kvoptions))
     (home-page "https://www.ctan.org/pkg/parskip")
     (synopsis "Layout with zero @code{\\parindent}, non-zero @code{\\parskip}")
     (description
@@ -6858,8 +6753,6 @@ designed class) helps alleviate this untidiness.")
               "104x4y22msgxhnlz2x331zq7rw28v129s5ym1jqhsk685izb3hcl")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://ctan.org/pkg/pbox")
     (synopsis "@code{\\parbox} with a variable width")
     (description
@@ -6879,7 +6772,7 @@ defines some associated length commands.")
              (list "doc/latex/pdfpages/" "source/latex/pdfpages/"
                    "tex/latex/pdfpages/")
              (base32
-              "0a68vxkygk20fp51fkp7nvs8mc7h6irdvxal8qsnn9zrgr965d76")))
+              "0ihihrrim9fwmgkmrqxmss4wjcv8mv1gr2cpigihlzl6q6iqggjx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
@@ -6906,7 +6799,7 @@ use this package to insert PostScript files, in addition to PDF files.")
              (list "doc/fonts/stix2-otf/"
                    "fonts/opentype/public/stix2-otf/")
              (base32
-              "0i7rd1wn5jgm3gbi779gy78apz63w034ck4pn73xw6s10zgjzmgl")))
+              "05xqlg61rkfky34x7mc92203z440kanr7bwpmw1djq2y36ql3p1l")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/stix2-otf")
@@ -6925,11 +6818,10 @@ with a set of text faces suitable for professional publishing.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/sidecap/"
-                   "source/latex/sidecap/"
+             (list "doc/latex/sidecap/" "source/latex/sidecap/"
                    "tex/latex/sidecap/")
              (base32
-              "0bjb514a6j90ad7dgyyzrwk6pp7rlb3zk9mfy0fv5a615a5gz82x")))
+              "1h4ysw90dpvnj0x1j9krx40078kyzzs4ynpjz7y50v9hwrrrynjk")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
@@ -6977,7 +6869,7 @@ captions sideways.  Options include @code{outercaption}, @code{innercaption},
     (home-page "https://ctan.org/pkg/stmaryrd")
     (synopsis "St Mary Road symbols for theoretical computer science")
     (description
-     "The fonts were originally distributed as METAFONT sources only, but
+     "The fonts were originally distributed as Metafont sources only, but
 Adobe Type 1 versions are also now available.  Macro support is provided for
 use under LaTeX; the package supports the @code{only} option (provided by the
 @code{somedefs} package) to restrict what is loaded, for those who don't need
@@ -6998,9 +6890,7 @@ the whole font.")
               "0bq1328pb1ak91j7q8n1kh2fncr742lvff7apgf8kkxzxjfg2z9r")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-caption
-           texlive-graphics))
+    (arguments (list #:tex-format "latex"))
     (home-page "https://ctan.org/pkg/subfig")
     (synopsis "Figures broken into subfigures")
     (description
@@ -7026,6 +6916,7 @@ caption for that subfigure.")
               "1327ygajf6gza5msvhfjjnk6r3sw7vb7rxg23v4gx4dmyxqfqrbi")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
     (home-page "https://ctan.org/pkg/subfigure")
     (synopsis "Deprecated: Figures divided into subfigures")
     (description
@@ -7054,8 +6945,6 @@ the more recent @code{subcaption} package more satisfactory.")
               "00afi9r5264rhfy5kg73fk763i7wm6bvzkmrlg7n17fwl6hx0sa1")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://ctan.org/pkg/tabulary")
     (synopsis "Tabular with variable width columns balanced")
     (description
@@ -7082,9 +6971,6 @@ according to the natural width of the widest cell in the column.")
               "05i50k1y736m52903nz4kf2xl23w6y7rrzyacs4kgd1w6kmjm6f7")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bookmark
-           texlive-hyperref))
     (home-page "https://ctan.org/pkg/threeparttable")
     (synopsis "Tables with captions and notes all the same width")
     (description
@@ -7278,13 +7164,11 @@ command).")
                    "fonts/vf/public/libertine/"
                    "tex/latex/libertine/")
              (base32
-              "1d5r80isyvs2v3i8pzlhsn7ns6bn8ldkbs82g25widraixlhg6yg")))
+              "04bb0v1fp9adcgx6s4zc0fs5z4f85ihbhbkk9zf5pf0ni3gy70fd")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-fontaxes
-           texlive-fontspec
-           texlive-hyperref
            texlive-iftex
            texlive-mweights
            texlive-xkeyval))
@@ -7318,8 +7202,6 @@ The @code{mweights} package is used to manage the selection of font weights.")
               "0y4qf5jl0xncah9nkcaalmy69wwq02n3j895zp71n2p0nfi24aka")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/dejavu")
     (synopsis "LaTeX support for the DejaVu fonts")
     (description
@@ -7338,7 +7220,7 @@ LGR.  The package doesn't (currently) support mathematics.")
              name version
              (list "doc/latex/titlesec/" "tex/latex/titlesec/")
              (base32
-              "01nwh4p15xblc3kgivjliihy9kr8yr2cqsf9wn2iwqv1njx0i2zw")))
+              "0331f6f6sv6sfn4dx7qhx2fgnj9lf3hgbqkh603paqpknfmfjyfm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/titlesec")
@@ -7477,7 +7359,7 @@ The package contains both the original TrueType font and the derived Type
                    "metapost/support/charlib/"
                    "tex/generic/metapost/")
              (base32
-              "04pgi23frfk6ds10zypqvki0852ds7m1s52c5qvbpyl647nfbgc5")))
+              "0i6mjq59n7vll81m7r2k83x0q6xx7cg6qcia46298zqc0b0l3qb0")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs (list texlive-kpathsea))
@@ -7498,38 +7380,9 @@ than the bitmaps Metafont creates.")
              (list "bibtex/bst/acmart/" "doc/latex/acmart/"
                    "source/latex/acmart/" "tex/latex/acmart/")
              (base32
-              "0vz0dla2frf5wgp5xrqc9q4z730k9wayfkfj0vg58a2xjriarrzn")))
+              "0g27q3r7w83347az77d64xbcxzr9rl64a2qq8l0xs6drfpsq0llb")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-booktabs
-           texlive-caption
-           texlive-cmap
-           texlive-comment
-           texlive-draftwatermark
-           texlive-environ
-           texlive-etoolbox
-           texlive-fancyhdr
-           texlive-float
-           texlive-geometry
-           texlive-graphics
-           texlive-hyperref
-           texlive-hyperxmp
-           texlive-iftex
-           texlive-inconsolata
-           texlive-libertine
-           texlive-microtype
-           texlive-natbib
-           texlive-ncctools
-           texlive-newtx
-           texlive-preprint
-           texlive-refcount
-           texlive-setspace
-           texlive-textcase
-           texlive-totpages
-           texlive-xcolor
-           texlive-xkeyval
-           texlive-xstring))
     (home-page "https://ctan.org/pkg/acmart")
     (synopsis "Class for typesetting publications of ACM")
     (description
@@ -7550,9 +7403,6 @@ Association for Computing Machinery (ACM).")
               "0jcrv4klcjpl17ml0zyqfvkrq6qwn2imxv8syqs5m6qk0fk7hg6l")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bookmark
-           texlive-hyperref))
     (home-page "https://ctan.org/pkg/varwidth")
     (synopsis "Variable-width @code{minipage}")
     (description
@@ -7633,15 +7483,12 @@ It does not work in combination with list environments, but can be used in a
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/ucs/" "tex/latex/ucs/data/"
-                   "tex/latex/ucs/utils/")
+             (list "doc/latex/ucs/" "fonts/enc/dvips/ucs/"
+                   "source/latex/ucs/" "tex/latex/ucs/")
              (base32
-              "1hr7dsfx7vggai1j7saba48lsm1a003my9qkbr6qmazgc3lbcvl8")))
+              "1viisfamsf0x984ak53dwznhw0yhb394xv66rbfaml6igizvkj83")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics
-           texlive-hyperref))
     (home-page "https://ctan.org/pkg/ucs")
     (synopsis "Extended UTF-8 input encoding support for LaTeX")
     (description
@@ -7665,7 +7512,7 @@ non-ASCII characters when coding mathematical formulae.")
              (list "doc/latex/preview/" "source/latex/preview/"
                    "tex/latex/preview/")
              (base32
-              "1njw4ziyigmzxky86sh6byn8jjdah51iyd8lkmwx5rxhaqp7snkp")))
+              "05ixx2il8xajakh1nkpf7qjczc1kvniiimv585b3gkg6fwx92wzb")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/preview")
@@ -7694,8 +7541,6 @@ files.")
               "0p2sws3qy7wv0v6bsy6c5j36n9s1ps7b1z7dmg1370schrjpqnfh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bigfoot texlive-relsize texlive-xstring))
     (home-page "https://ctan.org/pkg/acronym")
     (synopsis "Expand acronyms at least once")
     (description
@@ -7726,13 +7571,29 @@ e-TeX.")
                    "tex/generic/config/pdftex-dvi.tex"
                    "tex/generic/pdftex/")
              (base32
-              "182q6cy2crn2wwaljsq35g0kcmrngyjc307b4sh2zjdnkf8n58xx")))
+              "1fp8w8pkxqcv6n8y0zy2rdclm2hcyx4zv93h0fmqai1yvgcx6yh6")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list
-      #:texlive-latex-bin? #f
-      #:create-formats #~(list "etex" "pdfetex" "pdftex")))
+     (list #:texlive-latex-bin? #f
+           #:link-scripts #~(list "simpdftex")
+           #:create-formats #~(list "etex" "pdfetex" "pdftex")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'patch-shell-scripts
+                 (lambda _
+                   (substitute* "scripts/simpdftex/simpdftex"
+                     (("/bin/(cp|date|echo|mv|rm)" _ command)
+                      (which command))
+                     (("basename|dirname|mkdir|sed" command)
+                      (which command))
+                     (("(^[ \t]*)(cat|rm)" _ indent command)
+                      (string-append indent (which command)))
+                     (("(distillerpath=\").*" _ prefix)
+                      (string-append prefix
+                                     #$(this-package-input "ghostscript")
+                                     "/bin\"\n"))))))))
+    (inputs (list ghostscript))
     (propagated-inputs
      (list texlive-cm
            texlive-etex
@@ -8311,7 +8172,7 @@ required: automatic sectioning and pagination, spell checking and so forth.")
                    "tex/latex/media9/javascript/"
                    "tex/latex/media9/players/")
              (base32
-              "1kx0zbwd7pd4mah0b8l595hyjc03g505kfmn6fv7iaqvkixqrgbi")))
+              "03m59icz29sdp50wpl831pl67q9m6kzpq5fzx4jix50z7cmqvfrm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/media9")
@@ -8338,13 +8199,9 @@ specification.  It replaces the now obsolete @code{movie15} package.")
              name version
              (list "doc/latex/ocgx2/" "tex/latex/ocgx2/")
              (base32
-              "195zli0l69rvxxd7cs387g6bipppfl0pyfsf5invq191zlv319b2")))
+              "0jpvwy6sp7almdbhxizz22h3jxgfnsl4nirs93p7y1lqdgc4srl4")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-l3packages
-           texlive-media9
-           texlive-pgf))
     (home-page "https://ctan.org/pkg/ocgx2")
     (synopsis "Drop-in replacement for 'ocgx' and 'ocg-p'")
     (description
@@ -8371,8 +8228,6 @@ and back-ends.  It also ensures compatibility with the @code{media9} and
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:tex-format "latex"))
-    (propagated-inputs
-     (list texlive-everyshi texlive-tools))
     (home-page "https://ctan.org/pkg/ms")
     (synopsis "Various LaTeX packages by Martin Schroder")
     (description
@@ -8395,8 +8250,6 @@ and @code{multitoc}, typeset the table of contents in multiple columns.")
               "1g3fpvrg6kx2ns97ih6iwdk0rcbxlv043x8rdppxdincl2lvbdx5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsmath texlive-graphics))
     (home-page "https://ctan.org/pkg/ncctools")
     (synopsis "A collection of general packages for LaTeX")
     (description
@@ -8443,8 +8296,6 @@ toc-entries;
               "1rqbqj4ffcfxxxxbs100pdslaiimwzgg19mf2qzcmm5snxwrf7zj")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://ctan.org/pkg/numprint")
     (synopsis "Print numbers with separators and exponent if necessary")
     (description
@@ -8474,10 +8325,8 @@ number format.")
                              "12hbvv1w6b1k29qjvp72bkpnzsxpvrimzshllwinrxh9rx1mn550")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:tex-format "latex"))
-    (native-inputs
-     (list texlive-filecontents))
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list texlive-filecontents))
     (home-page "https://ctan.org/pkg/needspace")
     (synopsis "Insert pagebreak if not enough space")
     (description
@@ -8501,10 +8350,8 @@ bottom of the page, a new page will be started.")
               "0g9zlbqrgxh3p2vys2s84i8v590qi4fbpppp5lkaqc1di8kw60lm")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:tex-format "latex"))
-    (native-inputs
-     (list texlive-filecontents))
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list texlive-filecontents))
     (home-page "https://ctan.org/pkg/changepage")
     (synopsis "Margin adjustment and detection of odd/even pages")
     (description
@@ -8569,10 +8416,6 @@ underlining, and striking out, and crossing out.")
     (source (texlive-origin
              name version
              (list "doc/generic/pgf/"
-                   "scripts/pgf/"
-                   "source/generic/pgf/c/"
-                   "source/generic/pgf/testsuite/external/"
-                   "source/generic/pgf/testsuite/mathtest/"
                    "tex/context/third/pgf/basiclayer/"
                    "tex/context/third/pgf/frontendlayer/"
                    "tex/context/third/pgf/math/"
@@ -8606,12 +8449,11 @@ underlining, and striking out, and crossing out.")
                    "tex/plain/pgf/systemlayer/"
                    "tex/plain/pgf/utilities/")
              (base32
-              "1d6s7sf7dmcqrx652f7j468rylkarihxl0ghg0sy5scjdn3z9bdr")))
+              "1rkrp839snkfmxn0ff3kcvgq4k59lj2c3xz05hmmnprzymsx1zvd")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-atveryend
-           texlive-everyshi
            texlive-fp
            texlive-graphics
            texlive-ms
@@ -8640,31 +8482,13 @@ output.")
     (source (texlive-origin
              name version
              (list "doc/latex/koma-script/"
-                   "source/latex/koma-script/"
+                   "source/latex/koma-script/doc/"
                    "tex/latex/koma-script/")
              (base32
-              "0k8mhikpll066x3683gmg3xas7a2mz93b9fip4k56hacxxb6map1")))
+              "192jlijzrqipdi2bxg1562259zxivpzm8clbnpr0fk1rr1nc2lz1")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'move-required-files
-            ;; These files are required by the build process.
-            (lambda _
-              (for-each (lambda (f)
-                          (install-file
-                           (string-append "doc/latex/koma-script/" f)
-                           "build/"))
-                        '("komabug.tex" "manifest.txt" "INSTALL.txt"
-                          "INSTALLD.txt" "lppl.txt" "lppl-de.txt")))))))
-    (propagated-inputs
-     (list texlive-bookmark
-           texlive-eso-pic
-           texlive-etoolbox
-           texlive-graphics
-           texlive-l3packages
-           texlive-xpatch))
+    (propagated-inputs (list texlive-footmisc))
     (home-page "https://ctan.org/pkg/koma-script")
     (synopsis "Bundle of versatile classes and packages")
     (description
@@ -8718,8 +8542,6 @@ be used either with LaTeX or with plain TeX.")
               "1cyv4mcvx83ab782l6h2f86a63ipm845r7hv1m6f1z2336vy7rc5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-pdftexcmds))
     (home-page "https://ctan.org/pkg/bigintcalc")
     (synopsis "Integer calculations on very large numbers")
     (description
@@ -8741,8 +8563,7 @@ that can exceed TeX's number limits.")
               "1q7vk5gr5a4vaa3l20j178cg2q7a99rxdiyxhzpx9a6lfqfkjddz")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bigintcalc texlive-infwarerr texlive-intcalc))
+    (propagated-inputs (list texlive-bigintcalc))
     (home-page "https://ctan.org/pkg/bitset")
     (synopsis "Handle bit-vector datatype")
     (description
@@ -8765,8 +8586,6 @@ manipulated.")
               "13cf1fs5x9d8749b2jgxmgnkrx0r4hwpl389r15kq3ldz9jfl627")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex texlive-infwarerr))
     (home-page "https://ctan.org/pkg/etexcmds")
     (synopsis "Avoid name clashes with e-TeX commands")
     (description
@@ -8791,10 +8610,6 @@ provided as @code{\\etex@@unexpanded}.")
               "0bfcc8g8q5v1nyqmrg8n17hv4k8yvhsplansvriccpmvyx0w9y9d")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etex
-           texlive-etoolbox
-           texlive-letltxmacro))
     (home-page "https://ctan.org/pkg/etextools")
     (synopsis "e-TeX tools for LaTeX users and package writers")
     (description
@@ -8886,8 +8701,6 @@ using the e-TeX extension @code{\\numexpr} if it is available.")
               "1026h223ph3nzhs6jqbasa0bzsrdg3zgllfcwwcavfzb5i6p9jdf")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-ltxcmds))
     (home-page "https://ctan.org/pkg/kvdefinekeys")
     (synopsis "Define keys for use in the @code{kvsetkeys} package")
     (description
@@ -8905,13 +8718,11 @@ keyval’s @code{\\define@@key}, to define keys for use by @code{kvsetkeys}.")
              name version
              (list "doc/latex/kvsetkeys/"
                    "source/latex/kvsetkeys/"
-                   "tex/generic/kvsetkeys/")
+                   "tex/latex/kvsetkeys/")
              (base32
-              "0b2f2r49vi8x54qshm1h9sh8zhdmy0mc2y44yd05kcmmbiiq7hfz")))
+              "0c4f4sgb3xpxmvphrvzbyqa2vl7sp2j52hb99spmpbqwgj9j61qx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-infwarerr))
     (home-page "https://ctan.org/pkg/kvsetkeys")
     (synopsis "Key value parser with default handler support")
     (description
@@ -8929,10 +8740,10 @@ level of curly braces are removed from the values.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/generic/listofitems"
-                   "tex/generic/listofitems")
+             (list "doc/generic/listofitems/"
+                   "tex/generic/listofitems/")
              (base32
-              "1vzp4qkpfxzgcll1ak9syyc91sl93k9wr5rgfqvd6d6rgrnh3ava")))
+              "0yy0hw3631shf9rrdiyywr7hs7dvrhvz2a2vkzbwalnyrqdwbyh5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/listofitems")
@@ -9007,8 +8818,6 @@ plain TeX.")
               "16a0rdmpa4wxh6gyf46qwfgyh399rwdind2wc89phqd50ky9b5m4")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-ltxcmds texlive-pdftexcmds))
     (home-page "https://ctan.org/pkg/pdfescape")
     (synopsis "Implements pdfTeX's escape features using TeX or e-TeX")
     (description
@@ -9032,8 +8841,6 @@ using TeX or e-TeX.")
               "1ll3iwk8x44l3qx1dhna399ngg66vbllivv8i3lwzriwkx22xbf3")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-bigintcalc texlive-infwarerr))
     (home-page "https://ctan.org/pkg/uniquecounter")
     (synopsis "Provides unlimited unique counter")
     (description
@@ -9052,11 +8859,9 @@ not limited.")
              name version
              (list "doc/latex/readarray/" "tex/latex/readarray/")
              (base32
-              "05yi37j8jq5a9pp9n6qg76m2fw899vpmwafzgnxbg0qp2fmch2ch")))
+              "0iy3m20761mp83g59qpx9l20bg3fvm28l64vq735rcha7yqbhf22")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-listofitems))
     (home-page "https://www.ctan.org/pkg/readarray")
     (synopsis "Read, store and recall array-formatted data")
     (description
@@ -9080,8 +8885,6 @@ formatted text.")
               "00n3x075ya3s2qwmcz2vvn8x70pbbgj2cbwz0ifw89jrc4ljisgi")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://www.ctan.org/pkg/verbatimbox")
     (synopsis "Deposit verbatim text in a box")
     (description
@@ -9111,7 +8914,7 @@ in places where the standard @code{verbatim} environment (which is based on a
     (description
      "The @code{examplep} package provides sophisticated features for
 typesetting verbatim source code listings, including the display of the source
-code and its compiled LaTeX or METAPOST output side-by-side, with automatic
+code and its compiled LaTeX or Metapost output side-by-side, with automatic
 width detection and enabled page breaks (in the source), without the need for
 specifying the source twice.  Special care is taken that section, page and
 footnote numbers do not interfere with the main document.  For typesetting
@@ -9135,8 +8938,7 @@ such as footnotes and section titles.")
               "1d96i8kd2lhbykc3rxy2jjvws404f2vy1cvdcp5bdr6l9m72q1fa")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics texlive-tipa))
+    (propagated-inputs (list texlive-tipa))
     (home-page "https://ctan.org/pkg/xunicode")
     (synopsis "Generate Unicode characters from accented glyphs")
     (description
@@ -9168,7 +8970,6 @@ glyphs.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (native-inputs (list texlive-cm texlive-metafont))
-    (propagated-inputs (list texlive-graphics texlive-iftex))
     (home-page "https://ctan.org/pkg/xypic")
     (synopsis "Flexible diagramming macros")
     (description
@@ -9195,7 +8996,7 @@ AMS-LaTeX, AMS-TeX, and plain TeX).  The distribution includes Michael Barr's
                    "doc/man/man1/bibtex.man1.pdf"
                    "tex/generic/bibtex/")
              (base32
-              "0h72ckha1mv1a2i5v85l68amfc0kf0km9iyin6vxxal69146j8gp")))
+              "0iyaxab3wyhy3nw0id892aklpqf17z1cl85v4m3rjy5nmb8darn9")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs (list texlive-kpathsea))
@@ -9266,11 +9067,6 @@ a counter to be reset when another is incremented) and
                    "context/data/scite/context/documents/"
                    "context/data/scite/context/lexers/data/"
                    "context/data/scite/context/lexers/themes/"
-                   "context/data/texfont/"
-                   "context/data/textadept/context/data/"
-                   "context/data/textadept/context/lexers/"
-                   "context/data/textadept/context/modules/"
-                   "context/data/textadept/context/themes/"
                    "context/data/texworks/TUG/"
                    "context/data/texworks/completion/"
                    "context/data/texworks/configuration/"
@@ -9307,6 +9103,7 @@ a counter to be reset when another is incremented) and
                    "doc/context/presentations/context/2017/"
                    "doc/context/presentations/context/2019/"
                    "doc/context/presentations/context/2020/"
+                   "doc/context/presentations/context/2021/"
                    "doc/context/presentations/examples/"
                    "doc/context/presentations/tug/2001/"
                    "doc/context/presentations/tug/2007/"
@@ -9316,6 +9113,7 @@ a counter to be reset when another is incremented) and
                    "doc/context/sources/general/magazines/"
                    "doc/context/sources/general/manuals/about/"
                    "doc/context/sources/general/manuals/bidi/"
+                   "doc/context/sources/general/manuals/canbedone/"
                    "doc/context/sources/general/manuals/charts/"
                    "doc/context/sources/general/manuals/cld/"
                    "doc/context/sources/general/manuals/colors/"
@@ -9343,6 +9141,7 @@ a counter to be reset when another is incremented) and
                    "doc/context/sources/general/manuals/nodes/"
                    "doc/context/sources/general/manuals/notnow/"
                    "doc/context/sources/general/manuals/onandon/"
+                   "doc/context/sources/general/manuals/ontarget/"
                    "doc/context/sources/general/manuals/pagecolumns/"
                    "doc/context/sources/general/manuals/primitives/"
                    "doc/context/sources/general/manuals/publications/"
@@ -9421,6 +9220,8 @@ a counter to be reset when another is incremented) and
                    "doc/man/man1/mtx-scite.man1.pdf"
                    "doc/man/man1/mtx-server.1"
                    "doc/man/man1/mtx-server.man1.pdf"
+                   "doc/man/man1/mtx-spell.1"
+                   "doc/man/man1/mtx-spell.man1.pdf"
                    "doc/man/man1/mtx-texworks.1"
                    "doc/man/man1/mtx-texworks.man1.pdf"
                    "doc/man/man1/mtx-timing.1"
@@ -9441,13 +9242,8 @@ a counter to be reset when another is incremented) and
                    "doc/man/man1/mtx-youless.man1.pdf"
                    "doc/man/man1/mtxrun.1"
                    "doc/man/man1/mtxrun.man1.pdf"
-                   "doc/man/man1/texexec.1"
-                   "doc/man/man1/texexec.man1.pdf"
-                   "doc/man/man1/texmfstart.1"
-                   "doc/man/man1/texmfstart.man1.pdf"
                    "fonts/afm/hoekwater/context/"
                    "fonts/cid/fontforge/"
-                   "fonts/enc/dvips/context/"
                    "fonts/map/dvips/context/"
                    "fonts/map/luatex/context/"
                    "fonts/map/pdftex/context/"
@@ -9455,62 +9251,42 @@ a counter to be reset when another is incremented) and
                    "fonts/tfm/hoekwater/context/"
                    "fonts/type1/hoekwater/context/"
                    "metapost/context/base/common/"
-                   "metapost/context/base/mpii/"
                    "metapost/context/base/mpiv/"
                    "metapost/context/base/mpxl/"
                    "metapost/context/fonts/mpiv/"
                    "scripts/context/lua/"
                    "scripts/context/perl/"
-                   "scripts/context/ruby/base/"
-                   "scripts/context/ruby/graphics/"
-                   "scripts/context/ruby/rslb/"
-                   "scripts/context/stubs/install/"
-                   "scripts/context/stubs/mswin/"
-                   "scripts/context/stubs/setup/"
-                   "scripts/context/stubs/source/"
-                   "scripts/context/stubs/unix/"
-                   "scripts/context/stubs/win64/"
                    "tex/context/base/"
                    "tex/context/bib/common/"
-                   "tex/context/bib/mkii/"
                    "tex/context/colors/icc/context/"
-                   "tex/context/fonts/mkii/"
+                   "tex/context/colors/icc/profiles/"
                    "tex/context/fonts/mkiv/"
-                   "tex/context/interface/mkii/"
+                   "tex/context/fonts/mkxl/"
                    "tex/context/interface/mkiv/"
                    "tex/context/modules/common/"
-                   "tex/context/modules/mkii/"
                    "tex/context/modules/mkiv/"
                    "tex/context/modules/mkxl/"
                    "tex/context/patterns/common/"
-                   "tex/context/patterns/mkii/"
                    "tex/context/patterns/mkiv/"
+                   "tex/context/patterns/mkxl/"
                    "tex/context/sample/common/"
                    "tex/context/sample/third/"
                    "tex/context/test/mkiv/"
-                   "tex/context/user/mkii/"
                    "tex/generic/context/luatex/"
-                   "tex/generic/context/ppchtex/"
                    "tex/latex/context/ppchtex/")
              (base32
-              "1sbh4fnxxymh7lmvldp1ll8p6adcf3jhvqf47jvrayqr91zp4hh9")))
+              "1mmdxi6hcznmj2fjx6dmf76q3zsyhq67irvyr8a125d9qcs1iiml")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:create-formats
-           #~(list "cont-en" "cont-fr" "cont-it" "cont-nl" "cont-ro")))
+    (arguments (list #:link-scripts #~(list "context.lua" "mtxrun.lua")))
     (propagated-inputs
      (list texlive-amsfonts
            texlive-lm
            texlive-lm-math
            texlive-luatex
            texlive-manfnt-font
-           texlive-metapost
            texlive-mflogo-font
-           texlive-mptopdf
-           texlive-pdftex
-           texlive-stmaryrd
-           texlive-xetex))
+           texlive-stmaryrd))
     (home-page "https://ctan.org/pkg/context")
     (synopsis "Full featured, parameter driven macro package for TeX")
     (description "ConTeXt is a full featured, parameter driven macro package,
@@ -9530,25 +9306,22 @@ for a wealth of support information.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/beamer/"
-                   "tex/latex/beamer/")
+             (list "doc/latex/beamer/" "tex/latex/beamer/")
              (base32
-              "091n27n4l3iac911bvmpp735ffryyzaq46mkclgn3q9jsvc4ngiv")))
+              "0v5ix5dybf6j2mj9sp5598vdbm4bm1m50nmhj6qsk8faj78g562w")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-amsfonts
+     (list texlive-amscls
+           texlive-amsfonts
            texlive-amsmath
            texlive-atbegshi
            texlive-etoolbox
-           texlive-graphics
+           texlive-geometry
            texlive-hyperref
            texlive-iftex
-           texlive-oberdiek
            texlive-pgf
-           texlive-tools
            texlive-translator
-           texlive-ucs
            texlive-xcolor))
     (home-page "https://www.ctan.org/pkg/beamer")
     (synopsis "LaTeX class for producing presentations and slides")
@@ -9577,11 +9350,9 @@ effects, varying slide transitions and animations.")
              (list "doc/latex/xmpincl/" "source/latex/xmpincl/"
                    "tex/latex/xmpincl/")
              (base32
-              "1r9vga6pl8q0p40njr1l04nhga4i0pjyppsd9qmxx0kx408siram")))
+              "1wc48qark5hd593jh3mx1yryxsdcq5hbaxyrhwcaxzgqivdli34p")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex))
     (home-page "https://ctan.org/pkg/xmpincl")
     (synopsis "Include eXtensible Metadata Platform data in pdfLaTeX")
     (description
@@ -9613,15 +9384,6 @@ the file to which it applies.")
             (lambda _
               (substitute* "source/latex/pdfx/pdfx.dtx"
                 (("    .+umaczy") "umaczy")))))))
-    (propagated-inputs
-     (list texlive-colorprofiles
-           texlive-everyshi
-           texlive-hyperref
-           texlive-iftex
-           texlive-pdftexcmds
-           texlive-stringenc
-           texlive-xcolor
-           texlive-xmpincl))
     (home-page "https://ctan.org/pkg/pdfx")
     (synopsis "PDF/X and PDF/A support for pdfTeX, LuaTeX and XeTeX")
     (description
@@ -9640,26 +9402,17 @@ standards-compliant PDF documents with pdfTeX, LuaTeX and XeTeX.")
              (list "doc/latex/ydoc/" "source/latex/ydoc/"
                    "tex/generic/ydoc/" "tex/latex/ydoc/")
              (base32
-              "1z7690vin47mw47gjg7k4h49b4ckg6g96l1zlziyjmjbkyzmyhdn")))
+              "00v7vlv7z2xy4sy2zd4arlndjqvgjsqar3i22vdnld4flb03jqb8")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'create-missing-directories
-            ;; XXX: These directories are not created even though they belong
-            ;; to locations in TEXLIVE-ORIGIN.  Create them manually.
-            (lambda _
-              (mkdir-p "tex/generic/ydoc/")
-              (mkdir-p "tex/latex/ydoc/"))))))
     (propagated-inputs
      (list texlive-etoolbox
            texlive-float
            texlive-hyperref
            texlive-listings
            texlive-needspace
-           texlive-svn-prov
+           texlive-newverbs
+           texlive-showexpl
            texlive-tools
            texlive-url
            texlive-xcolor))
@@ -9680,39 +9433,13 @@ change.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/generic/pstricks/"
-                   "dvips/pstricks/"
-                   "tex/generic/pstricks/"
-                   "tex/latex/pstricks/")
+             (list "doc/generic/pstricks/" "dvips/pstricks/"
+                   "tex/generic/pstricks/" "tex/latex/pstricks/")
              (base32
-              "15c9iqfq2y9c8c78cvqb6vzd5a5rm7qq5x7m05jq1hb8sgqrqb0j")))
+              "0hyd8rx0a11mwd13fa10s3h3jq3xymff57p7ks6cnryy2860aizq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsfonts
-           texlive-amsmath
-           texlive-babel
-           texlive-bera
-           texlive-biblatex
-           texlive-booktabs
-           texlive-caption
-           texlive-chngcntr
-           texlive-eso-pic
-           texlive-fancyvrb
-           texlive-filecontents
-           texlive-footmisc
-           texlive-graphics
-           texlive-hyperref
-           texlive-ifplatform
-           texlive-iftex
-           texlive-listings
-           texlive-multido
-           texlive-ragged2e
-           texlive-setspace
-           texlive-subfig
-           texlive-tools
-           texlive-xcolor))
-    (home-page "http://www.ctan.org/pkg/pstricks")
+    (home-page "http://www.ctan.org/pkg/pstricks-base")
     (synopsis "PostScript macros for TeX")
     (description
      "PSTricks offers an extensive collection of macros for generating
@@ -9738,8 +9465,6 @@ of tables.")
               "146fpzd1xlqi94q5r48z8ni8qww713yh6nwkbr9pw27mjrqdadb9")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-pstricks))
     (home-page "http://www.ctan.org/pkg/pst-text")
     (synopsis "Text and character manipulation in PSTricks")
     (description "Pst-text is a PSTricks based package for plotting text along
@@ -9774,10 +9499,9 @@ frames made with the @code{framed} package.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "/doc/generic/iftex/"
-                   "/tex/generic/iftex/")
+             (list "doc/generic/iftex/" "tex/generic/iftex/")
              (base32
-              "147xa5kl4kjs05nj8v3kd7dpr5xkz3xp3gdvjih32ccd7527f5vp")))
+              "05p8iw8c8vjs59zb8pgilwpvlzrlb8zxyf34fhyr67y6bwm8phnf")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "http://www.ctan.org/pkg/iftex")
@@ -9801,15 +9525,13 @@ the engine in use.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/tabu/"
-                   "source/latex/tabu/"
+             (list "doc/latex/tabu/" "source/latex/tabu/"
                    "tex/latex/tabu/")
-             (base32 "0mixyrqavipq4ni38z42x3579cdjbz54cp2qqb4q4yhfbl0a4pka")))
+             (base32
+              "0mixyrqavipq4ni38z42x3579cdjbz54cp2qqb4q4yhfbl0a4pka")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools
-           texlive-varwidth))
+    (propagated-inputs (list texlive-varwidth))
     (home-page "https://ctan.org/macros/latex/contrib/tabu")
     (synopsis "Flexible LaTeX tabulars")
     (description
@@ -9824,34 +9546,37 @@ facilities of @code{tabu} in a modified @code{longtable} environment.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/xkeyval/"
-                   "source/latex/xkeyval/"
-                   "tex/generic/xkeyval/"
-                   "tex/latex/xkeyval/")
+             (list "doc/latex/xkeyval/" "source/latex/xkeyval/"
+                   "tex/generic/xkeyval/" "tex/latex/xkeyval/")
              (base32
-              "0hcfqxbi907yi9jwq61i638n8g9abf6zc0aazk2lxzshy44h3ms1")))
+              "0nclsazny3hnzsi2vcixh2g1gsj5lvwxls1v569rms8ykgd9v7z8")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:build-targets '("xkeyval.dtx")
-       #:tex-format "latex"             ;won't build with luatex
-       #:phases
-       (modify-phases %standard-phases
-         ;; This package cannot be built out of tree as it expects to find
-         ;; built files in the working directory.
-         (add-before 'build 'fix-build
-           (lambda _
-             (setenv "TEXINPUTS" (string-append (getcwd) "/build:"))
-             (substitute* "source/latex/xkeyval/xkeyval.dtx"
-               (("usepackage\\{xcolor\\}")
-                "usepackage[dvips]{xcolor}")))))))
+     (list
+      #:build-targets #~(list "xkeyval.dtx")
+      #:tex-format "latex"              ;won't build with luatex
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This package cannot be built out of tree as it expects to find
+          ;; built files in the working directory.
+          (add-before 'build 'fix-build
+            (lambda _
+              (setenv "TEXINPUTS" (string-append (getcwd) "/build:"))
+              (substitute* "source/latex/xkeyval/xkeyval.dtx"
+                (("usepackage\\{xcolor\\}")
+                 "usepackage[dvips]{xcolor}")))))))
     (native-inputs
      (list (texlive-updmap.cfg
             (list texlive-ec
                   texlive-footmisc
                   texlive-fourier
                   texlive-graphics-def
+                  texlive-hypdoc
+                  texlive-hyperref
                   texlive-iftex
+                  texlive-infwarerr
+                  texlive-kvoptions
                   texlive-listings
                   texlive-lm
                   texlive-pgf
@@ -9859,8 +9584,6 @@ facilities of @code{tabu} in a modified @code{longtable} environment.")
                   texlive-pstricks
                   texlive-url
                   texlive-xcolor))))
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://ctan.org/pkg/xkeyval")
     (synopsis "Extension of the @code{keyval} package")
     (description
@@ -9882,27 +9605,17 @@ keys.")
              name version
              (list "doc/latex/standalone/"
                    "source/latex/standalone/"
-                   "tex/latex/standalone/"
-                   "tex/plain/standalone/")
+                   "tex/latex/standalone/")
              (base32
-              "00cs6bxpcpl8fjld280af52njkv44fm81yww9ynhqa9xp49q0p90")))
+              "055mz0r837ipb6f0v7lp2imwpy1zh0i45wkd5f1dbpjpb9gf7qny")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list texlive-ydoc))
+    (native-inputs (list texlive-ydoc))
     (propagated-inputs
      (list texlive-adjustbox
            texlive-currfile
            texlive-filemod
            texlive-gincltex
-           texlive-iftex
-           texlive-multido
-           texlive-pdftexcmds
-           texlive-pgf
-           texlive-preview
-           texlive-pstricks
-           texlive-tools
-           texlive-varwidth
            texlive-xkeyval))
     (home-page "https://ctan.org/pkg/standalone")
     (synopsis "Compile TeX pictures stand-alone or as part of a document")
@@ -9925,7 +9638,7 @@ without margins.")
              (list "doc/latex/siunitx/" "source/latex/siunitx/"
                    "tex/latex/siunitx/")
              (base32
-              "05gpl318mpm5gxb9665080yd5qiirmh3hwixg9p4wgydk8wfllnl")))
+              "14rgn7lm5iy15jxcdwrkkp6rmi569x1x7qir82k89xl49k1rr2d1")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs (list texlive-l3kernel texlive-l3packages))
@@ -9973,16 +9686,12 @@ to what constitutes a good table in this context.  The package offers
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/csquotes/"
-                   "tex/latex/csquotes/")
+             (list "doc/latex/csquotes/" "tex/latex/csquotes/")
              (base32
-              "17y5mrmjmi7n0cgq4cnqr55f4bni6lx1pfdv5pzsmbrzha3mhbfg")))
+              "0657rvaciq5h4qp2hg9d2w2i663p5cnxygi6dj9w61463m4nkpy6")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox
-           texlive-graphics
-           texlive-relsize))
+    (propagated-inputs (list texlive-etoolbox))
     (home-page "https://www.ctan.org/pkg/csquotes")
     (synopsis "Context sensitive quotation facilities")
     (description
@@ -10009,9 +9718,7 @@ well as the optional active quotes are freely configurable.")
               "13difccs3cxlkqlnhw286yb0c7mifrxfd402a2x5wwxv0m1kgfqd")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox
-           texlive-graphics))
+    (propagated-inputs (list texlive-etoolbox))
     (home-page "https://ctan.org/pkg/logreq")
     (synopsis "Support for automation of the LaTeX workflow")
     (description
@@ -10039,7 +9746,7 @@ and write them to an external XML file at the end of the document.")
                    "tex/latex/biblatex/cbx/"
                    "tex/latex/biblatex/lbx/")
              (base32
-              "1v3y2i7vng1qfs3p7ma2mf8lvvib422aagc3z6q2vwz6r3y4mr5k")))
+              "0s4i9ck77cldf37j01pgjm6qznfwkmy0vmrcdichq8bvzx8w89zg")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
@@ -10071,7 +9778,7 @@ section.")
              (list "doc/latex/biblatex-apa/"
                    "tex/latex/biblatex-apa/")
              (base32
-              "0ivf7xbzj4xd57sqfbi87hbr73rraqifkzvx06yxgq0gmzz0x6wl")))
+              "1igzmgzfchn54zkb78fwsdk2lqs2pp0ydzzcmk1cydhmsfrjya4l")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/biblatex-apa")
@@ -10093,14 +9800,11 @@ citations and references.")
                    "source/latex/todonotes/"
                    "tex/latex/todonotes/")
              (base32
-              "0lhqzrvf216j3rzg7lmc1mvnr2mzr0a6c2kqrfwzw6qbpm9v29nk")))
+              "0gw9ny0s048kq78m2njrv2m6y4z0rck58i9nc892vl93h7gi4p1v")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-pgf
-           texlive-tools
-           texlive-xcolor
-           texlive-xkeyval))
+     (list texlive-pgf texlive-tools texlive-xcolor texlive-xkeyval))
     (home-page "https://ctan.org/pkg/todonotes")
     (synopsis "Marking things to do in a LaTeX document")
     (description
@@ -10139,11 +9843,9 @@ bundle.")
                    "source/latex/microtype/"
                    "tex/latex/microtype/")
              (base32
-              "1r9w6za8g263n16pz0r5adrx5sazhfa78rdhjj9idnif12bgvpq2")))
+              "039v1dw3n4lnd8ipazlkb7p5abqcrigjayx797ggh3ak8dcqwlli")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/microtype")
     (synopsis "Subliminal refinements towards typographical perfection")
     (description
@@ -10192,11 +9894,12 @@ configuration of its own fixed names, using @file{.mld} files.")
              (list "doc/latex/minted/" "source/latex/minted/"
                    "tex/latex/minted/")
              (base32
-              "13cjsjb3b04n9arwp46ayk8fcicylxq5g1864cpxl1lxjxh1yi0l")))
+              "1z2vagia7sbfa134qj3dfdkppy0v4yjykaj594c6z9qy1z5jn5mc")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
      (list python-pygments
+           texlive-catchfile
            texlive-etoolbox
            texlive-fancyvrb
            texlive-float
@@ -10206,9 +9909,10 @@ configuration of its own fixed names, using @file{.mld} files.")
            texlive-ifplatform
            texlive-kvoptions
            texlive-lineno
-           texlive-newfloat
            texlive-pdftexcmds
            texlive-tools
+           texlive-upquote
+           texlive-xcolor
            texlive-xstring))
     (home-page "https://ctan.org/pkg/minted")
     (synopsis "Highlighted source code for LaTeX")
@@ -10227,11 +9931,9 @@ customize the highlighted source code output using @code{fancyvrb}.")
              (list "doc/latex/caption/" "source/latex/caption/"
                    "tex/latex/caption/")
              (base32
-              "1fg3zfgi54zqx911wbqfb1y24d9ihm6wg59npng4clnqz45lla2i")))
+              "1hgd52dxm35k63jb2vxrkghlaq41h89bwbqyihaim2h06kmnpb0r")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/caption")
     (synopsis "Customising captions in floating environments")
     (description
@@ -10265,15 +9967,8 @@ that simpler packages like capt-of do.")
     (home-page "https://ctan.org/pkg/urw-base35")
     (synopsis "URW Base 35 font pack for LaTeX")
     (description
-     "This package provides a set of fonts for use as drop-in replacements for
-Adobe's basic set, comprising: Century Schoolbook (substituting for Adobe's
-New Century Schoolbook); Dingbats (substituting for Adobe's Zapf Dingbats);
-Nimbus Mono L (substituting for Abobe's Courier); Nimbus Roman No9
-L (substituting for Adobe's Times); Nimbus Sans L (substituting for Adobe's
-Helvetica); Standard Symbols L (substituting for Adobe's Symbol); URW Bookman;
-URW Chancery L Medium Italic (substituting for Adobe's Zapf Chancery); URW
-Gothic L Book (substituting for Adobe's Avant Garde); and URW Palladio
-L (substituting for Adobe's Palatino).")
+     "This package provides a drop-in replacement for the Symbol font from
+Adobe's basic set.")
     (license license:gpl3+)))
 
 (define-public texlive-mathpazo
@@ -10365,9 +10060,6 @@ the @code{psnfss} distribution.")
               "1a0zw9vc6z0shxvb4kdhfqdhwpzph5hm9v7klpchlisabvk421y1")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsfonts
-           texlive-bera))
     (home-page "https://ctan.org/pkg/arev")
     (synopsis "Fonts and LaTeX support files for Arev Sans")
     (description
@@ -10419,9 +10111,6 @@ packages.")
               "0jcby2sd0l3ank2drxc0qcf5d1cwa8idzh4g91h4nxk8zrzxj8nr")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/mathdesign")
     (synopsis "Mathematical fonts to fit with particular text fonts")
     (description
@@ -10450,8 +10139,6 @@ fonts (two of them created by the Greek Font Society).")
               "1pkmhhr6ah44xhipjr7nianv03hr4w4bn45xcvp264yw6ymqzqwr")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/bera")
     (synopsis "Bera fonts")
     (description "The @code{bera} package contains the Bera Type 1 fonts and
@@ -10476,12 +10163,9 @@ TeX, of the Bitstream Vera family.")
                    "fonts/vf/public/fourier/"
                    "tex/latex/fourier/")
              (base32
-              "038h02n02fii0kv021d5z8ic2p0mqnjzwxdbvcfym4gkcw345fxk")))
+              "10nw0s3820mf4nv4b655cfvm8asjb1q71yd21cnm8zjxj0xpcrpx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontspec
-           texlive-iftex))
     (home-page "https://ctan.org/pkg/fourier")
     (synopsis "Using Utopia fonts for LaTeX documents")
     (description
@@ -10598,15 +10282,9 @@ difficulties.")
                    "fonts/vf/impallari/cabin/"
                    "tex/latex/cabin/")
              (base32
-              "1gqqqbj7i18fs1ss5n3axd821hzq5kbv1dl7dqxp4gba619f1rli")))
+              "1l4s50l8rjmfrknffgy1c84dg8m9rg96817rs3b3cqk97c3l25zy")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontaxes
-           texlive-fontspec
-           texlive-iftex
-           texlive-mweights
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/cabin")
     (synopsis "Humanist Sans Serif font with LaTeX support")
     (description
@@ -10627,30 +10305,20 @@ as the default text font.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "/doc/fonts/newtx/"
-                   "/fonts/afm/public/newtx/"
-                   "/fonts/enc/dvips/newtx/"
-                   "/fonts/map/dvips/newtx/"
-                   "/fonts/opentype/public/newtx/"
-                   "/fonts/tfm/public/newtx/"
-                   "/fonts/type1/public/newtx/"
-                   "/fonts/vf/public/newtx/"
-                   "/tex/latex/newtx/")
+             (list "doc/fonts/newtx/"
+                   "fonts/afm/public/newtx/"
+                   "fonts/enc/dvips/newtx/"
+                   "fonts/map/dvips/newtx/"
+                   "fonts/opentype/public/newtx/"
+                   "fonts/tfm/public/newtx/"
+                   "fonts/type1/public/newtx/"
+                   "fonts/vf/public/newtx/"
+                   "tex/latex/newtx/")
              (base32
-              "0h0wm3cd0wxag5x7vy3vgr42jd8m6ffkl90pnkvqdxzbnfdjv3l6")))
+              "0lbkip5nwrc0sf1alhc8b4dh6ymvn48l5sv71qjzrc1qg2jnw29b")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsmath
-           texlive-carlisle
-           texlive-etextools
-           texlive-etoolbox
-           texlive-fontaxes
-           texlive-iftex
-           texlive-oberdiek
-           texlive-trimspaces
-           texlive-xkeyval
-           texlive-xstring))
+    (propagated-inputs (list texlive-kastrup))
     (home-page "https://www.ctan.org/pkg/newtx")
     (synopsis "Repackaging of the TX fonts with improved metrics")
     (description
@@ -10679,15 +10347,9 @@ package that matches Libertine text quite well.")
                    "fonts/vf/public/xcharter/"
                    "tex/latex/xcharter/")
              (base32
-              "0d8rvcmvxrlxqqxpirxqbhmiijpsz5y4vvldh1jnc018aannjlhm")))
+              "178mmdr9ji346cnmwas22vhbm38izb1sy5164a5h250kgm287v2c")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-carlisle
-           texlive-etoolbox
-           texlive-fontaxes
-           texlive-xstring
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/xcharter")
     (synopsis "Extension of Bitstream Charter fonts")
     (description "@code{xcharter} repackages Bitstream Charter with an
@@ -10705,7 +10367,7 @@ Type 1 and OTF formats, with supporting files as necessary.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/fonts/ly1/"
+             (list "doc/latex/ly1/"
                    "fonts/enc/dvips/ly1/"
                    "fonts/map/dvips/ly1/"
                    "fonts/tfm/adobe/ly1/"
@@ -10713,7 +10375,7 @@ Type 1 and OTF formats, with supporting files as necessary.")
                    "tex/latex/ly1/"
                    "tex/plain/ly1/")
              (base32
-              "1lks902rr94m3n3r4rc2lm4vvqhqv9prgrpni5ww64rqrv56h8yy")))
+              "0mwk8bfpvpzbwjw3jd6plw0w7kykpb499fv50a9bqxh0jqcyh0j5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/ly1")
@@ -10759,9 +10421,6 @@ include the addition of rules above or below a section title.")
               "0y8rd3ys71ys9cab172wwhrmbs9b52wqrj6d3p0iy3075z93h51c")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex
-           texlive-kvoptions))
     (home-page "https://ctan.org/pkg/morefloats")
     (synopsis "Increase the number of simultaneous LaTeX floats")
     (description "LaTeX can, by default, only cope with 18 outstanding floats;
@@ -10785,10 +10444,8 @@ floats merely delays the arrival of the inevitable error message.")
               "19bfi12j5ra19k6vjd1q5fjsm68vipa7ida7pg9pf15l5pxwbgqz")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:tex-format "latex"))
-    (native-inputs
-     (list texlive-filecontents))
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list texlive-filecontents))
     (home-page "https://ctan.org/pkg/ifmtarg")
     (synopsis "If-then-else command for processing potentially empty arguments")
     (description
@@ -10808,8 +10465,6 @@ whether an argument is empty.")
               "1dffh7ac13w3gs94lvfxgw1i4k6cfkrpcyikj1sfrqaivrxpmqpi")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-ifmtarg))
     (home-page "https://ctan.org/pkg/pagenote")
     (synopsis "Notes at end of document")
     (description
@@ -10870,11 +10525,10 @@ a physical page.")
                    "source/latex/ifoddpage/"
                    "tex/latex/ifoddpage/")
              (base32
-              "06xn3dwf6aa8j3lmvvgwfadw2ahw770jx91x8nyl8zir58aiys5s")))
+              "0mxi28lf97l4zg5kcv524b29n5r167yczrhgy132hql866vkdvyr")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list texlive-ydoc))
+    (native-inputs (list texlive-ydoc))
     (home-page "https://ctan.org/pkg/ifoddpage")
     (synopsis "Determine if the current page is odd or even")
     (description
@@ -10898,11 +10552,7 @@ mode where all pages use the odd page layout.")
               "1vbjq9aq2kbncq1dn4rk7jspfb6kcxk66h49z0xz1qix5yg94gmx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list texlive-ydoc))
-    (propagated-inputs
-     (list texlive-collectbox
-           texlive-iftex))
+    (native-inputs (list texlive-ydoc))
     (home-page "https://ctan.org/pkg/storebox")
     (synopsis "Storing information for reuse")
     (description
@@ -10923,11 +10573,10 @@ store boxes behave the same as save boxes.")
                    "source/latex/collectbox/"
                    "tex/latex/collectbox/")
              (base32
-              "106k01lgnvikndk48r5ms9xj3gmynv2xy20090frr7sa3g9k42za")))
+              "0mn0hdzjhbmziqqh2k7knfz816lxbjil0zld0n30qi3ila5v3gk6")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list texlive-ydoc))
+    (native-inputs (list texlive-ydoc))
     (home-page "https://ctan.org/pkg/collectbox")
     (synopsis "Collect and process macro arguments as boxes")
     (description
@@ -10952,7 +10601,7 @@ The macros were designed for use within other macros.")
     (propagated-inputs
      (list texlive-amsfonts
            texlive-bibtex
-           texlive-bin                  ;set GUIX TEXMF and engines
+           texlive-bin                  ;set GUIX_TEXMF and engines
            texlive-cm
            texlive-colorprofiles
            texlive-dvipdfmx
@@ -11076,9 +10725,6 @@ used and strongly recommended in practice.")
               "1x35r10mkjg8dzx7aj99y4dwyf69jgs41qwapdx523lbglywmgxp")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-infwarerr
-           texlive-kvdefinekeys))
     (home-page "https://ctan.org/pkg/grfext")
     (synopsis "Manipulate the @code{graphics} package's list of extensions")
     (description
@@ -11096,20 +10742,12 @@ graphics file extensions recognised by package @code{graphics}.")
                    "source/latex/adjustbox/"
                    "tex/latex/adjustbox/")
              (base32
-              "01r6cb8aadbgsfcqhqnwaig3xwzgr0nfxci3mzb8ln3k4dghmq97")))
+              "02iqc3i3n3d16xx8hgfy5s28h26fhnqf1f4kcxap6rssr165jj3h")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list texlive-ydoc))
+    (native-inputs (list texlive-ydoc))
     (propagated-inputs
-     (list texlive-collectbox
-           texlive-graphics
-           texlive-ifoddpage
-           texlive-pgf
-           texlive-storebox
-           texlive-tools
-           texlive-varwidth
-           texlive-xkeyval))
+     (list texlive-collectbox texlive-graphics texlive-xkeyval))
     (home-page "https://ctan.org/pkg/adjustbox")
     (synopsis "Graphics package-alike macros for general boxes")
     (description "The package provides several macros to adjust boxed
@@ -11135,10 +10773,6 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
               "197v18lsvb90i07gxvc6mrmn1z63q8v0wvcnbk8dnn3hhabpn16y")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-lm
-           texlive-xcolor
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/qrcode")
     (synopsis "QR codes without external tools")
     (description
@@ -11154,27 +10788,9 @@ need for PSTricks or any other graphical package.")
              name version
              (list "doc/latex/tcolorbox/" "tex/latex/tcolorbox/")
              (base32
-              "1qnsbblkadzdn1fx2k21xnlwcb35pg9xya24chkm66jmidi22qp0")))
+              "1vygwa4y9mc7qgwf5awi0aa5c5kakbdcsl5kry0ldr1lkaxs1j8w")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsmath
-           texlive-environ
-           texlive-etoolbox
-           texlive-hyperref
-           texlive-incgraph
-           texlive-iftex
-           texlive-l3packages
-           texlive-listings
-           texlive-listingsutf8
-           texlive-marvosym
-           texlive-minted
-           texlive-oberdiek             ;for pdfcol
-           texlive-pdftexcmds
-           texlive-pgf
-           texlive-psnfss
-           texlive-refcount
-           texlive-tools))
     (home-page "https://ctan.org/pkg/tcolorbox")
     (synopsis "Coloured boxes, for LaTeX examples and theorems, etc")
     (description
@@ -11198,8 +10814,6 @@ supports saving and reuse of source code and text parts.")
               "1a3203jgxsgihfgb6wwm0gfpaxbf1lg5axcakan9rj316xrrj4lc")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-l3kernel))
     (home-page "https://ctan.org/pkg/ebproof")
     (synopsis "Formal proofs in the style of sequent calculus")
     (description
@@ -11280,9 +10894,9 @@ OpenType fonts.")
     (build-system texlive-build-system)
     (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/eurosym")
-    (synopsis "METAFONT and macros for Euro sign")
+    (synopsis "Metafont and macros for Euro sign")
     (description
-     "The European currency symbol for the Euro implemented in METAFONT, using
+     "The European currency symbol for the Euro implemented in Metafont, using
 the official European Commission dimensions, and providing several
 shapes (normal, slanted, bold, outline).  The package also includes a LaTeX
 package which defines the macro, pre-compiled @file{tfm} files, and
@@ -11318,15 +10932,12 @@ may be used under LaTeX and plain TeX.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-              (list "doc/latex/translations/"
-                    "tex/latex/translations/")
-              (base32
-               "0vl7ckpbkjvz3a5snzppb96ncwgmhpwb2p6cg30grfyn421kap3v")))
+             (list "doc/latex/translations/"
+                   "tex/latex/translations/")
+             (base32
+              "16jcpb6afjqcqb8hn47dip2w7l9hg7q1vspg791sp1r1dsn81yf4")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox
-           texlive-pdftexcmds))
     (home-page "https://ctan.org/pkg/translations")
     (synopsis "Internationalisation of LaTeX2e packages")
     (description
@@ -11352,11 +10963,9 @@ document.")
              (list "doc/latex/translator/"
                    "tex/latex/translator/")
              (base32
-              "13rxdqhvgwc5lz2wsw4jwsb92614wlxsa90rmzxyrc6xjz1jypnk")))
+              "0vmg4w5spl98y9r4h6p89xa43xxfqmv5qlc3sf7kjkyp58px8axs")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/translator")
     (synopsis "Easy translation of strings in LaTeX")
     (description
@@ -11377,12 +10986,9 @@ a few words.")
              (list "doc/latex/textpos/" "source/latex/textpos/"
                    "tex/latex/textpos/")
              (base32
-              "0gg6b2ckafj8fbrlw85m538c08qyq2cv5z59r9pzcwg1c1xdyn02")))
+              "0spxbk9w69kcmgib33nq2x7ls8566fg214rcmkb126yyn7jqg567")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-everyshi
-           texlive-graphics))
     (home-page "https://ctan.org/pkg/textpos")
     (synopsis "Place boxes at arbitrary positions on the LaTeX page")
     (description
@@ -11408,13 +11014,8 @@ conference posters.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:tex-format "xelatex"))
-    (propagated-inputs
-     (list texlive-amsmath
-           texlive-fontspec
-           texlive-l3kernel
-           texlive-l3packages
-           texlive-lm-math
-           texlive-lualatex-math))
+    (native-inputs (list texlive-xetex))
+    (propagated-inputs (list texlive-fontspec texlive-lm-math))
     (home-page "https://ctan.org/pkg/unicode-math")
     (synopsis "Unicode mathematics support for XeTeX and LuaTeX")
     (description
@@ -11447,9 +11048,6 @@ fonts:
               "0b33mlmnxsj5mi06v2w2zgamk51mgv1lxdr1cax8nkpn9g7n9axw")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-ifmtarg
-           texlive-tools))
     (home-page "https://ctan.org/pkg/xifthen")
     (synopsis "Extended conditional commands")
     (description
@@ -11477,11 +11075,12 @@ handle complex tests.")
                    "scripts/xindy/"
                    "xindy/")
              (base32
-              "0rgzckyy6w4rmgxins5kakllkpn2hrccaps7lwb8h2nzvd29yj3m")))
+              "12j2bi0wwp1hyxr1427hhigqmhsd1fyg90bvghxkm1qck85r24vf")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
      (list
+      #:link-scripts #~(list "texindy.pl" "xindy.pl")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-inputs
@@ -11538,8 +11137,6 @@ these changes.")
               "16xain8s0azcnhwj5xwh3m365sb9bhdvxanh19kvmnc52dggjc1y")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsfonts))
     (home-page "https://ctan.org/pkg/ntheorem")
     (synopsis "Enhanced theorem environment")
     (description
@@ -11562,11 +11159,6 @@ making a list of theorems, analagous to @code{\\listoffigures}.")
               "1biw0g6s2arq6kq52c1yfkl0vzafja2az65c3d0syq0vgjzj9763")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsmath
-           texlive-etoolbox
-           texlive-graphics
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/fmtcount")
     (synopsis "Display the value of a LaTeX counter in a variety of formats")
     (description
@@ -11596,11 +11188,6 @@ variants), German, Italian, Portuguese and Spanish documents are provided.")
               "0ngbpr4pl7r82jmdhiksp32qvbvggf2nawwqq0pkb7cffp95ya49")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontaxes
-           texlive-ly1                  ;requires LY1 font encoding
-           texlive-mweights
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/inriafonts")
     (synopsis "Inria fonts with LaTeX support")
     (description
@@ -11625,8 +11212,7 @@ version of the fonts and their associated files.")
               "1piy8ajbbcadsjwp0mhlgxm2ggggnb5sn75arfs5fxiaqrwd572j")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:tex-format "latex"))
+    (arguments (list #:tex-format "latex"))
     (home-page "https://ctan.org/pkg/floatflt")
     (synopsis "Wrap text around floats")
     (description
@@ -11644,11 +11230,9 @@ to be set left/right or alternating on even/odd pages.")
              (list "doc/latex/fvextra/" "source/latex/fvextra/"
                    "tex/latex/fvextra/")
              (base32
-              "0nawx1fh55yhqspy5jgss2qmwpqmikfrg7628smk931rph9nq0aa")))
+              "18r3722sf859yn5j1q084ix9gp8sp4znvdlwi2vnrrn36djyvkzj")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox texlive-fancyvrb texlive-lineno texlive-upquote))
     (home-page "https://ctan.org/pkg/fvextra")
     (synopsis "Extensions and patches for @code{fancyvrb}")
     (description
@@ -11707,25 +11291,6 @@ and selecting references used in a publication.")
             (lambda _
               (substitute* "source/latex/apa6/apa6.ins"
                 (("file\\{\\./.*?/") "file{")))))))
-    (propagated-inputs
-     (list texlive-apacite
-           texlive-babel
-           texlive-biblatex
-           texlive-booktabs
-           texlive-caption
-           texlive-draftwatermark
-           texlive-endnotes
-           texlive-etoolbox
-           texlive-fancyhdr
-           texlive-float
-           texlive-geometry
-           texlive-graphics
-           texlive-lm
-           texlive-substr
-           texlive-threeparttable
-           texlive-times
-           texlive-tools
-           texlive-xstring))
     (home-page "https://ctan.org/pkg/apa6")
     (synopsis "Format documents in APA style (6th edition)")
     (description
@@ -11747,9 +11312,6 @@ mask author identity for copies for use in masked peer review.")
               "0nc86zngk71xpbinrfm8p0413xphc0v86ddhcw94gi2sl00hsmzq")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-natbib
-           texlive-tools))
     (home-page "https://ctan.org/pkg/apacite")
     (synopsis "Citation style following the rules of the APA")
     (description
@@ -11771,8 +11333,6 @@ designed to work with the @code{apa6} class.")
               "1zslmc5g28z6adfyd8bdlbw03jawxmgafq0mgwy811hrbcppb2kg")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/endfloat")
     (synopsis "Move floats to the end, leaving markers where they belong")
     (description
@@ -11790,7 +11350,7 @@ the figure (or table) would normally have occurred.")
              (list "doc/latex/was/" "source/latex/was/"
                    "tex/latex/was/")
              (base32
-              "1fp0l9sn9yrhf8hz175dzc2x28byk1ygfirn23am5ak72csmi0cp")))
+              "1c2kmfrm898c69bizw0650w82bjabp3jf57hmqfcb9y625pq0s05")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/was")
@@ -11814,10 +11374,6 @@ maths; and upright Greek letters in maths.")
               "0r08hadnwx9vyppzmbn1bj69b12i5fw1mhk49piw2rqbk01722zk")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etoolbox
-           texlive-l3kernel
-           texlive-l3packages))
     (home-page "https://ctan.org/pkg/xpatch")
     (synopsis "Extending @code{etoolbox} patching commands")
     (description
@@ -11837,9 +11393,6 @@ Lehmann's @code{etoolbox}.")
               "19pvw2ifswxcf8dxw0mzjmqhl592477w5hcfh97f4wpya0dv2m9p")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-environ
-           texlive-threeparttable))
     (home-page "https://ctan.org/pkg/threeparttablex")
     (synopsis "Notes in @code{longtables}")
     (description
@@ -11853,14 +11406,11 @@ package to tables created using the @code{longtable} package.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/lineno/" "source/latex/lineno/"
-                   "tex/latex/lineno/")
+             (list "doc/latex/lineno/" "tex/latex/lineno/")
              (base32
-              "1xf8ljgcj411yqmng89wc49rqfz19j95yqqpnb35dj3qc1chvm2a")))
+              "1naqdd62gld0hx6ss0d7sllnbqslzxjcgzj7cnycs303lb03h738")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://ctan.org/pkg/lineno")
     (synopsis "Line numbers on paragraphs")
     (description
@@ -11901,7 +11451,7 @@ of standard LaTeX names.")
                    "source/generic/babel-dutch/"
                    "tex/generic/babel-dutch/")
              (base32
-              "1s72g2hfnk5nqnrsbiwydh7jb9wy9186h5vy7rh3ngjwkmcfg0pz")))
+              "1iqlhs2zh60n50r69yicxlklxx8msrb8k552j0ffmqf5kh64fpqh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/babel-dutch")
@@ -11987,7 +11537,7 @@ settings to typeset Danish documents.")
                    "source/generic/babel-polish/"
                    "tex/generic/babel-polish/")
              (base32
-              "0an9csjd4jhz6civdldsrmz7l76hw8zfcgxdp55mj8f1rchsjylx")))
+              "0j86l23y1rq1raq2n5azza07l7xjkpgw9nhm77pzy8xmifp3nzhb")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/babel-polish")
@@ -12010,30 +11560,6 @@ Polish of standard LaTeX names.")
               "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsmath
-           texlive-booktabs
-           texlive-csquotes
-           texlive-eso-pic
-           texlive-etoolbox
-           texlive-iftex
-           texlive-geometry
-           texlive-graphics
-           texlive-kantlipsum
-           texlive-kvoptions
-           texlive-l3kernel
-           texlive-l3packages
-           texlive-lipsum
-           texlive-listings
-           texlive-microtype
-           texlive-needspace
-           texlive-ntheorem
-           texlive-oberdiek
-           texlive-pgf
-           texlive-selinput
-           texlive-tools
-           texlive-xcolor
-           texlive-zref))
     (home-page "https://ctan.org/pkg/mdframed")
     (synopsis "Framed environments that can split at page boundaries")
     (description
@@ -12051,7 +11577,7 @@ TikZ.")
              name version
              (list "doc/latex/setspace/" "tex/latex/setspace/")
              (base32
-              "00ik8qgkw3ivh3z827zjf7gbwkbsmdcmv22c6ap543mpgaqqjcfm")))
+              "0bvspbka1jhpysyhh3sd1vkkm6xjj2ahj0mzv2inzqbrrbydr9gr")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/setspace")
@@ -12096,13 +11622,9 @@ Several keys customize the appearance of the chart elements.")
                    "source/latex/pdflscape/"
                    "tex/latex/pdflscape/")
              (base32
-              "05vvmwd8vlzs2x2rm6pfzlvrrihqf924d7krlrkvc6giiwyfsic4")))
+              "0l1m97ai3w8lfdfndmcbwyd8sdwpw4wp7zn6c4iqkf8bqwrmqyk8")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-atbegshi
-           texlive-graphics
-           texlive-iftex))
     (home-page "https://ctan.org/pkg/pdflscape")
     (synopsis "Make landscape pages display as landscape")
     (description
@@ -12180,10 +11702,7 @@ superseded by @code{pict2e}.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-etoolbox
-           texlive-pgf
-           texlive-tracklang
-           texlive-xkeyval))
+     (list texlive-etoolbox texlive-tracklang texlive-xkeyval))
     (home-page "https://ctan.org/pkg/datetime2")
     (synopsis "Formats for dates, times and time zones")
     (description
@@ -12200,29 +11719,29 @@ replaces @code{datetime.sty}, which is now obsolete.")
     (license license:lppl1.3+)))
 
 (define-public texlive-tracklang
-(package
-  (name "texlive-tracklang")
-  (version (number->string %texlive-revision))
-  (source (texlive-origin
-           name version
-           (list "doc/generic/tracklang/"
-                 "source/latex/tracklang/"
-                 "tex/generic/tracklang/"
-                 "tex/latex/tracklang/")
-           (base32
-            "1386sg25y6zb4ixvrbdv6n1gp54h18mjd984bnwwqda6jafxx4zr")))
-  (outputs '("out" "doc"))
-  (build-system texlive-build-system)
-  (home-page "https://ctan.org/pkg/tracklang")
-  (synopsis "Language and dialect tracker")
-  (description
-   "The @code{tracklang} package is provided for package developers who want
+  (package
+    (name "texlive-tracklang")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tracklang/"
+                   "source/latex/tracklang/"
+                   "tex/generic/tracklang/"
+                   "tex/latex/tracklang/")
+             (base32
+              "0y8kdr5v033dp79fqfdc1jpp1x3lv0yjz5fjd6yk2xxw30lps1s9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tracklang")
+    (synopsis "Language and dialect tracker")
+    (description
+     "The @code{tracklang} package is provided for package developers who want
 a simple interface to find out which languages the user has requested through
 packages such as @code{babel} or @code{polyglossia}.  This package does not
 provide any translations!  Its purpose is simply to track which languages have
 been requested by the user.  Generic TeX code is in @file{tracklang.tex} for
 non-LaTeX users.")
-  (license license:lppl1.3+)))
+    (license license:lppl1.3+)))
 
 (define-public texlive-ltablex
   (package
@@ -12235,8 +11754,6 @@ non-LaTeX users.")
               "14lmgj820j6zwj1xnd6ad38kzb9w132kp7sp55cv5bk9vhx3621w")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-tools))
     (home-page "https://ctan.org/pkg/ltablex")
     (synopsis "Table package extensions")
     (description
@@ -12255,14 +11772,10 @@ tables).")
              (list "doc/latex/ragged2e/" "source/latex/ragged2e/"
                    "tex/latex/ragged2e/")
              (base32
-              "1cxj5jdgvr3xk1inrb3yzpm3l386jjawgpqiwsz53k6yshb6yfml")))
+              "06wr2x7mgd40wdq3dnjg3rp5p41fqk6lsj28652i6g71rhnga3sc")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:tex-format "latex"))
-    (propagated-inputs
-     (list texlive-everysel
-           texlive-footmisc))
+    (arguments (list #:tex-format "latex"))
     (home-page "https://ctan.org/pkg/ragged2e")
     (synopsis "Alternative versions of ragged-type commands")
     (description
@@ -12286,8 +11799,6 @@ altogether).")
               "0ckfm04kfi67babpn3m99nqj4b9r1fs0ivq5m7yz90mz4lqykhbs")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/refstyle")
     (synopsis "Advanced formatting of cross references")
     (description
@@ -12356,8 +11867,7 @@ layout, etc.")
               "0skzm2qsk5vpjxgslclp4pvbbcrrnm1w3df8xfvfq252dyd7w8s5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list #:tex-format "latex"))
+    (arguments (list #:tex-format "latex"))
     (home-page "https://ctan.org/pkg/everysel")
     (synopsis "Provides hooks into @code{\\selectfont}")
     (description
@@ -12454,15 +11964,9 @@ abstract in a two column paper.")
              (list "doc/latex/breqn/" "source/latex/breqn/"
                    "tex/latex/breqn/")
              (base32
-              "0w6jk97jmgwgshr9a3isbpwsh0fhrkzp36gywdiai1f5x2sldmpv")))
+              "03iyxwcr94f2y7ar7qin5nzjcvmamhblv5lxb97dg6r79mk4wr75")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsfonts
-           texlive-amsmath
-           texlive-graphics
-           texlive-l3kernel
-           texlive-tools))
     (home-page "https://ctan.org/pkg/breqn")
     (synopsis "Automatic line breaking of displayed equations")
     (description
@@ -12486,8 +11990,6 @@ displayed equations.  The bundle also contains the @code{flexisym} and
               "1lihfrihf1i300sddz09rsn6gj30g299warn88gli9hbrfy6nvw5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-iftex texlive-xkeyval))
     (home-page "https://ctan.org/pkg/breakurl")
     (synopsis "Line-breakable links in @code{hyperref} for dvips/ps2pdf")
     (description
@@ -12529,15 +12031,7 @@ controlled comment versions.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-amsmath
-           texlive-etoolbox
-           texlive-fp
-           texlive-mfirstuc
-           texlive-pgf
-           texlive-substr
-           texlive-tools
-           texlive-xfor
-           texlive-xkeyval))
+     (list texlive-fp texlive-substr texlive-xfor texlive-xkeyval))
     (home-page "https://ctan.org/pkg/datatool")
     (synopsis "Tools to load and manipulate data")
     (description
@@ -12559,9 +12053,6 @@ bibliographies, and displaying personal pronouns.")
               "1wy58wwcv1pv18xs1n71abnm73dqnxqijxvhfxk0rcmvbc6wvwrb")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-amsmath
-           texlive-l3packages))
     (home-page "https://ctan.org/pkg/physics")
     (synopsis "Macros supporting the Mathematics of Physics")
     (description
@@ -12594,11 +12085,6 @@ notation.")
               "18z7ln8dyh0sp6v0vdvc6qqxnpg3h3ix0f5magjcjbpay54kl0i3")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontaxes
-           texlive-iftex
-           texlive-mweights
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/sourcesanspro")
     (synopsis "Use Source Sans Pro with TeX(-alike) systems")
     (description
@@ -12626,11 +12112,6 @@ in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
               "18xxncg8ybv86r46zq5mvgkrfnvlhx93n55fy8nkk8vdmminrh8w")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontaxes
-           texlive-iftex
-           texlive-mweights
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/sourceserifpro")
     (synopsis "Use Source Serif Pro with TeX(-alike) systems")
     (description
@@ -12658,11 +12139,6 @@ fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
               "009v9y7d3vsljgq9nw5yx4kzyqavxbwrlvwhfjj83s6rmb9xcrmh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-fontaxes
-           texlive-iftex
-           texlive-mweights
-           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/sourcecodepro")
     (synopsis "Use Source Code Pro with TeX(-alike) systems")
     (description "This package provides the Source Code Pro font family from
@@ -12703,7 +12179,7 @@ underscores), and hyphenation of text typeset in monospaced (e.g.,
              (list "doc/latex/lastpage/" "source/latex/lastpage/"
                    "tex/latex/lastpage/")
              (base32
-              "1cmzl0jkid4w60bjlyxrc5bynbc3lwq5nr77rsip0q9hprxykxks")))
+              "0rb8kmslmxxr41g9nxmk60m0w0f3428kci42xys21lq4jrdsdz0m")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/lastpage")
@@ -12752,7 +12228,7 @@ defined tab stop.")
              (list "doc/generic/soul/" "source/generic/soul/"
                    "tex/generic/soul/")
              (base32
-              "0ikipdswzsafi4rr6q9xh3hkxk2n2683ym1879qcax41xs6cizdl")))
+              "1q6qd5fcqs9n49jxa77ildvdcdcqpw914m2xn9wggkp4d2kvxzh1")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/soul")
@@ -12762,33 +12238,12 @@ defined tab stop.")
 underlining, striking out, etc., using the TeX hyphenation algorithm to find
 the proper hyphens automatically.  The package also provides a mechanism that
 can be used to implement similar tasks, that have to treat text syllable by
-syllable.  The package itself does not support UTF-8 input in ordinary
-(PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
+syllable.  This version is a merge of the original @code{soul} package and the
+@code{soulutf8} package and supports also UTF-8.")
     (license license:lppl)))
 
 (define-deprecated-package texlive-generic-soul texlive-soul)
-
-(define-public texlive-soulutf8
-  (package
-    (name "texlive-soulutf8")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/latex/soulutf8/" "source/latex/soulutf8/"
-                   "tex/generic/soulutf8/")
-             (base32
-              "0d9lv3xsads8ms642ys3pghxnsa2hlzafkcx66d2hbq224bz1phc")))
-    (outputs '("out" "doc"))
-    (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-etexcmds texlive-infwarerr texlive-soul))
-    (home-page "https://ctan.org/pkg/soulutf8")
-    (synopsis "Permit use of UTF-8 characters in @code{soul}")
-    (description
-     "This package extends package @code{soul} and adds some support for
-UTF-8.  Namely the input encodings in @file{utf8.def} from package
-@code{inputenc} and @file{utf8x.def} from package @code{ucs} are supported.")
-    (license license:lppl1.3+)))
+(define-deprecated-package texlive-soulutf8 texlive-soul)
 
 (define-public texlive-xstring
   (package
@@ -12798,7 +12253,7 @@ UTF-8.  Namely the input encodings in @file{utf8.def} from package
              name version
              (list "doc/generic/xstring/" "tex/generic/xstring/")
              (base32
-              "1azpq855kq1l4686bjp8haxim5c8wycz1b6lcg5q7x8kb4g9sppn")))
+              "1sm84z6nlxipv10ydaww5yl4l2c31hznx3vzzqzaw1gi2yi2d6bb")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/xstring")
@@ -12847,7 +12302,6 @@ of occurrences of a substring.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:tex-format "latex"))
-    (propagated-inputs (list texlive-graphics))
     (home-page "https://ctan.org/pkg/totcount")
     (synopsis "Find the last value of a counter")
     (description
@@ -12871,7 +12325,6 @@ changed, the recorded value will usually be the maximum value.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:tex-format "latex"))
-    (propagated-inputs (list texlive-everyshi texlive-graphics))
     (home-page "https://ctan.org/pkg/totpages")
     (synopsis "Count pages in a document, and report last page number")
     (description
@@ -12890,7 +12343,7 @@ itself may be shipped out to the DVI file.")
                    "doc/man/man1/xdvi.man1.pdf" "dvips/xdvi/"
                    "xdvi/")
              (base32
-              "17cqim8dwsbpcr7cd97fklsyaiwj7d7d0k2zkcv7981fcqinw5pn")))
+              "1iidl3876vyi9k2dyfwd73q5kb53kwckivfyvvxh953n4axbqmi4")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/xdvi")
@@ -12922,19 +12375,27 @@ that it will build with web2c out of the box.")
   (package
     (name "texlive-xetex")
     (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/man/man1/xelatex.1"
-                   "doc/man/man1/xelatex.man1.pdf"
-                   "doc/man/man1/xetex.1"
-                   "doc/man/man1/xetex.man1.pdf"
-                   "doc/xetex/base/"
-                   "fonts/misc/xetex/fontmapping/base/")
-             (base32
-              "15bjr41p9l5d6837hy3nrhkkylgv04b0150vysyg5730svh3fnan")))
+    (source  (texlive-origin
+              name version
+              (list "doc/man/man1/xelatex-unsafe.1"
+                    "doc/man/man1/xelatex-unsafe.man1.pdf"
+                    "doc/man/man1/xelatex.1"
+                    "doc/man/man1/xelatex.man1.pdf"
+                    "doc/man/man1/xetex-unsafe.1"
+                    "doc/man/man1/xetex-unsafe.man1.pdf"
+                    "doc/man/man1/xetex.1"
+                    "doc/man/man1/xetex.man1.pdf"
+                    "doc/xetex/base/"
+                    "fonts/misc/xetex/fontmapping/base/"
+                    "scripts/texlive-extra/xelatex-unsafe.sh"
+                    "scripts/texlive-extra/xetex-unsafe.sh")
+              (base32
+               "1fc1b3pmzg6g80jnl7ixqbk79wd6frf477nvgxs1sf56vf9r3vjw")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:create-formats #~(list "xelatex" "xetex")))
+    (arguments
+     (list #:link-scripts #~(list "xelatex-unsafe.sh" "xetex-unsafe.sh")
+           #:create-formats #~(list "xelatex" "xetex")))
     (propagated-inputs
      (list texlive-atbegshi
            texlive-atveryend

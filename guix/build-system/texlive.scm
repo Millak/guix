@@ -34,8 +34,7 @@
             texlive-ref
             texlive-origin
             %texlive-tag
-            %texlive-revision
-            %texlive-date))
+            %texlive-revision))
 
 ;; Commentary:
 ;;
@@ -45,9 +44,8 @@
 
 ;; These variables specify the SVN tag and the matching SVN revision.  They
 ;; are taken from https://www.tug.org/svn/texlive/tags/
-(define %texlive-tag "texlive-2021.3")
-(define %texlive-revision 59745)
-(define %texlive-date "2021-06-28 21:59:21Z")
+(define %texlive-tag "texlive-2023.0")
+(define %texlive-revision 66594)
 
 (define (texlive-origin name version locations hash)
   "Return an <origin> object for a TeX Live package consisting of multiple
