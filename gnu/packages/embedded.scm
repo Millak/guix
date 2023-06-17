@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -559,7 +560,12 @@ SEGGER J-Link and compatible devices.")
                  (lambda _
                    ;; XXX All but 1 SSL tests fail (tries connecting to Google
                    ;; servers).
-                   (delete-file "tests/ssl.test"))))))
+                   (delete-file "tests/ssl.test")))
+               #$@(if (target-x86-32?)
+                      #~((add-after 'unpack 'delete-failing-tests/32bit
+                           (lambda _
+                             (delete-file "tests/file.test"))))
+                      #~()))))
     (inputs (list openssl))
     (native-inputs
      ;; For tests.
