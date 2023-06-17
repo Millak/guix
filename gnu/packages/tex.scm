@@ -108,15 +108,145 @@
   (define-deprecated/public old-name name
     (deprecated-package (symbol->string 'old-name) name)))
 
-(define texlive-scripts
-  (texlive-origin
-   "texlive-scripts" (number->string %texlive-revision)
-   (list "dvips/tetex/"
-         "fonts/enc/dvips/tetex/"
-         "fonts/map/dvips/tetex/"
-         "scripts/texlive/")
-   (base32
-    "0y571gddch111r2chjfkyjsm4zk24xxiv2rcczb5apf6d0g211b9")))
+(define-public texlive-scripts
+  (package
+    (name "texlive-scripts")
+    (version (number->string %texlive-revision))
+    ;; We cannot use `texlive-origin' because its locations start out in
+    ;; "texmf-dist" directory which is one level below "tlpkg" that we also
+    ;; need to pull here.
+    (source (origin
+              (method svn-multi-fetch)
+              (uri (svn-multi-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/"))
+                    (locations
+                     (list "texmf-dist/doc/man/man1/fmtutil-sys.1"
+                           "texmf-dist/doc/man/man1/fmtutil-sys.man1.pdf"
+                           "texmf-dist/doc/man/man1/fmtutil-user.1"
+                           "texmf-dist/doc/man/man1/fmtutil-user.man1.pdf"
+                           "texmf-dist/doc/man/man1/fmtutil.1"
+                           "texmf-dist/doc/man/man1/fmtutil.man1.pdf"
+                           "texmf-dist/doc/man/man1/install-tl.1"
+                           "texmf-dist/doc/man/man1/install-tl.man1.pdf"
+                           "texmf-dist/doc/man/man1/mktexfmt.1"
+                           "texmf-dist/doc/man/man1/mktexfmt.man1.pdf"
+                           "texmf-dist/doc/man/man1/mktexlsr.1"
+                           "texmf-dist/doc/man/man1/mktexlsr.man1.pdf"
+                           "texmf-dist/doc/man/man1/mktexmf.1"
+                           "texmf-dist/doc/man/man1/mktexmf.man1.pdf"
+                           "texmf-dist/doc/man/man1/mktexpk.1"
+                           "texmf-dist/doc/man/man1/mktexpk.man1.pdf"
+                           "texmf-dist/doc/man/man1/mktextfm.1"
+                           "texmf-dist/doc/man/man1/mktextfm.man1.pdf"
+                           "texmf-dist/doc/man/man1/texhash.1"
+                           "texmf-dist/doc/man/man1/texhash.man1.pdf"
+                           "texmf-dist/doc/man/man1/tlmgr.1"
+                           "texmf-dist/doc/man/man1/tlmgr.man1.pdf"
+                           "texmf-dist/doc/man/man1/updmap-sys.1"
+                           "texmf-dist/doc/man/man1/updmap-sys.man1.pdf"
+                           "texmf-dist/doc/man/man1/updmap-user.1"
+                           "texmf-dist/doc/man/man1/updmap-user.man1.pdf"
+                           "texmf-dist/doc/man/man1/updmap.1"
+                           "texmf-dist/doc/man/man1/updmap.man1.pdf"
+                           "texmf-dist/doc/man/man5/fmtutil.cnf.5"
+                           "texmf-dist/doc/man/man5/fmtutil.cnf.man5.pdf"
+                           "texmf-dist/doc/man/man5/updmap.cfg.5"
+                           "texmf-dist/doc/man/man5/updmap.cfg.man5.pdf"
+                           "texmf-dist/dvips/tetex/"
+                           "texmf-dist/fonts/enc/dvips/tetex/"
+                           "texmf-dist/fonts/map/dvips/tetex/"
+                           "texmf-dist/scripts/texlive/fmtutil-sys.sh"
+                           "texmf-dist/scripts/texlive/fmtutil-user.sh"
+                           "texmf-dist/scripts/texlive/fmtutil.pl"
+                           "texmf-dist/scripts/texlive/mktexlsr.pl"
+                           "texmf-dist/scripts/texlive/mktexmf"
+                           "texmf-dist/scripts/texlive/mktexpk"
+                           "texmf-dist/scripts/texlive/mktextfm"
+                           "texmf-dist/scripts/texlive/tlmgr.pl"
+                           "texmf-dist/scripts/texlive/updmap-sys.sh"
+                           "texmf-dist/scripts/texlive/updmap-user.sh"
+                           "texmf-dist/scripts/texlive/updmap.pl"
+                           "texmf-dist/web2c/fmtutil-hdr.cnf"
+                           "texmf-dist/web2c/updmap-hdr.cfg"
+                           "tlpkg/gpg/"
+                           "tlpkg/installer/config.guess"
+                           "tlpkg/installer/curl/curl-ca-bundle.crt"
+                           "tlpkg/TeXLive/"
+                           "tlpkg/texlive.tlpdb"))
+                    (revision %texlive-revision)))
+              (sha256
+               "1igdbnp37c5ajdp17bmcdgkm5s2fyph5v9gk8svhwaamwazk7xg5")))
+    (outputs '("out" "doc"))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%copy-build-system-modules
+                           (guix build texlive-build-system)
+                           (guix build union))
+      #:modules '((guix build copy-build-system)
+                  ((guix build texlive-build-system) #:prefix tex:)
+                  (guix build utils))
+      #:install-plan
+      #~'(("texmf-dist/dvips/"   "share/texmf-dist/dvips")
+          ("texmf-dist/fonts/"   "share/texmf-dist/fonts")
+          ("texmf-dist/scripts/" "share/texmf-dist/scripts")
+          ("texmf-dist/web2c/"   "share/texmf-dist/web2c")
+          ("tlpkg/"              "share/tlpkg"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-scripts
+            (lambda _
+              ;; First patch shell scripts with ".sh" extension.
+              (with-directory-excursion "texmf-dist"
+                ((assoc-ref tex:%standard-phases 'patch-shell-scripts)))
+              ;; Then patch scripts without such extension.
+              (let ((dirs (map (compose dirname which)
+                               (list "awk" "cat" "grep" "sed"))))
+                (substitute*
+                    (find-files "texmf-dist/scripts/" "^mktex(mf|pk|tfm)$")
+                  (("^version=" m)
+                   (format #false "PATH=\"~{~a:~}$PATH\"; export PATH~%~a"
+                           dirs m))))
+              ;; Make sure that fmtutil can find its Perl modules.
+              (substitute* "texmf-dist/scripts/texlive/fmtutil.pl"
+                (("\\$TEXMFROOT/")
+                 (string-append #$output "/share/")))
+              ;; Likewise for updmap.pl.
+              (substitute* "texmf-dist/scripts/texlive/updmap.pl"
+                (("\\$TEXMFROOT/tlpkg")
+                 (string-append #$output "/share/tlpkg")))
+              ;; Likewise for the tlmgr.
+              (substitute* "texmf-dist/scripts/texlive/tlmgr.pl"
+                ((".*\\$::installerdir = \\$Master.*" all)
+                 (format #f "  $Master = ~s;~%~a"
+                         (string-append #$output "/share")
+                         all)))))
+          (add-after 'unpack 'fix-fmtutil
+            ;; The line below generates an error when running "fmtutil".
+            (lambda _
+              (substitute* "texmf-dist/scripts/texlive/fmtutil.pl"
+                (("require TeXLive::TLWinGoo if .*") ""))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((doc (string-append #$output:doc "/share/texmf-dist/doc")))
+                (mkdir-p doc)
+                (copy-recursively "texmf-dist/doc/" doc))))
+          (add-after 'install-doc 'link-scripts
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion "texmf-dist"
+                (apply (assoc-ref tex:%standard-phases 'link-scripts)
+                       (list #:outputs outputs
+                             #:link-scripts
+                             (find-files "scripts")))))))))
+    (inputs (list perl))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "TeX Live infrastructure programs")
+    (description
+     "This package provides core TeX Live scripts such as @code{updmap},
+@code{fmtutil}, and @code{tlmgr}.  It is is automatically installed alongside
+@code{texlive-bin}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 (define-public texlive-hyphen-complete
   (package
@@ -359,337 +489,197 @@ and should be preferred to it whenever a package would otherwise depend on
                   (ice-9 ftw)))
        (snippet
         ;; TODO: Unbundle stuff in texk/dvisvgm/dvisvgm-src/libs too.
-        '(with-directory-excursion "libs"
-           (let ((preserved-directories '("." ".." "lua53" "luajit" "pplib" "xpdf")))
-             ;; Delete bundled software, except Lua which cannot easily be
-             ;; used as an external dependency, pplib and xpdf which aren't
-             ;; supported as system libraries (see m4/kpse-xpdf-flags.m4).
-             (for-each delete-file-recursively
-                       (scandir "."
-                                (lambda (file)
-                                  (and (not (member file preserved-directories))
-                                       (eq? 'directory (stat:type (stat file))))))))))))
+        #~(with-directory-excursion "libs"
+            (let ((preserved-directories '("." ".." "lua53" "luajit" "pplib" "xpdf")))
+              ;; Delete bundled software, except Lua which cannot easily be
+              ;; used as an external dependency, pplib and xpdf which aren't
+              ;; supported as system libraries (see m4/kpse-xpdf-flags.m4).
+              (for-each delete-file-recursively
+                        (scandir "."
+                                 (lambda (file)
+                                   (and (not (member file preserved-directories))
+                                        (eq? 'directory (stat:type (stat file))))))))))))
     (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
     (inputs
-     `(("texlive-extra-src"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "ftp://tug.org/historic/systems/texlive/"
-                               (string-take version 4)
-                               "/texlive-" version "-extra.tar.xz"))
-           (sha256
-            (base32
-             "1hiqvdg679yadygf23f37b3dz5ick258k1qcam9nhkhprkx7d9l0"))))
-       ("config" ,config)
-       ("texlive-scripts" ,texlive-scripts)
-       ("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("fontforge" ,fontforge)
-       ("freetype" ,freetype)
-       ("gd" ,gd)
-       ("gmp" ,gmp)
-       ("ghostscript" ,ghostscript)
-       ("graphite2" ,graphite2)
-       ("harfbuzz" ,harfbuzz)
-       ("icu4c" ,icu4c)
-       ("libpaper" ,libpaper)
-       ("libpng" ,libpng)
-       ("libxaw" ,libxaw)
-       ("libxt" ,libxt)
-       ("mpfr" ,mpfr)
-       ("perl" ,perl)
-       ("pixman" ,pixman)
-       ("potrace" ,potrace)
-       ("python" ,python)
-       ("ruby" ,ruby-2.7)
-       ("tcsh" ,tcsh)
-       ("teckit" ,teckit)
-       ("zlib" ,zlib)
-       ("zziplib" ,zziplib)))
-    (native-inputs
-     (list pkg-config))
+     (list config
+           cairo
+           fontconfig
+           fontforge
+           freetype
+           gd
+           gmp
+           ghostscript
+           graphite2
+           harfbuzz
+           icu4c
+           libpaper
+           libpng
+           libxaw
+           libxt
+           mpfr
+           perl
+           pixman
+           potrace
+           python
+           ruby-2.7
+           tcsh
+           teckit
+           zlib
+           zziplib))
+    (propagated-inputs (list texlive-scripts))
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (list
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)
                   (srfi srfi-26))
-       #:out-of-source? #t
-       #:parallel-tests? #f             ;bibtex8.test fails otherwise
-       #:configure-flags
-       '("--disable-static"
-         "--disable-native-texlive-build"
-         "--enable-shared"
-         "--with-banner-add=/GNU Guix"
-         "--with-system-cairo"
-         "--with-system-freetype2"
-         "--with-system-gd"
-         "--with-system-gmp"
-         "--with-system-graphite2"
-         "--with-system-harfbuzz"
-         "--with-system-icu"
-         "--with-system-libgs"
-         "--with-system-libpaper"
-         "--with-system-libpng"
-         "--with-system-mpfr"
-         "--with-system-pixman"
-         "--with-system-potrace"
-         "--with-system-teckit"
-         "--with-system-zlib"
-         "--with-system-zziplib"
-         ;; LuaJIT is not ported to some architectures yet.
-         ,@(if (or (target-ppc64le?)
-                   (target-riscv64?))
-             '("--disable-luajittex"
-               "--disable-luajithbtex"
-               "--disable-mfluajit")
-             '()))
-
+      #:out-of-source? #t
+      #:parallel-tests? #f              ;bibtex8.test fails otherwise
+      #:configure-flags
+      #~(list "--disable-static"
+              ;; "Linked scripts" are taken care of in their respective
+              ;; packages.
+              "--disable-linked-scripts"
+              "--disable-native-texlive-build"
+              "--enable-shared"
+              "--with-banner-add=/GNU Guix"
+              "--with-system-cairo"
+              "--with-system-freetype2"
+              "--with-system-gd"
+              "--with-system-gmp"
+              "--with-system-graphite2"
+              "--with-system-harfbuzz"
+              "--with-system-icu"
+              "--with-system-libgs"
+              "--with-system-libpaper"
+              "--with-system-libpng"
+              "--with-system-mpfr"
+              "--with-system-pixman"
+              "--with-system-potrace"
+              "--with-system-teckit"
+              "--with-system-zlib"
+              "--with-system-zziplib"
+              ;; LuaJIT is not ported to some architectures yet.
+              #$@(if (or (target-ppc64le?)
+                         (target-riscv64?))
+                     '("--disable-luajittex"
+                       "--disable-luajithbtex"
+                       "--disable-mfluajit")
+                     '()))
       ;; Disable tests on some architectures to cope with a failure of
       ;; luajiterr.test.
+      ;;
       ;; XXX FIXME fix luajit properly on these architectures.
-      #:tests? ,(let ((s (or (%current-target-system)
-                             (%current-system))))
-                  (not (or (string-prefix? "aarch64" s)
-                           (string-prefix? "mips64" s)
-                           (string-prefix? "powerpc64le" s))))
-
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-psutils-test
-           (lambda _
-             ;; This test fails due to a rounding difference with libpaper 1.2:
-             ;;   https://github.com/rrthomas/libpaper/issues/23
-             ;; Adjust the expected outcome to account for the minute difference.
-             (substitute* "texk/psutils/tests/playres.ps"
-               (("844\\.647799")
-                "844.647797"))))
-         (add-after 'unpack 'configure-ghostscript-executable
-           ;; ps2eps.pl uses the "gswin32c" ghostscript executable on Windows,
-           ;; and the "gs" ghostscript executable on Unix. It detects Unix by
-           ;; checking for the existence of the /usr/bin directory. Since
-           ;; Guix System does not have /usr/bin, it is also detected as Windows.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "utils/ps2eps/ps2eps-src/bin/ps2eps.pl"
-               (("gswin32c") "gs"))
-             (substitute* "texk/texlive/linked_scripts/epstopdf/epstopdf.pl"
-               (("\"gs\"")
-                (string-append "\"" (assoc-ref inputs "ghostscript") "/bin/gs\"")))))
-         (add-after 'unpack 'patch-dvisvgm-build-files
-           (lambda _
-             ;; XXX: Ghostscript is detected, but HAVE_LIBGS is never set, so
-             ;; the appropriate linker flags are not added.
-             (substitute* "texk/dvisvgm/configure"
-               (("^have_libgs=yes" all)
-                (string-append all "\nHAVE_LIBGS=1")))))
-         (add-after 'unpack 'disable-failing-test
-           (lambda _
-             ;; FIXME: This test fails on 32-bit architectures since Glibc 2.28:
-             ;; <https://bugzilla.redhat.com/show_bug.cgi?id=1631847>.
-             (substitute* "texk/web2c/omegafonts/check.test"
-               (("^\\./omfonts -ofm2opl \\$srcdir/tests/check tests/xcheck \\|\\| exit 1")
-                "./omfonts -ofm2opl $srcdir/tests/check tests/xcheck || exit 77"))))
-         ,@(if (or (target-ppc32?)
-                   (target-riscv64?))
-             ;; Some mendex tests fail on some architectures.
-             `((add-after 'unpack 'skip-mendex-tests
-                 (lambda _
-                   (substitute* '("texk/mendexk/tests/mendex.test"
-                                  "texk/upmendex/tests/upmendex.test")
-                     (("srcdir/tests/pprecA-0.ind pprecA-0.ind1 \\|\\| exit 1")
-                      "srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 77")))))
-             '())
-         (add-after 'unpack 'unpack-texlive-extra
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir "texlive-extra")
-             (with-directory-excursion "texlive-extra"
-               (apply (assoc-ref %standard-phases 'unpack)
-                      (list #:source (assoc-ref inputs "texlive-extra-src"))))))
-         (add-after 'unpack-texlive-extra 'copy-texlive-scripts
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir "texlive-scripts")
-             (with-directory-excursion "texlive-scripts"
-               (let ((scripts (string-append
-                               (assoc-ref inputs "texlive-scripts")
-                               "/scripts/texlive")))
-                 (copy-recursively scripts "."))
-               ;; Configure the version string for some scripts.
-               ;; Normally this would be done by Subversion.
-               ;; See <https://issues.guix.gnu.org/43442#15>.
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("\\$Id\\$")
-                              (format #f "$Id: ~a ~a ~a nobody $"
-                                      file
-                                      ,%texlive-revision
-                                      ,%texlive-date))
-                             (("\\$Revision\\$")
-                              (format #f "$Revision: ~a $"
-                                      ,%texlive-revision))
-                             (("\\$Date\\$")
-                              (format #f "$Date: ~a $"
-                                      ,%texlive-date))))
-                         '("fmtutil.pl"
-                           "mktexlsr"
-                           "mktexlsr.pl"
-                           "mktexmf"
-                           "mktexpk"
-                           "mktextfm"
-                           "tlmgr.pl"
-                           "tlmgrgui.pl"
-                           "updmap.pl")))))
-         (add-after 'copy-texlive-scripts 'patch-scripts
-           (lambda _
-             (let* ((scripts (append (find-files "texk/kpathsea" "^mktex")
-                                     (find-files "texk/texlive/linked_scripts"
-                                                 "\\.sh$")
-                                     (find-files "texlive-scripts" "\\.sh$")))
-                    (commands '("awk" "basename" "cat" "grep" "mkdir" "rm"
-                                "sed" "sort" "uname"))
-                    (command-regexp (format #f "\\b(~a)\\b"
-                                            (string-join commands "|")))
-                    (iso-8859-1-encoded-scripts
-                     '("texk/texlive/linked_scripts/texlive-extra/rubibtex.sh"
-                       "texk/texlive/linked_scripts/texlive-extra/rumakeindex.sh")))
-
-               (define (substitute-commands scripts)
-                 (substitute* scripts
-                   ((command-regexp dummy command)
-                    (which command))))
-
-               (substitute-commands (lset-difference string= scripts
-                                                     iso-8859-1-encoded-scripts))
-
-               (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                 (substitute-commands iso-8859-1-encoded-scripts)))))
-         ;; When ST_NLINK_TRICK is set, kpathsea attempts to avoid work when
-         ;; searching files by assuming that a directory with exactly two
-         ;; links has no subdirectories.  This assumption does not hold in our
-         ;; case, so some directories with symlinked subdirectories would not
-         ;; be traversed.
-         (add-after 'patch-scripts 'patch-directory-traversal
-           (lambda _
-             (substitute* "texk/kpathsea/config.h"
-               (("#define ST_NLINK_TRICK") ""))))
-
-         ,@(if (target-arm32?)
-               `((add-after 'unpack 'skip-faulty-test
-                   (lambda _
-                     ;; Skip this faulty test on armhf-linux:
-                     ;;   https://issues.guix.gnu.org/54055
-                     (substitute* '("texk/mendexk/tests/mendex.test"
-                                    "texk/upmendex/tests/upmendex.test")
-                       (("^TEXMFCNF=" all)
-                        (string-append "exit 77 # skip\n" all))))))
-               '())
-
-         (add-after 'check 'customize-texmf.cnf
-           ;; The default texmf.cnf is provided by this package, texlive-bin.
-           ;; Every variable of interest is set relatively to the GUIX_TEXMF
-           ;; environment variable defined via a search path specification
-           ;; further below.  The configuration file is patched after the test
-           ;; suite has run, as it relies on the default configuration to find
-           ;; its paths (and the GUIX_TEXMF variable isn't set yet).
-           (lambda _
-             ;; The current directory is build/ because of the out-of-tree
-             ;; build.
-             (let* ((source    (first (scandir ".." (cut string-suffix?
-                                                         "source" <>))))
-                    (texmf.cnf (string-append "../" source
-                                              "/texk/kpathsea/texmf.cnf")))
-               (substitute* texmf.cnf
-                 (("^TEXMFROOT = .*")
-                  "TEXMFROOT = {$GUIX_TEXMF}/..\n")
-                 (("^TEXMF = .*")
-                  "TEXMF = {$GUIX_TEXMF}\n")
-                 (("^%TEXMFCNF = .*")
-                  "TEXMFCNF = {$GUIX_TEXMF}/web2c\n")
-                 ;; Don't truncate lines.
-                 (("^error_line = .*$") "error_line = 254\n")
-                 (("^half_error_line = .*$") "half_error_line = 238\n")
-                 (("^max_print_line = .*$") "max_print_line = 1000\n")))))
-         (add-after 'install 'post-install
-           (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-             (let* ((out (assoc-ref outputs "out"))
-                    (patch-source-shebangs (assoc-ref %standard-phases
-                                                      'patch-source-shebangs))
-                    (share (string-append out "/share"))
-                    (scripts (string-append share
-                                            "/texmf-dist/scripts/texlive"))
-                    (source (string-append
-                             "../" (first (scandir ".." (cut string-suffix?
-                                                             "source" <>)))))
-                    (tl-extra-root (string-append source "/texlive-extra"))
-                    (tl-extra-dir (first
-                                   (scandir tl-extra-root
-                                            (negate
-                                             (cut member <> '("." ".."))))))
-                    (tlpkg-src (string-append tl-extra-root "/" tl-extra-dir
-                                              "/tlpkg"))
-                    (config.guess (search-input-file inputs
-                                                     "/bin/config.guess")))
-
-               ;; Create symbolic links for the latex variants.  We link
-               ;; lualatex to luahbtex; see issue #51252 for details.
-               (with-directory-excursion (string-append out "/bin/")
-                 (for-each symlink
-                           '("pdftex" "pdftex"   "xetex"   "luahbtex")
-                           '("latex"  "pdflatex" "xelatex" "lualatex")))
-
-               ;; Install tlpkg.
-               (copy-recursively tlpkg-src (string-append share "/tlpkg"))
-
-               ;; Install texlive-scripts and associated files.
-               (copy-recursively (string-append source "/texlive-scripts")
-                                 scripts)
-               (for-each
-                (lambda (dir)
-                  (mkdir-p dir)
-                  (copy-recursively (string-append
-                                     (assoc-ref inputs "texlive-scripts")
-                                     "/" dir)
-                                    (string-append share "/texmf-dist/" dir)))
-                '("dvips" "fonts"))
-
-               ;; Patch them.
-               (let ((dirs (map dirname (list (which "sed") (which "awk")))))
-                 (with-directory-excursion scripts
-                   (substitute* '("mktexpk" "mktexmf" "mktexlsr")
-                     (("^version=" m)
-                      (format #false "PATH=\"~{~a:~}$PATH\"; export PATH~%~a"
-                              dirs m)))))
-
-               ;; Make sure that fmtutil can find its Perl modules.
-               (substitute* (string-append scripts "/fmtutil.pl")
-                 (("\\$TEXMFROOT/")
-                  (string-append share "/")))
-
-               ;; Likewise for updmap.pl.
-               (substitute* (string-append scripts "/updmap.pl")
-                 (("\\$TEXMFROOT/tlpkg")
-                  (string-append share "/tlpkg")))
-
-               ;; Likewise for the tlmgr.
-               (substitute* (string-append scripts "/tlmgr.pl")
-                 ((".*\\$::installerdir = \\$Master.*" all)
-                  (format #f "  $Master = ~s;~%~a" share all)))
-
-               ;; Install the config.guess script, required by tlmgr.
-               (with-directory-excursion share
-                 (mkdir-p "tlpkg/installer/")
-                 (symlink config.guess "tlpkg/installer/config.guess"))
-
-               ;; texlua shebangs are not patched by the patch-source-shebangs
-               ;; phase because the texlua executable does not exist at that
-               ;; time.
-               (setenv "PATH" (string-append (getenv "PATH") ":" out "/bin"))
-               (with-directory-excursion out
-                 (patch-source-shebangs))
-
-               ;; The line below generates an error when running "fmtutil".
-               (substitute*
-                   (string-append share "/texmf-dist/scripts/texlive/fmtutil.pl")
-                 (("require TeXLive::TLWinGoo if .*") ""))))))))
+      #:tests? (let ((s (or (%current-target-system)
+                            (%current-system))))
+                 (not (or (string-prefix? "aarch64" s)
+                          (string-prefix? "mips64" s)
+                          (string-prefix? "powerpc64le" s))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-psutils-test
+            (lambda _
+              ;; This test fails due to a rounding difference with libpaper
+              ;; 1.2: <https://github.com/rrthomas/libpaper/issues/23>.
+              ;;
+              ;; Adjust the expected outcome to account for the minute
+              ;; difference.
+              (substitute* "texk/psutils/tests/playres.ps"
+                (("844\\.647799") "844.647797"))))
+          (add-after 'unpack 'configure-ghostscript-executable
+            ;; ps2eps.pl uses the "gswin32c" ghostscript executable on
+            ;; Windows, and the "gs" ghostscript executable on Unix.  It
+            ;; detects Unix by checking for the existence of the /usr/bin
+            ;; directory.  Since Guix System does not have /usr/bin, it is
+            ;; also detected as Windows.
+            (lambda _
+              (substitute* "utils/ps2eps/ps2eps-src/bin/ps2eps.pl"
+                (("gswin32c") "gs"))))
+          (add-after 'unpack 'patch-dvisvgm-build-files
+            (lambda _
+              ;; XXX: Ghostscript is detected, but HAVE_LIBGS is never set, so
+              ;; the appropriate linker flags are not added.
+              (substitute* "texk/dvisvgm/configure"
+                (("^have_libgs=yes" all)
+                 (string-append all "\nHAVE_LIBGS=1")))))
+          (add-after 'unpack 'disable-failing-test
+            (lambda _
+              ;; FIXME: This test fails on 32-bit architectures since Glibc
+              ;; 2.28: <https://bugzilla.redhat.com/show_bug.cgi?id=1631847>.
+              (substitute* "texk/web2c/omegafonts/check.test"
+                (("^\\./omfonts -ofm2opl \\$srcdir/tests/check tests/xcheck \\|\\| exit 1")
+                 "./omfonts -ofm2opl $srcdir/tests/check tests/xcheck || exit 77"))))
+          #$@(if (or (target-ppc32?)
+                     (target-riscv64?))
+                 ;; Some mendex tests fail on some architectures.
+                 `((add-after 'unpack 'skip-mendex-tests
+                     (lambda _
+                       (substitute* '("texk/mendexk/tests/mendex.test"
+                                      "texk/upmendex/tests/upmendex.test")
+                         (("srcdir/tests/pprecA-0.ind pprecA-0.ind1 \\|\\| exit 1")
+                          "srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 77")))))
+                 '())
+          ;; When ST_NLINK_TRICK is set, kpathsea attempts to avoid work when
+          ;; searching files by assuming that a directory with exactly two
+          ;; links has no subdirectories.  This assumption does not hold in our
+          ;; case, so some directories with symlinked subdirectories would not
+          ;; be traversed.
+          (add-after 'unpack 'patch-directory-traversal
+            (lambda _
+              (substitute* "texk/kpathsea/config.h"
+                (("#define ST_NLINK_TRICK") ""))))
+          #$@(if (target-arm32?)
+                 `((add-after 'unpack 'skip-faulty-test
+                     (lambda _
+                       ;; Skip this faulty test on armhf-linux:
+                       ;;   https://issues.guix.gnu.org/54055
+                       (substitute* '("texk/mendexk/tests/mendex.test"
+                                      "texk/upmendex/tests/upmendex.test")
+                         (("^TEXMFCNF=" all)
+                          (string-append "exit 77 # skip\n" all))))))
+                 '())
+          (add-after 'check 'customize-texmf.cnf
+            ;; The default texmf.cnf is provided by this package, texlive-bin.
+            ;; Every variable of interest is set relatively to the GUIX_TEXMF
+            ;; environment variable defined via a search path specification
+            ;; further below.  The configuration file is patched after the test
+            ;; suite has run, as it relies on the default configuration to find
+            ;; its paths (and the GUIX_TEXMF variable isn't set yet).
+            (lambda _
+              ;; The current directory is build/ because of the out-of-tree
+              ;; build.
+              (let* ((source    (first (scandir ".." (cut string-suffix?
+                                                          "source" <>))))
+                     (texmf.cnf (string-append "../" source
+                                               "/texk/kpathsea/texmf.cnf")))
+                (substitute* texmf.cnf
+                  (("^TEXMFROOT = .*")
+                   "TEXMFROOT = {$GUIX_TEXMF}/..\n")
+                  (("^TEXMF = .*")
+                   "TEXMF = {$GUIX_TEXMF}\n")
+                  (("^%TEXMFCNF = .*")
+                   "TEXMFCNF = {$GUIX_TEXMF}/web2c\n")
+                  ;; Don't truncate lines.
+                  (("^error_line = .*$") "error_line = 254\n")
+                  (("^half_error_line = .*$") "half_error_line = 238\n")
+                  (("^max_print_line = .*$") "max_print_line = 1000\n")))))
+          (add-after 'install 'post-install
+            (lambda _
+              ;; Create symbolic links for the latex variants.  We link
+              ;; lualatex to luahbtex; see issue #51252 for details.
+              (with-directory-excursion (string-append #$output "/bin/")
+                (for-each symlink
+                          '("pdftex" "pdftex"   "xetex"   "luahbtex")
+                          '("latex"  "pdflatex" "xelatex" "lualatex")))
+              ;; texlua shebangs are not patched by the patch-source-shebangs
+              ;; phase because the texlua executable does not exist at that
+              ;; time.
+              (setenv "PATH"
+                      (string-append (getenv "PATH") ":" #$output "/bin"))
+              (with-directory-excursion #$output
+                (assoc-ref %standard-phases 'patch-source-shebangs)))))))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_TEXMF")

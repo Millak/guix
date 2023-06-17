@@ -153,20 +153,20 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
                depends)))
 
 (define (tlpdb-file)
-  (define texlive-bin
+  (define texlive-scripts
     ;; Resolve this variable lazily so that (gnu packages ...) does not end up
     ;; in the closure of this module.
     (module-ref (resolve-interface '(gnu packages tex))
-                'texlive-bin))
+                'texlive-scripts))
 
   (with-store store
     (run-with-store store
       (mlet* %store-monad
-          ((drv (lower-object texlive-bin))
+          ((drv (lower-object texlive-scripts))
            (built (built-derivations (list drv))))
         (match (derivation->output-paths drv)
           (((names . items) ...)
-           (return (string-append (first items)
+           (return (string-append (second items) ;"out"
                                   "/share/tlpkg/texlive.tlpdb"))))))))
 
 (define tlpdb

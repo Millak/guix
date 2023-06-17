@@ -1789,6 +1789,8 @@ MANIFEST."
            '()))))
   (define texlive-inputs
     (append-map entry->texlive-input (manifest-entries manifest)))
+  (define texlive-scripts
+    (module-ref (resolve-interface '(gnu packages tex)) 'texlive-scripts))
   (define texlive-bin
     (module-ref (resolve-interface '(gnu packages tex)) 'texlive-bin))
   (define coreutils
@@ -1823,8 +1825,10 @@ MANIFEST."
                                  ":"
                                  #$(file-append grep "/bin")
                                  ":"
-                                 #$(file-append sed "/bin")))
-          (setenv "PERL5LIB" #$(file-append texlive-bin "/share/tlpkg"))
+                                 #$(file-append sed "/bin")
+                                 ":"
+                                 #$(file-append texlive-bin "/bin")))
+          (setenv "PERL5LIB" #$(file-append texlive-scripts "/share/tlpkg"))
           (setenv "GUIX_TEXMF" "/tmp/texlive/share/texmf-dist")
 
           ;; Remove invalid maps from config file.
@@ -1834,7 +1838,7 @@ MANIFEST."
             (install-file #$(file-append updmap.cfg "/web2c/updmap.cfg") web2c)
             (make-file-writable updmap.cfg)
             (let* ((port (open-pipe* OPEN_WRITE
-                                     #$(file-append texlive-bin "/bin/updmap-sys")
+                                     #$(file-append texlive-scripts "/bin/updmap-sys")
                                      "--syncwithtrees"
                                      "--nohash"
                                      "--force"
@@ -1844,7 +1848,7 @@ MANIFEST."
                 (error "failed to filter updmap.cfg")))
 
             ;; Generate font maps.
-            (invoke #$(file-append texlive-bin "/bin/updmap-sys")
+            (invoke #$(file-append texlive-scripts "/bin/updmap-sys")
                     (string-append "--cnffile=" updmap.cfg)
                     (string-append "--dvipdfmxoutputdir="
                                    maproot "dvipdfmx/updmap")
@@ -1862,7 +1866,7 @@ MANIFEST."
             ;; to /tmp and run mktexlsr only once.
             (let ((a (string-append #$output "/share/texmf-dist"))
                   (b "/tmp/texlive/share/texmf-dist")
-                  (mktexlsr #$(file-append texlive-bin "/bin/mktexlsr")))
+                  (mktexlsr #$(file-append texlive-scripts "/bin/mktexlsr")))
               (copy-recursively a b)
               (invoke mktexlsr b)
               (install-file (string-append b "/ls-R") a))))))
