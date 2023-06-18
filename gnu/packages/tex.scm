@@ -916,6 +916,28 @@ out to date by @code{unicode-letters.tex}.")
 
 (define-deprecated-package texlive-generic-unicode-data texlive-unicode-data)
 
+(define-public texlive-hologo
+  (package
+    (name "texlive-hologo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/hologo/"
+                   "source/generic/hologo/"
+                   "tex/generic/hologo/")
+             (base32
+              "0n62zwz93ab6vfb0hd2h0ncj9gwavg01i3djj7wyr7gyj20xb34x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hologo")
+    (synopsis "Collection of logos with bookmark support")
+    (description
+     "The package defines a single command @code{\\hologo}, whose argument is
+the usual case-confused ASCII version of the logo.  The command is
+bookmark-enabled, so that every logo becomes available in bookmarks without
+further work.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hopatch
   (package
     (name "texlive-hopatch")
