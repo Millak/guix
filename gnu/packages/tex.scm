@@ -10118,6 +10118,26 @@ in ConTeXt.  Such a font may be found in the Computer Modern extra bold font
 set.")
     (license license:gpl3+)))
 
+(define-public texlive-context-cmttbf
+  (package
+    (name "texlive-context-cmttbf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/cmttbf/"
+                   "tex/context/third/cmttbf/")
+             (base32
+              "0c88d2h6sn2l8s1lvy18h8vd6hc7im5gd85ilway4gq2nhvl4ahw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-cmttbf")
+    (synopsis "Use Computer Modern Typewriter bold font in ConTeXt")
+    (description
+     "The module makes provision for bold typewriter CM fonts, in ConTeXt.
+Such a font may be found in the Computer Modern extra bold font set.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
