@@ -11603,6 +11603,27 @@ The package includes font definition files for use with the Latin Modern
 OpenType fonts.")
     (license license:lppl1.3+)))
 
+(define-public texlive-euro
+  (package
+    (name "texlive-euro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/euro/" "source/latex/euro/"
+                   "tex/latex/euro/")
+             (base32
+              "1bmswsw4clzrrgxmk473ghsdbnw6zwa2rgbjs32i1i5c37026yfi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/euro")
+    (synopsis "Provide Euro values for national currency amounts")
+    (description
+     "This package converts arbitrary national currency amounts using the Euro
+as base unit, and typesets monetary amounts in almost any desired way.
+Conversion rates for the initial Euro-zone countries are already built-in.
+Further rates can be added easily.")
+    (license license:lppl)))
+
 (define-public texlive-eurosym
   (package
     (name "texlive-eurosym")
