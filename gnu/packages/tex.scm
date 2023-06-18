@@ -9974,6 +9974,26 @@ for a wealth of support information.")
 
 (define-deprecated-package texlive-context-base texlive-context)
 
+(define-public texlive-context-account
+  (package
+    (name "texlive-context-account")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/account/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/account/")
+             (base32
+              "0pcl7yiajm4q87f05kd6wyxhvdzvsy4hyvy24aihzlmhwrww0c9c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-account")
+    (synopsis "Simple accounting package")
+    (description
+     "The package deals with accounts of its own specification.")
+    (license license:public-domain)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
