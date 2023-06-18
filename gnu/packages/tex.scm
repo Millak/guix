@@ -10818,6 +10818,24 @@ metrics and LaTeX macros to use the three basic Adobe Type 1 fonts (Times,
 Helvetica and Courier) in LaTeX using LY1 encoding.")
     (license license:lppl1.0+)))
 
+(define-public texlive-section
+  (package
+    (name "texlive-section")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/section/" "tex/latex/section/")
+             (base32
+              "0gjajhlwwgyqnmw9bzr0l7dsq12mdhgv8sdkm86m4zn107qab0p9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/section")
+    (synopsis "Modifying section commands in LaTeX")
+    (description
+     "The package implements a pretty extensive scheme to make more manageable
+the business of configuring LaTeX output.")
+    (license license:lppl)))
+
 (define-public texlive-sectsty
   (package
     (name "texlive-sectsty")
