@@ -13,6 +13,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -58,6 +60,8 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages perl))
@@ -612,6 +616,61 @@ object, without whitespace.")
      "Cap'n Proto is a very fast data interchange format and capability-based
 RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faster.")
     (license license:expat)))
+
+(define-public python-msgspec
+  (package
+    (name "python-msgspec")
+    (version "0.16.0")
+    (source (origin
+              ;; There are no tests in the PyPI tarball.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jcrist/msgspec")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09q567klcv7ly60w9lqip2ffyhrij100ky9igh3p3vqwbml33zb3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disable only one failing test.
+      ;;
+      ;; AssertionError: msgspec/structs.pyi:7: error: Positional-only
+      ;; parameters are only supported in Python 3.8 and greater
+      #:test-flags #~(list "-k" "not test_mypy")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'versioneer
+                     (lambda _
+                       (invoke "versioneer" "install")
+                       (substitute* "setup.py"
+                         (("version=versioneer.get_version\\(),")
+                          (format #f "version=~s," #$version))))))))
+    (native-inputs (list python-attrs
+                         python-gcovr
+                         python-msgpack
+                         python-mypy
+                         python-pytest
+                         python-setuptools-scm
+                         python-versioneer))
+    (propagated-inputs (list python-pyyaml python-tomli python-tomli-w))
+    (home-page "https://jcristharif.com/msgspec/")
+    (synopsis "Fast serialization/validation library")
+    (description "@code{msgspec} is a fast serialization and validation
+library, with builtin support for JSON, MessagePack, YAML, and TOML.  It
+includes the following features:
+
+@itemize
+@item High performance encoders/decoders for common protocols.
+@item Support for a wide variety of Python types.
+@item Zero-cost schema validation using familiar Python type annotations.
+@item A speedy Struct type for representing structured data.
+@end itemize")
+    ;; XXX: It might support more architectures but GitHub Actions listed only
+    ;; two right now. Try to build for the rest supported by Guix.  See:
+    ;; https://github.com/jcrist/msgspec/blob/main/.github/workflows/ci.yml#L83
+    (supported-systems (list "x86_64-linux" "aarch64-linux"))
+    (license license:bsd-3)))
 
 (define-public python-ruamel.yaml
   (package
