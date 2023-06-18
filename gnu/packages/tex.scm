@@ -3156,6 +3156,68 @@ of file names.")
 
 (define-deprecated-package texlive-latex-url texlive-url)
 
+(define-public texlive-l3experimental
+  (package
+    (name "texlive-l3experimental")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l3experimental/"
+                   "source/latex/l3experimental/l3benchmark/"
+                   "source/latex/l3experimental/l3bitset/"
+                   "source/latex/l3experimental/l3draw/"
+                   "source/latex/l3experimental/l3graphics/"
+                   "source/latex/l3experimental/l3opacity/"
+                   "source/latex/l3experimental/l3str/"
+                   "source/latex/l3experimental/l3sys-shell/"
+                   "source/latex/l3experimental/xcoffins/"
+                   "source/latex/l3experimental/xgalley/"
+                   "tex/latex/l3experimental/l3benchmark/"
+                   "tex/latex/l3experimental/l3bitset/"
+                   "tex/latex/l3experimental/l3draw/"
+                   "tex/latex/l3experimental/l3graphics/"
+                   "tex/latex/l3experimental/l3opacity/"
+                   "tex/latex/l3experimental/l3str/"
+                   "tex/latex/l3experimental/l3sys-shell/"
+                   "tex/latex/l3experimental/xcoffins/"
+                   "tex/latex/l3experimental/xgalley/")
+             (base32
+              "1s4v0f29hk5racmvj4imyn6d2az7i94s4fq3hag11hr08ipvi51v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-l3kernel))
+    (home-page "https://ctan.org/pkg/l3experimental")
+    (synopsis "Experimental LaTeX3 concepts")
+    (description
+     "The l3experimental packages are a collection of experimental
+implementations for aspects of the LaTeX3 kernel, dealing with higher-level
+ideas such as the Designer Interface.  Some of them work as stand alone
+packages, providing new functionality, and can be used on top of LaTeX2e with
+no changes to the existing kernel.  The present release includes:
+@itemize @code
+@item l3benchmark
+for measuring the time taken by TeX to run certain code;
+@item l3draw
+a code-level interface for constructing drawings;
+@item l3graphics
+an interface for the inclusion of graphics files;
+@item l3opacity
+support for opacity in PDF output;
+@item l3str
+support for string manipulation;
+@item l3bitset
+support for bit vectors;
+@item l3sys-shell
+which provides abstractions for common shell functions like file
+deletion and copying;
+@item xcoffins
+which allows the alignment of boxes using a series of handle positions,
+supplementing the simple TeX reference point;
+@item xgalley
+which controls boxes receiving text for typesetting.
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-l3kernel
   (package
     (name "texlive-l3kernel")
