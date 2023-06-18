@@ -10238,6 +10238,27 @@ a default symbol.")
      "This ConTeXt module deals with spacing around French punctuation.")
     (license license:gpl3+)))
 
+(define-public texlive-context-fullpage
+  (package
+    (name "texlive-context-fullpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/fullpage/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/fullpage/")
+             (base32
+              "1phxzaayy8dpxhfg7xj66ms3xgrdfdc3hv18wy92havcky5gq9wc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-fullpage")
+    (synopsis "Overfull pages with ConTeXt")
+    (description
+     "This ConTeXt module copies the functionality of @code{fullpage}, and
+adds a styling parameter, given in the @code{\\usemodule} command.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
