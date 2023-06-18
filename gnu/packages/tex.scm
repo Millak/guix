@@ -7855,6 +7855,29 @@ It does not work in combination with list environments, but can be used in a
 
 (define-deprecated-package texlive-latex-wrapfig texlive-wrapfig)
 
+(define-public texlive-ucharcat
+  (package
+    (name "texlive-ucharcat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ucharcat/"
+                   "source/latex/ucharcat/"
+                   "tex/latex/ucharcat/")
+             (base32
+              "0r6mphnn26053vb4bgw1zjhw7y7xjavii9hnn7607cbscnx5f9di")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ucharcat")
+    (synopsis
+     "Implementation of the XeTeX @code{\\Ucharcat} command for LuaTeX")
+    (description
+     "The package implements the @code{\\Ucharcat} command for LuaLaTeX.
+@code{\\Ucharcat} is a new primitive in XeTeX, an extension of the existing
+@code{\\Uchar} command, that allows the specification of the catcode as well
+as character code of the character token being constructed.")
+    (license license:lppl)))
+
 (define-public texlive-ucs
   (package
     (name "texlive-ucs")
