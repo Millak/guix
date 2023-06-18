@@ -3629,28 +3629,28 @@ It is a low-dependency variant of ruby-hydra.")
 (define-public ruby-shindo
   (package
     (name "ruby-shindo")
-    (version "0.3.8")
+    (version "0.3.10")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "shindo" version))
               (sha256
                (base32
-                "0s8v1jbz8i0jh92f2fgxb3p51l1azrpkc8nv4mhrqy4vndpvd7wq"))))
+                "0qnqixhi0g8v44v13f3gynpbvvw6xqi1wajsxdjsx5rhzizfsj91"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "shindo_tests"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "tests/tests_helper.rb"
-               (("-rubygems") ""))
-             (substitute* "Rakefile"
-               (("system \"shindo") "system \"./bin/shindo")
-               ;; This test doesn't work, so we disable it.
-               (("fail \"The build_error test should fail") "#")
-               ((" -rubygems") ""))
-             #t)))))
+     (list
+      #:test-target "shindo_tests"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests/tests_helper.rb"
+                (("-rubygems") ""))
+              (substitute* "Rakefile"
+                (("system \"shindo") "system \"./bin/shindo")
+                ;; This test doesn't work, so we disable it.
+                (("fail \"The build_error test should fail") "#")
+                ((" -rubygems") "")))))))
     (propagated-inputs
      (list ruby-formatador))
     (synopsis "Simple depth first Ruby testing")
