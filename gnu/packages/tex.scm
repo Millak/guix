@@ -10297,6 +10297,28 @@ adds a styling parameter, given in the @code{\\usemodule} command.")
      "Gantt is a module for drawing Gantt charts via MetaPost or PGF/TikZ.")
     (license license:public-domain)))
 
+(define-public texlive-context-gnuplot
+  (package
+    (name "texlive-context-gnuplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/gnuplot/"
+                   "metapost/context/third/gnuplot/"
+                   "tex/context/third/gnuplot/")
+             (base32
+              "0bmzww4sq8n37aipy6cvplcblxwlbmpl0by2sqysc3pdyxnixg41")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-gnuplot")
+    (synopsis "Inclusion of Gnuplot graphs in ConTeXt")
+    (description
+     "This ConTeXt module enables simple creation and inclusion of graphs with
+Gnuplot.  It writes a script into temporary file, runs Gnuplot and includes
+the resulting graphic directly into the document.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
