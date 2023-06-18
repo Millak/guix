@@ -10424,6 +10424,50 @@ Dirac braket notation, conditional probabilities, etc.  The package is at
 least inspired by @code{braket}.")
     (license license:bsd-2)))           ;from "t-mathsets.tex"
 
+(define-public texlive-context-rst
+  (package
+    (name "texlive-context-rst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/rst/"
+                   "scripts/context/lua/third/rst/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/rst/")
+             (base32
+              "0dfviz3pww0k9ffhiqw0dywj9fs3wkmqavb98z2cq1ldw09fbh01")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-rst")
+    (synopsis "Process reStructuredText with ConTeXt")
+    (description
+     "The package provides a converter and module for typesetting
+reStructuredText with ConTeXt.")
+    (license license:bsd-2)))           ;from "manual.pdf"
+
+(define-public texlive-context-ruby
+  (package
+    (name "texlive-context-ruby")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/ruby/"
+                   "tex/context/third/ruby/")
+             (base32
+              "0dgyvsxxfll5zayp0bfb7ixzh7df4bm3yz7z2w974yjlrd17acm0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-ruby")
+    (synopsis "Ruby annotations in ConTeXt")
+    (description
+     "Ruby markup (aka furigana in Japan) are inline annotations above or
+below a word to indicate the reading of ideographic characters.  The module
+implements the W3C specification for simple Ruby in ConTeXt.  The position and
+layout of the base text and the Ruby text can be controlled by parameters.")
+    (license license:public-domain)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
