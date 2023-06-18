@@ -869,6 +869,32 @@ uppercase letters respectively (1 to a, 26 to z, 27 to aa, 52 to zz, 53 to ba,
 a replacement for LaTeX's @code{\\@@alph} and @code{\\@@Alph} macros.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-avantgar
+  (package
+    (name "texlive-avantgar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/avantgar/"
+                   "fonts/afm/adobe/avantgar/"
+                   "fonts/afm/urw/avantgar/"
+                   "fonts/map/dvips/avantgar/"
+                   "fonts/tfm/adobe/avantgar/"
+                   "fonts/tfm/urw35vf/avantgar/"
+                   "fonts/type1/urw/avantgar/"
+                   "fonts/vf/adobe/avantgar/"
+                   "fonts/vf/urw35vf/avantgar/"
+                   "tex/latex/avantgar/")
+             (base32
+              "1200x40k7wprm4n7srxvgrax2l52vn6d5ri2x0q7zbzzsfxfzkym")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urw-base35")
+    (synopsis "Replacement for Adobe's Avant Garde font")
+    (description
+     "This package provides a drop-in replacement for the Avant Garde font
+from Adobe's basic set.")
+    (license license:gpl3+)))
+
 (define texlive-docstrip
   (package
     (name "texlive-docstrip")
