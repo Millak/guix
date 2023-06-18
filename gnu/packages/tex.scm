@@ -9994,6 +9994,25 @@ for a wealth of support information.")
      "The package deals with accounts of its own specification.")
     (license license:public-domain)))
 
+(define-public texlive-context-algorithmic
+  (package
+    (name "texlive-context-algorithmic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/algorithmic/"
+                   "tex/context/third/algorithmic/")
+             (base32
+              "0l2k8a3g3yrirbiwp741h1fisbprhbl2kwzbmd71fij1a80sqfaw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-algorithmic")
+    (synopsis "Algorithm handling in ConTeXt")
+    (description
+     "This module provides support for typesetting algorithms.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
