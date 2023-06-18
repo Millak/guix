@@ -9842,25 +9842,25 @@ features such as filtering and fine grained logging.")
 (define-public ruby-yajl-ruby
   (package
     (name "ruby-yajl-ruby")
-    (version "1.4.1")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "yajl-ruby" version))
        (sha256
         (base32
-         "16v0w5749qjp13xhjgr2gcsvjv6mf35br7iqwycix1n2h7kfcckf"))))
+         "1lni4jbyrlph7sz8y49q84pb0sbj82lgwvnjnsiv01xf26f4v5wc"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-test-to-update-load-path
-           (lambda _
-             (substitute* "spec/parsing/large_number_spec.rb"
-               (("require \"yajl\"")
-                "$LOAD_PATH << 'lib'; require 'yajl'"))
-             #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-test-to-update-load-path
+            (lambda _
+              (substitute* "spec/parsing/large_number_spec.rb"
+                (("require \"yajl\"")
+                 "$LOAD_PATH << 'lib'; require 'yajl'")))))))
      (native-inputs
       (list ruby-rake-compiler ruby-rspec))
      (synopsis "Streaming JSON parsing and encoding library for Ruby")
