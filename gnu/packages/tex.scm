@@ -10138,6 +10138,25 @@ set.")
 Such a font may be found in the Computer Modern extra bold font set.")
     (license license:gpl3+)))
 
+(define-public texlive-context-construction-plan
+  (package
+    (name "texlive-context-construction-plan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/construction-plan/"
+                   "tex/context/third/construction-plan/")
+             (base32
+              "0nch7bwmal1lbsv4h5jwpavif5cx7096jr7m1g2pfjn4qy9slpgs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-construction-plan")
+    (synopsis "Construction plans in ConTeXt")
+    (description
+     "This module generates a page with a figure at a well-defined scale.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
