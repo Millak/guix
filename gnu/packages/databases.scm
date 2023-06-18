@@ -1559,7 +1559,22 @@ organized in a hash table or B+ tree.")
            #~(list "--disable-static"
                    (string-append "--with-bash-headers="
                                   (search-input-directory %build-inputs
-                                                          "include/bash")))))
+                                                          "include/bash")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'symlink-bash-loadables
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion (string-append
+                                              (assoc-ref outputs "out")
+                                              "/lib")
+                     (mkdir "bash")
+                     (for-each
+                      (compose symlink
+                               (lambda (loadable)
+                                 (values
+                                  (string-append (getcwd) "/" loadable ".so")
+                                  (string-append "bash/" loadable))))
+                      '("readrec" "testrec"))))))))
     (native-inputs
      (list bc check-0.14 pkg-config))
     (inputs
