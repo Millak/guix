@@ -1035,7 +1035,7 @@ H.264 (MPEG-4 AVC) video streams.")
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
        ("qttools-5" ,qttools-5)
-       ("ruby" ,ruby)))
+       ("ruby" ,ruby-2.7)))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-boost="
