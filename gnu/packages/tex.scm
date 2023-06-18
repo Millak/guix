@@ -11518,6 +11518,31 @@ SGML-based languages.  Xindy is highly configurable, both in markup terms and
 in terms of the collating order of the text being processed.")
     (license license:gpl2+)))
 
+(define-public texlive-ntgclass
+  (package
+    (name "texlive-ntgclass")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ntgclass/"
+                   "source/latex/ntgclass/"
+                   "tex/latex/ntgclass/")
+             (base32
+              "04rvr1gldp87nqplmnqkwi3l9jclsjaawj5rym72gy6sw9snpmck")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ntgclass")
+    (synopsis "European versions of standard classes")
+    (description
+     "The bundle offers versions of the standard LaTeX @code{article} and
+@code{report} classes, rewritten to reflect a more European design, and the
+@code{a4} package, which is better tuned to the shape of a4 paper than is the
+@code{a4paper} class option of the standard classes.  The classes include
+several for @code{article} and @code{report} requirements, and a @code{letter}
+class.  The elements of the bundle were designed by members of the Dutch TeX
+Users Group NTG.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-nth
   (package
     (name "texlive-nth")
