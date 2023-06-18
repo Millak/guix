@@ -10382,6 +10382,26 @@ provided, with support covering ConTeXt Mkii and Mkiv.  The design of
 letters may be amended by a wide range of style specifications.")
     (license license:gpl3+)))
 
+(define-public texlive-context-lettrine
+  (package
+    (name "texlive-context-lettrine")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/lettrine/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/lettrine/")
+             (base32
+              "0mhzvnn6ffysfq9qxdj1a6prplppzsh4pb7x2di2r87pnkxwa7f2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-lettrine")
+    (synopsis "ConTeXt implementation of lettrines")
+    (description
+     "This is a re-implementation of the LaTeX package @code{lettrine}.")
+    (license license:public-domain)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
