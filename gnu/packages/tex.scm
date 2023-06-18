@@ -10653,6 +10653,28 @@ There is a helper @file{2context.vim} script to do the syntax parsing in
 Vim.")
     (license license:bsd-2)))
 
+(define-public texlive-context-visualcounter
+  (package
+    (name "texlive-context-visualcounter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/visualcounter/"
+                   "source/context/third/visualcounter/"
+                   "tex/context/third/visualcounter/")
+             (base32
+              "0rq2zqrvbidwngc4jyv4ay84y5l854z1shk08cjlvnlbsgrg7lmk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-visualcounter")
+    (synopsis "Visual display of ConTeXt counters")
+    (description
+     "This package provides a typical document usually contains many counters:
+page numbers, section numbers, itemizations, enumerations, theorems, and so
+on.  This module provides a visual display for such counters.")
+    (license license:bsd-2)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
