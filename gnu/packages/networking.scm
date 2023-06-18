@@ -4378,7 +4378,7 @@ network.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.3")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -4389,27 +4389,33 @@ network.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jp6998a45xi8pbi8p84chvpm1mhhcvcxm1avi1c1gjjp4jqm3vl"))
+        (base32 "01mllfrsr55lnfivxwa57cfrjas6w4shsvx9k81pw8jixc124myk"))
        (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/yggdrasil-network/yggdrasil-go"
-       ;; TODO: figure out how tests are run
-       #:tests? #f
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key import-path build-flags #:allow-other-keys)
-             (for-each
-               (lambda (directory)
-                 ((assoc-ref %standard-phases 'build)
-                  #:build-flags build-flags
-                  #:import-path directory))
-               (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
-                     "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
-                     "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))
-             #t)))))
+     (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
+           ;; TODO: figure out how tests are run
+           #:tests? #f
+           #:install-source? #f
+           #:go go-1.20
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'build
+                 (lambda* (#:key import-path build-flags #:allow-other-keys)
+                   (let* ((pkgsrc "github.com/yggdrasil-network/yggdrasil-go/src/version")
+                          (ldflags (format #f
+                                           "-X ~a.buildName=yggdrasil -X ~a.buildVersion=~a"
+                                           pkgsrc
+                                           pkgsrc
+                                           #$version)))
+                     (for-each
+                      (lambda (directory)
+                        ((assoc-ref %standard-phases 'build)
+                         #:build-flags `("-ldflags" ,ldflags)
+                         #:import-path directory))
+                      (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
+                            "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
+                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
     ;; https://github.com/kardianos/minwinsvc is windows only
     (propagated-inputs
      (list ;;("go-golang-zx2c4-com-wireguard-windows"
@@ -4419,11 +4425,14 @@ network.")
            go-golang-org-x-sys
            go-golang-org-x-net
            go-golang-org-x-crypto
+           go-golang-org-x-tools
            go-netns
            go-netlink
+           go-github-com-olekukonko-tablewriter
            go-github-com-mitchellh-mapstructure
            go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-colorable
            go-github-com-kardianos-minwinsvc
            go-github-com-hjson-hjson-go
            go-github-com-hashicorp-go-syslog
