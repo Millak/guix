@@ -7377,6 +7377,26 @@ TeX metrics (VF and TFM files) and macros for use with LaTeX.")
 
 (define-deprecated-package texlive-fonts-txfonts texlive-txfonts)
 
+(define-public texlive-typehtml
+  (package
+    (name "texlive-typehtml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/typehtml/"
+                   "source/latex/typehtml/"
+                   "tex/latex/typehtml/")
+             (base32
+              "1nmdh2mhkzdqs5y4k95g9il6vz4rgndzhkikiilknkwg1a04rrzi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/typehtml")
+    (synopsis "Typeset HTML directly from LaTeX")
+    (description
+     "This package typesets HTML directly from LaTeX.  It can handle almost
+all of HTML2, and most of the math fragment of the draft HTML3.")
+    (license license:lppl)))
+
 (define-public texlive-iwona
   (package
     (name "texlive-iwona")
