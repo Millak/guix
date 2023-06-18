@@ -10338,6 +10338,27 @@ the resulting graphic directly into the document.")
      "The package handles CSV data merging for automatic document creation.")
     (license license:gpl3)))
 
+(define-public texlive-context-layout
+  (package
+    (name "texlive-context-layout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/layout/"
+                   "tex/context/third/layout/")
+             (base32
+              "1zl26r94yizzpxzilkwv90xbr61ddxm7fabwpgbkrci0idc9ksv0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-layout")
+    (synopsis "Show ConTeXt layouts")
+    (description
+     "This ConTeXt module draws a representation of the layout of the current
+page and displays the sizes of the widths and heights of the margins, header,
+footer and text body.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
