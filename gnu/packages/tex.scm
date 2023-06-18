@@ -10538,6 +10538,29 @@ a title block into your document.  With the command
 change the formatting of the content.")
     (license license:gpl3+)))
 
+(define-public texlive-context-transliterator
+  (package
+    (name "texlive-context-transliterator")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/transliterator/"
+                   "scripts/context/lua/third/transliterator/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/transliterator/")
+             (base32
+              "0hrj6sjldi7chqdnf300bs1q9s92v9sl2mfx3h0644mzjgjxw7s1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-transliterator")
+    (synopsis "Transliterate text from other alphabets")
+    (description
+     "The package will read text in one alphabet, and provide a transliterated
+version in another; this is useful for readers who cannot read the original
+alphabet.  The package can make allowance for hyphenation.")
+    (license license:bsd-2)))           ;from "t-transliterator.mkiv"
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
