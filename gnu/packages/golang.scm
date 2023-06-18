@@ -7121,7 +7121,7 @@ systems.")
     (package
       (inherit go-github-com-gdamore-tcell)
       (name "go-github-com-gdamore-tcell")
-      (version "2.5.3")
+      (version "2.6.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -7130,7 +7130,7 @@ systems.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0pvs0gigqxpifc7y7cx82cg95pgqmy8qzxynja3zidplrx2075j3"))))
+                  "0126hi8glnfqdx4l9zlh6dhd5f5c8bws7arv9pp4n2kqcnhdc6g2"))))
       (arguments
        (list #:import-path "github.com/gdamore/tcell/v2"
              #:phases
