@@ -770,6 +770,28 @@ it should not be processed without Knuth's direct permission.")
 document formating commands extended by a wide range of packages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-latexbug
+  (package
+    (name "texlive-latexbug")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexbug/"
+                   "source/latex/latexbug/"
+                   "tex/latex/latexbug/")
+             (base32
+              "0l9cyw41knbw3prsi4rbd2av4qfpkvzjs754847kv72dq1304m1i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexbug")
+    (synopsis "Bug-classification for LaTeX related bugs")
+    (description
+     "The package is written in order to help identifying the rightful
+addressee for a bug report.  The LaTeX team asks that it will be loaded in any
+test file that is intended to be sent to the LaTeX bug database as part of
+a bug report.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bidi
   (package
     (name "texlive-bidi")
