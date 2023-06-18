@@ -3409,6 +3409,24 @@ base LaTeX code now supports multiple dots and spaces, and this package by
 default is a stub that just loads @code{graphicx}.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-sansmath
+  (package
+    (name "texlive-sansmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sansmath/" "tex/latex/sansmath/")
+             (base32
+              "1lqxfvmxan0c9s270jp8jw1a5s6ya1i4jlfp2xz2k4w0g0fryjpj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sansmath")
+    (synopsis "Maths in a Sans font")
+    (description
+     "The package defines a new math version Sans, and a command
+@code{\\sansmath} that behaves somewhat like @code{\\boldmath}.")
+    (license license:public-domain)))
+
 (define-public texlive-sansmathfonts
   (package
     (name "texlive-sansmathfonts")
