@@ -10278,6 +10278,25 @@ a default symbol.")
 adds a styling parameter, given in the @code{\\usemodule} command.")
     (license license:gpl3+)))
 
+(define-public texlive-context-gantt
+  (package
+    (name "texlive-context-gantt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/gantt/"
+                   "tex/context/third/gantt/")
+             (base32
+              "0r6gwxqg4pvrgz5z1bsdknahdqhjfjdkdnl148awsg49apqrrbwi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context texlive-hatching))
+    (home-page "https://ctan.org/pkg/context-gantt")
+    (synopsis "GANTT module for ConTeXt")
+    (description
+     "Gantt is a module for drawing Gantt charts via MetaPost or PGF/TikZ.")
+    (license license:public-domain)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
