@@ -6160,6 +6160,27 @@ footnotes with symbols rather than numbers.")
 
 (define-deprecated-package texlive-latex-footmisc texlive-footmisc)
 
+(define-public texlive-footnotehyper
+  (package
+    (name "texlive-footnotehyper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/footnotehyper/"
+                   "source/latex/footnotehyper/"
+                   "tex/latex/footnotehyper/")
+             (base32
+              "0f8d13zr07bl295rvpagj99s9fn4dgrcjzv1xpjmla3h6xhrv914")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/footnotehyper")
+    (synopsis "hyperref aware @file{footnote.sty}")
+    (description
+     "The @code{footnote} package by Mark Wooding dates back to 1997 and has
+not been made @code{hyperref} compatible.  The aim of the present package is
+to do that.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-letltxmacro
   (package
     (name "texlive-letltxmacro")
