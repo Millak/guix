@@ -10488,6 +10488,33 @@ layout of the base text and the Ruby text can be controlled by parameters.")
 ConTeXt.")
     (license license:gpl3+)))
 
+(define-public texlive-context-simpleslides
+  (package
+    (name "texlive-context-simpleslides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/simpleslides/"
+                   "scripts/context/lua/third/simpleslides/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/simpleslides/")
+             (base32
+              "0vbh26ym42ayxwis6wbkmf07sy167g9kzg5ls889j2f2zn5rf4pr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-simpleslides")
+    (synopsis "Module for preparing presentations")
+    (description
+     "This ConTeXt module provides an easy-to-use interface for creating
+presentations for use with a digital projector.  The presentations are
+not interactive (no buttons, hyperlinks or navigational tools such as
+tables of contents).  Graphics may be mixed with the text of slides.
+The module provides several predefined styles, designed for academic
+presentation.  Most styles are configurable, and it is easy to design
+new styles.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
