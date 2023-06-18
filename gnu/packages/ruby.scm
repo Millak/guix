@@ -6732,13 +6732,13 @@ invocation, and source and documentation browsing.")
 (define-public ruby-pry-doc
   (package
     (name "ruby-pry-doc")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "pry-doc" version))
               (sha256
                (base32
-                "0wyvql6pb6m8jl8bsamabxhxhd86bnqblspaxzz05sl0fm2ynj0r"))))
+                "1pp43n69p6bjvc640wgcz295w1q2v9awcqgbwcqn082dbvq5xvnx"))))
     (build-system ruby-build-system)
     (propagated-inputs (list ruby-pry ruby-yard))
     (native-inputs (list ruby-latest-ruby ruby-rspec ruby-rake)) ;for tests
