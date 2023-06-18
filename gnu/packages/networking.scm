@@ -4369,14 +4369,15 @@ stamps.")
 (define-public nbd
   (package
     (name "nbd")
-    (version "3.24")
+    (version "3.25")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "mirror://sourceforge/nbd/nbd/" version
-                            "/nbd-" version ".tar.xz"))
+        (uri (string-append
+              "https://github.com/NetworkBlockDevice/nbd/releases/download/nbd-"
+              version "/nbd-" version ".tar.xz"))
         (sha256
-         (base32 "036ib2d5722sx9nn7jydqfpl5ici5if2z7g8xrskzcx74dniaxv8"))))
+         (base32 "02nxrgq3024g106x9wdyg23f0bj3avrmf3jdb4kckcaprc7zvj7m"))))
     (build-system gnu-build-system)
     (inputs
      (list glib))
