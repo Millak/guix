@@ -10013,6 +10013,27 @@ for a wealth of support information.")
      "This module provides support for typesetting algorithms.")
     (license license:gpl3+)))
 
+(define-public texlive-context-animation
+  (package
+    (name "texlive-context-animation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/animation/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/animation/")
+             (base32
+              "156zpxjb4c7qaibn7wjw13ysqyqg3m7pb8x3r3fzs6m83gp6r46c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-animation")
+    (synopsis "Generate fieldstack based animation with ConTeXt")
+    (description
+     "The package is a port, to Context (mkvi), of the corresponding LaTeX
+package.")
+    (license license:gpl3)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
