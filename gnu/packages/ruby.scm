@@ -15097,13 +15097,13 @@ floating-point numbers or complex numbers as arguments.")
 (define-public ruby-sucker-punch
   (package
     (name "ruby-sucker-punch")
-    (version "3.0.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sucker_punch" version))
        (sha256
-        (base32 "0yams24wndpj7dzdysvm4z1w6ggg4xvj4snxba66prahhxvik4xl"))))
+        (base32 "12by9vx8q6l4i56q62k1s1ymaxbpg4rny5zngj5i5h09kyh2yp4p"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
