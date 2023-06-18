@@ -10079,6 +10079,24 @@ while also allowing the gist of the grammar to be understood from simply
 looking at the source ConTeXt document.")
     (license license:gpl3+)))
 
+(define-public texlive-context-chromato
+  (package
+    (name "texlive-context-chromato")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/chromato/"
+                   "tex/context/third/chromato/")
+             (base32
+              "0p32iqgd6cbjx5y9ahs59f1q05js2s66nr84bjhzd37vzzl9acxs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-chromato")
+    (synopsis "ConTeXt macros for chromatograms")
+    (description "The module provides macros for drawing chromatograms.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
