@@ -207,25 +207,28 @@ Rails.")
 (define-public ruby-debug-inspector
   (package
     (name "ruby-debug-inspector")
-    (version "0.0.3")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "debug_inspector" version))
        (sha256
         (base32
-         "0vxr0xa1mfbkfcrn71n7c4f2dj7la5hvphn904vh20j3x4j5lrx0"))))
+         "01l678ng12rby6660pmwagmyg8nccvjfgs3487xna7ay378a59ga"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "rake" "compile")
-             (invoke "ruby" "-Ilib" "-e"
-                     (string-append
-                      "require 'debug_inspector'; RubyVM::DebugInspector."
-                      "open{|dc| p dc.backtrace_locations}")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "rake" "compile")
+              (invoke "ruby" "-Ilib" "-e"
+                      (string-append
+                       "require 'debug_inspector'; RubyVM::DebugInspector."
+                       "open{|dc| p dc.backtrace_locations}")))))))
+    (native-inputs
+     (list ruby-rake-compiler))
     (synopsis "Ruby wrapper for the MRI 2.0 debug_inspector API")
     (description
      "This package provides a Ruby wrapper for the MRI 2.0 debug_inspector
