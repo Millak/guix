@@ -11624,6 +11624,27 @@ Conversion rates for the initial Euro-zone countries are already built-in.
 Further rates can be added easily.")
     (license license:lppl)))
 
+(define-public texlive-euro-ce
+  (package
+    (name "texlive-euro-ce")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/euro-ce/"
+                   "fonts/source/public/euro-ce/"
+                   "fonts/tfm/public/euro-ce/")
+             (base32
+              "0vyh6ln2wdn42g5r1rg0gqf6q39ny7ldv2b6ikw8b029bdg5079p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/euro-ce")
+    (synopsis "Euro and CE sign font")
+    (description
+     "This package provides Metafont source for the Euro and CE symbols in
+several variants, designed to fit with the Computer Modern-set text.")
+    (license license:bsd-3)))           ;from "euro-ce.doc"
+
 (define-public texlive-eurosym
   (package
     (name "texlive-eurosym")
