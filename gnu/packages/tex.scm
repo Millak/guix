@@ -8511,6 +8511,29 @@ format.")
 
 (define-deprecated-package texlive-latex-eukdate texlive-eukdate)
 
+(define-public texlive-euler
+  (package
+    (name "texlive-euler")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/euler/" "source/latex/euler/"
+                   "tex/latex/euler/")
+             (base32
+              "0xd4lniaj243jvmlgfan7rp1zx308cfvpdd02nvvqpdnrwc69irk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/euler")
+    (synopsis "Use AMS Euler fonts for math")
+    (description
+     "This package provides a setup for using the AMS Euler family of fonts
+for mathematics in LaTeX documents. ``The underlying philosophy of Zapf's
+Euler design was to capture the flavour of mathematics as it might be written
+by a mathematician with excellent handwriting.'' The @code{euler} package is
+based on Knuth's macros for the book Concrete Mathematics'.  The text fonts
+for the Concrete book are supported by the @code{beton} package.")
+    (license license:lppl)))
+
 (define-public texlive-ulem
   (package
     (name "texlive-ulem")
