@@ -3962,6 +3962,25 @@ The OPmac macros can generate a bibliography without any external program.")
     ;; that says the package must be renamed from 'csplain' if it is modified.
     (license (license:non-copyleft "file:///tex/csplain/base/csplain.ini"))))
 
+(define-public texlive-ctable
+  (package
+    (name "texlive-ctable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ctable/" "source/latex/ctable/"
+                   "tex/latex/ctable/")
+             (base32
+              "1x624vz1gv8bsdafwhx89zaic7f2mz9vlvwjpv8fwzjhjwx4lxmv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ctable")
+    (synopsis "Flexible typesetting of table and figure floats")
+    (description
+     "This package provides commands to typeset centered, left- or
+right-aligned table and (multiple-)figure floats, with footnotes.")
+    (license license:lppl)))
+
 (define-public texlive-babel-english
   (package
     (name "texlive-babel-english")
