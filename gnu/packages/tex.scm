@@ -4814,6 +4814,32 @@ collect an argument verbatim to either typeset or write it into a file.  The
 used to write the verbatim text to a file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-noto
+  (package
+    (name "texlive-noto")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/noto/"
+                   "fonts/enc/dvips/noto/"
+                   "fonts/map/dvips/noto/"
+                   "fonts/tfm/google/noto/"
+                   "fonts/truetype/google/noto/"
+                   "fonts/type1/google/noto/"
+                   "fonts/vf/google/noto/"
+                   "tex/latex/noto/")
+             (base32
+              "14nf6xd85cb5s9f1sk8zzshgfhjda0r712dp592j8cb4s5v2hf7p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/noto")
+    (synopsis "Support for Noto fonts")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the NotoSerif, NotoSans and NotoSansMono families of fonts, designed by Steve
+Matteson for Google.")
+    (license (list license:lppl license:silofl1.1))))
+
 (define-public texlive-pdftexcmds
   (package
     (name "texlive-pdftexcmds")
@@ -5619,6 +5645,7 @@ also provides compacted versions of @code{enumerate} and @code{itemize}.")
            font-linuxlibertine
            font-sil-ezra
            fontconfig                   ;for XDG_DATA_DIRS (to locate fonts)
+           texlive-amiri
            texlive-babel
            texlive-bidi
            texlive-booktabs
@@ -5633,6 +5660,7 @@ also provides compacted versions of @code{enumerate} and @code{itemize}.")
            texlive-libertine
            texlive-metalogo
            texlive-microtype
+           texlive-noto
            texlive-paralist
            texlive-pdftexcmds
            texlive-tex
