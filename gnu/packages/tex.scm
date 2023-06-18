@@ -10337,6 +10337,25 @@ glyphs and the uppercase letters commonly used to represent various number
 sets.  LaTeX macro support is provided in package @code{psnfss}.")
     (license license:gpl3+)))
 
+(define-public texlive-mathspec
+  (package
+    (name "texlive-mathspec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/mathspec/"
+                   "tex/xelatex/mathspec/")
+             (base32
+              "0bfdzlim2kkvfzs8p7brwlc46qy41hvxb72xr53ijg2kplsqmkh8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathspec")
+    (synopsis "Specify arbitrary fonts for mathematics in XeTeX")
+    (description
+     "The mathspec package provides an interface to typeset mathematics in
+XeLaTeX with arbitrary text fonts using @code{fontspec} as a backend.")
+    (license license:lppl)))
+
 (define-public texlive-fp
   (package
     (name "texlive-fp")
