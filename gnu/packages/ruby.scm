@@ -4704,16 +4704,27 @@ objects.")
 (define-public ruby-mkmf-lite
   (package
     (name "ruby-mkmf-lite")
-    (version "0.3.2")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "mkmf-lite" version))
               (sha256
                (base32
-                "0br9k6zijj1zc25n8p7f2j1mwl58nfgdknf3q13h9k156jvrir06"))))
+                "0rqa5kzswhqkj7r9mqrqz4mjd2vdxsblgybb52gj3mwr1gwvl4c5"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Avoid rubocop dependency
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec")))))))
     (propagated-inputs
      (list ruby-ptools))
+    (native-inputs
+     (list ruby-rspec))
     (synopsis "Lightweight alternative to @code{mkmf}")
     (description
      "@code{mkmf-lite} is a light version of Ruby's @code{mkmf.rb} designed
