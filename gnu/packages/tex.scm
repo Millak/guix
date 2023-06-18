@@ -6153,6 +6153,32 @@ be used, for example, for per chapter/section appendices.  An
 
 (define-deprecated-package texlive-latex-appendix texlive-appendix)
 
+(define-public texlive-bookman
+  (package
+    (name "texlive-bookman")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/bookman/"
+                   "fonts/afm/adobe/bookman/"
+                   "fonts/afm/urw/bookman/"
+                   "fonts/map/dvips/bookman/"
+                   "fonts/tfm/adobe/bookman/"
+                   "fonts/tfm/urw35vf/bookman/"
+                   "fonts/type1/urw/bookman/"
+                   "fonts/vf/adobe/bookman/"
+                   "fonts/vf/urw35vf/bookman/"
+                   "tex/latex/bookman/")
+             (base32
+              "12wkjwpzxn1a1k3bb41gpnky1jjsh7gzj4xahsjd087fpmrsj9p9")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urw-base35")
+    (synopsis "Replacement for Adobe's Bookman font")
+    (description
+     "This package provides a drop-in replacement for the Bookman font from
+Adobe's basic set")
+    (license license:gpl3+)))
+
 (define-public texlive-bookmark
   (package
     (name "texlive-bookmark")
