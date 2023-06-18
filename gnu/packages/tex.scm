@@ -6919,6 +6919,32 @@ Adobe's basic set.")
 
 (define-deprecated-package texlive-fonts-adobe-palatino texlive-palatino)
 
+(define-public texlive-zapfchan
+  (package
+    (name "texlive-zapfchan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/zapfchan/"
+                   "fonts/afm/adobe/zapfchan/"
+                   "fonts/afm/urw/zapfchan/"
+                   "fonts/map/dvips/zapfchan/"
+                   "fonts/tfm/adobe/zapfchan/"
+                   "fonts/tfm/urw35vf/zapfchan/"
+                   "fonts/type1/urw/zapfchan/"
+                   "fonts/vf/adobe/zapfchan/"
+                   "fonts/vf/urw35vf/zapfchan/"
+                   "tex/latex/zapfchan/")
+             (base32
+              "1753lvv2bq29g43s4chc884n742695agvgal0b99gsrvlkyfp8gn")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urw-base35")
+    (synopsis "Replacement for Adobe's Zapf Chancery font")
+    (description
+     "This package provides a drop-in replacement for the Zapf Chancery
+font from Adobe's basic set.")
+    (license license:gpl3+)))
+
 (define-public texlive-zapfding
   (package
     (name "texlive-zapfding")
