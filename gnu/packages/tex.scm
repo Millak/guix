@@ -10157,6 +10157,27 @@ Such a font may be found in the Computer Modern extra bold font set.")
      "This module generates a page with a figure at a well-defined scale.")
     (license license:gpl3+)))
 
+(define-public texlive-context-cyrillicnumbers
+  (package
+    (name "texlive-context-cyrillicnumbers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/cyrillicnumbers/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/cyrillicnumbers/")
+             (base32
+              "0vg3czh7vhwr9pg8iqmry4fd6kkmimpvsf0sdnvf73p7jkn5478y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-cyrillicnumbers")
+    (synopsis "Write numbers as cyrillic glyphs")
+    (description
+     "The package extends ConTeXt's system of number conversion, by adding
+numeration using cyrillic letters.")
+    (license license:bsd-2)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
