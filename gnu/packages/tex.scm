@@ -10468,6 +10468,26 @@ implements the W3C specification for simple Ruby in ConTeXt.  The position and
 layout of the base text and the Ruby text can be controlled by parameters.")
     (license license:public-domain)))
 
+(define-public texlive-context-simplefonts
+  (package
+    (name "texlive-context-simplefonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/simplefonts/"
+                   "tex/context/third/simplefonts/")
+             (base32
+              "1yxxgxnxhg006pq8incc6s6rj7jvvl1mkrdagpvc63lc709ih56s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-simplefonts")
+    (synopsis "Simplified font usage for ConTeXt")
+    (description
+     "The package defines a set of commands for loading and using fonts in
+ConTeXt.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
