@@ -4377,17 +4377,17 @@ assertion messages for tests.")
 (define-public ruby-powerpack
   (package
     (name "ruby-powerpack")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "powerpack" version))
        (sha256
         (base32
-         "1r51d67wd467rpdfl6x43y84vwm8f5ql9l9m85ak1s2sp3nc5hyv"))))
+         "1f71axvlhnxja0k17qqxdi4qh5ck807hqg4i3j6cgy8fgzmyg7rg"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"))
+     (list #:test-target "spec"))
     (native-inputs
      (list bundler ruby-rspec ruby-yard))
     (synopsis "Useful extensions to core Ruby classes")
