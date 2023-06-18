@@ -1025,7 +1025,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
                                        (gnu-triplet->nix-system triplet))))))
     (package
       (name (string-append "arm-trusted-firmware-" platform))
-      (version "2.8")
+      (version "2.9")
       (source
        (origin
          (method git-fetch)
@@ -1036,7 +1036,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
          (file-name (git-file-name "arm-trusted-firmware" version))
          (sha256
           (base32
-           "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))
+           "16fjbn1zck0d8b554h8lk1svqqn0zlawvrlkjxry9l71s9h4vd0p"))
          (snippet
           #~(begin
               (use-modules (guix build utils))
@@ -1104,6 +1104,22 @@ such as:
   (let ((base (make-arm-trusted-firmware "imx8mq")))
     (package
       (inherit base)
+      ;; Newer versions do not build and are essentially not supported
+      ;; upstream.
+      ;; XXX: explore using NXP maintained branch
+      ;; https://github.com/nxp-imx/imx-atf
+      (version "2.8")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; There are only GitHub generated release snapshots.
+               (url "https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name "arm-trusted-firmware" version))
+         (sha256
+          (base32
+           "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:make-flags flags ''())
