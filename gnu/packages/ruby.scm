@@ -1212,22 +1212,22 @@ next patch version for example.")
 (define-public ruby-rjb
   (package
     (name "ruby-rjb")
-    (version "1.5.5")
+    (version "1.6.7")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rjb" version))
               (sha256
                (base32
-                "1ppj8rbicj3w0nhh7f73mflq19yd7pzdzkh2a91hcvphriy5b0ca"))))
+                "0ck802bm8cklhmqsgzhsa0y8lg80qy52dp3m8rlld3zc5gv1rsb9"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f ; no rakefile
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-java-home
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "JAVA_HOME" (assoc-ref inputs "jdk"))
-            #t)))))
+     (list
+      #:tests? #f ; no rakefile
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-java-home
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "JAVA_HOME" (assoc-ref inputs "jdk")))))))
     (native-inputs
      `(("jdk" ,icedtea "jdk")))
     (synopsis "Ruby-to-Java bridge using the Java Native Interface")
