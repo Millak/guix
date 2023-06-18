@@ -10876,34 +10876,34 @@ generate FASTA, JSON, YAML, RDF, JSON-LD, HTML, CSV, tabular output etc.")
 (define-public bioruby
   (package
     (name "bioruby")
-    (version "1.5.2")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "bio" version))
        (sha256
         (base32
-         "1d56amdsjv1mag7m6gv2w0xij8hqx1v5xbdjsix8sp3yp36m7938"))))
+         "08aknxk2ingwscwfqpw5vnax6jpk1sxfaialravladb63hcl8dx9"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-libxml))
     (native-inputs
      (list which))  ; required for test phase
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-test-command
-          (lambda _
-            (substitute* '("test/functional/bio/test_command.rb")
-              (("/bin/sh") (which "sh")))
-            (substitute* '("test/functional/bio/test_command.rb")
-              (("/bin/ls") (which "ls")))
-            (substitute* '("test/functional/bio/test_command.rb")
-              (("which") (which "which")))
-            (substitute* '("test/functional/bio/test_command.rb",
-                           "test/data/command/echoarg2.sh")
-              (("/bin/echo") (which "echo")))
-            #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-test-command
+            (lambda _
+              (substitute* '("test/functional/bio/test_command.rb")
+                (("/bin/sh") (which "sh")))
+              (substitute* '("test/functional/bio/test_command.rb")
+                (("/bin/ls") (which "ls")))
+              (substitute* '("test/functional/bio/test_command.rb")
+                (("which") (which "which")))
+              (substitute* '("test/functional/bio/test_command.rb"
+                             "test/data/command/echoarg2.sh")
+                (("/bin/echo") (which "echo"))))))))
     (synopsis "Ruby library, shell and utilities for bioinformatics")
     (description "BioRuby comes with a comprehensive set of Ruby development
 tools and libraries for bioinformatics and molecular biology.  BioRuby has
