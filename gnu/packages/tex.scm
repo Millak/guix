@@ -2255,6 +2255,25 @@ authors may also find this useful when writing out arbitrary text to an
 external file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hatching
+  (package
+    (name "texlive-hatching")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/hatching/"
+                   "metapost/hatching/")
+             (base32
+              "1rkxx57rpzk8i0msbyrzcgmbvmjjrg295qg508w3v3dsy0f0krjj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hatching")
+    (synopsis "MetaPost macros for hatching interior of closed paths")
+    (description
+     "The file @file{hatching}.mp contains a set of MetaPost macros for
+hatching interior of closed paths.")
+    (license license:public-domain)))
+
 (define-public texlive-helvetic
   (package
     (name "texlive-helvetic")
