@@ -10359,6 +10359,29 @@ page and displays the sizes of the widths and heights of the margins, header,
 footer and text body.")
     (license license:gpl3+)))
 
+(define-public texlive-context-letter
+  (package
+    (name "texlive-context-letter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/letter/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/letter/base/"
+                   "tex/context/third/letter/style/")
+             (base32
+              "1bygisva06mj7kqcwdyk9mp247dv8v0qxgh2g1a451q8sqnk52yl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-letter")
+    (synopsis "ConTeXt package for writing letters")
+    (description
+     "This package provides a means of writing vanilla letters and memos is
+provided, with support covering ConTeXt Mkii and Mkiv.  The design of
+letters may be amended by a wide range of style specifications.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
