@@ -2138,6 +2138,37 @@ discussed in the book).")
 
 (define-deprecated-package texlive-tex-plain texlive-plain)
 
+(define-public texlive-pxfonts
+  (package
+    (name "texlive-pxfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/pxfonts/"
+                   "fonts/afm/public/pxfonts/"
+                   "fonts/map/dvips/pxfonts/"
+                   "fonts/tfm/public/pxfonts/"
+                   "fonts/type1/public/pxfonts/"
+                   "fonts/vf/public/pxfonts/"
+                   "tex/latex/pxfonts/")
+             (base32
+              "0z2ls46x2l79saq4l1d2cqwazhpg79b9hqsf90wzx70676mxcwac")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxfonts")
+    (synopsis "Palatino-like fonts in support of mathematics")
+    (description
+     "Pxfonts supplies virtual text roman fonts using Adobe Palatino (or
+URWPalladioL) with some modified and additional text symbols in the OT1, T1,
+and TS1 encodings; maths alphabets using Palatino/Palladio; maths fonts
+providing all the symbols of the Computer Modern and AMS fonts, including all
+the Greek capital letters from CMR; and additional maths fonts of various
+other symbols.  The set is complemented by a sans-serif set of text fonts,
+based on Helvetica/NimbusSanL, and a monospace set derived from the parallel
+TX font set.  All the fonts are in Type 1 format (AFM and PFB files), and are
+supported by TeX metrics (VF and TFM files) and macros for use with LaTeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-halloweenmath
   (package
     (name "texlive-halloweenmath")
