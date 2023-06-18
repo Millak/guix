@@ -12050,6 +12050,26 @@ that contain various elements (titles, bars, milestones, groups and links).
 Several keys customize the appearance of the chart elements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pdfcolfoot
+  (package
+    (name "texlive-pdfcolfoot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfcolfoot/"
+                   "source/latex/pdfcolfoot/"
+                   "tex/latex/pdfcolfoot/")
+             (base32
+              "0k3fwfyj56zb18fr4yay4bp66nbx3a0nb87i8mh8yxkm7qmnx95l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfcolfoot")
+    (synopsis "Separate color stack for footnotes with pdfTeX")
+    (description
+     "Since version 1.40 pdfTeX supports several colour stacks.  This package
+uses a separate colour stack for footnotes that can break across pages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pdflscape
   (package
     (name "texlive-pdflscape")
