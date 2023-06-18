@@ -7965,6 +7965,28 @@ in the Metafont and Adobe Type 1 formats.  Support under LaTeX is provided by
 the @code{wasysym} package.")
     (license license:public-domain)))
 
+(define-public texlive-wasy-type1
+  (package
+    (name "texlive-wasy-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/wasy-type1/"
+                   "fonts/afm/public/wasy-type1/"
+                   "fonts/map/dvips/wasy-type1/"
+                   "fonts/type1/public/wasy-type1/")
+             (base32
+              "01xwryijs787ab4ayfsj44ylf72s0zkm49zm0yk4ghs4vck2qvq3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-wasy))
+    (home-page "https://ctan.org/pkg/wasy-type1")
+    (synopsis "Type 1 versions of @code{wasy} fonts")
+    (description
+     "This package provides converted (Adobe Type 1) outlines of the
+@code{wasy} fonts.")
+    (license license:public-domain)))
+
 (define-public texlive-wasysym
   (package
     (name "texlive-wasysym")
