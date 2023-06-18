@@ -1667,34 +1667,32 @@ and min/max network usage.")
 (define-public iodine
   (package
     (name "iodine")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://code.kryo.se/" name "/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0gh17kcxxi37k65zm4gqsvbk3aw7yphcs3c02pn1c4s2y6n40axd"))))
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://code.kryo.se/iodine/"
+                           "iodine-" version ".tar.gz"))
+       (sha256
+        (base32 "1ihlwxr5xi82gskcdl06qil9q67bcc80p18wm079gxqphv7r4vjl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (delete 'configure)
+         (delete 'configure)            ; no configure script
          (add-before 'build 'fix-ifconfig-path
            ;; This package works only with the net-tools version of ifconfig.
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/tun.c"
                (("PATH=[^ ]* ")
-                (string-append (assoc-ref inputs "net-tools") "/bin/")))
-             #t))
+                (string-append (assoc-ref inputs "net-tools") "/bin/")))))
          (add-before 'check 'delete-failing-tests
            ;; Avoid https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=802105.
            (lambda _
              (substitute* "tests/common.c"
                (("tcase_add_test\\(tc, \
 test_parse_format_ipv(4(|_listen_all|_mapped_ipv6)|6)\\);")
-                ""))
-             #t)))
+                "")))))
        #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "prefix=" (assoc-ref %outputs "out")))
        #:test-target "test"))
