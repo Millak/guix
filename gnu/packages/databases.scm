@@ -5072,7 +5072,7 @@ compatible with SQLite using a graphical user interface.")
                   go-github-com-pkg-errors
                   go-github-com-sourcegraph-jsonrpc2
                   go-golang-org-x-crypto
-                  go-github.com-mattn-go-runewidth
+                  go-github-com-mattn-go-runewidth
                   go-golang-org-x-xerrors
                   go-gopkg-in-yaml-v2))
     (synopsis "SQL language server written in Go")

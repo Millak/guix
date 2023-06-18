@@ -78,7 +78,7 @@
            go-github-com-google-goterm
            go-github-com-lucasb-eyer-go-colorful
            go-github-com-mattn-go-isatty
-           go-github.com-mattn-go-runewidth
+           go-github-com-mattn-go-runewidth
            go-github-com-olekukonko-tablewriter
            go-github-com-pelletier-go-toml
            go-github-com-pkg-diff

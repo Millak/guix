@@ -992,7 +992,7 @@ minimalistic.")
       (arguments
        '(#:import-path "github.com/nsf/termbox-go"))
       (propagated-inputs
-       (list go-github.com-mattn-go-runewidth))
+       (list go-github-com-mattn-go-runewidth))
       (synopsis "@code{termbox} provides a minimal API for text-based user
 interfaces")
       (description
@@ -1019,7 +1019,7 @@ programmer to write text-based user interfaces.")
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
     (inputs
-     (list go-github.com-mattn-go-runewidth
+     (list go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-shellwords
            go-github-com-mattn-go-isatty
            go-github-com-gdamore-tcell
