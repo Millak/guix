@@ -8471,7 +8471,7 @@ better performance than @code{Regexp} and @code{String} methods from the
 (define-public ruby-range-compressor
   (package
     (name "ruby-range-compressor")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
       (origin
         (method git-fetch)
@@ -8481,17 +8481,18 @@ better performance than @code{Regexp} and @code{String} methods from the
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0y8slri2msyyg2szgwgriqd6qw9hkxycssdrcl5lk2dbcq5zvn54"))))
+          "1zmc44si5ac2h7r1x4f1j8z5yr6wz528c7dssh0g70fmczs3pfga"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'extract-gemspec 'strip-version-requirements
-                    (lambda _
-                      (substitute* "range_compressor.gemspec"
-                        (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                         (string-append stripped "\n")))
-                      #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'strip-version-requirements
+            (lambda _
+              (substitute* "range_compressor.gemspec"
+                (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
+                 (string-append stripped "\n"))))))))
     (native-inputs
      (list ruby-rspec))
     (synopsis "Simple arrays of objects to arrays of ranges compressor")
