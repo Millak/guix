@@ -10319,6 +10319,25 @@ Gnuplot.  It writes a script into temporary file, runs Gnuplot and includes
 the resulting graphic directly into the document.")
     (license license:gpl3+)))
 
+(define-public texlive-context-handlecsv
+  (package
+    (name "texlive-context-handlecsv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/handlecsv/"
+                   "tex/context/third/handlecsv/")
+             (base32
+              "0g5lxyj7v64mvfdhw96sqwjgxcka1nh6glbv040rrkx1p3j2r55x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-handlecsv")
+    (synopsis "Data merging for automatic document creation")
+    (description
+     "The package handles CSV data merging for automatic document creation.")
+    (license license:gpl3)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
