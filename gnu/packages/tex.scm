@@ -10197,6 +10197,28 @@ numeration using cyrillic letters.")
      "This module provides tools to degrade JPEG images in ConTeXt.")
     (license license:gpl3+)))
 
+(define-public texlive-context-fancybreak
+  (package
+    (name "texlive-context-fancybreak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/fancybreak/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/fancybreak/")
+             (base32
+              "0v29i2c77ycvl412mwmlyijss4s31c0sbxz7m7ln9vqy0xh3hv5i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-fancybreak")
+    (synopsis "Overfull pages with ConTeXt")
+    (description
+     "The ConTeXt module allows insertion of thought breaks in texts.
+With parameters one can adjust the spacing around the content and set
+a default symbol.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
