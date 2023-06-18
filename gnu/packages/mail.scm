@@ -3175,14 +3175,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "6.8.0p2")
+    (version "7.3.0p0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "05sd7bmq29ibnqbl2z53hiyprfxzf0qydfdaixs68rz55wqhbgsi"))))
+        (base32 "1rnaa022pkdc15vkvlisv42dvcxchib40h0m97myfyqjralabmrd"))))
     (build-system gnu-build-system)
     (inputs
      (list bdb
@@ -3205,13 +3205,6 @@ from the Cyrus IMAP project.")
              "--with-table-db")
        #:phases
        (modify-phases %standard-phases
-         ;; See: https://github.com/OpenSMTPD/OpenSMTPD/issues/1069.
-         (add-after 'unpack 'fix-smtpctl-encrypt-bug
-           (lambda _
-             (substitute* "usr.sbin/smtpd/smtpctl.c"
-               (("\"encrypt\", \"--\",")
-                "\"encrypt\","))
-             #t))
          ;; Fix some incorrectly hard-coded external tool file names.
          (add-after 'unpack 'patch-FHS-file-names
            (lambda _
@@ -3219,8 +3212,7 @@ from the Cyrus IMAP project.")
                ;; ‘gzcat’ is auto-detected at compile time, but ‘cat’ isn't.
                (("/bin/cat") (which "cat")))
              (substitute* "usr.sbin/smtpd/mda_unpriv.c"
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          ;; OpenSMTPD provides a single smtpctl utility to control both the
          ;; daemon and the local submission subsystem.  To accomodate systems
          ;; that require historical interfaces such as sendmail, newaliases or
@@ -3233,8 +3225,7 @@ from the Cyrus IMAP project.")
                (for-each (lambda (command)
                            (symlink "smtpctl" (string-append sbin command)))
                          (list "mailq" "makemap" "newaliases"
-                               "send-mail" "sendmail")))
-             #t)))))
+                               "send-mail" "sendmail"))))))))
     (synopsis "Lightweight SMTP daemon")
     (description
      "OpenSMTPD is an implementation of server-side @acronym{SMTP, Simple Mail
