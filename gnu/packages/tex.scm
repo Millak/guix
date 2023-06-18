@@ -10402,6 +10402,28 @@ letters may be amended by a wide range of style specifications.")
      "This is a re-implementation of the LaTeX package @code{lettrine}.")
     (license license:public-domain)))
 
+(define-public texlive-context-mathsets
+  (package
+    (name "texlive-context-mathsets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/mathsets/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/mathsets/")
+             (base32
+              "15azsj3fv57yz9q1rrdp0cmjpz9p83aq5mwxkanppiy9sw1dny3b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-mathsets")
+    (synopsis "Set notation in ConTeXt")
+    (description
+     "Typeset good-looking set notation as well as similar things such as
+Dirac braket notation, conditional probabilities, etc.  The package is at
+least inspired by @code{braket}.")
+    (license license:bsd-2)))           ;from "t-mathsets.tex"
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
