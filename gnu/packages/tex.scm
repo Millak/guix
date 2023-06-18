@@ -11280,6 +11280,94 @@ LaTeX.")
 used and strongly recommended in practice.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-latexrecommended
+  (package
+    (name "texlive-collection-latexrecommended")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-anysize
+           texlive-attachfile2
+           texlive-beamer
+           texlive-booktabs
+           texlive-breqn
+           texlive-caption
+           texlive-cite
+           texlive-cmap
+           texlive-collection-latex
+           texlive-crop
+           texlive-ctable
+           texlive-eso-pic
+           texlive-etoolbox
+           texlive-euenc
+           texlive-euler
+           texlive-everysel
+           texlive-everyshi
+           texlive-extsizes
+           texlive-fancybox
+           texlive-fancyref
+           texlive-fancyvrb
+           texlive-filehook
+           texlive-float
+           texlive-fontspec
+           texlive-footnotehyper
+           texlive-fp
+           texlive-grffile
+           texlive-hologo
+           texlive-index
+           texlive-infwarerr
+           texlive-jknapltx
+           texlive-koma-script
+           texlive-l3experimental
+           texlive-latexbug
+           texlive-lineno
+           texlive-listings
+           texlive-lwarp
+           texlive-mathspec
+           texlive-mathtools
+           texlive-mdwtools
+           texlive-memoir
+           texlive-metalogo
+           texlive-microtype
+           texlive-ms
+           texlive-newfloat
+           texlive-ntgclass
+           texlive-parskip
+           texlive-pdfcolfoot
+           texlive-pdflscape
+           texlive-pdfmanagement-testphase
+           texlive-pdfpages
+           texlive-pdftexcmds
+           texlive-polyglossia
+           texlive-psfrag
+           texlive-ragged2e
+           texlive-rcs
+           texlive-sansmath
+           texlive-section
+           texlive-seminar
+           texlive-sepnum
+           texlive-setspace
+           texlive-subfig
+           texlive-textcase
+           texlive-thumbpdf
+           texlive-translator
+           texlive-typehtml
+           texlive-ucharcat
+           texlive-underscore
+           texlive-unicode-math
+           texlive-xcolor
+           texlive-xkeyval
+           texlive-xltxtra
+           texlive-xunicode))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "LaTeX recommended packages")
+    (description
+     "This package provides a collection of recommended add-on packages for
+LaTeX which have widespread use.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-grfext
   (package
     (name "texlive-grfext")
