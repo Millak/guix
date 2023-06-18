@@ -1630,9 +1630,10 @@ originals.")
               "08g6lm12b0k6333pxcaqdf67v87fz5mrqp3jgal8qhrls5ym8q6r")))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
-    (synopsis "URW Base 35 font pack for LaTeX")
-    (description "This package provides a drop-in replacements for the Courier
-font from Adobe's basic set.")
+    (synopsis "Replacement for Adobe's Courier font")
+    (description
+     "This package provides a drop-in replacement for the Courier font from
+Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
@@ -2276,9 +2277,9 @@ external file.")
               "0c3f1ly7y6404z0akbfbbfql13sz717v0n0g69qjpr69hi4n0nsl")))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
-    (synopsis "URW Base 35 font pack for LaTeX")
+    (synopsis "Replacement for Adobe's Helvetica font")
     (description
-     "This package provides a drop-in replacements for the Helvetica font from
+     "This package provides a drop-in replacement for the Helvetica font from
 Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
@@ -6881,9 +6882,9 @@ TeX, and LaTeX font definition and other relevant files.")
               "13g41a7vbkvsf7ki9dgl7qm100w382mnlqkcngwgl3axp6s5s8l0")))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
-    (synopsis "URW Base 35 font pack for LaTeX")
+    (synopsis "Replacement for Adobe's Times font")
     (description
-     "This package provides a drop-in replacements for the Times font from
+     "This package provides a drop-in replacement for the Times font from
 Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
@@ -6910,9 +6911,9 @@ Adobe's basic set.")
               "12jc0av7v99857jigmva47qaxyllhpzsnqis10n0qya2kz44xf22")))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
-    (synopsis "URW Base 35 font pack for LaTeX")
+    (synopsis "Replacement for Adobe's Palatino font")
     (description
-     "This package provides a drop-in replacements for the Palatino font from
+     "This package provides a drop-in replacement for the Palatino font from
 Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
@@ -6963,9 +6964,9 @@ font from Adobe's basic set.")
               "17mls8wilz9api9ivsbcczpiqp1f39qy8wa6ajssi8zhnc5lq7zn")))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
-    (synopsis "URW Base 35 font pack for LaTeX")
+    (synopsis "Replacement for Adobe's Zapfding font")
     (description
-     "This package provides a drop-in replacements for the Zapfding font from
+     "This package provides a drop-in replacement for the Zapfding font from
 Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
@@ -10638,7 +10639,7 @@ that simpler packages like capt-of do.")
               "1pdkpr86bhia5hcmf7q3nhvklnsga4mqqrrirgl8a7al7x6q3ivs")))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
-    (synopsis "URW Base 35 font pack for LaTeX")
+    (synopsis "Replacement for Adobe's Symbol font")
     (description
      "This package provides a drop-in replacement for the Symbol font from
 Adobe's basic set.")
