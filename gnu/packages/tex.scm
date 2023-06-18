@@ -1826,6 +1826,29 @@ Taco Hoekwater.")
 processing the output of Metafont.")
     (license license:public-domain)))
 
+(define-public texlive-amiri
+  (package
+    (name "texlive-amiri")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/amiri/"
+                   "fonts/truetype/public/amiri/")
+             (base32
+              "1d6yrh34fka9371a3vq72df593prik6s7z1i6myd0nix0c9jihp6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amiri")
+    (synopsis "Classical Arabic typeface, Naskh style")
+    (description
+     "Amiri is a classical Arabic typeface in Naskh style for typesetting books
+and other running text.  It is a revival of the beautiful typeface pioneered
+in the early 20th century by Bulaq Press in Cairo, also known as Amiria Press,
+after which the font is named.  The project aims at the revival of the
+aesthetics and traditions of Arabic typesetting, and adapting it to the era of
+digital typesetting, in a publicly available form.")
+    (license license:silofl1.1)))
+
 (define-public texlive-amsfonts
   (package
     (name "texlive-amsfonts")
