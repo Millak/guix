@@ -5977,7 +5977,7 @@ and manipulate Git repositories by wrapping system calls to the git binary.")
 (define-public ruby-hocon
   (package
     (name "ruby-hocon")
-    (version "1.3.1")
+    (version "1.4.0")
     (home-page "https://github.com/puppetlabs/ruby-hocon")
     (source (origin
               (method git-fetch)
@@ -5985,16 +5985,17 @@ and manipulate Git repositories by wrapping system calls to the git binary.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "172hh2zr0n9nnszv0qvlgwszgkrq84yahrg053m68asy79zpmbqr"))))
+                "04wgv0pwrghawnl6qp346z59fvp9v37jymq8p0lsrzxa6nvrykmk"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "rspec")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "rspec")
+                  (format #t "test suite not run~%")))))))
     (native-inputs
      (list bundler ruby-rspec))
     (synopsis "HOCON config library")
