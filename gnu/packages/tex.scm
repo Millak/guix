@@ -11409,6 +11409,56 @@ macros, Computer Modern fonts, and configuration for common drivers; no
 LaTeX.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-fontsrecommended
+  (package
+    (name "texlive-collection-fontsrecommended")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-avantgar
+           texlive-bookman
+           texlive-charter
+           texlive-cm-super
+           texlive-cmextra
+           texlive-collection-basic
+           texlive-courier
+           texlive-euro
+           texlive-euro-ce
+           texlive-eurosym
+           texlive-fpl
+           texlive-helvetic
+           texlive-lm
+           texlive-lm-math
+           texlive-manfnt-font
+           texlive-marvosym
+           texlive-mathpazo
+           texlive-mflogo-font
+           texlive-ncntrsbk
+           texlive-palatino
+           texlive-pxfonts
+           texlive-rsfs
+           texlive-symbol
+           texlive-tex-gyre
+           texlive-tex-gyre-math
+           texlive-times
+           texlive-tipa
+           texlive-txfonts
+           texlive-utopia
+           texlive-wasy
+           texlive-wasy-type1
+           texlive-wasysym
+           texlive-zapfchan
+           texlive-zapfding))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Recommended fonts")
+    (description
+     "This collection provides recommended fonts, including the base 35
+PostScript fonts, Latin Modern, TeX Gyre, and T1 and other encoding support
+for Computer Modern, in outline form.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
