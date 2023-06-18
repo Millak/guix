@@ -2849,6 +2849,33 @@ tables.")
 
 (define-deprecated-package texlive-latex-xcolor texlive-xcolor)
 
+(define-public texlive-xltxtra
+  (package
+    (name "texlive-xltxtra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xltxtra/"
+                   "source/xelatex/xltxtra/"
+                   "tex/xelatex/xltxtra/")
+             (base32
+              "0dh3nnr4xhb85zp3q4jdzqvfghg8m9zvpsvvrmmp0q3ayf0c1dbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-metalogo))
+    (home-page "https://ctan.org/pkg/xltxtra")
+    (synopsis "Extras for LaTeX users of XeTeX")
+    (description
+     "This package was previously used to provide a number of features that
+were useful for typesetting documents with XeLaTeX.  Many of those features
+have now been incorporated into the @code{fontspec} package and other
+packages, but the package persists for backwards compatibility.  Nowadays,
+loading @code{xltxtra} will: load the @code{fontspec}, @code{metalogo}, and
+@code{realscripts} packages; redefine @code{\\showhyphens} so it works
+correctly; and define two extra commands: @code{\\vfrac} and
+@code{\\namedglyph}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xmltexconfig
   (package
     (name "texlive-xmltexconfig")
