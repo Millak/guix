@@ -10627,6 +10627,32 @@ fonts (or collections of fonts from the same foundry); each is available in
 a @file{.mkii} and a @file{.mkiv} version.")
     (license license:gpl2)))
 
+(define-public texlive-context-vim
+  (package
+    (name "texlive-context-vim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/vim/"
+                   "tex/context/third/vim/")
+             (base32
+              "03cwdqkrx6bgcikmyxrwkyac3jmz7i50cavgb6r8b26zrsm522ca")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context texlive-context-filter))
+    (home-page "https://ctan.org/pkg/context-vim")
+    (synopsis "Generate ConTeXt syntax highlighting code from Vim")
+    (description
+     "ConTeXt has excellent pretty printing capabilities for many languages.
+The code for pretty printing is written in TeX, and due to catcode juggling,
+such verbatim typesetting is perhaps the trickiest part of TeX.  This makes it
+difficult for a normal user to define syntax highlighting rules for a new
+language.  This module takes the onus of defining syntax highlighting rules
+away from the user and uses Vim editor to generate the syntax highlighting.
+There is a helper @file{2context.vim} script to do the syntax parsing in
+Vim.")
+    (license license:bsd-2)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
