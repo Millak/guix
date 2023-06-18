@@ -6089,6 +6089,27 @@ would automatically change the heading style in use).")
 
 (define-deprecated-package texlive-latex-fancyhdr texlive-fancyhdr)
 
+(define-public texlive-fancyref
+  (package
+    (name "texlive-fancyref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancyref/"
+                   "source/latex/fancyref/"
+                   "tex/latex/fancyref/")
+             (base32
+              "0njgl53f5farwbd8xkw8im8id0scf6agbfqcdjkbqlk540vdzwbp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancyref")
+    (synopsis "LaTeX package for fancy cross-referencing")
+    (description
+     "This package provides fancy cross-referencing support, based on the
+package's reference commands (@code{\\fref} and @code{\\Fref}) that recognise
+what sort of object is being referenced.")
+    (license license:gpl3+)))
+
 (define-public texlive-float
   (package
     (name "texlive-float")
