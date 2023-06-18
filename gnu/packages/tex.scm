@@ -10034,6 +10034,27 @@ for a wealth of support information.")
 package.")
     (license license:gpl3)))
 
+(define-public texlive-context-annotation
+  (package
+    (name "texlive-context-annotation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/annotation/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/annotation/")
+             (base32
+              "1b908rj51dbpicdiwwycb36wscxl1asmsmccrzcfbdji189kf6ck")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-annotation")
+    (synopsis "Annotate text blocks")
+    (description
+     "The @code{annotation} module lets you create your own commands and
+environments to mark text blocks.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
