@@ -321,27 +321,27 @@ matching.  mruby can be linked and embedded within your application.")
 (define-public ruby-commander
   (package
     (name "ruby-commander")
-    (version "4.4.7")
+    (version "4.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "commander" version))
        (sha256
         (base32
-         "1pxakz596fjqak3cdbha6iva1dlqis86i3kjrgg6lf3sp8i5vhwg"))))
+         "1n8k547hqq9hvbyqbx2qi08g0bky20bbjca1df8cqq5frhzxq7bx"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         ;; Don't run or require rubocop, the code linting tool, as this is a
-         ;; bit unnecessary.
-         (add-after 'unpack 'dont-run-rubocop
-           (lambda _
-             (substitute* "Rakefile"
-               ((".*rubocop.*") "")
-               ((".*RuboCop.*") ""))
-             #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't run or require rubocop, the code linting tool, as this is a
+          ;; bit unnecessary.
+          (add-after 'unpack 'dont-run-rubocop
+            (lambda _
+              (substitute* "Rakefile"
+                ((".*rubocop.*") "")
+                ((".*RuboCop.*") "")))))))
     (propagated-inputs
      (list ruby-highline))
     (native-inputs
