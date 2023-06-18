@@ -4553,13 +4553,16 @@ temporary files and directories during tests.")
 (define-public ruby-test-unit
   (package
     (name "ruby-test-unit")
-    (version "3.4.4")
+    (version "3.6.0")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "test-unit" version))
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/test-unit/test-unit")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "15isy7vhppbfd0032klirj9gxp65ygkzjdwrmm28xpirlcsk6qpd"))))
+                "0w1m432q3y5v9lkak8yyxadak3z17bsp6afni97i4zjdgfz7niz2"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-power-assert))
