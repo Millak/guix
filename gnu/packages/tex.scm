@@ -2346,6 +2346,33 @@ a per-attachment basis.  @code{attachfile} makes it easy to attach files and
 customize their appearance in the enclosing document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-attachfile2
+  (package
+    (name "texlive-attachfile2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/attachfile2/"
+                   "doc/man/man1/pdfatfi.1"
+                   "doc/man/man1/pdfatfi.man1.pdf"
+                   "scripts/attachfile2/"
+                   "source/latex/attachfile2/"
+                   "tex/latex/attachfile2/")
+             (base32
+              "14glnfyp58ka78l5kc09mc96km7jd77qvsby0p8dpjhvwf6qfzg8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pdfatfi.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/attachfile2")
+    (synopsis "Attach files into PDF")
+    (description
+     "This package can be used to attach files to a PDF document.  It is
+a further development of Scott Pakin's package @code{attachfile} for pdfTeX.
+Apart from bug fixes, this package adds support for dvips, some new options,
+and gets and writes meta information data about the attached files.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-atveryend
   (package
     (name "texlive-atveryend")
