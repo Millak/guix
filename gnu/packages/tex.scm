@@ -10581,6 +10581,27 @@ alphabet.  The package can make allowance for hyphenation.")
 LaTeX package @code{typearea} does.")
     (license license:gpl3+)))
 
+(define-public texlive-context-typescripts
+  (package
+    (name "texlive-context-typescripts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/typescripts/"
+                   "tex/context/third/typescripts/")
+             (base32
+              "0kz3flqyzg2p7lvr7yy1h1nmk368glzxxhwirizn5g4xv5sdf27b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-typescripts")
+    (synopsis "Small modules to load various fonts for use in ConTeXt")
+    (description
+     "The package provides files offering interfaces to 33 publicly available
+fonts (or collections of fonts from the same foundry); each is available in
+a @file{.mkii} and a @file{.mkiv} version.")
+    (license license:gpl2)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
