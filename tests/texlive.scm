@@ -69,6 +69,19 @@
       "texmf-dist/tex/latex/adforn/adforn.sty"
       "texmf-dist/tex/latex/adforn/uornementsadf.fd")
      (catalogue-license . "lppl gpl2"))
+    ("authorindex"
+     (name . "authorindex")
+     (shortdesc . "Index citations by author names")
+     (longdesc . "This package allows the user to...")
+     (depend "authorindex.ARCH")
+     (docfiles "texmf-dist/doc/latex/authorindex/COPYING")
+     (runfiles
+      "texmf-dist/scripts/authorindex/authorindex"
+      "texmf-dist/tex/latex/authorindex/authorindex.sty")
+     (catalogue-license . "lppl"))
+    ("authorindex.x86_64-linux"
+     (name . "authorindex.x86_64-linux")
+     (binfiles "bin/amd64-netbsd/authorindex"))
     ("chs-physics-report"
      . ((name . "ch-physics-report")
         (shortdesc . "Physics lab reports...")
@@ -92,6 +105,22 @@
      (shortdesc . "TeXworks editor...")
      (longdesc . "See http...")
      (depend "texworks" "collection-basic"))
+    ("cyrillic-bin"
+     (name . "cyrillic-bin")
+     (shortdesc . "Cyrillic bibtex and makeindex")
+     (depend "cyrillic-bin.ARCH")
+     (docfiles
+      "texmf-dist/doc/man/man1/rubibtex.1"
+      "texmf-dist/doc/man/man1/rubibtex.man1.pdf")
+     (runfiles
+      "texmf-dist/scripts/texlive-extra/rumakeindex.sh"
+      "texmf-dist/scripts/texlive-extra/rubibtex.sh"))
+    ("cyrillic-bin.x86_64-linux"
+     (name . "cyrillic-bin.x86_64-linux")
+     (shortdesc . "x86_64-linux files of cyrillic-bin")
+     (binfiles
+      "bin/x86_64-linux/rubibtex"
+      "bin/x86_64-linux/rumakeindex"))
     ("example"
      . ((name . "example")
         (shortdesc . "Typeset examples...")
@@ -133,6 +162,24 @@
       "texmf-dist/tex/lollipop/lollipop.ini"
       "texmf-dist/tex/lollipop/lollipop.tex")
      (catalogue-license . "gpl3"))
+    ("pax"
+     (name . "pax")
+     (shortdesc . "Extract and reinsert PDF...")
+     (longdesc . "If PDF files are...")
+     (depend "pax.ARCH")
+     (docfiles
+      "texmf-dist/doc/latex/pax/README")
+     (srcfiles
+      "texmf-dist/source/latex/pax/Makefile"
+      "texmf-dist/source/latex/pax/build.xml")
+     (runfiles
+      "texmf-dist/scripts/pax/pdfannotextractor.pl")
+     (catalogue-license . "lppl gpl"))
+    ("pax.x86_64-linux"
+     (name . "pax.x86_64-linux")
+     (shortdesc . "x86_64-linux files of pax")
+     (binfiles
+      "bin/x86_64-linux/pdfannotextractor"))
     ("stricttex"
      . ((name
          . "stricttex")
@@ -639,6 +686,111 @@ completely compatible with Plain TeX.")
                ('home-page (? string?))
                ('synopsis (? string?))
                ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, single script, no extension"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "authorindex"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-authorindex")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('arguments
+                ('list '#:link-scripts ('gexp ('list "authorindex"))))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, multiple scripts, with extensions"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "cyrillic-bin"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-cyrillic-bin")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('arguments
+                ('list '#:link-scripts
+                       ('gexp ('list "rubibtex.sh" "rumakeindex.sh"))))
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, script with associated input"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "pax"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-pax")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('arguments
+                ('list '#:link-scripts ('gexp ('list "pdfannotextractor.pl"))))
+               ('inputs
+                ('list 'perl))
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
                ('license _))
              #true)
             (_

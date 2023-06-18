@@ -183,6 +183,7 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
               (srcfiles . list)
               (runfiles . list)
               (docfiles . list)
+              (binfiles . list)
               (depend   . simple-list)
               (execute  . simple-list)))
            (record
@@ -263,6 +264,46 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
                                      '())))
                              packages)
                  (append packages deps)))))))
+
+(define (formats package-data)
+  "Return a list of formats to build according to PACKAGE-DATA."
+  (and=> (assoc-ref package-data 'execute)
+         (lambda (actions)
+           (delete-duplicates
+            (filter-map
+             (lambda (action)
+               (match (string-split action #\space)
+                 (("AddFormat" fmt . _)
+                  (string-drop fmt (string-length "name=")))
+                 (_ #f)))
+             ;; Get the right (alphabetic) order.
+             (reverse actions))))))
+
+(define (linked-scripts name package-database)
+  "Return a list of script names to symlink from \"bin/\" directory for
+package NAME according to PACKAGE-DATABASE.  Consider as scripts files with
+\".lua\", \".pl\", \".py\", \".sh\" extensions, and files without extension."
+  (and-let* ((data (assoc-ref package-database name))
+             ;; Check if binaries are associated to the package.
+             (depend (assoc-ref data 'depend))
+             ((member (string-append name ".ARCH") depend))
+             ;; List those binaries.
+             (bin-data (assoc-ref package-database
+                                  ;; Any *nix-like architecture will do.
+                                  (string-append name ".x86_64-linux")))
+             (binaries (map basename (assoc-ref bin-data 'binfiles)))
+             ;; List scripts candidates.  Bail out if there are none.
+             (runfiles (assoc-ref data 'runfiles))
+             (scripts (filter (cut string-prefix? "texmf-dist/scripts/" <>)
+                              runfiles))
+             ((pair? scripts)))
+    (filter-map (lambda (script)
+                  (and (any (lambda (ext)
+                              (member (basename script ext) binaries))
+                            '(".lua" ".pl" ".py" ".sh"))
+                       (basename script)))
+                ;; Get the right (alphabetic) order.
+                (reverse scripts))))
 
 (define* (files-differ? directory package-name
                         #:key
@@ -348,7 +389,9 @@ of those files are returned that are unexpectedly installed."
              (source (with-store store
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
-    (let ((meta-package? (null? locs)))
+    (let* ((meta-package? (null? locs))
+           (scripts (and (not meta-package?)
+                         (linked-scripts texlive-name package-database))))
       (values
        `(package
           (name ,name)
@@ -369,25 +412,10 @@ of those files are returned that are unexpectedly installed."
           (build-system ,(if meta-package?
                              'trivial-build-system
                              'texlive-build-system))
+          ;; Generate arguments field.
           ,@(if meta-package?
                 '((arguments (list #:builder #~(mkdir #$output))))
-                (let* ((formats
-                        ;; Translate AddFormat execute actions into
-                        ;; a #:create-formats argument.
-                        (and-let*
-                            ((actions (assoc-ref data 'execute))
-                             (formats
-                              (delete-duplicates
-                               (filter-map
-                                (lambda (action)
-                                  (match (string-split action #\space)
-                                    (("AddFormat" fmt . _)
-                                     (string-drop fmt (string-length "name=")))
-                                    (_ #f)))
-                                actions)))
-                             ((pair? formats)))
-                          (reverse formats)))
-                       ;; Check if setting #:texlive-latex-bin? is appropriate.
+                (let* ((formats (formats data))
                        (latex-bin-dependency?
                         (member texlive-name
                                 (latex-bin-dependency-tree package-database)))
@@ -395,14 +423,20 @@ of those files are returned that are unexpectedly installed."
                         (append (if latex-bin-dependency?
                                     '(#:texlive-latex-bin? #f)
                                     '())
-                                (if formats
+                                (if (pair? scripts)
+                                    `(#:link-scripts #~(list ,@scripts))
+                                    '())
+                                (if (pair? formats)
                                     `(#:create-formats #~(list ,@formats))
                                     '()))))
                   (if (pair? arguments)
                       `((arguments (list ,@arguments)))
                       '())))
+          ;; Native inputs.
+          ;;
           ;; Texlive build system generates font metrics whenever a font
-          ;; metrics file has the same base name as a Metafont file.
+          ;; metrics file has the same base name as a Metafont file.  In this
+          ;; case, provide `texlive-metafont'.
           ,@(or (and-let* ((runfiles (assoc-ref data 'runfiles))
                            (metrics
                             (filter-map (lambda (f)
@@ -416,6 +450,15 @@ of those files are returned that are unexpectedly installed."
                                  runfiles)))
                   '((native-inputs (list texlive-metafont))))
                 '())
+          ;; Inputs.
+          ,@(match (filter-map (lambda (s)
+                                 (cond ((string-suffix? ".pl" s) 'perl)
+                                       ((string-suffix? ".py" s) 'python)
+                                       (else #f)))
+                               (or scripts '()))
+              (() '())
+              (inputs `((inputs (list ,@inputs)))))
+          ;; Propagated inputs.
           ,@(match (translate-depends depends)
               (() '())
               (inputs
