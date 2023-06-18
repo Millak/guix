@@ -12092,6 +12092,32 @@ attribute.  Pages with this attribute will be displayed in landscape
 orientation by conforming PDF viewers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pdfmanagement-testphase
+  (package
+    (name "texlive-pdfmanagement-testphase")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfmanagement-testphase/"
+                   "source/latex/pdfmanagement-testphase/"
+                   "tex/latex/pdfmanagement-testphase/")
+             (base32
+              "0lxnr7xzis376fmkcyk7ghyj1x7m9yvlg98fvvy6vc4b26hf2kyk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfmanagement-testphase")
+    (synopsis "LaTeX PDF management testphase bundle")
+    (description
+     "This is a temporary package, which is used during a test phase to load
+the new PDF management code of LaTeX.  The new PDF management code offers
+backend-independent interfaces to central PDF dictionaries, tools to create
+annotations, form Xobjects, to embed files, and to handle PDF standards.  The
+code is provided, during a testphase, as an independent package to allow users
+and package authors to safely test the code.  At a later stage it will be
+integrated into the LaTeX kernel (or in parts into permanent support
+packages), and the current testphase bundle will be removed.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pslatex
   (package
     (name "texlive-pslatex")
