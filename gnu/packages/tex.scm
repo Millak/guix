@@ -5225,17 +5225,39 @@ tuned to 21st-century presentation styles.")
 
 (define-deprecated-package texlive-latex-seminar texlive-seminar)
 
+(define-public texlive-sepnum
+  (package
+    (name "texlive-sepnum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sepnum/" "tex/latex/sepnum/")
+             (base32
+              "1vzjhb470imd1f5wlj32jysn825vyygq9xkscqdjaa9jby70a26x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sepnum")
+    (synopsis "Print numbers in a friendly format")
+    (description
+     "This package provides a command to print a number with (potentially
+different) separators every three digits in the parts either side of the
+decimal point (the point itself is also configurable).  The macro is fully
+expandable and not fragile (unless one of the separators is).  There is also
+a command @code{\\sepnumform}, that may be used when defining
+@samp{\\the<counter> macros}.")
+    (license license:lppl)))
+
 (define-public texlive-seqsplit
   (package
     (name "texlive-seqsplit")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-              (list "doc/latex/seqsplit/"
-                    "source/latex/seqsplit/"
-                    "tex/latex/seqsplit/")
-              (base32
-               "0x6xcism9s9mhpr278xi4c1gimz3mlqnrpr40vkx5abglr0gzm0j")))
+             (list "doc/latex/seqsplit/"
+                   "source/latex/seqsplit/"
+                   "tex/latex/seqsplit/")
+             (base32
+              "0x6xcism9s9mhpr278xi4c1gimz3mlqnrpr40vkx5abglr0gzm0j")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/seqsplit")
