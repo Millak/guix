@@ -10391,6 +10391,29 @@ environments;
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-memoir
+  (package
+    (name "texlive-memoir")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/memoir/" "makeindex/memoir/"
+                   "source/latex/memoir/" "tex/latex/memoir/")
+             (base32
+              "10jf0kiwvgrki8az04b57v0ffm6b3jj1rz3q6fgxhnrbsd68iphr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/memoir")
+    (synopsis "Typeset fiction, non-fiction and mathematical books")
+    (description
+     "The @code{memoir} class is for typesetting poetry, fiction,
+non-fiction, and mathematical works.  Permissible document base font sizes
+range from 9 to 60pt.  There is a range of page-styles and well over a dozen
+chapter-styles to choose from, as well as methods for specifying your own
+layouts and designs.  The class also provides the functionality of over thirty
+of the more popular packages, thus simplifying document sources.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fp
   (package
     (name "texlive-fp")
