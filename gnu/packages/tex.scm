@@ -10238,6 +10238,31 @@ With parameters one can adjust the spacing around the content and set
 a default symbol.")
     (license license:gpl3+)))
 
+(define-public texlive-context-filter
+  (package
+    (name "texlive-context-filter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/filter/"
+                   "tex/context/third/filter/")
+             (base32
+              "03nv2zd3aiv9lkq0bwq6awibn1acjprkc6b6jr5jslcyy4sw3k7w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-filter")
+    (synopsis
+     "Run external programs on the contents of a start-stop environment")
+    (description
+     "The @code{filter} module provides a simple interface to run external
+programs on the contents of a start-stop environment.  Options are available
+to run the external program only if the content of the environment has
+changed, to specify how the program output should be read back, and to choose
+the name of the temporary files that are created.  The module is compatible
+with both MkII and MkIV.")
+    (license license:bsd-2)))
+
 (define-public texlive-context-french
   (package
     (name "texlive-context-french")
