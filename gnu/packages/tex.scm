@@ -10055,6 +10055,30 @@ package.")
 environments to mark text blocks.")
     (license license:gpl3+)))
 
+(define-public texlive-context-bnf
+  (package
+    (name "texlive-context-bnf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/bnf/"
+                   "tex/context/third/bnf/")
+             (base32
+              "0m7144pgwk1707g7na96dx4apl6il73zzcvq7qd6lmhij3m96nv8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-bnf")
+    (synopsis "BNF module for ConTeXt")
+    (description
+     "The module provides a simple way to write good-looking BNF-style
+grammars in ConTeXt.  Grammars are written using the BNF syntax right in your
+ConTeXt documents, so there is a clear separation between content and layout.
+This allows the user to decide exactly how the grammar is to be displayed,
+while also allowing the gist of the grammar to be understood from simply
+looking at the source ConTeXt document.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
