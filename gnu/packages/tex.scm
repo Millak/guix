@@ -10097,6 +10097,27 @@ looking at the source ConTeXt document.")
     (description "The module provides macros for drawing chromatograms.")
     (license license:gpl3+)))
 
+(define-public texlive-context-cmscbf
+  (package
+    (name "texlive-context-cmscbf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/cmscbf/"
+                   "tex/context/third/cmscbf/")
+             (base32
+              "0p0xgqr2pqxmhq7mzrzfyn8c37vr1xm273jz99lxzqpc7pxs37cp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-cmscbf")
+    (synopsis "Use Computer Modern bold Caps and Small-caps in ConTeXt")
+    (description
+     "The module makes provision for bold caps and small caps CM fonts,
+in ConTeXt.  Such a font may be found in the Computer Modern extra bold font
+set.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
