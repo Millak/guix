@@ -8784,6 +8784,32 @@ toc-entries;
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-ncntrsbk
+  (package
+    (name "texlive-ncntrsbk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/ncntrsbk/"
+                   "fonts/afm/adobe/ncntrsbk/"
+                   "fonts/afm/urw/ncntrsbk/"
+                   "fonts/map/dvips/ncntrsbk/"
+                   "fonts/tfm/adobe/ncntrsbk/"
+                   "fonts/tfm/urw35vf/ncntrsbk/"
+                   "fonts/type1/urw/ncntrsbk/"
+                   "fonts/vf/adobe/ncntrsbk/"
+                   "fonts/vf/urw35vf/ncntrsbk/"
+                   "tex/latex/ncntrsbk/")
+             (base32
+              "0i6a48zbn9lg4pwbw8ya2wjjgppwac816fnbpmahm67kknx4d7ij")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urw-base35")
+    (synopsis "Replacement for Adobe's New Century Schoolbook font")
+    (description
+     "This package provides a drop-in replacement for the New Century
+Schoolbook font from Adobe's basic set.")
+    (license license:gpl3+)))
+
 (define-public texlive-numprint
   (package
     (name "texlive-numprint")
