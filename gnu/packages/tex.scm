@@ -1679,6 +1679,30 @@ support (for use with a variety of encodings) is provided.")
     ;; additional but not legally binding clause.
     (license license:lppl1.3c+)))
 
+(define-public texlive-tex-gyre-math
+  (package
+    (name "texlive-tex-gyre-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/tex-gyre-math/"
+                   "fonts/opentype/public/tex-gyre-math/"
+                   "source/fonts/tex-gyre-math/")
+             (base32
+              "1k5fx03bg702636hh7hv4kzzxhbbic26rp5g4lq2bgajd5dgc5xy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-gyre-math")
+    (synopsis "Maths fonts to match tex-gyre text fonts")
+    (description
+     "TeX-Gyre-Math is a collection of maths fonts to match the text fonts of
+the TeX-Gyre collection.  The collection is available in OpenType format,
+only; fonts conform to the developing standards for OpenType maths fonts.
+TeX-Gyre-Math-Bonum (to match TeX-Gyre-Bonum), TeX-Gyre-Math-Pagella (to match
+TeX-Gyre-Pagella), TeX-Gyre-Math-Schola (to match TeX-Gyre-Schola) and
+TeX-Gyre-Math-Termes (to match TeX-Gyre-Termes) fonts are provided.")
+    (license license:gfl1.0)))
+
 (define-public texlive-crop
   (package
     (name "texlive-crop")
