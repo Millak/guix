@@ -20514,7 +20514,7 @@ OpenSSH Server for example.")
 (define-public python-pyelftools
   (package
     (name "python-pyelftools")
-    (version "0.28")
+    (version "0.29")
     (home-page "https://github.com/eliben/pyelftools")
     (source
      (origin
@@ -20523,7 +20523,7 @@ OpenSSH Server for example.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z4fx39c9rds0bd4d2fjjq7n05b1nfxl36pmy523x8knm38l4gpr"))
+        (base32 "1mi7i9zlhkkap4q50ciak57ia46mj2jzq0713m3dh0x8j05k9xml"))
        (snippet
         ;; Delete bundled readelf executable.
         '(delete-file "test/external_tools/readelf"))))
