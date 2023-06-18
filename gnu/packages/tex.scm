@@ -10561,6 +10561,26 @@ version in another; this is useful for readers who cannot read the original
 alphabet.  The package can make allowance for hyphenation.")
     (license license:bsd-2)))           ;from "t-transliterator.mkiv"
 
+(define-public texlive-context-typearea
+  (package
+    (name "texlive-context-typearea")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/typearea/"
+                   "tex/context/third/typearea/")
+             (base32
+              "0np4yn0kjq1m7rrhcfxrai18qk19051188sfn9lrvphj604s7sna")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-typearea")
+    (synopsis "Something like Koma-Script typearea")
+    (description
+     "The module provides a command that calculates the page layout as the
+LaTeX package @code{typearea} does.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
