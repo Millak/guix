@@ -8534,6 +8534,27 @@ based on Knuth's macros for the book Concrete Mathematics'.  The text fonts
 for the Concrete book are supported by the @code{beton} package.")
     (license license:lppl)))
 
+(define-public texlive-extsizes
+  (package
+    (name "texlive-extsizes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/extsizes/" "tex/latex/extsizes/")
+             (base32
+              "1akxh0x8y1rhmpq8qzqi2bpbm1ffy8x0212jkyib7gm1i1d9ijgl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/extsizes")
+    (synopsis "Extend the standard classes' size options")
+    (description
+     "This package provides classes @code{extarticle}, @code{extreport},
+@code{extletter}, @code{extbook} and @code{extproc} which provide for
+documents with a base font size from 8-20pt.  There is also a LaTeX package,
+@file{extsizes.sty}, which can be used with nonstandard document classes.  But
+it cannot be guaranteed to work with any given class.")
+    (license license:lppl)))
+
 (define-public texlive-ulem
   (package
     (name "texlive-ulem")
