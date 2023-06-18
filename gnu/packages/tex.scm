@@ -10178,6 +10178,25 @@ Such a font may be found in the Computer Modern extra bold font set.")
 numeration using cyrillic letters.")
     (license license:bsd-2)))
 
+(define-public texlive-context-degrade
+  (package
+    (name "texlive-context-degrade")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/degrade/"
+                   "tex/context/third/degrade/")
+             (base32
+              "10bny5ipa8sn6wk1k6238f5q7mazlyz9hgfi2d7hspghnfg3sm3g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-degrade")
+    (synopsis "Degrading JPEG images in ConTeXt")
+    (description
+     "This module provides tools to degrade JPEG images in ConTeXt.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
