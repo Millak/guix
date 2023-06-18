@@ -7313,6 +7313,32 @@ float, but you can put it in a @code{table} or a @code{table*} or some other
 environment.")
     (license (license:fsf-free "file://threeparttable.sty"))))
 
+(define-public texlive-thumbpdf
+  (package
+    (name "texlive-thumbpdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/thumbpdf/"
+                   "doc/man/man1/thumbpdf.1"
+                   "doc/man/man1/thumbpdf.man1.pdf"
+                   "scripts/thumbpdf/" "tex/generic/thumbpdf/")
+             (base32
+              "0ya18440rpkav0z1zddzii9jh2swybicj87413l5iin2acrssw42")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "thumbpdf.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/thumbpdf")
+    (synopsis "Thumbnails for pdfTeX and dvips/ps2pdf")
+    (description
+     "This package provides a Perl script that provides support for thumbnails
+in pdfTeX and dvips/ps2pdf.  The script uses Ghostscript to generate the
+thumbnails which get represented in a TeX readable file that is read by the
+package @code{thumbpdf.sty} to automatically include the thumbnails.  This
+arrangement works with both plain TeX and LaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-txfonts
   (package
     (name "texlive-txfonts")
