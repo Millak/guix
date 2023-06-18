@@ -10356,6 +10356,41 @@ sets.  LaTeX macro support is provided in package @code{psnfss}.")
 XeLaTeX with arbitrary text fonts using @code{fontspec} as a backend.")
     (license license:lppl)))
 
+(define-public texlive-mathtools
+  (package
+    (name "texlive-mathtools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathtools/"
+                   "source/latex/mathtools/"
+                   "tex/latex/mathtools/")
+             (base32
+              "11rs5wd1m5f3y309gdlq47vj3xzs8m87qlbd7b6glhq8lx8wfbd6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathtools")
+    (synopsis "Mathematical tools to use with @code{amsmath}")
+    (description
+     "Mathtools provides a series of packages designed to enhance the
+appearance of documents containing a lot of mathematics.  It is based on
+@code{amsmath} and fixes various deficiencies of it and standard LaTeX.  It
+provides:
+@itemize
+@item Extensible symbols, such as brackets, arrows, harpoons, etc.;
+@item Various symbols such as \\coloneqq (:=);
+@item Easy creation of new tag forms;
+@item Showing equation numbers only for referenced equations;
+@item Extensible arrows, harpoons and hookarrows;
+@item Starred versions of the @code{matrix} environments for specifying the
+column alignment;
+@item More building blocks: multlined, cases-like environments, new gathered
+environments;
+@item Maths versions of @code{\\makebox}, @code{\\llap}, @code{\\rlap} etc.;
+@item Cramped math styles; and more...
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-fp
   (package
     (name "texlive-fp")
