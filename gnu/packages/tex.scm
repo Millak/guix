@@ -12271,6 +12271,28 @@ in LaTeX, all of whose names are lower-case, prevent hyphenation
 altogether).")
     (license license:lppl1.3c)))
 
+(define-public texlive-rcs
+  (package
+    (name "texlive-rcs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rcs/" "source/latex/rcs/"
+                   "tex/latex/rcs/")
+             (base32
+              "0lhb5njyk5y60lgbbggy804qqc0szcybbhndmwblpxhhyxiqvmi5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rcs")
+    (synopsis "Use RCS (revision control system) tags in LaTeX documents")
+    (description
+     "The @code{rcs} package utilizes the inclusion of RCS supplied data in
+LaTeX documents.  In particular, you can easily access values of every RCS
+field in your document put the checkin date on the titlepage or put RCS fields
+in a footline.  You can also typeset revision logs.  You can also configure
+the @code{rcs} package easily to do special things for any keyword.")
+    (license license:gpl3+)))
+
 (define-public texlive-refstyle
   (package
     (name "texlive-refstyle")
