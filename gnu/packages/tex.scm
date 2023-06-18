@@ -1568,6 +1568,32 @@ support (for use with a variety of encodings) is provided.")
     ;; additional but not legally binding clause.
     (license license:lppl1.3c+)))
 
+(define-public texlive-crop
+  (package
+    (name "texlive-crop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crop/" "source/latex/crop/"
+                   "tex/latex/crop/")
+             (base32
+              "1m0dg69bhbvqrq9d2yl6ip36w1bf5cibp386jj2wbywisa2hn3qf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crop")
+    (synopsis "Support for cropmarks")
+    (description
+     "This package provides a package providing corner marks for camera
+alignment as well as for trimming paper stacks, and additional page
+information on every page if required.  Most macros are easily adaptable to
+personal preferences.  An option is provided for selectively suppressing
+graphics or text, which may be useful for printing just colour graphics on
+a colour laser printer and the rest on a cheap mono laser printer.  A page
+info line contains the time and a new cropmarks index and is printed at the
+top of the page.  A configuration command is provided for the info line font.
+Options for better collaboration with dvips, pdfTeX and vtex are provided.")
+    (license license:lppl)))
+
 (define-public texlive-ctablestack
   (package
     (name "texlive-ctablestack")
