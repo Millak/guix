@@ -1008,6 +1008,27 @@ article into an exceptions file, together with a recent copy of the article
 and machine-readable files.")
     (license license:public-domain)))
 
+(define-public texlive-index
+  (package
+    (name "texlive-index")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/index/" "doc/latex/index/"
+                   "makeindex/index/" "source/latex/index/"
+                   "tex/latex/index/")
+             (base32
+              "0f1infc8fcpw16crciampy4cqqhl4hzypyfacbwsk4cnl0fyivns")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/index")
+    (synopsis "Extended index for LaTeX including multiple indexes")
+    (description
+     "This is a reimplementation of LaTeX's indexing macros to provide better
+support for indexing.  For example, it supports multiple indexes in a single
+document and provides a more robust @code{\\index} command.")
+    (license license:lppl1.2+)))        ;from "index.dtx"
+
 (define-public texlive-dvipdfmx
   (package
     (name "texlive-dvipdfmx")
