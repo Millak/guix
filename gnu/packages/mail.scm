@@ -3388,14 +3388,14 @@ messages with @acronym{DKIM, DomainKeys Identified Mail} (RFC 4871).")
 (define-public opensmtpd-filter-rspamd
   (package
     (name "opensmtpd-filter-rspamd")
-    (version "0.1.7")
+    (version "0.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/poolpOrg/filter-rspamd")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1qhrw20q9y44ffgx5k14nvqc9dh47ihywgzza84g0zv9xgif7hd5"))
+               (base32 "1zjmxfr22gvrxy3nfngl66h1fsd1sv4kxdn91r8byqijy6p65pai"))
               (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
