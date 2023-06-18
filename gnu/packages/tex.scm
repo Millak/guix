@@ -1523,6 +1523,26 @@ mathematical fonts in a range of styles, based on Monotype Modern 8A.")
 
 (define-deprecated-package texlive-fonts-cm texlive-cm)
 
+(define-public texlive-cmextra
+  (package
+    (name "texlive-cmextra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/cmextra/"
+                   "fonts/tfm/public/cmextra/")
+             (base32
+              "00my52lh3cn8bn211fpn7373b7khaylx4fgkrd2m72xgaymil308")))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/knuth-local")
+    (synopsis "Knuth's local information")
+    (description
+     "This package provides a collection of experimental programs and
+developments based on, or complementary to, the matter in his distribution
+directories.")
+    (license license:public-domain)))
+
 (define-public texlive-cm-lgc
   (package
     (name "texlive-cm-lgc")
