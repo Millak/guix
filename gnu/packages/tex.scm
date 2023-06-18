@@ -10219,6 +10219,25 @@ With parameters one can adjust the spacing around the content and set
 a default symbol.")
     (license license:gpl3+)))
 
+(define-public texlive-context-french
+  (package
+    (name "texlive-context-french")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/french/"
+                   "tex/context/third/french/")
+             (base32
+              "06x7dfsc1vrb49zl9xlhlyfavijgpc53hc0yhj5yc6vph8zbq0df")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-french")
+    (synopsis "Support for writing French in ConTeXt")
+    (description
+     "This ConTeXt module deals with spacing around French punctuation.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
