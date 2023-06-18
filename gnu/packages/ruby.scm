@@ -9215,7 +9215,7 @@ during shutdown.")
 (define-public ruby-memory-profiler
   (package
     (name "ruby-memory-profiler")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
       (origin
         (method git-fetch)
@@ -9225,7 +9225,7 @@ during shutdown.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "07yqv11q68xg2fqkrhs6ysngryk8b9zq6qzh24rgx9xqv6qfnj0w"))))
+          "1z1x0rymfv45gh1y3s46w5pga5y8cvgn228jiwlnhc8hin3zig84"))))
     (build-system ruby-build-system)
     (synopsis "Memory profiling routines for Ruby")
     (description
