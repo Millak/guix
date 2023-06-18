@@ -12128,6 +12128,56 @@ macros, Computer Modern fonts, and configuration for common drivers; no
 LaTeX.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-context
+  (package
+    (name "texlive-collection-context")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-collection-basic
+           texlive-context
+           texlive-context-account
+           texlive-context-algorithmic
+           texlive-context-animation
+           texlive-context-annotation
+           texlive-context-bnf
+           texlive-context-chromato
+           texlive-context-cmscbf
+           texlive-context-cmttbf
+           texlive-context-construction-plan
+           texlive-context-cyrillicnumbers
+           texlive-context-degrade
+           texlive-context-fancybreak
+           texlive-context-filter
+           texlive-context-french
+           texlive-context-fullpage
+           texlive-context-gantt
+           texlive-context-gnuplot
+           texlive-context-handlecsv
+           texlive-context-layout
+           texlive-context-letter
+           texlive-context-lettrine
+           texlive-context-mathsets
+           texlive-context-rst
+           texlive-context-ruby
+           texlive-context-simplefonts
+           texlive-context-simpleslides
+           texlive-context-title
+           texlive-context-transliterator
+           texlive-context-typearea
+           texlive-context-typescripts
+           texlive-context-vim
+           texlive-context-visualcounter
+           texlive-jmn))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "ConTeXt and packages")
+    (description
+     "This package provides Hans Hagen's powerful ConTeXt system, along with
+third-party ConTeXt packages.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-fontsrecommended
   (package
     (name "texlive-collection-fontsrecommended")
