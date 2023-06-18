@@ -181,6 +181,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages enchant)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages games)
@@ -10347,6 +10348,66 @@ insertion mode.  When enabled all keys are implicitly prefixed with
     (description
      "Emacs major mode for jinja2 with: syntax highlighting,
 sgml/html integration, and indentation (working with sgml).")
+    (license license:gpl3+)))
+
+(define-public emacs-jinx
+  (package
+    (name "emacs-jinx")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/minad/jinx")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1y097rnf9zg26jf4vh74a0laddfp4x6pp1fjqs3xqgwc0cmdq59w"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'expand-load-path 'build-jinx-mod
+            (lambda* _
+              (invoke
+               "emacs" "--batch" "-L" "."
+               "-l" "jinx.el"
+               "-f" "jinx--load-module")))
+          (add-after 'expand-load-path 'build-info
+            (lambda _
+              (invoke "emacs" "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")))
+          (add-after 'build-jinx-mod 'patch-path-to-jinx-mod
+            (lambda _
+              (let ((file "jinx.el"))
+                (make-file-writable file)
+                (emacs-substitute-sexps file
+                  ("\"Compile and load dynamic module.\""
+                   `(module-load
+                     ,(string-append #$output
+                                     "/lib/emacs/jinx-mod.so")))))))
+          (add-after 'install 'install-jinx-mod
+            (lambda _
+              (install-file "jinx-mod.so"
+                            (string-append #$output "/lib/emacs"))))
+          (add-after 'install 'install-info
+            (lambda _
+              (install-file "jinx.info"
+                            (string-append #$output "/share/info")))))))
+    (inputs (list enchant))
+    (propagated-inputs (list emacs-compat))
+    (native-inputs (list emacs-compat enchant pkg-config texinfo))
+    (home-page "https://github.com/minad/jinx")
+    (synopsis "Emacs Enchanted Spell Checker")
+    (description "Jinx is a just-in-time spell-checker for Emacs
+based on the enchant library.  It lazily highlights misspelled words in the
+text of the visible portion of the buffer by honouring window boundaries as
+well as text folding, if any.")
     (license license:gpl3+)))
 
 (define-public emacs-jit-spell
