@@ -10515,6 +10515,29 @@ presentation.  Most styles are configurable, and it is easy to design
 new styles.")
     (license license:gpl3+)))
 
+(define-public texlive-context-title
+  (package
+    (name "texlive-context-title")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/title/"
+                   "tex/context/interface/third/"
+                   "tex/context/third/title/")
+             (base32
+              "1ah7b5lgqq668s17d5glnl2bwyzh7idsdib4ijxarx7ahph06jx2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-context))
+    (home-page "https://ctan.org/pkg/context-title")
+    (synopsis "Place document titles")
+    (description
+     "The title module provides the @code{\\placetitle} command to put
+a title block into your document.  With the command
+@code{\\setuptitle} values can be set for @code{\\placetitle} and
+change the formatting of the content.")
+    (license license:gpl3+)))
+
 (define-public texlive-beamer
   (package
     (name "texlive-beamer")
