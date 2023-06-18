@@ -7011,7 +7011,7 @@ utilities for Ruby.")
 (define-public ruby-tzinfo
   (package
     (name "ruby-tzinfo")
-    (version "2.0.4")
+    (version "2.0.6")
     (source
      (origin
        (method git-fetch)
@@ -7022,31 +7022,29 @@ utilities for Ruby.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jaq1givdaz5jxz47xngyj3j315n872rk97mnpm5njwm48wy45yh"))))
+         "1n1gzjqwwnx209h8d054miva0y7x17db2ahy7jav5r25ibhh7rgm"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-safe-tests
-           (lambda _
-             (substitute* "test/test_utils.rb"
-               (("def safe_test\\(options = \\{\\}\\)")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-safe-tests
+            (lambda _
+              (substitute* "test/test_utils.rb"
+                (("def safe_test\\(options = \\{\\}\\)")
                  "def safe_test(options = {})
-      skip('The Guix build environment has an unsafe load path')"))
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (substitute* "Gemfile"
-               (("simplecov.*") "simplecov'\n"))
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? test-target #:allow-other-keys)
-             (when tests?
-               (invoke "bundler" "exec" "rake" test-target))
-             #t)))))
+      skip('The Guix build environment has an unsafe load path')"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (substitute* "Gemfile"
+                (("simplecov.*") "simplecov'\n"))))
+          (replace 'check
+            (lambda* (#:key tests? test-target #:allow-other-keys)
+              (when tests?
+                (invoke "bundler" "exec" "rake" test-target)))))))
     (propagated-inputs
-     `(("ruby-concurrent-ruby" ,ruby-concurrent)))
+     (list ruby-concurrent))
     (native-inputs
      (list ruby-simplecov))
     (synopsis "Time zone library for Ruby")
