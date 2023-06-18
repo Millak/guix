@@ -6730,6 +6730,23 @@ in SGML; use maths minus in text as appropriate; simple Young tableaux.")
 (define-deprecated-package texlive-latex-jknapltx texlive-jknapltx)
 (define-deprecated-package texlive-jknappen texlive-jknapltx)
 
+(define-public texlive-jmn
+  (package
+    (name "texlive-jmn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/afm/jmn/hans/" "fonts/enc/dvips/jmn/"
+                   "fonts/map/dvips/jmn/" "fonts/tfm/jmn/hans/"
+                   "fonts/type1/jmn/hans/")
+             (base32
+              "0iq5ky3llx50smw80lpylv11jmqc51m5yrhlslz3sakmgdqgg1yi")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jmn")
+    (synopsis "Special fonts for ConTeXt")
+    (description "This ConTeXt module provides special fonts.")
+    (license license:bsd-2)))           ;as the whole ConTeXt project
+
 (define-public texlive-kvoptions
   (package
     (name "texlive-kvoptions")
