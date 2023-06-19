@@ -98,7 +98,11 @@
     ("cc-by-sa-4" 'cc-by-sa4.0)
     ("mit" 'expat)
     ("fdl" 'fdl1.3+)
-    ("gfl" 'gfl1.0)
+    ;; The GUST Font Nosource License, which is legally equivalent to
+    ;; lppl1.3c+, is no longer in use (per
+    ;; <https://www.gust.org.pl/projects/e-foundry/licenses>).  It has de
+    ;; facto become GUST Font License 1.0.
+    ((or "gfl" "gfsl") 'gfl1.0)
 
     ;; These are known non-free licenses
     ("noinfo" 'unknown)
