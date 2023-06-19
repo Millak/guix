@@ -9404,6 +9404,27 @@ implements an easy to use interface for these symbols.")
 
 (define-deprecated-package texlive-latex-wasysym texlive-wasysym)
 
+(define-public texlive-willowtreebook
+  (package
+    (name "texlive-willowtreebook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/willowtreebook/"
+                   "tex/latex/willowtreebook/")
+             (base32
+              "1rv6pmyl02fpysviz4mvz9az9bgk96p6s7mbi9ykxxp74xzh8jik")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/willowtreebook")
+    (synopsis "Easy basic book class, built on @code{memoir}")
+    (description
+     "The @code{willowtreebook} class is a simple book class, which the author
+uses for his lecture notes to be found on his web page Benjamin McKay.  It
+actually just selects options for the more sophisticated @code{memoir}
+class.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-wrapfig
   (package
     (name "texlive-wrapfig")
