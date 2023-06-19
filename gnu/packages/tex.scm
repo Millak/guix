@@ -7378,6 +7378,27 @@ examples are given of simple use to check spelling, count words, and highlight
 syntax of programming languages.")
     (license license:lppl)))
 
+(define-public texlive-xespotcolor
+  (package
+    (name "texlive-xespotcolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xespotcolor/"
+                   "source/xelatex/xespotcolor/"
+                   "tex/xelatex/xespotcolor/")
+             (base32
+              "0pqv4y2idcazwdy94ryyrk5s2g66sb7liy9hypqaq69symn8myf7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xespotcolor")
+    (synopsis "Spot colours support for XeLaTeX")
+    (description
+     "The package provides macros for using spot colours in LaTeX documents.
+The package is a reimplementation of the @code{spotcolor} package for use with
+XeLaTeX.  As such, it has the same user interface and the same capabilities.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
