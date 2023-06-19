@@ -7442,6 +7442,25 @@ configuration, many PSTricks features can be used in XeLaTeX or plain XeTeX
 documents.")
     (license license:public-domain)))
 
+(define-public texlive-xetex-tibetan
+  (package
+    (name "texlive-xetex-tibetan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/xetex-tibetan/"
+                   "fonts/misc/xetex/fontmapping/xetex-tibetan/")
+             (base32
+              "02z3jzf16hi9zj50lpf9map5f6ydvxw66f0k4n5ry88s7frbxwmw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetex-tibetan")
+    (synopsis "XeTeX input maps for Unicode Tibetan")
+    (description
+     "The package provides a map for use with Jonathan Kew's TECkit, to
+translate Tibetan to Unicode (range 0F00-0FFF).")
+    (license license:lppl)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
