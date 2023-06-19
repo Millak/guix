@@ -6214,6 +6214,27 @@ user may consider the @code{dnaseq} as a rather more powerful alternative.")
 
 (define-deprecated-package texlive-latex-seqsplit texlive-seqsplit)
 
+(define-public texlive-shapes
+  (package
+    (name "texlive-shapes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/shapes/" "metapost/shapes/"
+                   "source/metapost/shapes/")
+             (base32
+              "0q93ycxjzmvp73z92rc7vlzvmijbj2w1ldq709r9jflk044lsrh2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shapes")
+    (synopsis "Draw polygons, reentrant stars, and fractions in circles")
+    (description
+     "The shapes set of macros allows drawing regular polygons; their
+corresponding reentrant stars in all their variations; and fractionally filled
+circles (useful for visually demonstrating the nature of fractions) in
+MetaPost.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-showexpl
   (package
     (name "texlive-showexpl")
