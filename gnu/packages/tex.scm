@@ -7399,6 +7399,26 @@ The package is a reimplementation of the @code{spotcolor} package for use with
 XeLaTeX.  As such, it has the same user interface and the same capabilities.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xetex-itrans
+  (package
+    (name "texlive-xetex-itrans")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xetex-itrans/"
+                   "fonts/misc/xetex/fontmapping/xetex-itrans/")
+             (base32
+              "1chx2s0p6y5p767cr23jh9x61axjrdnyc5lcvf7kyrg74cszsmql")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetex-itrans")
+    (synopsis "Itrans input maps for use with XeLaTeX")
+    (description
+     "The package provides maps for use with XeLaTeX with coding done using
+@code{itrans}.  Fontspec maps are provided for Devanagari (Sanskrit), for
+Sanskrit in Kannada and for Kannada itself.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
