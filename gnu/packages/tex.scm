@@ -853,6 +853,24 @@ it Bidi-aware, and adding support of the xdvipdfmx (when the outline option of
 the package is used).")
     (license license:lppl1.3+)))
 
+(define-public texlive-bidipagegrid
+  (package
+    (name "texlive-bidipagegrid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bidipagegrid/"
+                   "tex/xelatex/bidipagegrid/")
+             (base32
+              "19jkg4apf1g3whigcchbcf8p14lpxkz9ih2vrw00akwfh8v3ssrk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bidipagegrid")
+    (synopsis "Bidi-aware page grid in background")
+    (description "The package provides Bidi-aware page grid in background.  It
+is based on @code{pagegrid}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libkpathsea
   (package/inherit texlive-bin
     (name "texlive-libkpathsea")
