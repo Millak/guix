@@ -7499,6 +7499,25 @@ texts), using XeTeX.  It enhances the existing support, in XeTeX, providing
 features that provide quality typesetting.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xevlna
+  (package
+    (name "texlive-xevlna")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xevlna/" "tex/xelatex/xevlna/")
+             (base32
+              "0gwh1rd5s01rnb11nxk6nxwyqj32bi739p10hwqz3sw1hfy8mnfi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xevlna")
+    (synopsis "Insert non-breakable spaces using XeTeX")
+    (description
+     "The package will directly insert nonbreakable spaces (in Czech, vlna or
+vlnka), after nonsyllabic prepositions and single letter conjuctions, while
+the document is being typeset.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
