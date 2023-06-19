@@ -5837,6 +5837,27 @@ between various classes of Unix systems.")
 
 (define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
 
+(define-public texlive-interchar
+  (package
+    (name "texlive-interchar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/interchar/"
+                   "tex/xelatex/interchar/")
+             (base32
+              "06pvpaph1gi3rjvwzpvzc2rlx0wb8fqmidbfh8dw2qazzbirdlnz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/interchar")
+    (synopsis "Managing character class schemes in XeTeX")
+    (description
+     "The package manages character class schemes of XeTeX.  Using this
+package, you may switch among different character class schemes.  Migration
+commands are provided for make packages using this mechanism compatible with
+each others.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-latexmk
   (package
     (name "texlive-latexmk")
