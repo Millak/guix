@@ -9515,78 +9515,56 @@ This package contains the complete TeX Live distribution.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
     (home-page "https://www.tug.org/texlive/")))
 
-(define-public perl-text-bibtex
+(define-public texlive-biber
   (package
-    (name "perl-text-bibtex")
-    (version "0.88")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/A/AM/AMBS/Text-BibTeX-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "0b7lmjvfmypps1nw6nsdikgaakm0n0g4186glaqazg5xd1p5h55h"))))
-    (build-system perl-build-system)
+    (name "texlive-biber")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/bibtex/biber/" "source/bibtex/biber/")
+             (base32
+              "0i1hqr9zb7b9d1zjlyg4awa6mkyq6wnrb6z4689j1rg07vnbd7mw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'add-output-directory-to-rpath
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "inc/MyBuilder.pm"
-               (("-Lbtparse" line)
-                (string-append "-Wl,-rpath="
-                               (assoc-ref outputs "out") "/lib " line)))
-             #t))
-         (add-after 'unpack 'install-libraries-to-/lib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Build.PL"
-               (("lib64") "lib"))
-             #t)))))
+     (list
+      #:tests? #true
+      #:imported-modules `(,@%texlive-build-system-modules
+                           (guix build perl-build-system))
+      #:modules '((guix build texlive-build-system)
+                  ((guix build perl-build-system) #:prefix perl:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-biber-source
+            (lambda _
+              (mkdir-p "build")
+              (with-directory-excursion "build"
+                (invoke "tar" "xvf"
+                        "../source/bibtex/biber/biblatex-biber.tar.gz"
+                        "--strip-components=1"))))
+          (add-after 'unpack-biber-source 'build-biber
+            (lambda args
+              (with-directory-excursion "build"
+                (for-each (lambda (phase)
+                            (apply (assoc-ref perl:%standard-phases phase) args))
+                          '(configure build check install)))))
+          (add-after 'install 'wrap-programs
+            (lambda _
+              (let ((perl5lib (getenv "PERL5LIB")))
+                (wrap-program (string-append #$output "/bin/biber")
+                  `("PERL5LIB" ":" prefix
+                    (,(string-append perl5lib ":"
+                                     #$output "/lib/perl5/site_perl"))))))))))
     (native-inputs
-     (list perl-capture-tiny perl-config-autoconf perl-extutils-libbuilder
-           perl-module-build))
-    (home-page "https://metacpan.org/release/Text-BibTeX")
-    (synopsis "Interface to read and parse BibTeX files")
-    (description "@code{Text::BibTeX} is a Perl library for reading, parsing,
-and processing BibTeX files.  @code{Text::BibTeX} gives you access to the data
-at many different levels: you may work with BibTeX entries as simple field to
-string mappings, or get at the original form of the data as a list of simple
-values (strings, macros, or numbers) pasted together.")
-    (license license:perl-license)))
-
-(define-public biber
-  (package
-    ;; Note: When updating Biber, make sure it matches our BibLaTeX version by
-    ;; checking the Biber/BibLaTeX compatibility matrix in the BibLaTeX manual
-    ;; at <https://ctan.org/pkg/biblatex>.
-    (name "biber")
-    (version "2.16")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/plk/biber/")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0586q8y1f2k23mvb02ccm3qsb35cwskafksixsjaih7a7xcf5gxx"))
-              (patches (search-patches "biber-adapt-perl-5.36.patch"))))
-    (build-system perl-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (perl5lib (getenv "PERL5LIB")))
-               (wrap-program (string-append out "/bin/biber")
-                 `("PERL5LIB" ":" prefix
-                   (,(string-append perl5lib ":" out
-                                    "/lib/perl5/site_perl")))))
-             #t)))))
+     (list perl-config-autoconf
+           perl-extutils-libbuilder
+           perl-file-which
+           perl-module-build
+           perl-test-differences))
     (inputs
-     (list perl-autovivification
+     (list perl
+           perl-autovivification
            perl-class-accessor
            perl-data-dump
            perl-data-compare
@@ -9625,19 +9603,15 @@ values (strings, macros, or numbers) pasted together.")
            perl-business-issn
            perl-business-ismn
            perl-lingua-translit))
-    (native-inputs
-     `(("perl-config-autoconf" ,perl-config-autoconf)
-       ("perl-extutils-libbuilder" ,perl-extutils-libbuilder)
-       ("perl-module-build" ,perl-module-build)
-       ;; for tests
-       ("perl-file-which" ,perl-file-which)
-       ("perl-test-more" ,perl-test-most) ; FIXME: "more" would be sufficient
-       ("perl-test-differences" ,perl-test-differences)))
-    (home-page "https://biblatex-biber.sourceforge.net/")
-    (synopsis "Backend for the BibLaTeX citation management tool")
-    (description "Biber is a BibTeX replacement for users of biblatex.  Among
-other things it comes with full Unicode support.")
-    (license license:artistic2.0)))
+    (home-page "https://ctan.org/pkg/biber")
+    (synopsis "BibTeX replacement for users of BibLaTeX")
+    (description
+     "Biber is a BibTeX replacement for users of BibLaTeX.  It supports full
+UTF-8, can (re)-encode input and output, supports highly configurable sorting,
+dynamic bibliography sets and many other features.")
+    (license license:gpl3+)))
+
+(define-deprecated-package biber texlive-biber)
 
 (define-public rubber
   (package
