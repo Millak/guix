@@ -8034,6 +8034,41 @@ Adobe's basic set.")
 
 (define-deprecated-package texlive-fonts-adobe-palatino texlive-palatino)
 
+(define-public texlive-poltawski
+  (package
+    (name "texlive-poltawski")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/poltawski/"
+                   "fonts/afm/gust/poltawski/"
+                   "fonts/enc/dvips/poltawski/"
+                   "fonts/map/dvips/poltawski/"
+                   "fonts/opentype/gust/poltawski/"
+                   "fonts/tfm/gust/poltawski/"
+                   "fonts/type1/gust/poltawski/"
+                   "tex/latex/poltawski/")
+             (base32
+              "1cf8vxah8j6nnaq2lhmiy1q3dnq6swprfmizzxd6y67sc60rznzm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/poltawski")
+    (synopsis "Antykwa Poltawskiego Family of Fonts")
+    (description
+     "The package contains the Antykwa Poltawskiego family of fonts in the
+PostScript Type 1 and OpenType formats Following the route set out by the
+Latin Modern and TeX Gyre projects, the Antykwa Poltawskiego digitisation
+project aims at providing a rich collection of diacritical characters in the
+attempt to cover as many Latin-based scripts as possible.  To our knowledge,
+the repertoire of characters covers all European languages as well as some
+other Latin-based alphabets such as Vietnamese and Navajo; at the request of
+users, recent extensions (following the enhancement of the Latin Modern
+collection) provide glyphs sufficient for typesetting of romanized
+transliterations of Arabic and Sanskrit scripts.  The Antykwa Poltawskiego
+family consists of 4 weights (light, normal, medium, bold), each having
+upright and italic forms and one of 5 design sizes: 6, 8, 10, 12 and 17pt.")
+    (license license:gfl1.0)))
+
 (define-public texlive-zapfchan
   (package
     (name "texlive-zapfchan")
