@@ -4982,6 +4982,23 @@ define a new author interface to creating new environments.")
 
 (define-deprecated-package texlive-latex-environ texlive-environ)
 
+(define-public texlive-epsincl
+  (package
+    (name "texlive-epsincl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/epsincl/" "metapost/epsincl/")
+             (base32
+              "1pjnfqayh42gavlbd9wqn86qyqhw1bxrbmwgsv39ycj4s63xjxqr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epsincl")
+    (synopsis "Include EPS in MetaPost figures")
+    (description
+     "The package facilitates including EPS files in MetaPost figures.")
+    (license license:public-domain)))
+
 (define-public texlive-eqparbox
   (package
     (name "texlive-eqparbox")
