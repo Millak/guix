@@ -5611,6 +5611,33 @@ between various classes of Unix systems.")
 
 (define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
 
+(define-public texlive-latexmk
+  (package
+    (name "texlive-latexmk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/latexmk.1"
+                   "doc/man/man1/latexmk.man1.pdf"
+                   "doc/support/latexmk/" "scripts/latexmk/")
+             (base32
+              "1hgzx4xcny2ffm63afhfh3msy1i9llmcdqq2xf3fqlc95rkzn59z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "latexmk.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/latexmk")
+    (synopsis "Fully automated LaTeX document generation")
+    (description
+     "Latexmk completely automates the process of generating a LaTeX document.
+Given the source files for a document, @command{latexmk} issues the
+appropriate sequence of commands to generate a @file{.dvi}, @file{.ps},
+@file{.pdf} or hardcopy version of the document.  An important feature is the
+preview continuous mode, where the script watches all of the source files and
+reruns LaTeX, etc., whenever a source file has changed.  Thus a previewer can
+offer a display of the document's latest state.")
+    (license license:gpl2)))
+
 (define-public texlive-latexmp
   (package
     (name "texlive-latexmp")
