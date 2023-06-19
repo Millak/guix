@@ -5538,6 +5538,28 @@ a very flexible set of macros for generating plot axes, which may be useful in
 other contexts as well.")
     (license license:lppl)))
 
+(define-public texlive-metapost-colorbrewer
+  (package
+    (name "texlive-metapost-colorbrewer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/metapost-colorbrewer/"
+                   "metapost/metapost-colorbrewer/")
+             (base32
+              "00bpdz2k849k1sfrlflxhdbylncb5y2bixgmylyh0i8rbb467q7l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metapost-colorbrewer")
+    (synopsis
+     "Implementation of the @code{colorbrewer2.org} colours for MetaPost")
+    (description
+     "This package provides two MetaPost include files that define all the
+@code{colorbrewer2.org} colours: @code{colorbrewer-cmyk.mp} and
+@code{colorbrewer-rgb.mp}. The first defines all the colours as CMYK, the
+second as RGB.")
+    (license license:gpl3+)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
