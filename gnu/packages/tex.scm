@@ -5269,6 +5269,25 @@ The library also contains functions to draw some objects constructed from
 these primitives.")
     (license (list license:gpl3+ license:cc-by-sa4.0))))
 
+(define-public texlive-garrigues
+  (package
+    (name "texlive-garrigues")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/garrigues/"
+                   "metapost/garrigues/")
+             (base32
+              "0vg1j0r4mkp057v7kjr8yza1danc3zj7k590x5531yi0gzp7hgq2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/garrigues")
+    (synopsis "MetaPost macros for the reproduction of Garrigues' Easter nomogram")
+    (description
+     "This library provides MetaPost macros for the reproduction of Garrigues
+Easter nomogram.")
+    (license license:lppl)))
+
 (define-public texlive-hanging
   (package
     (name "texlive-hanging")
