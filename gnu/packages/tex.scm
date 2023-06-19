@@ -7176,6 +7176,27 @@ definition, or to define space-stripped macros.")
 and books created by Edward Tufte.")
     (license license:asl2.0)))
 
+(define-public texlive-ucharclasses
+  (package
+    (name "texlive-ucharclasses")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/ucharclasses/"
+                   "tex/xelatex/ucharclasses/")
+             (base32
+              "0pgzs730zqmcck693i7fq771p7szq6nqdxb9w8dy6l2b4zdql14m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ucharclasses")
+    (synopsis "Font actions in XeTeX according to what is being processed")
+    (description
+     "The package takes care of switching fonts when you switch from one
+Unicode block to another in the text of a document.  This way, you can write
+a document with no explicit font selection, but a series of rules of the form
+``when entering block ..., switch font to use ...''.")
+    (license license:public-domain)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
