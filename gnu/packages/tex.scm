@@ -5475,6 +5475,25 @@ chemical structure diagrams.  This package converts MCF to graphic files using
 MetaPost.")
     (license license:expat)))
 
+(define-public texlive-metago
+  (package
+    (name "texlive-metago")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/metago/" "metapost/metago/")
+             (base32
+              "13m61ml8wfs5888nifilgzi503m3gz1f2fa44408jdhlr6zk6fa0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metago")
+    (synopsis "MetaPost output of Go positions")
+    (description
+     "The package allows you to draw Go game positions with MetaPost.  Two
+methods of usage are provided, either using the package programmatically, or
+using the package via a script (which may produce several images).")
+    (license license:lppl)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
