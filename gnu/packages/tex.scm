@@ -5725,6 +5725,30 @@ colour names from different colour sets in different colour models available
 to MetaPost.")
     (license license:lppl)))
 
+(define-public texlive-mpgraphics
+  (package
+    (name "texlive-mpgraphics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mpgraphics/"
+                   "source/latex/mpgraphics/"
+                   "tex/latex/mpgraphics/")
+             (base32
+              "0z51scc8vimwihdyxv3g1cb7bjbj8w2a2ck1ygjyf8xzz4hcic2s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mpgraphics")
+    (synopsis "Process and display MetaPost figures inline")
+    (description
+     "The package allows LaTeX users to typeset MetaPost code inline and
+display figures in their documents with only and only one run of LaTeX,
+pdfLaTeX or XeLaTeX (no separate runs of @command{mpost}).  Mpgraphics
+achieves this by using the shell escape (@samp{\\write 18}) feature of current
+TeX distributions, so that the whole process is automatic and the end user is
+saved the tiresome processing.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
