@@ -7197,6 +7197,25 @@ a document with no explicit font selection, but a series of rules of the form
 ``when entering block ..., switch font to use ...''.")
     (license license:public-domain)))
 
+(define-public texlive-unicode-bidi
+  (package
+    (name "texlive-unicode-bidi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/unicode-bidi/"
+                   "tex/xelatex/unicode-bidi/")
+             (base32
+              "0anwaaf21qcdgni9z85hqap1wb4y9pv13p96x13w29hbqizmf69l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unicode-bidi")
+    (synopsis "Experimental Unicode Bidi package for XeTeX")
+    (description
+     "The experimental Unicode-Bidi package allows to mix non-RTL script with
+RTL script without any markup.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
