@@ -4314,6 +4314,30 @@ a language chosen by the user.  In addition, the package supports commands to
 change the typography of the bibliographies.")
     (license license:lppl1.0+)))
 
+(define-public texlive-barcodes
+  (package
+    (name "texlive-barcodes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/barcodes/"
+                   "fonts/source/public/barcodes/"
+                   "fonts/tfm/public/barcodes/"
+                   "source/latex/barcodes/"
+                   "tex/latex/barcodes/")
+             (base32
+              "1bxvmmmb4x0zpdkqa399rwdhz6yamfzx2kn2i7a8vz172q0b2msc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/barcodes")
+    (synopsis "Fonts for making barcodes")
+    (description
+     "The package deals with EAN barcodes; Metafont sources for fonts are
+provided, and a set of examples; for some codes, a small Perl script is
+needed.")
+    (license license:lppl)))
+
 (define-public texlive-bbcard
   (package
     (name "texlive-bbcard")
