@@ -4514,6 +4514,27 @@ cubic root function.  In addition, tangents on all functions and derivatives
 of polynomials can be calculated.")
     (license license:lppl)))
 
+(define-public texlive-businesscard-qrcode
+  (package
+    (name "texlive-businesscard-qrcode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/businesscard-qrcode/"
+                   "tex/xelatex/businesscard-qrcode/")
+             (base32
+              "0r942lv7mymi9wmmshjgf3vnz2n38m91dzqzrg0dg6bckb09dhmf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/businesscard-qrcode")
+    (synopsis "Business cards with QR-Code")
+    (description
+     "This package generates a configurable business card or visiting card
+with full vcard as QR-Code, ready to send to online printers.  You can specify
+the exact size of the paper and the content within the paper, including
+generation of crop marks.")
+    (license license:lgpl3)))
+
 (define-public texlive-cmarrows
   (package
     (name "texlive-cmarrows")
