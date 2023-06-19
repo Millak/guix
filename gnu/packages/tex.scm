@@ -5566,6 +5566,27 @@ that column has any marks at all; keep two column floats like @code{figure*}
 in sequence with single column floats like figure.")
     (license license:lppl)))
 
+(define-public texlive-fixlatvian
+  (package
+    (name "texlive-fixlatvian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/fixlatvian/"
+                   "makeindex/fixlatvian/"
+                   "source/xelatex/fixlatvian/"
+                   "tex/xelatex/fixlatvian/")
+             (base32
+              "09bivnc287z57k9rhwfl16w66dkvb55shnwpqv972n6dsjdcrh7j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixlatvian")
+    (synopsis "Improve Latvian language support in XeLaTeX")
+    (description
+     "The package offers improvement of the Latvian language support in
+@code{polyglossia}, in particular in the area of the standard classes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fiziko
   (package
     (name "texlive-fiziko")
