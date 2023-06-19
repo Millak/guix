@@ -5560,6 +5560,25 @@ other contexts as well.")
 second as RGB.")
     (license license:gpl3+)))
 
+(define-public texlive-metauml
+  (package
+    (name "texlive-metauml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/metauml/" "metapost/metauml/")
+             (base32
+              "01hs234mjqnr39zm7jl6dpbm5w0k4p73pr0aj35ii0dhakln2jsy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metauml")
+    (synopsis "MetaPost library for typesetting UML diagrams")
+    (description
+     "MetaUML is a MetaPost library for typesetting UML diagrams, which
+provides a usable, human-friendly textual notation for UML, offering now
+support for class, package, activity, state, and use case diagrams.")
+    (license license:gpl3+)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
