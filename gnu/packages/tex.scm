@@ -5702,6 +5702,29 @@ heads to be used with MetaPost commands")
 using the Pattern Color Space available in PostScript Level 2.")
     (license license:public-domain)))
 
+(define-public texlive-mpcolornames
+  (package
+    (name "texlive-mpcolornames")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/mpcolornames/"
+                   "metapost/mpcolornames/"
+                   "source/metapost/mpcolornames/")
+             (base32
+              "1s5yb57yamg1fd7w5hmkmfyxyqj3mivhkvrkqzm31dzh4y22qg3k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mpcolornames")
+    (synopsis "Extend list of predefined colour names for MetaPost")
+    (description
+     "The MetaPost format @code{plain.mp} provides only five built-in colour names
+(variables), all of which are defined in the RGB model: red, green and blue
+for the primary colours and black and white.  The package makes more than 500
+colour names from different colour sets in different colour models available
+to MetaPost.")
+    (license license:lppl)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
