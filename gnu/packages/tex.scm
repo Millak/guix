@@ -6248,6 +6248,28 @@ trees.  One command and several parameters to control the output are
 provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-na-position
+  (package
+    (name "texlive-na-position")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/na-position/"
+                   "tex/xelatex/na-position/")
+             (base32
+              "0rp1css44sl6j762kfwzq53k6690djgag6yc85dd9134i837gvqr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/na-position")
+    (synopsis
+     "Tables of relative positions of curves, asymptotes, tangents in Arabic documents")
+    (description
+     "This package facilitates, in most cases, the creation of tables of
+relative positions of a curve and its asymptote, or a curve and a tangent in
+one of its points.  This package has to be used with @code{polyglossia} and
+XeLaTeX to produce documents in Arabic.")
+    (license license:lppl)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
