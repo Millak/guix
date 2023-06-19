@@ -1505,6 +1505,34 @@ a LaTeX user is requesting.
 Tip: installing @code{texlive-cbfonts} will automatically propagate this one.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-ccicons
+  (package
+    (name "texlive-ccicons")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ccicons/"
+                   "doc/latex/ccicons/"
+                   "fonts/enc/dvips/ccicons/"
+                   "fonts/map/dvips/ccicons/"
+                   "fonts/opentype/public/ccicons/"
+                   "fonts/tfm/public/ccicons/"
+                   "fonts/type1/public/ccicons/"
+                   "source/fonts/ccicons/"
+                   "source/latex/ccicons/"
+                   "tex/latex/ccicons/")
+             (base32
+              "0lyxbjpkxny6hl7pmnpka0gmgx7qv66pibvwcfs9dvwhdcvwjr4x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ccicons")
+    (synopsis "LaTeX support for Creative Commons icons")
+    (description
+     "The package provides the means to typeset Creative Commons icons, in
+documents licensed under CC licences.  A font (in Adobe Type 1 format) and
+LaTeX support macros are provided.")
+    (license (list license:lppl1.3c license:silofl1.1))))
+
 (define-public texlive-cite
   (package
     (name "texlive-cite")
