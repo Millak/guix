@@ -5456,6 +5456,25 @@ is much more flexible, since it can be used as direct replacement for
 provided by @code{tex.mp}.")
     (license license:public-domain)))
 
+(define-public texlive-mcf2graph
+  (package
+    (name "texlive-mcf2graph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/mcf2graph/")
+             (base32
+              "1pji3d2mllfi74kalvs11h7yy3hkm5g5nlmcpq2vn7cxjbaqk9sq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mcf2graph")
+    (synopsis "Draw chemical structure diagrams with MetaPost")
+    (description
+     "The Molecular Coding Format (MCF) is a linear notation for describing
+chemical structure diagrams.  This package converts MCF to graphic files using
+MetaPost.")
+    (license license:expat)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
