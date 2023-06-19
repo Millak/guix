@@ -4574,6 +4574,27 @@ Computer Modern style.")
 @file{.pfb} file.")
     (license license:public-domain)))   ;see "README-cmexb"
 
+(define-public texlive-cqubeamer
+  (package
+    (name "texlive-cqubeamer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/cqubeamer/"
+                   "tex/xelatex/cqubeamer/")
+             (base32
+              "13ma7i3z64w59m2hkrh68j3vqa2k93hhb2lmarqb4pkhr72vk4s7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cqubeamer")
+    (synopsis "LaTeX Beamer Template for Chongqing University")
+    (description
+     "This package provides a LaTeX beamer template designed for researchers
+of Chongqing University.  It can be used for academic reports, conferences, or
+thesis defense, and can be helpful for delivering a speech.  It should be used
+with the XeTeX engine.")
+    (license (list license:expat license:cc-by4.0))))
+
 (define-public texlive-cs
   (package
     (name "texlive-cs")
