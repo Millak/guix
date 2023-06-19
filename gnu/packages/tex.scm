@@ -5683,6 +5683,25 @@ polyhedra) in MetaPost.")
 heads to be used with MetaPost commands")
     (license license:public-domain)))
 
+(define-public texlive-mpattern
+  (package
+    (name "texlive-mpattern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/mpattern/"
+                   "metapost/mpattern/")
+             (base32
+              "00g250vl6gnvwx6zgmfqcw3nwkh546i1vjz4zjp3dc5n5yj5y6ls")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mpattern")
+    (synopsis "Patterns in MetaPost")
+    (description
+     "This package provides a package for defining and using patterns in MetaPost,
+using the Pattern Color Space available in PostScript Level 2.")
+    (license license:public-domain)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
