@@ -7335,6 +7335,27 @@ without any problem.")
 XeLaTeX and @code{babel}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xeindex
+  (package
+    (name "texlive-xeindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xeindex/"
+                   "tex/xelatex/xeindex/")
+             (base32
+              "1sps9lrzm9y2rrin5pkgzyk56c77xnydvp21ljmvsimqgafr5aqb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xeindex")
+    (synopsis "Automatic index generation for XeLaTeX")
+    (description
+     "The package is based on XeSearch, and will automatically index words or
+phrases in an XeLaTeX document.  Words are declared in a list, and every
+occurrence then creates an index entry whose content can be fully specified
+beforehand.")
+    (license license:lppl)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
