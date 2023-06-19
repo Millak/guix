@@ -15690,6 +15690,50 @@ Computer Modern fonts.  This scheme corresponds to @code{collection-basic} and
 
 (define-deprecated-package texlive-base texlive-scheme-basic)
 
+(define-public texlive-scheme-bookpub
+  (package
+    (name "texlive-scheme-bookpub")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-barcodes
+           texlive-biber
+           texlive-biblatex
+           texlive-bookcover
+           texlive-caption
+           texlive-collection-basic
+           texlive-collection-latex
+           texlive-enumitem
+           texlive-fontspec
+           texlive-latexmk
+           texlive-lipsum
+           texlive-listings
+           texlive-markdown
+           texlive-memoir
+           texlive-microtype
+           texlive-minted
+           texlive-novel
+           texlive-octavo
+           texlive-pdfpages
+           texlive-pgf
+           texlive-qrcode
+           texlive-shapes
+           texlive-titlesec
+           texlive-tocloft
+           texlive-tufte-latex
+           texlive-willowtreebook))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Book publishing scheme (core LaTeX and add-ons)")
+    (description
+     "This is a book publishing scheme, containing core (Lua)LaTeX and
+selected additional packages likely to be useful for non-technical book
+publication.  It does not contain additional fonts (different books need
+different fonts, and the packages are large), nor does it contain additional
+mathematical or other technical packages.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-scheme-context
   (package
     (name "texlive-scheme-context")
