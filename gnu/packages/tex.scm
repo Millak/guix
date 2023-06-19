@@ -5749,6 +5749,25 @@ TeX distributions, so that the whole process is automatic and the end user is
 saved the tiresome processing.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mptrees
+  (package
+    (name "texlive-mptrees")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/mptrees/" "metapost/mptrees/")
+             (base32
+              "17jaj27pjnm3k8qcn1ijkwzgm0nacm0mb3fb7rx3a3cf1pi2qwd2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mptrees")
+    (synopsis "Probability trees with MetaPost")
+    (description
+     "This package provides MetaPost tools for drawing simple probability
+trees.  One command and several parameters to control the output are
+provided.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
