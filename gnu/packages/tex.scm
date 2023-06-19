@@ -6316,6 +6316,23 @@ of which make use of the @code{stackengine} core.")
 
 (define-deprecated-package texlive-latex-stackengine texlive-stackengine)
 
+(define-public texlive-suanpan
+  (package
+    (name "texlive-suanpan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/suanpan/" "metapost/suanpan/")
+             (base32
+              "1ddhk8d98bc4l2xbx5w6kaynl4n125nnv4hadfp5s19vwcc6slqv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/suanpan")
+    (synopsis "MetaPost macros for drawing Chinese and Japanese abaci")
+    (description
+     "The package provides macros for drawing Chinese and Japanese abaci.")
+    (license license:lppl)))
+
 (define-public texlive-tocloft
   (package
     (name "texlive-tocloft")
