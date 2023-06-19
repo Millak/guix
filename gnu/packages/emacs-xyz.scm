@@ -8337,7 +8337,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
 (define-public emacs-piem
   (package
     (name "emacs-piem")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -8346,7 +8346,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
              (commit (string-append "v" version))))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "0wr6n6wvznngjdp4c0pmdr4xz05dark0kxi5svzhzxsg3rdaql3z"))))
+        (base32 "0smdb1iph2q1xvxix5c93llckcxh7kmhg6pxgyrm88j736m4l16q"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases
@@ -8358,6 +8358,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
                       (search-input-file inputs "/bin/b4"))))))))
     (inputs
      (list b4
+           emacs-debbugs
            emacs-elfeed
            emacs-notmuch))
     (home-page "https://docs.kyleam.com/piem")
