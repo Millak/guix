@@ -6029,6 +6029,26 @@ corresponding thing with the page reference of the label.")
 
 (define-deprecated-package texlive-latex-refcount texlive-refcount)
 
+(define-public texlive-repere
+  (package
+    (name "texlive-repere")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/repere/" "metapost/repere/")
+             (base32
+              "06p184mgv0cac36pp1srrd80axvkxf155l3jf01dnvd2x1d7dwlk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/repere")
+    (synopsis "MetaPost macros for secondary school mathematics teachers")
+    (description
+     "This package provides MetaPost macros for drawing secondary school
+mathematics figures in a coordinate system: axis, grids points, vectors
+functions (curves, tangents, integrals, sequences) statistic diagrams plane
+geometry (polygons, circles), arrays and game boards.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-selinput
   (package
     (name "texlive-selinput")
