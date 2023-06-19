@@ -30,7 +30,7 @@
         (title
          (en "New @command{guix locate} command")
          (de "Neuer Befehl @command{guix locate}")
-         (fr "Nouvelle command @command{guix locate}"))
+         (fr "Nouvelle commande @command{guix locate}"))
         (body
          (en "The new @command{guix locate} command lets you search for
 packages containing a given file---at long last!  For instance, to find which
@@ -70,7 +70,7 @@ guix locate ls
 @end example
 
 Pour le moment la commande se base uniquement sur des informations locales.
-Elle ne peut donc pas trouver des paquets dans votre dépôt.  Cette limitation
+Elle ne peut donc pas trouver des paquets absents de votre dépôt.  Cette limitation
 sera levée dans une prochaine version.
 
 Lancer @command{info \"(guix) Invoking guix locate\"} pour plus d'informations.")))
