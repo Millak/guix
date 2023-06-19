@@ -5151,6 +5151,29 @@ containing angles, circles, cylinders, cones and spheres, among other
 things.")
     (license license:gpl3+)))
 
+(define-public texlive-feynmf
+  (package
+    (name "texlive-feynmf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/feynmf/" "metafont/feynmf/"
+                   "metapost/feynmf/" "source/latex/feynmf/"
+                   "tex/latex/feynmf/")
+             (base32
+              "1a6zhs4x6rkjl7vapc3y59hmrvmi570ji2bszpsk88w3fi8klckb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/feynmf")
+    (synopsis "Macros and fonts for creating Feynman (and other) diagrams")
+    (description
+     "The @code{feynmf} package provides an interface to Metafont to use
+simple structure specifications to produce relatively complex diagrams. While
+the package was designed for Feynman diagrams, it could in principle be used
+for diagrams in graph and similar theories, where the structure is
+semi-algorithmically determined.")
+    (license license:gpl3+)))
+
 (define-public texlive-filemod
   (package
     (name "texlive-filemod")
