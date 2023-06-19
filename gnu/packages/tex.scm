@@ -5634,6 +5634,26 @@ accessed.  Other features of the package include activating and deactivating
 hanging punctuation, and support for special Unicode characters.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-fontbook
+  (package
+    (name "texlive-fontbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/fontbook/"
+                   "source/xelatex/fontbook/"
+                   "tex/xelatex/fontbook/")
+             (base32
+              "1n5yn6rgndk0yr91bhglby9nr5mifgfi895klvsixmxc0k5bqp97")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontbook")
+    (synopsis "Generate a font book")
+    (description
+     "The package provides a means of producing a book of font samples (for
+evaluation, etc.).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-garrigues
   (package
     (name "texlive-garrigues")
