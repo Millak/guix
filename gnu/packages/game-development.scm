@@ -2809,29 +2809,26 @@ much more.")
       (license license:zlib))))
 
 (define-public recastnavigation
-  ;; We follow master since there hasn't been a release since 1.5.1 in 2016.
-  (let ((commit "6d1f9711b3b71f28c2c1c0742d76e0ef8766cf91")
-        (revision "2"))
-    (package
-      (name "recastnavigation")
-      (version (git-version "1.5.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/recastnavigation/recastnavigation")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0cqp0sbm0ixqnxqz6gf2gybh5l4az91mdsd8b5bgxs1wpl2jmnga"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
-                                 "-DRECASTNAVIGATION_DEMO=OFF"
-                                 "-DRECASTNAVIGATION_TESTS=ON"
-                                 "-DRECASTNAVIGATION_EXAMPLES=OFF")))
-      (synopsis "Navigation system for games")
-      (description "Recast is state of the art navigation mesh
+  (package
+    (name "recastnavigation")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/recastnavigation/recastnavigation")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rdz3qmp4b961zjah2ax82h471j14w2rcf576gcyx7vldrg8dmj8"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
+                               "-DRECASTNAVIGATION_DEMO=OFF"
+                               "-DRECASTNAVIGATION_TESTS=ON"
+                               "-DRECASTNAVIGATION_EXAMPLES=OFF")))
+    (synopsis "Navigation system for games")
+    (description "Recast is state of the art navigation mesh
 construction toolset for games.
 
 @itemize
@@ -2854,8 +2851,8 @@ simple cases, as well as tiled navigation mesh which allows you to plug
 in and out pieces of the mesh.  The tiled mesh allows you to create
 systems where you stream new navigation data in and out as the player
 progresses the level, or you may regenerate tiles as the world changes.")
-      (home-page "https://github.com/recastnavigation/recastnavigation")
-      (license license:zlib))))
+    (home-page "https://github.com/recastnavigation/recastnavigation")
+    (license license:zlib)))
 
 (define-public raylib
   (package
