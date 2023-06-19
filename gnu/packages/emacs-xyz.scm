@@ -8357,9 +8357,8 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
                      ("piem-b4-b4-executable"
                       (search-input-file inputs "/bin/b4"))))))))
     (inputs
-     (list b4))
-    (propagated-inputs
-     (list emacs-elfeed
+     (list b4
+           emacs-elfeed
            emacs-notmuch))
     (home-page "https://docs.kyleam.com/piem")
     (synopsis "Glue for working with public-inbox archives")
