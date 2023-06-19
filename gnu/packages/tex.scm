@@ -7356,6 +7356,28 @@ occurrence then creates an index entry whose content can be fully specified
 beforehand.")
     (license license:lppl)))
 
+(define-public texlive-xesearch
+  (package
+    (name "texlive-xesearch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/xesearch/" "tex/xetex/xesearch/")
+             (base32
+              "13fdllqswyyvvyjqn0a4ld18dixxnn7zlpagsdaq8cl1svpaxpk5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xesearch")
+    (synopsis "String finder for XeTeX")
+    (description
+     "The package finds strings (e.g., parts of words or phrases) and
+manipulates them, thus turning each word or phrase into a possible command.
+It is written in plain XeTeX and should thus work with any format.  The main
+application for the moment is XeIndex, an automatic index for XeLaTeX, but
+examples are given of simple use to check spelling, count words, and highlight
+syntax of programming languages.")
+    (license license:lppl)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
