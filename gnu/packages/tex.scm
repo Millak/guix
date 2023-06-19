@@ -6394,6 +6394,32 @@ rectangles, which may or may not contain a title bar or text (the title bar
 may itself contain text).")
     (license license:lppl1.3+)))
 
+(define-public texlive-sauerj
+  (package
+    (name "texlive-sauerj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sauerj/" "source/latex/sauerj/"
+                   "tex/latex/sauerj/")
+             (base32
+              "03dmw150qcravzndikijhq2a89sjdplxgi93fx0zxln2l4flvz5k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sauerj")
+    (synopsis "Bundle of utilities by Jonathan Sauer")
+    (description
+     "The bundle consists of:
+@itemize
+@item a tool for collecting text for later re-use,
+@item a tool for typesetting the meta-information within a text,
+@item a tool for use in constructing macros with multiple optional parameters,
+@item a package for multiple column parallel texts,
+@item a tool for processing key-value structured lists,
+@item macros for typesetting a number as a German-language string.
+@end itemize")
+    (license license:lppl)))
+
 (define-public texlive-selinput
   (package
     (name "texlive-selinput")
