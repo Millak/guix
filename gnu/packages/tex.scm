@@ -7257,6 +7257,25 @@ The package requires an TeX-alike system that uses Unicode input in a native
 way: current examples are XeTeX and LuaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xebaposter
+  (package
+    (name "texlive-xebaposter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xebaposter/"
+                   "tex/latex/xebaposter/")
+             (base32
+              "18fnwfhfk3jzkp4yd0dfi49jnf8njccbhhd6k15pvghs4brd9hba")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xebaposter")
+    (synopsis "Create scientific Persian/Latin posters using TikZ")
+    (description
+     "This package is designed for making scientific Persian/Latin posters.
+It is a fork of @code{baposter} by Brian Amberg and Reinhold Kainhofer.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
