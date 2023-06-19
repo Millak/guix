@@ -891,6 +891,25 @@ texpower bundle, with modifications to get things working properly in both
 right to left and left to right modes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bidishadowtext
+  (package
+    (name "texlive-bidishadowtext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bidishadowtext/"
+                   "tex/xelatex/bidishadowtext/")
+             (base32
+              "1nq71bgz7vag9k138mx8hsf42cjvgry2g4z9jiqmq4almm23a1gq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bidishadowtext")
+    (synopsis "Bidi-aware shadow text")
+    (description
+     "This package allows you to typeset Bidi-aware shadow text.  It is
+a re-implementation of the @code{shadowtext} package adding Bidi support.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libkpathsea
   (package/inherit texlive-bin
     (name "texlive-libkpathsea")
