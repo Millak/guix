@@ -6484,6 +6484,28 @@ available for LuaTeX by reimplementing them using Lua.")
 
 (define-deprecated-package texlive-latex-pdftexcmds texlive-pdftexcmds)
 
+(define-public texlive-philokalia
+  (package
+    (name "texlive-philokalia")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/philokalia/"
+                   "fonts/opentype/public/philokalia/"
+                   "source/xelatex/philokalia/"
+                   "tex/xelatex/philokalia/")
+             (base32
+              "1pcszddyyc4caqd1ahcl10rf1mn0m1lrdgn1gldv94cpa89653kg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/philokalia")
+    (synopsis "Font to typeset the Philokalia Books")
+    (description
+     "The @code{philokalia} package has been designed to ease the use of the
+Philokalia-Regular OpenType font with XeLaTeX.  The font started as a project
+to digitize the typeface used to typeset the Philokalia books.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-piechartmp
   (package
     (name "texlive-piechartmp")
