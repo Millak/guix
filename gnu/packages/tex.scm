@@ -6254,6 +6254,25 @@ MetaPost.")
 result in the same document.")
     (license license:lppl1.2+)))
 
+(define-public texlive-slideshow
+  (package
+    (name "texlive-slideshow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/slideshow/"
+                   "metapost/slideshow/")
+             (base32
+              "07r58whn61nyxj0cldzf9bbwhh0kc72d6708ldf03q7sbf5zi37s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/slideshow")
+    (synopsis "Generate slideshow with MetaPost")
+    (description
+     "The package provides a means of creating presentations in MetaPost,
+without intervention from other utilities (except a distiller).")
+    (license (license:fsf-free "file://metapost/slideshow/slideshow.mp"))))
+
 (define-public texlive-stackengine
   (package
     (name "texlive-stackengine")
