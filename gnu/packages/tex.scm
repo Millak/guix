@@ -4376,6 +4376,24 @@ diagrams and bond graphs. While the task is not itself difficult to program,
 it is felt that many users will be happy to have a library for the job.")
     (license license:lppl)))
 
+(define-public texlive-bookcover
+  (package
+    (name "texlive-bookcover")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bookcover/"
+                   "source/latex/bookcover/"
+                   "tex/latex/bookcover/")
+             (base32
+              "0m5km26diwv7xij4r64c3gk2hl8xc22lrbcccqlrk1fhdlz3i8zb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bookcover")
+    (synopsis "Class for book covers and dust jackets")
+    (description "This class helps typesetting book covers and dust jackets.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-bpolynomial
   (package
     (name "texlive-bpolynomial")
