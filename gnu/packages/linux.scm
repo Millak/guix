@@ -9737,6 +9737,41 @@ These trace events are logged in @file{/sys/kernel/debug/tracing} and reported
 through standard log mechanisms like syslog.")
     (license license:gpl2)))
 
+(define-public renameat2
+  ;; This is a Gist, with no release or tags.
+  (let ((revision "0")
+        (commit "5c5193f20142511a5fc7069a539f4e5aba0ea470"))
+    (package
+      (name "renameat2")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://gist.githubusercontent.com/"
+                                    "eatnumber1/f97ac7dad7b1f5a9721f/raw/"
+                                    commit "/renameat2.c"))
+                (sha256
+                 (base32
+                  "07b4hsxqjm610sdkm4nxhp0gnl2s7gzlh4zdnja5ay40v4x24bb9"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:phases #~(modify-phases %standard-phases
+                     (delete 'configure)
+                     (replace 'build
+                       (lambda _
+                         (invoke #$(cc-for-target) "renameat2.c"
+                                 "-o" "renameat2")))
+                     (replace 'install
+                       (lambda _
+                         (install-file "renameat2"
+                                       (string-append #$output "/bin")))))))
+      (home-page "https://gist.github.com/eatnumber1/f97ac7dad7b1f5a9721f")
+      (synopsis "Command to call the renameat2 Linux system call")
+      (description "This package provides a @command{renameat2} command that
+calls the Linux-specific @code{renameat2} system call.")
+      (license license:expat))))
+
 (define-public libgpiod
   (package
     (name "libgpiod")
