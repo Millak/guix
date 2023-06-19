@@ -5661,6 +5661,34 @@ is much more flexible, since it can be used as direct replacement for
 provided by @code{tex.mp}.")
     (license license:public-domain)))
 
+(define-public texlive-markdown
+  (package
+    (name "texlive-markdown")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/markdown/examples/"
+                   "doc/generic/markdown/"
+                   "doc/latex/markdown/examples/"
+                   "scripts/markdown/"
+                   "source/generic/markdown/"
+                   "tex/context/third/markdown/"
+                   "tex/generic/markdown/"
+                   "tex/latex/markdown/"
+                   "tex/luatex/markdown/")
+             (base32
+              "0nmw1c4ynn0vzdkgpz2dnqimbxbyl6pc0khl2gbi8bd4g9dkai55")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/markdown")
+    (synopsis "Converting and rendering Markdown documents inside TeX")
+    (description
+     "The package provides facilities for the conversion of Markdown markup to
+plain TeX.  These are provided both in form of a Lua module and in form of
+plain TeX, LaTeX, and ConTeXt macro packages that enable the direct inclusion
+of Markdown documents inside TeX documents.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mcf2graph
   (package
     (name "texlive-mcf2graph")
