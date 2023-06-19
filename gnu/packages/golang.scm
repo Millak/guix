@@ -628,6 +628,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      `(("go-fix-script-tests.patch" ,(search-patch "go-fix-script-tests.patch"))
        ,@(package-native-inputs go-1.14)))))
 
+;; https://github.com/golang/go/wiki/MinimumRequirements#microarchitecture-support
+(define %go-1.17-arm-micro-architectures
+  (list "armv5" "armv6" "armv7"))
+
+(define %go-1.17-powerpc64le-micro-architectures
+  (list "power8" "power9"))
+
 (define-public go-1.17
   (package
     (inherit go-1.16)
@@ -844,7 +851,14 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   "README.md" "SECURITY.md"))))))))
     (inputs (if (not (or (target-arm?) (target-ppc64le?)))
               (alist-delete "gcc:lib" (package-inputs go-1.16))
-              (package-inputs go-1.16)))))
+              (package-inputs go-1.16)))
+    (properties
+     `((compiler-cpu-architectures
+         ("armhf" ,@%go-1.17-arm-micro-architectures)
+         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures))))))
+
+(define %go-1.18-x86_64-micro-architectures
+  (list "x86_64-v1" "x86_64-v2" "x86_64-v3" "x86_64-v4"))
 
 (define-public go-1.18
   (package
@@ -887,7 +901,12 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                            "ldflags, err := setextld(ldflags, compiler)\n"
                            "ldflags = append(ldflags, \"-r\")\n"
                            "ldflags = append(ldflags, \"" gcclib "\")\n")))))))
-               '())))))))
+               '())))))
+    (properties
+     `((compiler-cpu-architectures
+         ("armhf" ,@%go-1.17-arm-micro-architectures)
+         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
+         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
 
 (define-public go-1.19
   (package
