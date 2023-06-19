@@ -5604,6 +5604,29 @@ to place the picture at the point where the original (La)TeX commands
 appeared.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mfpic4ode
+  (package
+    (name "texlive-mfpic4ode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mfpic4ode/"
+                   "source/latex/mfpic4ode/"
+                   "tex/latex/mfpic4ode/")
+             (base32
+              "0ssmpvp1apxvinidq42pfpvjimpvd250har85n6rl7dj5fws9j8m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mfpic4ode")
+    (synopsis "Macros to draw direction fields and solutions of ODEs")
+    (description
+     "The package is a small set of macros for drawing direction fields, phase
+portraits and trajectories of differential equations and two dimensional
+autonomous systems.  The Euler, Runge-Kutta and fourth order Runge-Kutta
+algorithms are available to solve the ODEs.  The picture is translated into
+@code{mfpic} macros and MetaPost is used to create the final drawing.")
+    (license license:lppl)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
