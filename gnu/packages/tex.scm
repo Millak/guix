@@ -12933,6 +12933,26 @@ packages.")
                    license:lppl1.3a     ;for TeX support files
                    license:gpl2))))     ;for ams-mdbch.sty
 
+(define-public texlive-awesomebox
+  (package
+    (name "texlive-awesomebox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/awesomebox/"
+                   "tex/latex/awesomebox/")
+             (base32
+              "0jmxhas12fs30x2csv1rbsjr71a60fv2r3i5q7xd5n9zmmrnh32f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/awesomebox")
+    (synopsis "Draw admonition blocks in your documents")
+    (description
+     "Awesome Box is all about drawing admonition blocks around text to inform
+or alert readers about something particular.  The specific aim of this package
+is to use FontAwesome icons to ease the illustration of these blocks.")
+    (license license:wtfpl2)))
+
 (define-public texlive-mathdesign
   (package
     (name "texlive-mathdesign")
