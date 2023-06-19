@@ -6756,6 +6756,33 @@ definition, or to define space-stripped macros.")
 
 (define-deprecated-package texlive-latex-trimspaces texlive-trimspaces)
 
+(define-public texlive-tufte-latex
+  (package
+    (name "texlive-tufte-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/tufte-latex/"
+                   "doc/latex/tufte-latex/"
+                   "tex/latex/tufte-latex/")
+             (base32
+              "16jqf8assirdj769rajrdb70w8rc0kyj0q07bs6v13kfil5h0bdp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-changepage
+           texlive-ifmtarg
+           texlive-paralist
+           texlive-placeins
+           texlive-sauerj
+           texlive-xifthen))
+    (home-page "https://ctan.org/pkg/tufte-latex")
+    (synopsis "Document classes inspired by the work of Edward Tufte")
+    (description
+     "This package provides two classes inspired, respectively, by handouts
+and books created by Edward Tufte.")
+    (license license:asl2.0)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
