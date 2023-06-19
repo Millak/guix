@@ -871,6 +871,26 @@ the package is used).")
 is based on @code{pagegrid}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bidipresentation
+  (package
+    (name "texlive-bidipresentation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bidipresentation/"
+                   "tex/xelatex/bidipresentation/")
+             (base32
+              "0b9md68zzj3nzi9b4hdavjz43nwair1xg3b240p0bp5ly5l6pvmr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bidipresentation")
+    (synopsis "Experimental bidi presentation")
+    (description
+     "This package provides a great portion of the code is borrowed from the
+texpower bundle, with modifications to get things working properly in both
+right to left and left to right modes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libkpathsea
   (package/inherit texlive-bin
     (name "texlive-libkpathsea")
