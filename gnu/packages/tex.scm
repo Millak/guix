@@ -4873,6 +4873,25 @@ implementation is output device independent, and made very simple by relying
 on @code{everypage}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-drv
+  (package
+    (name "texlive-drv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/drv/" "metapost/drv/")
+             (base32
+              "0vjc9x9xa50zzzc3m2csj9x0gqwcamhyqz1xkdbkqwkcy8rfpnlh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/drv")
+    (synopsis "Derivation trees with MetaPost")
+    (description
+     "This package provides a set of MetaPost macros for typesetting
+derivation trees (such as used in sequent calculus, type inference,
+programming language semantics...).")
+    (license license:lppl)))
+
 (define-public texlive-enctex
   (package
     (name "texlive-enctex")
