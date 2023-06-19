@@ -13296,6 +13296,68 @@ used and strongly recommended in practice.")
 LaTeX which have widespread use.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-metapost
+  (package
+    (name "texlive-collection-metapost")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-automata
+           texlive-bbcard
+           texlive-blockdraw-mp
+           texlive-bpolynomial
+           texlive-cmarrows
+           texlive-collection-basic
+           texlive-drv
+           texlive-dviincl
+           texlive-emp
+           texlive-epsincl
+           texlive-expressg
+           texlive-exteps
+           texlive-featpost
+           texlive-feynmf
+           texlive-feynmp-auto
+           texlive-fiziko
+           texlive-garrigues
+           texlive-gmp
+           texlive-hatching
+           texlive-hershey-mp
+           texlive-latexmp
+           texlive-mcf2graph
+           texlive-metago
+           texlive-metaobj
+           texlive-metaplot
+           texlive-metapost
+           texlive-metapost-colorbrewer
+           texlive-metauml
+           texlive-mfpic
+           texlive-mfpic4ode
+           texlive-minim-hatching
+           texlive-mp3d
+           texlive-mparrows
+           texlive-mpattern
+           texlive-mpcolornames
+           texlive-mpgraphics
+           texlive-mptrees
+           texlive-piechartmp
+           texlive-repere
+           texlive-roex
+           texlive-roundrect
+           texlive-shapes
+           texlive-slideshow
+           texlive-splines
+           texlive-suanpan
+           texlive-textpath
+           texlive-threeddice))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "MetaPost and Metafont packages")
+    (description
+     "This collection includes all MetaPost and Metafont packages, along
+with packages in @code{collection-basic}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-grfext
   (package
     (name "texlive-grfext")
