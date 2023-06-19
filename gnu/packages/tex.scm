@@ -15458,23 +15458,6 @@ break statement, except that the loop does not terminate until the end of the
 current iteration.")
     (license license:lppl)))
 
-(define-public texlive-scheme-minimal
-  (package
-    (name "texlive-scheme-minimal")
-    (version (number->string %texlive-revision))
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments (list #:builder #~(mkdir #$output)))
-    (propagated-inputs (list texlive-collection-basic))
-    (home-page "https://www.tug.org/texlive/")
-    (synopsis "Minimal scheme (plain only)")
-    (description
-     "This is the minimal TeX Live scheme, with support for only plain
-TeX. (No LaTeX macros.) LuaTeX is included because Lua scripts are used in TeX
-Live infrastructure.  This scheme corresponds exactly to
-@code{collection-basic}.")
-    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
-
 (define-public texlive-scheme-basic
   (package
     (name "texlive-scheme-basic")
@@ -15493,6 +15476,57 @@ Computer Modern fonts.  This scheme corresponds to @code{collection-basic} and
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 (define-deprecated-package texlive-base texlive-scheme-basic)
+
+(define-public texlive-scheme-context
+  (package
+    (name "texlive-scheme-context")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-antt
+           texlive-asana-math
+           texlive-ccicons
+           texlive-collection-context
+           texlive-collection-metapost
+           texlive-dejavu
+           texlive-eulervm
+           texlive-gentium-tug
+           texlive-iwona
+           texlive-kurier
+           texlive-ly1
+           texlive-manfnt-font
+           texlive-marvosym
+           texlive-mflogo-font
+           texlive-poltawski
+           texlive-pxfonts
+           texlive-tex-gyre
+           texlive-tex-gyre-math
+           texlive-txfonts
+           texlive-wasy
+           texlive-xits))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "ConTeXt scheme")
+    (description "This is the TeX Live scheme for installing ConTeXt.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
+(define-public texlive-scheme-minimal
+  (package
+    (name "texlive-scheme-minimal")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs (list texlive-collection-basic))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Minimal scheme (plain only)")
+    (description
+     "This is the minimal TeX Live scheme, with support for only plain
+TeX. (No LaTeX macros.) LuaTeX is included because Lua scripts are used in TeX
+Live infrastructure.  This scheme corresponds exactly to
+@code{collection-basic}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
