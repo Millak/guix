@@ -4238,6 +4238,25 @@ cubic root function.  In addition, tangents on all functions and derivatives
 of polynomials can be calculated.")
     (license license:lppl)))
 
+(define-public texlive-cmarrows
+  (package
+    (name "texlive-cmarrows")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/cmarrows/"
+                   "metapost/cmarrows/")
+             (base32
+              "1awyf474n4f6fivb7ih9mpmz6641f815in8qrg2biagys3czsq96")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmarrows")
+    (synopsis "MetaPost arrows and braces in the Computer Modern style")
+    (description
+     "This MetaPost package contains macros to draw arrows and braces in the
+Computer Modern style.")
+    (license license:lppl)))
+
 (define-public texlive-cmexb
   (package
     (name "texlive-cmexb")
