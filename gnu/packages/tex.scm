@@ -2613,6 +2613,28 @@ the @file{.aux} file.")
 
 (define-deprecated-package texlive-latex-atveryend texlive-atveryend)
 
+(define-public texlive-automata
+  (package
+    (name "texlive-automata")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/automata/"
+                   "metapost/automata/")
+             (base32
+              "0y02wp1w2jkhrxanz7r699kr08bmbfn0h0xaxj3zh4xj9745d7d7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/automata")
+    (synopsis "Finite state machines, graphs and trees in MetaPost")
+    (description
+     "The package offers a collection of macros for MetaPost to make easier to
+draw finite-state machines, automata, labelled graphs, etc.  The user defines
+nodes, which may be isolated or arranged into matrices or trees; edges connect
+pairs of nodes through arbitrary paths.  Parameters, that specify the shapes
+of nodes and the styles of edges, may be adjusted.")
+    (license license:lppl)))
+
 (define-public texlive-auxhook
   (package
     (name "texlive-auxhook")
