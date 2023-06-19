@@ -394,9 +394,10 @@ of those files are returned that are unexpectedly installed."
              (source (with-store store
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
-    (let* ((meta-package? (null? locs))
-           (scripts (and (not meta-package?)
-                         (linked-scripts texlive-name package-database))))
+    (let* ((scripts (linked-scripts texlive-name package-database))
+           (tex-formats (formats data))
+           (meta-package? (null? locs))
+           (empty-package? (and meta-package? (not (pair? tex-formats)))))
       (values
        `(package
           (name ,name)
@@ -414,29 +415,33 @@ of those files are returned that are unexpectedly installed."
           ,@(if (assoc-ref data 'docfiles)
                 '((outputs '("out" "doc")))
                 '())
-          (build-system ,(if meta-package?
+          ;; Set build-system.
+          ;;
+          ;; Use trivial build system only when the package contains no files,
+          ;; and no TeX format file is expected to be built.
+          (build-system ,(if empty-package?
                              'trivial-build-system
                              'texlive-build-system))
           ;; Generate arguments field.
-          ,@(if meta-package?
-                '((arguments (list #:builder #~(mkdir #$output))))
-                (let* ((formats (formats data))
-                       (latex-bin-dependency?
-                        (member texlive-name
-                                (latex-bin-dependency-tree package-database)))
-                       (arguments
-                        (append (if latex-bin-dependency?
-                                    '(#:texlive-latex-bin? #f)
-                                    '())
-                                (if (pair? scripts)
-                                    `(#:link-scripts #~(list ,@scripts))
-                                    '())
-                                (if (pair? formats)
-                                    `(#:create-formats #~(list ,@formats))
-                                    '()))))
-                  (if (pair? arguments)
-                      `((arguments (list ,@arguments)))
-                      '())))
+          ,@(let* ((latex-bin-dependency?
+                    (member texlive-name
+                            (latex-bin-dependency-tree package-database)))
+                   (arguments
+                    (append (if empty-package?
+                                '(#:builder #~(mkdir #$output))
+                                '())
+                            (if latex-bin-dependency?
+                                '(#:texlive-latex-bin? #f)
+                                '())
+                            (if (pair? scripts)
+                                `(#:link-scripts #~(list ,@scripts))
+                                '())
+                            (if (pair? tex-formats)
+                                `(#:create-formats #~(list ,@tex-formats))
+                                '()))))
+              (if (pair? arguments)
+                  `((arguments (list ,@arguments)))
+                  '()))
           ;; Native inputs.
           ;;
           ;; Texlive build system generates font metrics whenever a font
