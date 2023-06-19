@@ -5608,6 +5608,32 @@ The library also contains functions to draw some objects constructed from
 these primitives.")
     (license (list license:gpl3+ license:cc-by-sa4.0))))
 
+(define-public texlive-font-change-xetex
+  (package
+    (name "texlive-font-change-xetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/font-change-xetex/"
+                   "tex/xetex/font-change-xetex/")
+             (base32
+              "1qhkxsk3wl6a8isik4ln1jq7ifhk7hbidq2i1lfy18c1py87xw5k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/font-change-xetex")
+    (synopsis "Macros to change text and mathematics fonts in plain XeTeX")
+    (description
+     "This package consists of macros that can be used to typeset plain XeTeX
+documents using any OpenType or TrueType font installed on the computer
+system.  The macros allow the user to change the text mode fonts and some math
+mode fonts.  For any declared font family, various font style, weight, and
+size variants like bold, italics, small caps, etc., are available through
+standard and custom TeX control statements.  Using the optional argument of
+the macros, the available XeTeX font features and OpenType tags can be
+accessed.  Other features of the package include activating and deactivating
+hanging punctuation, and support for special Unicode characters.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-garrigues
   (package
     (name "texlive-garrigues")
