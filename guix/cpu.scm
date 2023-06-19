@@ -285,3 +285,36 @@ corresponds to CPU, a record as returned by 'current-cpu'."
     (architecture
      ;; TODO: More architectures
      architecture)))
+
+(define (cpu->micro-architecture-level cpu)
+  "Return a micro-architecture name, suitable for generalized optimizations that
+correspond roughly to CPU, a record as returned by 'current-cpu'."
+  (match (cpu-architecture cpu)
+    ("x86_64"
+     (or (letrec-syntax ((if-flags (syntax-rules (=>)
+                                     ((_)
+                                      #f)
+                                     ((_ (flags ... => name) rest ...)
+                                      (if (every (lambda (flag)
+                                                   (set-contains? (cpu-flags cpu)
+                                                                  flag))
+                                                 '(flags ...))
+                                        name
+                                        (if-flags rest ...))))))
+
+           (if-flags
+             ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
+             ;; v4: AVX512F, AVX512BW, AVX512CD, AVX512DQ, AVX512VL
+             ;; v3: AVX, AVX2, BMI1, BMI2, F16C, FMA, LZCNT, MOVBE, OSXSAVE
+             ;; v2: CMPXCHG16B, LAHF, SAHF, POPCNT, SSE3, SSE4.1, SSE4.2, SSSE3
+             ("avx512f" "avx512bw" "abx512cd" "abx512dq" "avx512vl"
+              "avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v4")
+             ("avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v3")
+             ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v2")
+             (_ => "x86_64-v1")))
+         "x86_64-v1"))
+    (architecture
+     ;; TODO: More architectures
+     architecture)))
