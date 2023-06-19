@@ -6597,6 +6597,25 @@ re-processing.")
 
 (define-deprecated-package texlive-latex-pstool texlive-pstool)
 
+(define-public texlive-ptext
+  (package
+    (name "texlive-ptext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/ptext/" "tex/xelatex/ptext/")
+             (base32
+              "0ipb1mlg266rziznskdxi3iwi0s6374lp8ky0hhbi5llryg505p9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ptext")
+    (synopsis "Lipsum for Persian")
+    (description
+     "The package provides lipsum-like facilities for the Persian language.
+The source of the filling text is the Persian epic @emph{the Shanameh} (100
+paragraphs are used).")
+    (license license:lppl1.2+)))
+
 (define-public texlive-refcount
   (package
     (name "texlive-refcount")
