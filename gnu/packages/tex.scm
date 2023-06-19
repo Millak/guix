@@ -7236,6 +7236,27 @@ RTL script without any markup.")
 It only works with the XeTeX engine.")
     (license license:lppl1.3c)))
 
+(define-public texlive-unisugar
+  (package
+    (name "texlive-unisugar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/unisugar/"
+                   "tex/xelatex/unisugar/")
+             (base32
+              "1bn88ghfn14am1grph1pjw9k0xy1rz8swzhsbxsxyzz6cqk9s161")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unisugar")
+    (synopsis "Define syntactic sugar for Unicode LaTeX")
+    (description
+     "The package allows the user to define shorthand aliases for single
+Unicode characters, and also provides support for such aliases in RTL-text.
+The package requires an TeX-alike system that uses Unicode input in a native
+way: current examples are XeTeX and LuaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
