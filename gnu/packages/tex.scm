@@ -869,6 +869,33 @@ uppercase letters respectively (1 to a, 26 to z, 27 to aa, 52 to zz, 53 to ba,
 a replacement for LaTeX's @code{\\@@alph} and @code{\\@@Alph} macros.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-antt
+  (package
+    (name "texlive-antt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/antt/"
+                   "doc/latex/antt/"
+                   "fonts/afm/public/antt/"
+                   "fonts/enc/dvips/antt/"
+                   "fonts/map/dvips/antt/"
+                   "fonts/opentype/public/antt/"
+                   "fonts/tfm/public/antt/"
+                   "fonts/type1/public/antt/"
+                   "tex/latex/antt/"
+                   "tex/plain/antt/")
+             (base32
+              "1fvmgb581ixc4fvw5l0g11hlvdpf0cld6db0cg3vysw5yabas3vm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/antt")
+    (synopsis "Type 1 family of a Polish traditional type")
+    (description
+     "Antykwa Torunska is a serif font designed by the late Polish typographer
+Zygfryd Gardzielewski, reconstructed and digitized as Type 1.")
+    (license license:gfl1.0)))
+
 (define-public texlive-avantgar
   (package
     (name "texlive-avantgar")
