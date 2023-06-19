@@ -6914,6 +6914,26 @@ MetaPost.")
 result in the same document.")
     (license license:lppl1.2+)))
 
+(define-public texlive-simple-resume-cv
+  (package
+    (name "texlive-simple-resume-cv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/simple-resume-cv/"
+                   "tex/xelatex/simple-resume-cv/")
+             (base32
+              "07lqmjfjr58q7jgl59syv67hsy54rsig9f002wkwr1297z02k862")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simple-resume-cv")
+    (synopsis "Template for a simple resume or curriculum vitae (CV)")
+    (description
+     "This package provides a template for a simple resume or curriculum
+vitae (CV), in XeLaTeX.  This simple template can be further customized or
+extended, with numerous examples.")
+    (license license:public-domain)))
+
 (define-public texlive-slideshow
   (package
     (name "texlive-slideshow")
