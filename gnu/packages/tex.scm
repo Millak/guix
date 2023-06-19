@@ -5248,6 +5248,27 @@ that column has any marks at all; keep two column floats like @code{figure*}
 in sequence with single column floats like figure.")
     (license license:lppl)))
 
+(define-public texlive-fiziko
+  (package
+    (name "texlive-fiziko")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin name version
+                            (list "doc/metapost/fiziko/" "metapost/fiziko/")
+                            (base32
+                             "160iqgm4f7imnj89gj4822xv5wnnxf336k261v52h6sd0lhnhany")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fiziko")
+    (synopsis "MetaPost library for physics textbook illustrations")
+    (description
+     "This MetaPost library was initially written to automate some elements of
+black and white illustrations for a physics textbook.  It provides functions
+to draw things like lines of variable width, shaded spheres, and tubes of
+different kinds, which can be used to produce images of a variety of objects.
+The library also contains functions to draw some objects constructed from
+these primitives.")
+    (license (list license:gpl3+ license:cc-by-sa4.0))))
+
 (define-public texlive-hanging
   (package
     (name "texlive-hanging")
