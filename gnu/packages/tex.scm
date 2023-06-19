@@ -9073,6 +9073,26 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
+(define-public texlive-zbmath-review-template
+  (package
+    (name "texlive-zbmath-review-template")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/zbmath-review-template/"
+                   "tex/xelatex/zbmath-review-template/")
+             (base32
+              "1m5q03vjscla4wmy9fr3kl23pk8zmqw760i89zg62pj4np8vyplj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zbmath-review-template")
+    (synopsis "Template for a zbMATH Open review")
+    (description
+     "This package contains a template for zbMATH Open reviews.  It will show
+what your review will look like on zbMATH Open and you can test whether your
+LaTeX-Code will compile on our system.")
+    (license (list license:gpl3 license:cc-by-sa4.0))))
+
 (define-public texlive-zhspacing
   (package
     (name "texlive-zhspacing")
