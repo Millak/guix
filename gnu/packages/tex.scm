@@ -5112,6 +5112,25 @@ Shlaer-Mellor, and NIAM diagrams.  The package may also be used to create UML
 and most other Box-Line-Annotation charts, but not Gantt charts directly.")
     (license license:lppl)))
 
+(define-public texlive-exteps
+  (package
+    (name "texlive-exteps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/exteps/" "metapost/exteps/")
+             (base32
+              "1mmlmcjn8fk16y14p3q6xfmkcc75vcykblgcyzapzxd1nzy51ak7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exteps")
+    (synopsis "Include EPS figures in MetaPost")
+    (description
+     "Exteps is a module for including external EPS figures into MetaPost
+figures.  It is written entirely in MetaPost, and does not therefore require
+any post processing of the MetaPost output.")
+    (license license:gpl3+)))
+
 (define-public texlive-filemod
   (package
     (name "texlive-filemod")
