@@ -114,19 +114,19 @@ corresponds to CPU, a record as returned by 'current-cpu'."
   (match (cpu-architecture cpu)
     ("x86_64"
      ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.cc.
-     (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
-              (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
-              (letrec-syntax ((if-flags (syntax-rules (=>)
-                                          ((_)
-                                           #f)
-                                          ((_ (flags ... => name) rest ...)
-                                           (if (every (lambda (flag)
-                                                        (set-contains? (cpu-flags cpu)
-                                                                       flag))
-                                                      '(flags ...))
-                                             name
-                                             (if-flags rest ...))))))
+     (letrec-syntax ((if-flags (syntax-rules (=>)
+                                 ((_)
+                                  #f)
+                                 ((_ (flags ... => name) rest ...)
+                                  (if (every (lambda (flag)
+                                               (set-contains? (cpu-flags cpu)
+                                                              flag))
+                                             '(flags ...))
+                                    name
+                                    (if-flags rest ...))))))
 
+       (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
+                (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
                 (if-flags ("avx" "raoint" => "grandridge")
                           ("avx" "amx_fp16" => "graniterapids")
                           ("avx" "avxvnniint8" => "sierraforest")
@@ -152,20 +152,9 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                           ("ssse3" "movbe" => "bonnell")
                           ("ssse3" => "core2")
                           ("longmode" => "x86-64")
-                          ("lm" => "x86-64"))))
+                          ("lm" => "x86-64")))
 
-         (and (equal? "AuthenticAMD" (cpu-vendor cpu))
-              (letrec-syntax ((if-flags (syntax-rules (=>)
-                                          ((_)
-                                           #f)
-                                          ((_ (flags ... => name) rest ...)
-                                           (if (every (lambda (flag)
-                                                        (set-contains? (cpu-flags cpu)
-                                                                       flag))
-                                                      '(flags ...))
-                                             name
-                                             (if-flags rest ...))))))
-
+           (and (equal? "AuthenticAMD" (cpu-vendor cpu))
                 (or (and (= 22 (cpu-family cpu))
                          (if-flags ("movbe" => "btver2")))
                     (and (= 6 (cpu-family cpu))
@@ -192,20 +181,10 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                               ("lm" => "k8")
                               ("mmx" "3dnow" => "k6-3")
                               ("mmx" => "k6")
-                              (_ => "pentium")))))
+                              (_ => "pentium"))))
 
-         ;; Fallback case for non-Intel processors or for Intel processors not
-         ;; recognized above.
-         (letrec-syntax ((if-flags (syntax-rules (=>)
-                                     ((_)
-                                      #f)
-                                     ((_ (flags ... => name) rest ...)
-                                      (if (every (lambda (flag)
-                                                   (set-contains? (cpu-flags cpu)
-                                                                  flag))
-                                                 '(flags ...))
-                                          name
-                                          (if-flags rest ...))))))
+           ;; Fallback case for non-Intel processors or for processors not
+           ;; recognized above.
            (if (and (= 7 (cpu-family cpu))
                     (= #x3b (cpu-model cpu)))
              "lujiazui"
@@ -213,7 +192,7 @@ corresponds to CPU, a record as returned by 'current-cpu'."
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
-         "x86_64"))
+         "x86_64")))
     ("aarch64"
      ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
      ;; What to do with big.LITTLE cores?
