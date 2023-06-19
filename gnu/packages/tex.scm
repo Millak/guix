@@ -6072,6 +6072,27 @@ expanding strokes.  In @code{mftoeps}, Metafont writes PostScript code to
 a log-file, from which it may be extracted by either TeX or AWK.")
     (license license:public-domain)))
 
+(define-public texlive-roundrect
+  (package
+    (name "texlive-roundrect")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/roundrect/"
+                   "metapost/roundrect/"
+                   "source/metapost/roundrect/")
+             (base32
+              "0bx6xfr49rrcrnbyw917fab2qi0x29h66ip4nyhw6477815ic0wq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/roundrect")
+    (synopsis "MetaPost macros for configurable rounded rectangles")
+    (description
+     "The @code{roundrect} macros for MetaPost provide ways to produce rounded
+rectangles, which may or may not contain a title bar or text (the title bar
+may itself contain text).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-selinput
   (package
     (name "texlive-selinput")
