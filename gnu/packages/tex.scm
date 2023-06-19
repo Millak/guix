@@ -4178,6 +4178,24 @@ a language chosen by the user.  In addition, the package supports commands to
 change the typography of the bibliographies.")
     (license license:lppl1.0+)))
 
+(define-public texlive-bbcard
+  (package
+    (name "texlive-bbcard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/bbcard/" "metapost/bbcard/")
+             (base32
+              "1f1d3l85d0308izqpydmqmb4vpw47lqx1pwjiq14npjs8zfzkp18")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bbcard")
+    (synopsis "Bullshit bingo, calendar and baseball-score cards")
+    (description
+     "This set contains three jiffy packages for creating cards of various
+sorts with MetaPost.")
+    (license license:public-domain)))
+
 (define-public texlive-cmexb
   (package
     (name "texlive-cmexb")
