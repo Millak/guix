@@ -2213,6 +2213,36 @@ allocation macros to make use of the extended register range.  The
 e-TeX's facilities.")
     (license license:lppl1.3+)))
 
+(define-public texlive-eulervm
+  (package
+    (name "texlive-eulervm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eulervm/"
+                   "fonts/tfm/public/eulervm/"
+                   "fonts/vf/public/eulervm/"
+                   "source/latex/eulervm/" "tex/latex/eulervm/")
+             (base32
+              "118yidwnqw4acap2wdykcdx2cxp8q2ganz67ls6rkg6fid325mkq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eulervm")
+    (synopsis "Euler virtual math fonts")
+    (description
+     "The Euler fonts are suitable for typsetting mathematics in conjunction
+with a variety of text fonts that do not provide mathematical character sets
+of their own.  Euler-VM is a set of virtual mathematics fonts based on Euler
+and CM. This approach has several advantages over immediately using the real
+Euler fonts. Most noticeably, less TeX resources are consumed, the quality of
+various math symbols is improved and a usable @code{\\hslash} symbol can be
+provided.  The virtual fonts are accompanied by a LaTeX package which makes
+them easy to use, particularly in conjunction with Type1 PostScript text
+fonts.  They are compatible with @code{amsmath}.  A package option allows the
+fonts to be loaded at 95% of their nominal size, thus blending better with
+certain text fonts, e.g., Minion.")
+    (license license:lppl)))
+
 (define-public texlive-plain
   (package
     (name "texlive-plain")
