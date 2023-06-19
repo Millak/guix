@@ -896,6 +896,27 @@ a replacement for LaTeX's @code{\\@@alph} and @code{\\@@Alph} macros.")
 Zygfryd Gardzielewski, reconstructed and digitized as Type 1.")
     (license license:gfl1.0)))
 
+(define-public texlive-asana-math
+  (package
+    (name "texlive-asana-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/asana-math/"
+                   "fonts/opentype/public/asana-math/"
+                   "fonts/truetype/public/asana-math/")
+             (base32
+              "1q934gackj9j7b7bvlq7yv1pr9rxrhhip1as7ywgx8d45ddig2rq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asana-math")
+    (synopsis "Font to typeset maths in Xe(La)TeX and Lua(La)TeX")
+    (description
+     "The Asana-Math font is an OpenType font that includes almost all
+mathematical Unicode symbols and it can be used to typeset mathematical text
+with any software that can understand the MATH OpenType table.")
+    (license license:silofl1.1)))
+
 (define-public texlive-avantgar
   (package
     (name "texlive-avantgar")
