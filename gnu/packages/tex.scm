@@ -7480,6 +7480,25 @@ translate Tibetan to Unicode (range 0F00-0FFF).")
 supported by fonts usable in XeTeX.")
     (license license:asl2.0)))
 
+(define-public texlive-xetexko
+  (package
+    (name "texlive-xetexko")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/xetexko/" "tex/xetex/xetexko/")
+             (base32
+              "1jp5caxnyjf5fnndszaqpzsgcm2rhk5iapnpf1ca6mvxbnpf1x5l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetexko")
+    (synopsis "Typeset Korean with Xe(La)TeX")
+    (description
+     "The package supports typesetting Korean documents (including old Hangul
+texts), using XeTeX.  It enhances the existing support, in XeTeX, providing
+features that provide quality typesetting.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
