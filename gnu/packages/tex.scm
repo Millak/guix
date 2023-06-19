@@ -812,6 +812,27 @@ bidirectional texts with plain TeX and LaTeX.  The package includes
 adaptations for use with many other commonly-used packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bidi-atbegshi
+  (package
+    (name "texlive-bidi-atbegshi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bidi-atbegshi/"
+                   "tex/xelatex/bidi-atbegshi/")
+             (base32
+              "08gawna9hf5p3rn0v5qzszk61zqknixafvh6d2x37x960x493gn7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bidi-atbegshi")
+    (synopsis "Bidi-aware shipout macros")
+    (description
+     "The package adds some commands to the @code{atbegshi} package for proper
+placement of background material in the left and right corners of the output
+page, in both LTR and RTL modes.  The package only works with @code{xelatex}
+format and should be loaded before the @code{bidi} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libkpathsea
   (package/inherit texlive-bin
     (name "texlive-libkpathsea")
