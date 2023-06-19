@@ -7034,6 +7034,25 @@ of which make use of the @code{stackengine} core.")
      "The package provides macros for drawing Chinese and Japanese abaci.")
     (license license:lppl)))
 
+(define-public texlive-tetragonos
+  (package
+    (name "texlive-tetragonos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/tetragonos/"
+                   "tex/xelatex/tetragonos/")
+             (base32
+              "191727d2craai25847i2xfzlm04852afvrwdjsk3jjss46a43ixn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tetragonos")
+    (synopsis "Four-Corner codes of Chinese characters")
+    (description
+     "This is a XeLaTeX package for mapping Chinese characters to their codes
+in the Four-Corner method.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-threeddice
   (package
     (name "texlive-threeddice")
