@@ -7276,6 +7276,27 @@ way: current examples are XeTeX and LuaTeX.")
 It is a fork of @code{baposter} by Brian Amberg and Reinhold Kainhofer.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xechangebar
+  (package
+    (name "texlive-xechangebar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xechangebar/"
+                   "tex/xelatex/xechangebar/")
+             (base32
+              "0a7b9bffh5b435gw4qxydmfrpizly79cjgjhhlgywwg6gibvxn4s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xechangebar")
+    (synopsis "Extension of package @code{changebar} for use with XeLaTeX")
+    (description
+     "The package extends package @code{changebar} so it can be used with
+XeLaTeX.  It introduces the new option @code{xetex} for use with XeLaTeX.
+Everything else remains the same and users should consult the original
+documentation for usage information.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
