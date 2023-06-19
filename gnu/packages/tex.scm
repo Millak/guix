@@ -2922,6 +2922,36 @@ verbatim source).")
 
 (define-deprecated-package texlive-latex-fancyvrb texlive-fancyvrb)
 
+(define-public texlive-gentium-tug
+  (package
+    (name "texlive-gentium-tug")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gentium-tug/GentiumPlus-6.101/"
+                   "doc/fonts/gentium-tug/gentium-tug/"
+                   "fonts/afm/public/gentium-tug/"
+                   "fonts/enc/dvips/gentium-tug/"
+                   "fonts/map/dvips/gentium-tug/"
+                   "fonts/map/pdftex/gentium-tug/"
+                   "fonts/tfm/public/gentium-tug/"
+                   "fonts/truetype/public/gentium-tug/"
+                   "fonts/type1/public/gentium-tug/"
+                   "source/fonts/gentium-tug/"
+                   "tex/latex/gentium-tug/")
+             (base32
+              "1ns62cn7cqq3hzmljd6yvs2mip2l30pa3js6c1dm90fj01gsjq86")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gentium-tug")
+    (synopsis "Gentium fonts (in two formats) and support files")
+    (description
+     "Gentium is a typeface family designed to enable the diverse ethnic
+groups around the world who use the Latin, Cyrillic and Greek scripts to
+produce readable, high-quality publications.  It supports a wide range of
+Latin- and Cyrillic-based alphabets.")
+    (license (list license:expat license:silofl1.1))))
+
 (define-public texlive-gincltex
   (package
     (name "texlive-gincltex")
