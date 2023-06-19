@@ -6273,6 +6273,26 @@ result in the same document.")
 without intervention from other utilities (except a distiller).")
     (license (license:fsf-free "file://metapost/slideshow/slideshow.mp"))))
 
+(define-public texlive-splines
+  (package
+    (name "texlive-splines")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/splines/" "metapost/splines/"
+                   "source/metapost/splines/")
+             (base32
+              "15pvr4vl5whcrij6gq3al5jaqrshvm2qybvxq7qx0gdxzfsli38z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/splines")
+    (synopsis "MetaPost macros for drawing cubic spline interpolants")
+    (description
+     "This is a small package of macros for creating cubic spline interpolants
+in MetaPost or Metafont.  Given a list of points the macros can produce
+a closed or a relaxed spline joining them.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-stackengine
   (package
     (name "texlive-stackengine")
