@@ -4196,6 +4196,26 @@ change the typography of the bibliographies.")
 sorts with MetaPost.")
     (license license:public-domain)))
 
+(define-public texlive-blockdraw-mp
+  (package
+    (name "texlive-blockdraw-mp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/blockdraw_mp/"
+                   "metapost/blockdraw_mp/")
+             (base32
+              "1z0cgjslx4kx8fspf3i5h4idxlzhgpm14i16vq88c96z8cdjb2xy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/blockdraw_mp")
+    (synopsis "Block diagrams and bond graphs, with MetaPost")
+    (description
+     "This package provides a set of simple MetaPost macros to draw block
+diagrams and bond graphs. While the task is not itself difficult to program,
+it is felt that many users will be happy to have a library for the job.")
+    (license license:lppl)))
+
 (define-public texlive-cmexb
   (package
     (name "texlive-cmexb")
