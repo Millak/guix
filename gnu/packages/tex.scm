@@ -4216,6 +4216,28 @@ diagrams and bond graphs. While the task is not itself difficult to program,
 it is felt that many users will be happy to have a library for the job.")
     (license license:lppl)))
 
+(define-public texlive-bpolynomial
+  (package
+    (name "texlive-bpolynomial")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/bpolynomial/"
+                   "metapost/bpolynomial/")
+             (base32
+              "1p4c3xc55zij85yy1jhmj7jrkxss935qx5zdxbm79mjlxx1aq1q0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bpolynomial")
+    (synopsis "Drawing polynomial functions of up to order 3")
+    (description
+     "This MetaPost package helps plotting polynomial and root functions up to
+order three.  The package provides macros to calculate Bezier curves exactly
+matching a given constant, linear, quadratic or cubic polynomial, or square or
+cubic root function.  In addition, tangents on all functions and derivatives
+of polynomials can be calculated.")
+    (license license:lppl)))
+
 (define-public texlive-cmexb
   (package
     (name "texlive-cmexb")
