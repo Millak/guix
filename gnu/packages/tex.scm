@@ -5089,6 +5089,29 @@ remain in sequence).")
 
 (define-deprecated-package texlive-latex-expdlist texlive-expdlist)
 
+(define-public texlive-expressg
+  (package
+    (name "texlive-expressg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/expressg/"
+                   "metapost/expressg/"
+                   "source/metapost/expressg/")
+             (base32
+              "08f6lxxxmhfld6g2iy2kn68llalz3wayxqka7nd48s1ahm33kmdd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/expressg")
+    (synopsis "Diagrams consisting of boxes, lines, and annotations")
+    (description
+     "This package provides a MetaPost package providing facilities to assist
+in drawing diagrams that consist of boxes, lines, and annotations.  Particular
+support is provided for creating EXPRESS-G diagrams, for example IDEF1X, OMT,
+Shlaer-Mellor, and NIAM diagrams.  The package may also be used to create UML
+and most other Box-Line-Annotation charts, but not Gantt charts directly.")
+    (license license:lppl)))
+
 (define-public texlive-filemod
   (package
     (name "texlive-filemod")
