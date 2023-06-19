@@ -6934,6 +6934,27 @@ vitae (CV), in XeLaTeX.  This simple template can be further customized or
 extended, with numerous examples.")
     (license license:public-domain)))
 
+(define-public texlive-simple-thesis-dissertation
+  (package
+    (name "texlive-simple-thesis-dissertation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list
+              "doc/xelatex/simple-thesis-dissertation/Figures/"
+              "tex/xelatex/simple-thesis-dissertation/")
+             (base32
+              "023bl8ic6bn86297wbxip5lm34wkbq1kcrizkmmsdz7cfxpn6637")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simple-thesis-dissertation")
+    (synopsis "Template for a simple thesis, dissertation, or technical report")
+    (description
+     "This package provides a template for a simple thesis or dissertation or
+technical report, in XeLaTeX.  This simple template that can be further
+customized or extended, with numerous examples.")
+    (license license:public-domain)))
+
 (define-public texlive-slideshow
   (package
     (name "texlive-slideshow")
