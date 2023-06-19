@@ -5579,6 +5579,31 @@ provides a usable, human-friendly textual notation for UML, offering now
 support for class, package, activity, state, and use case diagrams.")
     (license license:gpl3+)))
 
+(define-public texlive-mfpic
+  (package
+    (name "texlive-mfpic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/mfpic/" "metafont/mfpic/"
+                   "metapost/mfpic/" "source/generic/mfpic/"
+                   "tex/generic/mfpic/")
+             (base32
+              "1s3z31mglmij7qc1f0681vv2a6md9wz9zbi6zlh7zvmhy5hzkjkv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mfpic")
+    (synopsis "Draw Metafont/post pictures from (La)TeX commands")
+    (description
+     "Mfpic is a scheme for producing pictures from (La)TeX commands.
+Commands @code{\\mfpic} and @code{\\endmfpic} (in LaTeX, the @code{mfpic}
+environment) enclose a group in which drawing commands may be placed.  The
+commands generate a Meta-language file, which may be processed by MetaPost (or
+even Metafont).  The resulting image file will be read back in to the document
+to place the picture at the point where the original (La)TeX commands
+appeared.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
