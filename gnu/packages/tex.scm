@@ -6049,6 +6049,29 @@ functions (curves, tangents, integrals, sequences) statistic diagrams plane
 geometry (polygons, circles), arrays and game boards.")
     (license license:lppl1.3c)))
 
+(define-public texlive-roex
+  (package
+    (name "texlive-roex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "metafont/roex/" "source/metafont/roex/")
+             (base32
+              "12w5wrrlk8rd4gx57646r01rb49ckmgnzhmx9385ll0sag8c9s2v")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mf-ps")
+    (synopsis "Metafont-PostScript conversions")
+    (description
+     "This package provides a Metafont support package including: @code{epstomf},
+a tiny AWK script for converting EPS files into Metafont; @code{mftoeps} for
+generating (encapsulated) PostScript files readable, e.g., by CorelDRAW, Adobe
+Illustrator and Fontographer; a collection of routines (in folder progs) for
+converting Metafont-coded graphics into encapsulated PostScript; and
+@code{roex.mf}, which provides Metafont macros for removing overlaps and
+expanding strokes.  In @code{mftoeps}, Metafont writes PostScript code to
+a log-file, from which it may be extracted by either TeX or AWK.")
+    (license license:public-domain)))
+
 (define-public texlive-selinput
   (package
     (name "texlive-selinput")
