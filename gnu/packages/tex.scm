@@ -6333,6 +6333,26 @@ of which make use of the @code{stackengine} core.")
      "The package provides macros for drawing Chinese and Japanese abaci.")
     (license license:lppl)))
 
+(define-public texlive-textpath
+  (package
+    (name "texlive-textpath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/textpath/"
+                   "metapost/textpath/" "tex/latex/textpath/")
+             (base32
+              "07g7n0hjsvsk0cibprpqid43vvljjzagap07zbp2kirkiv7yq3k0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/textpath")
+    (synopsis "Setting text along a path with MetaPost")
+    (description
+     "This MetaPost package provides macros to typeset text along a free path
+with the help of LaTeX, thereby preserving kerning and allowing for 8-bit
+input (accented characters).")
+    (license license:lppl)))
+
 (define-public texlive-tocloft
   (package
     (name "texlive-tocloft")
