@@ -6237,6 +6237,25 @@ possibility of suppressing some segments of the chart, thus creating the
 possibility of several charts from the same data.")
     (license license:lppl)))
 
+(define-public texlive-placeins
+  (package
+    (name "texlive-placeins")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/placeins/" "tex/latex/placeins/")
+             (base32
+              "0785ppjhf4x3by61mskwz289nzvbbw6iw7n0fq2dckgywjw3p2mz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/placeins")
+    (synopsis "Control float placement")
+    (description
+     "This package defines a @code{\\FloatBarrier} command, beyond which
+floats may not pass; useful, for example, to ensure all floats for a section
+appear before the next @code{\\section} command.")
+    (license license:public-domain)))
+
 (define-public texlive-psfrag
   (package
     (name "texlive-psfrag")
