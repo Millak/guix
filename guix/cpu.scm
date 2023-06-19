@@ -209,21 +209,7 @@ corresponds to CPU, a record as returned by 'current-cpu'."
            (if (and (= 7 (cpu-family cpu))
                     (= #x3b (cpu-model cpu)))
              "lujiazui"
-             (if-flags ("avx512" => "knl")
-                       ("adx" => "broadwell")
-                       ("avx2" => "haswell")
-                       ;; TODO: tigerlake, cooperlake, etc.
-                       ("avx" => "sandybridge")
-                       ("sse4_2" "gfni" => "tremont")
-                       ("sse4_2" "sgx" => "goldmont-plus")
-                       ("sse4_2" "xsave" => "goldmont")
-                       ("sse4_2" "movbe" => "silvermont")
-                       ("sse4_2" => "nehalem")
-                       ("ssse3" "movbe" => "bonnell")
-                       ("ssse3" "sse3" "longmode" => "nocona")
-                       ("ssse3" "sse3" "lm" => "nocona")
-                       ("ssse3" "sse3" => "prescott")
-                       ("ssse3" => "core2"))))
+             (cpu->micro-architecture-level cpu))
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
