@@ -5384,6 +5384,27 @@ possible and the picture code can be put inside arguments to commands,
 including @code{\\newcommand}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hershey-mp
+  (package
+    (name "texlive-hershey-mp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/hershey-mp/"
+                   "metapost/hershey-mp/")
+             (base32
+              "1pbybiqh5qgj9zh0yifxm2hn25h73kz1glrv1cz9sw38h6iydlzw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hershey-mp")
+    (synopsis "MetaPost support for the Hershey font file format")
+    (description
+     "This package provides MetaPost support for reading jhf vector font
+files, used by (mostly? only?) the so-called Hershey Fonts of the late 1960s.
+The package does not include the actual font files, which you can probably
+find in the software repository of your operating system.")
+    (license license:eupl1.2)))
+
 (define-public texlive-ifplatform
   (package
     (name "texlive-ifplatform")
