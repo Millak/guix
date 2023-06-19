@@ -6333,6 +6333,25 @@ of which make use of the @code{stackengine} core.")
      "The package provides macros for drawing Chinese and Japanese abaci.")
     (license license:lppl)))
 
+(define-public texlive-threeddice
+  (package
+    (name "texlive-threeddice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/threeddice/"
+                   "metapost/threeddice/")
+             (base32
+              "1sj4f3bbxjzwbncxlvlbmsnfi7jkf5625gwhbqfh399vlh0nb56j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/threeddice")
+    (synopsis "Create images of dice with one, two, or three faces showing")
+    (description
+     "The package provides MetaPost code to create all possible symmetrical
+views (up to rotation) of a right-handed die.")
+    (license license:lppl)))
+
 (define-public texlive-textpath
   (package
     (name "texlive-textpath")
