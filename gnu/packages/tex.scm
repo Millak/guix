@@ -6144,6 +6144,29 @@ the NotoSerif, NotoSans and NotoSansMono families of fonts, designed by Steve
 Matteson for Google.")
     (license (list license:lppl license:silofl1.1))))
 
+(define-public texlive-novel
+  (package
+    (name "texlive-novel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/novel/"
+                   "fonts/opentype/novel/"
+                   "tex/lualatex/novel/")
+             (base32
+              "0qg6rs54w1n1vr5dmi6vjks8xn8x04zngk8zz4cv0035jxn4irpc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/novel")
+    (synopsis "Class for printing fiction, such as novels")
+    (description
+     "This LuaLaTeX document class is specifically written to meet the needs
+of original fiction writers, who are typesetting their own novels for
+non-color print-on-demand technology.  The package is well suited for
+detective novels, science fiction, and short stories.  It is however not
+recommended for creating color picture books or dissertations.")
+    (license (list license:lppl1.3c license:silofl1.1))))
+
 (define-public texlive-pdftexcmds
   (package
     (name "texlive-pdftexcmds")
