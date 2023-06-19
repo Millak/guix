@@ -5664,6 +5664,25 @@ the @code{minim-mp} MetaPost processor.")
 polyhedra) in MetaPost.")
     (license license:lppl)))
 
+(define-public texlive-mparrows
+  (package
+    (name "texlive-mparrows")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/mparrows/"
+                   "metapost/mparrows/")
+             (base32
+              "0pc9w5g6qasfpv4dxf0aahahbxk6kjwirdmx8l4i27syjb1lgzw9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mparrows")
+    (synopsis "MetaPost module with different types of arrow heads")
+    (description
+     "This package provides a package to provide different types of arrow
+heads to be used with MetaPost commands")
+    (license license:public-domain)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
