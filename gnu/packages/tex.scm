@@ -5646,6 +5646,24 @@ algorithms are available to solve the ODEs.  The picture is translated into
 the @code{minim-mp} MetaPost processor.")
     (license license:eupl1.2)))
 
+(define-public texlive-mp3d
+  (package
+    (name "texlive-mp3d")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/mp3d/" "metapost/mp3d/")
+             (base32
+              "1qfg4ifm5z72sr8vimibmpmqh0cxzipiy4jr8rbq5qsj2mfqzphd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mp3d")
+    (synopsis "3D animations")
+    (description
+     "This library creates animations of 3-dimensional objects (such as
+polyhedra) in MetaPost.")
+    (license license:lppl)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
