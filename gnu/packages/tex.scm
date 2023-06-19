@@ -7461,6 +7461,25 @@ documents.")
 translate Tibetan to Unicode (range 0F00-0FFF).")
     (license license:lppl)))
 
+(define-public texlive-xetexfontinfo
+  (package
+    (name "texlive-xetexfontinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/xetexfontinfo/"
+                   "tex/xetex/xetexfontinfo/")
+             (base32
+              "0x1llikcvwlf74anmvaks73gvd99xha9dg49zh75dwki0nwisn2j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetexfontinfo")
+    (synopsis "Report font features in XeTeX")
+    (description
+     "This package provides a pair of documents to reveal the font features
+supported by fonts usable in XeTeX.")
+    (license license:asl2.0)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
