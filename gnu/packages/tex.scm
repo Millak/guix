@@ -5627,6 +5627,25 @@ algorithms are available to solve the ODEs.  The picture is translated into
 @code{mfpic} macros and MetaPost is used to create the final drawing.")
     (license license:lppl)))
 
+(define-public texlive-minim-hatching
+  (package
+    (name "texlive-minim-hatching")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minim-hatching/"
+                   "metapost/minim-hatching/")
+             (base32
+              "0qcd5zvhj9hrdhb7il1hbfdh5sgccl6mvwwmpw9fymbwdri9224f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minim-hatching")
+    (synopsis "Create tiling patterns with @code{minim-mp} MetaPost processor")
+    (description
+     "This is a small proof-of-concept library of tiling patterns for use with
+the @code{minim-mp} MetaPost processor.")
+    (license license:eupl1.2)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
