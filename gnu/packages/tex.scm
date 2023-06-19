@@ -7216,6 +7216,26 @@ a document with no explicit font selection, but a series of rules of the form
 RTL script without any markup.")
     (license license:lppl1.3+)))
 
+(define-public texlive-unimath-plain-xetex
+  (package
+    (name "texlive-unimath-plain-xetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/unimath-plain-xetex/"
+                   "fonts/misc/xetex/fontmapping/unimath-plain-xetex/"
+                   "tex/xetex/unimath-plain-xetex/")
+             (base32
+              "0vqnqfklg1mj7mipgrfng0qq1i9psiqri0yh30ixrz8j6mkaqb35")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unimath-plain-xetex")
+    (synopsis "OpenType math support in (plain) XeTeX")
+    (description
+     "This package provides OpenType math font support in plain TeX format.
+It only works with the XeTeX engine.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
