@@ -5933,6 +5933,28 @@ available for LuaTeX by reimplementing them using Lua.")
 
 (define-deprecated-package texlive-latex-pdftexcmds texlive-pdftexcmds)
 
+(define-public texlive-piechartmp
+  (package
+    (name "texlive-piechartmp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/piechartmp/"
+                   "metapost/piechartmp/")
+             (base32
+              "0xf83k85bwbdy4d1m23zyk5zjg9qw960q4rkgf2i1449w30gf3hp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/piechartmp")
+    (synopsis "Draw pie-charts using MetaPost")
+    (description
+     "The @code{piechartmp} package is an easy way to draw pie-charts with
+MetaPost.  The package implements an interface that enables users with little
+MetaPost experience to draw charts.  A highlight of the package is the
+possibility of suppressing some segments of the chart, thus creating the
+possibility of several charts from the same data.")
+    (license license:lppl)))
+
 (define-public texlive-psfrag
   (package
     (name "texlive-psfrag")
