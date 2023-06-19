@@ -7419,6 +7419,29 @@ XeLaTeX.  As such, it has the same user interface and the same capabilities.")
 Sanskrit in Kannada and for Kannada itself.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xetex-pstricks
+  (package
+    (name "texlive-xetex-pstricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/xetex-pstricks/"
+                   "tex/xelatex/xetex-pstricks/"
+                   "tex/xetex/xetex-pstricks/")
+             (base32
+              "195zjdxddlwl69gnp2x3jg3l8gn36mxsdbz03qs0r940frx533ls")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetex-pstricks")
+    (synopsis "Running PSTricks under XeTeX")
+    (description
+     "The package provides an indirection scheme for XeTeX to use the PSTricks
+@file{xdvipdfmx.cfg} configuration file, so that XeTeX documents will load it
+in preference to the standard pstricks.con configuration file.  With this
+configuration, many PSTricks features can be used in XeLaTeX or plain XeTeX
+documents.")
+    (license license:public-domain)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
