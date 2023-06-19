@@ -12836,6 +12836,68 @@ the @code{psnfss} distribution.")
     ;; Either LPPL version 1.0 or later, or GPL version 2
     (license (list license:lppl1.0+ license:gpl2))))
 
+(define-public texlive-arabxetex
+  (package
+    (name "texlive-arabxetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/arabxetex/"
+                   "fonts/misc/xetex/fontmapping/arabxetex/"
+                   "source/xelatex/arabxetex/"
+                   "tex/xelatex/arabxetex/")
+             (base32
+              "097lh7ksw9rg93f1c7a4fqglgfpydf1qp3sbgy9xfgszcdpknmrk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "xelatex"
+      #:phases
+           #~(modify-phases %standard-phases
+               ;; Use dummy fonts to avoid pulling in needless dependencies.
+               ;; We're only interested in building the package, not the
+               ;; documentation.
+               (add-after 'unpack 'change-fonts
+                 (lambda _
+                   (substitute* "source/xelatex/arabxetex/arabxetex.dtx"
+                     (("(newfontfamily.*?\\{)[^}]+}" _ prefix)
+                      (string-append prefix "FreeSans}"))
+                     (("(set(main|mono|sans)font(\\[.*?])?\\{)[^}]+}" _ prefix)
+                      (string-append prefix "FreeSans}"))))))))
+    (native-inputs
+     (list fontconfig
+           font-gnu-freefont
+           texlive-amsmath
+           texlive-amsfonts
+           texlive-bidi
+           texlive-fancyvrb
+           texlive-fontspec
+           texlive-hologo
+           texlive-hypdoc
+           texlive-hyperref
+           texlive-infwarerr
+           texlive-kvdefinekeys
+           texlive-kvoptions
+           texlive-kvsetkeys
+           texlive-ltxcmds
+           texlive-paralist
+           texlive-pdftexcmds
+           texlive-supertabular
+           texlive-tools
+           texlive-xetex
+           texlive-xkeyval
+           texlive-zref))
+    (home-page "https://ctan.org/pkg/arabxetex")
+    (synopsis "ArabTeX-like interface for XeLaTeX")
+    (description
+     "ArabXeTeX provides a convenient ArabTeX-like user-interface for
+typesetting languages using the Arabic script in XeLaTeX, with flexible access
+to font features.  Input in ArabTeX notation can be set in three different
+vocalization modes or in roman transliteration.  Direct UTF-8 input is also
+supported.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-arev
   (package
     (name "texlive-arev")
