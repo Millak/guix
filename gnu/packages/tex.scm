@@ -5494,6 +5494,26 @@ methods of usage are provided, either using the package programmatically, or
 using the package via a script (which may produce several images).")
     (license license:lppl)))
 
+(define-public texlive-metaobj
+  (package
+    (name "texlive-metaobj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/metaobj/" "metapost/metaobj/")
+             (base32
+              "1ir6p14h79x5iqbxmj2893x8j1d490bnhs83jwnrbcjxn0yxky6w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metaobj")
+    (synopsis "MetaPost package providing high-level objects")
+    (description
+     "METAOBJ is a large MetaPost package providing high-level objects.  It
+implements many of PSTricks features for node connections, but also trees,
+matrices, and many other things.  It more or less contains @code{boxes.mp} and
+@code{rboxes.mp}.  It is easily extensible with new objects.")
+    (license license:lppl)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
