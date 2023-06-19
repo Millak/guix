@@ -6616,6 +6616,29 @@ The source of the filling text is the Persian epic @emph{the Shanameh} (100
 paragraphs are used).")
     (license license:lppl1.2+)))
 
+(define-public texlive-realscripts
+  (package
+    (name "texlive-realscripts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/realscripts/"
+                   "source/latex/realscripts/"
+                   "tex/latex/realscripts/")
+             (base32
+              "1yk1v1ybd1zv1x6rc8qd2mbbwc5h91i44scnih6v2n5nrh61jfxb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/realscripts")
+    (synopsis "Access OpenType subscript and superscript glyphs")
+    (description
+     "This package replaces @code{\\textsuperscript} and
+@code{\\textsubscript} commands by equivalent commands that use OpenType font
+features to access appropriate glyphs if possible.  It also patches LaTeX's
+default footnote command to use this new @code{\\textsuperscript} for footnote
+symbols.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-refcount
   (package
     (name "texlive-refcount")
