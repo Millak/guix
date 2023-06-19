@@ -13997,6 +13997,27 @@ SGML-based languages.  Xindy is highly configurable, both in markup terms and
 in terms of the collating order of the text being processed.")
     (license license:gpl2+)))
 
+(define-public texlive-xits
+  (package
+    (name "texlive-xits")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/xits/"
+                   "fonts/opentype/public/xits/")
+             (base32
+              "1359zgi8r4mwjv273zmc5jghyy4i54amkrmkq80z67x4kx092724")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xits")
+    (synopsis "Scientific Times-like font")
+    (description
+     "XITS is a Times-like font for scientific typesetting with proper
+mathematical support for modern, Unicode and OpenType capable TeX engines,
+namely LuaTeX and XeTeX. For use with LuaLaTeX or XeLaTeX, support is
+available from the @code{fontspec} and @code{unicode-math} packages.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ntgclass
   (package
     (name "texlive-ntgclass")
