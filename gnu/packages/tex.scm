@@ -833,6 +833,26 @@ page, in both LTR and RTL modes.  The package only works with @code{xelatex}
 format and should be loaded before the @code{bidi} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bidicontour
+  (package
+    (name "texlive-bidicontour")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bidicontour/"
+                   "tex/xelatex/bidicontour/")
+             (base32
+              "1kiqbn5map3d9bmlvr5cq1snssw44c772xzjp6yyjvg6wg1zy0bn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bidicontour")
+    (synopsis "Bidi-aware coloured contour around text")
+    (description
+     "The package is a re-implementation of the @code{contour} package, making
+it Bidi-aware, and adding support of the xdvipdfmx (when the outline option of
+the package is used).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libkpathsea
   (package/inherit texlive-bin
     (name "texlive-libkpathsea")
