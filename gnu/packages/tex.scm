@@ -5174,6 +5174,28 @@ for diagrams in graph and similar theories, where the structure is
 semi-algorithmically determined.")
     (license license:gpl3+)))
 
+(define-public texlive-feynmp-auto
+  (package
+    (name "texlive-feynmp-auto")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/feynmp-auto/"
+                   "source/latex/feynmp-auto/"
+                   "tex/latex/feynmp-auto/")
+             (base32
+              "19ghfblv641ghak049v42wbqmh7pfadz0mrbkfbx2jr4bvf57rv2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/feynmp-auto")
+    (synopsis "Automatic processing of @code{feynmp} graphics")
+    (description
+     "The package takes care of running Metapost on the output files produced
+by the @code{feynmp} package, so that the compiled pictures will be available
+in the next run of LaTeX. The package honours options that apply to
+@code{feynmp}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-filemod
   (package
     (name "texlive-filemod")
