@@ -14613,6 +14613,63 @@ LaTeX which have widespread use.")
 with packages in @code{collection-basic}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-xetex
+  (package
+    (name "texlive-collection-xetex")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-arabxetex
+           texlive-awesomebox
+           texlive-bidi-atbegshi
+           texlive-bidicontour
+           texlive-bidipagegrid
+           texlive-bidipresentation
+           texlive-bidishadowtext
+           texlive-businesscard-qrcode
+           texlive-collection-basic
+           texlive-cqubeamer
+           texlive-fixlatvian
+           texlive-font-change-xetex
+           texlive-fontbook
+           texlive-fontwrap
+           texlive-interchar
+           texlive-na-position
+           texlive-philokalia
+           texlive-ptext
+           texlive-realscripts
+           texlive-simple-resume-cv
+           texlive-simple-thesis-dissertation
+           texlive-tetragonos
+           texlive-ucharclasses
+           texlive-unicode-bidi
+           texlive-unimath-plain-xetex
+           texlive-unisugar
+           texlive-xebaposter
+           texlive-xechangebar
+           texlive-xecolor
+           texlive-xecyr
+           texlive-xeindex
+           texlive-xesearch
+           texlive-xespotcolor
+           texlive-xetex
+           texlive-xetex-itrans
+           texlive-xetex-pstricks
+           texlive-xetex-tibetan
+           texlive-xetexconfig
+           texlive-xetexfontinfo
+           texlive-xetexko
+           texlive-xevlna
+           texlive-zbmath-review-template))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "XeTeX and packages")
+    (description
+     "This collection includes packages for XeTeX, the Unicode and
+OpenType-enabled TeX by Jonathan Kew.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-grfext
   (package
     (name "texlive-grfext")
