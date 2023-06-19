@@ -6167,6 +6167,32 @@ detective novels, science fiction, and short stories.  It is however not
 recommended for creating color picture books or dissertations.")
     (license (list license:lppl1.3c license:silofl1.1))))
 
+(define-public texlive-octavo
+  (package
+    (name "texlive-octavo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/octavo/" "source/latex/octavo/"
+                   "tex/latex/octavo/")
+             (base32
+              "10ycj2xg2v7cq4my51dcc749hrrkg2gd41xyrwv1dg1lp9vh7j4z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/octavo")
+    (synopsis "Typeset books following classical design and layout")
+    (description
+     "The @code{octavo} class is a modification of the standard LaTeX
+@code{book} class.  Its purpose is to typeset books following classical design
+and layout principles, with the express intention of encouraging the making of
+beautiful books by anyone with access to a good printer and with an
+inclination towards venerable crafts, e.g., bookbinding.  The @code{octavo}
+class differs from the book class by implementing many of the proposals and
+insights of respected experts, especially Jan Tschichold and Hugh Williamson.
+The documentation discusses methods to organise and print out any text into
+signatures, which can then be gathered, folded and sewn into a book.")
+    (license license:lppl)))
+
 (define-public texlive-pdftexcmds
   (package
     (name "texlive-pdftexcmds")
