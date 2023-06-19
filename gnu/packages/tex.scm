@@ -7677,6 +7677,40 @@ into Python''.  The package is modelled on @code{lipsum}, and may be used for
 similar purposes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-kurier
+  (package
+    (name "texlive-kurier")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/kurier/"
+                   "fonts/afm/nowacki/kurier/"
+                   "fonts/enc/dvips/kurier/"
+                   "fonts/map/dvips/kurier/"
+                   "fonts/opentype/nowacki/kurier/"
+                   "fonts/tfm/nowacki/kurier/"
+                   "fonts/type1/nowacki/kurier/"
+                   "tex/latex/kurier/"
+                   "tex/plain/kurier/")
+             (base32
+              "0j89iv0yyy33dyyka0w0v5jykl41sdn7plxrrxa91qmxzqvi2y67")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kurier")
+    (synopsis "Two-element sans-serif typeface")
+    (description
+     "Kurier is a two-element sans-serif typeface.  It was designed for
+a diploma in typeface design at the Warsaw Academy of Fine Arts under the
+supervision of Roman Tomaszewski.  This distribution contains a significantly
+extended set of characters covering the following modern alphabets:
+latin (including Vietnamese), Cyrillic and Greek as well as a number of
+additional symbols (including mathematical symbols).  The fonts are prepared
+in Type 1 and OpenType formats.  For use with TeX the following encoding files
+have been prepared: T1 (ec), T2 (abc), and OT2--Cyrillic, T5 (Vietnamese),
+OT4, QX, texansi and--nonstandard (IL2 for the Czech fonts), as well as
+supporting macros and files defining fonts for LaTeX.")
+    (license license:gfl1.0)))
+
 (define-public texlive-lipsum
   (package
     (name "texlive-lipsum")
