@@ -5654,6 +5654,25 @@ hanging punctuation, and support for special Unicode characters.")
 evaluation, etc.).")
     (license license:lppl1.3+)))
 
+(define-public texlive-fontwrap
+  (package
+    (name "texlive-fontwrap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/fontwrap/"
+                   "tex/xelatex/fontwrap/")
+             (base32
+              "0nzphhwgm9387mn2rfhmsandyvcwv99lxm5978jg6pycs43dggs7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontwrap")
+    (synopsis "Bind fonts to specific Unicode blocks")
+    (description
+     "The package (which runs under XeLaTeX) lets you bind fonts to specific
+Unicode blocks, for automatic font tagging of multilingual text.")
+    (license license:gpl3+)))
+
 (define-public texlive-garrigues
   (package
     (name "texlive-garrigues")
