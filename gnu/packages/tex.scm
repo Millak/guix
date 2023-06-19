@@ -7297,6 +7297,26 @@ Everything else remains the same and users should consult the original
 documentation for usage information.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xecolor
+  (package
+    (name "texlive-xecolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xecolor/"
+                   "tex/xelatex/xecolor/")
+             (base32
+              "0adzg2j1lmclr5zcs8da3m1b9q5xs50rxga6k2pzzxy2x0nh1xpi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xecolor")
+    (synopsis "Support for color in XeLaTeX")
+    (description
+     "This is a simple package which defines about 140 different colours using
+XeTeX's colour feature.  The colours can be used in bidirectional texts
+without any problem.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
