@@ -547,7 +547,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.3.2")
+    (version "4.4.4")
     (source
      (origin
        (method url-fetch)
@@ -555,13 +555,12 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1kbyinm9fnxpx9chkyd11yr9rxvcxvw3ml7kzvxcfa8v7jnl0dmx"))
+        (base32 "05xzafv8ry5k5mzn3i4l71d42q42kjl81q154i97qmqiy3s2fhkb"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Delete the bundled dependencies.
-           (delete-file-recursively "packages")
-           #t))))
+           (delete-file-recursively "packages")))))
     (build-system python-build-system)
     (inputs
      (list libsecp256k1
@@ -585,31 +584,13 @@ do so.")
      `(#:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; setup.py installs to ~/.local/share if sys.prefix/share isn't
-               ;; writable.  sys.prefix points to Python's, not our, --prefix.
-               (mkdir-p (string-append out "/share"))
-               (substitute* "setup.py"
-                 (("sys\\.prefix")
-                  (format #f "\"~a\"" out)))
-               #t)))
-         (add-after 'unpack 'relax-dnspython-version-requirement
-           ;; The version requirement for dnspython>=2.0,<2.1 makes the
-           ;; sanity-check phase fail, but the application seems to be working
-           ;; fine with dnspython 2.1 (the version we have currently).
-           (lambda _
-             (substitute* "contrib/requirements/requirements.txt"
-               (("dnspython>=.*")
-                "dnspython"))))
          (add-after 'unpack 'use-libsecp256k1-input
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "electrum/ecc_fast.py"
-               (("library_paths = .* 'libsecp256k1.so.0'.")
-                (string-append "library_paths = ('"
+               (("library_paths = \\[\\]")
+                (string-append "library_paths = ['"
                                (assoc-ref inputs "libsecp256k1")
-                               "/lib/libsecp256k1.so.0'"))))))))
+                               "/lib/libsecp256k1.so']"))))))))
     (home-page "https://electrum.org/")
     (synopsis "Bitcoin wallet")
     (description
