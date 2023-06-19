@@ -1814,18 +1814,19 @@ side effects when unit testing.")
   (package
     (name "python-mypy-extensions")
     (version "1.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "mypy_extensions" version))
-        (sha256
-         (base32
-          "10h7mwjjfbwxzq7jzaj1pnv9g6laa1k0ckgw72j44160bnazinvm"))))
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mypy_extensions" version))
+              (sha256
+               (base32
+                "10h7mwjjfbwxzq7jzaj1pnv9g6laa1k0ckgw72j44160bnazinvm"))))
     (build-system python-build-system)
-    (arguments `(#:tests? #f)); no tests
+    (arguments
+     `(#:tests? #f)) ;no tests
     (home-page "https://github.com/python/mypy_extensions")
     (synopsis "Experimental extensions for MyPy")
-    (description "The @code{python-mypy-extensions} module defines
+    (description
+     "The @code{python-mypy-extensions} module defines
 experimental extensions to the standard @code{typing} module that are
 supported by the MyPy typechecker.")
     (license license:expat)))
