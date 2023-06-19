@@ -5363,6 +5363,27 @@ yet reflected in the package's or class's code.  The file
 meant to be loaded during format generation and not by the user.")
     (license license:lppl1.3c)))
 
+(define-public texlive-gmp
+  (package
+    (name "texlive-gmp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gmp/" "source/latex/gmp/"
+                   "tex/latex/gmp/")
+             (base32
+              "1zvl80wjg4xsika0p0v6jskrwdpy3n7qbfvbg76qbzzpc03n6x6a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gmp")
+    (synopsis "Enable integration between MetaPost pictures and LaTeX")
+    (description
+     "The package allows integration between MetaPost pictures and LaTeX.
+The main feature is that passing parameters to the MetaPost pictures is
+possible and the picture code can be put inside arguments to commands,
+including @code{\\newcommand}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ifplatform
   (package
     (name "texlive-ifplatform")
