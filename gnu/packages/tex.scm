@@ -5433,6 +5433,29 @@ between various classes of Unix systems.")
 
 (define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
 
+(define-public texlive-latexmp
+  (package
+    (name "texlive-latexmp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/latexmp/" "metapost/latexmp/")
+             (base32
+              "1zxwxss5sl16laaqalr8043wmyk2bhlja3al5xlxkizvlnflqy0f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexmp")
+    (synopsis "Interface for LaTeX-based typesetting in MetaPost")
+    (description
+     "The MetaPost package @code{latexMP} implements a user-friendly interface
+to access LaTeX-based typesetting capabilities in MetaPost.  The text to be
+typeset is given as string.  This allows even dynamic text elements, for
+example counters, to be used in labels.  Compared to other implementations it
+is much more flexible, since it can be used as direct replacement for
+@code{btex.etex}, and much faster, compared for example to the solution
+provided by @code{tex.mp}.")
+    (license license:public-domain)))
+
 (define-public texlive-natbib
   (package
     (name "texlive-natbib")
