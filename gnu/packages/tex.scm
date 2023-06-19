@@ -7317,6 +7317,24 @@ XeTeX's colour feature.  The colours can be used in bidirectional texts
 without any problem.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xecyr
+  (package
+    (name "texlive-xecyr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xecyr/" "tex/xelatex/xecyr/")
+             (base32
+              "07qvxfnwha6iqzcv84ws074jdi8jn60h42l93jn037n3zj2qxkg8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xecyr")
+    (synopsis "Using Cyrillic languages in XeTeX")
+    (description
+     "This package provides helper tools for using Cyrillic languages with
+XeLaTeX and @code{babel}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-currfile
   (package
     (name "texlive-currfile")
