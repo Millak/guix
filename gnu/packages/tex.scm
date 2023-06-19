@@ -5131,6 +5131,26 @@ figures.  It is written entirely in MetaPost, and does not therefore require
 any post processing of the MetaPost output.")
     (license license:gpl3+)))
 
+(define-public texlive-featpost
+  (package
+    (name "texlive-featpost")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/featpost/"
+                   "metapost/featpost/")
+             (base32
+              "0a97syvr3vwpayhasb98ssvgwr99p13plrjnqb9ad24jd6srmmdg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/featpost")
+    (synopsis "MetaPost macros for 3D")
+    (description
+     "These macros allow the production of three-dimensional schemes
+containing angles, circles, cylinders, cones and spheres, among other
+things.")
+    (license license:gpl3+)))
+
 (define-public texlive-filemod
   (package
     (name "texlive-filemod")
