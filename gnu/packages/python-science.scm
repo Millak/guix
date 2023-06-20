@@ -324,13 +324,13 @@ implements several methods for sequential model-based optimization.
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "3.10.7")
+    (version "3.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trimesh" version))
        (sha256
-        (base32 "0bw55cwxlxds0j54naijh64sdb0rkscx4i1fy0ql94h96kw2p2ir"))))
+        (base32 "1ck4dkhz1x6sznd83c1hlvsv2m6d22fr82na0947j5jf47a4c1gl"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy))
@@ -346,7 +346,7 @@ implements several methods for sequential model-based optimization.
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-build
            (lambda _
-             (substitute* "trimesh/resources/templates/blender_boolean.py"
+             (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
                (("\\$MESH_PRE")
                 "'$MESH_PRE'")))))))
     (home-page "https://github.com/mikedh/trimesh")
