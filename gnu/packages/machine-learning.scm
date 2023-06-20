@@ -2394,7 +2394,7 @@ Python.")
            ;; "ZIP does not support timestamps before 1980".  Luckily,
            ;; SOURCE_DATE_EPOCH is respected, which we set to some time in
            ;; 1980.
-           (lambda _ (setenv "SOURCE_DATE_EPOCH" "315532800") #t))
+           (lambda _ (setenv "SOURCE_DATE_EPOCH" "315532800")))
          (add-after 'unpack 'python3.10-compatibility
            (lambda _
              ;; See https://github.com/tensorflow/tensorflow/issues/20517#issuecomment-406373913
