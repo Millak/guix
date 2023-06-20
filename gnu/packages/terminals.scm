@@ -1150,13 +1150,13 @@ than a terminal.")
 (define-public python-curtsies
   (package
     (name "python-curtsies")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curtsies" version))
        (sha256
-        (base32 "1zj284kacv0d10ab3amkkx37hcciylkqympsksi9bwzy6g7fyafb"))))
+        (base32 "1c122vgfsvksxkd41g2vij6hjsz97ikg59snclq4af2mkhs0zlb2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
