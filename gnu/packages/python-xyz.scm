@@ -25423,6 +25423,7 @@ parentdir_prefix = dask-
     (propagated-inputs
      (list python-cloudpickle
            python-fsspec
+           python-importlib-metadata ;needed at runtime for dask/_compatibility.py
            python-numpy
            python-packaging
            python-pandas
