@@ -1341,7 +1341,7 @@ aggregated sum and more.")
 (define-public python-pyvista
   (package
     (name "python-pyvista")
-    (version "0.36.1")
+    (version "0.39.1")
     (source
      ;; The PyPI tarball does not contain the tests.
      ;; (However, we don't yet actually run the tests.)
@@ -1352,15 +1352,15 @@ aggregated sum and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kjilcrz2cyh67n79r8dpxrans99mlviz2whc6g7j8hgn7v14z2n"))))
+        (base32 "00nij00z5r35f6dx7mwndsrpmiw43adjk8x35mk308c369ylbv9p"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-appdirs
-           python-imageio
+     (list python-imageio
            python-matplotlib
            python-meshio
            python-numpy
            python-pillow
+           python-pooch
            python-scooby
            vtk))
     (arguments
@@ -1371,7 +1371,7 @@ aggregated sum and more.")
          (delete 'check)
          ;; Disable the sanity check, which fails with the following error:
          ;;
-         ;;   ...checking requirements: ERROR: pyvista==0.34.0 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
+         ;;   ...checking requirements: ERROR: pyvista==0.39.1 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
          (delete 'sanity-check))))
     (home-page "https://docs.pyvista.org/")
     (synopsis "3D plotting and mesh analysis through VTK")
