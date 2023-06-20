@@ -2435,6 +2435,8 @@ Python.")
              (substitute* "tensorflow/python/keras/callbacks.py"
                (("from collections import Iterable")
                 "from collections.abc import Iterable"))
+             (substitute* "tensorflow/python/ops/variable_scope.py"
+               (("collections_lib.Sequence") "collections_lib.abc.Sequence"))
 
              ;; XXX: it is not clear if this is a good idea, but the build
              ;; system tries to overwrite the __or__ and __ror__ methods of
@@ -2453,7 +2455,7 @@ Python.")
                 "void CompareUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,"))
 
              ;; ...and for numpy >= 1.23
-             (substitute* '("tensorflow/python/framework/tensor_util.py")
+             (substitute* "tensorflow/python/framework/tensor_util.py"
                (("np.asscalar\\(x\\[0\\]\\)") "x[0].item()")
                (("np.asscalar\\(x\\)") "x.item()")
                (("np.asscalar\\(v\\)") "np.ndarray.item(v)")
