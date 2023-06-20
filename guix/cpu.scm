@@ -32,7 +32,8 @@
             cpu-model
             cpu-flags
 
-            cpu->gcc-architecture))
+            cpu->gcc-architecture
+            gcc-architecture->micro-architecture-level))
 
 ;;; Commentary:
 ;;;
@@ -283,3 +284,24 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
     (architecture
      ;; TODO: More architectures
      architecture)))
+
+(define (gcc-architecture->micro-architecture-level gcc-architecture)
+  "Return a matching psABI micro-architecture, allowing optimizations for x86_64
+CPUs for compilers which don't allow for more focused optimizing."
+  ;; Matching gcc-architectures isn't an easy task, with the rule-of-thumb being
+  ;; 'Haswell and higher' qualify for x86_64-v3.
+  ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
+  (match gcc-architecture
+    ((or "grandridge" "graniterapids" "sierraforest" "tigerlake"
+         "sapphirerapids" "cooperlake" "icelake-server" "icelake-client"
+         "cannonlake" "knm" "knl" "skylake-avx512" "alderlake" "skylake"
+         "broadwell" "haswell"
+         "znver4" "znver3" "znver2" "znver1" "bdver4")
+     "x86_64-v3")
+    ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
+         "nehalem" "bonnell" "core2"
+         "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
+         "amdfam10"
+         "lujiazui" "x86-64")
+     "x86_64-v1")
+    (_ gcc-architecture)))
