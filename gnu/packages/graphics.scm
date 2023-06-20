@@ -2395,7 +2395,7 @@ generated discrete signed distance field using the cubic spline kernel.
 (define-public mmg
   (package
     (name "mmg")
-    (version "5.6.0")
+    (version "5.7.1")
     (source
      (origin
        (method git-fetch)
@@ -2404,7 +2404,7 @@ generated discrete signed distance field using the cubic spline kernel.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "173biz5skbwg27i5w6layg7mydjzv3rmi1ywhra4rx9rjf5c0cc5"))))
+        (base32 "0skb7yzsw6y44zp9gb729i5xks7qd97nvn3z6jhz4jksqksx7lz0"))))
     (build-system cmake-build-system)
     (outputs '("out" "lib" "doc"))
     (arguments
@@ -2414,11 +2414,14 @@ generated discrete signed distance field using the cubic spline kernel.
                    ;; The build doesn't honor -DCMAKE_INSTALL_BINDIR, hence
                    ;; the adjust-bindir phase.
                    ;;(string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
+                   (string-append "-DCMAKE_INSTALL_MANDIR=" #$output "/share/man")
                    "-DBUILD_SHARED_LIBS=ON"
+                   "-DBUILD_DOC=ON"
                    "-DBUILD_TESTING=ON"
                    ;; The longer tests are for continuous integration and
                    ;; depend on input data which must be downloaded.
                    "-DONLY_VERY_SHORT_TESTS=ON"
+                   "-DUSE_SCOTCH=ON"
                    ;; TODO: Add Elas (from
                    ;; https://github.com/ISCDtoolbox/LinearElasticity).
                    "-DUSE_ELAS=OFF"
@@ -2443,9 +2446,6 @@ generated discrete signed distance field using the cubic spline kernel.
                    (invoke "make" "doc")))
                (add-after 'install 'install-doc
                  (lambda _
-                   (copy-recursively
-                    "../source/doc/man" (string-append #$output
-                                                       "/share/man/man1"))
                    (copy-recursively
                     "doc" (string-append #$output:doc "/share/doc/"
                                          #$name "-" #$version))))
