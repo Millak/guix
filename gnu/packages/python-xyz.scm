@@ -15218,14 +15218,14 @@ use of the Meson build system.")
 (define-public python-pyflakes
   (package
     (name "python-pyflakes")
-    (version "2.4.0")
+    (version "3.2.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyflakes" version))
         (sha256
          (base32
-          "0k5jn8jpxni264wxf6cc3xcd1qckc0pww30bsd77mwzdf8l5ra05"))))
+          "0gxgz0kg008pgmjk1dn8z3g00dfa9pc3f80pm6r1yqjly4zn0q8w"))))
     (build-system python-build-system)
     (home-page "https://github.com/PyCQA/pyflakes")
     (synopsis "Passive checker of Python programs")
