@@ -2450,7 +2450,20 @@ Python.")
                (("void BinaryUFunc\\(char\\*\\* args, npy_intp\\* dimensions, npy_intp\\* steps,")
                 "void BinaryUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,")
                (("void CompareUFunc\\(char\\*\\* args, npy_intp\\* dimensions, npy_intp\\* steps,")
-                "void CompareUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,"))))
+                "void CompareUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,"))
+
+             ;; ...and for numpy >= 1.23
+             (substitute* '("tensorflow/python/framework/tensor_util.py")
+               (("np.asscalar\\(x\\[0\\]\\)") "x[0].item()")
+               (("np.asscalar\\(x\\)") "x.item()")
+               (("np.asscalar\\(v\\)") "np.ndarray.item(v)")
+               (("return np.asscalar") "return np.ndarray.item"))
+             (substitute* "tensorflow/python/kernel_tests/cwise_ops_test.py"
+               (("np.asscalar\\(np.random.rand\\(1\\) \\* 100.\\)")
+                "(np.random.rand(1) * 100.).item()"))
+             (substitute* '("tensorflow/python/framework/fast_tensor_util.pyx"
+                            "tensorflow/python/estimator/canned/linear_testing_utils.py")
+               (("np.asscalar") "np.ndarray.item"))))
          (add-after 'python3.10-compatibility 'chdir
            (lambda _ (chdir "tensorflow/contrib/cmake")))
          (add-after 'chdir 'disable-downloads
