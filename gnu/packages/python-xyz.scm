@@ -23914,13 +23914,13 @@ with PEP 484 argument (and return) type annotations.")
 (define-public bpython
   (package
     (name "bpython")
-    (version "0.23")
+    (version "0.24")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bpython" version))
        (sha256
-        (base32 "0ah5giynavyh70yc0jqgmjaajv3xg5j2y7k9i3q8mi47r2mph04z"))))
+        (base32 "1g9xzl49skghd9q2a8b71gg1n97lfnj9in2kzcmzsj4cgbynywwq"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -23945,7 +23945,6 @@ with PEP 484 argument (and return) type annotations.")
            python-requests
            python-curtsies
            python-greenlet
-           python-six
            python-cwcwidth
            python-pyxdg
            ;; optional dependencies
