@@ -1208,7 +1208,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.2")
+    (version "1.10.3")
     (source
      (origin
        (method url-fetch)
@@ -1216,7 +1216,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                            version "/mu-" version ".tar.xz"))
        (sha256
         (base32
-         "0mj43lnxr11wg354q8svcqjc403b36igb7ia406yavw6xfk46w9f"))))
+         "0pr4w2afhansi151lx3145rsaf3gxfjx21y26p8jfg0nnvy70ff8"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
