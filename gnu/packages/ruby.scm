@@ -3240,29 +3240,35 @@ and inspect the environment.")
 (define-public ruby-ptools
   (package
     (name "ruby-ptools")
-    (version "1.3.5")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "ptools" version))
               (sha256
                (base32
-                "1jb1h1nsk9zwykpniw8filbsk26kjsdlpk5wz6w0zyamcd41h87j"))))
+                "0damllbshkxycrwjv80sz78h76dw7r9z54d17mb5cbha1daq9q2d"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-/bin/ls
-                    (lambda _
-                      (substitute* "test/test_binary.rb"
-                        (("/bin/ls")
-                         (which "ls")))
-                      #t))
-                   (add-before 'install 'create-gem
-                     (lambda _
-                       ;; Do not attempt to sign the gem.
-                       (substitute* "Rakefile"
-                         (("spec\\.signing_key = .*")
-                          ""))
-                       (invoke "rake" "gem:create"))))))
+     (list
+      #:test-target "spec:all"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                ;; Don't require rubocop
+                (("require 'rubocop/rake_task'") "")
+                (("RuboCop::RakeTask.new") "")
+                ;; Do not attempt to sign the gem.
+                (("spec\\.signing_key = .*") ""))
+
+              (substitute* "spec/binary_spec.rb"
+                (("/bin/ls")    (which "ls"))
+                (("/bin/cat")   (which "cat"))
+                (("/bin/chmod") (which "chmod"))
+                (("/bin/df")    (which "df"))))))))
+    (native-inputs
+     (list ruby-rspec))
     (synopsis "Extra methods for Ruby's @code{File} class")
     (description
      "The @dfn{ptools} (power tools) library extends Ruby's core @code{File}
