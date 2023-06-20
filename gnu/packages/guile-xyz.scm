@@ -4062,6 +4062,50 @@ enriched with pure Guile Scheme algorithms, all accessible through a nice,
 clean and easy to use high level API.")
     (license license:gpl3+)))
 
+(define-public guile-ffi-cblas
+  (let ((commit "4458d50f84786d7ace0181c6588345eed7474996")
+        (revision "0"))
+    (package
+      (name "guile-ffi-cblas")
+      (version (git-version "0.0.0" revision commit))
+      (home-page "https://github.com/lloda/guile-ffi-cblas")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page)
+                                    (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "050s0lq64v286hkxqczkfkx3fp1vr3jm5w236hxx67br9najb1cp"))))
+      (build-system guile-build-system)
+      (arguments
+       (list #:source-directory "mod"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'set-blas-file-name
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "mod/ffi/cblas.scm"
+                       (("\"libcblas\"")
+                        (string-append "\""
+                                       (search-input-file
+                                        inputs "/lib/libopenblas.so")
+                                       "\"")))))
+                 (add-after 'build 'check
+                   (lambda _
+                     (invoke "guile" "-C" "mod" "-L" "mod"
+                             "test/test-ffi-cblas.scm"))))))
+      (native-inputs (list guile-3.0))
+      (inputs (list openblas))
+      (synopsis "Guile bindings for CBLAS, the linear algebra library")
+      (description
+       "This package provides Guile FFI bindings for CBLAS, the library of
+linear algebra subprograms.
+
+To use the bindings, import @code{(ffi cblas)}.  CBLAS will be loaded from the
+default dynamic library path.  There are up to three bindings for each
+function: raw, typed, and functional.")
+      (license license:lgpl3+))))
+
 (define-public guile-ffi-fftw
   (let ((commit "294ad9e7491dcb40026d2fec9be2af05263be1c0")
         (revision "2"))
