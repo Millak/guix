@@ -28754,7 +28754,7 @@ placement and scaling of SVG figures and adding markers, such as labels.")
      (list
       ;; Avoid python-pytest-coverage
       #:test-flags '(list "-c /dev/null")))
-    (propagated-inputs (list python-wcwidth))
+    (propagated-inputs (list python-six python-wcwidth))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/jquast/blessed")
     (synopsis "Wrapper around terminal capabilities")
