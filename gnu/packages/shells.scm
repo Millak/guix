@@ -460,7 +460,7 @@ history mechanism, job control and a C-like syntax.")
 (define-public zsh
   (package
     (name "zsh")
-    (version "5.8.1")
+    (version "5.9")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -471,7 +471,7 @@ history mechanism, job control and a C-like syntax.")
                            ".tar.xz")))
               (sha256
                (base32
-                "06crvpqbpm8sq5c215f4b985z7npwnqnj0i0g53hnq6fp8h3b5xn"))
+                "1mdc8lnq8qxq1ahxp8610n799pd7a9kqg3liy7xq2pjvvp71x3cv"))
               (patches (search-patches "zsh-egrep-failing-test.patch"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
