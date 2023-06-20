@@ -2794,15 +2794,15 @@ DESTINATION include/tensorflow/c FILES_MATCHING PATTERN \"*.h\")\n" m)))))
        ("swig" ,swig)
        ("unzip" ,unzip)))
     (propagated-inputs
-     `(("python-absl-py" ,python-absl-py)
-       ("python-astor" ,python-astor)
-       ("python-gast" ,python-gast)
-       ("python-grpcio" ,python-grpcio)
-       ("python-numpy" ,python-numpy)
-       ("python-protobuf" ,python-protobuf-3.6)
-       ("python-six" ,python-six)
-       ("python-termcolo" ,python-termcolor)
-       ("python-wheel" ,python-wheel)))
+     (list python-absl-py
+           python-astor
+           python-gast
+           python-grpcio
+           python-numpy
+           python-protobuf-3.6
+           python-six
+           python-termcolor
+           python-wheel))
     (inputs
      `(("c-ares" ,c-ares)
        ("eigen" ,eigen-for-tensorflow)
