@@ -2388,16 +2388,7 @@ interfaces.")
                       (string-append builddir "/src/nomad ")))
                    (for-each
                     (lambda (f) (fix-exe-path dir f))
-                    '("param1.txt" "param2.txt" "param3.txt" "param10.txt")))))))
-
-         ;; The information in the .egg-info file is not kept up to date.
-         (add-after 'install 'delete-superfluous-egg-info
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (delete-file (string-append
-                           (site-packages inputs outputs)
-                           "/PyNomad-0.0.0-py"
-                           (python-version (assoc-ref inputs "python"))
-                           ".egg-info")))))))
+                    '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))))))))
     (home-page "https://www.gerad.ca/nomad/")
     (synopsis "Nonlinear optimization by mesh-adaptive direct search")
     (description
