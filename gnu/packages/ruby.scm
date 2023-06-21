@@ -6716,7 +6716,9 @@ rate.")
          "1c1bkl97i9mkcvkn1jks346ksnvnnp84cs22gwl0vd7radybrgy5"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f)) ; No included tests
+     (list
+      #:ruby ruby-2.7
+      #:tests? #f)) ; No included tests
     (synopsis "Creates a version constraint of supported Rubies")
     (description
      "This package helps create a version constraint of supported Rubies,
