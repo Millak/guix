@@ -95,6 +95,7 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages apparmor)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
@@ -10164,6 +10165,42 @@ suggestions from various sources, including:
 @end itemize\n
 This tool supports checking Kconfig options and kernel cmdline parameters.")
     (license license:gpl3)))
+
+(define-public firejail
+  (package
+    (name "firejail")
+    (version "0.9.72")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/netblue30/firejail/releases/download/" version
+                    "/firejail-" version ".tar.xz" ))
+              (sha256
+               (base32
+                "1x77xy1mwfgjrcsymdda82bjnqgl7z2yymcb10mzd1zwik27gqc2"))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "test"
+                       (invoke "make"))))))))
+    (build-system gnu-build-system)
+    (inputs
+     (list apparmor xdg-dbus-proxy))
+    (synopsis "Linux namespaces sandbox program")
+    (description
+     "Firejail is a SUID sandbox program that reduces the risk of security
+breaches by restricting the running environment of untrusted applications
+using Linux namespaces, seccomp-bpf and Linux capabilities.  The software
+includes sandbox profiles for a number of common Linux programs.  Firejail
+should be added to the list of setuid programs in the system configuration to
+work properly.")
+    (home-page "https://github.com/netblue30/firejail")
+    (supported-systems
+     (filter (cut string-suffix? "-linux" <>) %supported-systems))
+    (license license:gpl2+)))
 
 (define-public edac-utils
   (package
