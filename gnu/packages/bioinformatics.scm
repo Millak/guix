@@ -11732,13 +11732,7 @@ using high-throughput sc-RNAseq data.")
                (copy-file (string-append "bin/sambamba-" ,version)
                           (string-append bin "/sambamba"))))))))
     (native-inputs
-     `(("ld-gold-wrapper"
-        ;; Importing (gnu packages commencement) would introduce a cycle.
-        ,(module-ref (resolve-interface
-                      '(gnu packages commencement))
-                     'ld-gold-wrapper))
-       ("binutils-gold" ,binutils-gold)
-       ("python" ,python)))
+     (list python))
     (inputs
      (list ldc lz4 zlib))
     (home-page "https://github.com/biod/sambamba")
