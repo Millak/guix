@@ -6787,14 +6787,14 @@ The output can be customized with a formatting system.")
 (define-public ruby-pry
   (package
     (name "ruby-pry")
-    (version "0.13.1")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "pry" version))
        (sha256
         (base32
-         "0iyw4q4an2wmk8v5rn2ghfy2jaz9vmw2nk8415nnpx2s866934qk"))))
+         "0k9kqkd9nps1w1r1rb7wjr31hqzkka2bhi8b518x78dcxppm9zn4"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; no tests
