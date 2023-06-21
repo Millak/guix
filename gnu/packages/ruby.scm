@@ -680,6 +680,15 @@ groups.")
               (sha256
                (base32
                 "0psjy5kdlz3ph39br0m01w65i1ikagnqlg39f8p65jh5q7dz8hwc"))))
+    (arguments
+     (cons*
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "lib/rspec/core/ruby_project.rb"
+                (("File\\.exists\\?") "File.exist?")))))
+      (package-arguments ruby-rspec-core)))
     (propagated-inputs `())))
 
 (define-public ruby-date
