@@ -1219,7 +1219,20 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
     (arguments
      '(#:test-target "run_minimal_tests"
        #:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON")))
+       '("-DBUILD_SHARED_LIBS=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? test-target parallel-tests? #:allow-other-keys)
+             (when tests?
+               ;; SSLTest.HostMatching fails due to an expired certificate.
+               ;; Fake the time to be that of the release.
+               (invoke "faketime" "2022-05-23"
+                       "make" test-target
+                       "-j" (if parallel-tests?
+                                (number->string (parallel-job-count))
+                                "1"))))))))
+    (native-inputs (list libfaketime))
     (synopsis "General purpose cryptographic library")
     (description "AWS libcrypto (aws-lc) contains portable C implementations
 of algorithms needed for TLS and common applications, and includes optimized
