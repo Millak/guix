@@ -1344,7 +1344,7 @@ aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
     (name "aws-sdk-cpp")
     ; When updating also check for a tagged update to aws-crt-cpp from
     ; https://github.com/aws/aws-sdk-cpp/tree/main/crt
-    (version "1.9.236")
+    (version "1.9.306")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1353,7 +1353,7 @@ aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13qhxsbfn81r7lg382wb4d3xfc4a287ikww5i7whddk5yz0j8384"))))
+                "0k3f4xq4vvlwrwgpp0vka4pwzbnkylvrkbbkjksx6wq6g1a2gc2g"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests are run during the build phase.
