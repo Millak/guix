@@ -9852,28 +9852,38 @@ is an infix boolean expression used by Cucumber.")
     (home-page "https://github.com/cucumber/tag-expressions")
     (license license:expat)))
 
-(define-public ruby-bindex
+(define-public ruby-skiptrace
   (package
-    (name "ruby-bindex")
-    (version "0.5.0")
+    (name "ruby-skiptrace")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
-       (uri (rubygems-uri "bindex" version))
+       (uri (rubygems-uri "skiptrace" version))
        (sha256
         (base32
-         "1wvhf4v8sk5x8li03pcc0v0wglmyv7ikvvg05bnms83dfy7s4k8i"))))
+         "1qpjy6pqd8hx4w7bai64jsr10mwbpnnb65wcbssyqcnalimi1s12"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "default"))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-git-from-gemspec
+            (lambda _
+              (substitute* "skiptrace.gemspec"
+                (("`git ls-files -z`") "`find . -type f -print0 |sort -z`"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "bundle" "exec" "rake" "default")))))))
     (native-inputs
      (list bundler ruby-rake-compiler))
     (synopsis "Provides access for bindings relating to Ruby exceptions")
     (description
-     "@code{bindex} provides a way to access the bindings that relate to
+     "@code{skiptrace} provides a way to access the bindings that relate to
 exceptions in Ruby, providing more information about the context in which the
 exception occurred.")
-    (home-page "https://github.com/gsamokovarov/bindex")
+    (home-page "https://github.com/gsamokovarov/skiptrace")
     (license license:expat)))
 
 (define-public ruby-bio-logger

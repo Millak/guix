@@ -1426,7 +1426,7 @@ Stimulus can be used.")
                ;; needs to be in the Gemfile to become available.
                (("group :test do") "group :test do\n  gem 'tzinfo-data'")))))))
     (propagated-inputs
-     (list ruby-actionview ruby-activemodel ruby-arel ruby-bindex ruby-railties))
+     (list ruby-actionview ruby-activemodel ruby-arel ruby-skiptrace ruby-railties))
     (native-inputs
      (list bundler ruby-rails ruby-mocha ruby-simplecov))
     (synopsis "Debugging tool for your Ruby on Rails applications")
