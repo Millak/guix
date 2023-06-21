@@ -16072,6 +16072,7 @@ parts (e.g., given and family names, honorifics etc.).")
     (arguments
      ;; thanks to the Gentoo packagers for figuring this out
      (list
+      #:ruby ruby-2.7
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'extract-gemspec 'fix-tests
