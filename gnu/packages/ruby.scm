@@ -4535,20 +4535,20 @@ Soundex, Metaphone, Double Metaphone, Porter Stemming.")
 (define-public ruby-gettext
   (package
     (name "ruby-gettext")
-    (version "3.1.7")
+    (version "3.4.4")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "gettext" version))
               (sha256
                (base32
-                "1hg9islkm324mb4sd4za1fgafj1hqnm3bdvzj3k4fqpnzqnbcfiq"))))
+                "11hlxkk2yr9wjwd3nf8kgmsjcd8wf35yqlxi9wpvrgmvrk9n9a2k"))))
     (build-system ruby-build-system)
     ;; ruby-test-unit is required to run tests, but that needs ruby-packnga,
     ;; which needs ruby-gettext.  To break the dependency cycle we disable
     ;; tests.
     (arguments `(#:tests? #f))
     (propagated-inputs
-     (list ruby-locale ruby-text))
+     (list ruby-locale ruby-text ruby-erubi))
     (native-inputs
      (list bundler ruby-yard))
     (synopsis "GNU gettext-like program for Ruby")
