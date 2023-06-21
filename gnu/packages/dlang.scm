@@ -236,19 +236,12 @@ bootstrapping more recent compilers written in D.")
                      (system ,(or (%current-target-system)
                                   (%current-system))))
                  (define (gnu-triplet->clang-arch system)
-                   (letrec-syntax
-                       ((matches (syntax-rules (=>)
-                                   ((_ (system-prefix => target) rest ...)
-                                    (if (string-prefix? system-prefix system)
-                                        target
-                                        (matches rest ...)))
-                                   ((_)
-                                    (error "Clang target for system is unknown"
-                                           system)))))
-                     (matches ("x86_64"      => "x86_64")
-                              ("i686"        => "i386")
-                              ("armhf"       => "armhf")
-                              ("aarch64"     => "aarch64"))))
+                   (let ((system-prefix
+                           (car (string-tokenize
+                                  system (char-set-complement (char-set #\-))))))
+                     (cond
+                       ((equal? system-prefix "i686") "i386")
+                       (#t system-prefix))))
                  ;; Coax LLVM into agreeing with Clang about system target
                  ;; naming.
                  (substitute* "driver/linker-gcc.cpp"
