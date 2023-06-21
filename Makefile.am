@@ -184,6 +184,7 @@ MODULES =					\
   guix/build-system/texlive.scm			\
   guix/build-system/tree-sitter.scm		\
   guix/build-system/trivial.scm			\
+  guix/build-system/zig.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
   guix/gnupg.scm				\
@@ -270,6 +271,7 @@ MODULES =					\
   guix/build/graft.scm				\
   guix/build/bournish.scm			\
   guix/build/qt-utils.scm			\
+  guix/build/zig-build-system.scm		\
   guix/build/make-bootstrap.scm			\
   guix/search-paths.scm				\
   guix/packages.scm				\

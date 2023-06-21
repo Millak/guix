@@ -10219,6 +10219,27 @@ Python package is used to run the script can be specified with the
 @code{#:python} parameter.
 @end defvar
 
+@defvar zig-build-system
+This variable is exported by @code{(guix build-system zig)}.  It implements
+the build procedures for the @uref{https://ziglang.org/, Zig}
+build system (@command{zig build} command).
+
+Selecting this build system adds @code{zig} to the package inputs, in
+addition to the packages of @code{gnu-build-system}.
+
+There is no @code{configure} phase because Zig packages typically do not
+need to be configured.  The @code{#:zig-build-flags} parameter is a list of
+flags that are passed to the @code{zig} command during the build.  The
+@code{#:zig-test-flags} parameter is a list of flags that are passed to the
+@code{zig test} command during the @code{check} phase.  The default compiler
+package can be overridden with the @code{#:zig} argument.
+
+The optional @code{zig-release-type} parameter declares the type of release.
+Possible values are: @code{safe}, @code{fast}, or @code{small}. The default
+value is @code{#f}, which causes the release flag to be omitted from the
+@code{zig} command.  That results in a @code{debug} build.
+@end defvar
+
 @defvar scons-build-system
 This variable is exported by @code{(guix build-system scons)}.  It
 implements the build procedure used by the SCons software construction
