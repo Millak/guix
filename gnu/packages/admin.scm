@@ -4276,6 +4276,28 @@ on systems running the Linux kernel.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:gpl2)))
 
+(define-public tcptrack
+  (package
+    (name "tcptrack")
+    (version "1.4.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bchretien/tcptrack")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08lh3l67wn4kq9q0nfspc7rj0jvp9dzwjgxpvqliwcif8cy5mi45"))))
+    (build-system gnu-build-system)
+    (inputs (list libpcap ncurses))
+    (synopsis "TCP connections sniffer")
+    (description
+     "Tcptrack is a sniffer which displays information about TCP connections
+it sees on a network interface.  This is a fork of Steve Benson’s tcptrack.")
+    (home-page "https://github.com/bchretien/tcptrack")
+    (license license:lgpl2.1+)))
+
 (define-public masscan
   (package
     (name "masscan")
