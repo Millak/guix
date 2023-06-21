@@ -15788,29 +15788,36 @@ HTTPS server, a proxy server, and a virtual-host server.")
     (license license:bsd-2)))
 
 (define-public ruby-websocket
-  (package
-    (name "ruby-websocket")
-    (version "1.2.9")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "websocket" version))
-              (sha256
-               (base32
-                "0dib6p55sl606qb4vpwrvj5wh881kk4aqn2zpfapf8ckx7g14jw8"))))
-    (build-system ruby-build-system)
-    (arguments (list #:test-target "spec"
-                     #:phases #~(modify-phases %standard-phases
-                                  (add-after 'unpack 'disable-rubocop
-                                    (lambda _
-                                      (substitute* "Rakefile"
-                                        (("require 'rubocop/rake_task'") "")
-                                        (("RuboCop::RakeTask.new") "")))))))
-    (native-inputs (list ruby-rspec))
-    (synopsis "WebSocket protocol Ruby library")
-    (description "This package provides a Ruby library to handle the WebSocket
+  (let ((commit "950e416a19a76c7e6a673a7e5baa6283476dbec1")
+        (revision "1"))
+    (package
+      (name "ruby-websocket")
+      (version (git-version "1.2.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/imanel/websocket-ruby")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1i6r0glpxy47zdf76aqgcpjgcgydla0733hfdhp628pmrinnkgwv"))
+                (file-name (git-file-name name version))))
+      (build-system ruby-build-system)
+      (arguments (list #:test-target "spec"
+                       #:phases #~(modify-phases %standard-phases
+                                    (add-after 'unpack 'disable-rubocop
+                                      (lambda _
+                                        (substitute* "Rakefile"
+                                          (("require 'rubocop/rake_task'") "")
+                                          (("RuboCop::RakeTask.new") "")))))))
+      (native-inputs
+       (list ruby-rspec
+             ruby-webrick))
+      (synopsis "WebSocket protocol Ruby library")
+      (description "This package provides a Ruby library to handle the WebSocket
 protocol.")
-    (home-page "https://github.com/imanel/websocket-ruby")
-    (license license:expat)))
+      (home-page "https://github.com/imanel/websocket-ruby")
+      (license license:expat))))
 
 (define-public ruby-interception
   (package
