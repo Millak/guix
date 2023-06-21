@@ -1184,18 +1184,28 @@ specified in a \"Gemfile\", as well as their dependencies.")
                 "045wzckxpwcqzrjr353cxnyaxgf0qg22jh00dcx7z38cys5g1jlr"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-use-rvm
-          (lambda _
-            (substitute* "rakelib/tags.rake"
-              (("RVM_GEMDIR = .*") "RVM_GEMDIR = 'no-rvm-please'\n"))
-            #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "rakelib/tags.rake"
+                (("File\\.exists\\?") "File.exist?"))
+
+              ;; TODO This test is broken
+              ;; https://github.com/tenderlove/builder/issues/13
+              (substitute* "test/test_blankslate.rb"
+                (("test_late_included_module_in_kernel_is_ok")
+                 "test_late_included_module_in_kernel_is_ok
+    skip(\"test expected to fail\")
+"))
+              (substitute* "rakelib/tags.rake"
+                (("RVM_GEMDIR = .*") "RVM_GEMDIR = 'no-rvm-please'\n")))))))
     (synopsis "Ruby library to create structured data")
     (description "Builder provides a number of builder objects that make it
 easy to create structured data.  Currently the following builder objects are
 supported: XML Markup and XML Events.")
-    (home-page "https://github.com/jimweirich/builder")
+    (home-page "https://github.com/tenderlove/builder")
     (license license:expat)))
 
 (define-public ruby-bump
