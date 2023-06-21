@@ -2449,27 +2449,27 @@ features:
 (define-public ruby-contracts
   (package
     (name "ruby-contracts")
-    (version "0.16.0")
+    (version "0.17")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "contracts" version))
        (sha256
         (base32
-         "119f5p1n6r5svbx8h09za6a4vrsnj5i1pzr9cqdn9hj3wrxvyl3a"))))
+         "0gfybfsb6kqxvvcrv1q7bfjaxmq73pf3vqy4bbzarkbajil05ii5"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         ;; Don't run or require rubocop, the code linting tool, as this is a
-         ;; bit unnecessary.
-         (add-after 'unpack 'dont-run-rubocop
-          (lambda _
-            (substitute* "Rakefile"
-              ((".*rubocop.*") "")
-              ((".*RuboCop.*") ""))
-            #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't run or require rubocop, the code linting tool, as this is a
+          ;; bit unnecessary.
+          (add-after 'unpack 'dont-run-rubocop
+            (lambda _
+              (substitute* "Rakefile"
+                ((".*rubocop.*") "")
+                ((".*RuboCop.*") "")))))))
     (native-inputs
      (list ruby-rspec))
     (synopsis "Method contracts for Ruby")
