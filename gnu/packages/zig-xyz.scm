@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Maya Tomasek <maya.tomasek@disroot.org>
+;;; Copyright © 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,10 +22,35 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system zig)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages zig)
   #:use-module (gnu packages python))
+
+(define-public tigerbeetle
+  (package
+    (name "tigerbeetle")
+    (version "0.13.35")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tigerbeetledb/tigerbeetle")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x8msknvq8s6vnlczq5fxmaiqvig2sbcv60c3x8zbgr28dsqpmll"))))
+    (build-system zig-build-system)
+    (arguments
+     (list
+      #:zig zig-0.9
+      #:zig-release-type "safe"))
+    (synopsis "Distributed financial accounting database")
+    (description "TigerBeetle is a financial accounting database designed for
+mission-critical safety and performance for financial services.")
+    (home-page "https://github.com/tigerbeetledb/tigerbeetle")
+    (license license:asl2.0)))
 
 (define-public zig-zls
   (package
