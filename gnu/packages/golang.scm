@@ -10658,6 +10658,29 @@ extracting information about the music/image/video that is Now Playing on the
 system.")
       (license license:expat))))
 
+(define-public go-github-com-delthas-go-localeinfo
+  (let ((commit "686a1e18511819b2f1625f00437f6e1246c04a5d"))
+    (package
+      (name "go-github-com-delthas-go-localeinfo")
+      (version (git-version "0.0.0" "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/delthas/go-localeinfo")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                  (base32
+                    "0r0v42ggvyss8327nggwinxl42pj4l0dwz96g9wk1w8h8vmfrh0z"))))
+      (build-system go-build-system)
+      (arguments `(#:tests? #f ; FIXME: tests assume certain locale
+                   #:import-path "github.com/delthas/go-localeinfo"))
+      (home-page "https://github.com/delthas/go-localeinfo")
+      (synopsis "Library for extracting locale information")
+      (description "@code{go-localeinfo} extracts monetary/numeric/time
+formatting information, rather than the current locale name.")
+      (license license:expat))))
+
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
