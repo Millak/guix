@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -464,6 +465,52 @@ method framework.")
      "This package provides virtual keyboard for Wayland and X11
 display servers.  It supports many different languages and emoji.")
     (license license:gpl3+)))
+
+;; Private package used by shared-mime-info.
+(define xdgmime
+  ;; No public release, match commit to the one used in the
+  ;; shared-mime-info release.
+  (let ((commit "de283fc430460b9b3a7e61432a6d273cd64cb102")
+        (revision "1"))
+    (package
+      (name "xdgmime")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.freedesktop.org/xdg/xdgmime.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0m9k7nfxgchb9j0xh9cwsldz6564qisqdkvlhgkcgc0grd4nfbn9"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f  ; no tests
+        #:make-flags #~(list (string-append "DESTDIR=" #$output)
+                             #$(string-append "CC=" (cc-for-target)))
+        #:imported-modules `((guix build copy-build-system)
+                             ,@%gnu-build-system-modules)
+        #:modules `((guix build gnu-build-system)
+                    ((guix build copy-build-system) #:prefix copy:)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Package uses a hand-crafted Makefile.
+            (delete 'configure)
+            (replace 'install
+              (lambda args
+                (apply (assoc-ref copy:%standard-phases 'install)
+                       #:install-plan
+                       '(("src" "bin/" #:include ("print-mime-data"
+                                                  "test-mime-data"
+                                                  "test-mime")))
+                       args))))))
+      (home-page "https://gitlab.freedesktop.org/xdg/xdgmime/")
+      (synopsis "Module that parses the freedesktop.org MIME spec")
+      (description "This module is used for shared-mime-info package tests.")
+      (license (list license:lgpl2.1+ license:artistic2.0)))))
 
 (define-public shared-mime-info
   (package
