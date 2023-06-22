@@ -10634,6 +10634,30 @@ RFC-5802 and RFC-7677.")
 bindings for the D-Bus message bus system.")
     (license license:bsd-2)))
 
+(define-public go-github-com-delthas-go-libnp
+  (let ((commit "0e45ece1f878f202fee2c74801e287804668f677"))
+    (package
+      (name "go-github-com-delthas-go-libnp")
+      (version (git-version "0.0.0" "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/delthas/go-libnp")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                  (base32
+                    "1hylpvwz3kb8wr00knba6mggjacak2vmqafwysansj0ns038lp8w"))))
+      (build-system go-build-system)
+      (arguments `(#:import-path "github.com/delthas/go-libnp"))
+      (propagated-inputs (list go-github-com-godbus-dbus))
+      (home-page "https://github.com/delthas/go-libnp")
+      (synopsis "Tiny library providing information about now-playing media")
+      (description "@code{go-libnp} is a tiny cross-platform library for
+extracting information about the music/image/video that is Now Playing on the
+system.")
+      (license license:expat))))
+
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
