@@ -8644,7 +8644,8 @@ better performance than @code{Regexp} and @code{String} methods from the
                 (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
                  (string-append stripped "\n"))))))))
     (native-inputs
-     (list ruby-rspec))
+     (list ruby-rspec
+           ruby-sorted-set))
     (synopsis "Simple arrays of objects to arrays of ranges compressor")
     (description "RangeCompresses is a tiny library that allows compressing
 arrays of objects into arrays of ranges.  For example, it can turn the
