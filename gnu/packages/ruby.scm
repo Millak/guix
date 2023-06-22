@@ -787,6 +787,27 @@ re-sourced, but they will be rendered in a single-line format.")
     (home-page "https://github.com/rspec-given/sorcerer")
     (license license:expat)))
 
+(define-public ruby-sorted-set
+  (package
+    (name "ruby-sorted-set")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "sorted_set" version))
+              (sha256
+               (base32
+                "0brpwv68d7m9qbf5js4bg8bmg4v7h4ghz312jv9cnnccdvp8nasg"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-rbtree ruby-set))
+    (synopsis
+     "Ruby Set variant whose elements are sorted in ascending order")
+    (description
+     "This package implements a variant of Set whose elements are sorted in
+ascending order")
+    (home-page "https://github.com/knu/sorted_set")
+    (license license:bsd-2)))
+
 (define-public ruby-given-core
   (package
     (name "ruby-given-core")
