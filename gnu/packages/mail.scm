@@ -4855,7 +4855,7 @@ remote SMTP server.")
 (define-public aerc
   (package
     (name "aerc")
-    (version "0.14.0")
+    (version "0.15.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4864,17 +4864,20 @@ remote SMTP server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "067j7kja78hv7dafw8gy3m2g5cslq6xlnzja8lm3b5p0m0vfabm8"))))
+                "1gbprx0i8d13q974n5hsys6lllav5cpll3cwrr1hfw6307hc001r"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rjarry/aerc"
            ;; Installing the source is only necessary for Go libraries.
            #:install-source? #f
            #:build-flags
-           #~(list "-tags=notmuch" "-ldflags"
-                   (string-append "-X main.Version=" #$version
-                                  " -X git.sr.ht/~rjarry/aerc/config.shareDir="
-                                  #$output "/share/aerc"))
+           #~(list "-tags=notmuch"
+                   (string-append
+                     "-ldflags=-X main.Version=" #$version
+                     " -X git.sr.ht/~rjarry/aerc/config.libexecDir="
+                     #$output "/libexec/aerc"
+                     " -X git.sr.ht/~rjarry/aerc/config.shareDir="
+                     #$output "/share/aerc"))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
@@ -4912,7 +4915,7 @@ remote SMTP server.")
                            (string-append "src/" import-path))))
                (replace 'install
                  (lambda* (#:key import-path build-flags #:allow-other-keys)
-                   (invoke "make" "install" "-C"
+                   (invoke "make" "CC=gcc" "install" "-C"
                            (string-append "src/" import-path)
                            (string-append "PREFIX=" #$output)))))))
     (inputs (list gnupg
@@ -4951,6 +4954,8 @@ remote SMTP server.")
                   go-github-com-syndtr-goleveldb-leveldb
                   go-git-sr-ht-sircmpwn-getopt
                   go-git-sr-ht-rockorager-tcell-term
+                  python
+                  python-vobject
                   zoxide))
     (native-inputs (list scdoc))
     (home-page "https://git.sr.ht/~rjarry/aerc")
