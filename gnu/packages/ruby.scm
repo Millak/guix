@@ -3237,6 +3237,38 @@ high-level toolkit for building cryptographic systems and protocols.")
     (home-page "https://github.com/crypto-rb/rbnacl")
     (license license:expat)))
 
+(define-public ruby-rbtree
+  (package
+    (name "ruby-rbtree")
+    (version "0.4.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rbtree" version))
+              (sha256
+               (base32
+                "1z0h1x7fpkzxamnvbw1nry64qd6n0nqkwprfair29z94kd3a9vhl"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'extconf
+            (lambda _
+              (invoke "ruby" "extconf.rb")
+              (invoke "make" "install" (string-append "prefix=" #$output))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ruby" "-I." "test.rb")))))))
+    (synopsis "Ruby implementation of a sorted associative collection")
+    (description
+     "This package provides a RBTree is a sorted associative collection that
+is implemented with a Red-Black Tree.  It maps keys to values like a Hash, but
+maintains its elements in ascending key order.  The interface is the almost
+identical to that of Hash.")
+    (home-page "http://rbtree.rubyforge.org/")
+    (license license:expat)))
+
 (define-public ruby-hkdf
   (package
     (name "ruby-hkdf")
