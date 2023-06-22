@@ -7509,6 +7509,33 @@ process tree data structure for the current host.")
     ;; There is no mention of the "or later" clause.
     (license license:gpl2)))
 
+(define-public ruby-psych
+  (package
+    (name "ruby-psych")
+    (version "5.1.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/psych")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0m3668y79jcv2h9p7w74awwdyz13rpfr24w4nzh3iz96kxwssz83"))))
+    (build-system ruby-build-system)
+    (inputs
+     (list libyaml))
+    (native-inputs
+     (list ruby-rake-compiler))
+    (synopsis "Ruby YAML parser and emitter")
+    (description
+     "Psych is a YAML parser and emitter.  Psych leverages libyaml for its
+YAML parsing and emitting capabilities.  In addition to wrapping libyaml,
+Psych also knows how to serialize and de-serialize most Ruby objects to and
+from the YAML format.")
+    (home-page "https://github.com/ruby/psych")
+    (license license:expat)))
+
 (define-public ruby-utils
   (package
     (name "ruby-utils")
