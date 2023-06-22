@@ -512,29 +512,44 @@ display servers.  It supports many different languages and emoji.")
       (description "This module is used for shared-mime-info package tests.")
       (license (list license:lgpl2.1+ license:artistic2.0)))))
 
+;; Note: when updating shared-mime-info, don't forget to update xdgmime's commit
+;; to the one used in the release.
 (define-public shared-mime-info
   (package
     (name "shared-mime-info")
-    (version "1.15")
+    (version "2.2")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://gitlab.freedesktop.org/xdg/shared-mime-info/uploads/"
-                   "b27eb88e4155d8fccb8bb3cd12025d5b/shared-mime-info-" version
-                   ".tar.xz"))
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://gitlab.freedesktop.org/xdg/shared-mime-info.git")
+                   (commit version)))
+             (file-name (git-file-name name version))
              (sha256
               (base32
-               "146vynj78wcwdq0ms52jzm1r4m6dzi1rhyh3h4xyb6bw8ckv10pl"))))
-    (build-system gnu-build-system)
+               "04dfnnflspprxg7qia3whz1754lfvgi4ihvmihg379936zy5xd22"))
+             (patches (search-patches "shared-mime-info-xdgmime-path.patch"))))
+    (build-system meson-build-system)
     (arguments
-     ;; The build system appears not to be parallel-safe.
-     '(#:parallel-build? #f))
+     (list
+      #:configure-flags
+      #~(list #$(format #f "-Dxdgmime-path=~a/bin"
+                        (this-package-native-input "xdgmime"))
+              "-Dupdate-mimedb=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't patch shebangs for the test files.
+          (replace 'patch-source-shebangs
+            (lambda _
+              (let ((pred (lambda (file stat)
+                            (and (eq? 'regular (stat:type stat))
+                                 (not (string-prefix? "./tests/mime-detection"
+                                                      file))))))
+                (for-each patch-shebang
+                          (find-files "." pred #:stat lstat))))))))
     (inputs
      (list glib libxml2))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config python xdgmime))
     (home-page "https://www.freedesktop.org/wiki/Software/shared-mime-info")
     (synopsis "Database of common MIME types")
     (description

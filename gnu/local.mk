@@ -59,6 +59,7 @@
 # Copyright © 2023 Zheng Junjie <873216071@qq.com>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 # Copyright © 2023 Andy Tai <atai@atai.org>
+# Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 #
 # This file is part of GNU Guix.
 #
@@ -1919,6 +1920,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libsequoia-remove-store.patch		\
   %D%/packages/patches/serf-python3.patch			\
   %D%/packages/patches/shakespeare-spl-fix-grammar.patch		\
+  %D%/packages/patches/shared-mime-info-xdgmime-path.patch	\
   %D%/packages/patches/sharutils-CVE-2018-1000097.patch		\
   %D%/packages/patches/slim-session.patch			\
   %D%/packages/patches/slim-config.patch			\
