@@ -459,7 +459,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.2.1")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
@@ -467,7 +467,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "1b3vr6njwqfvnrx3qpbg5aqcbl1z8nxnxcgyyw0sd4a20z33jfk0"))))
+        (base32 "105hyc8rhc8md683h8mbvqxxc2f5w2bk3348n2c4jz6rmcsgr1w8"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -514,13 +514,13 @@ photographic equipment.")
                   (,(string-append #$(this-package-input "gtk+")
                                    "/share/glib-2.0/schemas")))))))))
     (native-inputs
-     (list clang-11
+     (list clang
            cmocka
            desktop-file-utils
            `(,glib "bin")
            gobject-introspection
            intltool
-           llvm-11                      ;should match the Clang version
+           llvm                         ;should match the Clang version
            opencl-headers
            perl
            pkg-config
