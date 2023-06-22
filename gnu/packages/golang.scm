@@ -10612,7 +10612,7 @@ RFC-5802 and RFC-7677.")
 (define-public go-github-com-godbus-dbus
   (package
     (name "go-github-com-godbus-dbus")
-    (version "5.0.3")
+    (version "5.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10621,7 +10621,7 @@ RFC-5802 and RFC-7677.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bkc904073k807yxg6mvqaxrr6ammmhginr9p54jfb55mz3hfw3s"))))
+                "1kayd4x7idrhi06ahh5kqkgwzgh9icvv71mjar2d0jl486dfs8r5"))))
     (build-system go-build-system)
     (arguments
      `(#:tests? #f ;no /var/run/dbus/system_bus_socket
