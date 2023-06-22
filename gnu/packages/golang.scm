@@ -7163,7 +7163,7 @@ systems.")
 (define-public go-git-sr-ht-rockorager-tcell-term
   (package
     (name "go-git-sr-ht-rockorager-tcell-term")
-    (version "0.3.0")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7172,7 +7172,7 @@ systems.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13nfb2mq59846j531j7p2nm8mi0kjw5p90pa89l3fwc0sljkn5p8"))))
+                "177ladvpiiw7sb0hsjjv9p2yv5wpqpw6nqardkm8mqqlj0swa9xx"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rockorager/tcell-term"))
