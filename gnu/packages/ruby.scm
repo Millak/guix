@@ -5092,42 +5092,6 @@ definitions more readable.")
     (home-page "https://github.com/jordansissel/ruby-insist/")
     (license license:asl2.0)))
 
-(define-public ruby-instantiator
-  (package
-    (name "ruby-instantiator")
-    (version "0.0.7")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "instantiator" version))
-              (sha256
-               (base32
-                "0w07w3gkyqr7m0vz5h13vm8b411660qywjm2xxxgdjv4wb3fazbr"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'add-test-unit-to-search-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((test-unit (assoc-ref inputs "ruby-test-unit")))
-               (substitute* "Rakefile"
-                 (("t\\.libs << \"test\"" line)
-                  (string-append line "; t.libs << \""
-                                 test-unit "/lib/ruby/vendor_ruby"
-                                 "/gems/test-unit-"
-                                 ,(package-version ruby-test-unit)
-                                 "/lib\""))))
-             #t)))))
-    (propagated-inputs
-     (list ruby-blankslate))
-    (native-inputs
-     (list bundler ruby-test-unit))
-    (synopsis "Instantiate an arbitrary Ruby class")
-    (description
-     "Instantiator lets you instantiate an arbitrary Ruby class without
-knowing anything about the constructor.")
-    (home-page "https://github.com/floehopper/instantiator")
-    (license license:expat)))
-
 (define-public ruby-introspection
   (package
     (name "ruby-introspection")
