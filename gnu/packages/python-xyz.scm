@@ -106,7 +106,7 @@
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
-;;; Copyright © 2021 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2021, 2022, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
@@ -4668,6 +4668,27 @@ connecting ClickHouse to Python, Pandas, and Superset.")
       "cligj is for Python developers who create command line interfaces
 for geospatial data.  cligj allows you to quickly build consistent,
 well-tested and interoperable CLIs for handling GeoJSON.")
+    (license license:bsd-3)))
+
+(define-public python-cloup
+  (package
+    (name "python-cloup")
+    (version "2.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cloup" version))
+              (sha256
+               (base32
+                "05c6cjpnf9s72gyn5dckxbmd8rf2kgdzfsl7pqzrnc1lcdl13zmv"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-click))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/janLuke/cloup")
+    (synopsis "Extension library for python-click")
+    (description
+     "Cloup enriches Click with several features that make it more expressive
+and configurable such as option groups, constraints, subcommand aliases,
+subcommands sections and a themeable HelpFormatter.")
     (license license:bsd-3)))
 
 (define-public python-vcversioner
