@@ -2913,39 +2913,6 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
 guidelines.")
     (license license:public-domain)))
 
-(define-public shared-mime-info
-  (package
-    (name "shared-mime-info")
-    (version "1.15")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://gitlab.freedesktop.org/xdg/shared-mime-info/uploads/"
-                   "b27eb88e4155d8fccb8bb3cd12025d5b/shared-mime-info-" version
-                   ".tar.xz"))
-             (sha256
-              (base32
-               "146vynj78wcwdq0ms52jzm1r4m6dzi1rhyh3h4xyb6bw8ckv10pl"))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; The build system appears not to be parallel-safe.
-     '(#:parallel-build? #f))
-    (inputs
-     (list glib libxml2))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://www.freedesktop.org/wiki/Software/shared-mime-info")
-    (synopsis "Database of common MIME types")
-    (description
-     "The shared-mime-info package contains the core database of common types
-and the update-mime-database command used to extend it.  It requires glib2 to
-be installed for building the update command.  Additionally, it uses intltool
-for translations, though this is only a dependency for the maintainers.  This
-database is translated at Transifex.")
-    (license license:gpl2+)))
-
 (define-public system-config-printer
   (package
     (name "system-config-printer")

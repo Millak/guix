@@ -35,6 +35,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib) ; dbus for tests
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
