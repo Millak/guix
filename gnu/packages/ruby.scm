@@ -5139,24 +5139,11 @@ knowing anything about the constructor.")
                (base32
                 "1y2nbijkc0zlfmn9ss6588ilarq2kbn2i7w7pwwsli66dj84zgca"))))
     (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'add-test-unit-to-search-path
-          (lambda* (#:key inputs #:allow-other-keys)
-            (let* ((test-unit (assoc-ref inputs "ruby-test-unit")))
-              (substitute* "Rakefile"
-                (("t\\.libs << \"test\"" line)
-                 (string-append line "; t.libs << \""
-                                test-unit "/lib/ruby/vendor_ruby"
-                                "/gems/test-unit-"
-                                ,(package-version ruby-test-unit)
-                                "/lib\""))))
-            #t)))))
     (propagated-inputs
-     (list ruby-instantiator ruby-metaclass))
+     (list ruby-metaclass))
     (native-inputs
-     (list bundler ruby-blankslate ruby-test-unit))
+     (list bundler
+           ruby-blankslate))
     (synopsis "Dynamic inspection of the method hierarchy on a Ruby object")
     (description
      "Introspection provides tools to inspect the hierarchy of method
