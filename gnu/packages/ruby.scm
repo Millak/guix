@@ -6611,6 +6611,25 @@ across multiple CPU cores.")
     (home-page "https://github.com/whitequark/parser")
     (license license:expat)))
 
+(define-public ruby-set
+  (package
+    (name "ruby-set")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "set" version))
+              (sha256
+               (base32
+                "07kc057nrkddrybqmlbmgf9x7nsmbc3ni6gy1z6xjx5b838vlj33"))))
+    (build-system ruby-build-system)
+    (synopsis
+     "Ruby class to deal with collections of unordered, unique values")
+    (description
+     "This package provides a class to deal with collections of unordered,
+unique values")
+    (home-page "https://github.com/ruby/set")
+    (license license:bsd-2)))
+
 (define-public ruby-sexp-processor
   (package
     (name "ruby-sexp-processor")
