@@ -545,11 +545,24 @@ display servers.  It supports many different languages and emoji.")
                                  (not (string-prefix? "./tests/mime-detection"
                                                       file))))))
                 (for-each patch-shebang
-                          (find-files "." pred #:stat lstat))))))))
+                          (find-files "." pred #:stat lstat)))))
+          ;; The docs have no install rule.
+          (add-after 'install 'install-doc
+            (lambda* (#:key source #:allow-other-keys)
+              (let ((dest (string-append #$output:doc "/share/doc")))
+                (with-directory-excursion "data/shared-mime-info-spec-html"
+                  (install-file "shared-mime-info-spec.html"
+                                (string-append dest "/html")))
+                (install-file (string-append source
+                                             "/data/shared-mime-info-spec.xml")
+                              dest)))))))
     (inputs
      (list glib libxml2))
     (native-inputs
-     (list gettext-minimal pkg-config python xdgmime))
+     (list gettext-minimal pkg-config python xdgmime
+           ;; For 'doc' output.
+           docbook-xml-4.1.2 docbook-xsl xmlto))
+    (outputs (list "out" "doc"))
     (home-page "https://www.freedesktop.org/wiki/Software/shared-mime-info")
     (synopsis "Database of common MIME types")
     (description
