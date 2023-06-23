@@ -22398,6 +22398,27 @@ accessor functions on enums.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-enum-derive-0.1
+  (package
+    (name "rust-enum-derive")
+    (version "0.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enum-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05n8mdca3y2c8pvl1isncj52fa80wplvx28lxvwqmpzfr6lc4sj0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-custom-derive" ,rust-custom-derive-0.1))))
+    (home-page "https://github.com/DanielKeep/rust-custom-derive")
+    (synopsis "Macros for deriving additional functionality for enums")
+    (description
+     "This crate provides macros for deriving additional functionality for enums.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-enum-map-derive-0.4
   (package
     (name "rust-enum-map-derive")
