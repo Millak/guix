@@ -55155,6 +55155,37 @@ can handle huge texts and memory-incoherent edits with ease.")
 rust.")
     (license license:mpl2.0)))
 
+(define-public rust-rspotify-http-0.11
+  (package
+    (name "rust-rspotify-http")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify-http" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a1xdvnlksb0gbkyrw9q4l7fyy8ba0mfsjs71qv2r6bbpadij0d8"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-maybe-async" ,rust-maybe-async-0.2)
+             ("rust-reqwest" ,rust-reqwest-0.11)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-ureq" ,rust-ureq-2))
+           #:cargo-development-inputs
+           `(("rust-rspotify-model" ,rust-rspotify-model-0.11)
+             ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config openssl))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "HTTP compatibility layer for RSpotify")
+    (description "RSpotify is a wrapper for the Spotify Web API.  This
+package contains a HTTP compatibility layer for RSpotify.")
+    (license license:expat)))
+
 (define-public rust-rspotify-macros-0.11
   (package
     (name "rust-rspotify-macros")
