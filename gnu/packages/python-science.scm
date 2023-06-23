@@ -1321,7 +1321,8 @@ Mathematics (GLM) library to Python.")
                 "test_tls_temporary_credentials_functional"
                 "test_variable_in_task"
                 "test_worker_preload_text"
-                "test_worker_uses_same_host_as_nanny")
+                "test_worker_uses_same_host_as_nanny"
+                "test_nanny_timeout") ; access to 127.0.0.1
                " and not ")
 
               ;; These fail because it doesn't find dask[distributed]
@@ -1344,7 +1345,8 @@ Mathematics (GLM) library to Python.")
 
               ;; These tests are rather flaky
               " and not test_quiet_quit_when_cluster_leaves"
-              " and not multiple_clients_restart"))
+              " and not multiple_clients_restart"
+              " and not test_steal_twice"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'versioneer
