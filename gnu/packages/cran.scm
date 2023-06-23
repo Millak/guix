@@ -27358,6 +27358,31 @@ forest) is fit on the kernel matrix of a subset of the training data.")
 classes into dummy/indicator variables.")
     (license license:gpl2+)))
 
+(define-public r-dunn-test
+  (package
+    (name "r-dunn-test")
+    (version "1.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "dunn.test" version))
+              (sha256
+               (base32
+                "0lqwvyl3pyygfc73nf81gzw3zl3w43r7ki0yw2dgrzhkpb2iji4a"))))
+    (properties `((upstream-name . "dunn.test")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=dunn.test")
+    (synopsis "Dunn's test of multiple comparisons using rank sums")
+    (description
+     "Dunn's test computes stochastic dominance & reports pairwise comparisons.
+This is done following a Kruskal-Wallis test (Kruskal and Wallis, 1952).  It
+employs Dunn's z-test-statistic approximations for rank statistics, conducting
+k(k-1)/2 comparisons.  The null hypothesis assumes that the probability of a
+randomly selected value from the first group being larger than one from the
+second group is one half, similar to the Wilcoxon-Mann-Whitney test.  Dunn's
+test serves as a test for median difference and takes into account tied
+ranks.")
+    (license license:gpl2)))
+
 (define-public r-acrm
   (package
     (name "r-acrm")
