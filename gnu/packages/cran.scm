@@ -3008,6 +3008,28 @@ dissimilarity analysis.  Most of its multivariate tools can be used for other
 data types as well.")
     (license license:gpl2+)))
 
+(define-public r-tidyft
+  (package
+    (name "r-tidyft")
+    (version "0.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "tidyft" version))
+              (sha256
+               (base32
+                "00qcsr2sx8fwyil384vgppx0q72qjrkj7h5nv4mdxdi8f9h6ph2r"))))
+    (properties `((upstream-name . "tidyft")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table r-fst r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/hope-data-science/tidyft")
+    (synopsis "Fast and memory efficient data operations in tidy syntax")
+    (description "Tidyft is an extension of @code{data.table}.  It uses
+modifification by reference whenever possible.  This toolkit is designed for
+big data analysis in high-performance desktop or laptop computers.  The syntax
+of the package is similar or identical to tidyverse.")
+    (license license:expat)))
+
 (define-public r-tidyverse
   (package
     (name "r-tidyverse")
