@@ -11320,6 +11320,26 @@ promises, but with a syntax that is idiomatic R.")
 using the @code{snow} package.")
     (license license:gpl2)))
 
+(define-public r-fsa
+  (package
+    (name "r-fsa")
+    (version "0.9.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "FSA" version))
+              (sha256
+               (base32
+                "0m63pik6bcqsbzizq8zjzilr2pxjl8b64ivdqzdnz09gmck73r5h"))))
+    (properties `((upstream-name . "FSA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-car r-dunn-test r-lmtest r-plotrix r-withr))
+    (home-page "https://fishr-core-team.github.io/FSA/")
+    (synopsis "Simple fisheries stock assessment methods")
+    (description
+     "This package provides a variety of simple fish stock assessment
+methods.")
+    (license license:gpl2+)))
+
 (define-public r-fstcore
   (package
     (name "r-fstcore")
