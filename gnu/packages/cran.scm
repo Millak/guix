@@ -8162,6 +8162,33 @@ University Press.  It provides smoothing methods for nonparametric regression
 and density estimation")
     (license license:gpl2+)))
 
+(define-public r-smoof
+  (package
+    (name "r-smoof")
+    (version "1.6.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "smoof" version))
+              (sha256
+               (base32
+                "1cazhnd0m5jjzixaqgqh2h3rsa2sw3k8slj5cmgm8v47aaqn91mg"))))
+    (properties `((upstream-name . "smoof")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bbmisc
+                             r-checkmate
+                             r-ggplot2
+                             r-paramhelpers
+                             r-rcpp
+                             r-rcpparmadillo))
+    (home-page "https://jakobbossek.github.io/smoof/")
+    (synopsis "Single and multi-objective optimization test functions")
+    (description
+     "This tool generates high number of both single- and multi-objective test
+functions.  These functions are frequently used for the benchmarking of
+(numerical) optimization algorithms.  Moreover, it offers a set of convenient
+functions to generate, plot and work with objective functions.")
+    (license license:bsd-2)))
+
 (define-public r-smurf
   (package
     (name "r-smurf")
