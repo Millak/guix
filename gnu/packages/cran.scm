@@ -2434,6 +2434,30 @@ programmed on.  A useful @code{OptPath} object (archive) to log function
 evaluations is also provided.")
     (license license:bsd-2)))
 
+(define-public r-parallelmap
+  (package
+    (name "r-parallelmap")
+    (version "1.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "parallelMap" version))
+              (sha256
+               (base32
+                "1qg7zpz5sd9jp8wzjqahkhipwj1jn192llwg06q4gv9mlcsac261"))))
+    (properties `((upstream-name . "parallelMap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bbmisc r-checkmate))
+    (home-page "https://parallelmap.mlr-org.com")
+    (synopsis "Unified interface to parallelization backends")
+    (description
+     "This package provides a unified parallelization framework for multiple
+backends.  This package is designed for internal package and interactive
+usage.  The main operation is parallel mapping over lists.  It supports local,
+multicore, mpi and BatchJobs mode.  It allows tagging of the parallel
+operation with a level name that can be later selected by the user to switch
+on parallel execution for exactly this operation.")
+    (license license:bsd-2)))
+
 (define-public r-pheatmap
   (package
     (name "r-pheatmap")
