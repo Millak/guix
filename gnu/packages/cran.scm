@@ -2410,6 +2410,30 @@ extends the signature of the @code{dist} function and uses the same parameter
 naming conventions as distance methods of existing R packages.")
     (license license:gpl2+)))
 
+(define-public r-paramhelpers
+  (package
+    (name "r-paramhelpers")
+    (version "1.14.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ParamHelpers" version))
+              (sha256
+               (base32
+                "088sl3az4ysq8cyw82brdn9xm5yy7rqskxih462d1m5hi62gyl04"))))
+    (properties `((upstream-name . "ParamHelpers")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-backports r-bbmisc r-checkmate r-fastmatch))
+    (home-page "https://paramhelpers.mlr-org.com")
+    (synopsis
+     "Helpers for parameters in black-box optimization, tuning, and machine learning")
+    (description
+     "This is a package for parameter description and operations in
+optimization, tuning and machine learning.  Parameters can be described (type,
+constraints, defaults, etc.), combined to parameter sets and can in general be
+programmed on.  A useful @code{OptPath} object (archive) to log function
+evaluations is also provided.")
+    (license license:bsd-2)))
+
 (define-public r-pheatmap
   (package
     (name "r-pheatmap")
