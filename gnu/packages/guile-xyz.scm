@@ -4252,7 +4252,7 @@ the style of the Node Package Manager (NPM).")
                       #t)))))
     (native-inputs
      (list guile-3.0))
-    (synopsis "Cryprographic hash functions implemented in Scheme")
+    (synopsis "Cryptographic hash functions implemented in Scheme")
     (description
      "The @code{(hashing @dots{})} modules implement cryptographic hash
 functions in pure R6RS Scheme: CRC, HMAC, MD5, SHA-1, and SHA-2 (SHA-256,
