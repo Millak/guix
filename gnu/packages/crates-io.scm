@@ -55127,6 +55127,27 @@ can handle huge texts and memory-incoherent edits with ease.")
 rust.")
     (license license:mpl2.0)))
 
+(define-public rust-rspotify-macros-0.11
+  (package
+    (name "rust-rspotify-macros")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "00zjxnbhljak54bf5q1h09487bh7sza3mqsxk21x43q7pw5jlrkg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-development-inputs
+           `(("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "Macros for RSpotify")
+    (description "RSpotify is a wrapper for the Spotify Web API.  This crate
+contains Macros for RSpotify.")
+    (license license:expat)))
+
 (define-public rust-rspotify-model-0.11
   (package
     (name "rust-rspotify-model")
