@@ -33930,6 +33930,24 @@ different types of resampling objects (e.g. bootstrap, cross-validation).")
 Design} (SFD) and to test their quality.")
     (license license:gpl3)))
 
+(define-public r-dicekriging
+  (package
+    (name "r-dicekriging")
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "DiceKriging" version))
+              (sha256
+               (base32
+                "0jfb2li6b93fkwgjkr4jwxnvv7zb0aqk9lkf2mnv2awzh0r16pdb"))))
+    (properties `((upstream-name . "DiceKriging")))
+    (build-system r-build-system)
+    (home-page "https://dicekrigingclub.github.io/www/")
+    (synopsis "Kriging methods for computer experiments")
+    (description "This is a package for the estimation, validation and
+prediction of kriging models.")
+    (license license:gpl2+)))
+
 (define-public r-dials
   (package
     (name "r-dials")
