@@ -55127,6 +55127,32 @@ can handle huge texts and memory-incoherent edits with ease.")
 rust.")
     (license license:mpl2.0)))
 
+(define-public rust-rspotify-model-0.11
+  (package
+    (name "rust-rspotify-model")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify-model" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1j0fy5n3f0gwq2qnn4qss0sx5kvbghfr8149jb0bp8azzvlg3gbg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-chrono" ,rust-chrono-0.4)
+             ("rust-enum-dispatch" ,rust-enum-dispatch-0.3)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-strum" ,rust-strum-0.24)
+             ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "API endpoint response model object for RSpotify")
+    (description "RSpotify is a wrapper for the Spotify Web API.  This crate
+contains the API endpoint response objects.")
+    (license license:expat)))
+
 (define-public rust-rstar-0.9
   (package
     (name "rust-rstar")
