@@ -22419,6 +22419,45 @@ accessor functions on enums.")
      "This crate provides macros for deriving additional functionality for enums.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-enum-dispatch-0.3
+  (package
+    (name "rust-enum-dispatch")
+    (version "0.3.11")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enum_dispatch" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qlxlxjvy92s0fwcwlnd2cdkkyml1755xap2lq8v4812hsanxwqi"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                          (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:skip-build? #t     ; Needs newer version of rust-smol
+       #:cargo-inputs
+       `(("rust-once-cell" ,rust-once-cell-1)
+         ("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       `(("rust-custom-derive" ,rust-custom-derive-0.1)
+         ("rust-enum-derive" ,rust-enum-derive-0.1)
+         ("rust-rand" ,rust-rand-0.6)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-smol" ,rust-smol-1))))
+    (home-page "https://gitlab.com/antonok/enum_dispatch")
+    (synopsis "Faster alternative to dynamically dispatched method calls")
+    (description
+     "This crate transforms your trait objects into concrete compound types,
+increasing their method call speed up to 10x.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-enum-map-derive-0.4
   (package
     (name "rust-enum-map-derive")
