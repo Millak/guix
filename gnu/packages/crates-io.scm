@@ -55155,6 +55155,89 @@ can handle huge texts and memory-incoherent edits with ease.")
 rust.")
     (license license:mpl2.0)))
 
+(define-public rust-rspotify-0.11
+  (package
+    (name "rust-rspotify")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jxpdiic1550h13j8gaqk1g3xlv3b7p7dzyjrf6xx6j8hzh74kjw"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-async-stream" ,rust-async-stream-0.3)
+             ("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-base64" ,rust-base64-0.20)
+             ("rust-chrono" ,rust-chrono-0.4)
+             ("rust-dotenv" ,rust-dotenv-0.15)
+             ("rust-futures" ,rust-futures-0.3)
+             ("rust-getrandom" ,rust-getrandom-0.2)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-maybe-async" ,rust-maybe-async-0.2)
+             ("rust-rspotify-http" ,rust-rspotify-http-0.11)
+             ("rust-rspotify-macros" ,rust-rspotify-macros-0.11)
+             ("rust-rspotify-model" ,rust-rspotify-model-0.11)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-sha2" ,rust-sha2-0.10)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-url" ,rust-url-2)
+             ("rust-webbrowser" ,rust-webbrowser-0.8))
+           #:cargo-development-inputs
+           `(("rust-env-logger" ,rust-env-logger-0.10)
+             ("rust-futures-util" ,rust-futures-util-0.3)
+             ("rust-tokio" ,rust-tokio-1))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pre-check
+                 ;; This test requires RSPOTIFY_CLIENT_ID and RSPOTIFY_CLIENT_SECRET
+                 (lambda _
+                   (delete-file "tests/test_with_credential.rs"))))))
+    (native-inputs (list pkg-config openssl))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "Spotify API wrapper")
+    (description "This package provides a wrapper API for the Spotify
+streaming service.")
+    (license license:expat)))
+
+(define-public rust-rspotify-0.10
+  (package
+    (inherit rust-rspotify-0.11)
+    (name "rust-rspotify")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "196wd157l3fn6hlyixgffhl2x516g4fpa3s91arhcikiifsppzgf"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-derive-builder" ,rust-derive-builder-0.7)
+        ("rust-dotenv" ,rust-dotenv-0.13)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-itertools" ,rust-itertools-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-percent-encoding" ,rust-percent-encoding-1)
+        ("rust-rand" ,rust-rand-0.6)
+        ("rust-random" ,rust-random-0.12)
+        ("rust-reqwest" ,rust-reqwest-0.10)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-url" ,rust-url-1)
+        ("rust-webbrowser" ,rust-webbrowser-0.5))))))
+
 (define-public rust-rspotify-http-0.11
   (package
     (name "rust-rspotify-http")
@@ -63883,45 +63966,6 @@ OIDs)")
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-bincode" ,rust-bincode-1)
         ("rust-tobj" ,rust-tobj-2))))))
-
-(define-public rust-rspotify-0.10
-  (package
-    (name "rust-rspotify")
-    (version "0.10.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rspotify" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "196wd157l3fn6hlyixgffhl2x516g4fpa3s91arhcikiifsppzgf"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-base64" ,rust-base64-0.10)
-         ("rust-chrono" ,rust-chrono-0.4)
-         ("rust-derive-builder" ,rust-derive-builder-0.7)
-         ("rust-dotenv" ,rust-dotenv-0.13)
-         ("rust-env-logger" ,rust-env-logger-0.6)
-         ("rust-failure" ,rust-failure-0.1)
-         ("rust-itertools" ,rust-itertools-0.8)
-         ("rust-lazy-static" ,rust-lazy-static-1)
-         ("rust-log" ,rust-log-0.4)
-         ("rust-percent-encoding" ,rust-percent-encoding-1)
-         ("rust-rand" ,rust-rand-0.6)
-         ("rust-random" ,rust-random-0.12)
-         ("rust-reqwest" ,rust-reqwest-0.10)
-         ("rust-serde" ,rust-serde-1)
-         ("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-url" ,rust-url-1)
-         ("rust-webbrowser" ,rust-webbrowser-0.5))))
-    (home-page "https://github.com/ramsayleung/rspotify")
-    (synopsis "Spotify API wrapper")
-    (description "This package provides wrapper API forSpotify streaming
-service.")
-    (license license:expat)))
 
 (define-public rust-spsc-buffer-0.1
   (package
