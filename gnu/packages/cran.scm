@@ -35250,6 +35250,62 @@ well as email and push notifications.")
 \"Discovering Motifs in Ranked Lists of DNA Sequences\" by Eran Eden.")
     (license license:gpl2)))
 
+(define-public r-mlr
+  (package
+    (name "r-mlr")
+    (version "2.19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mlr" version))
+              (sha256
+               (base32
+                "00jjhvaqifj6glqsyzixlp56bvlch5smck8kk3klcmwx9pasyllx"))))
+    (properties `((upstream-name . "mlr")))
+    (build-system r-build-system)
+    (inputs (list gdal
+                  geos
+                  glu
+                  gmp
+                  gsl
+                  jags
+                  mpfr
+                  openmpi
+                  proj
+                  udunits))
+    (propagated-inputs (list r-backports
+                             r-bbmisc
+                             r-checkmate
+                             r-data-table
+                             r-ggplot2
+                             r-parallelmap
+                             r-paramhelpers
+                             r-stringi
+                             r-survival
+                             r-xml))
+    (native-inputs (list r-knitr))
+    (home-page "https://mlr.mlr-org.com")
+    (synopsis "Machine learning in R")
+    (description
+     "This package provides an interface to a large number of classification
+and regression techniques.  These techniques include machine-readable
+parameter descriptions.  There is also an experimental extension for survival
+analysis, clustering and general, example-specific cost-sensitive learning.
+Also included:
+
+@itemize
+
+@item Generic resampling, including cross-validation, bootstrapping and
+  subsampling;
+@item Hyperparameter tuning with modern optimization techniques, for single-
+  and multi-objective problems;
+@item Filter and wrapper methods for feature selection;
+@item Extension of basic learners with additional operations common in machine
+  learning, also allowing for easy nested resampling.
+@end itemize
+
+Most operations can be parallelized.")
+    (license license:bsd-2)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
