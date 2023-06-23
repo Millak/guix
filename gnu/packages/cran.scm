@@ -35306,6 +35306,40 @@ Also included:
 Most operations can be parallelized.")
     (license license:bsd-2)))
 
+(define-public r-mlrmbo
+  (package
+    (name "r-mlrmbo")
+    (version "1.1.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mlrMBO" version))
+              (sha256
+               (base32
+                "16fwj7m28g4km7yalqppxmh3lw2jln0z072l6awia38qkdg6xwhc"))))
+    (properties `((upstream-name . "mlrMBO")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-backports
+                             r-bbmisc
+                             r-checkmate
+                             r-data-table
+                             r-lhs
+                             r-mlr
+                             r-parallelmap
+                             r-paramhelpers
+                             r-smoof))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mlr-org/mlrMBO")
+    (synopsis "Model-based optimization with mlr")
+    (description
+     "This package is a flexible and comprehensive R toolbox for model-based
+optimization.  It implements Efficient Global Optimization Algorithm for
+single- and multi-objective optimization.  It supports mixed parameters.  The
+machine learning toolbox mlr offers regression learners.  It provides various
+infill criteria and features batch proposal, parallel execution,
+visualization, and logging.  Its modular implementation allows easy
+customization by the user.")
+    (license license:bsd-2)))
+
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
