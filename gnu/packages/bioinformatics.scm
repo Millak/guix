@@ -17253,6 +17253,30 @@ information...  The package can also be used to extract data from @code{.loom}
 files.")
       (license license:expat))))
 
+(define-public rscape
+  (package
+    (name "rscape")
+    (version "2.0.0.q")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://eddylab.org/software/rscape/"
+                                  "rscape_v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1jabvm3fzh8iy4803ns12v1fsy28x6wdy8wx4ik8y0mfac4h787q"))))
+    (build-system gnu-build-system)
+    (propagated-inputs (list gsl openmpi))
+    (native-inputs (list automake autoconf))
+    (home-page "https://github.com/EddyRivasLab/R-scape")
+    (synopsis "RNA structural covariation above phylogenetic expectation")
+    (description
+     "R-scape discovers RNA secondary structure consensus elements.
+These elements include riboswitches and ribozymes.  It utilizes probabilistic
+modeling of sequence alignments, explicitly considering folding dependencies.
+The tool enables the de novo search for new structural elements and
+facilitates comparative analysis of known RNA families.")
+    (license license:bsd-3)))
+
 (define-public r-seurat-utils
   (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")
         (revision "1"))
