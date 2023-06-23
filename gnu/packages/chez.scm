@@ -466,7 +466,7 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.9.9-pre-release.14")
+    (version "9.9.9-pre-release.16")
     ;; The version should match `scheme-version`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
