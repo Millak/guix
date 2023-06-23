@@ -722,6 +722,26 @@ dumbbell charts, the ability to encircle points and coordinate-system-based
 text annotations.")
     (license license:agpl3)))
 
+(define-public r-ggfittext
+  (package
+    (name "r-ggfittext")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggfittext" version))
+              (sha256
+               (base32
+                "06xfv552nhw13wc8dixyqhhmw5zh8hphrabw090nzb33cpfwzin8"))))
+    (properties `((upstream-name . "ggfittext")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-gridtext r-shades r-stringi))
+    (native-inputs (list r-knitr))
+    (home-page "https://wilkox.org/ggfittext/")
+    (synopsis "Ggfittext is a ggplot2 extension for fitting text into boxes")
+    (description
+     "Ggfittext is a ggplot2 extension for fitting text into boxes.")
+    (license license:gpl2)))
+
 (define-public r-glmpca
   (package
     (name "r-glmpca")
