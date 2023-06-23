@@ -26155,6 +26155,25 @@ been created, it no longer relies on the font files.  No external software
 such as Ghostscript is needed to use this package.")
     (license license:asl2.0)))
 
+(define-public r-emoa
+  (package
+    (name "r-emoa")
+    (version "0.5-0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "emoa" version))
+              (sha256
+               (base32
+                "0fr4ia3hkv8c7wkl64a51s6ynldppc812ynwldvbwy25dhlbvs6r"))))
+    (properties `((upstream-name . "emoa")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/emoa/")
+    (synopsis "Evolutionary multiobjective optimization algorithms")
+    (description
+     "This package provides building blocks for the design and analysis of
+multiobjective optimization algorithms.")
+    (license license:gpl2)))
+
 (define-public r-emojifont
   (package
     (name "r-emojifont")
