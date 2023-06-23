@@ -37608,6 +37608,34 @@ parallelize and optimize.")
      `(#:cargo-inputs (("rust-rawpointer" ,rust-rawpointer-0.1))
        #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))))
 
+(define-public rust-maybe-async-0.2
+  (package
+    (name "rust-maybe-async")
+    (version "0.2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "maybe-async" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01gksgxmzgl8hvg831vv993fvrwz8hjwgcln99ilp08zrc9qq6qg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-syn" ,rust-syn-1)
+             ("rust-async-std" ,rust-async-std-1)
+             ("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-tokio" ,rust-tokio-1)
+             ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/fMeow/maybe-async-rs")
+    (synopsis "Procedural macro to unify sync and async Rust code")
+    (description
+     "This package provides a procedural macro that unifies sync and
+async code in Rust.")
+    (license license:expat)))
+
 (define-public rust-maybe-rayon-0.1
   (package
     (name "rust-maybe-rayon")
