@@ -8188,20 +8188,20 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.2.2")
+    (version "1.2.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "1xlh4kqa8516rvmzy67pzs0ghk9rc919nq5b2sywd5mvzi5spxnh"))))
+                "0np4wp7pmpayz8r9p3cl7z1i7yfq8xmkn862n9d104szf4ffk0if"))))
     (arguments
      (list
       #:tests? #t
       #:test-command #~(list "make" "test-only")))
     (native-inputs
-     (list emacs-buttercup))
+     (list))
     (build-system emacs-build-system)
     (home-page "https://elpa.nongnu.org/nongnu/subed.html")
     (synopsis "Major mode for editing subtitles")
