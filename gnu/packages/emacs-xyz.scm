@@ -35401,6 +35401,50 @@ without requiring all of Spacemacs.  The @code{<Leader>} key, inspired by Vim,
 provides an easy way to bind keys under a configurable prefix key.")
       (license license:gpl3+))))
 
+(define-public emacs-spamfilter-el
+  (package
+    (name "emacs-spamfilter-el")
+    (version "1.13")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://web.archive.org/web/20190227001412/"
+                    "http://www.geocities.co.jp/SiliconValley-PaloAlto/7043/"
+                    "spamfilter-1.1.tar.gz"))
+              (sha256
+               (base32
+                "1rd7wfn24bqlqlrrhq0d87vfhhcq09pnmrkkr7jpcnsls081a2iv"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'convert-encoding
+            (lambda _
+              (for-each
+               (lambda (name)
+                 (invoke "iconv" "-f" "EUC-JP" "-t" "UTF-8" name "-o" name))
+               (find-files "." "\\.el")))))))
+    (home-page
+     (string-append
+      "https://web.archive.org/web/20190326203214/"
+      "http://www.geocities.co.jp/SiliconValley-PaloAlto/7043/"
+      "index.html#spamfilter.el"))
+    (synopsis "Bayesian spam filter")
+    (description
+     "This package provides a spam filtering library for Emacs MUAs.  It
+supports Japanese and has the following features:
+
+@itemize
+@item Pure Emacs Lisp implementation.
+@item Interactive process within the MUA.
+@item Incremental corpus learning.
+@item Three different methods for Japanese word segmentation.
+@item Built-in support for @code{emacs-wanderlust} and @code{emacs-mew}.
+@item @url{https://github.com/naota/navi2ch, Navi2ch} integration.
+@end itemize\n")
+    (license license:gpl2+)))
+
 (define-public emacs-promise
   ;; XXX: Last stable release fails to build with "(wrong-number-of-arguments
   ;; (3 . 4) 2)" error.
@@ -37135,6 +37179,7 @@ EasyPG and latest Emacs.")
                      (invoke "make" "install")
                      (invoke "make" "install-info"))))))
       (propagated-inputs (list emacs-semi-epg))
+      (inputs (list emacs-spamfilter-el))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
       (synopsis "Yet Another Message Interface on Emacsen")
       (description
