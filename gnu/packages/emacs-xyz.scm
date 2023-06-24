@@ -1690,10 +1690,10 @@ Alternatively the menu can be bound globally, for example:
     (license license:gpl3+)))
 
 (define-public emacs-nano-modeline
-  (let ((commit "cba074e55c847f289085ec35c21fb2ad8df1b483")) ;version bump
+  (let ((commit "a18780c277838983932623870752f0adddef0345")) ;version bump
     (package
       (name "emacs-nano-modeline")
-      (version "1.0.0")
+      (version "1.0.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1702,7 +1702,7 @@ Alternatively the menu can be bound globally, for example:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0fccasr5ydyfwpqj3kmsgxiazifkckybg2rnwm6sg034phavcyln"))))
+                  "017vxz96fh26jb2xj7jnz8w580knvybcdr4xjad4xs72l2lrkj37"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/rougier/nano-modeline")
       (synopsis "Emacs minor mode controlling mode line")
