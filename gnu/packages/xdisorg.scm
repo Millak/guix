@@ -1272,14 +1272,14 @@ compact configuration syntax.")
 (define-public rxvt-unicode
   (package
     (name "rxvt-unicode")
-    (version "9.30")
+    (version "9.31")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dist.schmorp.de/rxvt-unicode/Attic/"
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0badnkjsn3zps24r5iggj8k5v4f00npc77wqg92pcn1q5z8r677y"))))
+                "1s3jcvac40zzp03fvmhjsdpsjx0gb1wk54qz74zhzzj9q75kz8da"))))
     (build-system gnu-build-system)
     (arguments
      ;; This sets the destination when installing the necessary terminal
@@ -1329,7 +1329,8 @@ compact configuration syntax.")
      `(("libptytty" ,libptytty)
        ("libXft" ,libxft)
        ("libX11" ,libx11)
-       ("libXt" ,libxt)))
+       ("libXt" ,libxt)
+       ("libxext" ,libxext)))
     (native-inputs
      (list ncurses ;trigger the installation of terminfo data
            perl pkg-config))
