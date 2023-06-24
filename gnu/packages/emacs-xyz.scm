@@ -37116,8 +37116,8 @@ EasyPG and latest Emacs.")
   ;; macro-expansion failure at runtime, so don't rewrite emacs input of this
   ;; package.
   (let ((version "2.15.9")
-        (revision "779")
-        (commit "f5cb2f0cf5e2c893acf2e669fd549836828dfdfc"))
+        (revision "791")
+        (commit "8369b2d5170a174652294835dd9a18ed21a38cb2"))
     (package
       (name "emacs-wanderlust")
       (version (git-version version revision commit))
@@ -37138,7 +37138,7 @@ EasyPG and latest Emacs.")
                            (("package-user-dir") "NONE"))))
                 (sha256
                  (base32
-                  "1ijs57wv1vrh33vn311hgkp42vlmjyi998nc4qdrqi7yy9j8hl1h"))))
+                  "0nqa9z61r308j61rgglacjsfddncbm185gp3rnzqkrpb5qsjzngk"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
