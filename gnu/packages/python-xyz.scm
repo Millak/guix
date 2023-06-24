@@ -17442,13 +17442,13 @@ checking library.")
 (define-public python-codespell
   (package
     (name "python-codespell")
-    (version "2.2.4")
+    (version "2.2.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "codespell" version))
         (sha256
-          (base32 "0fp8ihlj8q23qdfryj5pq8srl85vn8k8p6gq3zg9qz957i3j0ihb"))))
+          (base32 "0mmynpblhwbja0vmzbmbb9cgpxdl7b0lxaf9h2zr5dpddvgsv7vd"))))
     (build-system pyproject-build-system)
     (inputs
       (list python-chardet))
