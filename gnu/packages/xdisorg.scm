@@ -1289,38 +1289,21 @@ compact configuration syntax.")
            #:make-flags #~(list (string-append "TERMINFO=" #$output "/share/terminfo"))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'install 'install-desktop-urxvt
+               (add-after 'install 'install-desktop-entries
                  (lambda _
-                   (let ((desktop (string-append #$output "/share/applications")))
-                     (mkdir-p desktop)
-                     (with-output-to-file
-                         (string-append desktop "/urxvt.desktop")
-                       (lambda _
-                         (format #t
-                                 "[Desktop Entry]~@
-                                 Name=rxvt-unicode~@
-                                 Comment=~@
-                                 Exec=~a/bin/urxvt~@
-                                 TryExec=~@*~a/bin/urxvt~@
-                                 Icon=~@
-                                 Type=Application~%"
-                                 #$output))))))
-               (add-after 'install 'install-desktop-urxvtc
-                 (lambda _
-                   (let ((desktop (string-append #$output "/share/applications")))
-                     (mkdir-p desktop)
-                     (with-output-to-file
-                         (string-append desktop "/urxvtc.desktop")
-                       (lambda _
-                         (format #t
-                                 "[Desktop Entry]~@
-                                 Name=rxvt-unicode (client)~@
-                                 Comment=Rxvt clone with XFT and unicode support~@
-                                 Exec=~a/bin/urxvtc~@
-                                 TryExec=~@*~a/bin/urxvtc~@
-                                 Icon=~@
-                                 Type=Application~%"
-                                 #$output)))))))))
+                   (for-each (lambda (exec name)
+                               (make-desktop-entry-file
+                                (string-append #$output "/share/applications/"
+                                               exec ".desktop")
+                                #:type "Application"
+                                #:name name
+                                #:comment '((#f #$(package-synopsis this-package)))
+                                #:exec exec
+                                #:try-exec exec
+                                #:icon "utilities-terminal"
+                                #:categories '("System" "TerminalEmulator")))
+                             '("urxvt" "urxvtc")
+                             '("rxvt-unicode" "rxvt-unicode (client)")))))))
     (inputs
      (list libptytty libxft libx11 libxt libxext))
     (native-inputs
