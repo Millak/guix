@@ -1677,7 +1677,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/openboardview-use-system-mpc.patch	\
   %D%/packages/patches/openbox-python3.patch			\
   %D%/packages/patches/opencolorio-fix-build-with-gcc11.patch	\
-  %D%/packages/patches/openfoam-4.1-cleanup.patch			\
   %D%/packages/patches/openjdk-9-pointer-comparison.patch       \
   %D%/packages/patches/openjdk-9-setsignalhandler.patch         \
   %D%/packages/patches/openjdk-10-idlj-reproducibility.patch	\
