@@ -397,6 +397,40 @@ problems for efficient solution on parallel systems.")
 (define-public openfoam
   (deprecated-package "openfoam" openfoam-org))
 
+(define-public openfoam-com
+  ;; This is a fork of 'openfoam-org', maintained separately.
+  (package
+    (inherit openfoam-org)
+    (name "openfoam-com")
+    (version "2212")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://develop.openfoam.com"
+                                  "/Development/openfoam/-/archive/OpenFOAM-v"
+                                  version
+                                  "/openfoam-OpenFOAM-v"
+                                  version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0i9039hfz9gvgymkdjhjvvn5500zha3cpdbpqrzfrfi8lbz10is2"))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          (substitute* "etc/bashrc"
+                            ;; set same version as guix package
+			    (("^export WM_PROJECT_VERSION=.*$")
+			     (string-append "export WM_PROJECT_VERSION="
+					    ,version "\n")))
+                          ;; patch shell paths
+                          (substitute* (list "src/OSspecific/POSIX/POSIX.C"
+                                             "wmake/src/Makefile"
+                                             "wmake/makefiles/general"
+                                             "wmake/makefiles/info")
+                            (("/bin/sh")
+                             "sh"))))))
+    (synopsis "Framework for numerical simulation of fluid flow (from openfoam.com)")
+    (home-page "https://www.openfoam.com")))
+
 (define-public open-simulation-interface
   (package
     (name "open-simulation-interface")
