@@ -3968,35 +3968,36 @@ or XEmacs.")
     (license license:gpl3+)))
 
 (define-public emacs-autothemer
-  (package
-    (name "emacs-autothemer")
-    (version "0.2.17")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sebastiansturm/autothemer")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "13lj0igrsdycsr8ldv2hilj2x79c888g4lx2ixqn7w29lw6cb44g"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:tests? #true
-      #:test-command #~(list "emacs" "-Q" "--batch"
-                             "-l" "tests/autothemer-tests.el"
-                             "-f" "ert-run-tests-batch-and-exit")))
-    (propagated-inputs
-     (list emacs-dash))
-    (home-page "https://github.com/sebastiansturm/autothemer")
-    (synopsis "Conveniently create Emacs themes")
-    (description
-     "Autothemer provides a thin layer on top of @code{deftheme} and
+  (let ((commit "8f72afc6dba5ad7cc3a201a084fd20571f945d2e")) ;version bump
+    (package
+      (name "emacs-autothemer")
+      (version "0.2.18")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sebastiansturm/autothemer")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "15f7i39937riswpwjpc1ryg2v0rqj944pwf7rp2ry56rbx4vgl97"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-l" "tests/autothemer-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs
+       (list emacs-dash))
+      (home-page "https://github.com/sebastiansturm/autothemer")
+      (synopsis "Conveniently create Emacs themes")
+      (description
+       "Autothemer provides a thin layer on top of @code{deftheme} and
 @code{custom-theme-set-faces} that creates a new custom color theme, based on
 a set of simplified face specifications and a user-supplied color palette.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-howm
   (package
