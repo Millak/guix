@@ -1285,52 +1285,44 @@ compact configuration syntax.")
      ;; This sets the destination when installing the necessary terminal
      ;; capability data, which are not provided by 'ncurses'.  See
      ;; https://lists.gnu.org/archive/html/bug-ncurses/2009-10/msg00031.html
-     `(#:configure-flags (list "--enable-256-color")
-       #:make-flags (list (string-append "TERMINFO="
-                                         (assoc-ref %outputs "out")
-                                         "/share/terminfo"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-desktop-urxvt
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((output (assoc-ref outputs "out"))
-                    (desktop (string-append output "/share/applications")))
-               (mkdir-p desktop)
-               (with-output-to-file
-                   (string-append desktop "/urxvt.desktop")
+     (list #:configure-flags #~(list "--enable-256-color")
+           #:make-flags #~(list (string-append "TERMINFO=" #$output "/share/terminfo"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-desktop-urxvt
                  (lambda _
-                   (format #t
-                           "[Desktop Entry]~@
-                           Name=rxvt-unicode~@
-                           Comment=~@
-                           Exec=~a/bin/urxvt~@
-                           TryExec=~@*~a/bin/urxvt~@
-                           Icon=~@
-                           Type=Application~%"
-                           output))))))
-         (add-after 'install 'install-desktop-urxvtc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((output (assoc-ref outputs "out"))
-                    (desktop (string-append output "/share/applications")))
-               (mkdir-p desktop)
-               (with-output-to-file
-                   (string-append desktop "/urxvtc.desktop")
+                   (let ((desktop (string-append #$output "/share/applications")))
+                     (mkdir-p desktop)
+                     (with-output-to-file
+                         (string-append desktop "/urxvt.desktop")
+                       (lambda _
+                         (format #t
+                                 "[Desktop Entry]~@
+                                 Name=rxvt-unicode~@
+                                 Comment=~@
+                                 Exec=~a/bin/urxvt~@
+                                 TryExec=~@*~a/bin/urxvt~@
+                                 Icon=~@
+                                 Type=Application~%"
+                                 #$output))))))
+               (add-after 'install 'install-desktop-urxvtc
                  (lambda _
-                   (format #t
-                           "[Desktop Entry]~@
-                           Name=rxvt-unicode (client)~@
-                           Comment=Rxvt clone with XFT and unicode support~@
-                           Exec=~a/bin/urxvtc~@
-                           TryExec=~@*~a/bin/urxvtc~@
-                           Icon=~@
-                           Type=Application~%"
-                           output)))))))))
+                   (let ((desktop (string-append #$output "/share/applications")))
+                     (mkdir-p desktop)
+                     (with-output-to-file
+                         (string-append desktop "/urxvtc.desktop")
+                       (lambda _
+                         (format #t
+                                 "[Desktop Entry]~@
+                                 Name=rxvt-unicode (client)~@
+                                 Comment=Rxvt clone with XFT and unicode support~@
+                                 Exec=~a/bin/urxvtc~@
+                                 TryExec=~@*~a/bin/urxvtc~@
+                                 Icon=~@
+                                 Type=Application~%"
+                                 #$output)))))))))
     (inputs
-     `(("libptytty" ,libptytty)
-       ("libXft" ,libxft)
-       ("libX11" ,libx11)
-       ("libXt" ,libxt)
-       ("libxext" ,libxext)))
+     (list libptytty libxft libx11 libxt libxext))
     (native-inputs
      (list ncurses ;trigger the installation of terminfo data
            perl pkg-config))
