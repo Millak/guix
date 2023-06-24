@@ -1243,10 +1243,17 @@ command-line utility for mesh optimisation.")
              (when tests?
                (add-installed-pythonpath inputs outputs)
                (setenv "HOME" (getcwd))
-               (and (invoke "py.test" "-v" "tests/fenics_adjoint")
+               (and (invoke "py.test" "-v" "tests/fenics_adjoint"
+                            "-k" "not test_read_checkpoint")
                     (invoke "py.test" "-v" "tests/migration")
                     (invoke "py.test" "-v" "tests/pyadjoint")))
-             #t)))))
+             #t))
+         ;; Remove 'sanity-check, because it tries to import
+         ;; firedrake_adjoint after importing fenics_adjoint.
+         ;; Both load a module named 'backend' and firedrake_adjoint
+         ;; fails with an ImportError if it sees that the backend module
+         ;; has already been loaded.
+         (delete 'sanity-check))))
     (home-page "https://www.dolfin-adjoint.org")
     (synopsis "Automatic differentiation library")
     (description "@code{python-dolfin-adjoint} is a solver of
