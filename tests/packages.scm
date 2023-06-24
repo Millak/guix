@@ -368,6 +368,23 @@
           (package-transitive-supported-systems d)
           (package-transitive-supported-systems e))))
 
+(test-equal "package-transitive-supported-systems detects cycles"
+  '("c" "a" "b" "c")
+  (letrec* ((a (dummy-package "a"
+                 (build-system trivial-build-system)
+                 (native-inputs (list c))))
+            (b (dummy-package "b"
+                 (build-system trivial-build-system)
+                 (inputs (list a))))
+            (c (dummy-package "c"
+                 (build-system trivial-build-system)
+                 (inputs (list b)))))
+    (guard (c ((package-cyclic-dependency-error? c)
+               (map package-name
+                    (cons (package-error-package c)
+                          (package-error-dependency-cycle c)))))
+      (package-transitive-supported-systems c))))
+
 (test-assert "package-development-inputs"
   ;; Note: Due to propagated inputs, 'package-development-inputs' returns a
   ;; couple more inputs, such as 'linux-libre-headers'.

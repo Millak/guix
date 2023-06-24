@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018, 2019, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2021, 2022, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -626,7 +626,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                          #~("AR=gcc-ar" "RANLIB=gcc-ranlib")
                          #~())
 
-                  #$@(if (hurd-target?)
+                  #$@(if (target-hurd?)
                          #~("--disable-jit")
                          #~())))
          ((#:phases phases '%standard-phases)

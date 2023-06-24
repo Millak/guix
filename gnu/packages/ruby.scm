@@ -32,6 +32,7 @@
 ;;; Copyright © 2022, 2023 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -320,27 +321,27 @@ matching.  mruby can be linked and embedded within your application.")
 (define-public ruby-commander
   (package
     (name "ruby-commander")
-    (version "4.4.7")
+    (version "4.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "commander" version))
        (sha256
         (base32
-         "1pxakz596fjqak3cdbha6iva1dlqis86i3kjrgg6lf3sp8i5vhwg"))))
+         "1n8k547hqq9hvbyqbx2qi08g0bky20bbjca1df8cqq5frhzxq7bx"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         ;; Don't run or require rubocop, the code linting tool, as this is a
-         ;; bit unnecessary.
-         (add-after 'unpack 'dont-run-rubocop
-           (lambda _
-             (substitute* "Rakefile"
-               ((".*rubocop.*") "")
-               ((".*RuboCop.*") ""))
-             #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't run or require rubocop, the code linting tool, as this is a
+          ;; bit unnecessary.
+          (add-after 'unpack 'dont-run-rubocop
+            (lambda _
+              (substitute* "Rakefile"
+                ((".*rubocop.*") "")
+                ((".*RuboCop.*") "")))))))
     (propagated-inputs
      (list ruby-highline))
     (native-inputs
@@ -1211,22 +1212,22 @@ next patch version for example.")
 (define-public ruby-rjb
   (package
     (name "ruby-rjb")
-    (version "1.5.5")
+    (version "1.6.7")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rjb" version))
               (sha256
                (base32
-                "1ppj8rbicj3w0nhh7f73mflq19yd7pzdzkh2a91hcvphriy5b0ca"))))
+                "0ck802bm8cklhmqsgzhsa0y8lg80qy52dp3m8rlld3zc5gv1rsb9"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f ; no rakefile
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-java-home
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "JAVA_HOME" (assoc-ref inputs "jdk"))
-            #t)))))
+     (list
+      #:tests? #f ; no rakefile
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-java-home
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "JAVA_HOME" (assoc-ref inputs "jdk")))))))
     (native-inputs
      `(("jdk" ,icedtea "jdk")))
     (synopsis "Ruby-to-Java bridge using the Java Native Interface")
@@ -3239,29 +3240,35 @@ and inspect the environment.")
 (define-public ruby-ptools
   (package
     (name "ruby-ptools")
-    (version "1.3.5")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "ptools" version))
               (sha256
                (base32
-                "1jb1h1nsk9zwykpniw8filbsk26kjsdlpk5wz6w0zyamcd41h87j"))))
+                "0damllbshkxycrwjv80sz78h76dw7r9z54d17mb5cbha1daq9q2d"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-/bin/ls
-                    (lambda _
-                      (substitute* "test/test_binary.rb"
-                        (("/bin/ls")
-                         (which "ls")))
-                      #t))
-                   (add-before 'install 'create-gem
-                     (lambda _
-                       ;; Do not attempt to sign the gem.
-                       (substitute* "Rakefile"
-                         (("spec\\.signing_key = .*")
-                          ""))
-                       (invoke "rake" "gem:create"))))))
+     (list
+      #:test-target "spec:all"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                ;; Don't require rubocop
+                (("require 'rubocop/rake_task'") "")
+                (("RuboCop::RakeTask.new") "")
+                ;; Do not attempt to sign the gem.
+                (("spec\\.signing_key = .*") ""))
+
+              (substitute* "spec/binary_spec.rb"
+                (("/bin/ls")    (which "ls"))
+                (("/bin/cat")   (which "cat"))
+                (("/bin/chmod") (which "chmod"))
+                (("/bin/df")    (which "df"))))))))
+    (native-inputs
+     (list ruby-rspec))
     (synopsis "Extra methods for Ruby's @code{File} class")
     (description
      "The @dfn{ptools} (power tools) library extends Ruby's core @code{File}
@@ -3596,6 +3603,15 @@ two hashes.")
 It is a low-dependency variant of ruby-hydra.")
       (license license:expat))))
 
+;; Pinned variant for use by texlive
+(define-public ruby-hydra-minimal/pinned
+  (hidden-package
+   (package
+     (inherit ruby-hydra-minimal)
+     (arguments
+      (cons* #:ruby ruby-2.7
+             (package-arguments ruby-hydra-minimal))))))
+
 (define-public ruby-hydra
   (package
     (inherit ruby-hydra-minimal)
@@ -3619,28 +3635,28 @@ It is a low-dependency variant of ruby-hydra.")
 (define-public ruby-shindo
   (package
     (name "ruby-shindo")
-    (version "0.3.8")
+    (version "0.3.10")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "shindo" version))
               (sha256
                (base32
-                "0s8v1jbz8i0jh92f2fgxb3p51l1azrpkc8nv4mhrqy4vndpvd7wq"))))
+                "0qnqixhi0g8v44v13f3gynpbvvw6xqi1wajsxdjsx5rhzizfsj91"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "shindo_tests"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "tests/tests_helper.rb"
-               (("-rubygems") ""))
-             (substitute* "Rakefile"
-               (("system \"shindo") "system \"./bin/shindo")
-               ;; This test doesn't work, so we disable it.
-               (("fail \"The build_error test should fail") "#")
-               ((" -rubygems") ""))
-             #t)))))
+     (list
+      #:test-target "shindo_tests"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests/tests_helper.rb"
+                (("-rubygems") ""))
+              (substitute* "Rakefile"
+                (("system \"shindo") "system \"./bin/shindo")
+                ;; This test doesn't work, so we disable it.
+                (("fail \"The build_error test should fail") "#")
+                ((" -rubygems") "")))))))
     (propagated-inputs
      (list ruby-formatador))
     (synopsis "Simple depth first Ruby testing")
@@ -4367,17 +4383,17 @@ assertion messages for tests.")
 (define-public ruby-powerpack
   (package
     (name "ruby-powerpack")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "powerpack" version))
        (sha256
         (base32
-         "1r51d67wd467rpdfl6x43y84vwm8f5ql9l9m85ak1s2sp3nc5hyv"))))
+         "1f71axvlhnxja0k17qqxdi4qh5ck807hqg4i3j6cgy8fgzmyg7rg"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"))
+     (list #:test-target "spec"))
     (native-inputs
      (list bundler ruby-rspec ruby-yard))
     (synopsis "Useful extensions to core Ruby classes")
@@ -4543,13 +4559,16 @@ temporary files and directories during tests.")
 (define-public ruby-test-unit
   (package
     (name "ruby-test-unit")
-    (version "3.4.4")
+    (version "3.6.0")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "test-unit" version))
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/test-unit/test-unit")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "15isy7vhppbfd0032klirj9gxp65ygkzjdwrmm28xpirlcsk6qpd"))))
+                "0w1m432q3y5v9lkak8yyxadak3z17bsp6afni97i4zjdgfz7niz2"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-power-assert))
@@ -4691,16 +4710,27 @@ objects.")
 (define-public ruby-mkmf-lite
   (package
     (name "ruby-mkmf-lite")
-    (version "0.3.2")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "mkmf-lite" version))
               (sha256
                (base32
-                "0br9k6zijj1zc25n8p7f2j1mwl58nfgdknf3q13h9k156jvrir06"))))
+                "0rqa5kzswhqkj7r9mqrqz4mjd2vdxsblgybb52gj3mwr1gwvl4c5"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Avoid rubocop dependency
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec")))))))
     (propagated-inputs
      (list ruby-ptools))
+    (native-inputs
+     (list ruby-rspec))
     (synopsis "Lightweight alternative to @code{mkmf}")
     (description
      "@code{mkmf-lite} is a light version of Ruby's @code{mkmf.rb} designed
@@ -5256,6 +5286,36 @@ with processes on remote servers, via SSH2.")
     (description "@code{Net::SCP} is a pure-Ruby implementation of the SCP
 client protocol.")
     (home-page "https://github.com/net-ssh/net-scp")
+    (license license:expat)))
+
+(define-public ruby-minima
+  (package
+    (name "ruby-minima")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minima" version))
+              (sha256
+               (base32
+                "1gk7jmriiswda1ykjzpsw9cpiya4m9n0yrh0h6xnrc8zcfy543jj"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "jekyll" "build"))
+                            ;; Without the following, an attempt to remove
+                            ;; minima-<version>.gem is made during installation,
+                            ;; which will fail.
+                            (delete-file #$(string-append "_site/minima-"
+                                                          version ".gem")))))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list jekyll ruby-jekyll-feed ruby-jekyll-seo-tag))
+    (synopsis "Beautiful, minimal theme for Jekyll")
+    (description
+     "Minima is a one-size-fits-all Jekyll theme for writers.  It's Jekyll's
+default (and first) theme.  It's what you get when you run @code{jekyll new}.")
+    (home-page "https://github.com/jekyll/minima")
     (license license:expat)))
 
 (define-public ruby-minitest
@@ -5923,7 +5983,7 @@ and manipulate Git repositories by wrapping system calls to the git binary.")
 (define-public ruby-hocon
   (package
     (name "ruby-hocon")
-    (version "1.3.1")
+    (version "1.4.0")
     (home-page "https://github.com/puppetlabs/ruby-hocon")
     (source (origin
               (method git-fetch)
@@ -5931,16 +5991,17 @@ and manipulate Git repositories by wrapping system calls to the git binary.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "172hh2zr0n9nnszv0qvlgwszgkrq84yahrg053m68asy79zpmbqr"))))
+                "04wgv0pwrghawnl6qp346z59fvp9v37jymq8p0lsrzxa6nvrykmk"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "rspec")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "rspec")
+                  (format #t "test suite not run~%")))))))
     (native-inputs
      (list bundler ruby-rspec))
     (synopsis "HOCON config library")
@@ -6689,13 +6750,13 @@ invocation, and source and documentation browsing.")
 (define-public ruby-pry-doc
   (package
     (name "ruby-pry-doc")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "pry-doc" version))
               (sha256
                (base32
-                "0wyvql6pb6m8jl8bsamabxhxhd86bnqblspaxzz05sl0fm2ynj0r"))))
+                "1pp43n69p6bjvc640wgcz295w1q2v9awcqgbwcqn082dbvq5xvnx"))))
     (build-system ruby-build-system)
     (propagated-inputs (list ruby-pry ruby-yard))
     (native-inputs (list ruby-latest-ruby ruby-rspec ruby-rake)) ;for tests
@@ -6971,7 +7032,7 @@ utilities for Ruby.")
 (define-public ruby-tzinfo
   (package
     (name "ruby-tzinfo")
-    (version "2.0.4")
+    (version "2.0.6")
     (source
      (origin
        (method git-fetch)
@@ -6982,31 +7043,29 @@ utilities for Ruby.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jaq1givdaz5jxz47xngyj3j315n872rk97mnpm5njwm48wy45yh"))))
+         "1n1gzjqwwnx209h8d054miva0y7x17db2ahy7jav5r25ibhh7rgm"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-safe-tests
-           (lambda _
-             (substitute* "test/test_utils.rb"
-               (("def safe_test\\(options = \\{\\}\\)")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-safe-tests
+            (lambda _
+              (substitute* "test/test_utils.rb"
+                (("def safe_test\\(options = \\{\\}\\)")
                  "def safe_test(options = {})
-      skip('The Guix build environment has an unsafe load path')"))
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (substitute* "Gemfile"
-               (("simplecov.*") "simplecov'\n"))
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? test-target #:allow-other-keys)
-             (when tests?
-               (invoke "bundler" "exec" "rake" test-target))
-             #t)))))
+      skip('The Guix build environment has an unsafe load path')"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (substitute* "Gemfile"
+                (("simplecov.*") "simplecov'\n"))))
+          (replace 'check
+            (lambda* (#:key tests? test-target #:allow-other-keys)
+              (when tests?
+                (invoke "bundler" "exec" "rake" test-target)))))))
     (propagated-inputs
-     `(("ruby-concurrent-ruby" ,ruby-concurrent)))
+     (list ruby-concurrent))
     (native-inputs
      (list ruby-simplecov))
     (synopsis "Time zone library for Ruby")
@@ -7565,7 +7624,7 @@ you about the changes.")
 (define-public ruby-loofah
   (package
     (name "ruby-loofah")
-    (version "2.13.0")
+    (version "2.21.3")
     (home-page "https://github.com/flavorjones/loofah")
     (source
      (origin
@@ -7576,7 +7635,7 @@ you about the changes.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rmsm7mckiq0gslfqdl02yvn500n42v84gq28qjqn4yq9jwfs9ga"))))
+         "1lh7cf56y1b0h090ahphvz7grq581phsamdl0rq59y0q9bqwrhg0"))))
     (build-system ruby-build-system)
     (native-inputs
      (list ruby-hoe ruby-hoe-markdown ruby-rr))
@@ -8430,7 +8489,7 @@ better performance than @code{Regexp} and @code{String} methods from the
 (define-public ruby-range-compressor
   (package
     (name "ruby-range-compressor")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
       (origin
         (method git-fetch)
@@ -8440,17 +8499,18 @@ better performance than @code{Regexp} and @code{String} methods from the
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0y8slri2msyyg2szgwgriqd6qw9hkxycssdrcl5lk2dbcq5zvn54"))))
+          "1zmc44si5ac2h7r1x4f1j8z5yr6wz528c7dssh0g70fmczs3pfga"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'extract-gemspec 'strip-version-requirements
-                    (lambda _
-                      (substitute* "range_compressor.gemspec"
-                        (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                         (string-append stripped "\n")))
-                      #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'strip-version-requirements
+            (lambda _
+              (substitute* "range_compressor.gemspec"
+                (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
+                 (string-append stripped "\n"))))))))
     (native-inputs
      (list ruby-rspec))
     (synopsis "Simple arrays of objects to arrays of ranges compressor")
@@ -9162,7 +9222,7 @@ during shutdown.")
 (define-public ruby-memory-profiler
   (package
     (name "ruby-memory-profiler")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
       (origin
         (method git-fetch)
@@ -9172,7 +9232,7 @@ during shutdown.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "07yqv11q68xg2fqkrhs6ysngryk8b9zq6qzh24rgx9xqv6qfnj0w"))))
+          "1z1x0rymfv45gh1y3s46w5pga5y8cvgn228jiwlnhc8hin3zig84"))))
     (build-system ruby-build-system)
     (synopsis "Memory profiling routines for Ruby")
     (description
@@ -9802,25 +9862,25 @@ features such as filtering and fine grained logging.")
 (define-public ruby-yajl-ruby
   (package
     (name "ruby-yajl-ruby")
-    (version "1.4.1")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "yajl-ruby" version))
        (sha256
         (base32
-         "16v0w5749qjp13xhjgr2gcsvjv6mf35br7iqwycix1n2h7kfcckf"))))
+         "1lni4jbyrlph7sz8y49q84pb0sbj82lgwvnjnsiv01xf26f4v5wc"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-test-to-update-load-path
-           (lambda _
-             (substitute* "spec/parsing/large_number_spec.rb"
-               (("require \"yajl\"")
-                "$LOAD_PATH << 'lib'; require 'yajl'"))
-             #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-test-to-update-load-path
+            (lambda _
+              (substitute* "spec/parsing/large_number_spec.rb"
+                (("require \"yajl\"")
+                 "$LOAD_PATH << 'lib'; require 'yajl'")))))))
      (native-inputs
       (list ruby-rake-compiler ruby-rspec))
      (synopsis "Streaming JSON parsing and encoding library for Ruby")
@@ -15056,13 +15116,13 @@ floating-point numbers or complex numbers as arguments.")
 (define-public ruby-sucker-punch
   (package
     (name "ruby-sucker-punch")
-    (version "3.0.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sucker_punch" version))
        (sha256
-        (base32 "0yams24wndpj7dzdysvm4z1w6ggg4xvj4snxba66prahhxvik4xl"))))
+        (base32 "12by9vx8q6l4i56q62k1s1ymaxbpg4rny5zngj5i5h09kyh2yp4p"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases

@@ -11717,20 +11717,20 @@ be used with @code{cl-yacc}.")
   (sbcl-package->ecl-package sbcl-cl-lex))
 
 (define-public sbcl-cl-colors2
-  (let ((commit "d620e7fb504bbec3ed48cc7cd03f60ce2bb3735d")
-        (revision "2"))
+  (let ((commit "cc03badf5f69be65ae7e13c2f9a7c16838ab8241")
+        (revision "3"))
     (package
       (name "sbcl-cl-colors2")
-      (version (git-version "0.5.0" revision commit))
+      (version (git-version "0.5.4" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://notabug.org/cage/cl-colors2.git")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-colors2" version))
          (sha256
-          (base32 "14wx006lv4bhf86z68484kphm5jsh86ns60pb4i1bi8kl8lp03r0"))))
+          (base32 "1l7sl7nnvq13xmss9wwkhcq123bsylskxjrijwfkqp6sm02gbd15"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-clunit2))
@@ -11741,11 +11741,10 @@ be used with @code{cl-yacc}.")
        "This is a very simple color library for Common Lisp, providing:
 
 @itemize
-@item Types for representing colors in HSV and RGB spaces.
-@item Simple conversion functions between the above types (and also
-hexadecimal representation for RGB).
-@item Some predefined colors (currently X11 color names -- of course
-the library does not depend on X11).
+@item Types for representing colors in HSV, HSL, and RGB spaces.
+@item Simple conversion functions between the above types.
+@item Function printing colors to HEX, RGB, RGBA, and HSL.
+@item Predefined colors from X11, SVG, and GDK.
 @end itemize\n")
       (home-page "https://notabug.org/cage/cl-colors2")
       (license license:boost1.0))))
@@ -25684,7 +25683,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -25694,7 +25693,7 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "0aym0m12s5px139ragna0pr8jan8bx3akhjgamj6h0y28xksziji"))
+         "0kp5wim5frr4l52rgchaz1cj74daqngagrz3r0lgasii6bwlzsi6"))
        (modules '((guix build utils)))
        (snippet
         `(begin

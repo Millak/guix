@@ -34,13 +34,13 @@
 (define-public purescript
   (package
     (name "purescript")
-    (version "0.15.8")
+    (version "0.15.9")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "purescript" version))
        (sha256
-        (base32 "1h5d5hjc9hrlk718lf62qzaq1l6ppr0l2b3fl78csyh86cihh750"))))
+        (base32 "1i9wszs5kwwq0l8l4if05y8xc8fih10assrdj8q1ipr0hx3zjawm"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "purescript")))
     (inputs (list ghc-aeson
@@ -109,7 +109,8 @@
                 dep))))
          (add-after 'register 'remove-libraries
            (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
+             (delete-file-recursively
+               (string-append (assoc-ref outputs "out") "/lib")))))))
     (home-page "https://www.purescript.org/")
     (synopsis "Haskell inspired programming language compiling to JavaScript")
     (description

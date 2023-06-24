@@ -111,6 +111,7 @@ guix/scripts/system.scm
 guix/scripts/system/edit.scm
 guix/scripts/system/search.scm
 guix/scripts/lint.scm
+guix/scripts/locate.scm
 guix/scripts/publish.scm
 guix/scripts/edit.scm
 guix/scripts/size.scm

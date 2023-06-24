@@ -9,7 +9,7 @@
 ;;; Copyright © 2016, 2017, 2021 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
 ;;; Copyright © 2016, 2021 Amirouche <amirouche@hypermove.net>
-;;; Copyright © 2016, 2019, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2019, 2021, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2017 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -89,9 +89,9 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)         ;pandoc
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
@@ -311,11 +311,11 @@ currently does not do much, but it might in the future.")
     (license license:gpl3+)))
 
 (define-public guile-openai
-  (let ((commit "9265b641dea0246609b7bd5031f3f6780ef6a167")
-        (revision "2"))
+  (let ((commit "751cd5db5f8bb7c00e60042a7ec86100930b0f02")
+        (revision "1"))
     (package
       (name "guile-openai")
-      (version (git-version "0.1" revision commit))
+      (version (git-version "0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -324,21 +324,16 @@ currently does not do much, but it might in the future.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0sydjsgdr6xxk1w5f8pf14wgimfy4fb1hpi8yml0nv83p7bfr1w3"))))
-      (build-system guile-build-system)
-      (arguments
-       (list
-        #:scheme-file-regexp
-        #~(lambda (file info)
-            (let ((name (basename file)))
-              (and (string-suffix? ".scm" name)
-                   (not (string=? (basename file) "guix.scm")))))))
-      (inputs (list guile-3.0-latest))
+                  "1rl15wkm682xwzj2fjn4czp1haxnxlcjsk3g69j2a9qlwc4w0g4a"))))
+      (build-system gnu-build-system)
+      (arguments (list #:strip-binaries? #f))
+      (inputs (list guile-3.0-latest imagemagick))
       (propagated-inputs
        (list guile-colorized
              guile-gnutls
              guile-json-4
              guile-picture-language))
+      (native-inputs (list autoconf automake pkg-config))
       (home-page "https://gitlab.com/flatwhatson/guile-openai")
       (synopsis "Guile implementation of the OpenAI API")
       (description
@@ -788,10 +783,10 @@ Unix-style DSV format and RFC 4180 format.")
     (inputs (list guile-2.2))
     (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
 
-(define-public guile-fibers-1.1
+(define-public guile-fibers-1.3
   (package
     (name "guile-fibers")
-    (version "1.1.1")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -800,11 +795,9 @@ Unix-style DSV format and RFC 4180 format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
+                "0wvdi4l58f9a5c9wi3cdc9l1bniscsixb6w2zj86mch7j7j814lc"))
               (patches
-               (search-patches "guile-fibers-wait-for-io-readiness.patch"
-                               "guile-fibers-epoll-instance-is-dead.patch"
-                               "guile-fibers-fd-finalizer-leak.patch"))))
+               (search-patches "guile-fibers-libevent-32-bit.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -822,17 +815,15 @@ Unix-style DSV format and RFC 4180 format.")
                      (substitute* "Makefile"
                        (("tests/speedup.scm") ""))))))))
     (native-inputs
-     (list texinfo pkg-config autoconf automake libtool
+     (list texinfo pkg-config autoconf-2.71 automake libtool
            guile-3.0            ;for 'guild compile
            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
            gettext-minimal))
     (inputs
-     (list guile-3.0))                            ;for libguile-3.0.so
-    (supported-systems
-     ;; This version requires 'epoll' and is thus limited to Linux-based
-     ;; systems, but this may change soon:
-     ;; <https://github.com/wingo/fibers/pull/53>.
-     (filter (cut string-suffix? "-linux" <>) %supported-systems))
+     (append (list guile-3.0)                     ;for libguile-3.0.so
+             (if (target-hurd?)
+                 (list libevent)
+                 '())))
     (synopsis "Lightweight concurrency facility for Guile")
     (description
      "Fibers is a Guile library that implements a a lightweight concurrency
@@ -849,22 +840,35 @@ is not available for Guile 2.0.")
     (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
 
-(define-public guile-fibers-next
-  (let ((commit "99fc3e38048f732de67c43fde52e949fa294aa7d")
-        (revision "1"))
-    (package
-      (inherit guile-fibers-1.1)
-      (name "guile-fibers-next")
-      (version (git-version "1.3.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/wingo/fibers")
-                      (commit commit)))
-                (file-name (git-file-name "guile-fibers" version))
-                (sha256
-                 (base32
-                  "1950nf0qa52m1hhc33z0snci5azbdcv4m6hklk5rpqchc90x9h4p")))))))
+(define-public guile-fibers-1.1
+  (package
+    (inherit guile-fibers-1.3)
+    (version "1.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wingo/fibers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "guile-fibers" version))
+              (sha256
+               (base32
+                "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
+              (patches
+               (search-patches "guile-fibers-wait-for-io-readiness.patch"
+                               "guile-fibers-epoll-instance-is-dead.patch"
+                               "guile-fibers-fd-finalizer-leak.patch"))))
+    (native-inputs
+     (list texinfo pkg-config autoconf automake libtool
+           guile-3.0            ;for 'guild compile
+           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
+           gettext-minimal))
+    (inputs
+     (list guile-3.0))                            ;for libguile-3.0.so
+    (supported-systems
+     ;; This version requires 'epoll' and is thus limited to Linux-based
+     ;; systems, which is fixed in 1.2.0:
+     ;; <https://github.com/wingo/fibers/pull/53>.
+     (filter (cut string-suffix? "-linux" <>) %supported-systems))))
 
 (define-public guile-fibers
   (package
@@ -3843,7 +3847,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3852,7 +3856,7 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0dnahq05mwxzbsqb0qjkyysylc54qr8l5839zyc4sanl2syzhvwk"))))
+                "0i0q2h4kfp1mj5m3wnz2hk6z895001j38s5vkbhkdxf05cjvwkky"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
@@ -4057,6 +4061,50 @@ bindings to Vigra C (a C wrapper to most of the Vigra functionality) and is
 enriched with pure Guile Scheme algorithms, all accessible through a nice,
 clean and easy to use high level API.")
     (license license:gpl3+)))
+
+(define-public guile-ffi-cblas
+  (let ((commit "4458d50f84786d7ace0181c6588345eed7474996")
+        (revision "0"))
+    (package
+      (name "guile-ffi-cblas")
+      (version (git-version "0.0.0" revision commit))
+      (home-page "https://github.com/lloda/guile-ffi-cblas")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page)
+                                    (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "050s0lq64v286hkxqczkfkx3fp1vr3jm5w236hxx67br9najb1cp"))))
+      (build-system guile-build-system)
+      (arguments
+       (list #:source-directory "mod"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'set-blas-file-name
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "mod/ffi/cblas.scm"
+                       (("\"libcblas\"")
+                        (string-append "\""
+                                       (search-input-file
+                                        inputs "/lib/libopenblas.so")
+                                       "\"")))))
+                 (add-after 'build 'check
+                   (lambda _
+                     (invoke "guile" "-C" "mod" "-L" "mod"
+                             "test/test-ffi-cblas.scm"))))))
+      (native-inputs (list guile-3.0))
+      (inputs (list openblas))
+      (synopsis "Guile bindings for CBLAS, the linear algebra library")
+      (description
+       "This package provides Guile FFI bindings for CBLAS, the library of
+linear algebra subprograms.
+
+To use the bindings, import @code{(ffi cblas)}.  CBLAS will be loaded from the
+default dynamic library path.  There are up to three bindings for each
+function: raw, typed, and functional.")
+      (license license:lgpl3+))))
 
 (define-public guile-ffi-fftw
   (let ((commit "294ad9e7491dcb40026d2fec9be2af05263be1c0")
@@ -5205,7 +5253,7 @@ locations.")
 (define-public guile-netlink
   (package
     (name "guile-netlink")
-    (version "1.1.2")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -5215,7 +5263,7 @@ locations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1s06xbyj0yd49aivfpc9l73c8c12r3zjmskkyislrfwkbpd74hjr"))))
+         "06ls830nrshzi2j532di5vdf03fp8cy1275ll4ms93x1hv2g8dk0"))))
     (build-system gnu-build-system)
     (inputs
      (list guile-3.0))

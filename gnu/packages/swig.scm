@@ -67,3 +67,21 @@ you tailor the wrapping process to suit your application.")
 
     ;; See http://www.swig.org/Release/LICENSE for details.
     (license gpl3+)))
+
+(define-public swig-next
+  ;; a number of packages using swig do not build with this version
+  ;; so we need to keep swig 4.0.2 above and place the current release
+  ;; as swig-next
+  (package
+    (inherit swig)
+    (name "swig")
+    (version "4.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/" name "/" name "/"
+                                 name "-" version "/"
+                                 name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16xc767gf5ip40jh698wbdrxrghli5v2c966bkdmrmpwv378mw1a"))))
+    (inputs (list pcre2))))

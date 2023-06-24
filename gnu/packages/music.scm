@@ -159,6 +159,7 @@
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -7095,7 +7096,7 @@ choice.")
 (define-public musikcube
   (package
     (name "musikcube")
-    (version "0.96.10")
+    (version "3.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7104,13 +7105,12 @@ choice.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06myr83x8jvzlzchg3jsw1163n2lcsbmb176zgnx7xxa26jpdbh1"))))
+                "09q15xlssgg67zg5m0q574k3al2pdjdnm1580mlf0wzr6a021fnd"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; No test suite
        #:configure-flags
        '("-DCMAKE_BUILD_TYPE=Release"
-         "-DENABLE_BUNDLED_TAGLIB=false"
          ;; Use the "wide" ncurses headers but don't look for them in an
          ;; ncursesw directory. For more info:
          ;; https://github.com/clangen/musikcube/wiki/building#compiler-cannot-find-ncurseswcursesh
@@ -7118,7 +7118,7 @@ choice.")
          ;; We will strip the binaries ourselves in the 'strip' phase.
          "-DDISABLE_STRIP=true")))
     (native-inputs
-     (list pkg-config))
+     (list asio pkg-config))
     (inputs
      (list alsa-lib
            boost
@@ -7126,10 +7126,14 @@ choice.")
            ffmpeg-4
            lame
            libev
+           libgme
            libmicrohttpd
+           libogg
            libopenmpt
-           ncurses
+           libvorbis
+           ncurses/tinfo
            openssl
+           pipewire
            pulseaudio
            taglib
            zlib))
@@ -7150,6 +7154,8 @@ streaming audio server.")
              (url "https://github.com/quodlibet/quodlibet")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "quodlibet-fix-invalid-glob.patch"
+                                "quodlibet-fix-mtime-tests.patch"))
        (sha256
         (base32 "1i5k93k3bfp7hpcwkbr865mbj9jam3jv2a5k1bazcyp4f5vdrb0v"))))
     (build-system python-build-system)
@@ -7173,9 +7179,7 @@ streaming audio server.")
                           "--ignore=tests/test_browsers_iradio.py"
                           ;; broken upstream
                           "--disable-warnings"
-                          "--ignore=tests/quality"
-                          ;; missing legacy icons in adwaita-icon-theme
-                          "--ignore=tests/plugin/test_trayicon.py")
+                          "--ignore=tests/quality/test_flake8.py")
                   (format #t "test suite not run~%"))))
           (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))

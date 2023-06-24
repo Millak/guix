@@ -29,20 +29,25 @@
 (define-module (gnu packages flashing-tools)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages embedded)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnupg)
@@ -58,7 +63,7 @@
 (define-public flashrom
   (package
     (name "flashrom")
-    (version "1.2")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -66,35 +71,22 @@
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0ax4kqnh7kd3z120ypgp73qy1knz47l6qxsqzrfkd97mh5cdky71"))
-              (patches
-               (search-patches "flashrom-fix-building-on-aarch64.patch"))))
-    (build-system gnu-build-system)
-    (inputs (list dmidecode pciutils libusb libftdi))
-    (native-inputs (list pkg-config))
+                "08wn2j5vxzzvigflrjypgxxzjp32c76bshrlkzki5l6cad226lx0"))))
+    (build-system meson-build-system)
+    (inputs (list bash-minimal dmidecode pciutils libusb libftdi libjaylink))
+    (native-inputs (list cmocka pkg-config))
     (arguments
-     '(#:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" %output)
-             "CONFIG_ENABLE_LIBUSB0_PROGRAMMERS=no")
-       #:tests? #f                      ; no 'check' target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'patch-exec-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "dmi.c"
-               (("\"dmidecode\"")
-                (format #f "~S"
-                        (search-input-file inputs "/sbin/dmidecode"))))))
-         (add-before 'build 'patch-type-error
-           (lambda _
-             ;; See https://github.com/flashrom/flashrom/pull/133
-             (substitute* "libflashrom.c"
-               (("supported_boards\\[i\\].working = binfo\\[i\\].working")
-                "supported_boards[i].working = (enum flashrom_test_state)binfo[i].working")
-               (("supported_chipsets\\[i\\].status = chipset\\[i\\].status")
-                "supported_chipsets[i].status = (enum flashrom_test_state)chipset[i].status")))))))
+     (list #:configure-flags
+           #~'("-Dprogrammer=all")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((flashrom (string-append #$output "/sbin/flashrom")))
+                     (wrap-program flashrom
+                       `("PATH" ":" prefix
+                         (,(dirname (search-input-file
+                                     inputs "/sbin/dmidecode")))))))))))
     (home-page "https://flashrom.org/")
     (synopsis "Identify, read, write, erase, and verify ROM/flash chips")
     (description

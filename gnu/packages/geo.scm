@@ -2786,17 +2786,20 @@ growing set of geoscientific methods.")
            sqlite
            (list zstd "lib")))
     (native-inputs
-     (list bison
-           flex
-           perl
-           perl-yaml-tiny
-           pkg-config
-           python-mock
-           python-nose2
-           python-pyqt-builder
-           qttools-5
-           shellcheck
-           xorg-server-for-tests))
+     (append
+       (list bison
+             flex
+             perl
+             perl-yaml-tiny
+             pkg-config
+             python-mock
+             python-nose2
+             python-pyqt-builder
+             qttools-5)
+       (if (supported-package? shellcheck)
+         (list shellcheck)
+         '())
+       (list xorg-server-for-tests)))
     (home-page "https://qgis.org")
     (synopsis "Geographical information system")
     (description "QGIS is an easy to use Geographical Information

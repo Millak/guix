@@ -4294,7 +4294,7 @@ Hints specification (EWMH).")
            gtk+
            goffice
            libgsf
-           librsvg
+           (librsvg-for-system)
            libxml2
            libxslt
            python

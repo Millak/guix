@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -799,7 +799,7 @@ displayed in a terminal.")
            libjpeg-turbo
            libinih
            libnsgif
-           librsvg
+           (librsvg-for-system)
            libtiff
            libxkbcommon
            pango

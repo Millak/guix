@@ -938,6 +938,41 @@ It's a terminal emulator with few dependencies, so you don't need a full GNOME
 desktop installed to have a decent terminal emulator.")
     (license license:gpl2)))
 
+(define-public xiate
+  (let ((commit "ae3cf30b345c64f097a747ac848e23ef5bae8b57")
+        (revision "0"))
+    (package
+      (name "xiate")
+      (version (git-version "22.12" revision commit))
+      (source (origin
+                (method git-fetch)
+                (file-name (git-file-name name version))
+                (uri (git-reference
+                      (url "https://www.uninformativ.de/git/xiate.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0bc205b1gs1jvp1a2cr814l32hmlm0sgv1drfw7ykbavslfpmg2d"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:make-flags #~(list (string-append "CC="
+                                                 #$(cc-for-target))
+                                  (string-append "prefix="
+                                                 #$output))
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure))))
+      (inputs (list gtk+ glib vte))
+      (native-inputs (list pkg-config))
+      (synopsis "Minimalist terminal emulator based on GTK+")
+      (description
+       "Xiate is a terminal emulator which tries to keep a balance
+between features and simplicity.  This is achieved by using VTE as a powerful
+backend, while UI, configuration, and code try to remain much more
+minimalistic.")
+      (home-page "https://www.uninformativ.de/git/xiate/file/README.html")
+      (license license:expat))))
+
 (define-public go-github.com-nsf-termbox-go
   (let ((commit "288510b9734e30e7966ec2f22b87c5f8e67345e3")
         (revision "1"))
@@ -957,7 +992,7 @@ desktop installed to have a decent terminal emulator.")
       (arguments
        '(#:import-path "github.com/nsf/termbox-go"))
       (propagated-inputs
-       (list go-github.com-mattn-go-runewidth))
+       (list go-github-com-mattn-go-runewidth))
       (synopsis "@code{termbox} provides a minimal API for text-based user
 interfaces")
       (description
@@ -969,7 +1004,7 @@ programmer to write text-based user interfaces.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.34.0")
+    (version "0.41.0")
     (source
      (origin
        (method git-fetch)
@@ -979,12 +1014,12 @@ programmer to write text-based user interfaces.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "023ksrmjg99svmkpnlh4k7gssv1sz2nl0v5b6bsr2iragvwrgkf4"))))
+         "1l9nsvziip3azyvg8wi4g3x606fh6w9vpfcbcgjdzdnp2ywqciim"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
     (inputs
-     (list go-github.com-mattn-go-runewidth
+     (list go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-shellwords
            go-github-com-mattn-go-isatty
            go-github-com-gdamore-tcell

@@ -2262,16 +2262,37 @@ provides methods for automatically determining breaks and labels for axes and
 legends.")
     (license license:expat)))
 
+(define-public r-swagger
+  (package
+    (name "r-swagger")
+    (version "3.33.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "swagger" version))
+              (sha256
+               (base32
+                "1ldgmy5vjzd11z5yl5a518wkw6y0l469b2zf0lp12hk19jq6k0sj"))))
+    (properties `((upstream-name . "swagger")))
+    (build-system r-build-system)
+    (home-page "https://github.com/rstudio/swagger")
+    (synopsis
+     "Dynamically generate documentation from a Swagger-compliant API")
+    (description
+     "This package provides a collection of HTML, JavaScript, and CSS assets
+that dynamically generate beautiful documentation from a Swagger compliant
+API.")
+    (license license:asl2.0)))
+
 (define-public r-pacman
   (package
     (name "r-pacman")
     (version "0.5.1")
     (source (origin
-             (method url-fetch)
-             (uri (cran-uri "pacman" version))
-             (sha256
-              (base32
-               "0z7gngd6h83cpjhq1vg75wvzhdjbgjh7gj5d4zvvi9gd2lmagjcy"))))
+              (method url-fetch)
+              (uri (cran-uri "pacman" version))
+              (sha256
+               (base32
+                "0z7gngd6h83cpjhq1vg75wvzhdjbgjh7gj5d4zvvi9gd2lmagjcy"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-remotes))
@@ -2483,6 +2504,40 @@ reduce the amount of code to produce for the user.  As a result, the package
 does not use formula input or special syntax, but can be used in combination
 with default R plot functions.")
     (license license:gpl2+)))
+
+(define-public r-plumber
+  (package
+    (name "r-plumber")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "plumber" version))
+              (sha256
+               (base32
+                "1k0y7ylc8bld16imn86g0i0dmxmr3kmh9ax4ys0yrxqzrvji7z3g"))))
+    (properties `((upstream-name . "plumber")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-crayon
+                             r-ellipsis
+                             r-httpuv
+                             r-jsonlite
+                             r-lifecycle
+                             r-magrittr
+                             r-mime
+                             r-promises
+                             r-r6
+                             r-rlang
+                             r-sodium
+                             r-stringi
+                             r-swagger
+                             r-webutils))
+    (home-page "https://www.rplumber.io")
+    (synopsis "API generator for R")
+    (description
+     "This package gives you the ability to automatically generate and serve
+an HTTP API from R functions using the annotations in the R documentation
+around your functions.")
+    (license license:expat)))
 
 (define-public r-polychrome
   (package
@@ -10960,6 +11015,33 @@ It is a replacement for the @code{zip} function, that does not require any
 additional external tools on any platform.")
     (license license:cc0)))
 
+(define-public r-openai
+  (package
+    (name "r-openai")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "openai" version))
+              (sha256
+               (base32
+                "1fi1nc9c7kfnig6b5ifpb1v9r3gxszk984rwyq7i1lb6s5jv0b9z"))))
+    (properties `((upstream-name . "openai")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-assertthat
+                             r-glue
+                             r-httr
+                             r-jsonlite
+                             r-lifecycle
+                             r-magrittr))
+    (home-page "https://github.com/irudnyts/openai")
+    (synopsis "R Wrapper for OpenAI API")
+    (description
+     "This package provides an R wrapper of OpenAI API endpoints (see
+@url{https://platform.openai.com/docs/introduction} for details).  This
+package covers Models, Completions, Chat, Edits, Images, Embeddings, Audio,
+Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
+    (license license:expat)))
+
 (define-public r-openxlsx
   (package
     (name "r-openxlsx")
@@ -17188,6 +17270,29 @@ Kingsbury (1999, 2001) as implemented by Selesnick; and Hilbert wavelet
 pairs (Selesnick 2001, 2002).")
     (license license:bsd-3)))
 
+(define-public r-word2vec
+  (package
+    (name "r-word2vec")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "word2vec" version))
+              (sha256
+               (base32
+                "0qj39vms6zgwb8lpmfkppayizdmhakic3pkacglary3ain61vnsk"))))
+    (properties `((upstream-name . "word2vec")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcppprogress))
+    (home-page "https://github.com/bnosac/word2vec")
+    (synopsis "Distributed representations of words")
+    (description
+     "Learn vector representations of words by continuous bag of words and
+skip-gram implementations of the word2vec algorithm.  The techniques are
+detailed in the paper \"Distributed Representations of Words and Phrases and
+their Compositionality\" by Mikolov et al. (2013), available at
+<arXiv:1310.4546>.")
+    (license license:asl2.0)))
+
 (define-public r-wordcloud
   (package
     (name "r-wordcloud")
@@ -17286,6 +17391,38 @@ manipulate tree data.")
      "This package provides tools to check the latest release version of R and
 R packages (on CRAN, Bioconductor or Github).")
     (license license:artistic2.0)))
+
+(define-public r-doc2vec
+  (package
+    (name "r-doc2vec")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "doc2vec" version))
+              (sha256
+               (base32
+                "0249hm0103kxxsi4gks4h20wf6p00gbrk9jf8c148mbja1l56f6v"))))
+    (properties `((upstream-name . "doc2vec")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/bnosac/doc2vec")
+    (synopsis "Distributed representations of sentences, documents and topics")
+    (description
+     "Learn vector representations of sentences, paragraphs or documents by
+using the Paragraph Vector algorithms, namely the distributed bag of
+words (PV-DBOW) and the distributed memory (PV-DM) model.  Top2vec finds
+clusters in text documents by combining techniques to embed documents and
+words and density-based clustering.  It does this by embedding documents in
+the semantic space as defined by the doc2vec algorithm.  Next it maps these
+document embeddings to a lower-dimensional space using the Uniform Manifold
+Approximation and Projection (UMAP) clustering algorithm and finds dense areas
+in that space using a Hierarchical Density-Based Clustering
+technique (HDBSCAN).  These dense areas are the topic clusters which can be
+represented by the corresponding topic vector which is an aggregate of the
+document embeddings of the documents which are part of that topic cluster.  In
+the same semantic space similar words can be found which are representative of
+the topic.")
+    (license license:expat)))
 
 (define-public r-docopt
   (package

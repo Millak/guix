@@ -57,6 +57,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
@@ -247,7 +249,7 @@ encoding, supporting Unicode version 9.0.0.")
               (sha256
                (base32 "1g77s8g9443dd92f82pbkim7rk51s7xdwa3mxpzb1lcw8ryxvvg3"))))
           ;; For tests
-          ("ruby" ,ruby)))))))
+          ("ruby" ,ruby-2.7)))))))
 
 (define-public libconfuse
   (package
@@ -1006,34 +1008,6 @@ and Cython.")
 markup and converts it to multiple formats.")
     (license license:gpl2)))
 
-(define-public go-github.com-mattn-go-runewidth
-  (let ((commit "703b5e6b11ae25aeb2af9ebb5d5fdf8fa2575211")
-        (version "0.0.4")
-        (revision "1"))
-    (package
-      (name "go-github.com-mattn-go-runewidth")
-      (version (git-version version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mattn/runewidth")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0znpyz71gajx3g0j2zp63nhjj2c07g16885vxv4ykwnrfmzbgk4w"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/mattn/go-runewidth"))
-      (synopsis "@code{runewidth} provides Go functions to work with string widths")
-      (description
-       "The @code{runewidth} library provides Go functions for padding,
-measuring and checking the width of strings, with support for East Asian
-text.")
-      (home-page "https://github.com/mattn/runewidth")
-      (license license:expat))))
-
 (define-public docx2txt
   (package
     (name "docx2txt")
@@ -1536,3 +1510,58 @@ hackers and programmers by being fast, ignoring VCS directories, letting a user
 easily specify file types, match highlighting, Perl-Compatible Regular
 Expressions, and being faster to type than grep.")
     (license license:artistic2.0)))
+
+(define-public python-panflute
+  (package
+    (name "python-panflute")
+    (version "2.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "panflute" version))
+              (sha256
+               (base32
+                "1jk5b2sp1h4drkjrg2ks77d0ca6j043n2myvacm77nfc93y9vzff"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-click python-pyyaml))
+    (native-inputs (list python-configparser
+                         python-coverage
+                         python-flake8
+                         python-pandocfilters
+                         python-pytest
+                         python-pytest-cov
+                         python-requests))
+    (home-page "http://scorreia.com/software/panflute/")
+    (synopsis "Pythonic Pandoc filters")
+    (description
+     "Panflute is a Python package that makes Pandoc filters fun to
+write.  It is a pythonic alternative to John MacFarlane's pandocfilters, from
+which it is heavily inspired.")
+    (license license:bsd-3)))
+
+(define-public pandoc-include
+  (package
+    (name "pandoc-include")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pandoc-include" version))
+              (sha256
+               (base32
+                "01nrbzs85mrd7jcflicsz0bmfnzi6wsy0ii262xl01zsabqd7n91"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-natsort python-panflute))
+    (home-page "https://github.com/DCsunset/pandoc-include")
+    (synopsis "Pandoc filter to allow file and header includes")
+    (description "@code{pandoc-include} extends Pandoc to support:
+
+@enumerate
+@item include as raw blocks
+@item indent and dedent included contents
+@item partial include
+@item code include
+@item Unix style pathname
+@item recursive include
+@item Yaml header merging
+@item header include
+@end enumerate")
+    (license license:expat)))

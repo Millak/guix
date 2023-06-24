@@ -8101,7 +8101,7 @@ characters in a smarter, more visually pleasing style.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv" "test")))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-mock python-pytest))
     (propagated-inputs
      (list python-beautifulsoup4 python-html5lib python-requests))
     (home-page "https://github.com/microformats/mf2py")

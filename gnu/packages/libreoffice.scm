@@ -13,6 +13,7 @@
 ;;; Copyright © 2018, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -913,6 +914,11 @@ commonly called @code{ftoa} or @code{dtoa}.")
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
+      #:imported-modules `((guix build python-build-system)
+                           ,@%glib-or-gtk-build-system-modules)
+      #:modules `(((guix build python-build-system) #:select (python-version))
+                  (ice-9 textual-ports)
+                  ,@%glib-or-gtk-build-system-modules)
       #:tests? #f                       ; Building the tests already fails.
       #:phases
       #~(modify-phases %standard-phases
@@ -976,7 +982,12 @@ commonly called @code{ftoa} or @code{dtoa}.")
             ;; Create 'soffice' and 'libreoffice' symlinks to the executable
             ;; script.
             (lambda _
-              (let ((out #$output))
+              (let* ((out #$output)
+                     (python-libdir
+                      (string-append out "/lib/python"
+                                     (python-version
+                                      #$(this-package-input "python"))
+                                     "/site-packages/")))
                 (define (symlink-output src dst)
                   (mkdir-p (dirname (string-append out dst)))
                   (symlink (string-append out src) (string-append out dst)))
@@ -1002,6 +1013,24 @@ commonly called @code{ftoa} or @code{dtoa}.")
                                  "sysui/desktop/appstream-appdata/"
                                  "libreoffice-" app ".appdata.xml")
                                 (string-append out "/share/appdata")))
+                (define (install-python-script name)
+                  (with-input-from-file
+                      (string-append out "/lib/libreoffice/program/" name ".py")
+                    (lambda _
+                      (let ((file (get-string-all (current-input-port))))
+                        (with-output-to-file
+                            (string-append python-libdir name ".py")
+                          (lambda _
+                            (format (current-output-port) "~a"
+                                    (string-append
+                                     "import sys, os\n"
+                                     "sys.path.append('"
+                                     out "/lib/libreoffice/program" "')\n"
+                                     "os.putenv('URE_BOOTSTRAP', 'vnd.sun.star.pathname:"
+                                     out "/lib/libreoffice/program/fundamentalrc')\n\n"
+                                     file)))))))
+                  (delete-file
+                   (string-append out "/lib/libreoffice/program/" name ".py")))
                 (symlink-output "/lib/libreoffice/program/soffice"
                                 "/bin/soffice")
                 (symlink-output "/lib/libreoffice/program/soffice"
@@ -1016,7 +1045,12 @@ commonly called @code{ftoa} or @code{dtoa}.")
                           '("base" "calc" "draw" "impress" "writer"))
                 (mkdir-p (string-append out "/share/icons/hicolor"))
                 (copy-recursively "sysui/desktop/icons/hicolor"
-                                  (string-append out "/share/icons/hicolor"))))))
+                                  (string-append out "/share/icons/hicolor"))
+                (mkdir-p python-libdir)
+                (for-each install-python-script
+                          '("access2base" "mailmerge" "msgbox" "officehelper"
+                            "pythonloader" "pythonscript" "scriptforge"
+                            "unohelper" "uno"))))))
       #:configure-flags
       #~(list
          "--enable-release-build"

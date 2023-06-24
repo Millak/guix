@@ -1118,6 +1118,31 @@ expression navigating and manipulating.  It supports many major modes
 out of the box.")
       (license license:gpl3+))))
 
+(define-public emacs-pug-mode
+  (package
+    (name "emacs-pug-mode")
+    (version "1.0.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hlissner/emacs-pug-mode")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1f6bhdr1a72x94dlz2i1fwwln8crc2mbpc2iq23hvsbsfmj7xfzp"))))
+    (native-inputs (list emacs-ert-runner))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "ert-runner")))
+    (home-page "https://github.com/hlissner/emacs-pug-mode")
+    (synopsis "Pug support for Emacs")
+    (description "Pug mode offers Emacs support for Pug.  Unlike Jade mode, it
+is based off of Slim mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-spaceline-all-the-icons
   (package
     (name "emacs-spaceline-all-the-icons")
@@ -1665,12 +1690,10 @@ Alternatively the menu can be bound globally, for example:
     (license license:gpl3+)))
 
 (define-public emacs-nano-modeline
-  ;; No tagged release upstream.  The commit below matches latest version
-  ;; bump.
-  (let ((commit "61f62aa4716eae4fa89961955323d146e9791fca"))
+  (let ((commit "cba074e55c847f289085ec35c21fb2ad8df1b483")) ;version bump
     (package
       (name "emacs-nano-modeline")
-      (version "0.7.2")
+      (version "1.0.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1679,7 +1702,7 @@ Alternatively the menu can be bound globally, for example:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1zwf3mp0z4vc36lg057vspk7dr8chcvhivm1l8q7p3m9b6xw8ask"))))
+                  "0fccasr5ydyfwpqj3kmsgxiazifkckybg2rnwm6sg034phavcyln"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/rougier/nano-modeline")
       (synopsis "Emacs minor mode controlling mode line")
@@ -2364,6 +2387,45 @@ checking for over 30 programming and markup languages with more than 70
 different tools.  It highlights errors and warnings inline in the buffer, and
 provides an optional IDE-like error list.")
     (license license:gpl3+)))                     ;+GFDLv1.3+ for the manual
+
+(define-public emacs-fb2-reader
+  (let ((commit "9836db284749e0cef4c43c2cb5358c82ae9b8589")) ; version bump
+    (package
+      (name "emacs-fb2-reader")
+      (version "0.1.1")
+      (source
+       (origin
+	 (method git-fetch)
+	 (uri (git-reference
+	       (url "https://github.com/jumper047/fb2-reader")
+	       (commit commit)))
+	 (file-name (git-file-name name version))
+	 (sha256
+	  (base32 "0vx4b9wnmx1bng8wak5r7yryyvgib4m46l6b877xzkdhsjr3rbsi"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command
+        #~(list "emacs" "-Q" "--batch" "-L" "."
+                "--eval" "(load-file \"tests/test-fb2-reader.el\")")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'qualify-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((unzip (search-input-file inputs "/bin/unzip")))
+                  (substitute* "fb2-reader.el"
+                    (("unzip") unzip))))))))
+      (inputs (list unzip))
+      (native-inputs
+       (list emacs-async emacs-buttercup emacs-dash emacs-s))
+      (propagated-inputs
+       (list emacs-f emacs-visual-fill-column))
+      (home-page "https://github.com/jumper047/fb2-reader")
+      (synopsis "Emacs plugin to read FictionBook2 ebooks")
+      (description "FB2 Reader provides a major mode for reading
+FictionBook2 (@file{.fb2} and @file{.fb2.zip} files) ebooks.")
+      (license license:gpl3+))))
 
 (define-public emacs-flymake-collection
   (package
@@ -6080,7 +6142,7 @@ intended to be.")
 (define-public emacs-ef-themes
   (package
     (name "emacs-ef-themes")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -6090,7 +6152,7 @@ intended to be.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rq1cy9hg603wk7pnfj0zfc84h1l87rg8blk4x4b61x7bkc3dd7q"))))
+         "03xmc4657q9p4b5zbssjjpq125bb1vd4fbhmy1f6rk25vxx3pxg7"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~protesilaos/ef-themes")
     (synopsis "Colorful and legible themes")
@@ -8275,7 +8337,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
 (define-public emacs-piem
   (package
     (name "emacs-piem")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -8284,7 +8346,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
              (commit (string-append "v" version))))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "0wr6n6wvznngjdp4c0pmdr4xz05dark0kxi5svzhzxsg3rdaql3z"))))
+        (base32 "0smdb1iph2q1xvxix5c93llckcxh7kmhg6pxgyrm88j736m4l16q"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases
@@ -8295,9 +8357,9 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
                      ("piem-b4-b4-executable"
                       (search-input-file inputs "/bin/b4"))))))))
     (inputs
-     (list b4))
-    (propagated-inputs
-     (list emacs-elfeed
+     (list b4
+           emacs-debbugs
+           emacs-elfeed
            emacs-notmuch))
     (home-page "https://docs.kyleam.com/piem")
     (synopsis "Glue for working with public-inbox archives")
@@ -12884,7 +12946,7 @@ mode with the package emacs-julia-mode.")
 (define-public emacs-julia-snail
   (package
     (name "emacs-julia-snail")
-    (version "1.2.2")
+    (version "1.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12893,7 +12955,7 @@ mode with the package emacs-julia-mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vbg97h2jvmkpyhdsra51ilimzvrqnpy8rf1bhxnnb54p2cgkpsr"))))
+                "07dj788hdfskn2k400q2fcfh18w7gflfrc5zqg8bqflhv755m30k"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -13070,7 +13132,7 @@ indentation and filling of comments and C preprocessor fontification.")
 (define-public emacs-tide
   (package
     (name "emacs-tide")
-    (version "4.5.4")
+    (version "5.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13079,7 +13141,7 @@ indentation and filling of comments and C preprocessor fontification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zrapfxdarakp3kwp73c2ymjx51fsnfk6azi2y1wb2kgsdxl2yim"))))
+                "01chyr71b8893jxgf4wncpskfmg9iwfpcaxq0vfc6yaij46yfhky"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-flycheck emacs-s emacs-typescript-mode))
@@ -13905,16 +13967,16 @@ restrict the text width to 80 characters.")
 (define-public emacs-wucuo
   (package
     (name "emacs-wucuo")
-    (version "0.2.9")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/redguardtoo/wucuo")
-             (commit "89b99166768afb811c48a7db7c93c02d51a32b09")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03a6jlbv9axrd9yr0xscq3ni7fipm20ppc51kxy0sn241rplv0pg"))))
+        (base32 "0za3mxssx48shdaqwn8akxrshkqn92dd0s06h6abqk9mfzdd67ng"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
@@ -15454,6 +15516,27 @@ can selectively commit files, view the diffs, and other things.")
     (description
      "Monroe is a nREPL client for Emacs, focused on simplicity and easy
 distribution, primarily targeting Clojure users")
+    (license license:gpl3+)))
+
+(define-public emacs-rail
+  (package
+    (name "emacs-rail")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Sasanidas/Rail")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i07zv0z6r46jpg22x99a1izyfp6536xf951ibyr9kis5bql5jz9"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/Sasanidas/Rail")
+    (synopsis "Generic nREPL client for Emacs")
+    (description
+     "Rail is a nREPL client based on monroe with similar features, but aims
+to be a more complete implementation.")
     (license license:gpl3+)))
 
 (define-public emacs-orgalist
@@ -20865,7 +20948,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
 (define-public emacs-jupyter
   (package
     (name "emacs-jupyter")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -20874,7 +20957,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sr007wsl2y6wqpzkmv3inbpwhvgdcb2nmqzgfg7w1awapi2r13p"))))
+        (base32 "0acn964xlpn265vry35lrkkpf9z5y4ml96xg8ifadkxwxymm1sh2"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-company ;optional
@@ -20885,9 +20968,9 @@ the pipeline, featuring the support for running @code{emacsclient}.")
     (home-page "https://github.com/nnicandro/emacs-jupyter")
     (synopsis "Emacs interface to communicate with Jupyter kernels")
     (description "This package provides an Emacs interface to communicate with
-Jupyter kernels.  It provides REPL and @code{org-mode} source code block
-frontends to Jupyter kernels and kernel interactions integrated with Emacs'
-built-in features.")
+Jupyter kernels.  It provides REPL and Org mode source code block frontends to
+Jupyter kernels and kernel interactions integrated with Emacs' built-in
+features.")
     (license license:gpl3+)))
 
 (define-public emacs-hcl-mode
@@ -21970,7 +22053,7 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.4")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -21979,7 +22062,7 @@ according to a parsing expression grammar.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cziz1a8mh24aj79jfnkjb0llh6a2raqnlcfyaswha80bwzwp4ph"))))
+        (base32 "1vvqs8x2chm2bgwnlsrq7llgql5m9hjbxi1x3xbnzbx5l1yvldbp"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -23672,7 +23755,7 @@ powerful Org contents.")
 (define-public emacs-org-re-reveal
   (package
     (name "emacs-org-re-reveal")
-    (version "3.18.2")
+    (version "3.18.3")
     (source
      (origin
        (method git-fetch)
@@ -23681,7 +23764,7 @@ powerful Org contents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v9403zjxays4c66xq3zq2285h77pn2ha7afx70xffjyynmvnz6i"))))
+        (base32 "124f59yj0w5linph4k38fil42jc6nvkzhx73312farkmn4p9r9zk"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-htmlize emacs-org))
@@ -26963,43 +27046,45 @@ can be queued at any time.")
       (license license:unlicense))))
 
 (define-public emacs-ytdl
-  (package
-    (name "emacs-ytdl")
-    (version "1.3.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/tuedachu/ytdl")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "010arhvibyw50lqhsr8bm0vj3pzry1h1vgcvxnmyryirk3dv40jl"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; .el is read-only in git.
-             (make-file-writable "ytdl.el")
-             ;; Specify the absolute file names of the various programs so
-             ;; that everything works out-of-the-box.
-             (emacs-substitute-variables "ytdl.el"
-               ("ytdl-command"
-                (search-input-file inputs "/bin/youtube-dl"))))))))
-    (inputs
-     (list youtube-dl))
-    (propagated-inputs
-     (list emacs-async emacs-dash))
-    (home-page "https://gitlab.com/tuedachu/ytdl")
-    (synopsis "Emacs interface for youtube-dl")
-    (description
-     "This package manages a video download queue for @command{youtube-dl},
+  (let ((commit "2ea3daf2f6aa9d18b71fe3e15f05c30a56fca228")
+        (revision "0"))
+    (package
+      (name "emacs-ytdl")
+      (version (git-version "1.3.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/tuedachu/ytdl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0y62lkgsg19j05dpd6sp6zify8vq8xvpc8caqiy4rwi7p4ahacsf"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'configure
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; .el is read-only in git.
+               (make-file-writable "ytdl.el")
+               ;; Specify the absolute file names of the various programs so
+               ;; that everything works out-of-the-box.
+               (emacs-substitute-variables "ytdl.el"
+                 ("ytdl-command"
+                  (search-input-file inputs "/bin/youtube-dl"))))))))
+      (inputs
+       (list youtube-dl))
+      (propagated-inputs
+       (list emacs-async emacs-dash))
+      (home-page "https://gitlab.com/tuedachu/ytdl")
+      (synopsis "Emacs interface for youtube-dl")
+      (description
+       "This package manages a video download queue for @command{youtube-dl},
 which serves as the back end.  New videos can be queued at any time.  All
 youtube-dl backends are supported.  It is possible to create download profiles
 depending on the downloaded URL.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-ytel
   ;; No tagged releases.  Using version from main file.
@@ -29493,7 +29578,7 @@ as Emacs Lisp.")
 (define-public emacs-transient
   (package
     (name "emacs-transient")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -29502,7 +29587,7 @@ as Emacs Lisp.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c9bfn5jwwng98h7i9lx0q3vg00wd8w25cg8d3vyy2vqfbg80qhy"))))
+                "1aq4bb83pdkbkbqh6ba0r7sadaq45qqg2q5jlqyvsn8akcsq65iq"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #f                      ;no test suite
@@ -30870,14 +30955,14 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-tramp
   (package
     (name "emacs-tramp")
-    (version "2.6.0.4")
+    (version "2.6.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "tramp-" version ".tar"))
        (sha256
-        (base32 "0s50zgxxhlc2k80mnxyyqcfd1iij9dz95fryb2a65chy1ccibd0m"))))
+        (base32 "0hbrrlcyhxkmjym4wnwipi47lzqpnlxc833p0hmghc6n0s8sx7hf"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -31295,20 +31380,18 @@ programming in Emacs Lisp easy and fun.")
 (define-public emacs-excorporate
   (package
     (name "emacs-excorporate")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "excorporate-" version ".tar"))
        (sha256
-        (base32 "1il51gfgvkxjj7vdi5kdmzi87hl9853ck8s45p0cxrddlaiqbmwy"))))
+        (base32 "06ilfkrlx6ca0qfqq3w1w07kdwak556i1wgf1875py2d5xkg4r90"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-fsm
-           emacs-soap-client
-           emacs-url-http-oauth
-           emacs-url-http-ntlm))
+     (list emacs-fsm emacs-soap-client emacs-url-http-ntlm
+           emacs-url-http-oauth))
     (home-page "https://elpa.gnu.org/packages/excorporate.html")
     (synopsis "Exchange integration")
     (description "This package provides Exchange integration for Emacs.")
@@ -31758,22 +31841,22 @@ format.")
 (define-public emacs-ox-pandoc
   (package
     (name "emacs-ox-pandoc")
-    (version "20180510")
+    (version "2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/kawabata/ox-pandoc")
-                    (commit "aa37dc7e94213d4ebedb85c384c1ba35007da18e")))
+                    (url "https://github.com/emacsorphanage/ox-pandoc")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0iibxplgdp34bpq1yll2gmqjd8d8lnqn4mqjvx6cdf0y438yr4jz"))))
+                "0sh8l18lc2hngbmb1vv99xb8cp4sfy90j9cbf7b09l82jmnlqmk1"))))
     (build-system emacs-build-system)
     (inputs
      (list pandoc))
     (propagated-inputs
      (list emacs-dash emacs-ht))
-    (home-page "https://github.com/kawabata/ox-pandoc")
+    (home-page "https://github.com/emacsorphanage/ox-pandoc")
     (synopsis "Org exporter for Pandoc")
     (description "@code{ox-pandoc} is an exporter for converting Org-mode
 files to numerous other formats via Pandoc.")
@@ -32331,7 +32414,7 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "4.1.0")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
@@ -32340,7 +32423,7 @@ Emacs that integrate with major modes like Org-mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rfnn7c6qv3qmzpksdzy7623qijbldnmr7hl9ka2kwnhdarsigkk"))))
+        (base32 "1r6m2jsfn6066155pnlkdgs6dz2fdsampdhdz796z2jy53k7srsg"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
@@ -33604,29 +33687,27 @@ data format @code{edn}.  See @url{https://github.com/edn-format/edn}.")
       (license license:gpl3+))))
 
 (define-public emacs-ednc
-  (let ((commit "940a4adbbeb3b6b1a72270a814d52770dd89a997")
-        (revision "1"))
-    (package
-      (name "emacs-ednc")
-      (version (git-version "0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/sinic/ednc")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1gsx2qgv5xm9r0i0axd4hf31g2rq2m4a1hvnif48g4xb0llss73c"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/sinic/ednc")
-      (synopsis "Emacs Desktop Notification Center")
-      (description
-       "The Emacs Desktop Notification Center (EDNC) is an Emacs package written
+  (package
+    (name "emacs-ednc")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sinic/ednc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jdlwngxipq5pzs3kgmzwc99aqk6mi3cf1wv228hhmb8nsm1dqgd"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/sinic/ednc")
+    (synopsis "Emacs Desktop Notification Center")
+    (description
+     "The Emacs Desktop Notification Center (EDNC) is an Emacs package written
 in pure Lisp that implements a Desktop Notifications service according to the
 freedesktop.org specification.  EDNC aspires to be a small, but flexible
 drop-in replacement of standalone daemons like Dunst.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-helm-clojuredocs
   (let ((commit "5a7f0f2cb401be0b09e73262a1c18265ab9a3cea"))
@@ -34267,6 +34348,33 @@ EXIF, XMP and IPTC.")
 generate random passwords and insert them into the current buffer.  It also
 supports generation of phonetic and numeric passwords.")
     (license license:artistic2.0)))
+
+(define-public emacs-qrencode
+  (package
+    (name "emacs-qrencode")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruediger/qrencode-el")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yrshahci319lnjdpsksdy11a69k1n91qk9r2zfyhqmng09s6i0y"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #t
+           #:test-command #~(list "emacs" "-Q" "--batch"
+                                  "-l" "qrencode.el"
+                                  "-l" "qrencode-tests.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
+    (home-page "https://github.com/ruediger/qrencode-el")
+    (synopsis "QRCode encoder for Emacs in pure elisp")
+    (description
+     "This package provides two user facing interactive functions, that will encode
+text into a QR Code and show it in a separate buffer.")
+    (license license:gpl3+)))
 
 (define-public emacs-csv
   (package
@@ -35091,7 +35199,7 @@ displayed for sharing.")
 (define-public emacs-orglink
   (package
     (name "emacs-orglink")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -35100,7 +35208,7 @@ displayed for sharing.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05x8alv4a8c1g9l8v8p319vcr0y7w1i2r6ipj0v3dy4n2gh7v822"))))
+        (base32 "0jkk6jiqmsns1pb0almaihyz6c3lim0r6l4x75qp7448p46q2him"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))

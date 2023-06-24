@@ -46,20 +46,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages xorg) ; libpciaccess
-  #:use-module (guix git-download)
-  #:export (hurd-system?
-            hurd-target?))
-
-(define (hurd-target?)
-  "Return true if the cross-compilation target or the current system is
-GNU/Hurd."
-  (or (and=> (%current-target-system) target-hurd?)
-      (and (not (%current-target-system))
-           (and=> (%current-system) target-hurd?))))
-
-(define (hurd-system?)
-  "Return true if the current system is the Hurd."
-  (and=> (%current-system) target-hurd?))
+  #:use-module (guix git-download))
 
 (define (hurd-source-url version)
   (string-append "mirror://gnu/hurd/hurd-"

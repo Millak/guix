@@ -3312,6 +3312,77 @@ off-target reads for a capture method that targets CpG-rich region.")
 multiple sequence alignments.")
     (license license:expat)))
 
+(define-public python-mofax
+  ;; This is a recent commit from the "dev" branch, which is much more recent
+  ;; than the latest commit from the "master" branch.
+  (let ((commit "4d96f8f0a5d5251847353656f523684d66c3c47a")
+        (revision "0"))
+    (package
+      (name "python-mofax")
+      (version (git-version "0.4.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bioFAM/mofax")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lwrw0qyvvnyiqz1l20dhcf7dxidb80cqgvk78czvdgba87yxzqx"))
+                (modules '((guix build utils)))
+                ;; Prevent the pyproject-build-system from guessing that flit
+                ;; should be used as a builder.
+                (snippet '(substitute* "pyproject.toml"
+                            (("^#.*") "")))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; This test is failing due to a bug. The bug has been reported to the
+        ;; developers. See https://github.com/bioFAM/mofax/issues/12 for more
+        ;; info.
+        #:test-flags '(list "-k" "not test_get_methods")))
+      (propagated-inputs (list python-h5py
+                               python-matplotlib
+                               python-pandas
+                               python-poetry-core
+                               python-scipy
+                               python-seaborn))
+      (native-inputs (list python-numpy python-pytest))
+      (home-page "https://github.com/bioFAM/mofax")
+      (synopsis
+       "Motif activity finder for transcription factor motif analysis")
+      (description
+       "MoFax is a Python package for transcription factor motif analysis.
+It provides convenience functions to load and visualize factor models trained
+with MOFA+ in Python.")
+      (license license:expat))))
+
+(define-public python-mudata
+  (package
+    (name "python-mudata")
+    (version "0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/scverse/mudata")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02h0k1q57589r0hdv8nwg1vk7g2ljvn5g66c47fy5gdilbm3gjws"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-anndata python-h5py python-pandas))
+    (native-inputs
+     (list python-flit-core python-numpy python-pytest python-zarr))
+    (home-page "https://github.com/scverse/mudata")
+    (synopsis "Python package for multi-omics data analysis")
+    (description
+     "Mudata is a Python package for multi-omics data analysis.
+It is designed to provide functionality to load, process, and store multimodal
+omics data.")
+    (license license:bsd-3)))
+
 (define-public python-pyega3
   (package
     (name "python-pyega3")
@@ -10805,34 +10876,34 @@ generate FASTA, JSON, YAML, RDF, JSON-LD, HTML, CSV, tabular output etc.")
 (define-public bioruby
   (package
     (name "bioruby")
-    (version "1.5.2")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "bio" version))
        (sha256
         (base32
-         "1d56amdsjv1mag7m6gv2w0xij8hqx1v5xbdjsix8sp3yp36m7938"))))
+         "08aknxk2ingwscwfqpw5vnax6jpk1sxfaialravladb63hcl8dx9"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-libxml))
     (native-inputs
      (list which))  ; required for test phase
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-test-command
-          (lambda _
-            (substitute* '("test/functional/bio/test_command.rb")
-              (("/bin/sh") (which "sh")))
-            (substitute* '("test/functional/bio/test_command.rb")
-              (("/bin/ls") (which "ls")))
-            (substitute* '("test/functional/bio/test_command.rb")
-              (("which") (which "which")))
-            (substitute* '("test/functional/bio/test_command.rb",
-                           "test/data/command/echoarg2.sh")
-              (("/bin/echo") (which "echo")))
-            #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-test-command
+            (lambda _
+              (substitute* '("test/functional/bio/test_command.rb")
+                (("/bin/sh") (which "sh")))
+              (substitute* '("test/functional/bio/test_command.rb")
+                (("/bin/ls") (which "ls")))
+              (substitute* '("test/functional/bio/test_command.rb")
+                (("which") (which "which")))
+              (substitute* '("test/functional/bio/test_command.rb"
+                             "test/data/command/echoarg2.sh")
+                (("/bin/echo") (which "echo"))))))))
     (synopsis "Ruby library, shell and utilities for bioinformatics")
     (description "BioRuby comes with a comprehensive set of Ruby development
 tools and libraries for bioinformatics and molecular biology.  BioRuby has
@@ -11661,13 +11732,7 @@ using high-throughput sc-RNAseq data.")
                (copy-file (string-append "bin/sambamba-" ,version)
                           (string-append bin "/sambamba"))))))))
     (native-inputs
-     `(("ld-gold-wrapper"
-        ;; Importing (gnu packages commencement) would introduce a cycle.
-        ,(module-ref (resolve-interface
-                      '(gnu packages commencement))
-                     'ld-gold-wrapper))
-       ("binutils-gold" ,binutils-gold)
-       ("python" ,python)))
+     (list python))
     (inputs
      (list ldc lz4 zlib))
     (home-page "https://github.com/biod/sambamba")

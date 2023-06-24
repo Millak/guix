@@ -114,14 +114,14 @@
        ("libxml2" ,libxml2)
 
        ;; The Hurd needs -lshouldbeinlibc.
-       ,@(if (hurd-target?)
+       ,@(if (target-hurd?)
              `(("hurd" ,hurd))
              '())))
     (native-inputs
      `(("texinfo" ,texinfo)
        ("dejagnu" ,dejagnu)
        ("pkg-config" ,pkg-config)
-       ,@(if (hurd-target?)
+       ,@(if (target-hurd?)
              ;; When cross-compiling from x86_64-linux, make sure to use a
              ;; 32-bit MiG because we assume target i586-pc-gnu.
              `(("mig" ,(if (%current-target-system)

@@ -137,6 +137,8 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
+;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1064,6 +1066,38 @@ MySQL databases, using an API that is compliant with the Python Database API
 Specification v2.0 (PEP 249).")
     (license license:gpl2)))
 
+(define-public python-pdoc
+  (package
+    (name "python-pdoc")
+    (version "13.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mitmproxy/pdoc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gxkw607nrd67ck4w8jri9vfrm5g60qvp8b134m8zkiphbxjnx0l"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-jinja2 python-pygments))
+    (arguments
+     (list
+      ;; Some tests fail, presumably because of slight version mismatches of
+      ;; the dependencies.
+      #:test-flags
+      '(list "-k" (string-append "not test_var_with_raising_repr and "
+                                 "not test_smoke[mock] and "
+                                 "not test_snapshots[html"))))
+    (home-page "https://pdoc.dev/")
+    (synopsis "API documentation for Python projects")
+    (description "pdoc auto-generates API documentation that follows your
+project's Python module hierarchy.  It requires no configuration, has
+first-class support for type annotations, cross-links between identifiers,
+comes with an integrated live-reloading web server, uses customizable HTML
+templates, understands numpydoc and Google-style docstrings.")
+    (license license:unlicense)))
+
 (define-public python-py4j
   (package
     (name "python-py4j")
@@ -1715,14 +1749,22 @@ attacks or network discovery.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "1.8.4")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Shapely" version))
+       (uri (pypi-uri "shapely" version))
        (sha256
-        (base32 "130rqd0czi128wm5pdn47v4m6czxd7pkzanbya8q48gsm8ffb5d1"))))
-    (build-system python-build-system)
+        (base32 "14v88k0y7qhp8n5clip6w96pkdzrfqa2hsjkhpy9gkifwyiv39k6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-cython python-matplotlib python-pytest
            python-pytest-cov))
@@ -1730,25 +1772,6 @@ attacks or network discovery.")
      (list geos))
     (propagated-inputs
      (list python-numpy))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-geos-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((geos (assoc-ref inputs "geos"))
-                   (glibc (assoc-ref inputs ,(if (%current-target-system)
-                                                 "cross-libc" "libc"))))
-               (substitute* '("shapely/geos.py" "shapely/_buildcfg.py")
-                 (("_lgeos = load_dll\\('geos_c', fallbacks=.*\\)")
-                  (string-append "_lgeos = load_dll('geos_c', fallbacks=['"
-                                 geos "/lib/libgeos_c.so'])"))
-                 (("free = load_dll\\('c'\\)\\.free")
-                  (string-append "free = load_dll('c', fallbacks=['"
-                                 glibc "/lib/libc.so.6']).free"))
-                 (("free = load_dll\\('c', fallbacks=.*\\)\\.free")
-                  (string-append "free = load_dll('c', fallbacks=['"
-                                 glibc "/lib/libc.so.6']).free"))))
-             #t)))))
     (home-page "https://github.com/Toblerity/Shapely")
     (synopsis "Library for the manipulation and analysis of geometric objects")
     (description "Shapely is a Python package for manipulation and analysis of
@@ -3828,6 +3851,39 @@ matplotlib plots or supply colors for a web application.")
 syntax.")
     (license license:x11)))
 
+(define-public python-parsley
+  (package
+    (name "python-parsley")
+    (version "1.3")
+    (source (origin
+              ;; The source distributed on PyPI is outdated.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pyga/parsley")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0550rw65ygqzbjc8a66hs355pzbx727kbn20dssdb6ls846gw2qs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Check why these 3 tests fail.
+      #:test-flags #~(list "-k"
+                           (string-append "not test_sending_empty_netstring"
+                            " and not test_sending_one_netstring"
+                            " and not test_sending_two_netstrings"))))
+    (native-inputs (list python-pytest python-twisted))
+    (home-page "https://launchpad.net/parsley")
+    (synopsis "Parsing and pattern matching Python library")
+    (description
+     "Parsley is a parsing library using PEG algorithm, so each expression in
+the grammar rules works like a Python expression.  In particular, alternatives
+are evaluated in order, unlike table-driven parsers such as yacc, bison or PLY.
+Parsley is an implementation of OMeta, an object-oriented pattern-matching
+language.")
+    (license license:expat)))
+
 (define-public python-polib
   (package
     (name "python-polib")
@@ -3905,6 +3961,28 @@ a certain expected condition.")
      "Pomegranate is a graphical models library for Python, implemented in
 Cython for speed.")
     (license license:expat)))
+
+(define-public python-portalocker
+  (package
+    (name "python-portalocker")
+    (version "2.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "portalocker" version))
+              (sha256
+               (base32
+                "0lawjm736vs86wlnxc3qqh37l11z0yx81xq3dmrw33m86kaq2bh3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-pytest-mypy
+                         python-pytest-timeout
+                         python-redis))
+    (home-page "https://github.com/WoLpH/portalocker")
+    (synopsis "Python library for file locking")
+    (description "Portalocker is a library to provide an easy API to file
+locking..")
+    (license license:bsd-3)))
 
 (define-public python-poyo
   (package
@@ -4085,6 +4163,33 @@ server.")
 accuracy scores for various music/audio information retrieval/signal
 processing tasks.")
     (license license:expat)))
+
+(define-public python-mizani
+  (package
+    (name "python-mizani")
+    (version "0.9.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/has2k1/mizani")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13aisfc98nvypb4mglpdphp2r627cjzpdriw4dhlx55f3b2m0dza"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pandas python-scipy))
+    (native-inputs
+     (list python-setuptools python-pytest python-pytest-cov tzdata))
+    (home-page "https://github.com/has2k1/mizani")
+    (synopsis "Create data visualizations in Python")
+    (description
+     "Mizani is a Python package for creating data visualizations.  It
+provides functions and tools to help with the creation of visually appealing
+and informative visualizations, including scales, transformations and color
+palettes.")
+    (license license:bsd-3)))
 
 (define-public python-pafy
   (package
@@ -6811,13 +6916,13 @@ writing C extensions for Python as easy as Python itself.")
     ;; Cython 3 is not officially released yet, so distinguish the name
     ;; for now.
     (name "python-cython-next")
-    (version "3.0.0a10")
+    (version "3.0.0b2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Cython" version))
               (sha256
                (base32
-                "17fqacrpis05w1rpi7d7sbimrk20xf8h6d3vrz5nf6ix3899abil"))))
+                "0mb7gpavs87am29sbk6yqznsybxj9dk4fwj4370j9sbrcmjq0hkc"))))
     (properties '())))
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
@@ -11740,13 +11845,13 @@ applications.")
 (define-public python-pyzmq
   (package
     (name "python-pyzmq")
-    (version "25.0.2")
+    (version "25.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyzmq" version))
        (sha256
-        (base32 "0jai5sbd4ypihsvr4ikq6d93nkmxwv53598sh24dqs78f2xip33b"))
+        (base32 "0mw9zf0h9sgn2cchw24vyxgyi2nfpyfacr0mh072hdjx8qii1i40"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -11774,17 +11879,16 @@ applications.")
            (lambda _
              ;; FIXME: The test_draft.TestDraftSockets test fails with:
              ;;   zmq.error.Again: Resource temporarily unavailable
-             (delete-file "zmq/tests/test_draft.py")
-             ;; These tests fail for unknown reasons (see:
-             ;; https://github.com/zeromq/pyzmq/issues/1853).
-             (delete-file "zmq/tests/test_auth.py")
-             (delete-file "zmq/tests/test_zmqstream.py")))
+             (delete-file "zmq/tests/test_draft.py")))
          (add-before 'check 'build-extensions
            (lambda _
              ;; Cython extensions have to be built before running the tests.
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (inputs
-     (list zeromq))
+             (invoke "python" "setup.py" "build_ext" "--inplace")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (inputs (list zeromq))
     (native-inputs
      (list pkg-config
            python-cython
@@ -17925,13 +18029,13 @@ to occurrences in strings and comments.")
 (define-public python-py3status
   (package
     (name "python-py3status")
-    (version "3.21")
+    (version "3.50")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py3status" version))
        (sha256
-        (base32 "16z8zq83hxy48g6hh4xczbdz50qvxv9k1aahr4fqq7jis60cc262"))))
+        (base32 "0j2dx9lzpic15r8p0r0s3jmcskxpacahxl640b4864ldn5rlnh9d"))))
     (build-system python-build-system)
     (inputs
      (list file))
@@ -25147,20 +25251,33 @@ they use the same path.")
 (define-public python-blosc
   (package
     (name "python-blosc")
-    (version "1.5.1")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "blosc" version))
        (sha256
         (base32
-         "1cm91c6r431yla2mbs4895bgiianjf30dfz14vvv99dslygd65jw"))))
+         "0xmjs28sgpnb940zrhw010dq2m9d8a5h4fgnjyk6645fgfr1j8f2"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "blosc/c-blosc")))))
     (build-system python-build-system)
-    ;; FIXME: all tests pass, but then this error is printed:
-    ;; TypeError: calling <function run at 0x7ffff2568d90> returned None, not a test
-    (arguments '(#:tests? #f))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'find-blosc
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "USE_SYSTEM_BLOSC" "1")
+                   (setenv "Blosc_ROOT" #$(this-package-input "c-blosc"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "-m" "blosc.test")))))))
     (propagated-inputs
-     (list python-numpy))
+     (list python-scikit-build python-numpy))
+    (inputs (list c-blosc))
+    (native-inputs (list cmake-minimal))
     (home-page "https://github.com/blosc/python-blosc")
     (synopsis "Python wrapper for the Blosc data compressor library")
     (description "Blosc is a high performance compressor optimized for binary
@@ -25306,6 +25423,7 @@ parentdir_prefix = dask-
     (propagated-inputs
      (list python-cloudpickle
            python-fsspec
+           python-importlib-metadata ;needed at runtime for dask/_compatibility.py
            python-numpy
            python-packaging
            python-pandas
@@ -25450,26 +25568,15 @@ RFC 8265 and RFC 8266.")
 (define-public python-absl-py
   (package
     (name "python-absl-py")
-    (version "0.6.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "absl-py" version))
        (sha256
         (base32
-         "1mp9lk0b2qa37b7y6ak4lvf6ifw2ylyy6bkf9ik77md3j4xrwlc7"))))
+         "0ga3b0m8lfsv1m3260p83lhis52yvz3d42q8gip4gfj823849hnj"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-version-check
-           (lambda _
-             ;; Python 3.10 is indeed more recent than Python 3.4.
-             (substitute* "setup.py"
-               ((" or py_version\\[0\\] == '3'.*") ":")))))))
-    (propagated-inputs
-     (list python-six))
     (home-page "https://github.com/abseil/abseil-py")
     (synopsis "Abseil Python common libraries")
     (description
@@ -27285,17 +27392,15 @@ an upload option to send your work back to the platform.")
 (define-public python-titlecase
   (package
     (name "python-titlecase")
-    (version "0.12.0")
+    (version "2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "titlecase" version))
        (sha256
         (base32
-         "0486i99wf8ssa7sgn81fn6fv6i4rhhq6n751bc740b3hzfbpmpl4"))))
+         "00h92jdpj108z4sb6dpayfblpax20698290jnbyi5z5iwk5974i6"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-nose))
     (home-page "https://github.com/ppannuto/python-titlecase")
     (synopsis "Capitalize strings similar to book titles")
     (description
@@ -29722,13 +29827,13 @@ and frame grabber interface.")
 (define-public python-scikit-build
   (package
     (name "python-scikit-build")
-    (version "0.17.1")
+    (version "0.17.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit_build" version))
        (sha256
-        (base32 "0v1qcn3nsjxqdl6fa07b7acq6xndqbvvic5dvsgbjgldkjr1drqp"))))
+        (base32 "17awdvpzj4bn50gk4gmj20r2xcjr5y8lfl2bk582di1pdfim26mm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -29767,11 +29872,7 @@ and frame grabber interface.")
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
                               "and not test_generator_cleanup "
-                              "and not test_generator_selection "
-                              ;; The compiler test fails with a
-                              ;; SKBuildGeneratorNotFoundError error (see:
-                              ;; https://github.com/scikit-build/scikit-build/issues/945).
-                              "and not test_cxx_compiler "))))))))
+                              "and not test_generator_selection "))))))))
     (native-inputs
      (list cmake-minimal
            gfortran
@@ -29791,7 +29892,8 @@ and frame grabber interface.")
            python-pytest-virtualenv
            python-pytest-xdist
            python-requests
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-virtualenv))
     (propagated-inputs
      (list python-distro python-packaging python-tomli python-wheel))
     (home-page "https://github.com/scikit-build/scikit-build")

@@ -3,6 +3,7 @@
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2023 Zongyuan Li <zongyuan.li@c0x0o.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -395,4 +396,83 @@ configure network interfaces in Linux containers.")
      "Podman (the POD MANager) is a tool for managing containers and images,
 volumes mounted into those containers, and pods made from groups of
 containers.")
+    (license license:asl2.0)))
+
+(define-public buildah
+  (package
+    (name "buildah")
+    (version "1.29.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/containers/buildah")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mcqkz68fjccdla1bgxw57w268a586brm6x28fcm6x425ah0w07h"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/containers/buildah/cmd/buildah"
+           #:unpack-path "github.com/containers/buildah"
+
+           ;; Some dependencies require go-1.18 to build.
+           #:go go-1.18
+
+           #:tests? #f
+           #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'prepare-install-docs
+                 (lambda* (#:key unpack-path #:allow-other-keys)
+                   (substitute* (string-append "src/"
+                                               unpack-path
+                                               "/docs/Makefile")
+                     (("../tests/tools/build/go-md2man")
+                      (which "go-md2man")))
+                   (substitute* (string-append "src/"
+                                               unpack-path
+                                               "/docs/Makefile")
+                     (("/usr/local") (string-append #$output)))))
+               (add-after 'build 'build-docs
+                 (lambda* (#:key unpack-path #:allow-other-keys)
+                   (let ((doc (string-append "src/" unpack-path "/docs")))
+                     (invoke "make" "-C" doc))))
+               (add-after 'install 'install-docs
+                 (lambda* (#:key unpack-path #:allow-other-keys)
+                   (let ((doc (string-append "src/" unpack-path "/docs")))
+                     (invoke "make" "-C" doc "install")))))))
+    (inputs (list btrfs-progs
+                  cni-plugins
+                  conmon
+                  eudev
+                  glib
+                  gpgme
+                  libassuan
+                  libseccomp
+                  lvm2
+                  runc))
+    (native-inputs
+     (list go-github-com-go-md2man
+           gnu-make
+           pkg-config))
+    (synopsis "Build @acronym{OCI, Open Container Initiative} images")
+    (description
+     "Buildah is a command-line tool to build @acronym{OCI, Open Container
+Initiative} container images.  More generally, it can be used to:
+
+@itemize
+@item
+create a working container, either from scratch or using an image as a
+starting point;
+@item
+create an image, either from a working container or via the instructions
+in a @file{Dockerfile};
+@item
+mount a working container's root filesystem for manipulation;
+@item
+use the updated contents of a container's root filesystem as a filesystem
+layer to create a new image.
+@end itemize")
+    (home-page "https://buildah.io")
     (license license:asl2.0)))

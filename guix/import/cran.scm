@@ -95,7 +95,8 @@
       ("AGPL (>= 3)" (prefix 'agpl3+))
       ("Artistic-2.0" (prefix 'artistic2.0))
       ((or "Apache License 2.0"
-           "Apache License (== 2.0)")
+           "Apache License (== 2.0)"
+           "Apache License (>= 2.0)")
        (prefix 'asl2.0))
       ("BSD_2_clause" (prefix 'bsd-2))
       ("BSD_2_clause + file LICENSE" (prefix 'bsd-2))

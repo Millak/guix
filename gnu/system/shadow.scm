@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
@@ -458,7 +458,7 @@ the /etc/skel directory for those."
                                           (const '(user-homes)))
                        (service-extension etc-service-type
                                           etc-files)))
-                (default-value #f)
+                (default-value '())
                 (description
                  "Ensure the specified user accounts and groups exist, as well
 as each account home directory.")))

@@ -275,14 +275,14 @@ example, modify the message headers or body, or encrypt or sign the message.")
 (define-public mailutils
   (package
     (name "mailutils")
-    (version "3.15")
+    (version "3.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/mailutils/mailutils-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1nrd9wsidxami3wa86l9z8hnnwv6rhbxdkvqg7dcgz2jqf3c5l5p"))
+               "1h02l0zilxsak1sxpm15vhfaahd8rwvcksc88cc7c0wc626ia784"))
              (patches
               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
@@ -1208,7 +1208,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.2")
+    (version "1.10.3")
     (source
      (origin
        (method url-fetch)
@@ -1216,7 +1216,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                            version "/mu-" version ".tar.xz"))
        (sha256
         (base32
-         "0mj43lnxr11wg354q8svcqjc403b36igb7ia406yavw6xfk46w9f"))))
+         "0pr4w2afhansi151lx3145rsaf3gxfjx21y26p8jfg0nnvy70ff8"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -3175,14 +3175,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "6.8.0p2")
+    (version "7.3.0p0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "05sd7bmq29ibnqbl2z53hiyprfxzf0qydfdaixs68rz55wqhbgsi"))))
+        (base32 "1rnaa022pkdc15vkvlisv42dvcxchib40h0m97myfyqjralabmrd"))))
     (build-system gnu-build-system)
     (inputs
      (list bdb
@@ -3205,13 +3205,6 @@ from the Cyrus IMAP project.")
              "--with-table-db")
        #:phases
        (modify-phases %standard-phases
-         ;; See: https://github.com/OpenSMTPD/OpenSMTPD/issues/1069.
-         (add-after 'unpack 'fix-smtpctl-encrypt-bug
-           (lambda _
-             (substitute* "usr.sbin/smtpd/smtpctl.c"
-               (("\"encrypt\", \"--\",")
-                "\"encrypt\","))
-             #t))
          ;; Fix some incorrectly hard-coded external tool file names.
          (add-after 'unpack 'patch-FHS-file-names
            (lambda _
@@ -3219,8 +3212,7 @@ from the Cyrus IMAP project.")
                ;; ‘gzcat’ is auto-detected at compile time, but ‘cat’ isn't.
                (("/bin/cat") (which "cat")))
              (substitute* "usr.sbin/smtpd/mda_unpriv.c"
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          ;; OpenSMTPD provides a single smtpctl utility to control both the
          ;; daemon and the local submission subsystem.  To accomodate systems
          ;; that require historical interfaces such as sendmail, newaliases or
@@ -3233,8 +3225,7 @@ from the Cyrus IMAP project.")
                (for-each (lambda (command)
                            (symlink "smtpctl" (string-append sbin command)))
                          (list "mailq" "makemap" "newaliases"
-                               "send-mail" "sendmail")))
-             #t)))))
+                               "send-mail" "sendmail"))))))))
     (synopsis "Lightweight SMTP daemon")
     (description
      "OpenSMTPD is an implementation of server-side @acronym{SMTP, Simple Mail

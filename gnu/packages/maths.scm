@@ -1029,6 +1029,7 @@ large scale eigenvalue problems.")
     (arguments
      `(#:configure-flags (list
                           "-DBUILD_SHARED_LIBS:BOOL=YES"
+                          "-DCBLAS=ON"
                           "-DLAPACKE=ON"
                           ;; Build the 'LAPACKE_clatms' functions.
                           "-DLAPACKE_WITH_TMG=ON"
@@ -2785,7 +2786,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "8.1.0")
+    (version "8.2.0")
     (source
      (origin
        (method url-fetch)
@@ -2793,7 +2794,7 @@ can solve two kinds of problems:
                            version ".tar.xz"))
        (sha256
         (base32
-         "00lis18dsb13v9nvz0z4cs7v4y634jc0vb04lxfw9pshwriikglv"))))
+         "1pkh4vmq4hcrmyl2gybd54i3qamyvmcjmpgy1i2kkw2g03jxdfdp"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib

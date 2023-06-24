@@ -27,6 +27,7 @@
 ;;; Copyright © 2023 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
+;;; Copyright © 2023 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -235,7 +236,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                         (string-append "File.join(\"" ptex "\"")))
                      (invoke "ruby" "generate-ptex-patterns.rb")))))))))
       (native-inputs
-       (list ruby ruby-hydra-minimal hyph-utf8-scripts))
+       (list ruby-2.7 ruby-hydra-minimal/pinned hyph-utf8-scripts))
       (home-page "https://ctan.org/pkg/hyph-utf8"))))
 
 (define texlive-extra-src
@@ -295,7 +296,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                                      "-checkout"))
            (sha256
             (base32
-             "10xpa4nnz1biap7qfv7fb0zk6132ki5g1j8w0bqwkggfncdfl07d"))))
+             "1jrphfjhmw17rp1yqsl70shmvka3vg0g8841q6zx2lfn48p7vqf3"))))
        ("cairo" ,cairo)
        ("fontconfig" ,fontconfig)
        ("fontforge" ,fontforge)
@@ -315,7 +316,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
        ("pixman" ,pixman)
        ("potrace" ,potrace)
        ("python" ,python)
-       ("ruby" ,ruby)
+       ("ruby" ,ruby-2.7)
        ("tcsh" ,tcsh)
        ("teckit" ,teckit)
        ("zlib" ,zlib)
@@ -423,7 +424,32 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
              (mkdir "texlive-scripts")
              (with-directory-excursion "texlive-scripts"
                (apply (assoc-ref %standard-phases 'unpack)
-                      (list #:source (assoc-ref inputs "texlive-scripts"))))))
+                      (list #:source (assoc-ref inputs "texlive-scripts")))
+               ;; Configure the version string for some scripts.
+               ;; Normally this would be done by Subversion.
+               ;; See <https://issues.guix.gnu.org/43442#15>.
+               (for-each (lambda (file)
+                           (substitute* file
+                             (("\\$Id\\$")
+                              (format #f "$Id: ~a ~a ~a nobody $"
+                                      file
+                                      ,%texlive-revision
+                                      ,%texlive-date))
+                             (("\\$Revision\\$")
+                              (format #f "$Revision: ~a $"
+                                      ,%texlive-revision))
+                             (("\\$Date\\$")
+                              (format #f "$Date: ~a $"
+                                      ,%texlive-date))))
+                         '("fmtutil.pl"
+                           "mktexlsr"
+                           "mktexlsr.pl"
+                           "mktexmf"
+                           "mktexpk"
+                           "mktextfm"
+                           "tlmgr.pl"
+                           "tlmgrgui.pl"
+                           "updmap.pl")))))
          (add-after 'unpack-texlive-scripts 'patch-scripts
            (lambda _
              (let* ((scripts (append (find-files "texk/kpathsea" "^mktex")
@@ -784,7 +810,7 @@ out to date by @code{unicode-letters.tex}.")
                     "/tex/generic/hyphen/hypht1.tex"
                     "/tex/generic/hyphen/zerohyph.tex")
               (base32
-               "1sagn9aybs34m1s6m3zwya5g5kbiwfnw8ifcgxssygmzzs88dgjp")
+               "1nad1bqpjsywm49hlv7d75mqvgha3j5vayvkvfhv8wwzgdb3mk84")
               #:trivial? #t))
     (home-page "https://tug.org/texlive/")
     (synopsis "Core hyphenation support files")
@@ -804,7 +830,7 @@ default versions of those), etc.")
                          "fonts/cmap/dvipdfmx/"
                          "fonts/map/dvipdfmx/")
                    (base32
-                    "04x93w777l9qzdzglwanb14k8cmq74kjcsgyanvp3bsmnn5zfrgz")
+                    "08i81hciksh0sm9pw6lw8v8s2rj92p58wd5j2mq1mzqbp171wjmr")
                    #:trivial? #t)))
     (package
       (inherit template)
@@ -836,7 +862,7 @@ features as does pdfTeX.")
                     "/fonts/enc/dvips/base/"
                     "/tex/generic/dvips/")
               (base32
-               "0rns1hpjy4fmsskmkwx197j8qbgdmyj0j9214sq9vhpa6nv7czm3")
+               "1fb73mfw9mp4ylp6sfc0465rbdb7k830aq0qf3c085c3n0zyrin8")
               #:trivial? #t))
     (home-page "https://www.ctan.org/pkg/dvips")
     (synopsis "DVI to PostScript drivers")
@@ -1094,7 +1120,7 @@ cite bundle of the author's citation-related packages.")
                          "/fonts/map/dvips/cm/cmtext-bsr-interpolated.map"
                          "/doc/fonts/cm/")
                    (base32
-                    "1ky4gvcn8qn3d61bvb39512b8r92igv6il7vh02hw04223yj6q8i")
+                    "0mfslqs9saqkb3z3xdhsqnklxk858nmipgj1y93by2791jzkma1d")
                    #:trivial? #t)))
     (package
       (inherit template)
@@ -1698,7 +1724,7 @@ incorporates the e-TeX extensions.")
               "texlive-tex-plain"
               (list "/tex/plain/")
               (base32
-               "0gwygkm8i2jmpf7bfg6fb6824rl7fq4a2s0wni73v0fz6s4chr1n")
+               "1hafbphx1486069cky87hyksx6ia5gd83m4wp2xmgc09z87faf0h")
               #:trivial? #t))
     (home-page "https://www.ctan.org/pkg/plain")
     (synopsis "Plain TeX format and supporting files")
@@ -2737,7 +2763,7 @@ T1/EC and UTF-8 encodings.")
                 (string-append out "/share/texmf-dist/tex/luatex/hyph-utf8/")))
              #t)))))
     (native-inputs
-     (list ruby
+     (list ruby-2.7
            texlive-bin
            ;; The following packages are needed for build "tex.fmt", which we need
            ;; for a working "tex".
@@ -2904,7 +2930,7 @@ package.")
                          "/web2c/tcvn-t5.tcx"
                          "/web2c/viscii-t5.tcx")
                    (base32
-                    "00q2nny7lw7jxyln6ch4h0alygbrzk8yynliyc291m53kds1h0mr")
+                    "08nfk5hicqbvnz73rjbxi97lcakd9i1k2cy4qi2cwghan92650jq")
                    #:trivial? #t)))
     (package
       (inherit template)
@@ -2967,7 +2993,7 @@ default and narrow versions of multiple integrals.")
               "texlive-latexconfig"
               (list "/tex/latex/latexconfig/")
               (base32
-               "10ynmd8b9b9l1wl1mva23yz4zir53p6r5z31s39wmxz19pj12qvx")
+               "1x5fyr2185nx3qlyariykdz44hcy5azimrk9db2p707dg08bjhsd")
               #:trivial? #t))
     (home-page "https://www.tug.org/")
     (synopsis "Configuration files for LaTeX-related formats")
@@ -3121,7 +3147,7 @@ formats.")
                   "/tex/generic/config/luatexiniconfig.tex"
                   "/web2c/texmfcnf.lua")
             (base32
-             "0yjx7nw9mgfgnq1givkzbxh7z7ncw1liaddjgm7n2nwn0aw6xfdg")))))
+             "065j47i2785nbj2507pzxlscyrwr4ghv6nksc3a01rp62bq8kkjp")))))
       (propagated-inputs
        (list texlive-dehyph-exptl
              texlive-etex
@@ -3294,48 +3320,82 @@ the @file{.aux} file.")
 
 (define-deprecated-package texlive-latex-auxhook texlive-auxhook)
 
-(define-public texlive-latex-epstopdf-pkg
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-epstopdf-pkg"
-              '("/doc/latex/epstopdf-pkg/"
-                "/tex/latex/epstopdf-pkg/")
-              (base32
-               "0zl6jiyp2cvvyqx3lwxdkcvvnkqgbwj4issq07cagf61gljq6fns")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/epstopdf-pkg")
-    (synopsis "Call @command{epstopdf} \"on the fly\"")
-    (description
-     "The package adds support for EPS files in the @code{graphicx} package
-when running under pdfTeX.  If an EPS graphic is detected, the package
-spawns a process to convert the EPS to PDF, using the script
-@command{epstopdf}.")
-    (license license:lppl1.3c+)))
+(define-public texlive-epstopdf-pkg
+  (let ((template (simple-texlive-package
+                   "texlive-epstopdf-pkg"
+                   (list "doc/latex/epstopdf-pkg/"
+                         "source/latex/epstopdf-pkg/"
+                         "tex/latex/epstopdf-pkg/")
+                   (base32
+                    "1ajyc5pkn1niifz5asyf09vbdqvmy05xwl0vxcdl7ik0ll0jcaxp"))))
+    (package
+     (inherit template)
+     (arguments
+      (substitute-keyword-arguments (package-arguments template)
+        ((#:tex-directory _ '())
+         "latex/epstopdf-pkg")
+        ((#:build-targets _ '())
+         #~(list "epstopdf.ins"))
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/latex/epstopdf-pkg")))
+             (replace 'copy-files
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((origin (assoc-ref inputs "source"))
+                       (source (string-append #$output
+                                              "/share/texmf-dist/source"))
+                       (doc (string-append #$output:doc
+                                           "/share/texmf-dist/doc")))
+                   (copy-recursively (string-append origin "/source") source)
+                   (copy-recursively (string-append origin "/doc") doc))))))))
+     (propagated-inputs
+      (list texlive-grfext
+            texlive-infwarerr
+            texlive-kvoptions
+            texlive-pdftexcmds))
+     (home-page "https://www.ctan.org/pkg/epstopdf-pkg")
+     (synopsis "Call @command{epstopdf} on the fly")
+     (description
+      "The package adds support for EPS files in the @code{graphicx} package
+when running under pdfTeX.  If an EPS graphic is detected, the package spawns
+a process to convert the EPS to PDF, using the script @command{epstopdf}.")
+     (license license:lppl1.3c+))))
 
-(define-public texlive-latex-filecontents
-  (package
-    (name "texlive-latex-filecontents")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "filecontents"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1cmfigg5jx3hmdyh4gv8kwxi7dg076ldkxmr46s05xvhzjig1z9x"))))
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/filecontents"))
-    (home-page "https://www.ctan.org/pkg/filecontents")
-    (synopsis "Extended filecontents and filecontents* environments")
-    (description
-     "LaTeX2e's @code{filecontents} and @code{filecontents*} environments
+(define-deprecated-package texlive-latex-epstopdf-pkg texlive-epstopdf-pkg)
+
+(define-public texlive-filecontents
+  (let ((template (simple-texlive-package
+                   "texlive-filecontents"
+                   (list "doc/latex/filecontents/"
+                         "source/latex/filecontents/"
+                         "tex/latex/filecontents/")
+                   (base32
+                    "0ifhqfdzx91hrmndhg5441rpmv9k4lxrql02kd5yx75xpplxryzw"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '()) "latex/filecontents")
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/filecontents")))))))
+      (home-page "https://ctan.org/pkg/filecontents")
+      (synopsis "Create an external file from within a LaTeX document")
+      (description
+       "LaTeX2e's @code{filecontents} and @code{filecontents*} environments
 enable a LaTeX source file to generate external files as it runs through
 LaTeX.  However, there are two limitations of these environments: they refuse
-to overwrite existing files, and they can only be used in the preamble of a
-document.  The filecontents package removes these limitations, letting you
-overwrite existing files and letting you use @code{filecontents} /
+to overwrite existing files, and they can only be used in the preamble of
+a document.  The filecontents package removes these limitations, letting you
+overwrite existing files and letting you use @code{filecontents}
 @code{filecontents*} anywhere.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-filecontents texlive-filecontents)
 
 (define-public texlive-epsf
   (package
@@ -3407,7 +3467,7 @@ Unicode points; it is maintained by Adobe.  The additional
                "0b66fy06safyrd717rfr476g1gz6nqfv1vqvam7ac2yy0g0djb17")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-latex-epstopdf-pkg))
+     (list texlive-epstopdf-pkg))
     (home-page "https://www.ctan.org/pkg/latex-graphics")
     (synopsis "Color and graphics option files")
     (description
@@ -3985,7 +4045,7 @@ of file names.")
                     "/fonts/enc/dvips/tetex/"
                     "/fonts/map/dvips/tetex/")
               (base32
-               "1si3as8mwi8837965djlw6jhwwzsp3r1hkflvdxv2avx9vb45hjb")
+               "05mf8yqdj2wrc1zm3al2j4aam2wx0ky6a7slxw17pkd1c7rmvjrq")
               #:trivial? #t))
     (home-page "https://www.ctan.org/pkg/tetex")
     (synopsis "Font maps originally from teTeX")
@@ -4386,6 +4446,8 @@ loading fonts by their proper names instead of file names.")
                  (delete-file-recursively
                   (string-append (assoc-ref outputs "out")
                                  "/share/texmf-dist/source/latex/amsmath/build"))))))))
+      (propagated-inputs
+       (list texlive-amsfonts))
       (home-page "https://www.ctan.org/pkg/amsmath")
       (synopsis "AMS mathematical facilities for LaTeX")
       (description
@@ -5802,7 +5864,7 @@ be changed.")
                (("pstool.tex") "trimspaces.tex"))
              #t)))))
     (inputs
-     (list texlive-latex-filecontents))
+     (list texlive-filecontents))
     (home-page "https://www.ctan.org/pkg/trimspaces")
     (synopsis "Trim spaces around an argument or within a macro")
     (description
@@ -8653,7 +8715,7 @@ e-TeX.")
                     "/tex/generic/pdftex/glyphtounicode.tex"
                     "/tex/generic/pdftex/pdfcolor.tex")
               (base32
-               "1wx928rqsv0x1a8vc7aq49w3nglr4bmlhl822slqglymfxrmb91b")
+               "0w4ar5g7x4w8zw8z6hdwqxwcbglfzzq7pcznz8rawllwy6dssr8g")
               #:trivial? #t))
     ;; TODO: add this missing package:
     ;; dehyph
@@ -9478,7 +9540,7 @@ and after the formatted number.")
      '(#:tex-directory "latex/needspace"
        #:tex-format "latex"))
     (inputs
-     (list texlive-latex-filecontents))
+     (list texlive-filecontents))
     (home-page "https://www.ctan.org/pkg/needspace")
     (synopsis "Insert pagebreak if not enough space")
     (description
@@ -9504,7 +9566,7 @@ page, a new page will be started.")
      '(#:tex-directory "latex/changepage"
        #:tex-format "latex"))
     (inputs
-     (list texlive-latex-filecontents))
+     (list texlive-filecontents))
     (home-page "https://www.ctan.org/pkg/changepage")
     (synopsis "Margin adjustment and detection of odd/even pages")
     (description
@@ -11684,7 +11746,7 @@ floats merely delays the arrival of the inevitable error message.")
              (add-after 'unpack 'chdir
                (lambda _ (chdir "source/latex/ifmtarg")))))))
       (inputs
-       (list texlive-latex-filecontents))
+       (list texlive-filecontents))
       (home-page "https://www.ctan.org/pkg/ifmtarg")
       (synopsis "If-then-else command for processing potentially empty arguments")
       (description "This package provides a command for the LaTeX programmer for
@@ -13512,7 +13574,7 @@ itself may be shipped out to the DVI file.")
                     "/fonts/misc/xetex/fontmapping/base/"
                     "/tex/xelatex/xetexconfig/")
               (base32
-               "1gmgagvsv2qknrjzjk840ca3wging8wfc20rgq7bnhphm9n87m6q")
+               "0j396anlhk5pqrnwxr8bpq55sp3qfyb6n9g08x4nmaa6p9b9y8ab")
               #:trivial? #t))
     (propagated-inputs
      (list texlive-atbegshi

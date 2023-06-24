@@ -78,6 +78,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -414,6 +415,40 @@ Plenty of classic platforming in four nice colors guaranteed!
 
 The game includes a built-in editor so you can design and share your own maps.")
     (license license:gpl2+)))
+
+(define-public anarch
+  (let ((commit "2d78d0c69a3aac14dbd8f8aca62d0cbd9d27c860")
+        (revision "1"))
+    (package
+      (name "anarch")
+      (version (git-version "1.1d" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~drummyfish/Anarch")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lg9r6q1davn5yj181ccygmvaigvm8fr9q2s1bc77a1vkz68vzdk"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure) ;no configure script
+                          (replace 'build
+                            (lambda _
+                              (invoke "./make.sh" "sdl")))
+                          (replace 'install
+                            (lambda _
+                              (let ((bin (string-append #$output "/bin")))
+                                (install-file "anarch" bin)))))))
+      (inputs (list alsa-lib libxcursor libxrandr sdl2))
+      (home-page "https://drummyfish.gitlab.io/anarch/")
+      (synopsis "Public domain 90s-style shooter game")
+      (description "Anarch is a small, completely public domain, 90s-style
+Doom clone shooter game.")
+      (license license:cc0))))
 
 (define-public armagetronad
   (package
@@ -876,6 +911,31 @@ Quizzes: arithmetic and quiz.")
               license:public-domain
               ;; phantasia (all but phantasia/pathnames.h.in, which is bsd-3)
               (license:fsf-free "file:///phantasia/COPYRIGHT")))))
+
+(define-public rogue
+  (package
+    (name "rogue")
+    (version "5.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Davidslv/rogue")
+                    (commit "cf9bd26d564a72fac4cf56b55c96c2435270d29a")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mk03l120scas4dcn6xccnhslnwmcx2blshbf925z06yk7rkzias"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f
+       #:make-flags (list "CFLAGS=-DNCURSES_INTERNALS")))
+    (inputs (list ncurses))
+    (synopsis "Original rogue game")
+    (description
+     "This package provides ``Rogue: Exploring the Dungeons of Doom'', the
+original rogue game found on 4.2BSD.")
+    (home-page "https://github.com/Davidslv/rogue")
+    (license license:bsd-3)))
 
 
 (define-public bzflag
@@ -2018,33 +2078,59 @@ scriptable with Guile.")
   (package
     (name "gnushogi")
     (version "1.4.2")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/gnushogi/gnushogi-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "0a9bsl2nbnb138lq0h14jfc5xvz7hpb2bcsj4mjn6g1hcsl4ik0y"))))
-    (arguments `(#:tests? #f)) ;; No check target.
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gnushogi/gnushogi-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0a9bsl2nbnb138lq0h14jfc5xvz7hpb2bcsj4mjn6g1hcsl4ik0y"))
+              (modules '((guix build utils)))
+              ;; Fix "warning: ISO C90 does not support ‘__func__’ predefined
+              ;; identifier [-Wpedantic]"
+              (snippet '(begin
+                          (substitute* "gnushogi/dspwrappers.c"
+                            (("__FUNCTION__")
+                             "__extension__ __FUNCTION__"))))))
+    (arguments
+     `(#:configure-flags (list (string-append
+                                "CFLAGS="
+                                (string-join '("-Wno-format"
+                                               "-Wno-unused-but-set-variable"
+                                               "-Wno-bool-compare")
+                                             " ")))
+       #:make-flags '("LDFLAGS=-z muldefs")
+       #:phases (modify-phases %standard-phases
+                  ;; Skip --enable-fast-install flag
+                  (replace 'configure
+                    (lambda* (#:key outputs configure-flags #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (setenv "CONFIG_SHELL"
+                                (which "sh"))
+                        (setenv "SHELL"
+                                (which "sh"))
+                        (apply invoke "./configure"
+                               (string-append "--prefix=" out) configure-flags)))))
+       #:test-target "sizetest"))
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org/software/gnushogi/")
-    (synopsis "The game of Shogi (Japanese chess)")
-    (description  "GNU Shogi is a program that plays the game Shogi (Japanese
-Chess).  It is similar to standard chess but this variant is far more complicated.")
+    (synopsis "Game of Shogi (Japanese chess)")
+    (description
+     "GNU Shogi is a program that plays the game Shogi (Japanese Chess).
+It is similar to standard chess but this variant is far more complicated.")
     (license license:gpl3+)))
 
 (define-public ltris
   (package
     (name "ltris")
-    (version "1.2.4")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/ltris/"
                            "ltris-" version ".tar.gz"))
        (sha256
-        (base32 "10wg6v12w3jms8ka2x9a87p06l9gzpr94ai9v428c9r320q7psyn"))))
+        (base32 "1xj65kn815x2hq1ynzjyc90dj178xwa2xvx7jx99qf60ahaf4g62"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -10543,14 +10629,14 @@ ChessX.")
 (define-public barrage
   (package
     (name "barrage")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/barrage/"
                            "barrage-" version ".tar.gz"))
        (sha256
-        (base32 "1bhx708s7viv01m6bmpjsdgr33wk5kqw4wf7bvgw73a07v6j8ncw"))))
+        (base32 "0j7j6n5h97xpw0h8zi5a8ziw1vjsbr5gk4dcsiwzh59qn0djnrkh"))))
     (build-system gnu-build-system)
     (inputs
      (list hicolor-icon-theme sdl sdl-mixer))

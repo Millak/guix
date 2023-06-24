@@ -3380,7 +3380,7 @@ MouseKeys-acceleration management.")
 (define-public wlsunset
   (package
     (name "wlsunset")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -3390,7 +3390,7 @@ MouseKeys-acceleration management.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hhsddh3rs066rbsjksr8kcwg8lvglbvs67dq0r5wx5c1xcwb51w"))))
+         "1wbz6m7p0czhyv7axg2gn0ffh1q1887khh6phvw35a2llichyrlc"))))
     (build-system meson-build-system)
     (inputs
      (list wayland wayland-protocols))

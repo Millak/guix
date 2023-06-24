@@ -58,6 +58,7 @@
 # Copyright © 2022 jgart <jgart@dismail.de>
 # Copyright © 2023 Zheng Junjie <873216071@qq.com>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
+# Copyright © 2023 Andy Tai <atai@atai.org>
 #
 # This file is part of GNU Guix.
 #
@@ -742,6 +743,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/system/images/pine64.scm			\
   %D%/system/images/pinebook-pro.scm		\
   %D%/system/images/rock64.scm			\
+  %D%/system/images/unmatched.scm		\
   %D%/system/images/wsl2.scm			\
 						\
   %D%/machine.scm				\
@@ -895,6 +897,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/akonadi-not-relocatable.patch		\
   %D%/packages/patches/akonadi-timestamps.patch		\
   %D%/packages/patches/allegro-mesa-18.2.5-and-later.patch	\
+  %D%/packages/patches/ibus-anthy-fix-tests.patch		\
   %D%/packages/patches/anki-mpv-args.patch			\
   %D%/packages/patches/antiword-CVE-2014-8123.patch			\
   %D%/packages/patches/antlr3-3_1-fix-java8-compilation.patch	\
@@ -1055,6 +1058,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dezyne-add-missing-shebangs.patch	\
   %D%/packages/patches/dfu-programmer-fix-libusb.patch		\
   %D%/packages/patches/diffutils-fix-signal-processing.patch	\
+  %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
   %D%/packages/patches/docbook-xsl-nonrecursive-string-subst.patch	\
   %D%/packages/patches/docbook-xsl-support-old-url.patch	\
@@ -1137,7 +1141,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/firebird-riscv64-support-pt1.patch	\
   %D%/packages/patches/firebird-riscv64-support-pt2.patch	\
   %D%/packages/patches/flann-cmake-3.11.patch			\
-  %D%/packages/patches/flashrom-fix-building-on-aarch64.patch	\
   %D%/packages/patches/flatpak-fix-path.patch			\
   %D%/packages/patches/flatpak-unset-gdk-pixbuf-for-sandbox.patch	\
   %D%/packages/patches/fluxbox-1.3.7-no-dynamic-cursor.patch	\
@@ -1238,6 +1241,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-networking-gnutls-binding.patch	\
   %D%/packages/patches/glib-skip-failing-test.patch		\
+  %D%/packages/patches/glibc-2.33-riscv64-miscompilation.patch	\
   %D%/packages/patches/glibc-CVE-2019-7309.patch		\
   %D%/packages/patches/glibc-CVE-2019-9169.patch		\
   %D%/packages/patches/glibc-CVE-2019-19126.patch		\
@@ -1317,6 +1321,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-fibers-epoll-instance-is-dead.patch \
   %D%/packages/patches/guile-fibers-fd-finalizer-leak.patch	\
   %D%/packages/patches/guile-fibers-wait-for-io-readiness.patch \
+  %D%/packages/patches/guile-fibers-libevent-32-bit.patch	\
   %D%/packages/patches/guile-fix-invalid-unicode-handling.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-git-adjust-for-libgit2-1.2.0.patch \
@@ -1354,6 +1359,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/http-parser-CVE-2020-8287.patch		\
   %D%/packages/patches/htslib-for-stringtie.patch		\
   %D%/packages/patches/hubbub-sort-entities.patch		\
+  %D%/packages/patches/hubbub-maybe-uninitialized.patch         \
   %D%/packages/patches/hueplusplus-mbedtls.patch		\
   %D%/packages/patches/hurd-add-without-rump-configure-option.patch \
   %D%/packages/patches/hurd-fix-types-of-read-write-and-readables-methods-2.patch \
@@ -1503,6 +1509,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libtommath-integer-overflow.patch	\
   %D%/packages/patches/libtool-grep-compat.patch		\
   %D%/packages/patches/libtool-skip-tests2.patch		\
+  %D%/packages/patches/libtree-fix-check-non-x86.patch		\
   %D%/packages/patches/libusb-0.1-disable-tests.patch		\
   %D%/packages/patches/libusb-for-axoloti.patch			\
   %D%/packages/patches/libutils-add-includes.patch		\
@@ -1702,6 +1709,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-typeguard-python3.10.patch	\
   %D%/packages/patches/python-w3lib-fix-test-failure.patch	\
   %D%/packages/patches/python-wxwidgets-type-errors.patch	\
+  %D%/packages/patches/quodlibet-fix-invalid-glob.patch	\
+  %D%/packages/patches/quodlibet-fix-mtime-tests.patch		\
   %D%/packages/patches/scribus-1.5.8-poppler-22.03.0.patch	\
   %D%/packages/patches/scribus-1.5.8-poppler-22.04.0.patch	\
   %D%/packages/patches/scribus-1.5.8-poppler-22.09.0.patch	\
@@ -1794,7 +1803,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
   %D%/packages/patches/python-hiredis-fix-header.patch		\
   %D%/packages/patches/python-hiredis-use-system-hiredis.patch	\
-  %D%/packages/patches/python-keras-integration-test.patch	\
   %D%/packages/patches/python-pdoc3-tests.patch			\
   %D%/packages/patches/python-peachpy-determinism.patch	\
   %D%/packages/patches/python-pep8-stdlib-tokenize-compat.patch \

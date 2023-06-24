@@ -846,6 +846,12 @@ to GitHub contributions calendar.")
                    '()))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-arm32?)
+             ;; Some tests are flaky on armhf.
+             '((add-before 'check 'pre-check
+                 (lambda _
+                   (setenv "GITTEST_FLAKY_STAT" "true"))))
+             '())
          ;; Run checks more verbosely, unless we are cross-compiling.
          (replace 'check
            (lambda* (#:key (tests? #t) #:allow-other-keys)
@@ -2611,13 +2617,13 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.8.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "115ysciq15sxc8fd9hf7p0f4wnd5xapcfkmq8g33y1c8nbdxclbx"))))
+        (base32 "0qwi2f729mflrv8dazb3xbs23hzprbchjrhjcc8fjvpn7yvnrd7f"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
@@ -3114,7 +3120,7 @@ file contents on a remote server.")
 (define-public lfs-s3
   (package
     (name "lfs-s3")
-    (version "0.1")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3123,7 +3129,7 @@ file contents on a remote server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nkxivb356f1zjlj34px601zy86w4398db9s2ivd178jp4v69raw"))))
+                "0ncfy3lgc7dik9k71xk9l5f2llsh2jk33aaqb8dkslschc1mx4g6"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3133,8 +3139,7 @@ file contents on a remote server.")
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
-           go-github-com-aws-aws-sdk-go-v2-service-s3
-           go-github-com-spf13-cobra))
+           go-github-com-aws-aws-sdk-go-v2-service-s3))
     (home-page "https://git.sr.ht/~ngraves/lfs-s3/")
     (synopsis "Git extension for versioning large files in S3")
     (description

@@ -623,7 +623,7 @@ TUI program that displays time across a few time zones of your choosing.")
     (arguments
      '(#:import-path "github.com/antonmedv/countdown"))
     (native-inputs
-     `(("runewidth" ,go-github.com-mattn-go-runewidth)
+     `(("runewidth" ,go-github-com-mattn-go-runewidth)
        ("termbox" ,go-github.com-nsf-termbox-go)))
     (home-page "https://github.com/antonmedv/countdown")
     (synopsis "Counts to zero with a text user interface")

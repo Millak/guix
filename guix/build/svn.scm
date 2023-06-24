@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
@@ -47,6 +47,13 @@ valid Subversion revision.  Return #t on success, #f otherwise."
            ;; verify the checksum later.  This can be removed when
            ;; ca-certificates package is added.
            "--trust-server-cert" "-r" (number->string revision)
+
+           ;; Disable keyword substitutions (keywords are CVS-like strings
+           ;; like "$Date$", "$Id$", and so on) for two reasons: (1) some
+           ;; expansions depend on the local time zone, and (2) SWH disables
+           ;; it in its archive for this very reason.
+           "--ignore-keywords"
+
            `(,@(if (and user-name password)
                    (list (string-append "--username=" user-name)
                          (string-append "--password=" password))

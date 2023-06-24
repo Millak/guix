@@ -1493,7 +1493,8 @@ blacklisted.certs.pem"
                 "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"
    (source (origin
              (inherit (package-source base))
-             (patches (search-patches "openjdk-10-setsignalhandler.patch"))))))
+             (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"
+                                      "openjdk-10-setsignalhandler.patch"))))))
 
 (define-public openjdk17
   (make-openjdk
@@ -1501,7 +1502,7 @@ blacklisted.certs.pem"
    "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
    (source (origin
              (inherit (package-source base))
-             (patches '())))
+             (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk16)
       ((#:phases phases)
@@ -11240,7 +11241,7 @@ outputting XML data from Java code.")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "18q3i6jgm6rkw8aysfgihgywrdc5nvijrwnslmi3ww497jvri6ja"))))
+                "0zjqmsad4xk0iar23hdyvx19nxczybd2bh0i35xrafli5cmh720k"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "geronimo-xbean-reflect.jar"
@@ -11291,7 +11292,7 @@ and graphs of objects for dependency injection frameworks")
               (file-name (string-append name "-" version "-source"))
               (sha256
                (base32
-                "119yn795jvnjf52si84q192s8wag1k013iabg78b7wnadssnnh31"))))
+                "1mky4zyl2xsqlgrkairaj5971byvhwk2z9bq8snsgvlr11ydc0zf"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f

@@ -68,6 +68,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -113,21 +114,23 @@
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
 
-(define-public a4pdf
+(define-public capypdf
   (package
-    (name "a4pdf")
-    (version "0.1.0")
+    (name "capypdf")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/jpakkane/a4pdf")
+                    (url "https://github.com/jpakkane/capypdf")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "18062cm1qsbaymmjar0whbd7kaggy4x7wzp7xw94kcd1pwx2jp1p"))))
+               (base32 "193izn2jw55w2dxy6l0vz5zrlar9lm7a6z443nw0vs4mlj4jnasi"))))
     (build-system meson-build-system)
     (arguments
-     (list #:phases
+     (list #:meson meson/newer
+           #:test-options '(list "plainc")
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'add-missing-header
                  (lambda _
@@ -139,14 +142,7 @@
                    ;; XXX: remove when bumping glib
                    (substitute* "src/pdfviewer.cpp"
                      (("G_APPLICATION_DEFAULT_FLAGS")
-                      "G_APPLICATION_FLAGS_NONE"))))
-               (add-after 'unpack 'fix-broken-tests
-                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                   (substitute* "test/a4pdftests.py"
-                     (("'Ghostscript not found, test suite can not be run.'")
-                      ;; Sucks, but there's no point in repairing a certain test
-                      ;; at the moment.
-                      "0")))))))
+                      "G_APPLICATION_FLAGS_NONE")))))))
     (inputs (list fmt
                   freetype
                   gtk
@@ -155,7 +151,8 @@
                   libpng
                   zlib))
     (native-inputs (list font-google-noto
-                         ;; ghostscript
+                         gcc-12
+                         ghostscript
                          pkg-config
                          python
                          python-pillow))
@@ -166,6 +163,9 @@ It does not have a document model and instead uses PDF primitives
 directly.  It uses LittleCMS for color management but otherwise does not
 convert data in any way.")
     (license license:asl2.0)))
+
+(define-public a4pdf
+  (deprecated-package "a4pdf" capypdf))
 
 (define-public diffpdf
   (let ((commit "ba68231d3d05e0cb3a2d4a4fca8b70d4044f4303")

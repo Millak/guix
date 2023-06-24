@@ -38,7 +38,7 @@
   #:use-module (guix cache)
   #:use-module (gcrypt pk-crypto)
   #:use-module (guix pki)
-  #:use-module ((guix build utils) #:select (mkdir-p))
+  #:autoload   (guix build utils) (mkdir-p delete-file-recursively)
   #:use-module ((guix build download)
                 #:select (uri-abbreviation nar-uri-abbreviation
                           (open-connection-for-uri
@@ -167,6 +167,11 @@ was found."
 
 (define (cached-narinfo-expiration-time file)
   "Return the expiration time for FILE, which is a cached narinfo."
+  (define max-ttl
+    ;; Upper bound on the TTL used to avoid keeping around cached narinfos for
+    ;; too long, which makes the cache bigger and more expensive to traverse.
+    (* 2 30 24 60 60))                            ;2 months
+
   (catch 'system-error
     (lambda ()
       (call-with-input-file file
@@ -174,10 +179,10 @@ was found."
           (match (read port)
             (('narinfo ('version 2) ('cache-uri uri)
                        ('date date) ('ttl ttl) ('value #f))
-             (+ date ttl))
+             (+ date (min ttl max-ttl)))
             (('narinfo ('version 2) ('cache-uri uri)
                        ('date date) ('ttl ttl) ('value value))
-             (+ date ttl))
+             (+ date (min ttl max-ttl)))
             (x
              0)))))
     (lambda args
@@ -440,6 +445,11 @@ server certificates."
   "Bind PORT with EXP... to a socket connected to URI."
   (call-with-cached-connection uri (lambda (port) exp ...)))
 
+(define-syntax-rule (catch-system-error exp)
+  (catch 'system-error
+    (lambda () exp)
+    (const #f)))
+
 (define* (download-nar narinfo destination
                        #:key status-port
                        deduplicate? print-build-trace?)
@@ -497,6 +507,10 @@ STATUS-PORT."
        (leave (G_ "no valid nar URLs for ~a at ~a~%")
               (narinfo-path narinfo)
               (narinfo-uri-base narinfo)))))
+
+  ;; Delete DESTINATION first--necessary when starting over after a failed
+  ;; download.
+  (catch-system-error (delete-file-recursively destination))
 
   (let ((choices (narinfo-preferred-uris narinfo
                                          #:fast-decompression?

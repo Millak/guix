@@ -25,6 +25,7 @@
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
 
 (define-module (gnu packages disk)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -1159,7 +1161,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
                 "1piym8za0iw2s8yryh39y072f90mzisv89ffvn1jzb71f71mbfqa"))))
     (build-system go-build-system)
     (native-inputs
-     (list go-github.com-mattn-go-runewidth go-golang-org-x-term
+     (list go-github-com-mattn-go-runewidth go-golang-org-x-term
            go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2-2.3))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
@@ -1501,6 +1503,46 @@ wrapper for disk usage querying and visualisation.")
 gone and to help you to clean it up.")
     (home-page "https://github.com/shundhammer/qdirstat")
     (license license:gpl2)))
+
+(define-public nwipe
+  (package
+    (name "nwipe")
+    (version "0.34")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/martijnvanbrummelen/nwipe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1frwjgz4mpzwr9sigr693crmxsjl08wcikh6ik7dm0x40l1kqqpd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-program (search-input-file outputs "bin/nwipe")
+                     (list "PATH" ":" 'prefix
+                           (map (lambda (p) (dirname (search-input-file inputs p)))
+                                '("sbin/dmidecode"
+                                  "sbin/hdparm"
+                                  "sbin/smartctl")))))))))
+    (inputs
+     (list bash-minimal dmidecode hdparm ncurses parted smartmontools))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (home-page "https://github.com/martijnvanbrummelen/nwipe")
+    (synopsis "Secure disk wiping utility")
+    (description
+     "@command{nwipe} securely erases disks using a variety of methods to
+ensure the data cannot be recovered.  It can wipe multiple drives in parallel
+and can be used noninteractively or with a text-based user interface.")
+    (license
+     (list license:gpl2
+           license:bsd-3 ; mt19937ar-cok
+           license:public-domain)))) ; {isaac_rand,PDFGen}
 
 (define-public wipe
   (package

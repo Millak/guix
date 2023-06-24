@@ -34,7 +34,8 @@
             texlive-ref
             texlive-origin
             %texlive-tag
-            %texlive-revision))
+            %texlive-revision
+            %texlive-date))
 
 ;; Commentary:
 ;;
@@ -46,6 +47,7 @@
 ;; are taken from https://www.tug.org/svn/texlive/tags/
 (define %texlive-tag "texlive-2021.3")
 (define %texlive-revision 59745)
+(define %texlive-date "2021-06-28 21:59:21Z")
 
 (define (texlive-origin name version locations hash)
   "Return an <origin> object for a TeX Live package consisting of multiple

@@ -651,7 +651,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
 (define-public gnuastro
   (package
     (name "gnuastro")
-    (version "0.19")
+    (version "0.20")
     (source
      (origin
        (method url-fetch)
@@ -659,7 +659,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "192q3i4zlfmwfcchlf9lnpfgys9dssh7npr5qx0gzn3d2fri0xbz"))))
+         "05bkad0xbax9k0m2g2507mdmjg2109sfg72dsx16f44yj55llh2n"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -1355,6 +1355,38 @@ be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
     (license license:bsd-3)))
 
+(define-public python-bayesicfitting
+  (package
+    (name "python-bayesicfitting")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dokester/BayesicFitting")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07y9dr9wxhxrvhk0jjakhbyrgal60i92m7z7q14fp12k8x0gl69l"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "unittest" "discover"
+                                      "test")))))))
+    (propagated-inputs (list python-astropy python-future python-matplotlib
+                             python-numpy python-scipy))
+    (home-page "https://www.bayesicfitting.nl")
+    (synopsis "Python Toolbox for Astronimical Bayesian fitting")
+    (description
+     "The BayesicFitting package is a python version of the the fitter classes
+in @acronym{HCSS, Herschel Common Science System}.  HCSS was the all
+encompassing software system for the operations and analysis of the ESA satelite
+Herschel.")
+    (license license:gpl3+)))
+
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
@@ -1425,6 +1457,58 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
+(define-public python-crds
+  (package
+    (name "python-crds")
+    (version "11.17.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "crds" version))
+              (sha256
+               (base32
+                "0sdz1k4hrgrc2jwihp9ns7lx23kcz7f90c222q7aaqf9g3vvpqlr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require Internet access to https://hst-crds.stsci.edu and
+      ;; additional test data. See:
+      ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
+      #:tests? #f))
+    (propagated-inputs (list python-asdf
+                             python-astropy
+                             python-boto3
+                             python-filelock
+                             python-lxml
+                             python-numpy
+                             python-parsley
+                             python-pysynphot
+                             python-roman-datamodels
+                             python-stsynphot
+                             python-requests))
+    (native-inputs (list python-flake8
+                         python-ipython
+                         python-lockfile
+                         python-mock
+                         python-nose
+                         python-pylint
+                         python-pytest
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://hst-crds.stsci.edu")
+    (synopsis "Calibration Reference Data System for HST and JWST")
+    (description
+     "CRDS is a package used for working with astronomical reference files for
+the HST and JWST telescopes.  CRDS is useful for performing various operations
+on reference files or reference file assignment rules.  CRDS is used to assign,
+check, and compare reference files and rules, and also to predict those datasets
+which should potentially be reprocessed due to changes in reference files or
+assignment rules.  CRDS has versioned rules which define the assignment of
+references for each type and instrument configuration.  CRDS has web sites
+corresponding to each project (http://hst-crds.stsci.edu or
+https://jwst-crds.stsci.edu/) which record information about reference files and
+provide related services.")
+    (license license:bsd-3)))
+
 (define-public python-czml3
   (package
     (name "python-czml3")
@@ -1492,6 +1576,53 @@ MDI data with Python.  It uses the publicly accessible
 JSOC (@url{http://jsoc.stanford.edu/}) DRMS server by default, but can also be
 used with local NetDRMS sites.")
     (license license:bsd-2)))
+
+(define-public python-drizzle
+  (package
+    (name "python-drizzle")
+    (version "1.13.7")
+    (source (origin
+              (method git-fetch) ;PyPi doesn't have the test data sets
+              (uri (git-reference
+                    (url "https://github.com/spacetelescope/drizzle")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x591d9gjasds91fvwcf37bhxp5nra28g0vq5zkykczpc70ywiy8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: 2 of 26 tests failed with AssertionError, disable them for now.
+      ;; Consider mention it in upstream.
+      #:test-flags #~(list "-k"
+                           (string-append "not test_square_with_point"
+                                          " and not test_square_with_grid"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'set-env-version
+                     (lambda _
+                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                               #$version)))
+                   (add-before 'check 'build-extensions
+                     (lambda _
+                       ;; Cython extensions have to be built before running
+                       ;; the tests.
+                       (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-astropy python-numpy))
+    (native-inputs (list python-coverage python-flake8 python-pytest
+                         python-pytest-cov python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/drizzle")
+    (synopsis
+     "Astronomical tool for combining dithered images into a single image")
+    (description
+     "The drizzle library is a Python package for combining dithered images into
+a single image.  This library is derived from code used in DrizzlePac.  Like
+DrizzlePac, most of the code is implemented in the C language.  The biggest
+change from DrizzlePac is that this code passes an array that maps the input to
+output image into the C code, while the DrizzlePac code computes the mapping by
+using a Python callback.  Switching to using an array allowed the code to be
+greatly simplified.")
+    (license license:bsd-3)))
 
 (define-public python-ephem
   (package
@@ -2045,6 +2176,211 @@ spherical polygons that represent arbitrary regions of the sky.")
     ;; QD_LIBRARY_LICENSE.rst for bandeled QD source
     (license license:bsd-3)))
 
+(define-public python-stsci-image
+  (package
+    (name "python-stsci-image")
+    (version "2.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.image" version))
+              (sha256
+               (base32
+                "1vnp4256nbdvapa69cmm80sjz11ygxa49abr9nbvssj6nyyp5icb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'build-extensions
+                          (lambda _
+                            ;; Cython extensions have to be built before running
+                            ;; the tests.
+                            (invoke "python" "setup.py" "build_ext"
+                                    "--inplace"))))))
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stsci.image")
+    (synopsis "Image array manipulation functions")
+    (description
+     "This package provides Python modules of @acronym{STScI, Space Telescope
+Science Institute} image array manipulation functions.")
+    (license license:bsd-3)))
+
+(define-public python-stsci-imagestats
+  (package
+    (name "python-stsci-imagestats")
+    (version "1.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.imagestats" version))
+              (sha256
+               (base32
+                "14457izlbnks84dyza75ib3nvx2w8nhlqm9vc1zb7hbhknb5gjvw"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f)) ;No tests
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-setuptools-scm))
+    (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
+    (synopsis "Compute sigma-clipped statistics on data arrays")
+    (description
+     "@code{stsci.imagestats} is a package designed to compute various
+statistics on image data using sigma-clipping iterations.  It is designed to
+replicate core behaviour of the IRAF's
+@url{http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?imstatistics, imstatistics
+task}.")
+    (license license:bsd-3)))
+
+(define-public python-stsci-stimage
+  (package
+    (name "python-stsci-stimage")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.stimage" version))
+              (sha256
+               (base32
+                "0i7xby1gaiplvbqqv8a4f4cw1is8fwj89mix1z3bqrykqi3n24g0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Fix failing tests. There are errors to load test files.
+      #:tests? #f))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-codecov python-pytest python-pytest-cov
+                         python-setuptools-scm))
+    (home-page "https://stscistimage.readthedocs.io/en/latest/")
+    (synopsis "STScI image processing")
+    (description "This package provides an astronomical Python package with
+image processing functions: @code{xyxymatch}, @code{geomap}.")
+    (license license:bsd-3)))
+
+(define-public python-stcal
+  (package
+    (name "python-stcal")
+    (version "1.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stcal" version))
+              (sha256
+               (base32
+                "0yy0pwi3krvhxfby6nzgpgyz5il3sl1j29ihbk81dh9fdh3ys2n9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        ;; XXX: Can't detect opencv-python version. The input
+                        ;; opencv might not set the version correctly.
+                        (delete 'sanity-check))))
+    (propagated-inputs (list opencv ;Provides OpenCV-Python
+                             python-astropy python-numpy python-scipy))
+    (native-inputs (list python-psutil
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stcal")
+    (synopsis "STScI tools and algorithms used in calibration pipelines")
+    (description "STScI tools and algorithms used in calibration pipelines.")
+    (license license:bsd-3)))
+
+(define-public python-stdatamodels
+  (package
+    (name "python-stdatamodels")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stdatamodels" version))
+              (sha256
+               (base32
+                "1lssz5mnkzgraqa9mdg1w39scsikymcp3zpmsjb146r0pqnwnpzw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disable tests requiring access to CRDS servers to download ~500MiB
+      ;; of data.
+      #:test-flags #~(list "-k" "not test_crds_selectors_vs_datamodel")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-home
+                     (lambda _
+                       (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-asdf
+                             python-asdf-astropy
+                             python-astropy
+                             python-jsonschema
+                             python-numpy
+                             python-psutil))
+    (native-inputs (list python-crds
+                         python-pytest
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-scipy
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stdatamodels")
+    (synopsis
+     "Core support for DataModel classes used in calibration pipelines")
+    (description
+     "Provides DataModel, which is the base class for data models implemented in
+the @acronym{JWST, James Webb Space Telescope} and @acronym{Roman, Nancy Grace
+Roman Space Telescope} calibration software.")
+    (license license:bsd-3)))
+
+(define-public python-stpipe
+  (package
+    (name "python-stpipe")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stpipe" version))
+              (sha256
+               (base32
+                "17gnwzhl10vbg059lfprdyci19dlh3whkmb9rl7z25wr593rnvcp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-asdf python-astropy python-crds
+                             python-semantic-version python-stdatamodels))
+    (native-inputs (list python-pytest python-pytest-doctestplus
+                         python-pytest-openfiles python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stpipe")
+    (synopsis "Framework for calibration pipeline software")
+    (description
+     "This package provides base classes and command-line tools for
+implementing calibration pipeline software.")
+    ;; LICENSE Association of Universities for Research in Astronomy (AURA)
+    (license license:bsd-3)))
+
+(define-public python-stsynphot
+  (package
+    (name "python-stsynphot")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsynphot" version))
+              (sha256
+               (base32
+                "0qkdh47j84v7fzri7bmi1jcmggdqq0a8byamfm73d8mbz86v8sn4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests fails on missing file, it might need to be downloaded,
+      ;; disable them for now.  astropy.utils.exceptions.AstropyUserWarning:
+      ;; Failed to load Vega spectrum from
+      ;; /grp/redcat/trds/calspec/alpha_lyr_stis_010.fits;
+      #:tests? #f))
+    (propagated-inputs (list python-astropy
+                             python-beautifulsoup4
+                             python-matplotlib
+                             python-numpy
+                             python-scipy
+                             python-synphot))
+    (native-inputs (list python-pytest python-pytest-astropy
+                         python-pytest-astropy-header python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stsynphot_refactor")
+    (synopsis "Synthetic photometry using Astropy for HST and JWST")
+    (description
+     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
+PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
+packages for HST.")
+    (license license:bsd-3)))
+
 (define-public libnova
   (package
     (name "libnova")
@@ -2590,6 +2926,73 @@ Moon position, etc.")
 JPL ephemerides use to predict raw (x,y,z) planetary positions.")
     (license license:expat)))
 
+(define-public python-jwst
+  (package
+    (name "python-jwst")
+    (version "1.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jwst" version))
+              (sha256
+               (base32
+                "1lmfyw2y7c84rs9xqavah9aidj478ijiiijlz6fag11xqn1vs98y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server for
+      ;; getting data sets.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   ;; NOTE: (Sharlatan-20230529T113448+0100): opencv-python's
+                   ;; version can't be detected, it could the way it's packed in
+                   ;; Guix. Review failing sanity check with more efforts,
+                   ;; disable for now to make package buildable.
+                   (delete 'sanity-check))))
+    ;; opencv provides OpenCV-Python which is Listed as install requirement.
+    (propagated-inputs (list opencv
+                             python-asdf
+                             python-asdf-astropy
+                             python-astropy
+                             python-bayesicfitting
+                             python-crds
+                             python-drizzle
+                             python-gwcs
+                             python-jsonschema
+                             python-numpy
+                             python-photutils
+                             python-poppy
+                             python-psutil
+                             python-pyparsing
+                             python-requests
+                             python-scikit-image
+                             python-scipy
+                             python-spherical-geometry
+                             python-stcal
+                             python-stdatamodels
+                             python-stpipe
+                             python-stsci-image
+                             python-stsci-imagestats
+                             python-tweakwcs
+                             python-wiimatch))
+    (native-inputs (list python-codecov
+                         python-colorama
+                         python-flake8
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-requests-mock
+                         python-setuptools-scm))
+    (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
+    (synopsis
+     "Python library for science observations from the James Webb Space Telescope")
+    (description
+     "This package provides an access to the JWST Science Calibration Pipeline
+processes data from all JWST instruments and observing modes by applying various
+science corrections sequentially, producing both fully-calibrated individual
+exposures and high-level data products (mosaics, extracted spectra, etc.).")
+    (license license:bsd-3)))
+
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
@@ -2687,6 +3090,38 @@ astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
 N-Chilada and RAMSES AMR outputs.")
     (license license:gpl3+)))
 
+(define-public python-pysynphot
+  (package
+    (name "python-pysynphot")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pysynphot" version))
+              (sha256
+               (base32
+                "1rr29m63bnj47f6gvbvg3pm1296x14ad29c6qd0sdj4f4ilrzhj5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-env-data-path
+                          (lambda _
+                            (setenv "PYSYN_CDBS"
+                                    (string-append #$output "/crds")))))))
+    (native-inputs (list python-pytest python-pytest-remotedata
+                         python-setuptools-scm))
+    (propagated-inputs (list python-astropy python-beautifulsoup4 python-numpy
+                             python-pytest-astropy-header python-six))
+    (home-page "https://github.com/spacetelescope/pysynphot")
+    (synopsis "Python Synthetic Photometry Utilities")
+    (description
+     "Astrolib PySynphot (hereafter referred to only as pysynphot) is an
+object-oriented replacement for STSDAS SYNPHOT synthetic photometry package in
+IRAF.  @code{pysynphot} simulates photometric data and spectra as they are
+observed with the Hubble Space Telescope (HST).  Passbands for standard
+photometric systems are available, and users can incorporate their own filters,
+spectra, and data.")
+    (license license:bsd-3)))
+
 (define-public python-sep
   (package
     (inherit libsep)
@@ -2722,6 +3157,67 @@ N-Chilada and RAMSES AMR outputs.")
 Takes a WGS84 (GPS) latitude/longitude as input as well as an UTC or local
 datetime object.")
     (license license:lgpl3+)))
+
+(define-public python-synphot
+  (package
+    (name "python-synphot")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "synphot" version))
+              (sha256
+               (base32
+                "02pjp1bnbyq7zi1bxqv56nif4ijd8fscmnn9ldrs8yvgsbmgdvlc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Test needs more love to pass.
+      ;; ERROR collecting synphot/tests/test_utils.py
+      #:tests? #f))
+    (propagated-inputs (list python-astropy python-numpy python-scipy))
+    (native-inputs (list python-pytest python-pytest-astropy
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/synphot_refactor")
+    (synopsis "Synthetic photometry using Astropy")
+    (description
+     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
+PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
+of the old packages.")
+    (license license:bsd-3)))
+
+(define-public python-tweakwcs
+  (package
+    (name "python-tweakwcs")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tweakwcs" version))
+              (sha256
+               (base32
+                "1500w737n9vf5hv16xkybk4shl7g4wfzb2ji9mc4vgzj41gkrwl4"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-astropy
+                             python-gwcs
+                             python-numpy
+                             python-packaging
+                             python-spherical-geometry
+                             python-stsci-imagestats
+                             python-stsci-stimage))
+    (native-inputs (list python-codecov
+                         python-pytest
+                         python-pytest-cov
+                         python-scipy
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://tweakwcs.readthedocs.io/en/latest/")
+    (synopsis
+     "Algorithms for matching and aligning catalogs and for tweaking the WCS")
+    (description
+     "@code{tweakwcs} is a package that provides core algorithms for computing
+and applying corrections to @code{WCS} objects such as to minimize mismatch
+between image and reference catalogs. Currently only aligning images with
+@code{FITS WCS} and @code{JWST gWCS} are supported.")
+    (license license:bsd-3)))
 
 (define-public python-asdf
   (package
@@ -3050,6 +3546,79 @@ the entire transformation pipeline from input coordinates (detector by
 default) to world coordinates.")
     (license license:bsd-3)))
 
+(define-public python-rad
+  (package
+    (name "python-rad")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rad" version))
+              (sha256
+               (base32
+                "0j51pkywxdaqrfz162rdsywlvx1mbb2h0gi5framvhf25i1im7mb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "-k" "not remote_data")))
+    (native-inputs (list python-astropy
+                         python-pytest
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-semantic-version
+                         python-setuptools-scm))
+    (propagated-inputs (list python-asdf python-asdf-astropy))
+    (home-page "https://github.com/spacetelescope/rad")
+    (synopsis "Roman Attribute Dictionary")
+    (description
+     "@acronym{RAD, The Roman Attribute Dictionary} is package which defines
+schemas for the Nancy Grace Roman Space Telescope shared attributes for
+processing and archive.  These schemas are schemas for the ASDF file file
+format, which are used by ASDF to serialize and deserialize data for the Nancy
+Grace Roman Space Telescope.")
+    (license license:bsd-3)))
+
+(define-public python-roman-datamodels
+  (package
+    (name "python-roman-datamodels")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "roman_datamodels" version))
+              (sha256
+               (base32
+                "0frhm1cqqd8934yizhm4fy78y38q2w9ncm4rv1n74hfypkyis4ap"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Check how to make all tests enabled, probably some more inner
+     ;; input chain needs to be upgraded, keep them disabled to make the build
+     ;; green.
+     (list #:test-flags #~(list "-k"
+                                (string-append "not test_will_validate"
+                                 " and not test_will_strict_validate"
+                                 " and not test_nuke_validation"))))
+    (propagated-inputs (list python-asdf
+                             python-asdf-astropy
+                             python-asdf-standard
+                             python-astropy
+                             python-gwcs
+                             python-numpy
+                             python-psutil
+                             python-rad))
+    (native-inputs (list python-pytest python-pytest-doctestplus
+                         python-pytest-openfiles python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/roman_datamodels")
+    (synopsis "Roman Datamodels Support")
+    (description
+     "This package provides a Python package of Roman Datamodels for the
+calibration pipelines started with the @acronym{JWST, James Webb Space
+Telescope} calibration pipelines.  The goal for the JWST pipelines was motivated
+primarily by the need to support FITS data files, specifically with isolating
+the details of where metadata and data were located in the FITS file from the
+representation of the same items within the Python code.  That is not a concern
+for Roman since FITS format data files will not be used by the Roman calibration
+pipelines.")
+    (license license:bsd-3)))
+
 (define-public python-astroalign
   (package
     (name "python-astroalign")
@@ -3102,3 +3671,26 @@ astronomical images, especially when there is no WCS information available.")
      "Skyfield computes positions for the stars, planets, and satellites in
 orbit around the Earth.")
     (license license:expat)))
+
+(define-public python-wiimatch
+  (package
+    (name "python-wiimatch")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "wiimatch" version))
+              (sha256
+               (base32
+                "0x6p5z6a2cqinckwlpinjxagvmswl149s1jn6ihmdxk4k0h8rrz0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-codecov python-pytest python-pytest-cov
+                         python-pytest-doctestplus python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/wiimatch")
+    (synopsis
+     "Optimal matching of weighted N-dimensional image intensity data")
+    (description
+     "@code{wiimatch} is a package that provides core computational algorithms
+for optimal @code{matching} of weighted N-dimensional image intensity data
+using (multivariate) polynomials.")
+    (license license:bsd-3)))

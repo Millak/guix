@@ -208,7 +208,8 @@ only after the 'patch-dependencies' phase."
       (jsobject-update*
        pkg-meta
        `("devDependencies" ,delete-from-jsobject (@))
-       `("dependencies" ,delete-from-jsobject (@))))))
+       `("dependencies" ,delete-from-jsobject (@))
+       `("peerDependencies" ,delete-from-jsobject (@))))))
 
 (define* (delete-lockfiles #:key inputs #:allow-other-keys)
   "Delete 'package-lock.json', 'yarn.lock', and 'npm-shrinkwrap.json', if they

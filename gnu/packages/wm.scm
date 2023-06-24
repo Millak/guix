@@ -331,20 +331,33 @@ commands would.")
                 "0jrya4rhh46sivlmqaqc4n9abpp1yn1ajhi616gn75cxwl8rjqr8"))))
     (build-system meson-build-system)
     (arguments
-     `(;; The test suite requires the unpackaged Xephyr X server.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'patch-session-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (i3 (string-append out "/bin/i3"))
-                    (i3-with-shmlog (string-append out "/bin/i3-with-shmlog")))
-               (substitute* (string-append out "/share/xsessions/i3.desktop")
-                 (("Exec=i3") (string-append "Exec=" i3)))
-               (substitute* (string-append out "/share/xsessions/i3-with-shmlog.desktop")
-                 (("Exec=i3-with-shmlog") (string-append "Exec=" i3-with-shmlog)))
-               #t))))))
+     (list
+      ;; The test suite requires the unpackaged Xephyr X server.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'patch-session-file
+            (lambda _
+              (let ((i3 (string-append #$output "/bin/i3"))
+                    (i3-with-shmlog (string-append #$output "/bin/i3-with-shmlog")))
+                (substitute* (string-append #$output "/share/xsessions/i3.desktop")
+                  (("Exec=i3") (string-append "Exec=" i3)))
+                (substitute* (string-append #$output "/share/xsessions/i3-with-shmlog.desktop")
+                  (("Exec=i3-with-shmlog") (string-append "Exec=" i3-with-shmlog))))))
+           (add-after 'patch-session-file 'wrap-perl-bin
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let* ((i3-save-tree (string-append #$output "/bin/i3-save-tree"))
+                      (perl-lib-names '("perl-anyevent"
+                                        "perl-anyevent-i3"
+                                        "perl-json-xs"
+                                        "perl-common-sense"
+                                        "perl-types-serialiser"))
+                      (perl-lib-paths
+                       (map (lambda (name)
+                              (string-append (assoc-ref inputs name) "/lib/perl5/site_perl"))
+                            perl-lib-names)))
+                 (wrap-program i3-save-tree
+                               `("PERL5LIB" ":" prefix ,perl-lib-paths))))))))
     (inputs
      (list libxcb
            xcb-util
@@ -356,6 +369,11 @@ commands would.")
            libev
            yajl
            xmlto
+           perl
+           perl-anyevent-i3
+           perl-json-xs
+           perl-common-sense
+           perl-types-serialiser
            perl-pod-simple
            libx11
            pcre2
@@ -1090,7 +1108,7 @@ the XDG Autostart specification.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1099,7 +1117,7 @@ the XDG Autostart specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00zg03nz79kqcsnwmm22friawhvl05f93yxpvqmy5wvggx9hrlz8"))))
+                "0l0brayvcifrc5rxxkqfrskd6523vs3allg2cxhwkixqf2ddg7kh"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"))
     (native-inputs
@@ -1566,7 +1584,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.16.1")
+    (version "0.16.2")
     (source
      (origin
        (method git-fetch)
@@ -1575,7 +1593,7 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11kcica9waj1a1xgbi12gif9z5z0b4xzycbcgawbgdmj77pws8sk"))))
+        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -1610,7 +1628,7 @@ functionality to display information about the most commonly used services.")
      (list
        `(,hwdata "pnp")
        pkg-config))
-    (home-page "https://github.com/swaywm/wlroots")
+    (home-page "https://gitlab.freedesktop.org/wlroots/wlroots/")
     (synopsis "Pluggable, composable, unopinionated modules for building a
 Wayland compositor")
     (description "wlroots is a set of pluggable, composable, unopinionated
@@ -1620,7 +1638,7 @@ modules for building a Wayland compositor.")
 (define-public sway
   (package
     (name "sway")
-    (version "1.8")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -1629,7 +1647,7 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17dqr2lkmcv2ssp7vky27zw599i77whpb1aqh1s6kl8a8vkrz6mg"))))
+        (base32 "1y7brfrsjnm9gksijgnr6zxqiqvn06mdiwsk5j87ggmxazxd66av"))))
     (build-system meson-build-system)
     (arguments
      `(;; elogind is propagated by wlroots -> libseat
@@ -1761,7 +1779,7 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public swaynotificationcenter
   (package
     (name "swaynotificationcenter")
-    (version "0.7.3")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1769,7 +1787,7 @@ display a clock or apply image manipulation techniques to the background image."
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1xvr5m5sqznr3dd512i5pk0d56v7n0ywdcy6rnz85vbf2k7b6kj5"))))
+               (base32 "1c3gd6mlr209jzzrh5jmws2lawnn3gr6smvzcw74kkpi3wvs7l0k"))))
     (build-system meson-build-system)
     (arguments (list #:configure-flags #~(list "-Dsystemd-service=false")))
     (native-inputs
@@ -1785,6 +1803,8 @@ display a clock or apply image manipulation techniques to the background image."
            gtk+
            gtk-layer-shell
            libhandy
+           libgee
+           pulseaudio
            wayland-protocols))
     (synopsis "Notification daemon with a graphical interface")
     (description
@@ -2026,7 +2046,11 @@ Wayland compositors supporting the wlr-output-management protocol.")
                 (invoke "./autogen.sh")
                 (invoke "sh" "./configure" "SHELL=sh")
                 (apply invoke "make" "stumpwm.info" make-flags)
-                (install-file "stumpwm.info" info)))))))
+                (install-file "stumpwm.info" info))))
+          (add-after 'install-manual 'remove-temporary-cache
+            (lambda* (#:key outputs #:allow-other-keys)
+              (delete-file-recursively (string-append (assoc-ref outputs "lib")
+                                                      "/.cache")))))))
     (synopsis "Window manager written in Common Lisp")
     (description
      "Stumpwm is a window manager written entirely in Common Lisp.
@@ -2069,6 +2093,7 @@ productive, customizable lisp based systems.")
            (delete 'copy-source)
            (delete 'build)
            (delete 'check)
+           (delete 'remove-temporary-cache)
            (delete 'cleanup)))))))
 
 (define stumpwm-contrib

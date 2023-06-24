@@ -1556,20 +1556,17 @@ organized in a hash table or B+ tree.")
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           '(list "--disable-static"
-                  (string-append "--with-bash-headers="
-                                 (dirname (search-input-directory
-                                           %build-inputs
-                                           "include/bash"))))))
+           #~(list "--disable-static"
+                   (string-append "--with-bash-headers="
+                                  (search-input-directory %build-inputs
+                                                          "include/bash")))))
     (native-inputs
-     ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
-     `(("bc" ,bc)
-       ("bash:include" ,bash "include")
-       ("check" ,check)
-       ("pkg-config" ,pkg-config)))
+     (list bc check-0.14 pkg-config))
     (inputs
      ;; TODO: Add more optional inputs.
-     (list curl
+     (list bash                         ; /bin/bash for native compilation
+           `(,bash "include")
+           curl
            libgcrypt
            `(,util-linux "lib")))
     (synopsis "Manipulate plain text files as databases")
@@ -5075,7 +5072,7 @@ compatible with SQLite using a graphical user interface.")
                   go-github-com-pkg-errors
                   go-github-com-sourcegraph-jsonrpc2
                   go-golang-org-x-crypto
-                  go-github.com-mattn-go-runewidth
+                  go-github-com-mattn-go-runewidth
                   go-golang-org-x-xerrors
                   go-gopkg-in-yaml-v2))
     (synopsis "SQL language server written in Go")

@@ -296,18 +296,17 @@ shadows, highlights, and gradients for some depth.")
 (define-public flat-remix-gnome-theme
   (package
     (name "flat-remix-gnome-theme")
-    (version "20221107-1")
+    (version "20230508")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
          (url "https://github.com/daniruiz/flat-remix-gnome")
-         ;; This commit adds GtkSourceView 5 theme, for GNOME Text Editor.
-         (commit "b5616efc515e9f1417436e67d94718db7529a2ba")))
+         (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10fgdz8hz8rd7aj4vb3bvl8khzb2fvaia7n00gi0x19yvnnh36pr"))))
+        (base32 "1b31ayb4qvcr5m3dqcidl9ilpp3w4mr56wq6vrp73g4cj558pi9h"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan

@@ -40,7 +40,7 @@
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2021, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -142,7 +142,6 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
@@ -4849,7 +4848,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers-next
+             guile-fibers-1.3
              guile-json-4
              guile-email
              guile-prometheus
@@ -5242,7 +5241,9 @@ C.  It is developed as part of the NetSurf project.")
        (sha256
         (base32
          "1dimfyblmym98qa1b80c5jslv2zk8r44xbdrgrsrw1n9wr9y4yly"))
-       (patches (search-patches "hubbub-sort-entities.patch"))))
+       (patches (search-patches
+         "hubbub-sort-entities.patch"
+         "hubbub-maybe-uninitialized.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem
@@ -7783,7 +7784,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
     (inputs
      ;; Required to build the tools (i.e. without ‘--enable-lib-only’).
      (append
-      (if (hurd-target?)
+      (if (target-hurd?)
           `((,openssl "static"))
           (list jemalloc))              ; fight nghttpd{,x} heap fragmentation
       (list c-ares

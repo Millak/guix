@@ -43,17 +43,17 @@
             [(11 88 6)
              nil "Integrated environment for *TeX*" tar
              ((:url . "http://www.gnu.org/software/auctex/"))])
-    (taxy-magit-section .
-		        [(0 12 2)
-		         ((emacs
-			   (26 3))
-		          (magit-section
-			   (3 2 1))
-		          (taxy
-			   (0 10)))
-		         "View Taxy structs in a Magit Section buffer" tar
-		         ((:url . "https://github.com/alphapapa/taxy.el")
-		          (:keywords "lisp"))])))
+    (fake-taxy-magit-section .
+		             [(0 12 2)
+		              ((emacs
+			        (26 3))
+		               (magit-section
+			        (3 2 1))
+		               (taxy
+			        (0 10)))
+		              "View Taxy structs in a Magit Section buffer" tar
+		              ((:url . "https://github.com/alphapapa/taxy.el")
+		               (:keywords "lisp"))])))
 
 
 (test-begin "elpa")
@@ -88,8 +88,8 @@
   (eval-test-with-elpa "auctex"))
 
 (test-equal "package-latest-release"
-  (list '("https://elpa.gnu.org/packages/taxy-magit-section-0.12.2.tar")
-        '("https://elpa.gnu.org/packages/taxy-magit-section-0.12.2.tar.sig")
+  (list '("http://elpa.gnu.org/packages/fake-taxy-magit-section-0.12.2.tar")
+        '("http://elpa.gnu.org/packages/fake-taxy-magit-section-0.12.2.tar.sig")
         (list (upstream-input
                (name "magit-section")
                (downstream-name "emacs-magit-section")
@@ -105,12 +105,13 @@
   (with-http-server `((200 ,(object->string elpa-mock-archive)))
     (parameterize ((current-http-proxy (%local-url)))
       (define source
+        ;; Note: Use 'http' URLs to the proxy is used.
         (package-latest-release
-         (dummy-package "emacs-taxy-magit-section"
+         (dummy-package "emacs-fake-taxy-magit-section"
                         (version "0.0.0")
                         (source (dummy-origin
                                  (method url-fetch)
-                                 (uri "https://elpa.gnu.org/xyz"))))
+                                 (uri "http://elpa.gnu.org/xyz"))))
          (list %elpa-updater)))
 
       (list (upstream-source-urls source)

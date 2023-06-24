@@ -110,7 +110,7 @@ error-reporting purposes."
     (syntax-case x ()
       ((_ type within)
        (syntax-violation (syntax->datum #'within)
-                         "undefined guix record-type"
+                         "undefined record type"
                          #'type))
       (_ (syntax-violation 'map-fields "bad use of syntactic keyword" x x)))))
 

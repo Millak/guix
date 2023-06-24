@@ -158,13 +158,14 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
            (warning (G_ "failed to parse ~a~%")
                     (hackage-cabal-url hackage-name))
            #f)
-          (_ (let ((url (hackage-source-url hackage-name version))
-                   (cabal (eval-cabal (hackage-fetch hackage-name) '())))
+          (_ (let ((url (hackage-source-url hackage-name version)))
                (upstream-source
                 (package (package-name pkg))
                 (version version)
                 (urls (list url))
-                (inputs (cabal-package-inputs cabal))))))))))
+                (inputs
+                 (let ((cabal (eval-cabal (hackage-fetch name-version) '())))
+                   (cabal-package-inputs cabal)))))))))))
 
 (define (stackage-lts-package? package)
   "Return whether PACKAGE is available on the default Stackage LTS release."

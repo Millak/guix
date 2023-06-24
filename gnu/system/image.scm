@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -390,6 +391,9 @@ used in the image."
          ((or (string=? file-system "vfat")
               (string=? file-system "fat16")
               (string=? file-system "fat32")) "F")
+         ((and (string=? file-system "unformatted")
+               (partition-uuid partition))
+          (uuid->string (partition-uuid partition)))
          (else
           (raise (condition
                   (&message
@@ -414,7 +418,14 @@ used in the image."
               (with-imported-modules*
                (let ((initializer (or #$(partition-initializer partition)
                                       initialize-root-partition))
-                     (inputs '#+(list e2fsprogs fakeroot dosfstools mtools))
+                     (inputs '#+(cond
+                                  ((string-prefix? "ext" type)
+                                   (list e2fsprogs fakeroot))
+                                  ((or (string=? type "vfat")
+                                       (string-prefix? "fat" type))
+                                   (list dosfstools fakeroot mtools))
+                                  (else
+                                    '())))
                      (image-root "tmp-root"))
                  (sql-schema #$schema)
 

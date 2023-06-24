@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
@@ -31,7 +31,7 @@
 ;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -130,7 +130,6 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages inkscape)
@@ -378,7 +377,11 @@ interface and is based on GNU Guile.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))))
+                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))
+    (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
+                     (replace "guile-fibers" guile-fibers-1.3)))
+    (inputs (modify-inputs (package-inputs shepherd-0.9)
+              (replace "guile-fibers" guile-fibers-1.3)))))
 
 (define-public shepherd shepherd-0.9)
 
@@ -909,7 +912,7 @@ re-executing them as necessary.")
                            ,@(if (%current-target-system)
                                  '("--with-path-procnet-dev=/proc/net/dev")
                                  '())
-                           ,@(if (hurd-target?)
+                           ,@(if (target-hurd?)
                                  '("--disable-rcp"
                                    "--disable-rexec"
                                    "--disable-rexecd"
@@ -963,7 +966,7 @@ hostname.")
      `(;; Assume System V `setpgrp (void)', which is the default on GNU
        ;; variants (`AC_FUNC_SETPGRP' is not cross-compilation capable.)
        #:configure-flags
-       '(,@(if (hurd-target?)
+       '(,@(if (target-hurd?)
              '()
              '("--with-libpam"))
           "shadow_cv_logdir=/var/log"
@@ -1014,7 +1017,7 @@ hostname.")
                (delete-file (string-append bin "/groups"))
                (for-each delete-file (find-files man "^groups\\."))))))))
     (inputs
-     `(,@(if (hurd-target?)
+     `(,@(if (target-hurd?)
            '()
            `(("linux-pam" ,linux-pam)))
        ,@(if (%current-target-system)
@@ -1523,7 +1526,7 @@ connection alive.")
 
       (inputs `(("inetutils" ,inetutils)
                 ("bash" ,bash-minimal)
-                ,@(if (hurd-target?) '()
+                ,@(if (target-hurd?) '()
                       `(("net-tools" ,net-tools)
                         ("iproute" ,iproute)))
 
@@ -2033,7 +2036,7 @@ system administrator.")
      (list groff))
     (inputs
      `(("coreutils" ,coreutils)
-       ,@(if (hurd-target?)
+       ,@(if (target-hurd?)
            '()
            `(("linux-pam" ,linux-pam)))
        ("zlib" ,zlib)))
@@ -5764,7 +5767,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.93.1")
+    (version "1.94.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5773,7 +5776,7 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18l0avbq1la1wsfwj13kq5prqz6mydhs3ihvf0f3s3vr2y9h71aq"))))
+                "0a221n0x7qrq0dbhhf1saya2g7jyy1798k3rhy9nzyvqzc4vnd0x"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"

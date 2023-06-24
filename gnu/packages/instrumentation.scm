@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021, 2022 Olivier Dion <olivier.dion@polymtl.ca>
+;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -314,14 +316,14 @@ coverage.")
 (define-public lttng-modules
   (package
     (name "lttng-modules")
-    (version "2.13.5")
+    (version "2.13.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-modules/"
                                   "lttng-modules-" version ".tar.bz2"))
               (sha256
                (base32
-                "0277yfp57psnvn5g40mk09zryp0r4saynns213qak18fv0l39szc"))))
+                "19xh8nm19vx6c2i1adqpa8q2xsvxn59qxa6z186iywbhr0dgpaqk"))))
     (build-system linux-module-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -497,6 +499,40 @@ line for tracing control, a @code{lttng-ctl} library for tracing control and a
 analysis and instrumentation based on Linux perf_events (aka perf) and
 ftrace.")
     (license (list license:gpl2))))
+
+(define-public systemtap
+  (package
+    (name "systemtap")
+    (version "4.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://sourceware.org/ftp/systemtap/releases/" name "-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "161smpv4ajqfncmgylvs89bbix1id60nf0g7clmga2lxxax3646h"))))
+    (build-system gnu-build-system)
+    (native-inputs (list cpio python))
+    (inputs (list elfutils))
+
+    (home-page "https://sourceware.org/systemtap/")
+    (synopsis "GNU/Linux trace/probe tool")
+    (description
+     "SystemTap provides infrastructure to simplify the
+gathering of information about the running Linux system.  This assists
+diagnosis of a performance or functional problem.  SystemTap eliminates the
+need for the developer to go through the tedious and disruptive
+instrument, recompile, install, and reboot sequence that may be otherwise
+required to collect data.
+
+SystemTap provides a simple command line interface and scripting language for
+writing instrumentation for a live running kernel plus user-space applications.
+We are publishing samples, as well as enlarging the internal \"tapset\" script
+library to aid reuse and abstraction.  SystemTap is a tool for complex
+tasks that may require live analysis, programmable on-line response, and
+whole-system symbolic access, and can also handle simple tracing jobs.")
+    (license license:gpl2+)))
 
 (define-public uftrace
   (package

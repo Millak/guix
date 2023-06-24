@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016, 2017, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016, 2021 Stefan Reichoer <stefan@xsteve.at>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -177,13 +177,13 @@ data units.")
 (define-public khal
   (package
     (name "khal")
-    (version "0.11.1")
+    (version "0.11.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "khal" version))
               (sha256
                (base32
-                "07k0cfbfkx9fhfk4gf73vh34c05i1cb72gc15a1lmx9knxy4h503"))))
+                "1flrz01nsmvphiv673b8ia279qcp3gj6a1rsjlsj4gp5f69xif4g"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; The test suite is unreliable. See <https://bugs.gnu.org/44197>
@@ -202,17 +202,18 @@ data units.")
            ;; Required to build manpage
            python-sphinxcontrib-newsfeed python-sphinx))
     (inputs
-     (list python-configobj
-           python-dateutil
-           python-icalendar
-           python-tzlocal
-           python-urwid
-           python-pytz
-           python-setproctitle
-           python-atomicwrites
+     (list python-atomicwrites
            python-click
            python-click-log
-           python-pyxdg))
+           python-configobj
+           python-dateutil
+           python-icalendar
+           python-pytz
+           python-pyxdg
+           python-tzlocal
+           python-urwid
+           ;; For the extras.
+           python-setproctitle))
     (synopsis "Console calendar program")
     (description "Khal is a standards based console calendar program,
 able to synchronize with CalDAV servers through vdirsyncer.  It includes

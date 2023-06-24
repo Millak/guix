@@ -738,7 +738,7 @@ purposes developed at Queen Mary, University of London.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "7.3")
+    (version "7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -755,7 +755,7 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "0bkhrgswhc9y1ly8nfg8hpwad77cgbr663dgj86h3aisljc4cdkw"))
+                "0v66h9fghjyjinldw9yfhhlfi3my235x6n4dpxx432z35lka2h89"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -799,7 +799,6 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
      (list alsa-lib
            atkmm
            aubio
-           boost
            cairomm
            curl
            dbus
@@ -844,7 +843,8 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            taglib
            vamp))
     (native-inputs
-     (list cppunit
+     (list boost
+           cppunit
            gettext-minimal
            itstool
            perl
@@ -860,7 +860,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.3.0-beta-1")            ;for ffmpeg 6 support
+    (version "3.3.3")            ;for ffmpeg 6 support
     (source
      (origin
        (method git-fetch)
@@ -869,7 +869,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j1fy8h3vvf3pbyy2vxahf7admcqfmx7m1mxm7g48n54i2f0n1h9"))
+        (base32 "07jbql4jl2198z0rsa1nsf4p045iv4gz6ym75a60yyznvg0h0zwv"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet

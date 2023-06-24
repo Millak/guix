@@ -477,7 +477,7 @@ significantly increases the risk of irreversible data loss!")
 (define-public gocryptfs
   (package
     (name "gocryptfs")
-    (version "2.3.1")
+    (version "2.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -486,7 +486,7 @@ significantly increases the risk of irreversible data loss!")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m0xk5imkx81i1l4wv1j1xh9ckp0gqssq4v46pkkcq2xlv2dvxlr"))))
+                "08pdfx6bs1dc2k7xv54x7i1qbych4a7dlf31qwcm9wlz7lr5lawm"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1364,7 +1364,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.11")
+    (version "2.1.12")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1373,7 +1373,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "1cnfv3adk7prl6b8r3nw62y6dbjy2q7ai68p9xc0g8nhaklf8kx5"))))
+           (base32 "0vbf9kfryprb2mbb65jllf6xpsy44xskshglyqqwj4iyxmma5nk4"))))
     (build-system linux-module-build-system)
     (arguments
      (list

@@ -150,15 +150,18 @@ containerized OS.  EXTRA-FILE-SYSTEMS is a list of file systems to add to OS."
     (essential-services (container-essential-services
                          this-operating-system
                          #:shared-network? shared-network?))
-    (services (append (remove (lambda (service)
-                                (memq (service-kind service)
-                                      services-to-drop))
-                              (modify-services (operating-system-user-services os)
-                                (nscd-service-type
-                                 config => (nscd-configuration
-                                            (inherit config)
-                                            (caches %nscd-container-caches)))))
-                      services-to-add))
+    (services
+     (append services-to-add
+             (filter-map (lambda (s)
+                           (cond ((memq (service-kind s) services-to-drop)
+                                  #f)
+                                 ((eq? nscd-service-type (service-kind s))
+                                  (service nscd-service-type
+                                           (nscd-configuration
+                                            (inherit (service-value s))
+                                            (caches %nscd-container-caches))))
+                                 (else s)))
+                         (operating-system-user-services os))))
     (file-systems (append (map mapping->fs
                                (if shared-network?
                                    (append %network-file-mappings mappings)

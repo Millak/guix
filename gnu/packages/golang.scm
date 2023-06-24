@@ -2755,7 +2755,7 @@ jar struct to manage the cookies added to the cookie jar.")
      '(#:unpack-path "github.com/gizak/termui"
        #:import-path "github.com/gizak/termui/v3"))
     (propagated-inputs
-     (list go-github.com-mattn-go-runewidth
+     (list go-github-com-mattn-go-runewidth
            go-github-com-mitchellh-go-wordwrap go-github.com-nsf-termbox-go))
     (home-page "https://github.com/gizak/termui")
     (synopsis "Terminal dashboard widget Go library")
@@ -7105,7 +7105,7 @@ encoding in Go.")
       (arguments
        `(#:import-path "github.com/gdamore/tcell"))
       (inputs
-       (list go-github.com-mattn-go-runewidth
+       (list go-github-com-mattn-go-runewidth
              go-github-com-lucasb-eyer-go-colorful
              go-golang-org-x-text
              go-github-com-gdamore-encoding))
@@ -7121,7 +7121,7 @@ systems.")
     (package
       (inherit go-github-com-gdamore-tcell)
       (name "go-github-com-gdamore-tcell")
-      (version "2.5.3")
+      (version "2.6.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -7130,7 +7130,7 @@ systems.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0pvs0gigqxpifc7y7cx82cg95pgqmy8qzxynja3zidplrx2075j3"))))
+                  "0126hi8glnfqdx4l9zlh6dhd5f5c8bws7arv9pp4n2kqcnhdc6g2"))))
       (arguments
        (list #:import-path "github.com/gdamore/tcell/v2"
              #:phases
@@ -9128,7 +9128,7 @@ transforms one JSON document into another through a JMESPath expression.")
      `(#:import-path "github.com/muesli/reflow/wordwrap"
        #:unpack-path "github.com/muesli/reflow"))
     (native-inputs
-     (list go-github.com-mattn-go-runewidth))
+     (list go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/reflow/")
     (synopsis "Collection of methods helping to transform blocks of text")
     (description "This package provides a collection of ANSI-aware methods and
@@ -9187,7 +9187,7 @@ io.Writers helping you to transform blocks of text.")
      (list go-github-com-google-goterm
            go-github-com-lucasb-eyer-go-colorful
            go-github-com-mattn-go-isatty
-           go-github.com-mattn-go-runewidth))
+           go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/termenv/")
     (synopsis "Advanced styling options on the terminal")
     (description "termenv lets you safely use advanced styling options on the
@@ -9241,7 +9241,7 @@ which produce colorized output using github.com/fatih/color.")
     (arguments
      `(#:import-path "github.com/olekukonko/tablewriter"))
     (propagated-inputs
-     (list go-github.com-mattn-go-runewidth))
+     (list go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/olekukonko/tablewriter/")
     (synopsis "Generate ASCII table")
     (description "This package generates ASCII tables.  Features:
@@ -9338,7 +9338,7 @@ size of the terminal.")
            go-github-com-muesli-reflow-wordwrap
            go-github-com-muesli-reflow-indent
            go-github-com-muesli-reflow-padding
-           go-github.com-mattn-go-runewidth
+           go-github-com-mattn-go-runewidth
            go-github-com-muesli-termenv
            go-github-com-google-goterm
            go-github-com-lucasb-eyer-go-colorful
@@ -11521,7 +11521,7 @@ averages.")
 (define-public go-github-com-mattn-go-runewidth
   (package
     (name "go-github-com-mattn-go-runewidth")
-    (version "0.0.13")
+    (version "0.0.14")
     (source
      (origin
        (method git-fetch)
@@ -11530,7 +11530,7 @@ averages.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yir0f3wc5z5hnkwhvx5qb6nmpfb05zp2gvfjvna63s8kmla1rrn"))))
+        (base32 "1iaqw5pd7f4f2xz37540kp0828p2820g4vxx3hz089hwl331sx1v"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/mattn/go-runewidth"))
     (propagated-inputs
@@ -11563,7 +11563,7 @@ string.")
     (propagated-inputs
      `(("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
        ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)
-       ("github.com/mattn/go-runewidth" ,go-github.com-mattn-go-runewidth)
+       ("github.com/mattn/go-runewidth" ,go-github-com-mattn-go-runewidth)
        ("go-github-com-muesli-reflow-indent" ,go-github-com-muesli-reflow-indent)
        ("go-github-com-muesli-reflow-ansi" ,go-github-com-muesli-reflow-ansi)
        ("go-github-com-lucasb-eyer-go-colorful" ,go-github-com-lucasb-eyer-go-colorful)

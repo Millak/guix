@@ -30,7 +30,7 @@
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -1173,7 +1173,11 @@ parsers according to a Parsing Expression Grammar (PEG).")
                                   "/pSAscan-" version ".tar.bz2"))
               (sha256
                (base32
-                "1cphk4gf202nzkxz6jdjzls4zy27055gwpm0r8cn99gr6c8548cy"))))
+                "1cphk4gf202nzkxz6jdjzls4zy27055gwpm0r8cn99gr6c8548cy"))
+              (modules '((guix build utils)))
+              (snippet '(begin (substitute* '("src/Makefile"
+                                              "tools/delete-bytes-255/Makefile")
+                                 (("-march=native") ""))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1187,6 +1191,7 @@ parsers according to a Parsing Expression Grammar (PEG).")
               (install-file "psascan"
                             (string-append #$output "/bin")))))))
     (inputs (list libdivsufsort))
+    (properties '((tunable? . #t)))
     (home-page "https://www.cs.helsinki.fi/group/pads/pSAscan.html")
     (synopsis "Parallel external memory suffix array construction")
     (description "This package contains an implementation of the parallel
