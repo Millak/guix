@@ -224,7 +224,9 @@ communication, encryption, decryption, signatures, etc.")
                                   "/download/v" version "/signify-" version ".tar.xz"))
               (sha256
                (base32
-                "0x1bipfphnyvf2kl7n9q4gawaglma79368vb8whama6lxsggsm8i"))))
+                "0x1bipfphnyvf2kl7n9q4gawaglma79368vb8whama6lxsggsm8i"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "libbsd"))))
     (build-system gnu-build-system)
     ;; TODO Build with libwaive (described in README.md), to implement something
     ;; like OpenBSD's pledge().
@@ -246,7 +248,7 @@ signatures using the elliptic curve Ed25519.  This is a Linux port of the
 OpenBSD tool of the same name.")
     ;; This package includes third-party code that was originally released under
     ;; various non-copyleft licenses. See the source files for clarification.
-    (license (list license:bsd-3 license:bsd-4 license:expat license:isc
+    (license (list license:bsd-3 license:expat license:isc
                    license:public-domain (license:non-copyleft
                                           "file://base64.c"
                                           "See base64.c in the distribution for
