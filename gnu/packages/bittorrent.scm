@@ -451,7 +451,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.5.2")
+    (version "4.5.4")
     (source
      (origin
        (method git-fetch)
@@ -460,7 +460,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07s0ypkd1zzkw9qhfwxxx7s6zizjz0448al17xmc1b48phn46hjk"))))
+        (base32 "1r4vqlwmvg7b0ibq53m7ascyykv3v66qxlwfi0zmmi1ig7rlkxkk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
