@@ -2554,7 +2554,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.03.04")
+    (version "2023.06.22")
     (source
      (origin
        (method git-fetch)
@@ -2563,7 +2563,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zb4blj7qrmwkryyqrkxl909f59hvbs8dwiwl7sw1fs2kdzb1rw4"))))
+        (base32 "16y0rvbj6h3i2r8yzac6d7v2md4jrik2azix58c895wcy9qamjkl"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
@@ -2612,8 +2612,7 @@ YouTube.com and many more sites.")
     (native-inputs
      (append
        ;; To generate the manpage.
-       (if (member (%current-system)
-                   (package-transitive-supported-systems pandoc))
+       (if (supported-package? pandoc)
          (list pandoc)
          '())
        (list python-pytest zip)))
