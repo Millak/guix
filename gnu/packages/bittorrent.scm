@@ -40,6 +40,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix gexp)
@@ -461,36 +462,19 @@ desktops.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1r4vqlwmvg7b0ibq53m7ascyykv3v66qxlwfi0zmmi1ig7rlkxkk"))))
-    (build-system gnu-build-system)
+    (build-system qt-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost-libdir="
-                            (assoc-ref %build-inputs "boost")
-                            "/lib")
-             "--enable-debug"
-             "QMAKE_LRELEASE=lrelease")
-       #:modules ((guix build gnu-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                           (guix build qt-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "qbittorrent" #:output out #:inputs inputs))
-             #t)))))
+     (list #:configure-flags #~(list "-DTESTING=ON")
+           #:test-target "check"))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list qttools-5))
     (inputs
-     `(("boost" ,boost)
-       ("libtorrent-rasterbar" ,libtorrent-rasterbar)
-       ("openssl" ,openssl)
-       ("python" ,python-wrapper)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("zlib" ,zlib)))
+     (list boost
+           libtorrent-rasterbar
+           openssl
+           python-wrapper
+           qtsvg-5
+           zlib))
     (home-page "https://www.qbittorrent.org/")
     (synopsis "Graphical BitTorrent client")
     (description
@@ -510,11 +494,7 @@ features.")
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags configure-flags)
-          #~(append #$configure-flags
-                    (list "--disable-gui")))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (delete 'wrap-qt)))))
+          #~(cons "-DGUI=OFF" #$configure-flags))))
       (inputs
        (modify-inputs (package-inputs base)
          (delete "qtsvg-5"))))))
