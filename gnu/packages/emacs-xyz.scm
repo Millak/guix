@@ -8459,7 +8459,7 @@ build jobs.")
 (define-public emacs-zmq
   (package
     (name "emacs-zmq")
-    (version "0.10.10")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -8468,26 +8468,27 @@ build jobs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ngxm5mm0kqgvn8977ryrngamx0khzlw86d8vz5s0jhm2kgwnqp8"))))
+        (base32 "1bg4c26f8n1jy6z9dr2c9fz79myy9lbb5z67797qp1cbx8k6p3n7"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure
-           (lambda _
-             (invoke "make" "src/configure")
-             (substitute* "src/configure"
-               (("/bin/sh") (which "sh"))
-               (("/usr/bin/file") (which "file")))
-             (invoke "make")))
-         (add-after 'install 'install-shared-object
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (site-lisp (string-append out "/share/emacs/site-lisp"))
-                    (libdir (string-append site-lisp "/zmq-0.10.10")))
-               (copy-file "emacs-zmq.so"
-                          (string-append libdir "/emacs-zmq.so"))))))))
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda _
+              (invoke "make" "src/configure")
+              (substitute* "src/configure"
+                (("/bin/sh") (which "sh"))
+                (("/usr/bin/file") (which "file")))
+              (invoke "make")))
+          (add-after 'install 'install-shared-object
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (site-lisp (string-append out "/share/emacs/site-lisp"))
+                     (libdir (string-append site-lisp "/zmq-" #$version)))
+                (copy-file "emacs-zmq.so"
+                           (string-append libdir "/emacs-zmq.so"))))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
@@ -8495,7 +8496,7 @@ build jobs.")
     (home-page "https://github.com/nnicandro/emacs-zmq")
     (synopsis "Emacs bindings to ØMQ")
     (description "This package provides Emacs bindings to ØMQ.")
-    (license (list license:gpl2+     ;zmq.el
+    (license (list license:gpl2+        ;zmq.el
                    license:gpl3+)))) ;src/emacs-module.h
 
 (define-public emacs-tup-mode
