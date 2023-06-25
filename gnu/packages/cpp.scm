@@ -2660,3 +2660,39 @@ a hash set with open addressing and sparse quadratic probing.  It is intended
 to be memory efficient and provides additional features, such as heterogeneous
 lookups and different growth policies.")
     (license license:expat)))
+
+(define-public tsl-ordered-map
+  (package
+    (name "tsl-ordered-map")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Tessil/ordered-map")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bz5zgabalb7z0j9scng4zmi95hy7iasry5gz15x6y6dsdz0qf3j"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (let ((file (open-file "CMakeLists.txt" "a")))
+                (display "\nenable_testing()\nadd_subdirectory(tests)" file)
+                (close-port file))
+              (substitute* "tests/CMakeLists.txt"
+                (("set\\(Boost_USE_STATIC_LIBS.*") "")
+                (("add_subdirectory\\(\\.\\..*")
+                 "add_test(tsl_ordered_map_tests tsl_ordered_map_tests)\n")))))))
+    (native-inputs (list boost))
+    (home-page "https://github.com/Tessil/ordered-map")
+    (synopsis "Order-preserving hash map and hash set")
+    (description "This package provides a C++ implementation of a hash map and
+a hash set which preserve the order of insertion.  It is intended for
+efficient ordered insertions and lookup, while sacrifing performance for
+ordered erase operations.")
+    (license license:expat)))
