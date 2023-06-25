@@ -1130,15 +1130,21 @@ project.")
 (define-public swarp
   (package
     (name "swarp")
-    (version "2.38.0")
+    (version "2.41.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/swarp/"
-                           "swarp-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/swarp")
+             (commit (string-append version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1i670waqp54vin1cn08mqckcggm9zqd69nk7yya2vvqpdizn6jpm"))))
+        (base32 "00463r5rd4xl74xs4h1n4gl2qk7v9p5nw9x05pbzgh8jm77q90qq"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (inputs
+     (list cfitsio))
     (home-page "https://www.astromatic.net/software/swarp")
     (synopsis "FITS image resampling and co-addition")
     (description
