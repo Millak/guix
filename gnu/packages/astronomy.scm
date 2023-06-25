@@ -645,11 +645,13 @@ International Astronomical Union}.")
     (version "1.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/eye/"
-                           "eye-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/eye")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "092qhzcbrkcfidbx4bv9wz42w297n80jk7a6kwyi9a3fjfz81d7k"))))
+        (base32 "1j8rpgz3fjp6fw0qmxgfqycf3n01fzxds4w12vgyrhbnk658ia41"))))
     (build-system gnu-build-system)
     (arguments
      (list
