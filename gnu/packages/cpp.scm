@@ -2624,3 +2624,39 @@ map and a hash set variants using open addressing and hopscotch hashing to
 resolve collisions.  It is intended to be fast and provides additional
 features, such as heterogeneous lookups and different growth policies.")
     (license license:expat)))
+
+(define-public tsl-sparse-map
+  (package
+    (name "tsl-sparse-map")
+    (version "0.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Tessil/sparse-map")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0rb7w0hzsj4qbm0dff1niaf75aag9lj0xqhgb3vg5h9hfic62ic2"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (let ((file (open-file "CMakeLists.txt" "a")))
+                (display "\nenable_testing()\nadd_subdirectory(tests)" file)
+                (close-port file))
+              (substitute* "tests/CMakeLists.txt"
+                (("set\\(Boost_USE_STATIC_LIBS.*") "")
+                (("add_subdirectory\\(\\.\\..*")
+                 "add_test(tsl_sparse_map_tests tsl_sparse_map_tests)\n")))))))
+    (native-inputs (list boost))
+    (home-page "https://github.com/Tessil/sparse-map")
+    (synopsis "Sparse hash map")
+    (description "This package provides a C++ implementation of a hash map and
+a hash set with open addressing and sparse quadratic probing.  It is intended
+to be memory efficient and provides additional features, such as heterogeneous
+lookups and different growth policies.")
+    (license license:expat)))
