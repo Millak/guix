@@ -1125,15 +1125,21 @@ objects.")
 (define-public stuff
   (package
     (name "stuff")
-    (version "1.26.0")
+    (version "2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/stuff/"
-                           "stuff-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/stuff")
+             ;; XXX: No version tag available in GitHub.
+             ;; See: https://github.com/astromatic/stuff/issues/6
+             (commit "9008dc022ef53331092da248cf0a794abd6783bf")))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1syibi3b86z9pikhicvkkmgxm916j732fdiw0agw0lq6z13fdcjm"))))
+        (base32 "004sry5lqqm7s9x4l3agysp3n63y3ga35x1rwwda4m6dc6zvla6b"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
     (home-page "https://www.astromatic.net/software/stuff")
     (synopsis "Astronomical catalogue simulation")
     (description
