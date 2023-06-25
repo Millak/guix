@@ -1252,7 +1252,8 @@ accurately in real time at any rate desired.")
                   (list "--enable-cairo"
                         "--enable-theora"
                         "--without-glut"
-                        "--with-gtk")))))))
+                        "--with-gtk")))))
+    (synopsis "Real-time 3D visualization of space (using GTK+)")))
 
 (define-public python-astropy
   (package
