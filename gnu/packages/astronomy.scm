@@ -1232,7 +1232,10 @@ accurately in real time at any rate desired.")
              `(("gtk2" ,gtk+-2)
                ("gtkglext" ,gtkglext))))
     (arguments
-     `(#:configure-flags '("-DENABLE_GTK=ON" "-DENABLE_QT=OFF")
+     (list
+      #:configure-flags
+      #~(list "-DENABLE_GTK=ON"
+              "-DENABLE_QT=OFF")
        #:tests? #f))))
 
 (define-public python-astropy
