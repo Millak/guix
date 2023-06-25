@@ -29,7 +29,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
@@ -2553,3 +2553,38 @@ Main features:
 @item No dependencies.
 @end itemize")
     (license license:expat)))
+
+(define-public mpark-variant
+  (package
+    (name "mpark-variant")
+    (version "1.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mpark/variant")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0gz8d5qprlfqb42cfyyc4nbwhgarhw027a9nr52h3gbdn560j0j4"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DMPARK_VARIANT_INCLUDE_TESTS=mpark")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-googletest
+            (lambda _
+              (substitute* "test/CMakeLists.txt"
+                (("add_subdirectory.*3rdparty/googletest.*\n")
+                 "find_package(GTest REQUIRED)\n")
+                ((".*3rdparty/googletest.*\n") "")
+                ((".*config_compiler_and_linker.*\n") "")
+                (("gtest_main") "gtest gtest_main")))))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/mpark/variant")
+    (synopsis "Implementation of std::variant for C++11/14/17")
+    (description
+     "MPark.Variant provides the C++17 std::variant for C++11/14/17.  It is
+based on the implementation of std::variant in libc++.")
+    (license license:boost1.0)))
