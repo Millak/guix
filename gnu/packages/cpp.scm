@@ -2588,3 +2588,39 @@ Main features:
      "MPark.Variant provides the C++17 std::variant for C++11/14/17.  It is
 based on the implementation of std::variant in libc++.")
     (license license:boost1.0)))
+
+(define-public tsl-hopscotch-map
+  (package
+    (name "tsl-hopscotch-map")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Tessil/hopscotch-map")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "012pw37w000pdxdvps0wsqrw6597cm6i6kr5rpl303qmiwqicb2p"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (let ((file (open-file "CMakeLists.txt" "a")))
+                (display "\nenable_testing()\nadd_subdirectory(tests)" file)
+                (close-port file))
+              (substitute* "tests/CMakeLists.txt"
+                (("set\\(Boost_USE_STATIC_LIBS.*") "")
+                (("add_subdirectory\\(\\.\\..*")
+                 "add_test(tsl_hopscotch_map_tests tsl_hopscotch_map_tests)\n")))))))
+    (native-inputs (list boost))
+    (home-page "https://github.com/Tessil/hopscotch-map")
+    (synopsis "Hash maps and hash sets using hopscotch hashing")
+    (description "This package provides a C++ implementation of several hash
+map and a hash set variants using open addressing and hopscotch hashing to
+resolve collisions.  It is intended to be fast and provides additional
+features, such as heterogeneous lookups and different growth policies.")
+    (license license:expat)))
