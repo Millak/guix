@@ -2738,28 +2738,28 @@ R. Seaman's protocol}
          "xplanet-1.3.1-libimage_gif.c.patch"
          "xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; No NASA JPL cspice support.
+         "--without-cspice"
+         (string-append "CPPFLAGS=-I" #$(this-package-input "netpbm")
+                        "/include/netpbm"))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("libx11" ,libx11)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libice" ,libice)
-       ("freetype" ,freetype)
-       ("pango" ,pango)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("netpbm" ,netpbm)
-       ("zlib" ,zlib)))
-    (arguments
-     `(#:configure-flags
-       (let ((netpbm (assoc-ref %build-inputs "netpbm")))
-         (append (list
-                  ;; Give correct path for pnm.h header to configure script
-                  (string-append "CPPFLAGS=-I" netpbm "/include/netpbm")
-                  ;; no nasa jpl cspice support
-                  "--without-cspice" )))))
+     (list freetype
+           giflib
+           libice
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           libxscrnsaver
+           netpbm
+           pango
+           zlib))
     (home-page "https://xplanet.sourceforge.net/")
     (synopsis "Planetary body renderer")
     (description
