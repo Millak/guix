@@ -2696,3 +2696,36 @@ a hash set which preserve the order of insertion.  It is intended for
 efficient ordered insertions and lookup, while sacrifing performance for
 ordered erase operations.")
     (license license:expat)))
+
+(define-public tl-optional
+  (package
+    (name "tl-optional")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/TartanLlama/optional")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkjplmhilbi1iqxx3pz0grcx5355ymk6wwd4h4309mk156xgx2q"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("FetchContent_Declare.*") "")
+                ((".*http.*catchorg/Catch2.*") "")
+                (("FetchContent_MakeAvailable\\(Catch2\\)")
+                 "find_package(Catch2 REQUIRED)")))))))
+    (native-inputs (list catch2))
+    (home-page "https://github.com/TartanLlama/optional")
+    (synopsis "Implementation of std::optional with extensions for C++11/14/17")
+    (description "@code{tl::optional} provides a single-header implementation of
+the std::optional for C++11/14/17, with support for monadic operations added in
+C++23.")
+    (license license:cc0)))
