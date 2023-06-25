@@ -2678,6 +2678,13 @@ PixInsight.  It implements XISF 1.0 specification.")
        (sha256
         (base32 "04jrd7fsvzr14vdmwgj2f6v97gdcfyjyz6jppml3ghr9xh12jxv5"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; Address this link error:
+         ;; ld: ... multiple definition of ... first defined here
+         "CPPFLAGS=-fcommon")))
     (home-page "https://www.astromatic.net/software/missfits")
     (synopsis "FITS files Maintenance program")
     (description
