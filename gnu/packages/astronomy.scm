@@ -1190,24 +1190,21 @@ any arbitrary astrometric projection defined in the WCS standard.")
                   "00xibg87l1arzifakgj7s828x9pszcgx7x7ij88a561ig49ryh78"))))
       (build-system cmake-build-system)
       (native-inputs
-       `(("perl" ,perl)
-         ("libgit2" ,libgit2)
-         ("pkg-config" ,pkg-config)
-         ("libtool" ,libtool)
-         ("gettext" ,gettext-minimal)))
+       (list gettext-minimal
+             libgit2
+             libtool
+             perl
+             pkg-config))
       (inputs
-       `(("glu" ,glu)
-         ("glew" ,glew)
-         ("libtheora" ,libtheora)
-         ("libjpeg" ,libjpeg-turbo)
-         ("libpng" ,libpng)
-         ;; maybe required?
-         ("mesa" ,mesa)
-         ;; optional: fmtlib, Eigen3;
-         ("fmt" ,fmt-7)
-         ("eigen" ,eigen)
-         ;; glut: for glut interface
-         ("freeglut" ,freeglut)))
+       (list eigen
+             fmt-7
+             freeglut
+             glew
+             glu
+             libjpeg-turbo
+             libpng
+             libtheora
+             mesa))
       (propagated-inputs
        (list lua))
       (arguments
@@ -1223,6 +1220,7 @@ object in the expandable database and view it from any point in space and
 time.  The position and movement of solar system objects is calculated
 accurately in real time at any rate desired.")
       (license license:gpl2+))))
+
 
 (define-public celestia-gtk
   (package/inherit celestia
