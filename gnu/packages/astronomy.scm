@@ -1189,6 +1189,12 @@ any arbitrary astrometric projection defined in the WCS standard.")
                  (base32
                   "00xibg87l1arzifakgj7s828x9pszcgx7x7ij88a561ig49ryh78"))))
       (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DENABLE_GLUT=ON"
+                "-DENABLE_QT=OFF")
+        #:tests? #f))                            ; no tests
       (native-inputs
        (list gettext-minimal
              libgit2
@@ -1207,9 +1213,6 @@ any arbitrary astrometric projection defined in the WCS standard.")
              mesa))
       (propagated-inputs
        (list lua))
-      (arguments
-       `(#:configure-flags '("-DENABLE_GLUT=ON" "-DENABLE_QT=OFF")
-         #:tests? #f))                            ;no tests
       (home-page "https://celestia.space/")
       (synopsis "Real-time 3D visualization of space")
       (description
