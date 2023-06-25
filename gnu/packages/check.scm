@@ -38,7 +38,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
@@ -596,10 +596,10 @@ It allows the specification of behaviour scenarios using a given-when-then
 pattern.")
       (license license:apsl2))))
 
-(define-public catch2-3.1
+(define-public catch2-3.3
   (package
     (name "catch2")
-    (version "3.1.1")
+    (version "3.3.2")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -609,66 +609,14 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qnr5b3zq8brh43f924rgnw5gmmjf9ax7kbq2crz1mlwgmdymxlp"))))
-    (outputs (list "out" "static"))
-    (build-system meson-build-system)
+                "0m6i3lr0qk303ashjpz5vpwmxf76n5d6s8jq6r6kcy6gph525zmp"))))
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-meson
-            (lambda _
-              (substitute* "src/catch2/meson.build"
-                (("static_library") "both_libraries"))))
-          (add-after 'install 'install-cmake-config
-            (lambda* (#:key outputs #:allow-other-keys)
-              (define prefix (string-append (assoc-ref outputs "out")
-                                            "/lib/cmake/Catch2/"))
-              (mkdir-p prefix)
-              (call-with-output-file (string-append
-                                      prefix
-                                      "catch2-config-version.cmake")
-                (lambda (port)
-                  (format
-                   port
-                   "set(PACKAGE_VERSION ~s)~@
-                    if(PACKAGE_FIND_VERSION STREQUAL PACKAGE_VERSION)~@
-                    set(PACKAGE_VERSION_EXACT TRUE)~@
-                    set(PACKAGE_VERSION_COMPATIBLE TRUE)~@
-                    elseif(PACKAGE_FIND_VERSION VERSION_LESS_EQUAL ~
-                           PACKAGE_VERSION)~@
-                    set(PACKAGE_VERSION_COMPATIBLE TRUE)~@
-                    else()~@
-                    set(PACKAGE_VERSION_COMPATIBLE FALSE)~@
-                    endif()"
-                   #$version)))
-              (call-with-output-file (string-append prefix
-                                                    "catch2-config.cmake")
-                (lambda (port)
-                  (format
-                   port
-                   "include(FindPkgConfig)~@
-                    pkg_check_modules(CATCH2 IMPORTED_TARGET GLOBAL catch2)~@
-                    pkg_check_modules(CATCH2MAIN ~
-                                      IMPORTED_TARGET GLOBAL ~
-                                      catch2 catch2-with-main)~@
-                    if(CATCH2_FOUND)~@
-                      add_library(Catch2::Catch2 ALIAS PkgConfig::CATCH2)~@
-                    endif()~@
-                    if(CATCH2MAIN_FOUND)~@
-                      add_library(Catch2::Catch2WithMain ~
-                                  ALIAS PkgConfig::CATCH2MAIN)~@
-                    endif()")))))
-          (add-after 'install 'move-static-libraries
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out"))
-                    (static (assoc-ref outputs "static")))
-                (for-each
-                 (lambda (file)
-                   (install-file file (string-append static "/lib"))
-                   (delete-file file))
-                 (find-files (string-append out "/lib")
-                             "\\.a$"))))))))
+      #:configure-flags
+      #~(list "-DCATCH_DEVELOPMENT_BUILD=ON"
+              "-DENABLE_WERROR=OFF"
+              "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list python-wrapper))
     (synopsis "Automated test framework for C++ and Objective-C")
     (description "Catch2 stands for C++ Automated Test Cases in Headers and is

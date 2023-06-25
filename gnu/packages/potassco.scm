@@ -209,7 +209,7 @@ satisfiability checking (SAT).")
                                 "unpool-ast-v2" "parse_term"
                                 "propagator" "propgator-sequence-mining"
                                 "symbol" "visitor"))))))))))
-    (inputs (list catch2-3.1 clasp libpotassco))
+    (inputs (list catch2-3.3 clasp libpotassco))
     (native-inputs (list mpark-variant
                          pkg-config
                          tl-optional
