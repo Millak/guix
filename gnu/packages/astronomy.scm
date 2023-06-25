@@ -967,13 +967,14 @@ interactively in the plotting window.")
         (base32 "03zvx7c89plp9559niqv5532r233kza3ir992rg3nxjksqmrqvx1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list
+     (list
+      #:configure-flags
+       #~(list
         "CPPFLAGS=-fcommon"             ; fix build with GCC 10
         (string-append
-         "--with-fftw-libdir=" (assoc-ref %build-inputs "fftw") "/lib")
+         "--with-fftw-libdir=" #$(this-package-input "fftw") "/lib")
         (string-append
-         "--with-fftw-incdir=" (assoc-ref %build-inputs "fftw") "/include"))))
+         "--with-fftw-incdir=" #$(this-package-input "fftw") "/include"))))
     (inputs
      `(("fftw" ,fftwf)))
     (home-page "https://www.astromatic.net/software/skymaker")
