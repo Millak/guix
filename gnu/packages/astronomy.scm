@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
@@ -1175,54 +1175,67 @@ any arbitrary astrometric projection defined in the WCS standard.")
     (license license:gpl3+)))
 
 (define-public celestia
-  (let ((commit "9dbdf29c4ac3d20afb2d9a80d3dff241ecf81dce"))
-    (package
-      (name "celestia")
-      (version (git-version "1.6.1" "815" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/celestiaproject/celestia")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "00xibg87l1arzifakgj7s828x9pszcgx7x7ij88a561ig49ryh78"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list "-DENABLE_GLUT=ON"
-                "-DENABLE_QT=OFF")
-        #:tests? #f))                            ; no tests
-      (native-inputs
-       (list gettext-minimal
-             libgit2
-             libtool
-             perl
-             pkg-config))
-      (inputs
-       (list eigen
-             fmt-7
-             freeglut
-             glew
-             glu
-             libjpeg-turbo
-             libpng
-             libtheora
-             mesa))
-      (propagated-inputs
-       (list lua))
-      (home-page "https://celestia.space/")
-      (synopsis "Real-time 3D visualization of space")
-      (description
-       "This simulation program lets you explore our universe in three
+  (package
+    (name "celestia")
+    (version "1.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/celestiaproject/celestia")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dzci5n7gcnm1vq916gsn9zddkhbzhbsakqxrpnmvzibsqznn6c8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules
+      `((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-71))
+      #:configure-flags
+      #~(list "--with-glut"
+              (string-append "--with-lua=" #$(this-package-input "lua")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-lua-version
+            (lambda _
+              (let* ((_ version (package-name->name+version
+                                 #$(this-package-input "lua")))
+                     (components (string-split version #\.))
+                     (major+minor (string-join (take components 2) ".")))
+                (substitute* "configure.ac"
+                  (("lua5.3")
+                   (string-append "lua-" major+minor)))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal
+           libgit2
+           libtool
+           perl
+           pkg-config))
+    (inputs
+     (list freeglut
+           glu
+           libjpeg-turbo
+           libpng
+           libtheora
+           mesa))
+    (propagated-inputs
+     (list lua))
+    (home-page "https://celestia.space/")
+    (synopsis "Real-time 3D visualization of space")
+    (description
+     "This simulation program lets you explore our universe in three
 dimensions.  Celestia simulates many different types of celestial objects.
 From planets and moons to star clusters and galaxies, you can visit every
 object in the expandable database and view it from any point in space and
 time.  The position and movement of solar system objects is calculated
 accurately in real time at any rate desired.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 
 (define-public celestia-gtk
@@ -1231,13 +1244,15 @@ accurately in real time at any rate desired.")
     (inputs
      (modify-inputs (package-inputs celestia)
        (replace "freeglut" gtk+-2)
-       (prepend gtkglext)))
+       (prepend cairo gtkglext libxmu libtheora pango-1.42)))
     (arguments
-     (list
-      #:configure-flags
-      #~(list "-DENABLE_GTK=ON"
-              "-DENABLE_QT=OFF")
-       #:tests? #f))))
+     (substitute-keyword-arguments (package-arguments celestia)
+       ((#:configure-flags flags '())
+        #~(append #$flags
+                  (list "--enable-cairo"
+                        "--enable-theora"
+                        "--without-glut"
+                        "--with-gtk")))))))
 
 (define-public python-astropy
   (package
