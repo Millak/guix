@@ -371,6 +371,37 @@ but also provides many useful font conversion and analysis facilities.
            python-ufonormalizer
            python-ufoprocessor))))
 
+(define-public python-beziers
+  (package
+    (name "python-beziers")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simoncozens/beziers.py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dyr45m15sclbgaz1mrcnw8kny50h09gd45dlpfkgv9qpfxphkg3"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-dotmap python-matplotlib))
+    (propagated-inputs (list python-pyclipper))
+    (home-page "https://simoncozens.github.io/beziers.py/index.html")
+    (synopsis "Python bezier manipulation library")
+    (description
+     "Beziers provides a variety of classes for constructing,
+manipulating and drawing Bezier curves and paths.  Principally designed for
+font design software, it allows you to join, split, offset, and perform many
+other operations on paths.")
+    (license license:expat)))
+
 (define-public python-cffsubr
   (package
     (name "python-cffsubr")
