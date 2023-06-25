@@ -972,11 +972,11 @@ interactively in the plotting window.")
        #~(list
         "CPPFLAGS=-fcommon"             ; fix build with GCC 10
         (string-append
-         "--with-fftw-libdir=" #$(this-package-input "fftw") "/lib")
+         "--with-fftw-libdir=" #$(this-package-input "fftwf") "/lib")
         (string-append
-         "--with-fftw-incdir=" #$(this-package-input "fftw") "/include"))))
+         "--with-fftw-incdir=" #$(this-package-input "fftwf") "/include"))))
     (inputs
-     `(("fftw" ,fftwf)))
+     (list fftwf))
     (home-page "https://www.astromatic.net/software/skymaker")
     (synopsis "Astronomical image simulator")
     (description
