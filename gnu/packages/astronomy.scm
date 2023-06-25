@@ -2672,11 +2672,13 @@ PixInsight.  It implements XISF 1.0 specification.")
     (version "2.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/missfits/"
-                           "missfits-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/missfits")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04jrd7fsvzr14vdmwgj2f6v97gdcfyjyz6jppml3ghr9xh12jxv5"))))
+        (base32 "12ndvrr3l5j7ph2i5f3qf0wqmv5ymsyjzxnnypqajsvliw72iprh"))))
     (build-system gnu-build-system)
     (arguments
      (list
