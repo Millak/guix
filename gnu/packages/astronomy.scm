@@ -1225,8 +1225,7 @@ accurately in real time at any rate desired.")
       (license license:gpl2+))))
 
 (define-public celestia-gtk
-  (package
-    (inherit celestia)
+  (package/inherit celestia
     (name "celestia-gtk")
     (inputs
      (append (alist-delete "freeglut" (package-inputs celestia))
