@@ -1228,9 +1228,9 @@ accurately in real time at any rate desired.")
   (package/inherit celestia
     (name "celestia-gtk")
     (inputs
-     (append (alist-delete "freeglut" (package-inputs celestia))
-             `(("gtk2" ,gtk+-2)
-               ("gtkglext" ,gtkglext))))
+     (modify-inputs (package-inputs celestia)
+       (replace "freeglut" gtk+-2)
+       (prepend gtkglext)))
     (arguments
      (list
       #:configure-flags
