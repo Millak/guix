@@ -969,6 +969,7 @@ interactively in the plotting window.")
     (arguments
      `(#:configure-flags
        (list
+        "CPPFLAGS=-fcommon"             ; fix build with GCC 10
         (string-append
          "--with-fftw-libdir=" (assoc-ref %build-inputs "fftw") "/lib")
         (string-append
