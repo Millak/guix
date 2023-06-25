@@ -806,13 +806,6 @@ model to base your own plug-in on, here it is.")
                           "'elements/viewfinderbin.c'], true, ],"))
                        '())
 
-                  ;; This substitution is no longer effective and can be removed.
-                  #$@(if (member (%current-system)
-                                 '("i686-linux" "aarch64-linux" "riscv64-linux"))
-                         `((("'elements/camerabin\\.c'\\]\\],")
-                            "'elements/camerabin.c'], true, ],"))
-                         '())
-
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
                   ((".*elements/dtls\\.c.*") ""))
                 (substitute* "tests/check/elements/zxing.c"
