@@ -11769,6 +11769,29 @@ underlining, and striking out, and crossing out.")
 with LuaLaTeX.")
     (license license:expat)))
 
+(define-public texlive-pdfextra
+  (package
+    (name "texlive-pdfextra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/optex/pdfextra/" "tex/luatex/pdfextra/"
+                   "tex/optex/pdfextra/")
+             (base32
+              "0vv7vidcvi6c9bg9rdp00d324d3xfyazpwlc7l4vggz1w6n8l96y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfextra")
+    (synopsis "Extra PDF features for (Op)TeX")
+    (description
+     "This package provides extra PDF features for OpTeX (or in limited form
+for plain LuaTeX and LuaLaTeX).  As a minimalistic format, OpTeX does not
+support advanced features of the PDF file format in its base.  This third
+party package aims to provide them.  As such, it supports insertion of
+multimedia (audio, video, 3D), hyperlinks and other actions, triggering
+events, transitions, and attachments.")
+    (license license:bsd-0)))
+
 (define-public texlive-pgf
   (package
     (name "texlive-pgf")
