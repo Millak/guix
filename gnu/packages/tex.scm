@@ -16845,6 +16845,28 @@ written in Lua, and the @file{.tex} file is to be compiled with the LuaLaTeX
 engine.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luatexko
+  (package
+    (name "texlive-luatexko")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luatexko/"
+                   "tex/luatex/luatexko/")
+             (base32
+              "0pbpi8g2bdakrl3lpb4vmsbvccjzcb4d6y2ivnv0pncn0k5zfmfv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luatexko")
+    (synopsis "Typeset Korean with Lua(La)TeX")
+    (description
+     "This is a Lua(La)TeX macro package that supports typesetting Korean
+documents including Old Hangul texts.  As LuaTeX has opened up access to
+almost all the hidden routines of TeX engine, users can obtain more beautiful
+outcome using this package rather than other Hangul macros operating on other
+engines.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
