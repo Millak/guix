@@ -16404,6 +16404,29 @@ performing operations on complex numbers.  The package commands can be used in
 any environment (including the mathematics environment).")
     (license license:lppl1.3c)))
 
+(define-public texlive-luagcd
+  (package
+    (name "texlive-luagcd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luagcd/"
+                   "tex/lualatex/luagcd/")
+             (base32
+              "17d1am1c4gmbc0z1fllk6kf6b8fmihw4bv8bl0vvwvnk2acj4zj9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luagcd")
+    (synopsis "Computation of gcd of integers inside LaTeX using Lua")
+    (description
+     "Using Lua, the @code{luagcd} package is developed to find the greatest
+common divisor (gcd) of integers in LaTeX.  The package provides commands to
+obtain step-by-step computation of gcd of two integers by using the Euclidean
+algorithm.  In addition, the package has the command to express gcd of two
+integers as a linear combination.  The Bezout's Identity can be verified for
+any two integers using commands in the package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
