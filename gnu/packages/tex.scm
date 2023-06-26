@@ -16520,6 +16520,25 @@ a current LuaTeX,the package has the same behaviour with LuaTeX as
 @code{inputenc} has under pdfTeX.")
     (license license:public-domain)))
 
+(define-public texlive-luaintro
+  (package
+    (name "texlive-luaintro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luaintro/")
+             (base32
+              "0xab7yymknvhsh4c30xnhrlvk798mbnl9fbf7njqx8mbmnv869bi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luaintro")
+    (synopsis "Examples from the book ``Einfuhrung in LuaTeX und LuaLaTeX''")
+    (description
+     "The bundle provides source of all the examples published in the German
+book ``Einfuhrung in LuaTeX und LuaLaTeX'', published by Lehmans Media and
+DANTE, Berlin.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
