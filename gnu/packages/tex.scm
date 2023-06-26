@@ -16695,6 +16695,28 @@ be used with the @code{booktabs} package, which provides nice formatting of
 tables in LaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luamplib
+  (package
+    (name "texlive-luamplib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luamplib/"
+                   "source/luatex/luamplib/"
+                   "tex/luatex/luamplib/")
+             (base32
+              "1f2r93daddjwmj7fcy5rds2yz0c8qmww7yw93vgwffmm49d9ims5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luamplib")
+    (synopsis "Use LuaTeX's built-in MetaPost interpreter")
+    (description
+     "The package enables the user to specify MetaPost diagrams (which may
+include colour specifications from the color or xcolor packages) into
+a document, using LuaTeX's built-in MetaPost library.  The facility is only
+available in PDF mode.")
+    (license license:gpl2)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
