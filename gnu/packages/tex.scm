@@ -16449,6 +16449,27 @@ languages and load their patterns by means of @file{language.dat} without
 loading @code{babel}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luaimageembed
+  (package
+    (name "texlive-luaimageembed")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luaimageembed/"
+                   "tex/lualatex/luaimageembed/")
+             (base32
+              "0nn4vw7hjyjr8an04dd8xmaskf9qn3zjv29dj37pias3pjq7nqi5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luaimageembed")
+    (synopsis "Embed images as base64-encoded strings")
+    (description
+     "This package allows to embed images directly as base64-encoded strings
+into a LuaLaTeX document.  This can be useful, e.g., to package a document
+with images into a single TeX file, or with automatically generated
+graphics.")
+    (license license:expat)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
