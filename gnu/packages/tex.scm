@@ -9023,6 +9023,24 @@ segment by segment according to various criteria: main edited text, variant
 readings, translations or annotated borrowings between texts.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-emoji
+  (package
+    (name "texlive-emoji")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/emoji/" "tex/latex/emoji/")
+             (base32
+              "17i2kjb1rlgj2ipg6bkni1n8l1yhhnm1m96ynj1nv8gkmgkfklal")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/emoji")
+    (synopsis "Emoji support in (Lua)LaTeX")
+    (description
+     "This package allows users to typeset emojis in LaTeX documents.  It
+requires the LuaHBTeX engine.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ae
   (package
     (name "texlive-ae")
