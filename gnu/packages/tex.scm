@@ -16077,6 +16077,28 @@ ligature suppression rules.  With the help of options and macros it can be
 used for other languages as well.  The package requires LuaLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-linebreaker
+  (package
+    (name "texlive-linebreaker")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/linebreaker/"
+                   "tex/lualatex/linebreaker/")
+             (base32
+              "1rppq2dlj7g5djq5f0hhgk9sgk0ip1ha4vqhx6ajfpzdchg7b1cw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/linebreaker")
+    (synopsis "Prevent overflow boxes with LuaLaTeX")
+    (description
+     "This package tries to prevent overflow lines in paragraphs or boxes.  It
+changes LuaTeX's @code{\\linebreak} callback and re-typesets the paragraph
+with increased values of @code{\\tolerance} and @code{\\emergencystretch}
+until the overflow no longer happens.  If that doesn't help, it chooses the
+solution with the lowest badness.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lineno
   (package
     (name "texlive-lineno")
