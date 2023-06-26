@@ -16977,6 +16977,29 @@ makecell with an easy to use syntax.  It also adds some enhanced rules for the
 @code{booktabs} package.")
     (license license:expat)))
 
+(define-public texlive-minim
+  (package
+    (name "texlive-minim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/minim/" "tex/luatex/minim/")
+             (base32
+              "056jp5rx9rhwshhzif58kx832jv1f1xw7zj1gh17g7zbyqzbc003")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minim")
+    (synopsis "Modern plain format for the LuaTeX engine")
+    (description
+     "This is a modern plain format for the LuaTeX engine, adding improved
+low-level support for many LuaTeX extensions and newer PDF features.  While it
+can be used as drop-in replacement for plain TeX, it probably is most useful
+as a basis for your own formats.  Most features included in the format are
+provided by separate packages that can be used on their own; this package
+contains only their shared lowest-level programming interface, along with
+their combined format.")
+    (license license:eupl1.2)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
