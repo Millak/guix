@@ -8525,6 +8525,25 @@ individual cells.")
 combo fonts to LuaLaTeX documents.")
     (license license:lppl1.3c)))
 
+(define-public texlive-cstypo
+  (package
+    (name "texlive-cstypo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/cstypo/"
+                   "tex/lualatex/cstypo/" "tex/luatex/cstypo/")
+             (base32
+              "07cgcda6jcmkvhp90n4a8g4x98jmzwf4199gp6nh19718v6n15j8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cstypo")
+    (synopsis "Czech typography rules enforced through LuaTeX hooks")
+    (description
+     "This package provides macros that enforce basic Czech typography rules
+through Lua hooks available in LuaTeX.")
+    (license license:expat)))
+
 (define-public texlive-fancybox
   (package
     (name "texlive-fancybox")
