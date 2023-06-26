@@ -13881,6 +13881,26 @@ exactly to the respective kerning value.  By option the bars can be placed
 behind or in front of the glyphs.  The package requires LuaLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-spacekern
+  (package
+    (name "texlive-spacekern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/spacekern/"
+                   "tex/lualatex/spacekern/")
+             (base32
+              "0rmdg9daqp0fallznsqsr0475z7cw0djhxq6dwkyk5yg8ii9c6s9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spacekern")
+    (synopsis "Kerning between words and against space")
+    (description
+     "This package provides two shorthands for typesetting breaking and
+non-breaking small spaces, where both hyphenation and kerning against space
+are correctly applied.  Additionally, interword kerning can be applied.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-standalone
   (package
     (name "texlive-standalone")
