@@ -16361,6 +16361,26 @@ length of strings to prevent jigsaw identification.  It also is friendly to
 screen readers by adding alt-text indicating redacted content.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luacolor
+  (package
+    (name "texlive-luacolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/luacolor/"
+                   "source/latex/luacolor/"
+                   "tex/latex/luacolor/")
+             (base32
+              "0c91m5iq095f04wiy3dfnhyh458d9scww51np88x8islz1l3psbp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luacolor")
+    (synopsis "Color support based on LuaTeX's node attributes")
+    (description
+     "This package implements color support based on LuaTeX's node
+attributes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
