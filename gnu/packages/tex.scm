@@ -8360,6 +8360,26 @@ drivers, and VTeX and pdfTeX.")
 
 (define-deprecated-package texlive-latex-changebar texlive-changebar)
 
+(define-public texlive-checkcites
+  (package
+    (name "texlive-checkcites")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/checkcites/"
+                   "scripts/checkcites/")
+             (base32
+              "0zfghyyq86xrbnb9bzl7z1p96s0n255b39v2srqslb2z37ppvjyz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/checkcites")
+    (synopsis "Check citation commands in a document")
+    (description
+     "The package provides a Lua script written for the sole purpose of
+detecting undefined and unused references from LaTeX auxiliary or bibliography
+files.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cmap
   (package
     (name "texlive-cmap")
