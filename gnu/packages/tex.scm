@@ -9223,6 +9223,28 @@ superscripts and subscripts more closely resemble @code{\\textstyle} and
 @code{\\mathord}, effectively eliminating this class.")
     (license license:lppl1.3c)))
 
+(define-public texlive-interpreter
+  (package
+    (name "texlive-interpreter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/interpreter/"
+                   "tex/luatex/interpreter/")
+             (base32
+              "03h6bjhvbl3bfkiyssplivqmn2986asv8b1jvr1ahsh7p04bkk4j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/interpreter")
+    (synopsis "Translate input files on the fly")
+    (description
+     "The package preprocesses input files to a Lua(La)TeX run, on the fly.
+The user defines Lua regular expressions to search for patterns and modify
+input lines (or entire paragraphs) accordingly, before TeX reads the material.
+In this way, documents may be prepared in a non-TeX language (e.g., some
+lightweight markup language) and turned into proper TeX for processing.")
+    (license license:lppl)))
+
 (define-public texlive-times
   (package
     (name "texlive-times")
