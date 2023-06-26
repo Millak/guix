@@ -16497,6 +16497,29 @@ graphics.")
      "Luaindex provides (yet another) index processor, written in Lua.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luainputenc
+  (package
+    (name "texlive-luainputenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luainputenc/"
+                   "source/lualatex/luainputenc/"
+                   "tex/lualatex/luainputenc/")
+             (base32
+              "17xglqil5mbv47kjzklp22vvsn29vajf6q0v45af4pd6yk9kcc6w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luainputenc")
+    (synopsis "Replacing @code{inputenc} for use in LuaTeX")
+    (description
+     "LuaTeX operates by default in UTF-8 input; thus LaTeX documents that
+need 8-bit character-sets need special treatment.  The package, therefore,
+replaces the LaTeX standard @code{inputenc} for use under LuaTeX.  With
+a current LuaTeX,the package has the same behaviour with LuaTeX as
+@code{inputenc} has under pdfTeX.")
+    (license license:public-domain)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
