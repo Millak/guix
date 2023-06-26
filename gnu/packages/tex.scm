@@ -11792,6 +11792,25 @@ multimedia (audio, video, 3D), hyperlinks and other actions, triggering
 events, transitions, and attachments.")
     (license license:bsd-0)))
 
+(define-public texlive-penlight
+  (package
+    (name "texlive-penlight")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/penlight/"
+                   "tex/luatex/penlight/")
+             (base32
+              "1jdq8x0rbknlvrlh2wc7q5gd463xhi845ajkkiirz65n23m7wyg6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/penlight")
+    (synopsis "Penlight Lua libraries made available to LuaLaTeX users")
+    (description
+     "This LuaLaTeX package provides a wrapper to use the penlight Lua
+libraries with LuaLaTeX, with some extra functionality added.")
+    (license license:expat)))
+
 (define-public texlive-pgf
   (package
     (name "texlive-pgf")
