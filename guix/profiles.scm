@@ -1791,8 +1791,8 @@ MANIFEST."
     (append-map entry->texlive-input (manifest-entries manifest)))
   (define texlive-scripts
     (module-ref (resolve-interface '(gnu packages tex)) 'texlive-scripts))
-  (define texlive-bin
-    (module-ref (resolve-interface '(gnu packages tex)) 'texlive-bin))
+  (define texlive-libkpathsea
+    (module-ref (resolve-interface '(gnu packages tex)) 'texlive-libkpathsea))
   (define coreutils
     (module-ref (resolve-interface '(gnu packages base)) 'coreutils))
   (define grep
@@ -1818,8 +1818,8 @@ MANIFEST."
                        #:create-all-directories? #t
                        #:log-port (%make-void-port "w"))
 
-          ;; XXX: This is annoying, but it's necessary because texlive-bin
-          ;; does not provide wrapped executables.
+          ;; XXX: This is annoying, but it's necessary because
+          ;; texlive-libkpathsea does not provide wrapped executables.
           (setenv "PATH"
                   (string-append #$(file-append coreutils "/bin")
                                  ":"
@@ -1827,7 +1827,7 @@ MANIFEST."
                                  ":"
                                  #$(file-append sed "/bin")
                                  ":"
-                                 #$(file-append texlive-bin "/bin")))
+                                 #$(file-append texlive-libkpathsea "/bin")))
           (setenv "PERL5LIB" #$(file-append texlive-scripts "/share/tlpkg"))
           (setenv "GUIX_TEXMF" "/tmp/texlive/share/texmf-dist")
 

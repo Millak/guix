@@ -77,6 +77,7 @@
   #:use-module (gnu packages gd)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -107,6 +108,96 @@
   "Define OLD-NAME as a deprecated package alias for NAME."
   (define-deprecated/public old-name name
     (deprecated-package (symbol->string 'old-name) name)))
+
+(define-public texlive-libkpathsea
+  (package
+    (name "texlive-libkpathsea")
+    (version "20230313")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "ftp://tug.org/historic/systems/texlive/"
+                           (string-take version 4)
+                           "/texlive-" version "-source.tar.xz"))
+       (sha256
+        (base32
+         "1fbrkv7g9j6ipmwjx27l8l9l974rmply8bhf7c2iqc6h3q7aly1q"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (snippet
+        #~(begin
+            (with-directory-excursion "libs"
+              (for-each
+               delete-file-recursively
+               (scandir "."
+                        (lambda (file)
+                          (and (not (member file '("." "..")))
+                               (eq? 'directory (stat:type (stat file))))))))
+            (with-directory-excursion "texk"
+              (let ((preserved-directories '("." ".." "kpathsea")))
+                (for-each
+                 delete-file-recursively
+                 (scandir "."
+                          (lambda (file)
+                            (and (not (member file preserved-directories))
+                                 (eq? 'directory (stat:type (stat file)))))))))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:out-of-source? #t
+      #:configure-flags
+      #~(list "--disable-static"
+              "--disable-native-texlive-build"
+              "--enable-shared"
+              "--with-banner-add=/GNU Guix"
+              "--disable-all-pkgs"
+              "--enable-kpathsea")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'customize-texmf.cnf
+            ;; The default "texmf.cnf" file is provided by this package.
+            ;; Every variable of interest is set relatively to the GUIX_TEXMF
+            ;; environment variable defined via a search path below.
+            ;;
+            ;; This phase must happen before the `configure' phase, because
+            ;; the value of the TEXMFCNF variable (modified along with the
+            ;; SELFAUTOLOC reference below) is used at compile time to
+            ;; generate "paths.h" file.
+            (lambda _
+              (substitute* "texk/kpathsea/texmf.cnf"
+                (("^TEXMFROOT = .*")
+                 "TEXMFROOT = {$GUIX_TEXMF}/..\n")
+                (("^TEXMF = .*")
+                 "TEXMF = {$GUIX_TEXMF}\n")
+                (("\\$SELFAUTOLOC(/share/texmf-dist/web2c)" _ suffix)
+                 (string-append #$output suffix))
+                ;; Don't truncate lines.
+                (("^error_line = .*$") "error_line = 254\n")
+                (("^half_error_line = .*$") "half_error_line = 238\n")
+                (("^max_print_line = .*$") "max_print_line = 1000\n"))))
+          (add-after 'unpack 'patch-directory-traversal
+            ;; When ST_NLINK_TRICK is set, kpathsea attempts to avoid work
+            ;; when searching files by assuming that a directory with exactly
+            ;; two links has no subdirectories.  This assumption does not hold
+            ;; in our case, so some directories with symlinked sub-directories
+            ;; would not be traversed.
+            (lambda _
+              (substitute* "texk/kpathsea/config.h"
+                (("#define ST_NLINK_TRICK") ""))))
+          (add-after 'install 'post-install
+            (lambda _
+              (with-directory-excursion "texk/kpathsea"
+                (invoke "make" "install")))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUIX_TEXMF")
+            (files '("share/texmf-dist")))))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Path searching library")
+    (description
+     "Kpathsea is a library whose purpose is to return a filename from a list
+of user-specified directories similar to how shells look up executables.")
+    (license license:lgpl2.1)))
 
 (define-public texlive-scripts
   (package
@@ -473,20 +564,11 @@ and should be preferred to it whenever a package would otherwise depend on
 (define-deprecated-package texlive-ukrhyph texlive-hyphen-complete)
 
 (define-public texlive-bin
-  (package
+  (package/inherit texlive-libkpathsea
     (name "texlive-bin")
-    (version "20230313")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "ftp://tug.org/historic/systems/texlive/"
-                           (string-take version 4)
-                           "/texlive-" version "-source.tar.xz"))
-       (sha256
-        (base32
-         "1fbrkv7g9j6ipmwjx27l8l9l974rmply8bhf7c2iqc6h3q7aly1q"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)))
+       (inherit (package-source texlive-libkpathsea))
        (snippet
         ;; TODO: Unbundle stuff in texk/dvisvgm/dvisvgm-src/libs too.
         #~(with-directory-excursion "libs"
@@ -498,36 +580,8 @@ and should be preferred to it whenever a package would otherwise depend on
                         (scandir "."
                                  (lambda (file)
                                    (and (not (member file preserved-directories))
-                                        (eq? 'directory (stat:type (stat file))))))))))))
-    (build-system gnu-build-system)
-    (native-inputs (list pkg-config))
-    (inputs
-     (list config
-           cairo
-           fontconfig
-           fontforge
-           freetype
-           gd
-           gmp
-           ghostscript
-           graphite2
-           harfbuzz
-           icu4c
-           libpaper
-           libpng
-           libxaw
-           libxt
-           mpfr
-           perl
-           pixman
-           potrace
-           python
-           ruby-2.7
-           tcsh
-           teckit
-           zlib
-           zziplib))
-    (propagated-inputs (list texlive-scripts))
+                                        (eq? 'directory
+                                             (stat:type (stat file))))))))))))
     (arguments
      (list
       #:modules '((guix build gnu-build-system)
@@ -538,36 +592,41 @@ and should be preferred to it whenever a package would otherwise depend on
       #:out-of-source? #t
       #:parallel-tests? #f              ;bibtex8.test fails otherwise
       #:configure-flags
-      #~(list "--disable-static"
-              ;; "Linked scripts" are taken care of in their respective
-              ;; packages.
-              "--disable-linked-scripts"
-              "--disable-native-texlive-build"
-              "--enable-shared"
-              "--with-banner-add=/GNU Guix"
-              "--with-system-cairo"
-              "--with-system-freetype2"
-              "--with-system-gd"
-              "--with-system-gmp"
-              "--with-system-graphite2"
-              "--with-system-harfbuzz"
-              "--with-system-icu"
-              "--with-system-libgs"
-              "--with-system-libpaper"
-              "--with-system-libpng"
-              "--with-system-mpfr"
-              "--with-system-pixman"
-              "--with-system-potrace"
-              "--with-system-teckit"
-              "--with-system-zlib"
-              "--with-system-zziplib"
-              ;; LuaJIT is not ported to some architectures yet.
-              #$@(if (or (target-ppc64le?)
-                         (target-riscv64?))
-                     '("--disable-luajittex"
-                       "--disable-luajithbtex"
-                       "--disable-mfluajit")
-                     '()))
+      #~(let ((kpathsea #$(this-package-input "texlive-libkpathsea")))
+          (list "--with-banner-add=/GNU Guix"
+                "--enable-shared"
+                "--disable-native-texlive-build"
+                "--disable-static"
+                "--disable-linked-scripts"
+                "--disable-kpathsea"
+                "--with-system-cairo"
+                "--with-system-freetype2"
+                "--with-system-gd"
+                "--with-system-gmp"
+                "--with-system-graphite2"
+                "--with-system-harfbuzz"
+                "--with-system-icu"
+                "--with-system-libgs"
+                "--with-system-libpaper"
+                "--with-system-libpng"
+                "--with-system-mpfr"
+                "--with-system-pixman"
+                "--with-system-potrace"
+                "--with-system-teckit"
+                "--with-system-zlib"
+                "--with-system-zziplib"
+                ;; Help locating external kpathsea.  For some reason
+                ;; PKG-CONFIG is unable to find it.
+                "--with-system-kpathsea"
+                (format #f "--with-kpathsea-includes=~a/include" kpathsea)
+                (format #f "--with-kpathsea-lib=~a/lib" kpathsea)
+                ;; LuaJIT is not ported to some architectures yet.
+                #$@(if (or (target-ppc64le?)
+                           (target-riscv64?))
+                       '("--disable-luajittex"
+                         "--disable-luajithbtex"
+                         "--disable-mfluajit")
+                       '())))
       ;; Disable tests on some architectures to cope with a failure of
       ;; luajiterr.test.
       ;;
@@ -579,6 +638,14 @@ and should be preferred to it whenever a package would otherwise depend on
                           (string-prefix? "powerpc64le" s))))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-external-kpathsea
+            ;; Despite our best efforts, the configure scripts below is not
+            ;; able to find external kpathsea.
+            (lambda _
+              (substitute* "texk/web2c/configure"
+                (("/usr/include /usr/local/include")
+                 (string-append #$(this-package-input "texlive-libkpathsea")
+                                "/include")))))
           (add-after 'unpack 'patch-psutils-test
             (lambda _
               ;; This test fails due to a rounding difference with libpaper
@@ -621,15 +688,6 @@ and should be preferred to it whenever a package would otherwise depend on
                          (("srcdir/tests/pprecA-0.ind pprecA-0.ind1 \\|\\| exit 1")
                           "srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 77")))))
                  '())
-          ;; When ST_NLINK_TRICK is set, kpathsea attempts to avoid work when
-          ;; searching files by assuming that a directory with exactly two
-          ;; links has no subdirectories.  This assumption does not hold in our
-          ;; case, so some directories with symlinked subdirectories would not
-          ;; be traversed.
-          (add-after 'unpack 'patch-directory-traversal
-            (lambda _
-              (substitute* "texk/kpathsea/config.h"
-                (("#define ST_NLINK_TRICK") ""))))
           #$@(if (target-arm32?)
                  `((add-after 'unpack 'skip-faulty-test
                      (lambda _
@@ -640,31 +698,6 @@ and should be preferred to it whenever a package would otherwise depend on
                          (("^TEXMFCNF=" all)
                           (string-append "exit 77 # skip\n" all))))))
                  '())
-          (add-after 'check 'customize-texmf.cnf
-            ;; The default texmf.cnf is provided by this package, texlive-bin.
-            ;; Every variable of interest is set relatively to the GUIX_TEXMF
-            ;; environment variable defined via a search path specification
-            ;; further below.  The configuration file is patched after the test
-            ;; suite has run, as it relies on the default configuration to find
-            ;; its paths (and the GUIX_TEXMF variable isn't set yet).
-            (lambda _
-              ;; The current directory is build/ because of the out-of-tree
-              ;; build.
-              (let* ((source    (first (scandir ".." (cut string-suffix?
-                                                          "source" <>))))
-                     (texmf.cnf (string-append "../" source
-                                               "/texk/kpathsea/texmf.cnf")))
-                (substitute* texmf.cnf
-                  (("^TEXMFROOT = .*")
-                   "TEXMFROOT = {$GUIX_TEXMF}/..\n")
-                  (("^TEXMF = .*")
-                   "TEXMF = {$GUIX_TEXMF}\n")
-                  (("^%TEXMFCNF = .*")
-                   "TEXMFCNF = {$GUIX_TEXMF}/web2c\n")
-                  ;; Don't truncate lines.
-                  (("^error_line = .*$") "error_line = 254\n")
-                  (("^half_error_line = .*$") "half_error_line = 238\n")
-                  (("^max_print_line = .*$") "max_print_line = 1000\n")))))
           (add-after 'install 'post-install
             (lambda _
               ;; Create symbolic links for the latex variants.  We link
@@ -680,10 +713,34 @@ and should be preferred to it whenever a package would otherwise depend on
                       (string-append (getenv "PATH") ":" #$output "/bin"))
               (with-directory-excursion #$output
                 (assoc-ref %standard-phases 'patch-source-shebangs)))))))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "GUIX_TEXMF")
-            (files '("share/texmf-dist")))))
+    (native-inputs (list groff-minimal pkg-config))
+    (inputs
+     (list cairo
+           config
+           fontconfig
+           fontforge
+           freetype
+           gd
+           ghostscript
+           gmp
+           graphite2
+           harfbuzz
+           icu4c
+           libpaper
+           libpng
+           libxaw
+           libxt
+           mpfr
+           perl
+           pixman
+           potrace
+           python
+           ruby-2.7
+           tcsh
+           teckit
+           zlib
+           zziplib))
+    (propagated-inputs (list texlive-libkpathsea texlive-scripts))
     (synopsis "TeX Live, a package of the TeX typesetting system")
     (description
      "TeX Live provides a comprehensive TeX document production system.
@@ -909,40 +966,6 @@ right to left and left to right modes.")
      "This package allows you to typeset Bidi-aware shadow text.  It is
 a re-implementation of the @code{shadowtext} package adding Bidi support.")
     (license license:lppl1.3+)))
-
-(define-public texlive-libkpathsea
-  (package/inherit texlive-bin
-    (name "texlive-libkpathsea")
-    (source
-     (origin
-       (inherit (package-source texlive-bin))
-       (snippet
-        `(begin
-           ,(origin-snippet (package-source texlive-bin))
-           (with-directory-excursion "texk"
-             (let ((preserved-directories '("." ".." "kpathsea")))
-               (for-each
-                delete-file-recursively
-                (scandir "."
-                         (lambda (file)
-                           (and (not (member file preserved-directories))
-                                (eq? 'directory (stat:type (stat file)))))))))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments texlive-bin)
-       ((#:configure-flags flags)
-        `(cons* "--disable-all-pkgs" "--enable-kpathsea"
-                "--enable-shared" ,flags))
-       ((#:phases phases)
-        `(modify-phases %standard-phases
-           (add-after 'install 'post-install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (with-directory-excursion "texk/kpathsea"
-                 (invoke "make" "install"))))))))
-    (inputs '())
-    (synopsis "Path searching library")
-    (description "kpathsea is a library, whose purpose is to return a filename
-from a list of user-specified directories similar to how shells look up
-executables.  It is maintained as a part of TeX Live.")))
 
 (define-public texlive-alphalph
   (package
@@ -10358,6 +10381,133 @@ documents as well as DVI output.")
 
 (define-deprecated-package texlive-generic-pdftex texlive-pdftex)
 
+(define texlive-bin-full
+  (package/inherit texlive-bin
+    (name "texlive-bin-full")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-bin)
+       ((#:configure-flags _)
+        #~(let ((kpathsea #$(this-package-input "texlive-libkpathsea")))
+            (list "--with-banner-add=/GNU Guix"
+                  "--enable-shared"
+                  "--disable-native-texlive-build"
+                  "--disable-static"
+                  "--disable-kpathsea"
+                  "--with-system-cairo"
+                  "--with-system-freetype2"
+                  "--with-system-gd"
+                  "--with-system-gmp"
+                  "--with-system-graphite2"
+                  "--with-system-harfbuzz"
+                  "--with-system-icu"
+                  "--with-system-libgs"
+                  "--with-system-libpaper"
+                  "--with-system-libpng"
+                  "--with-system-mpfr"
+                  "--with-system-pixman"
+                  "--with-system-potrace"
+                  "--with-system-teckit"
+                  "--with-system-zlib"
+                  "--with-system-zziplib"
+                  ;; Help locating external kpathsea.  For some reason
+                  ;; PKG-CONFIG is unable to find it.
+                  "--with-system-kpathsea"
+                  (format #f "--with-kpathsea-includes=~a/include" kpathsea)
+                  (format #f "--with-kpathsea-lib=~a/lib" kpathsea)
+                  ;; LuaJIT is not ported to some architectures yet.
+                  #$@(if (or (target-ppc64le?)
+                             (target-riscv64?))
+                         '("--disable-luajittex"
+                           "--disable-luajithbtex"
+                           "--disable-mfluajit")
+                         '()))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'symlink-kpathsea-binaries
+              (lambda _
+                (let ((bin (string-append
+                            #$(this-package-input "texlive-libkpathsea")
+                            "/bin"))
+                      (files
+                       '("kpseaccess" "kpsereadlink" "kpsestat" "kpsewhich")))
+                  (with-directory-excursion (string-append #$output "/bin")
+                    (for-each (lambda (b) (symlink (string-append bin "/" b) b))
+                              files)))))
+            (add-after 'install 'merge-core-scripts
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                (let ((texlive-scripts
+                       (dirname
+                        (dirname
+                         (search-input-file (or native-inputs inputs)
+                                            "tlpkg/texlive.tlpdb"))))
+                      (tlpkg (string-append #$output "/share/tlpkg")))
+                  ;; "tlpkg" directory is neither provided by texlive-bin nor
+                  ;; by texlive-texmf.
+                  (mkdir-p tlpkg)
+                  (copy-recursively (string-append texlive-scripts "/tlpkg")
+                                    tlpkg)
+                  ;; texlive-bin source doesn't provide this Perl script.
+                  ;; Yet, it is referenced in "fmtutil.pl" so we need to move
+                  ;; it here too.
+                  (install-file
+                   (string-append texlive-scripts
+                                  "/texmf-dist/scripts/texlive/mktexlsr.pl")
+                   (string-append #$output
+                                  "/share/texmf-dist/scripts/texlive")))))
+            (add-after 'merge-core-scripts 'patch-core-scripts
+              (lambda _
+                (with-directory-excursion
+                    (string-append #$output "/share/texmf-dist/scripts/texlive")
+                  ;; Make sure that fmtutil can find its Perl modules.
+                  (substitute* "fmtutil.pl"
+                    (("\\$TEXMFROOT/")
+                     (string-append #$output "/share/")))
+                  ;; Likewise for updmap.pl.
+                  (substitute* "updmap.pl"
+                    (("\\$TEXMFROOT/tlpkg")
+                     (string-append #$output "/share/tlpkg")))
+                  ;; Likewise for the tlmgr.
+                  (substitute* "tlmgr.pl"
+                    ((".*\\$::installerdir = \\$Master.*" all)
+                     (format #f "  $Master = ~s;~%~a"
+                             (string-append #$output "/share")
+                             all))))))
+            (add-after 'patch-core-scripts 'patch-shell-scripts
+              (lambda _
+                (with-directory-excursion
+                    (string-append #$output "/share/texmf-dist/scripts")
+                  ;; First patch shell scripts with ".sh" extension.
+                  (let* ((scripts (find-files "." "\\.sh$"))
+                         (commands '("awk" "basename" "cat" "grep" "mkdir" "rm"
+                                     "sed" "sort" "uname"))
+                         (command-regexp
+                          (format #f "\\b(~a)\\b" (string-join commands "|")))
+                         (iso-8859-1-encoded-scripts
+                          '("./texlive-extra/rubibtex.sh"
+                            "./texlive-extra/rumakeindex.sh")))
+                    (define (substitute-commands scripts)
+                      (substitute* scripts
+                        ((command-regexp dummy command)
+                         (which command))))
+                    (substitute-commands
+                     (lset-difference string= scripts iso-8859-1-encoded-scripts))
+                    (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                      (substitute-commands iso-8859-1-encoded-scripts)))
+                  ;; Then patch scripts without such extension.
+                  (let ((dirs (map (compose dirname which)
+                                   (list "awk" "cat" "grep" "sed"))))
+                    (substitute* (find-files "texlive" "^mktex(mf|pk|tfm)$")
+                      (("^version=" m)
+                       (format #false "PATH=\"~{~a:~}$PATH\"; export PATH~%~a"
+                               dirs m)))))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs texlive-bin)
+       (append (package-source texlive-scripts))))
+    (inputs
+     (modify-inputs (package-inputs texlive-bin)
+       (append texlive-libkpathsea)))
+    (propagated-inputs '())))
+
 (define texlive-texmf
   (package
     (name "texlive-texmf")
@@ -10370,71 +10520,55 @@ documents as well as DVI output.")
               (sha256
                (base32
                 "0lqjm11pr9vasvivaci3k9xcmdyd08ldnh31zf8avjjs09xcfkac"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list lua
-           perl
-           python
-           ruby
-           tcsh
-           texlive-bin))
+    (build-system copy-build-system)
     (arguments
      (list
-      #:modules '((guix build gnu-build-system)
+      #:modules '((guix build copy-build-system)
                   (guix build utils)
+                  (srfi srfi-1)
                   (srfi srfi-26))
-
       ;; This package takes 4 GiB, which we can't afford to distribute from
       ;; our servers.
       #:substitutable? #f
-
+      #:install-plan #~'(("texmf-dist/" "share/texmf-dist"))
       #:phases
-      #~(modify-phases (map (cut assq <> %standard-phases)
-                            '(set-paths unpack patch-source-shebangs))
-          (add-after 'unpack 'unset-environment-variables
-            (lambda _
-              (unsetenv "TEXMF")
-              (unsetenv "TEXMFCNF")))
-          (add-after 'patch-source-shebangs 'install
-            (lambda _
-              (let ((share (string-append #$output "/share")))
-                (mkdir-p share)
-                (invoke "mv" "texmf-dist" share))))
+      #~(modify-phases %standard-phases
           (add-after 'install 'texmf-config
-            (lambda _
+            (lambda* (#:key inputs native-inputs  #:allow-other-keys)
               (let* ((share (string-append #$output "/share"))
-                     (texmfroot (string-append share "/texmf-dist/web2c"))
-                     (texmfcnf (string-append texmfroot "/texmf.cnf"))
-                     (fmtutilcnf (string-append texmfroot "/fmtutil.cnf"))
-                     (texlive-bin #$(this-package-input "texlive-bin"))
-                     (texbin (string-append texlive-bin "/bin"))
-                     (tlpkg (string-append texlive-bin "/share/tlpkg")))
+                     (texmf-dist (string-append share "/texmf-dist"))
+                     (web2c (string-append texmf-dist "/web2c"))
+                     (fmtutil.cnf (string-append web2c "/fmtutil.cnf"))
+                     (texlive-bin
+                      #$(this-package-native-input "texlive-bin-full")))
                 ;; LuaJIT is not ported to powerpc64* yet.
                 (if #$(target-ppc64le?)
-                    (substitute* fmtutilcnf
+                    (substitute* fmtutil.cnf
                       (("^(luajittex|luajithbtex|mfluajit)" m)
                        (string-append "#! " m))))
-                ;; Register SHARE as TEXMFROOT in texmf.cnf.
-                (substitute* texmfcnf
-                  (("TEXMFROOT = \\$SELFAUTOPARENT")
-                   (string-append "TEXMFROOT = " share))
-                  (("TEXMFLOCAL = \\$SELFAUTOGRANDPARENT/texmf-local")
-                   "TEXMFLOCAL = $SELFAUTODIR/share/texmf-local")
-                  (("!!\\$TEXMFLOCAL") "$TEXMFLOCAL"))
                 ;; Register paths in texmfcnf.lua, needed for context.
-                (substitute* (string-append texmfroot "/texmfcnf.lua")
+                (substitute* (string-append web2c "/texmfcnf.lua")
                   (("selfautodir:") #$output)
                   (("selfautoparent:") (string-append share "/")))
                 ;; Set path to TeXLive Perl modules
                 (setenv "PERL5LIB"
-                        (string-append (getenv "PERL5LIB") ":" tlpkg))
-                ;; Configure the texmf-dist tree; inspired from
-                ;; http://slackbuilds.org/repository/13.37/office/texlive/
-                (setenv "PATH" (string-append (getenv "PATH") ":" texbin))
-                (setenv "TEXMFCNF" texmfroot)
-                (invoke "updmap-sys" "--nohash" "--syncwithtrees")
-                (invoke "mktexlsr")
-                (invoke "fmtutil-sys" "--all")))))))
+                        (string-append (getenv "PERL5LIB") ":"
+                                       (string-append texlive-bin
+                                                      "/share/tlpkg")))
+                ;; Configure the texmf-dist tree.
+                (setenv "GUIX_TEXMF" texmf-dist)
+                (setenv "PATH"
+                        (string-append (getenv "PATH") ":" texlive-bin "/bin:"))
+                (let ((updmap.cfg (string-append web2c "/updmap.cfg")))
+                  (invoke (string-append texlive-bin "/bin/updmap-sys")
+                          "--nohash" "--syncwithtrees"
+                          (string-append "--cnffile=" updmap.cfg)))
+                (invoke (string-append texlive-bin "/bin/fmtutil-sys")
+                        "--cnffile" fmtutil.cnf
+                        "--all"
+                        "--fmtdir" web2c)))))))
+    (native-inputs (list texlive-bin-full))
+    (inputs (list lua perl python-wrapper ruby tcsh))
     (properties `((max-silent-time . 9600))) ; don't time out while grafting
     (synopsis "TeX Live, a package of the TeX typesetting system")
     (description
@@ -10453,52 +10587,51 @@ This package contains the complete tree of texmf-dist data.")
     (version (package-version texlive-bin))
     (source #f)
     (build-system trivial-build-system)
-    (inputs
-     (list bash-minimal                 ;for wrap-program
-           texlive-bin
-           texlive-texmf))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "TEXMFLOCAL")
-            (files '("share/texmf-local")))))
     (arguments
      (list
       #:modules '((guix build utils))
       #:builder
-      ;; Build the union of texlive-bin and texlive-texmf, but take the
+      ;; Build the union of texlive-bin-full and texlive-texmf, but take the
       ;; conflicting subdirectory share/texmf-dist from texlive-texmf.
       #~(begin
           (use-modules (guix build utils))
-          (let ((bin #$(this-package-input "texlive-bin"))
-                (texmf #$(this-package-input "texlive-texmf"))
-                (bash #$(this-package-input "bash-minimal")))
+          (let ((bin #$(this-package-input "texlive-bin-full"))
+                (texmf #$(this-package-input "texlive-texmf")))
             (mkdir #$output)
             (with-directory-excursion #$output
+              ;; "include/" and "lib/" directories.
               (for-each
                (lambda (name)
                  (symlink (string-append bin "/" name) name))
                '("include" "lib"))
+              ;; "bin/" directory.
               (mkdir "bin")
               (with-directory-excursion "bin"
-                (setenv "PATH" (string-append bash "/bin"))
                 (for-each
-                 (lambda (name)
-                   (symlink name (basename name))
-                   (wrap-program
-                       (basename name)
-                     `("TEXMFCNF" =
-                       (,(string-append texmf "/share/texmf-dist/web2c")))))
+                 (lambda (name) (symlink name (basename name)))
                  (find-files (string-append bin "/bin/") "")))
+              ;; "share/info", "share/man", share/texmf-dist/" and
+              ;; "share/tlpkg/" directories.
               (mkdir "share")
               (with-directory-excursion "share"
                 (for-each
                  (lambda (name)
                    (symlink (string-append bin "/share/" name) name))
                  '("info" "man" "tlpkg"))
-                (for-each
-                 (lambda (name)
-                   (symlink (string-append texmf "/share/" name) name))
-                 '("texmf-dist" "texmf-var"))))))))
+                (symlink (string-append texmf "/share/texmf-dist")
+                         "texmf-dist"))
+              ;; Now everything is in place, generate ls-R file.
+              (setenv "PATH"
+                      (string-append
+                       (getenv "PATH") ":"
+                       #$(this-package-input "texlive-bin-full") "/bin"))
+              (invoke (string-append bin "/bin/mktexlsr")))))))
+    (inputs (list texlive-bin-full texlive-texmf))
+    (propagated-inputs (list texlive-libkpathsea))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TEXMFLOCAL")
+            (files '("share/texmf-local")))))
     (synopsis "TeX Live, a package of the TeX typesetting system")
     (description
      "TeX Live provides a comprehensive TeX document production system.
