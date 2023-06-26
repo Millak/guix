@@ -17044,6 +17044,26 @@ code from within MetaPost.  With the included @code{minim-mp} format file, you
 can even use LuaTeX as a stand-alone MetaPost compiler.")
     (license license:eupl1.2)))
 
+(define-public texlive-minim-pdf
+  (package
+    (name "texlive-minim-pdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/minim-pdf/"
+                   "tex/luatex/minim-pdf/")
+             (base32
+              "10ls1i1141lh2f69r63wmvk2dg7j6g9gl0d0qk1m73byrg4zvbcp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minim-pdf")
+    (synopsis "Low-level PDF integration for LuaTeX")
+    (description
+     "This package adds low-level support to plain LuaTeX for marking up the
+structure of a PDF document.  The implementation is rather basic, but should
+allow you to make your PDFs fully PDF/A-compliant.")
+    (license license:eupl1.2)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
