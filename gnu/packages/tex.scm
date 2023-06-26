@@ -15221,6 +15221,27 @@ This package is not intended to be used to automatically translate more than
 a few words.")
     (license (list license:lppl license:gpl1+))))
 
+(define-public texlive-texapi
+  (package
+    (name "texlive-texapi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/texapi/" "tex/generic/texapi/")
+             (base32
+              "0ivg2a2pgl6bmb2242cjjcz7n9cs514dp1r8c89mva2zlm9l323j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texapi")
+    (synopsis "Macros to write format-independent packages")
+    (description
+     "Texapi provides utility macros to write format-independent (and -aware)
+packages.  It is similar in spirit to the etoolbox, except that it isn't tied
+to LaTeX.  The tools include engine and format detection, expansion control,
+command definition and manipulation, various testing macros, string
+operations, and highly customizable while and for loops.")
+    (license license:lppl)))
+
 (define-public texlive-textpos
   (package
     (name "texlive-textpos")
