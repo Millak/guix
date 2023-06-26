@@ -6545,6 +6545,27 @@ The documentation discusses methods to organise and print out any text into
 signatures, which can then be gathered, folded and sewn into a book.")
     (license license:lppl)))
 
+(define-public texlive-odsfile
+  (package
+    (name "texlive-odsfile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/odsfile/"
+                   "tex/lualatex/odsfile/")
+             (base32
+              "03zfzwjhrrsw8z9v8jsd730iiqbc44s38jra36b0il4xqgbknyqg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/odsfile")
+    (synopsis "Read OpenDocument Spreadsheet documents as LaTeX tables")
+    (description
+     "The distribution includes a package and a Lua library that can together
+read OpenDocument spreadsheet documents as LaTeX tables.  Cells in the tables
+may be processed by LaTeX macros, so that, for example, the package may be
+used for drawing some plots.  The package uses Lua's @code{zip} library.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pdftexcmds
   (package
     (name "texlive-pdftexcmds")
