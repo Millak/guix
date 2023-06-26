@@ -16956,6 +16956,27 @@ current release is aimed mainly at support for the @code{odsfile} package.")
     ;; It uses explicitly the same license as Lua.
     (license license:x11)))
 
+(define-public texlive-lutabulartools
+  (package
+    (name "texlive-lutabulartools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/lutabulartools/"
+                   "tex/luatex/lutabulartools/")
+             (base32
+              "1p7b1gv86xa09g1big3s88w0c8jiyj2bk2r8wq4n3pqqqr7zm79z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lutabulartools")
+    (synopsis "Some useful LuaLaTeX-based tabular tools")
+    (description
+     "This package provides some useful commands for tabular matter.  It uses
+LuaLaTeX and offers the ability to combine the facilities of multirow and
+makecell with an easy to use syntax.  It also adds some enhanced rules for the
+@code{booktabs} package.")
+    (license license:expat)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
