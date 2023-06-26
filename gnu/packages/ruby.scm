@@ -5243,27 +5243,29 @@ number, support for interrupted tests, better backtraces, and more.")
 (define-public ruby-mocha
   (package
     (name "ruby-mocha")
-    (version "1.13.0")
+    (version "2.0.4")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "mocha" version))
               (sha256
                (base32
-                "15s53ggsykk69kxqvs4416s8yxdhz6caggva55n8sjgy4ixzwp10"))))
+                "18xn9gm9yypavy9yck71fplan19hy5697mwd1rwzz7vizh3ip7bd"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'remove-rubocop-dependency
-           (lambda _
-             ;; Disable dependency on Rubocop, which is just a linter,
-             ;; and would introduce a circular dependency.
-             (substitute* "mocha.gemspec"
-               ((".*rubocop.*")
-                "true\n"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-rubocop-dependency
+            (lambda _
+              ;; Disable dependency on Rubocop, which is just a linter,
+              ;; and would introduce a circular dependency.
+              (substitute* "Gemfile"
+                ((".*rubocop.*") "")))))))
+    (propagated-inputs
+     (list ruby-ruby2-keywords))
     (native-inputs
-     (list ruby-introspection))
+     (list ruby-psych-3
+           ruby-introspection))
     (synopsis "Mocking and stubbing library for Ruby")
     (description
      "Mocha is a mocking and stubbing library with JMock/SchMock syntax, which
@@ -5271,6 +5273,19 @@ allows mocking and stubbing of methods on real (non-mock) classes.")
     (home-page "https://mocha.jamesmead.org/")
     ;; Mocha can be used with either license at the users choice.
     (license (list license:expat license:ruby))))
+
+(define-public ruby-mocha-1
+  (package
+    (inherit ruby-mocha)
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "mocha" version))
+              (sha256
+               (base32
+                "15s53ggsykk69kxqvs4416s8yxdhz6caggva55n8sjgy4ixzwp10"))))
+    (arguments
+     '(#:tests? #f))))
 
 (define-public ruby-mocha-on-bacon
   (package
