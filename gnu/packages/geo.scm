@@ -843,14 +843,14 @@ projections and coordinate transformations library.")
 (define-public python-fiona
   (package
     (name "python-fiona")
-    (version "1.8.20")
+    (version "1.9.4.post1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Fiona" version))
         (sha256
           (base32
-            "0fql7i7dg1xpbadmk8d26dwp91v7faixxc4wq14zg0kvhp9041d7"))))
+            "083120rqc4rrqzgmams0yjd8b1h4p5xm4n9fnxg064ymw3vx6yan"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -879,16 +879,13 @@ projections and coordinate transformations library.")
             python-click
             python-click-plugins
             python-cligj
-            python-munch
-            python-setuptools
-            python-six
-            python-pytz))
+            python-importlib-metadata
+            python-six))
     (native-inputs
       (list gdal ; for gdal-config
             python-boto3
             python-cython
-            python-pytest
-            python-pytest-cov))
+            python-pytest python-pytest-cov python-pytz))
     (home-page "https://github.com/Toblerity/Fiona")
     (synopsis
       "Fiona reads and writes spatial data files")
