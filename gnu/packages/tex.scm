@@ -16162,6 +16162,29 @@ that allows you to execute Lua code in LuaTeX or any other TeX engine that
 exposes the shell.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lua-typo
+  (package
+    (name "texlive-lua-typo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lua-typo/"
+                   "source/lualatex/lua-typo/"
+                   "tex/lualatex/lua-typo/")
+             (base32
+              "0lhjgs7jxdwk2cn9zb99mk2c56awi249zk839waqxnzfr18ky63k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-typo")
+    (synopsis "Highlighting typographical flaws with LuaLaTeX")
+    (description
+     "This package tracks common typographic flaws in LuaLaTeX documents,
+especially widows, orphans, hyphenated words split over two pages, consecutive
+lines ending with hyphens, paragraphs ending on too short lines, etc.
+Customisable colours are used to highlight these flaws, and the list of pages
+on which typographical flaws were found is printed.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
