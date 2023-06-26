@@ -16822,6 +16822,29 @@ It is possible to get lists with or without multiple numbers.  The random
 generator will be initialized by the system time.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luaset
+  (package
+    (name "texlive-luaset")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luaset/"
+                   "tex/lualatex/luaset/")
+             (base32
+              "1xbr7m1fb71xnlc3p4lb2gz10i6bz6f4bbzyfcclggriq7bkv1iq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luaset")
+    (synopsis "Set Operations inside LaTeX documents using Lua")
+    (description
+     "The @code{luaset} package is developed to define finite sets and perform
+operations on them inside LaTeX documents.  There is no particular environment
+in the package for performing set operations.  The package commands can be
+used in any environment (including the mathematics environment).  It is
+written in Lua, and the @file{.tex} file is to be compiled with the LuaLaTeX
+engine.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
