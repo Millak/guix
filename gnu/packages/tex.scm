@@ -11877,6 +11877,26 @@ output.")
 
 (define-deprecated-package texlive-latex-pgf texlive-pgf)
 
+(define-public texlive-piton
+  (package
+    (name "texlive-piton")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/piton/"
+                   "source/lualatex/piton/"
+                   "tex/lualatex/piton/")
+             (base32
+              "123ir1hnla5klkvb13qw1mkfnpbwk61lxli0851qf33g72c8qc4r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/piton")
+    (synopsis "Typeset Python listings with LPEG")
+    (description
+     "This package uses the Lua library LPEG to typeset and highlight Python
+listings.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-koma-script
   (package
     (name "texlive-koma-script")
