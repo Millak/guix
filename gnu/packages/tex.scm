@@ -14911,6 +14911,30 @@ is also possible to use Barracuda with a standalone Lua interpreter to draw
 barcodes in different graphic formats like SVG.")
     (license license:gpl2)))
 
+(define-public texlive-bezierplot
+  (package
+    (name "texlive-bezierplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/bezierplot/"
+                   "tex/lualatex/bezierplot/")
+             (base32
+              "125gdb9d160g729v3fbsrsrw5abk34jwa4x43yil0mzjls2aq550")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bezierplot")
+    (synopsis "Approximate smooth function graphs with cubic Bezier splines")
+    (description
+     "This package consists of a Lua program as well as a (Lua)LaTeX
+@file{.sty} file.  Given a smooth function, @code{bezierplot} returns a smooth
+Bezier path written in TikZ notation, which also matches MetaPost, that
+approximates the graph of the function.  For polynomial functions of degree
+lesser or equal to 3 and their inverses the approximation is exact (up to
+numeric precision).  @code{bezierplot} also finds special points such as
+extreme points and inflection points and reduces the number of used points.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
