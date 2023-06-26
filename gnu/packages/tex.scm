@@ -16764,6 +16764,25 @@ arguments into proper Lua tables.")
 to load external Lua modules, including modules installed via LuaRocks.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luaprogtable
+  (package
+    (name "texlive-luaprogtable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luaprogtable/"
+                   "tex/lualatex/luaprogtable/")
+             (base32
+              "0vx4vsqa777hv4bdw8m7x8hrjg5p9h8d68z0l2ji60h67bziy161")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luaprogtable")
+    (synopsis "Programmable table interface for LuaLaTeX")
+    (description
+     "This package allows you to modify a cell based on the contents of other
+cells using LaTeX macros.")
+    (license license:expat)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
