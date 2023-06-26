@@ -17000,6 +17000,28 @@ contains only their shared lowest-level programming interface, along with
 their combined format.")
     (license license:eupl1.2)))
 
+(define-public texlive-minim-math
+  (package
+    (name "texlive-minim-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/minim-math/"
+                   "tex/luatex/minim-math/")
+             (base32
+              "0793np84dx47c6wsmqrh3vj2y9w6p0l55nc4xl9b21xvgzzb0b5j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minim-math")
+    (synopsis "Extensive maths for LuaTeX")
+    (description
+     "This package provides a simple and highly configurable way to use
+Unicode and OpenType mathematics with simple LuaTeX, taking advantage of most
+of the engine's new capabilities in mathematical typesetting.  Also included
+are the proper settings and definitions for almost all Unicode mathematical
+characters.")
+    (license license:eupl1.2)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
