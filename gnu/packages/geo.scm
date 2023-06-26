@@ -903,34 +903,27 @@ pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "0.10.2")
+    (version "0.13.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "1nvim2i47ap1zdwy6kxydskf1cir5g4ij8124wvmrqij0zklggzg"))))
-    (build-system python-build-system)
+            "0s59jjk02l1zajz95n1c7fr3fyj44wzxn569q2y7f34042f6vdg5"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"
-                       ; Disable tests that fail due to incompatibilities
-                       ; with our pandas version.
-                       "-k"
-                       (string-append
-                         "not test_getitem_invalid"
-                         " and not test_value_counts"
-                         " and not test_setitem_invalid"
-                         " and not test_insert_invalid")
-                       ; Disable tests that require internet access.
-                       "-m" "not web")))))))
+     (list
+       #:test-flags
+       '(list
+         ;; Test files are missing
+         "--ignore=geopandas/tests/test_overlay.py"
+         "--ignore=geopandas/io/tests/test_file.py"
+         ;; Disable tests that require internet access.
+         "-m" "not web")))
     (propagated-inputs
-      (list python-fiona python-pandas python-pyproj python-shapely))
+      (list python-fiona python-packaging python-pandas python-pyproj
+            python-shapely))
     (native-inputs
       (list python-pytest))
     (home-page "https://geopandas.org")
