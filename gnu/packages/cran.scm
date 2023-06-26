@@ -17803,6 +17803,27 @@ Touzet and Varre (2007).")
 @url{https://www.naturalearthdata.com/} more easily available to R users.")
     (license license:expat)))
 
+(define-public r-rnaturalearthdata
+  (package
+    (name "r-rnaturalearthdata")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rnaturalearthdata" version))
+              (sha256
+               (base32
+                "1z32j5lz2lb8xgpkr73majw22k0b49iazj6jjc7j4w9k4zxxa102"))))
+    (properties `((upstream-name . "rnaturalearthdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-sp))
+    (home-page "https://github.com/ropenscilabs/rnaturalearthdata")
+    (synopsis "World vector map data from Natural Earth")
+    (description
+     "This package provides vector map data from
+@url{https://www.naturalearthdata.com/}.  Access functions are provided in the
+accompanying package @code{rnaturalearth}.")
+    (license license:cc0)))
+
 (define-public r-rncl
   (package
     (name "r-rncl")
