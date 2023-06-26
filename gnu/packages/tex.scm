@@ -13859,6 +13859,28 @@ size adjusts to the font size.  By option the markers can be placed behind or
 in front of the glyphs.  The package requires LuaLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-showkerning
+  (package
+    (name "texlive-showkerning")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/showkerning/"
+                   "tex/lualatex/showkerning/")
+             (base32
+              "0kd20scd9mv7zmsfz9wy321j07fwkll94cbfpqllzn0jk80qgxgm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/showkerning")
+    (synopsis "Showing kerns in a document")
+    (description
+     "The package displays all kerning values in the form of colored bars
+directly at the respective position in the document.  Positive values are
+displayed in green, negative values in red.  The width of the bars corresponds
+exactly to the respective kerning value.  By option the bars can be placed
+behind or in front of the glyphs.  The package requires LuaLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-standalone
   (package
     (name "texlive-standalone")
