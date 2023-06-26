@@ -17022,6 +17022,28 @@ are the proper settings and definitions for almost all Unicode mathematical
 characters.")
     (license license:eupl1.2)))
 
+(define-public texlive-minim-mp
+  (package
+    (name "texlive-minim-mp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/minim-mp/" "metapost/minim-mp/"
+                   "tex/luatex/minim-mp/")
+             (base32
+              "084k1ywvaq1mbz00kmbxd5kzp1da7a397dy3y25pbf7chrlxwsrk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minim-mp")
+    (synopsis "Low-level mplib integration for LuaTeX")
+    (description
+     "This package offers low-level mplib integration for plain LuaTeX and is
+designed with the purpose of being easy to extend.  The use of multiple
+simultaneous MetaPost instances is supported, as well as running TeX or lua
+code from within MetaPost.  With the included @code{minim-mp} format file, you
+can even use LuaTeX as a stand-alone MetaPost compiler.")
+    (license license:eupl1.2)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
