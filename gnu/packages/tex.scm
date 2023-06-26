@@ -16558,6 +16558,27 @@ the TeX packages @code{keyval}, @code{kvsetkeys}, @code{kvoptions},
 @code{xkeyval}, @code{pgfkeys}, etc.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lualatex-doc
+  (package
+    (name "texlive-lualatex-doc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lualatex-doc/"
+                   "source/lualatex/lualatex-doc/")
+             (base32
+              "1nbanlp3qfk0hylih64qnkh5cd1mjd3j99jk36rnbjhd3f840d9q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lualatex-doc")
+    (synopsis "Guide to use of LaTeX with LuaTeX")
+    (description
+     "The document is a guide to the world of LuaLaTeX.  Coverage supports
+both new users and package developers.  Apart from the introductory material,
+the document gathers information from several sources, and offers links to
+others.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
