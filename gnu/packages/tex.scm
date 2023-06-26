@@ -16337,6 +16337,30 @@ symbolic computations within LaTeX without the need for laborious and
 technical setup.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luacensor
+  (package
+    (name "texlive-luacensor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luacensor/"
+                   "tex/lualatex/luacensor/")
+             (base32
+              "0nw83zzpb9y4vnm4rjz786nz9fxv1vzlz3dv8fjwxqpxngqws4g8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luacensor")
+    (synopsis "Securely redact sensitive information using Lua")
+    (description
+     "This package provides simple tools for creating redacted contents.  Its
+tools are useful for lawyers, workers in sensitive industries, and others who
+need to easily produce both unrestricted versions of documents (for limited,
+secure release) and restricted versions of documents (for general release).
+Redaction is done both by hiding all characters and by slightly varying the
+length of strings to prevent jigsaw identification.  It also is friendly to
+screen readers by adding alt-text indicating redacted content.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
