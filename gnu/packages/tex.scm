@@ -16539,6 +16539,25 @@ book ``Einfuhrung in LuaTeX und LuaLaTeX'', published by Lehmans Media and
 DANTE, Berlin.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luakeys
+  (package
+    (name "texlive-luakeys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luakeys/" "tex/luatex/luakeys/")
+             (base32
+              "0nsd9d2rfwbjadnfykhi0c4wj39cscpx496acjcixg1irlxii7z8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luakeys")
+    (synopsis "Lua module for parsing key-value options")
+    (description
+     "This package provides a Lua module that can parse key-value options like
+the TeX packages @code{keyval}, @code{kvsetkeys}, @code{kvoptions},
+@code{xkeyval}, @code{pgfkeys}, etc.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
