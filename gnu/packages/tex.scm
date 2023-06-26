@@ -16381,6 +16381,29 @@ screen readers by adding alt-text indicating redacted content.")
 attributes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luacomplex
+  (package
+    (name "texlive-luacomplex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luacomplex/"
+                   "tex/lualatex/luacomplex/")
+             (base32
+              "0fb75jzvl0gqqyfl6vrfwdpsxjfq7dyhmfbfibg9w6rqxzcd013p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luacomplex")
+    (synopsis "Operations on complex numbers inside LaTeX documents using Lua")
+    (description
+     "The @code{luacomplex} package is developed to define complex numbers and
+perform basic arithmetic on complex numbers in LaTeX.  It also loads the
+@code{luamathspackage}.  It provides an easy way to define complex numbers and
+perform operations on complex numbers.  There is no particular environment for
+performing operations on complex numbers.  The package commands can be used in
+any environment (including the mathematics environment).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
