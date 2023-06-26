@@ -4498,6 +4498,26 @@ diagrams and bond graphs. While the task is not itself difficult to program,
 it is felt that many users will be happy to have a library for the job.")
     (license license:lppl)))
 
+(define-public texlive-blopentype
+  (package
+    (name "texlive-blopentype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/blopentype/"
+                   "tex/luatex/blopentype/")
+             (base32
+              "1zz19a0glxad0bq8kpa2qlrmgysdlda1hpxacf3m42m9n3byrb75")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-gates texlive-texapi texlive-yax))
+    (home-page "https://ctan.org/pkg/blopentype")
+    (synopsis "Basic LuaTeX OpenType handler")
+    (description
+     "This is a basic LuaTeX OpenType handler, based on Paul Isambert's PiTeX
+code.")
+    (license (list license:lppl1.3c license:expat))))
+
 (define-public texlive-bookcover
   (package
     (name "texlive-bookcover")
