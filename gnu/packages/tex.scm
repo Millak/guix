@@ -13901,6 +13901,28 @@ non-breaking small spaces, where both hyphenation and kerning against space
 are correctly applied.  Additionally, interword kerning can be applied.")
     (license license:lppl1.3c)))
 
+(define-public texlive-spelling
+  (package
+    (name "texlive-spelling")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/spelling/" "scripts/spelling/"
+                   "tex/luatex/spelling/")
+             (base32
+              "1pg4jz1rxpjc9648b53zbnwrn59id9iv8b1jfwl6nqj58q285w7q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spelling")
+    (synopsis "Support for spell-checking of LuaTeX documents")
+    (description
+     "The package aids spell-checking of TeX documents compiled with the
+LuaTeX engine.  It can give visual feedback in PDF output similar to WYSIWYG
+word processors.  The package relies on an external spell-checker application
+to check spelling of a text file and to output a list of bad spellings.  The
+package should work with most spell-checkers, even dumb, TeX-unaware ones.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-standalone
   (package
     (name "texlive-standalone")
