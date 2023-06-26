@@ -83,6 +83,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -94,6 +95,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages libusb)
@@ -126,11 +128,43 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public gmt
+  (package
+    (name "gmt")
+    (version "6.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/GenericMappingTools/gmt/"
+                           "releases/download/"
+                           version "/gmt-" version "-src.tar.xz"))
+       (sha256
+        (base32 "0wh694cwcw2dz5rsh6pdn9irx08d65iih0vbxz350vzrkkjzyvml"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #false)) ;tests need costline data and caches
+    (inputs
+     (list curl ffmpeg fftw gdal geos ghostscript netcdf openblas pcre2))
+    (native-inputs
+     (list graphicsmagick pkg-config))
+    (home-page "https://www.generic-mapping-tools.org/")
+    (synopsis "Generic mapping tools")
+    (description "GMT is a collection of about 100 command-line tools for
+manipulating geographic and Cartesian data sets (including filtering, trend
+fitting, gridding, projecting, etc.) and producing high-quality illustrations
+ranging from simple x-y plots via contour maps to artificially illuminated
+surfaces, 3D perspective views and animations.  The GMT supplements add
+another 50 more specialized and discipline-specific tools.  GMT supports over
+30 map projections and transformations and requires support data such as GSHHG
+coastlines, rivers, and political boundaries and optionally DCW country
+polygons.")
+    (license license:lgpl3+)))
 
 (define-public libaec
   (package
