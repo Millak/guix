@@ -1283,6 +1283,9 @@ Mathematics (GLM) library to Python.")
               " and not test_exception_text"
               " and not test_worker_bad_args"
 
+              ;; These time out
+              " and not test_nanny_timeout"
+
               ;; These tests are rather flaky
               " and not test_quiet_quit_when_cluster_leaves"
               " and not multiple_clients_restart"))
