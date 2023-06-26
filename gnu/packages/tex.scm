@@ -16647,6 +16647,29 @@ directly using @samp{&} is not possible, especially in nested macros or
 environments.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luamaths
+  (package
+    (name "texlive-luamaths")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin name version
+                            (list "doc/lualatex/luamaths/"
+                                  "tex/lualatex/luamaths/")
+                            (base32
+                             "1dswh6jjkl7jbs3f5pvwh30874x4xycvw7n9cbfd5m9wfcv97rw9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luamaths")
+    (synopsis
+     "Provide standard mathematical operations inside LaTeX documents using Lua")
+    (description
+     "The @code{luamaths} package is developed to perform standard
+mathematical operations inside LaTeX documents using Lua.  It provides an easy
+way to perform standard mathematical operations.  There is no particular
+environment in the package for performing mathematical operations.  The
+package commands can be used in any environment (including the mathematics
+environment).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
