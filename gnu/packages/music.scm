@@ -54,6 +54,7 @@
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7250,18 +7251,16 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
                (base32 "1x6rcl3f4nklnx4p5jln9a7fpj9y7agjxs9rw7cccmwnski7pnsq"))
               (file-name (git-file-name name version))))
     (arguments
-     `(#:tests? #f      ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/")))
-               (substitute* (string-append bin "a2j")
-                 (("a2j_control") (string-append bin "a2j_control")))
-               (wrap-program (string-append bin "a2j_control")
-                `("PYTHONPATH" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+     (list #:tests? #f      ; No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-programs
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((bin (string-append #$output "/bin/")))
+                     (substitute* (string-append bin "a2j")
+                       (("a2j_control") (string-append bin "a2j_control")))
+                     (wrap-program (string-append bin "a2j_control")
+                       `("PYTHONPATH" prefix (,(getenv "GUIX_PYTHONPATH"))))))))))
     (build-system meson-build-system)
     (inputs
      (list alsa-lib
