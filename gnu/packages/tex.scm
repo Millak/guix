@@ -11750,6 +11750,25 @@ it comes from a typewriter.  The package also offers double and wavy
 underlining, and striking out, and crossing out.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-pdfarticle
+  (package
+    (name "texlive-pdfarticle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/pdfarticle/"
+                   "tex/lualatex/pdfarticle/")
+             (base32
+              "16cy8n3hws1gm3bsv3h4mwnpvaajiy5sj6hpchy0r9hq28liara4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfarticle")
+    (synopsis "Class for PDF publications")
+    (description
+     "pdfArticle is simple document class dedicated for creating PDF documents
+with LuaLaTeX.")
+    (license license:expat)))
+
 (define-public texlive-pgf
   (package
     (name "texlive-pgf")
