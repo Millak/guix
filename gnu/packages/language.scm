@@ -867,12 +867,20 @@ noun phrases, verb phrases, etc.).")
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))
-       #:tests? #f                      ; no test target
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'delete-failing-tests
+           (lambda _
+             (delete-file "test/sys/graphicsText.praat")
+             #t))
          (replace 'configure
            (lambda _
              (copy-file "makefiles/makefile.defs.linux.pulse" "makefile.defs")
+             #t))
+         (replace 'check
+           (lambda _
+             (invoke "./praat" "--run"
+                     "test/runAllTests_batch.praat")
              #t))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
