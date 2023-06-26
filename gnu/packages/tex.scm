@@ -9041,6 +9041,23 @@ readings, translations or annotated borrowings between texts.")
 requires the LuaHBTeX engine.")
     (license license:lppl1.3c)))
 
+(define-public texlive-emojicite
+  (package
+    (name "texlive-emojicite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/emojicite/"
+                   "tex/lualatex/emojicite/")
+             (base32
+              "0wfr4alglwhsp728fp91qxdmc9413c6k9j7hgg0qk3j4w464srbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/emojicite")
+    (synopsis "Add emojis to citations")
+    (description "This package adds emojis to citations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ae
   (package
     (name "texlive-ae")
