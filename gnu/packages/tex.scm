@@ -16599,6 +16599,33 @@ others.")
 fixing issues related to LuaTeX's hyphenation algorithm.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lualinalg
+  (package
+    (name "texlive-lualinalg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lualinalg/"
+                   "tex/lualatex/lualinalg/")
+             (base32
+              "0f29ymc5adcg8mh8lhgir6cj6f0kni0i53r6g35yqnd1jw9qr24q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lualinalg")
+    (synopsis "Linear algebra package for LaTeX")
+    (description
+     "The @code{lualinalg} package is developed to perform operations on
+vectors and matrices defined over the field of real or complex numbers inside
+LaTeX documents.  It provides flexible ways for defining and displaying
+vectors and matrices.  No particular environment of LaTeX is required to use
+commands in the package.  The package is written in Lua, and @file{.tex} file
+is to be compiled with the LuaLaTeX engine.  It may also save users efforts to
+copy vectors and matrices from other software (which may not be in
+LaTeX-compatible format) and to use them in a TeX file.  The vectors and
+matrices of reasonable size can be handled with ease.  The package can be
+modified or extended by writing custom Lua programs.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
