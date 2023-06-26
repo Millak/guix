@@ -1834,24 +1834,14 @@ supported by the MyPy typechecker.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "0.971")
+    (version "1.4.1")
     (source
      (origin
-       ;; Because of https://github.com/python/mypy/issues/9584, the
-       ;; mypyc/analysis directory is missing in the PyPI archive, leading to
-       ;; test failures.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/python/mypy")
-             (commit (string-append "v" version))
-             ;; Fetch git submodules otherwise typeshed is not fetched.
-             ;; Typeshed is a collection of Python sources type annotation
-             ;; (data) files.
-             (recursive? #t)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "mypy" version))
        (sha256
         (base32
-         "0i8swdynms1wpiprgqn24za6mx8rlgxr2jash3cb5xi8jyf58n97"))))
+         "06svfmqbnb45pydy8lcrr12wqhhla5dl888w0g4f3wm1ismxkg4v"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1859,10 +1849,7 @@ supported by the MyPy typechecker.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-vv" "mypyc"
-                       ;; XXX: This test gets an unexpected DeprecationWarning
-                       ;; from recent versions of setuptools.  Ignore for now.
-                       "-k" "not testImports")))))))
+               (invoke "pytest" "mypyc")))))))
     (native-inputs
      (list python-attrs
            python-lxml
