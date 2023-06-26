@@ -16249,6 +16249,39 @@ glues, kerns and penalties in the PDF output.  The package is known to work in
 LaTeX and Plain TeX documents.")
     (license license:expat)))
 
+(define-public texlive-lua-widow-control
+  (package
+    (name "texlive-lua-widow-control")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/lua-widow-control/"
+                   "source/luatex/lua-widow-control/"
+                   "tex/context/third/lua-widow-control/"
+                   "tex/lualatex/lua-widow-control/"
+                   "tex/luatex/lua-widow-control/"
+                   "tex/optex/lua-widow-control/")
+             (base32
+              "1c2n0hmf4kgvdfqday9pk673nxmpddg2wr91wkgalvrn7jw82js4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-widow-control")
+    (synopsis "Automatically remove widows and orphans from any document")
+    (description
+     "Unmodified TeX has very few ways of preventing widows and orphans.  In
+documents with figures, section headings, and equations, TeX can stretch the
+vertical glue between items in order to prevent widows and orphans, but many
+documents have no figures or headings.  TeX can also shorten the page by
+1 line, but this will give each page a different length which can make
+a document look uneven.  The typical solution is to strategically insert
+@samp{\\looseness=1}, but this requires manual editing every time that the
+document is edited.  Lua-widow-control is essentially an automation of the
+@code{\\looseness} method: it uses Lua callbacks to find stretchy paragraphs,
+then it lengthens them to remove widows and orphans.  Lua-widow-control is
+compatible with all LuaTeX and LuaMetaTeX-based formats.")
+    ;; Use either license.
+    (license (list license:mpl2.0 license:cc-by-sa4.0))))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
