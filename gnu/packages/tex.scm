@@ -8424,6 +8424,26 @@ three styles and other fancy features.  It can be used for both horizontal and
 vertical writing mode in Simplified/Traditional Chinese or Japanese fonts.")
     (license license:expat)))
 
+(define-public texlive-cloze
+  (package
+    (name "texlive-cloze")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/cloze/" "scripts/cloze/"
+                   "source/luatex/cloze/" "tex/luatex/cloze/")
+             (base32
+              "0i0bsflqgw14bik1r8qlx2287fx6lv8jmha57bx54d7icaswssf9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cloze")
+    (synopsis "Lualatex package for creating cloze texts")
+    (description
+     "This is a LuaTeX or LuaLaTeX package for generating cloze texts.  The
+main feature of the package is that the formatting doesn't change when using
+the hide and show options.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cmap
   (package
     (name "texlive-cmap")
