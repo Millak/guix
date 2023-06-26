@@ -9058,6 +9058,29 @@ requires the LuaHBTeX engine.")
     (description "This package adds emojis to citations.")
     (license license:lppl1.3c)))
 
+(define-public texlive-enigma
+  (package
+    (name "texlive-enigma")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/enigma/enigma/"
+                   "scripts/context/lua/third/enigma/mtx-t-enigma.lua/"
+                   "tex/context/third/enigma/t-enigma.mkv/"
+                   "tex/generic/enigma/"
+                   "tex/latex/enigma/"
+                   "tex/plain/enigma/")
+             (base32
+              "1rnp2c903bfgq0gqshaccd1zxcb0zpbk2sh7w3lwynpp0zx8d435")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/enigma")
+    (synopsis "Encrypt documents with a three rotor Enigma")
+    (description
+     "The package provides historical encryption (Enigma cipher) for
+LuaTeX-based formats.")
+    (license license:bsd-2)))
+
 (define-public texlive-ae
   (package
     (name "texlive-ae")
