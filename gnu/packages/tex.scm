@@ -16427,6 +16427,28 @@ integers as a linear combination.  The Bezout's Identity can be verified for
 any two integers using commands in the package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luahyphenrules
+  (package
+    (name "texlive-luahyphenrules")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luahyphenrules/"
+                   "tex/lualatex/luahyphenrules/")
+             (base32
+              "1a23bp4a7nix4lhi4dl6kwxp1bs6dvldxxrx143i1ps95l3clasj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luahyphenrules")
+    (synopsis "Loading patterns in LuaLaTeX with @file{language.dat}")
+    (description
+     "Preloading hyphenation patterns (or hyphen rules) into any format based
+upon LuaTeX is not required in LuaTeX and recent releases of Babel don't do it
+anyway.  This package is addressed to those who just want to select the
+languages and load their patterns by means of @file{language.dat} without
+loading @code{babel}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
