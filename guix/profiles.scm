@@ -1799,9 +1799,6 @@ MANIFEST."
     (module-ref (resolve-interface '(gnu packages base)) 'grep))
   (define sed
     (module-ref (resolve-interface '(gnu packages base)) 'sed))
-  (define updmap.cfg
-    (module-ref (resolve-interface '(gnu packages tex))
-                'texlive-default-updmap.cfg))
   (define build
     (with-imported-modules '((guix build utils)
                              (guix build union))
@@ -1835,7 +1832,9 @@ MANIFEST."
           (let* ((web2c (string-append #$output "/share/texmf-dist/web2c/"))
                  (maproot (string-append #$output "/share/texmf-dist/fonts/map/"))
                  (updmap.cfg (string-append web2c "updmap.cfg")))
-            (install-file #$(file-append updmap.cfg "/web2c/updmap.cfg") web2c)
+            (install-file #$(file-append texlive-scripts
+                                         "/share/texmf-dist/web2c/updmap.cfg")
+                          web2c)
             (make-file-writable updmap.cfg)
             (let* ((port (open-pipe* OPEN_WRITE
                                      #$(file-append texlive-scripts "/bin/updmap-sys")
@@ -1867,6 +1866,8 @@ MANIFEST."
             (let ((a (string-append #$output "/share/texmf-dist"))
                   (b "/tmp/texlive/share/texmf-dist")
                   (mktexlsr #$(file-append texlive-scripts "/bin/mktexlsr")))
+              ;; Ignore original "updmap.cfg" from texlive-scripts input.
+              (delete-file "/tmp/texlive/share/texmf-dist/web2c/updmap.cfg")
               (copy-recursively a b)
               (invoke mktexlsr b)
               (install-file (string-append b "/ls-R") a))))))

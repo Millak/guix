@@ -260,6 +260,7 @@ of user-specified directories similar to how shells look up executables.")
                            "texmf-dist/scripts/texlive/updmap.pl"
                            "texmf-dist/web2c/fmtutil-hdr.cnf"
                            "texmf-dist/web2c/updmap-hdr.cfg"
+                           "texmf-dist/web2c/updmap.cfg"
                            "tlpkg/gpg/"
                            "tlpkg/installer/config.guess"
                            "tlpkg/installer/curl/curl-ca-bundle.crt"
@@ -267,7 +268,7 @@ of user-specified directories similar to how shells look up executables.")
                            "tlpkg/texlive.tlpdb"))
                     (revision %texlive-revision)))
               (sha256
-               "191p4rznf19wl9sbjm61v143wap3izhsql6s1bpq1nnbf1p4bakq")))
+               "0sqbg5kjpzkpm1fq2c9hpf4f21bvjs3xas944dlbqp44lsqhcmsk")))
     (outputs '("out" "doc"))
     (build-system copy-build-system)
     (arguments
@@ -4948,13 +4949,6 @@ part of the LaTeX required set of packages.")
 
 (define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
-(define-public texlive-default-updmap.cfg
-  (texlive-origin
-   "updmap.cfg" (number->string %texlive-revision)
-   (list "web2c/updmap.cfg")
-   (base32
-    "10b9il84x6vwfns7cvf8jv0bfcjr7icph3mhci9cq088v216k3kb")))
-
 (define-public texlive-updmap.cfg
   (lambda* (#:optional (packages '()))
     "Return a 'texlive-updmap.cfg' package which contains the fonts map
@@ -4978,42 +4972,45 @@ configuration of a base set of packages plus PACKAGES."
                   texlive-tools)))
       (package
         (version (number->string %texlive-revision))
-        (source texlive-default-updmap.cfg)
+        (source (package-source texlive-scripts))
         (name "texlive-updmap.cfg")
         (build-system copy-build-system)
         (arguments
-         '(#:modules ((guix build copy-build-system)
+         (list
+          #:modules '((guix build copy-build-system)
                       (guix build utils)
                       (ice-9 popen)
                       (ice-9 textual-ports))
-           #:install-plan '(("web2c/updmap.cfg" "share/texmf-config/web2c/")
-                            ("web2c/map" "share/texmf-dist/fonts/map"))
-           #:phases
-           (modify-phases %standard-phases
-             (add-before 'install 'regenerate-updmap.cfg
-               (lambda _
-                 (with-directory-excursion "web2c"
-                   (make-file-writable "updmap.cfg")
+          #:install-plan
+          #~'(("texmf-dist/web2c/updmap.cfg" "share/texmf-config/web2c/")
+              ("texmf-dist/web2c/map" "share/texmf-dist/fonts/map"))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-before 'install 'regenerate-updmap.cfg
+                (lambda _
+                  (with-directory-excursion "texmf-dist/web2c"
+                    (make-file-writable "updmap.cfg")
 
-                   ;; Disable unavailable map files.
-                   (let* ((port (open-pipe* OPEN_WRITE "updmap-sys"
-                                            "--syncwithtrees"
-                                            "--nohash"
-                                            "--cnffile" "updmap.cfg")))
-                     (display "Y\n" port)
-                     (when (not (zero? (status:exit-val (close-pipe port))))
-                       (error "failed to filter updmap.cfg")))
+                    ;; Disable unavailable map files.
+                    (let* ((port (open-pipe* OPEN_WRITE "updmap-sys"
+                                             "--syncwithtrees"
+                                             "--nohash"
+                                             "--cnffile" "updmap.cfg")))
+                      (display "Y\n" port)
+                      (when (not (zero? (status:exit-val (close-pipe port))))
+                        (error "failed to filter updmap.cfg")))
 
-                   ;; Set TEXMFSYSVAR to a sane and writable value; updmap fails
-                   ;; if it cannot create its log file there.
-                   (setenv "TEXMFSYSVAR" (getcwd))
+                    ;; Set TEXMFSYSVAR to a sane and writable value; updmap fails
+                    ;; if it cannot create its log file there.
+                    (setenv "TEXMFSYSVAR" (getcwd))
 
-                   ;; Generate maps.
-                   (invoke "updmap-sys"
-                           "--cnffile"           "updmap.cfg"
-                           "--dvipdfmxoutputdir" "map/dvipdfmx/updmap/"
-                           "--dvipsoutputdir"    "map/dvips/updmap/"
-                           "--pdftexoutputdir"   "map/pdftex/updmap/")))))))
+                    ;; Generate maps.
+                    (invoke "updmap-sys"
+                            "--cnffile"           "updmap.cfg"
+                            "--dvipdfmxoutputdir" "map/dvipdfmx/updmap/"
+                            "--dvipsoutputdir"    "map/dvips/updmap/"
+                            "--pdftexoutputdir"   "map/pdftex/updmap/")))))))
+        (native-inputs (list texlive-scripts))
         (propagated-inputs (map (lambda (package)
                                   (list (package-name package) package))
                                 (append default-packages packages)))
