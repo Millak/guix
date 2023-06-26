@@ -16783,6 +16783,25 @@ to load external Lua modules, including modules installed via LuaRocks.")
 cells using LaTeX macros.")
     (license license:expat)))
 
+(define-public texlive-luaquotes
+  (package
+    (name "texlive-luaquotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luaquotes/"
+                   "tex/lualatex/luaquotes/")
+             (base32
+              "0lla3bd5prh5ld1p88f8c3mfck6c6jn241fq1fzz0a9vdhfsbpv0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luaquotes")
+    (synopsis "Smart setting of quotation marks")
+    (description
+     "This package automatically generates quotation marks and punctuation
+depending on the selected language.")
+    (license (list license:lppl1.3c license:cc-by-sa3.0))))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
