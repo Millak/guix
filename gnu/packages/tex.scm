@@ -16888,6 +16888,29 @@ with LuaTeX.  It loads packages @code{fontspec}, @code{luatexbase} and
 @code{lualibs}, and provides additional user-level features and goodies.")
     (license license:public-domain)))
 
+(define-public texlive-luatruthtable
+  (package
+    (name "texlive-luatruthtable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luatruthtable/"
+                   "tex/lualatex/luatruthtable/")
+             (base32
+              "18k0zk9zxfprcjxzkmfb2j1lk4ldk5hxi0ch1sy0n29f06qcl740")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luatruthtable")
+    (synopsis "Generate truth tables of boolean values in LuaLaTeX")
+    (description
+     "This package provides an easy way for generating truth tables of boolean
+values in LuaLaTeX. The time required for operations is no issue while
+compiling with LuaLaTeX. The package supports nesting of commands for multiple
+operations.  It can be modified or extended by writing custom lua programs.
+There is no need to install lua on users system as TeX distributions (TeX Live
+or MikTeX) come bundled with LuaLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
