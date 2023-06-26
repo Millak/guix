@@ -13817,6 +13817,26 @@ contributions to PDF metadata in a structured XMP format which can be picked
 up by search engines and knowledge graphs.")
     (license license:expat)))
 
+(define-public texlive-selnolig
+  (package
+    (name "texlive-selnolig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/selnolig/"
+                   "tex/lualatex/selnolig/")
+             (base32
+              "0xx3agmd7ply84jjx1kcg4jpix7qg1y3wrd2kr7dv74jw5cffrfq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/selnolig")
+    (synopsis "Selectively disable typographic ligatures")
+    (description
+     "The package suppresses typographic ligatures selectively, i.e., based on
+predefined search patterns.  The search patterns focus on ligatures deemed
+inappropriate because they span morpheme boundaries.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-standalone
   (package
     (name "texlive-standalone")
