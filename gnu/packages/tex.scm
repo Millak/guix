@@ -15524,6 +15524,118 @@ used and strongly recommended in practice.")
 LaTeX which have widespread use.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-luatex
+  (package
+    (name "texlive-collection-luatex")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-addliga
+           texlive-auto-pst-pdf-lua
+           texlive-barracuda
+           texlive-bezierplot
+           texlive-blopentype
+           texlive-checkcites
+           texlive-chickenize
+           texlive-chinese-jfm
+           texlive-cloze
+           texlive-collection-basic
+           texlive-combofont
+           texlive-cstypo
+           texlive-ctablestack
+           texlive-ekdosis
+           texlive-emoji
+           texlive-emojicite
+           texlive-enigma
+           texlive-innerscript
+           texlive-interpreter
+           texlive-kanaparser
+           texlive-ligtype
+           texlive-linebreaker
+           texlive-lparse
+           texlive-lt3luabridge
+           texlive-lua-typo
+           texlive-lua-uca
+           texlive-lua-ul
+           texlive-lua-uni-algos
+           texlive-lua-visual-debug
+           texlive-lua-widow-control
+           texlive-luaaddplot
+           texlive-luacas
+           texlive-luacensor
+           texlive-luacode
+           texlive-luacolor
+           texlive-luacomplex
+           texlive-luagcd
+           texlive-luahyphenrules
+           texlive-luaimageembed
+           texlive-luaindex
+           texlive-luainputenc
+           texlive-luaintro
+           texlive-luakeys
+           texlive-lualatex-doc
+           texlive-lualatex-math
+           texlive-lualatex-truncate
+           texlive-lualibs
+           texlive-lualinalg
+           texlive-luamathalign
+           texlive-luamaths
+           texlive-luamodulartables
+           texlive-luamplib
+           texlive-luaoptions
+           texlive-luaotfload
+           texlive-luapackageloader
+           texlive-luaprogtable
+           texlive-luaquotes
+           texlive-luarandom
+           texlive-luaset
+           texlive-luatex85
+           texlive-luatexbase
+           texlive-luatexko
+           texlive-luatextra
+           texlive-luatruthtable
+           texlive-luavlna
+           texlive-luaxml
+           texlive-lutabulartools
+           texlive-minim
+           texlive-minim-math
+           texlive-minim-mp
+           texlive-minim-pdf
+           texlive-minim-xmp
+           texlive-newpax
+           texlive-nodetree
+           texlive-odsfile
+           texlive-optex
+           texlive-pdfarticle
+           texlive-pdfextra
+           texlive-penlight
+           texlive-piton
+           texlive-placeat
+           texlive-plantuml
+           texlive-pyluatex
+           texlive-scikgtex
+           texlive-selnolig
+           texlive-showhyphenation
+           texlive-showkerning
+           texlive-spacekern
+           texlive-spelling
+           texlive-stricttex
+           texlive-truthtable
+           texlive-tsvtemplate
+           texlive-typewriter
+           texlive-uninormalize
+           texlive-yamlvars))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "LuaTeX packages")
+    (description
+     "Packages for LuaTeX, a TeX engine using Lua as an embedded scripting and
+extension language, with native support for Unicode, OpenType/TrueType fonts,
+and both PDF and DVI output.  The LuaTeX engine itself, and plain formats, are
+in @code{collection-basic}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-metapost
   (package
     (name "texlive-collection-metapost")
