@@ -14137,6 +14137,27 @@ automates most of the guidelines in the APA 7th edition style guide for
 citations and references.")
     (license license:lppl1.3c)))
 
+(define-public texlive-truthtable
+  (package
+    (name "texlive-truthtable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/truthtable/"
+                   "tex/lualatex/truthtable/")
+             (base32
+              "193326nni5xnjkz9hhc1pjzkv0qrbz73irz6vixd8igpbavi2dzv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/truthtable")
+    (synopsis
+     "Automatically generate truth tables for given variables and statements")
+    (description
+     "This LuaLaTeX package permits to automatically generate truth tables
+given a table header.  It supports a number of logical operations which can be
+combined as needed.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-todonotes
   (package
     (name "texlive-todonotes")
