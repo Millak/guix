@@ -9100,33 +9100,45 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
 (define-public ruby-stackprof
   (package
     (name "ruby-stackprof")
-    (version "0.2.17")
+    (version "0.2.25")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "stackprof" version))
        (sha256
-        (base32 "06lz70k8c0r7fyxk1nc3idh14x7nvsr21ydm1bsmbj00jyhmfzsn"))))
+        (base32 "0bhdgfb0pmw9mav1kw9fn0ka012sa0i3h5ppvqssw5xq48nhxnr8"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'skip-dubious-test
-           (lambda _
-             ,@(if (or (target-riscv64?)
-                       (target-ppc32?))
-                 ;; This unreliable test can fail with "Expected 32 to be <= 25."
-                 '((substitute* "test/test_stackprof.rb"
-                     ((".*assert_operator profile\\[:missed_samples.*") "")))
-                 ;; This unreliable test can fail with "Expected 0 to be >= 1."
-                 '((substitute* "test/test_stackprof.rb"
-                     (("def test_(cputime)" _ name)
-                      (string-append "def skip_" name)))))))
-         (add-before 'check 'build-tests
-           (lambda _
-             (invoke "rake" "compile"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-gemspec
+            (lambda _
+              (substitute* "stackprof.gemspec"
+                (("rake-compiler.*")
+                 "rake-compiler>.freeze, [\"> 0.9\"])\n")
+                (("mocha.*")
+                 "mocha>.freeze, [\"> 0.14\"])\n"))))
+          (add-before 'check 'skip-dubious-test
+            (lambda _
+              #$(if (or (target-riscv64?)
+                        (target-ppc32?))
+                    ;; This unreliable test can fail with "Expected 32 to be <= 25."
+                    #~(substitute* "test/test_stackprof.rb"
+                        ((".*assert_operator profile\\[:missed_samples.*") ""))
+                    ;; This unreliable test can fail with "Expected 0 to be >= 1."
+                    #~(substitute* "test/test_stackprof.rb"
+                        (("def test_(cputime)" _ name)
+                         (string-append "def skip_" name))))))
+          (add-before 'check 'build-tests
+            (lambda _
+              (invoke "rake" "compile")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "bundle" "exec" "rake" "default")))))))
     (native-inputs
-     (list ruby-mocha ruby-rake-compiler))
+     (list bundler ruby-mocha-1 ruby-rake-compiler))
     (synopsis "Sampling profiler for Ruby code")
     (description
      "@code{stackprof} is a fast sampling profiler for Ruby code, with cpu,
