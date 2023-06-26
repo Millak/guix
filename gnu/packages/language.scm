@@ -854,7 +854,7 @@ noun phrases, verb phrases, etc.).")
 (define-public praat
   (package
     (name "praat")
-    (version "6.1.30")
+    (version "6.1.49")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -863,7 +863,7 @@ noun phrases, verb phrases, etc.).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pjfifyv3wjn68l3i2dr83xm75nf2kxvfxrk9qqbmwz58p183jw4"))))
+                "17ymrnvwvb08x61ygqlnfzzvggz937miix7rnk8vscrznywhh4jc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test target
@@ -882,7 +882,7 @@ noun phrases, verb phrases, etc.).")
              #t)))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("gtk" ,gtk+-2)
+       ("gtk" ,gtk+)
        ("jack" ,jack-1)
        ("publesaudio" ,pulseaudio)))
     (native-inputs
