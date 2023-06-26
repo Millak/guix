@@ -14868,6 +14868,28 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
 @code{\\minsizebox}, @code{\\maxsizebox} and @code{\\phantombox}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-auto-pst-pdf-lua
+  (package
+    (name "texlive-auto-pst-pdf-lua")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/auto-pst-pdf-lua/"
+                   "tex/latex/auto-pst-pdf-lua/")
+             (base32
+              "1wkhdg47qjpc0yv47z1jmrmpnq8zic6bqfmay3ry6lvv47f775z1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-iftex))
+    (home-page "https://ctan.org/pkg/auto-pst-pdf-lua")
+    (synopsis "Using LuaLaTeX together with PostScript code")
+    (description
+     "This package is a slightly modified version of @code{auto-pst-pdf} by
+Will Robertson, which itself is a wrapper for @code{pst-pdf} by Rolf
+Niepraschk.  The package allows the use of LuaLaTeX together with PostScript
+related code, e.g., PSTricks.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
