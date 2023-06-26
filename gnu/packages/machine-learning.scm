@@ -1471,26 +1471,17 @@ with your favorite libraries.")
 (define-public python-threadpoolctl
   (package
     (name "python-threadpoolctl")
-    (version "2.1.0")
+    (version "3.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "threadpoolctl" version))
         (sha256
          (base32
-          "0szsxcm2fbxrn83iynn42bnvrdh7mfsmkhfn8pdn7swblfb7rifx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest"))
-             #t)))))
+          "100k76nmajf408lbn5ipis1gilklcs6sbqyqy3hhlh54zanbldd3"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-flit-core python-pytest))
     (home-page "https://github.com/joblib/threadpoolctl")
     (synopsis "Python helpers for common threading libraries")
     (description "Thread-pool Controls provides Python helpers to limit the
