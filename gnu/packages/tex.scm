@@ -14819,6 +14819,26 @@ OpenType-enabled TeX by Jonathan Kew.")
 graphics file extensions recognised by package @code{graphics}.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-addliga
+  (package
+    (name "texlive-addliga")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/addliga/"
+                   "tex/lualatex/addliga/")
+             (base32
+              "1gbdbwskba1rf3bmvwms3i3crj3dcqqg69wdzfdyy1a6ml05qpc7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/addliga")
+    (synopsis "Access basic ligatures in legacy TrueType fonts")
+    (description
+     "This small and simple package allows LuaLaTeX users to access basic
+ligatures (ff, fi, ffi, fl, ffl) in legacy TrueType fonts (those
+lacking a liga table) accessed via @code{fontspec}.")
+    (license license:public-domain)))
+
 (define-public texlive-adjustbox
   (package
     (name "texlive-adjustbox")
