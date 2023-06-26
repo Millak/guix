@@ -16867,6 +16867,27 @@ outcome using this package rather than other Hangul macros operating on other
 engines.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luatextra
+  (package
+    (name "texlive-luatextra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luatextra/"
+                   "source/lualatex/luatextra/"
+                   "tex/lualatex/luatextra/")
+             (base32
+              "1i82x51rcdll5r6x63j5qqahb277a1xdrzpck30xlggwwlns0jdc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luatextra")
+    (synopsis "Additional macros for Plain TeX and LaTeX in LuaTeX")
+    (description
+     "The package provides a coherent extended programming environment for use
+with LuaTeX.  It loads packages @code{fontspec}, @code{luatexbase} and
+@code{lualibs}, and provides additional user-level features and goodies.")
+    (license license:public-domain)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
