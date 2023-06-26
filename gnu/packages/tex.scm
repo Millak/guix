@@ -6357,6 +6357,28 @@ the LaTeX standard foating environments @code{figure} and @code{table}.")
 
 (define-deprecated-package texlive-latex-newfloat texlive-newfloat)
 
+(define-public texlive-newpax
+  (package
+    (name "texlive-newpax")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newpax/" "source/latex/newpax/"
+                   "tex/latex/newpax/")
+             (base32
+              "1b8z1k9gn0g1q6qyixgwds61b2844kiqb0sfvhn9x38fnqgzy83j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newpax")
+    (synopsis "Experimental package to extract and reinsert PDF annotations")
+    (description
+     "The package is based on the @code{pax} package from Heiko Oberdiek.  It
+offers a Lua-based alternative to the java based @file{pax.jar} to extract the
+annotations from a PDF.  The resulting file can then be used together with
+@file{pax.sty}.  It also offers an extended style which works with all three
+major engines.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-newunicodechar
   (package
     (name "texlive-newunicodechar")
