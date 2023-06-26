@@ -11920,6 +11920,28 @@ positioning (the grid may be disabled, for final copy using the command
 \\placeatsetup).")
     (license license:lppl1.3+)))
 
+(define-public texlive-plantuml
+  (package
+    (name "texlive-plantuml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/plantuml/"
+                   "tex/lualatex/plantuml/")
+             (base32
+              "00ram4dm1n7v9xd50xhvp1jxih4y431sq05snqaxj292ib0yh5b8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plantuml")
+    (synopsis
+     "Support for rendering UML diagrams using syntax and tool of PlantUML")
+    (description
+     "The package provides support for rendering UML diagrams using the syntax
+and tools of PlantUML.  The PlantUML syntax is very short and thus enables
+quickly specifying UML diagrams.  Using @command{dot}, PlantUML layouts the
+diagrams.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-koma-script
   (package
     (name "texlive-koma-script")
