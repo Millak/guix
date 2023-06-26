@@ -14935,6 +14935,34 @@ numeric precision).  @code{bezierplot} also finds special points such as
 extreme points and inflection points and reduces the number of used points.")
     (license license:lppl1.3c)))
 
+(define-public texlive-gates
+  (package
+    (name "texlive-gates")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/gates/" "tex/generic/gates/")
+             (base32
+              "0brcms8qbnsyiqnnqxyzqp12z1xpvfzb5hgh6kqm28904lr84i4g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gates")
+    (synopsis "Support for writing modular and customisable code")
+    (description
+     "The package provides the means of writing code in a modular fashion: big
+macros or functions are divided into small chunks (called gates) with names,
+which can be externally controlled (e.g., they can be disabled, subjected to
+conditionals, loops...) and/or augmented with new chunks.  Thus complex code
+may easily be customised without having to rewrite it, or even understand its
+implementation: the behavior of existing gates can be modified, and new ones
+can be added, without endangering the whole design.  This allows code to be
+hacked in ways the original authors might have never envisioned.  The
+@code{gates} package is implemented independently for both TeX and Lua.  The
+TeX implementation, running in any current environment, requires the
+@code{texapi} package, whereas the Lua version can be run with any Lua
+interpreter, not just LuaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
