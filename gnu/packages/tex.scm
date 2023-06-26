@@ -16185,6 +16185,28 @@ Customisable colours are used to highlight these flaws, and the list of pages
 on which typographical flaws were found is printed.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lua-uca
+  (package
+    (name "texlive-lua-uca")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/lua-uca/" "scripts/lua-uca/"
+                   "source/support/lua-uca/")
+             (base32
+              "03wpdaz0z3zqfjs43ar65lx521qyf0c2q62b5p53kdx17xfr09jz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-uca")
+    (synopsis "Unicode Collation Algorithm library for Lua")
+    (description
+     "The Lua-UCA library provides basic support for Unicode Collation
+Algorithm in Lua.  It can be used to sort arrays of strings according to rules
+of particular languages.  It can be used in other Lua projects that need to
+sort text in a language dependent way, like indexing processors, bibliographic
+generators, etc.")
+    (license license:expat)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
