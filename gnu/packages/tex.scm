@@ -16802,6 +16802,26 @@ cells using LaTeX macros.")
 depending on the selected language.")
     (license (list license:lppl1.3c license:cc-by-sa3.0))))
 
+(define-public texlive-luarandom
+  (package
+    (name "texlive-luarandom")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luarandom/"
+                   "tex/lualatex/luarandom/")
+             (base32
+              "1hzq29prnwgvp400d26fdjhh812gwwgmlwb22xhj29s9f0k2g1qy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luarandom")
+    (synopsis "Create lists of random numbers")
+    (description
+     "This package can create lists of random numbers for any given interval.
+It is possible to get lists with or without multiple numbers.  The random
+generator will be initialized by the system time.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
