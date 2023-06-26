@@ -8380,6 +8380,29 @@ detecting undefined and unused references from LaTeX auxiliary or bibliography
 files.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chickenize
+  (package
+    (name "texlive-chickenize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/chickenize/"
+                   "source/luatex/chickenize/"
+                   "tex/luatex/chickenize/")
+             (base32
+              "055lkxc2igr0qh1lcdbnh2w0z92v3wkjgp1hpbbrj8r5kvpm7nvy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chickenize")
+    (synopsis "Use Lua callbacks for some textual effects")
+    (description
+     "The package allows manipulations of any LuaTeX document.  Most of the
+package's functions are merely for fun or educational use, but some
+functions (for example, @code{colorstretch} for visualising the badness and
+font expansion of each line, and @code{letterspaceadjust} doing what its name
+says) could be useful in a normal LuaTeX document.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cmap
   (package
     (name "texlive-cmap")
