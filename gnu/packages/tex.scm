@@ -13794,6 +13794,29 @@ keys.")
 
 (define-deprecated-package texlive-latex-xkeyval texlive-xkeyval)
 
+(define-public texlive-scikgtex
+  (package
+    (name "texlive-scikgtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/scikgtex/"
+                   "tex/lualatex/scikgtex/")
+             (base32
+              "0p7y7qd5kmlhr4v72x8krxihzjm80fkb65wh28rr2r54rw8ag3hc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scikgtex")
+    (synopsis
+     "Mark research contributions in scientific documents and embed them in PDF metadata")
+    (description
+     "Scientific Knowledge Graph TeX (SciKgTeX) is a LuaLaTeX package which
+makes it possible to annotate specific research contributions in scientific
+documents.  SciKGTeX will enrich the document by adding the marked
+contributions to PDF metadata in a structured XMP format which can be picked
+up by search engines and knowledge graphs.")
+    (license license:expat)))
+
 (define-public texlive-standalone
   (package
     (name "texlive-standalone")
