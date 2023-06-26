@@ -13837,6 +13837,28 @@ predefined search patterns.  The search patterns focus on ligatures deemed
 inappropriate because they span morpheme boundaries.")
     (license license:lppl1.3+)))
 
+(define-public texlive-showhyphenation
+  (package
+    (name "texlive-showhyphenation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/showhyphenation/"
+                   "tex/lualatex/showhyphenation/")
+             (base32
+              "0v8rjr828pzcn85zqbrw3fnrfyvn7cscqyg5mm08wyay990lkhny")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/showhyphenation")
+    (synopsis "Marking of hyphenation points")
+    (description
+     "The package shows the hyphenation points in the document by either
+inserting small triangles below the baseline or by typesetting explicit
+hyphens.  The markers are correctly placed even within ligatures and their
+size adjusts to the font size.  By option the markers can be placed behind or
+in front of the glyphs.  The package requires LuaLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-standalone
   (package
     (name "texlive-standalone")
