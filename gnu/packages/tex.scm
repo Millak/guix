@@ -16470,6 +16470,33 @@ with images into a single TeX file, or with automatically generated
 graphics.")
     (license license:expat)))
 
+(define-public texlive-luaindex
+  (package
+    (name "texlive-luaindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luaindex/" "scripts/luaindex/"
+                   "source/lualatex/luaindex/"
+                   "tex/lualatex/luaindex/")
+             (base32
+              "0a2xfzrc663jmd2s5vi5p38pwd16mbm5602pxc3kszza8whqlfdn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "lualatex"
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; FIXME: Building documentation requires shell-escape to be
+               ;; allowed.  I couldn't find a way to generate the package
+               ;; only.
+               (delete 'build))))
+    (home-page "https://ctan.org/pkg/luaindex")
+    (synopsis "Create index using LuaLaTeX")
+    (description
+     "Luaindex provides (yet another) index processor, written in Lua.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
