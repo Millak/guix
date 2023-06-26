@@ -14181,6 +14181,26 @@ a simple and visually appealing way.  The package takes several options to
 enable customization and finetuning of the visual appearance.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tsvtemplate
+  (package
+    (name "texlive-tsvtemplate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/tsvtemplate/"
+                   "tex/luatex/tsvtemplate/")
+             (base32
+              "05q1vfsy9w0pmc489dl995iqr9srdv107mj89nlc269m3wjnwn7a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tsvtemplate")
+    (synopsis "Apply a template to a TSV file")
+    (description
+     "This is a simple TSV (tab-separated values) reader for LuaLaTeX and
+plain LuaTeX.  It also supports (non-quoted) comma-separated values, or indeed
+values separated by any character.")
+    (license license:eupl1.2)))
+
 (define-public texlive-units
   (package
     (name "texlive-units")
