@@ -10244,6 +10244,30 @@ The @code{mweights} package is used to manage the selection of font weights.")
                    license:silofl1.1
                    license:lppl))))
 
+(define-public texlive-librarian
+  (package
+    (name "texlive-librarian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/librarian/"
+                   "tex/generic/librarian/")
+             (base32
+              "1a40ac9vg2niafg6dd2iv0c5nrxqxz8vhh2awdw756xsd0znb5n0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/librarian")
+    (synopsis "Tools to create bibliographies in TeX")
+    (description
+     "The package extracts information in @file{.bib} files, makes it
+available in the current document, and sorts lists of entries according to
+that information and the user's specifications.  Citation and bibliography
+styles can then be written directly in TeX, without any use of BibTeX.  The
+package works with all formats that use plain TeX's basic syntactic sugar; the
+distribution includes a third-party file for ConTeXt and a style file for
+LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-dejavu
   (package
     (name "texlive-dejavu")
