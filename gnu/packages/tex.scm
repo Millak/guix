@@ -14890,6 +14890,27 @@ Niepraschk.  The package allows the use of LuaLaTeX together with PostScript
 related code, e.g., PSTricks.")
     (license license:lppl1.3c)))
 
+(define-public texlive-barracuda
+  (package
+    (name "texlive-barracuda")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/barracuda/" "scripts/barracuda/"
+                   "tex/luatex/barracuda/")
+             (base32
+              "1v318nbbbp2klp0rykzb3skqqw4hhj1hbliigmp3qh34iiq3wqh0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/barracuda")
+    (synopsis "Draw barcodes with Lua")
+    (description
+     "The Barracuda library is a modular Lua package for drawing barcode
+symbols.  It provides modules for writing barcodes from a LuaTeX document.  It
+is also possible to use Barracuda with a standalone Lua interpreter to draw
+barcodes in different graphic formats like SVG.")
+    (license license:gpl2)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
