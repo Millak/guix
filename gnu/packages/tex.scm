@@ -16119,6 +16119,28 @@ reference mechanism.  Line numbering may be extended to footnote lines, using
 the @code{fnlineno} package.")
     (license license:lppl1.3a+)))
 
+(define-public texlive-lparse
+  (package
+    (name "texlive-lparse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/lparse/" "tex/luatex/lparse/")
+             (base32
+              "1m75w69qm67j82ja0lp38yckdsbn465aipzdbi2kg4y2xz34hli1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lparse")
+    (synopsis "Lua module for parsing key-value options")
+    (description
+     "@code{lparse} is derived from @code{xparse}, but only works with LuaTeX.
+Just as with xparse, it is possible to use a special syntax consisting of
+single letters to express the arguments of a macro.  However, @code{lparse} is
+able to read arguments regardless of the macro systemd used -- whether LaTeX,
+or ConTeXt, or even plain TeX.  Of course, LuaTeX must always be used as the
+engine.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
