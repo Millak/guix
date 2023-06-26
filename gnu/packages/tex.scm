@@ -16579,6 +16579,26 @@ the document gathers information from several sources, and offers links to
 others.")
     (license license:fdl1.3+)))
 
+(define-public texlive-lualatex-truncate
+  (package
+    (name "texlive-lualatex-truncate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lualatex-truncate/"
+                   "source/lualatex/lualatex-truncate/"
+                   "tex/lualatex/lualatex-truncate/")
+             (base32
+              "1ash4zy97qr9vl3j0gpf16srhi8ymfz3h9khlp59kyq9c921rcla")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lualatex-truncate")
+    (synopsis "Wrapper for using the @code{truncate} package with LuaLaTeX")
+    (description
+     "This package provides a wrapper for the @code{truncate} package, thus
+fixing issues related to LuaTeX's hyphenation algorithm.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
