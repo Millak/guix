@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
@@ -48,6 +48,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
+  #:use-module (guix build-system r)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -71,6 +72,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
@@ -119,6 +121,7 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
@@ -2119,6 +2122,34 @@ using the dataset of topographical information collected by
 @url{https://www.OpenStreetMap.org}.")
    (home-page "https://www.routino.org/")
    (license license:agpl3+)))
+
+(define-public r-rnaturalearthhires
+  (let ((commit "c3785a8c44738de6ae8f797080c0a337ebed929d")
+        (revision "1"))
+    (package
+      (name "r-rnaturalearthhires")
+      (version (git-version "0.2.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ropensci/rnaturalearthhires")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1fr0yb2fbr9zbk7gqr3rnzz2w4ijjpl6hlzdrh4n27lf0ip3h0cx"))))
+      (properties `((upstream-name . "rnaturalearthhires")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-sp))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/ropensci/rnaturalearthhires")
+      (synopsis
+       "High Resolution World Vector Map Data from Natural Earth used in rnaturalearth")
+      (description
+       "Facilitates mapping by making natural earth map data from http://
+www.naturalearthdata.com/ more easily available to R users.  Focuses on vector
+data.")
+      (license license:cc0))))
 
 (define-public qmapshack
   (package
