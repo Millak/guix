@@ -16911,6 +16911,32 @@ There is no need to install lua on users system as TeX distributions (TeX Live
 or MikTeX) come bundled with LuaLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luavlna
+  (package
+    (name "texlive-luavlna")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luavlna/" "tex/luatex/luavlna/")
+             (base32
+              "1daa8gdkava15vvvfgr63mrq85l2ni0ydh9l17i9hyhw40mgz4bb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luavlna")
+    (synopsis
+     "Prevent line breaks after single letter words, units, or academic titles")
+    (description
+     "In some languages, like Czech or Polish, there should be no single
+letter words at the end of a line, according to typographical norms.  This
+package handles such situations using LuaTeX's callback mechanism.  In doing
+this, the package can detect languages used in the text and insert spaces only
+in parts of the document where languages requiring this feature are used.
+Another feature of this package is the inclusion of non-breakable space after
+initials (like in personal names), after or before academic degrees, and
+between numbers and units.  The package supports both plain LuaTeX and
+LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
