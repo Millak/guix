@@ -16717,6 +16717,32 @@ a document, using LuaTeX's built-in MetaPost library.  The facility is only
 available in PDF mode.")
     (license license:gpl2)))
 
+(define-public texlive-luaoptions
+  (package
+    (name "texlive-luaoptions")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luaoptions/"
+                   "tex/lualatex/luaoptions/")
+             (base32
+              "143cjll4dkjb3bp9755c5wsq447mvw8k043mqyi01qskz5wq45yf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luaoptions")
+    (synopsis "Option handling for LuaLaTeX packages")
+    (description
+     "This LuaLaTeX package provides extensive support for handling options,
+on package level and locally.  It allows the declaration of sets of options,
+along with defaults, allowed values and limited type checking.  These options
+can be enforced as package options, changed at any point during a document, or
+overwritten locally by optional macro arguments.  It is also possible to
+instantiate an Options object as an independent Lua object, without linking it
+to a package.  Luaoptions can be used to enforce and prepopulate options, or
+it can be used to simply handle the parsing of optional @samp{key=value}
+arguments into proper Lua tables.")
+    (license license:expat)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
