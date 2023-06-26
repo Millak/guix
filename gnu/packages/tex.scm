@@ -8996,6 +8996,33 @@ texlive-2019.3/Master/texmf-dist/doc/fonts/ec/copyrite.txt"))))
 
 (define-deprecated-package texlive-fonts-ec texlive-ec)
 
+(define-public texlive-ekdosis
+  (package
+    (name "texlive-ekdosis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/ekdosis/"
+                   "source/lualatex/ekdosis/"
+                   "tex/lualatex/ekdosis/")
+             (base32
+              "0bzydy6gcmikqsdiaji30a2ycifzaafbg0ccv5lq5an7rv2hajmj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ekdosis")
+    (synopsis "Typesetting TEI-xml compliant Critical Editions")
+    (description
+     "@code{ekdosis} is a LuaLaTeX package designed for multilingual critical
+editions.  It can be used to typeset texts and different layers of critical
+notes in any direction accepted by LuaTeX. Texts can be arranged in running
+paragraphs or on facing pages, in any number of columns which in turn can be
+synchronized or not.  In addition to printed texts, @code{ekdosis} can convert
+@file{.tex} source files so as to produce TEI XML-compliant critical editions.
+Database-driven encoding under LaTeX then allows extraction of texts entered
+segment by segment according to various criteria: main edited text, variant
+readings, translations or annotated borrowings between texts.")
+    (license (list license:gpl3+ license:fdl1.3+))))
+
 (define-public texlive-ae
   (package
     (name "texlive-ae")
