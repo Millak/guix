@@ -16670,6 +16670,31 @@ package commands can be used in any environment (including the mathematics
 environment).")
     (license license:lppl1.3c)))
 
+(define-public texlive-luamodulartables
+  (package
+    (name "texlive-luamodulartables")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luamodulartables/"
+                   "tex/lualatex/luamodulartables/")
+             (base32
+              "18yc3fincdvfk1zj5m2gah35mzlvg6rbby8m71clnjk9knmzjcxy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luamodulartables")
+    (synopsis "Generate modular addition and multiplication tables")
+    (description
+     "This package is developed to generate modular addition and
+multiplication tables for positive integers.  It provides an easy way to
+generate modular addition and modular multiplication tables for positive
+integers in LaTeX documents.  The commands in the package have optional
+arguments for the formatting of tables.  These commands can be used in an
+environment similar to a tabular or array environment.  The commands can also
+be used with the @code{booktabs} package, which provides nice formatting of
+tables in LaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
