@@ -11450,6 +11450,42 @@ and back-ends.  It also ensures compatibility with the @code{media9} and
 
 (define-deprecated-package texlive-latex-ocgx2 texlive-ocgx2)
 
+(define-public texlive-optex
+  (package
+    (name "texlive-optex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/optex.1"
+                   "doc/man/man1/optex.man1.pdf"
+                   "doc/optex/base/"
+                   "tex/optex/base/"
+                   "tex/optex/demo/"
+                   "tex/optex/pkg/")
+             (base32
+              "0bcrj9wrimcd2pxrcfk7x3vkhxzij4422l19a8j4h299lkq3pbx0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "optex")))
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-cm
+           texlive-ec
+           texlive-hyphen-base
+           texlive-librarian
+           texlive-lm
+           texlive-luaotfload
+           texlive-luatex
+           texlive-rsfs
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/optex")
+    (synopsis "LuaTeX format based on Plain TeX and OPmac")
+    (description
+     "OpTeX is a LuaTeX format based on Plain TeX macros with power from
+OPmac (fonts selection system, colors, external graphics, references,
+hyperlinks, ...) with Unicode fonts.")
+    (license license:public-domain)))
+
 (define-public texlive-ms
   (package
     (name "texlive-ms")
