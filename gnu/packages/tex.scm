@@ -9176,6 +9176,53 @@ TeX, and LaTeX font definition and other relevant files.")
                    license:silofl1.1
                    license:asl2.0))))
 
+(define-public texlive-innerscript
+  (package
+    (name "texlive-innerscript")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/innerscript/"
+                   "source/lualatex/innerscript/"
+                   "tex/lualatex/innerscript/")
+             (base32
+              "1nq2il8av1169is3kbq761375vk4znb2cc3f8vk9ab3fh5vqkcjv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "lualatex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-documentation-build
+            ;; Only extract the ".sty" file.  Documentation build fails with
+            ;; "Command \code already defined" error.
+            (lambda _
+              (substitute* "source/lualatex/innerscript/innerscript.dtx"
+                (("\\DocInput\\{innerscript.dtx\\}") "")))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-amsfonts
+                  texlive-booktabs
+                  texlive-epstopdf-pkg
+                  texlive-etoolbox
+                  texlive-geometry
+                  texlive-hypdoc
+                  texlive-hyperref
+                  texlive-infwarerr
+                  texlive-kvoptions
+                  texlive-microtype
+                  texlive-pdftexcmds))))
+    (home-page "https://ctan.org/pkg/innerscript")
+    (synopsis "Modifies automatic mathematics spacing")
+    (description
+     "This package modifies two aspects of TeX's automatic interatom
+mathematics spacing.  It uses LuaTeX's @code{\\Umath} primitives to make
+superscripts and subscripts more closely resemble @code{\\textstyle} and
+@code{\\displaystyle} math and to treat @code{\\mathinner} subformulas as
+@code{\\mathord}, effectively eliminating this class.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-times
   (package
     (name "texlive-times")
