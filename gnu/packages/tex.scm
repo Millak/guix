@@ -13567,6 +13567,25 @@ standards-compliant PDF documents with pdfTeX, LuaTeX and XeTeX.")
 
 (define-deprecated-package texlive-latex-pdfx texlive-pdfx)
 
+(define-public texlive-yamlvars
+  (package
+    (name "texlive-yamlvars")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/yamlvars/"
+                   "tex/lualatex/yamlvars/")
+             (base32
+              "0r9xqjbag1kvyiz369nbz1w15ij5b3bw9msxrnz4864wn2b50cf0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yamlvars")
+    (synopsis "YAML parser and tool for easy LaTeX definition creation")
+    (description
+     "This LuaLaTeX package provides a YAML parser and some functions to
+declare and define LaTeX definitions using YAML files.")
+    (license license:expat)))
+
 (define-public texlive-yax
   (package
     (name "texlive-yax")
