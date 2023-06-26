@@ -6449,6 +6449,27 @@ collect an argument verbatim to either typeset or write it into a file.  The
 used to write the verbatim text to a file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nodetree
+  (package
+    (name "texlive-nodetree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/nodetree/"
+                   "source/luatex/nodetree/"
+                   "tex/luatex/nodetree/")
+             (base32
+              "00lj7wykgc2r5pgijm9lxjrghq8bsx6whanzvsxcwf639mzv3528")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nodetree")
+    (synopsis "Visualize node lists in a tree view")
+    (description
+     "@code{nodetree} is a development package that visualizes the structure
+of node lists.  It uses a similar visual representation for node lists as the
+UNIX @command{tree} command for a folder structure.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-noto
   (package
     (name "texlive-noto")
