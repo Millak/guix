@@ -12996,6 +12996,29 @@ standards-compliant PDF documents with pdfTeX, LuaTeX and XeTeX.")
 
 (define-deprecated-package texlive-latex-pdfx texlive-pdfx)
 
+(define-public texlive-yax
+  (package
+    (name "texlive-yax")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/yax/" "tex/generic/yax/")
+             (base32
+              "01hv550qkmxw63m41v4qykfiracvzvjwxk49y6fc6abg89hfvsj6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yax")
+    (synopsis "Yet Another Key System")
+    (description
+     "YaX is advertised as a key system, but it rather organizes attributes in
+parameters, which parameters can be executed, so that YaX is halfway between
+key management and macro definition (and actually hopes to provide a user's
+interface).  Values assigned to attributes can be retrieved and tested in
+various ways, with full expandability ensured as much as possible.  Finally,
+YaX's syntax is a quite peculiar (as few braces as possible), but may be
+customized.")
+    (license license:lppl)))
+
 (define-public texlive-ydoc
   (package
     (name "texlive-ydoc")
