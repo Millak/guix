@@ -16207,6 +16207,28 @@ sort text in a language dependent way, like indexing processors, bibliographic
 generators, etc.")
     (license license:expat)))
 
+(define-public texlive-lua-ul
+  (package
+    (name "texlive-lua-ul")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lua-ul/"
+                   "source/lualatex/lua-ul/"
+                   "tex/lualatex/lua-ul/")
+             (base32
+              "0xpa41hkjzqcws7yjj6s8ys93qyhnv6zfv7479qbv58h5mgfxzhh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-ul")
+    (synopsis "Underlining for LuaLaTeX")
+    (description
+     "This package provides underlining, strikethough, and highlighting using
+features in LuaLaTeX which avoid the restrictions imposed by other methods.
+In particular, kerning is not affected, the underlined text can use arbitrary
+commands, hyphenation works etc.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
