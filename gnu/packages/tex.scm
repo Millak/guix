@@ -14221,6 +14221,25 @@ Typewriter font, together with a LuaTeX virtual font setup that introduces
 random variability in grey level and angle of each character.")
     (license license:lppl)))
 
+(define-public texlive-uninormalize
+  (package
+    (name "texlive-uninormalize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/uninormalize/"
+                   "tex/lualatex/uninormalize/")
+             (base32
+              "1c4pki1yw5599s9nyj1ir7j26mgbhf1iw7m44685d8la9vbzv8dm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uninormalize")
+    (synopsis "Unicode normalization support")
+    (description
+     "This package provides Unicode normalization (useful for composed
+characters) for LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-units
   (package
     (name "texlive-units")
