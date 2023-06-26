@@ -16229,6 +16229,26 @@ In particular, kerning is not affected, the underlined text can use arbitrary
 commands, hyphenation works etc.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lua-visual-debug
+  (package
+    (name "texlive-lua-visual-debug")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/lua-visual-debug/"
+                   "tex/luatex/lua-visual-debug/")
+             (base32
+              "1g4n4xfqbgcja2x3b7yi59nn76jq695yndv90610pakask2k560l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-visual-debug")
+    (synopsis "Visual debugging with LuaLaTeX")
+    (description
+     "The package uses Lua code to provide visible indications of boxes,
+glues, kerns and penalties in the PDF output.  The package is known to work in
+LaTeX and Plain TeX documents.")
+    (license license:expat)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
