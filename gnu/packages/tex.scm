@@ -11942,6 +11942,31 @@ quickly specifying UML diagrams.  Using @command{dot}, PlantUML layouts the
 diagrams.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pyluatex
+  (package
+    (name "texlive-pyluatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/pyluatex/"
+                   "tex/lualatex/pyluatex/")
+             (base32
+              "0dwqi0m3qf6s41wpavngq1c4wn8yjfas798r4a53wr20y3ajhqnn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pyluatex")
+    (synopsis "Execute Python code on the fly in your LaTeX documents")
+    (description
+     "PyLuaTeX allows you to execute Python code and to include the resulting
+output in your LaTeX documents in a single compilation run.  LaTeX documents
+must be compiled with LuaLaTeX for this to work.  PyLuaTeX runs a Python
+InteractiveInterpreter (actually several if you use different sessions) in the
+background for on-the-fly code execution.  Python code from your LaTeX file is
+sent to the background interpreter through a TCP socket.  This approach allows
+your Python code to be executed and the output to be integrated in your LaTeX
+file in a single compilation run.")
+    (license (list license:expat license:lppl1.3c))))
+
 (define-public texlive-koma-script
   (package
     (name "texlive-koma-script")
