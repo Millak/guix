@@ -11897,6 +11897,29 @@ output.")
 listings.")
     (license license:lppl1.3+)))
 
+(define-public texlive-placeat
+  (package
+    (name "texlive-placeat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/placeat/" "scripts/placeat/"
+                   "source/lualatex/placeat/"
+                   "tex/lualatex/placeat/")
+             (base32
+              "0lwr71sxrs1idy2nqqn2xsi3pmgv0hyfkhhiyir53cix203n18aq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/placeat")
+    (synopsis "Absolute content positioning")
+    (description
+     "The package provides commands so that the user of LuaLaTeX may position
+arbitrary content at any position specified by absolute coordinates on the
+page.  The package draws a grid on each page of the document, to aid
+positioning (the grid may be disabled, for final copy using the command
+\\placeatsetup).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-koma-script
   (package
     (name "texlive-koma-script")
