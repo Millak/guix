@@ -4639,17 +4639,17 @@ use GNU gettext tools for maintenance.")
 (define-public ruby-test-construct
   (package
     (name "ruby-test-construct")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "test_construct" version))
        (sha256
         (base32
-         "1a2ym3l068d0pxzzr95kvqx87zpdsarxslz9ygd4qfm9frrz0kgj"))))
+         "17q7rw92l7r4zh6rkvzrn4dyl8p8p77217vaa1wf7nsv8k5541vy"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list bundler ruby-mocha ruby-rspec))
+     (list bundler ruby-mocha-1 ruby-rspec))
     (synopsis "Creates temporary files and directories for testing")
     (description
      "TestConstruct is a @acronym{DSL, Domain Specific Language} for creating
