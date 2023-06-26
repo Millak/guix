@@ -16626,6 +16626,27 @@ matrices of reasonable size can be handled with ease.  The package can be
 modified or extended by writing custom Lua programs.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luamathalign
+  (package
+    (name "texlive-luamathalign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luamathalign/"
+                   "source/lualatex/luamathalign/"
+                   "tex/lualatex/luamathalign/")
+             (base32
+              "0lj5lc6s30l9k83xrwfjva0v7c9ajv22ybsaz07hadgj17fxqbdn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luamathalign")
+    (synopsis "More flexible alignment in @code{amsmath} environments")
+    (description
+     "This package allows aligning mathematical expressions on points where
+directly using @samp{&} is not possible, especially in nested macros or
+environments.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
