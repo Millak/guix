@@ -858,47 +858,41 @@ noun phrases, verb phrases, etc.).")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/praat/praat")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/praat/praat")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "0kwv0p2bn2x5h0c61rymm87icqqwnbj699awgc5afl4qp53azci8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-failing-tests
-           (lambda _
-             (delete-file "test/sys/graphicsText.praat")
-             #t))
-         (replace 'configure
-           (lambda _
-             (copy-file "makefiles/makefile.defs.linux.pulse" "makefile.defs")
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "./praat" "--run"
-                     "test/runAllTests_batch.praat")
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (copy-file "praat" (string-append bin "/praat")))
-             #t)))))
-    (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("gtk" ,gtk+)
-       ("jack" ,jack-1)
-       ("publesaudio" ,pulseaudio)))
-    (native-inputs
-     (list pkg-config))
+     (list #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'delete-failing-tests
+                          (lambda _
+                            (delete-file "test/sys/graphicsText.praat")))
+                        (replace 'configure
+                          (lambda _
+                            (copy-file "makefiles/makefile.defs.linux.pulse"
+                                       "makefile.defs")))
+                        (replace 'check
+                          (lambda _
+                            (invoke "./praat" "--run"
+                                    "test/runAllTests_batch.praat")))
+                        (replace 'install
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (let* ((out (assoc-ref outputs "out"))
+                                   (bin (string-append out "/bin")))
+                              (mkdir-p bin)
+                              (copy-file "praat"
+                                         (string-append bin "/praat"))))))))
+    (inputs (list alsa-lib gtk+ jack-1 pulseaudio))
+    (native-inputs (list pkg-config))
     (home-page "https://www.fon.hum.uva.nl/praat/")
     (synopsis "Doing phonetics by computer")
-    (description "Praat is a tool to perform phonetics tasks.  It can do speech
+    (description
+     "Praat is a tool to perform phonetics tasks.  It can do speech
 analysis (pitch, formant, intensity, ...), speech synthesis, labelling, segmenting
 and manipulation.")
     (license license:gpl2+)))
