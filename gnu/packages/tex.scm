@@ -16141,6 +16141,27 @@ or ConTeXt, or even plain TeX.  Of course, LuaTeX must always be used as the
 engine.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lt3luabridge
+  (package
+    (name "texlive-lt3luabridge")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/lt3luabridge/"
+                   "source/generic/lt3luabridge/"
+                   "tex/generic/lt3luabridge/")
+             (base32
+              "00nfi3c545kmm6d9hxwl0m3pawg8322g36gm8sfa3y2p8kah6p8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lt3luabridge")
+    (synopsis "Execute Lua code in any TeX engine that exposes the shell")
+    (description
+     "This is an expl3(-generic) package for plain TeX, LaTeX, and ConTeXt
+that allows you to execute Lua code in LuaTeX or any other TeX engine that
+exposes the shell.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
