@@ -4023,7 +4023,7 @@ you are running, what theme or icon set you are using, etc.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
-          (add-before 'build 'path-source-paths
+          (add-before 'build 'patch-source-paths
             (lambda _
               (substitute* "uwufetch.c"
                 (("(/usr(/local)?)(.*;)" all _ _ rest)
