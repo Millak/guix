@@ -384,13 +384,13 @@ a menu system for providing multiple options to the user.")
 (define-public ruby-hoe
   (package
     (name "ruby-hoe")
-    (version "3.21.0")
+    (version "4.0.4")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "hoe" version))
               (sha256
                (base32
-                "0qid0n56mgsjvq5ksxajv0gb92akky8imwgvw22ajms5g4fd6nf4"))))
+                "0r2hy7mq9jd9hsbvskd9sxfbagc92adnn7abzxbda05sscbf46hn"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases
