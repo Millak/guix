@@ -15466,6 +15466,30 @@ package which defines the macro, pre-compiled @file{tfm} files, and
 documentation.")
     (license (license:non-copyleft "file:///doc/fonts/eurosym/COPYING"))))
 
+(define-public texlive-kanaparser
+  (package
+    (name "texlive-kanaparser")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/kanaparser/"
+                   "tex/luatex/kanaparser/")
+             (base32
+              "0bcvxkdb2y60w7c0swi3f8yncli0yswalrdzxjv7h0xp21c202hp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kanaparser")
+    (synopsis "Kana parser for LuaTeX")
+    (description
+     "The package provides a kana parser for LuaTeX.  It is a set of four
+macros that handle transliteration of text: from hiragana and katakana to
+Latin from Latin and katakana to hiragana from Latin and hiragana to katakana
+It can be used to write kana directly using only the ASCII character set or
+for education purposes.  The package has support for obsolete and rarely used
+syllables, some only accessible via the provided toggle macro.")
+    ;; License is BSD.  Assuming original BSD-4.
+    (license license:bsd-4)))
+
 (define-public texlive-kastrup
   (package
     (name "texlive-kastrup")
