@@ -14201,6 +14201,26 @@ plain LuaTeX.  It also supports (non-quoted) comma-separated values, or indeed
 values separated by any character.")
     (license license:eupl1.2)))
 
+(define-public texlive-typewriter
+  (package
+    (name "texlive-typewriter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/typewriter/"
+                   "tex/lualatex/typewriter/")
+             (base32
+              "00c53vbm8fchjggi3h1w49y07ma4cmmliqx2bhkvis6qsqgddw5f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/typewriter")
+    (synopsis "Typeset with a randomly variable monospace font")
+    (description
+     "The typewriter package uses the OpenType Computer Modern Unicode
+Typewriter font, together with a LuaTeX virtual font setup that introduces
+random variability in grey level and angle of each character.")
+    (license license:lppl)))
+
 (define-public texlive-units
   (package
     (name "texlive-units")
