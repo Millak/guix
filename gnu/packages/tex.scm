@@ -16054,6 +16054,29 @@ Lehmann's @code{etoolbox}.")
 package to tables created using the @code{longtable} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ligtype
+  (package
+    (name "texlive-ligtype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/ligtype/"
+                   "tex/lualatex/ligtype/")
+             (base32
+              "18m4j01zhp3kj2ixd53b9z0k5f6idbpr6jv45gw149j5niax1dxg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ligtype")
+    (synopsis "Comprehensive ligature suppression functionalities")
+    (description
+     "This package suppresses inappropriate ligatures following specified
+rules.  Both font and user kerning are applied correctly, and f-glyphs are
+automatically replaced with their short-arm variant (if available).  Also
+there is an emphasis on speed.  By default the package applies German language
+ligature suppression rules.  With the help of options and macros it can be
+used for other languages as well.  The package requires LuaLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lineno
   (package
     (name "texlive-lineno")
