@@ -16743,6 +16743,27 @@ it can be used to simply handle the parsing of optional @samp{key=value}
 arguments into proper Lua tables.")
     (license license:expat)))
 
+(define-public texlive-luapackageloader
+  (package
+    (name "texlive-luapackageloader")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luapackageloader/"
+                   "tex/luatex/luapackageloader/")
+             (base32
+              "0cf2p4zhfvf7f10pbpp332chj46ajknqgb7a8i16v63ivvmgb8m3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-iftex))
+    (home-page "https://ctan.org/pkg/luapackageloader")
+    (synopsis "Allow LuaTeX to load external Lua packages")
+    (description
+     "This package allows LuaTeX to load packages from the default
+@code{package.path} and @code{package.cpath} locations.  This could be useful
+to load external Lua modules, including modules installed via LuaRocks.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
