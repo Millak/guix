@@ -16937,6 +16937,25 @@ between numbers and units.  The package supports both plain LuaTeX and
 LuaLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luaxml
+  (package
+    (name "texlive-luaxml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luaxml/" "tex/luatex/luaxml/")
+             (base32
+              "0j0d9n87rigawqq3xlxk0zi5ry31zqg3p19jmfablvnb9lan3nrc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luaxml")
+    (synopsis "Lua library for reading and serialising XML files")
+    (description
+     "LuaXML is a pure Lua library for reading and serializing XML files.  The
+current release is aimed mainly at support for the @code{odsfile} package.")
+    ;; It uses explicitly the same license as Lua.
+    (license license:x11)))
+
 (define-public texlive-babel-czech
   (package
     (name "texlive-babel-czech")
