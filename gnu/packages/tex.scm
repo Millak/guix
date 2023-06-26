@@ -8403,6 +8403,27 @@ font expansion of each line, and @code{letterspaceadjust} doing what its name
 says) could be useful in a normal LuaTeX document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chinese-jfm
+  (package
+    (name "texlive-chinese-jfm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/chinese-jfm/"
+                   "tex/luatex/chinese-jfm/")
+             (base32
+              "0ixlwivijp6vvzn2j3drr13hk0ylslcd9ws8df24abda93wjm35r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chinese-jfm")
+    (synopsis "Luatexja-jfm files for Chinese typesetting")
+    (description
+     "ChineseJFM is a series of @code{luatexja-jfm} files for better Chinese
+typesetting, providing @code{quanjiao}, @code{banjiao}, and @code{kaiming}
+three styles and other fancy features.  It can be used for both horizontal and
+vertical writing mode in Simplified/Traditional Chinese or Japanese fonts.")
+    (license license:expat)))
+
 (define-public texlive-cmap
   (package
     (name "texlive-cmap")
