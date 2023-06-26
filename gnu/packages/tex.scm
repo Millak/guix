@@ -8506,6 +8506,25 @@ individual cells.")
 
 (define-deprecated-package texlive-latex-colortbl texlive-colortbl)
 
+(define-public texlive-combofont
+  (package
+    (name "texlive-combofont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/combofont/"
+                   "tex/lualatex/combofont/")
+             (base32
+              "05p044znavjjd7cpgjx46i8n6b56rpybhixqs9yaam86nb70ha7n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/combofont")
+    (synopsis "Add NFSS-declarations of combo fonts to LuaLaTeX documents")
+    (description
+     "This highly experimental package can be used to add NFSS-declarations of
+combo fonts to LuaLaTeX documents.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-fancybox
   (package
     (name "texlive-fancybox")
