@@ -13955,6 +13955,27 @@ By default the @code{preview} package is used to display the typeset code
 without margins.")
     (license license:lppl1.3+)))
 
+(define-public texlive-stricttex
+  (package
+    (name "texlive-stricttex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/stricttex/"
+                   "tex/lualatex/stricttex/")
+             (base32
+              "1ddlcwj1bnj6zrkljkz3jywgri34f4g9gshbwd0lzz4nz03v82rv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stricttex")
+    (synopsis "Strictly balanced brackets and numbers in command names")
+    (description
+     "This is a small, LuaLaTeX-only package providing you with three,
+sometimes useful features.  It allows you to make brackets @samp{[...]}
+strict, meaning that each @samp{[} must be balanced by a @samp{]}.  It also
+allows you to use numbers and primes in command names.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-siunitx
   (package
     (name "texlive-siunitx")
