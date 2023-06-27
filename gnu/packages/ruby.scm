@@ -7175,7 +7175,7 @@ aware transformations between times in different time zones.")
 (define-public ruby-tzinfo-data
   (package
     (name "ruby-tzinfo-data")
-    (version "1.2021.1")
+    (version "1.2023.3")
     (source
      (origin
        (method git-fetch)
@@ -7187,59 +7187,62 @@ aware transformations between times in different time zones.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0yzyr3rf8qaw6kxfc0gwpxsb7gl3rhfpx9g1c2z15vapyminhi60"))))
+         "1v3fpfmw485lsc9bfqfcasb9j25g9ywfpmmk648l2vdsh7nipilf"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "Rakefile"
-               (("https://data.iana.org/time-zones/releases")
-                (assoc-ref inputs "tzdata")))))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (substitute* "Rakefile"
-               ;; Don't need gpg, and it may break after a time.
-               (("gpg ") "echo ")
-               (("    sh\\(\\\"make -C" text)
-                (string-append "    sh(\"sed -i 's@/bin/sh@sh@' #{tzdb_combined_path}/Makefile \")\n"
-                               "    sh(\"sed -i 's@cc=@cc?=@' #{tzdb_combined_path}/Makefile \")\n" text)))
-               (setenv "cc" ,(cc-for-target)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Rakefile"
+                (("URI\\.parse\\(url\\)\\.open")
+                 "URI.open(url)")
+                (("https://data.iana.org/time-zones/releases")
+                 (assoc-ref inputs "tzdata")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (substitute* "Rakefile"
+                ;; Don't need gpg, and it may break after a time.
+                (("gpg ") "echo ")
+                (("    sh\\(\\\"make -C" text)
+                 (string-append "    sh(\"sed -i 's@/bin/sh@sh@' #{tzdb_combined_path}/Makefile \")\n"
+                                "    sh(\"sed -i 's@cc=@cc?=@' #{tzdb_combined_path}/Makefile \")\n" text)))
+              (setenv "cc" #$(cc-for-target)))))))
     (propagated-inputs
      (list ruby-tzinfo))
     (native-inputs
      `(("tzdata"
         ,(file-union "tzdata-for-ruby-tzdata-info"
-           `(("tzdata2021a.tar.gz"
+           `(("tzdata2023c.tar.gz"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzdata2021a.tar.gz")
+                 (uri "https://data.iana.org/time-zones/releases/tzdata2023c.tar.gz")
                  (sha256
                   (base32
-                   "022fn6gkmp7pamlgab04x0dm5hnyn2m2fcnyr3pvm36612xd5rrr"))))
-             ("tzdata2021a.tar.gz.asc"
+                   "0p4nvp5bdxxdqh269nvvcfrpycbbfwm31al5whwbpsaa3dfhnl9z"))))
+             ("tzdata2023c.tar.gz.asc"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzdata2021a.tar.gz.asc")
+                 (uri "https://data.iana.org/time-zones/releases/tzdata2023c.tar.gz.asc")
                  (sha256
                   (base32
-                   "0n7h2w8ji1lrxpk0d44wyfshlhr7c9jmwj6lqbxlyvqnfi3gbicx"))))
-             ("tzcode2021a.tar.gz"
+                   "0mrmhczs5qnj1zp6gh4pg6fm0iblr2jmzy0fgh9slinwxmn7pv6m"))))
+             ("tzcode2023c.tar.gz"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzcode2021a.tar.gz")
+                 (uri "https://data.iana.org/time-zones/releases/tzcode2023c.tar.gz")
                  (sha256
                   (base32
-                   "1l02b0jiwp3fl0xd6227i69d26rmx3yrnq0ssq9vvdmm4jhvyipb"))))
-             ("tzcode2021a.tar.gz.asc"
+                   "1rqln88ki0jagi372nqyn7bs03rf2l33081sy2835mwsn4mpzla6"))))
+             ("tzcode2023c.tar.gz.asc"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzcode2021a.tar.gz.asc")
+                 (uri "https://data.iana.org/time-zones/releases/tzcode2023c.tar.gz.asc")
                  (sha256
                   (base32
-                   "1qhlj4lr810s47s1lwcvv1sgvg2sflf98w4sbg1lc8wzv5qxxv7g")))))))))
+                   "0jbx8xjv75qfh7bxa2xmrf97r37057y89rhmrq1gz8s6b8qlzb2i")))))))))
     (synopsis "Data from the IANA Time Zone database")
     (description
      "This library provides @code{TZInfo::Data}, which contains data from the
