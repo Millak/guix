@@ -10582,25 +10582,40 @@ neither too verbose nor too minimal.")
 (define-public ruby-sqlite3
   (package
     (name "ruby-sqlite3")
-    (version "1.4.4")
+    (version "1.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "sqlite3" version))
+       (method git-fetch)        ;for tests
+       (uri (git-reference
+             (url "https://github.com/sparklemotion/sqlite3-ruby")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1z1wa639c278bsipczn6kv8b13fj85pi8gk7x462chqx6k0wm0ax"))))
+         "0ijj8z8fpk2lczydkxv71k250g5gd8ip8klsscxc9f16b01gh9qs"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'add-gemtest-file
-           ;; This file exists in the repository but is not distributed.
-           (lambda _ (invoke "touch" ".gemtest"))))))
+     (list
+      #:gem-flags #~(list "--" "--enable-system-libraries")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "GEM_PATH"
+                        (string-append (getenv "GEM_PATH") ":"
+                                       #$output "/lib/ruby/vendor_ruby"))
+                (invoke "rake" "test")))))))
+    (propagated-inputs
+     (list ruby-mini-portile-2))
     (inputs
      (list sqlite))
     (native-inputs
-     (list ruby-hoe ruby-rake-compiler ruby-mini-portile-2))
+     (list ruby-hoe
+           ruby-ruby-memcheck
+           ruby-rake-compiler
+           ruby-rake-compiler-dock))
     (synopsis "Interface with SQLite3 databases")
     (description
      "This module allows Ruby programs to interface with the SQLite3 database
