@@ -14088,9 +14088,10 @@ TeX packages that are part of the @uref{https://www.tug.org/texlive/,
 TeX Live distribution}.
 
 Information about the package is obtained from the TeX Live package
-database, a plain text file that is included in the @code{texlive-bin}
-package.  The source code is downloaded from possibly multiple locations
-in the SVN repository of the Tex Live project.
+database, a plain text file that is included in the
+@code{texlive-scripts} package.  The source code is downloaded from
+possibly multiple locations in the SVN repository of the Tex Live
+project.
 
 The command command below imports metadata for the @code{fontspec}
 TeX package:
@@ -45406,14 +45407,19 @@ single @TeX{} Live package} (more than 7,000 of them), but it is huge
 (more than 4@tie{}GiB for a single package!).
 
 @item
-The ``modular'' @code{texlive-} packages: you install
-@code{texlive-base}, which provides core functionality and the main
+The ``modular'' @samp{texlive-} packages: you start off with
+a combination of @TeX{} Live @dfn{collections} and
+@dfn{schemes}---``meta-packages'' such as
+@code{texlive-collection-fontsrecommended}, or
+@code{texlive-collection-context}, that provide the set of packages
+needed in this particular domain, schemes being the name for collections
+of such collections.  This grants you core functionality and the main
 commands---@command{pdflatex}, @command{dvips}, @command{luatex},
-@command{mf}, etc.---together with individual packages that provide just
-the features you need---@code{texlive-listings} for the
-@code{listings} package, @code{texlive-hyperref} for @code{hyperref},
-@code{texlive-beamer} for Beamer, @code{texlive-pgf} for PGF/TikZ,
-and so on.
+@command{mf}, etc.  You can then complete your selection with additional
+collections or individual packages that provide just the features you
+need---@code{texlive-listings} for the @code{listings} package,
+@code{texlive-beamer} for Beamer, @code{texlive-pgf} for PGF/TikZ, and
+so on.
 @end itemize
 
 We recommend using the modular package set because it is much less
@@ -45421,29 +45427,29 @@ resource-hungry.  To build your documents, you would use commands such
 as:
 
 @example
-guix shell texlive-base texlive-wrapfig \
-  texlive-hyperref texlive-cm-super -- pdflatex doc.tex
+guix shell texlive-scheme-basic texlive-cm-super -- pdflatex doc.tex
 @end example
 
 You can quickly end up with unreasonably long command lines though.  The
-solution is to instead write a manifest, for example like this one:
+solution is to instead write a manifest, for example like this one,
+which would probably be a reasonable starting point for a French
+@LaTeX{} user:
 
 @lisp
 (specifications->manifest
  '("rubber"
 
-   "texlive-base"
-   "texlive-wrapfig"
+   "texlive-scheme-basic"
+   "texlive-collection-latexrecommended"
+   "texlive-collection-fontsrecommended"
 
-   "texlive-microtype"
-   "texlive-listings" "texlive-hyperref"
+   "texlive-babel-french"
 
    ;; PGF/TikZ
    "texlive-pgf"
 
-   ;; Additional fonts.
-   "texlive-cm-super" "texlive-amsfonts"
-   "texlive-times" "texlive-helvetic" "texlive-courier"))
+   ;; Additional font.
+   "texlive-kpfonts"))
 @end lisp
 
 You can then pass it to any command with the @option{-m} option:
@@ -45452,12 +45458,9 @@ You can then pass it to any command with the @option{-m} option:
 guix shell -m manifest.scm -- pdflatex doc.tex
 @end example
 
-@xref{Writing Manifests}, for more on
-manifests.  In the future, we plan to provide packages for @TeX{} Live
-@dfn{collections}---``meta-packages'' such as @code{fontsrecommended},
-@code{humanities}, or @code{langarabic} that provide the set of packages
-needed in this particular domain.  That will allow you to list fewer
-packages.
+@xref{Writing Manifests}, for more on manifests.  In the future, we plan
+to provide more collections and schemes.  That will allow you to list
+fewer packages.
 
 The main difficulty here is that using the modular package set forces
 you to select precisely the packages that you need.  You can use
@@ -45493,7 +45496,7 @@ you can search the @TeX{} Live package database using the @command{tlmgr}
 command:
 
 @example
-$ guix shell texlive-base -- tlmgr info phvr7t
+$ guix shell texlive-bin -- tlmgr info phvr7t
 tlmgr: cannot find package phvr7t, searching for other matches:
 
 Packages containing `phvr7t' in their title/description:
