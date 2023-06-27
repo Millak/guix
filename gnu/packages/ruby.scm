@@ -8238,7 +8238,7 @@ generates Ruby program.")
   (package
     (name "ruby-rack")
     ;; Do not upgrade to version 3, as Rails doesn't support it yet.
-    (version "2.2.6.3")
+    (version "2.2.7")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -8248,7 +8248,7 @@ generates Ruby program.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "19n33q0v15qjh7kbp2painyzyqg16kkf0mp68vcnlswghmmjcyzq"))))
+         "02r41fr61x0jfhraizc6bsgs40p8mlpvnzix71zwmcvibg384ify"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -8276,7 +8276,10 @@ generates Ruby program.")
                                   (number->string (+ 22 size-diff))
                                   "-"
                                   (number->string (+ 33 size-diff)))))))))))
-    (native-inputs (list ruby-minitest ruby-minitest-global-expectations))
+    (native-inputs
+     (list ruby-minitest
+           ruby-minitest-global-expectations
+           ruby-webrick))
     (synopsis "Unified web application interface for Ruby")
     (description "Rack provides a minimal, modular and adaptable interface for
 developing web applications in Ruby.  By wrapping HTTP requests and responses,
