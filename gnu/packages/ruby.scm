@@ -11234,6 +11234,20 @@ HTTP headers.")
     (home-page "https://github.com/socketry/http-accept")
     (license license:expat)))
 
+(define-public ruby-http-accept-1
+  (package
+    (inherit ruby-http-accept)
+    (version "1.7.0")
+    (source (origin
+              (method git-fetch)        ;for the tests
+              (uri (git-reference
+                    (url "https://github.com/ioquatix/http-accept")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "ruby-http-accept" version))
+              (sha256
+               (base32
+                "1hnqmqpa135s3xgcvv30qzqm8zp88my1aj05m72d2q9cvc31g92z"))))))
+
 (define-public ruby-http-cookie
   (package
     (name "ruby-http-cookie")
