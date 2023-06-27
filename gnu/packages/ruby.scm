@@ -5395,13 +5395,13 @@ default (and first) theme.  It's what you get when you run @code{jekyll new}.")
 (define-public ruby-minitest
   (package
     (name "ruby-minitest")
-    (version "5.18.0")
+    (version "5.18.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "minitest" version))
               (sha256
                (base32
-                "0ic7i5z88zcaqnpzprf7saimq2f6sad57g5mkkqsrqrcd6h3mx06"))))
+                "1kg9wh7jlc9zsr3hkhpzkbn0ynf4np5ap9m2d8xdrb8shy0y6pmb"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-hoe))
     (home-page "https://github.com/minitest/minitest")
