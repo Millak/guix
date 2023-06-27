@@ -10498,14 +10498,14 @@ look up the likely MIME type definitions.")
 (define-public ruby-mime-types
   (package
     (name "ruby-mime-types")
-    (version "3.1")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "mime-types" version))
        (sha256
         (base32
-         "0087z9kbnlqhci7fxh9f6il63hj1k02icq2rs0c6cppmqchr753m"))))
+         "0ipw892jbksbxxcrlx9g5ljq60qx47pm24ywgfbyjskbcl78pkvb"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-mime-types-data))
@@ -10513,7 +10513,6 @@ look up the likely MIME type definitions.")
      (list ruby-hoe
            ruby-fivemat
            ruby-minitest-focus
-           ruby-minitest-rg
            ruby-minitest-bonus-assertions
            ruby-minitest-hooks))
     (synopsis "Library and registry for MIME content type definitions")
