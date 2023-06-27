@@ -23009,6 +23009,57 @@ library.")
     (description
      "This is the Cython-coded accelerator module for PyOpenGL.")))
 
+(define-public python-glcontext
+  (package
+    (name "python-glcontext")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/moderngl/glcontext")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zzpwyqg19y600n09xz07cxk4jimh9vjraszda7g7ipijq6iasac"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'fix-lib-paths
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (let ((mesa (assoc-ref inputs "mesa"))
+                                  (libx11 (assoc-ref inputs "libx11")))
+                              (substitute* '("glcontext/x11.cpp"
+                                             "glcontext/egl.cpp")
+                                (("\"libGL.so\"")
+                                 (string-append "\"" mesa "/lib/libGL.so\""))
+                                (("\"libEGL.so\"")
+                                 (string-append "\"" mesa "/lib/libEGL.so\""))
+                                (("\"libX11.so\"")
+                                 (string-append "\"" libx11 "/lib/libX11.so\"")))
+                              (substitute* '("glcontext/__init__.py")
+                                (("find_library\\('GL'\\)")
+                                 (string-append "'" mesa "/lib/libGL.so'"))
+                                (("find_library\\('EGL'\\)")
+                                 (string-append "'" mesa "/lib/libEGL.so'"))
+                                (("find_library\\(\"X11\"\\)")
+                                 (string-append "'" libx11 "/lib/libX11.so'"))))))
+                        (replace 'check
+                          (lambda* (#:key inputs outputs tests?
+                                    #:allow-other-keys)
+                            (when tests?
+                              (system "Xvfb :1 &")
+                              (setenv "DISPLAY" ":1")
+                              (add-installed-pythonpath inputs outputs)
+                              (invoke "pytest" "tests")))))))
+    (inputs (list libx11 mesa))
+    (native-inputs (list xorg-server-for-tests python-pytest python-psutil))
+    (home-page "https://github.com/moderngl/glcontext")
+    (synopsis "Portable OpenGL Context for ModernGL")
+    (description "Python-glcontext is a library providing an OpenGL
+implementation for ModernGL on multiple platforms.")
+    (license license:expat)))
+
 (define-public python-rencode
   (package
    (name "python-rencode")
