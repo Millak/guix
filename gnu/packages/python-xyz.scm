@@ -1766,6 +1766,51 @@ It can handle tasks such as scanning, tracerouting, probing, unit tests,
 attacks or network discovery.")
     (license license:gpl2)))
 
+(define-public python-rasterio
+  (package
+    (name "python-rasterio")
+    (version "1.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rasterio" version))
+              (sha256
+               (base32
+                "012341c1rlcdr9rkg97lbhxrwzn4sr2xah4zjfnqy2r1227wpzdb"))))
+    (properties
+     '((updater-ignored-native-inputs . ("gdal" "python-cython"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;test data not present
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-affine
+                             python-attrs
+                             python-certifi
+                             python-click
+                             python-click-plugins
+                             python-cligj
+                             python-numpy
+                             python-setuptools
+                             python-snuggs))
+    (native-inputs (list gdal
+                         python-boto3
+                         python-cython
+                         python-hypothesis
+                         python-packaging
+                         python-pytest
+                         python-pytest-cov
+                         python-shapely))
+    (home-page "https://github.com/rasterio/rasterio")
+    (synopsis "Fast and direct raster I/O for use with Numpy and SciPy")
+    (description "This package implements fast and direct raster I/O for use
+with Numpy and SciPy.")
+    (license license:bsd-3)))
+
 (define-public python-shapely
   (package
     (name "python-shapely")
