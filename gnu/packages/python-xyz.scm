@@ -665,6 +665,26 @@ of their positions to minimize overlaps (relatively easy).  This library
 implements the latter option to help with matplotlib graphs.")
     (license license:expat)))
 
+(define-public python-affine
+  (package
+    (name "python-affine")
+    (version "2.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "affine" version))
+              (sha256
+               (base32
+                "1shyvajayyzbkp9dihb4mz835jnkp0kqqbyjfqci6v43da6q2kd2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-coveralls python-flake8 python-pydocstyle
+                             python-pytest python-pytest-cov))
+    (native-inputs (list python-flit-core))
+    (home-page "https://github.com/rasterio/affine")
+    (synopsis "Matrices describing affine transformation of the plane")
+    (description "This is a package for matrices describing the affine
+transformation of the plane.")
+    (license license:bsd-3)))
+
 (define-public python-argopt
   (package
    (name "python-argopt")
