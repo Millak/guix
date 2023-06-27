@@ -7642,28 +7642,34 @@ a native C extension.")
 (define-public ruby-json-pure
   (package
     (name "ruby-json-pure")
-    (version "2.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "json_pure" version))
-              (sha256
-               (base32
-                "00pziwkfqwk8vj19s65sdki31q1wvmf5v9b3sfglxm94qfvas1lx"))))
+    (version "2.6.3")
+    (source
+     (origin
+       ;; For tests
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flori/json.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0551269c98a07m6bl594syh5vknrm3c636a4dxis9jpsb7vf7lfx"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-rakefile
-           (lambda _
-             (substitute* "Rakefile"
-               ;; Since this is not a git repository, do not call 'git'.
-               (("`git ls-files`") "`find . -type f |sort`")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-rakefile
+            (lambda _
+              (substitute* "Rakefile"
+                ;; Since this is not a git repository, do not call 'git'.
+                (("`git ls-files`") "`find . -type f |sort`")))))))
     (native-inputs
      (list bundler ragel ruby-simplecov ruby-test-unit which))
     (synopsis "JSON implementation in pure Ruby")
     (description
      "This package provides a JSON implementation written in pure Ruby.")
-    (home-page "https://flori.github.com/json/")
+    (home-page "https://flori.github.io/json/")
     (license license:ruby)))
 
 (define-public ruby-jwt
