@@ -1518,8 +1518,8 @@ blacklisted.certs.pem"
                 "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
 
 (define-public openjdk19
-  (make-openjdk openjdk18 "19.0.1"
-                "0kyalb391znw6idmfn3dsx6c2mal1hl63f0bwa4mlnsxfl380bi1"
+  (make-openjdk openjdk18 "19.0.2"
+                "08kvx7n8qhhfl25pig966881j5h4x7y0pf4brq16x0283fc0f4d4"
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk18)
       ((#:phases phases)
