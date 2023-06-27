@@ -11199,32 +11199,32 @@ with Ruby on Rails projects.")))
 (define-public ruby-http-cookie
   (package
     (name "ruby-http-cookie")
-    (version "1.0.3")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "http-cookie" version))
        (sha256
         (base32
-         "004cgs4xg5n6byjs7qld0xhsjq3n6ydfh897myr2mibvh6fjc49g"))))
+         "13rilvlv8kwbzqfb644qp6hrbsj82cbqmnzcvqip1p6vqx36sxbk"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'add-dependency-to-bundler
-           (lambda _
-             ;; Fix NameError
-             (substitute* "Rakefile"
-               (("HTTP::Cookie::VERSION")
-                "Bundler::GemHelper.gemspec.version"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'add-dependency-to-bundler
+            (lambda _
+              ;; Fix NameError
+              (substitute* "Rakefile"
+                (("HTTP::Cookie::VERSION")
+                 "Bundler::GemHelper.gemspec.version")))))))
     (propagated-inputs
      (list ruby-domain-name))
     (native-inputs
-     `(("rubysimplecov" ,ruby-simplecov)
-       ("bundler" ,bundler)
-       ("ruby-sqlite3" ,ruby-sqlite3)
-       ("ruby-test-unit" ,ruby-test-unit)))
+     (list ruby-simplecov
+           bundler
+           ruby-sqlite3
+           ruby-test-unit))
     (synopsis "Handle HTTP Cookies based on RFC 6265")
     (description
      "@code{HTTP::Cookie} is a Ruby library to handle HTTP Cookies based on
