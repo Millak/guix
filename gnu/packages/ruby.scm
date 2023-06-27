@@ -7469,20 +7469,21 @@ Ruby's large and slower test/unit.")
     ;; Rebuilding the gemspec seems to require git, even though this is not a
     ;; git repository, so we just build the gem from the existing gemspec.
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-test
-           (lambda -
-             (substitute* "tests/hsl_triple_test.rb"
-               (("0\\\\\\.0%")
-                "0\\.?0?%"))))
-         (replace 'build
-          (lambda _
-            (invoke "gem" "build" "term-ansicolor.gemspec"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test
+            (lambda -
+              (substitute* "tests/hsl_triple_test.rb"
+                (("0\\\\\\.0%")
+                 "0\\.?0?%"))))
+          (replace 'build
+            (lambda _
+              (invoke "gem" "build" "term-ansicolor.gemspec"))))))
     (propagated-inputs
      (list ruby-tins))
     (native-inputs
-     (list ruby-gem-hadar ruby-minitest-tu-shim))
+     (list ruby-gem-hadar))
     (synopsis "Ruby library to control the attributes of terminal output")
     (description
      "This Ruby library uses ANSI escape sequences to control the attributes
