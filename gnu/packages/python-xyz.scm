@@ -13712,6 +13712,24 @@ asyncio.")
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
 
+(define-public python-snuggs
+  (package
+    (name "python-snuggs")
+    (version "1.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "snuggs" version))
+              (sha256
+               (base32
+                "0yv1wayrw9g6k0c2f721kha7wsv0s1fdlxpf5x7f34iqzq9z272h"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-pyparsing))
+    (native-inputs (list python-hypothesis python-pytest))
+    (home-page "https://github.com/mapbox/snuggs")
+    (synopsis "Snuggs are S-expressions for Numpy")
+    (description "Snuggs are S-expressions for Numpy.")
+    (license license:expat)))
+
 (define-public python-pytest-black
   (package
     (name "python-pytest-black")
