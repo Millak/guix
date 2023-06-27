@@ -5557,14 +5557,14 @@ functionality, making it easier to migrate test suites from bacon to minitest.")
 (define-public ruby-minitest-focus
   (package
     (name "ruby-minitest-focus")
-    (version "1.1.2")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "minitest-focus" version))
        (sha256
         (base32
-         "1zgjslp6d7dzcn8smj595idymgd5j603p9g2jqkfgi28sqbhz6m0"))))
+         "13kd2dkd9akfb99ziqndz9mir5iynyfyj2l45mcibab6mq5k8g67"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-minitest))
