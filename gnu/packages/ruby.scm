@@ -11196,6 +11196,44 @@ defined in a @file{.env} file.")
 defined in a @file{.env} file.  This is the Rails variant, adapted for use
 with Ruby on Rails projects.")))
 
+(define-public ruby-http-accept
+  (package
+    (name "ruby-http-accept")
+    (version "2.2.0")
+    (source (origin
+              (method git-fetch)        ;for the tests
+              (uri (git-reference
+                    (url "https://github.com/socketry/http-accept")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d69cy12hqbcqrhw4dibvdq5pqklxsa59kih6pzl479nxq79rgs7"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-missing-key-directive
+            ;; This seem to be a common problem in Ruby projects (see:
+            ;; https://github.com/prawnpdf/ttfunk/issues/99).
+            (lambda _
+              (substitute* "http-accept.gemspec"
+                ((".*spec.signing_key.*") ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec")))))))
+    (native-inputs
+     (list ruby-rspec
+           ruby-covered))
+    (synopsis "Parse Accept and Accept-Language HTTP headers")
+    (description
+     "This package provides a set of parsers for Accept and Accept-Language
+HTTP headers.")
+    (home-page "https://github.com/socketry/http-accept")
+    (license license:expat)))
+
 (define-public ruby-http-cookie
   (package
     (name "ruby-http-cookie")
