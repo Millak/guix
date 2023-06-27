@@ -5716,18 +5716,19 @@ MiniTest @code{Object#stub} with a global @code{stub} method.")
          "1hbq9jk904xkz868yha1bqcm6azm7kmjsll2k4pn2nrcib508h2a"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f          ; Test suite has bitrotted.
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'clean-dependencies
-           (lambda _
-             ;; Remove unneeded require statement that would entail another
-             ;; dependency.
-             (substitute* "test/minitest_config.rb"
-               (("require 'minitest/bisect'") ""))
-             #t)))))
+     (list
+      #:tests? #f          ; Test suite has bitrotted.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'clean-dependencies
+            (lambda _
+              ;; Remove unneeded require statement that would entail another
+              ;; dependency.
+              (substitute* "test/minitest_config.rb"
+                (("require 'minitest/bisect'") "")))))))
     (native-inputs
-     (list ruby-hoe ruby-minitest-pretty-diff ruby-minitest-focus
+     (list ruby-hoe
+           ruby-minitest-focus
            ruby-minitest-moar))
     (synopsis "Bonus assertions for @code{Minitest}")
     (description
