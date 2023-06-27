@@ -7742,7 +7742,7 @@ a native C extension.")
 (define-public ruby-listen
   (package
     (name "ruby-listen")
-    (version "3.2.0")
+    (version "3.8.0")
     (source
      (origin
        ;; The gem does not include a Rakefile, so fetch from the Git
@@ -7754,24 +7754,24 @@ a native C extension.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1hkp1g6hk5clsmbd001gkc12ma6s459x820piajyasv61m87if24"))))
+         "1skkglml094dw1xr4742in1rwwa84ld0mz4nkw6qa8pwhx48x2n5"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-files-in-gemspec
-           (lambda _
-             (substitute* "listen.gemspec"
-               (("`git ls-files -z`") "`find . -type f -printf '%P\\\\0' |sort -z`"))
-             #t))
-         (add-before 'check 'remove-unnecessary-dependencies'
-           (lambda _
-             (substitute* "Rakefile"
-               ;; Rubocop is for code linting, and is unnecessary for running
-               ;; the tests.
-               ((".*rubocop.*") ""))
-             #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-files-in-gemspec
+            (lambda _
+              (substitute* "listen.gemspec"
+                (("`git ls-files -z`")
+                 "`find . -type f -printf '%P\\\\0' |sort -z`"))))
+          (add-before 'check 'remove-unnecessary-dependencies'
+            (lambda _
+              (substitute* "Rakefile"
+                ;; Rubocop is for code linting, and is unnecessary for running
+                ;; the tests.
+                ((".*rubocop.*") "")))))))
     (native-inputs
      (list bundler ruby-rspec))
     (inputs
