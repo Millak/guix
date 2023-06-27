@@ -104,6 +104,55 @@
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
 
+;;; Commentary:
+;;;
+;;; This module aims at being as faithful as possible to TeX Live
+;;; distribution.  Yet, some of the packages in this module are Guix specific.
+;;; The following paragraphs describe them.
+;;;
+;;; Guix provides two different TeX Live systems: one monolithic, the TEXLIVE
+;;; package, and the other modular.  Both are built from TEXLIVE-LIBKPATHSEA,
+;;; which is therefore the starting of any TeX Live update.  Both also rely on
+;;; TEXLIVE-SCRIPTS, which contains core scripts and related files---although
+;;; monolithic TeX Live only makes use of its source.  At that point, both
+;;; systems diverge.
+;;;
+;;; On the one hand, the monolithic TeX Live merges TEXLIVE-BIN-FULL and
+;;; TEXLIVE-TEXMF in order to create TEXLIVE.
+;;;
+;;; On the other hand, modular TeX Live relies on TEXLIVE-BIN, which is
+;;; provided as a mandatory native input in the texlive build system.  Unlike
+;;; TEXLIVE-BIN-FULL, it doesn't provide any script (but still include all the
+;;; binaries; this might change in the future).  Then the system builds its
+;;; way towards regular `texlive-latex-bin' package, which is a convenient
+;;; native input (that can be ignored) for most TeX Live packages.  Those
+;;; earlier in the build chain need the TEXLIVE-DOCSTRIP package to still be
+;;; able to generate their runfiles.
+;;;
+;;; Default font map files are updated in a profile hook (see
+;;; `texlive-font-maps' in "profiles.scm").  However, this option is not
+;;; available when building documentation for a package.  Consequently, this
+;;; module also provides TEXLIVE-UPDMAP.CFG function, which creates a TeX Live
+;;; tree with font map files updates.  It should be used exclusively for
+;;; package definitions, as a native input.  It is possible to augment that
+;;; tree, in particular with additional font packages.  TEXLIVE-TINY package
+;;; is a shortcut for TEXLIVE-UPDMAP.CFG called without any additional
+;;; package.
+;;;
+;;; Unlike font map files, TeX formats are not built from a profile hook, as
+;;; the process would be too time-consuming, e.g., when invoking "guix shell".
+;;; Instead, those are generated when the corresponding package is built.  It
+;;; is therefore not possible for the build system to take into consideration
+;;; hyphenation rules installed after a given format has been built.  To work
+;;; around this, all hyphenations rules are packed into
+;;; TEXLIVE-HYPHEN-COMPLETE, and all formats, being built with it, include all
+;;; rules right from the start.
+;;;
+;;; Any other "texlive-name" package matches the "name" TeX Live package, as
+;;; defined in the "texlive.tlpdb" file.
+;;;
+;;; Code:
+
 (define-syntax-rule (define-deprecated-package old-name name)
   "Define OLD-NAME as a deprecated package alias for NAME."
   (define-deprecated/public old-name name
