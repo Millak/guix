@@ -7061,7 +7061,7 @@ intended for use with event loops such as async.")
 (define-public ruby-tilt
   (package
     (name "ruby-tilt")
-    (version "2.0.10")
+    (version "2.0.11")
     (source
      (origin
        (method git-fetch)               ;the distributed gem lacks tests
@@ -7071,28 +7071,44 @@ intended for use with event loops such as async.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0adb7fg7925n2rd9a8kkqz3mgylw2skp9hkh9qc1rnph72mqsm6r"))))
+         "0a75s6ci2rwai5q1bnlqbz8kxqnfp2497jhkcry1n4g29lcxq9ja"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-some-dependencies
-           (lambda _
-             (substitute* "Gemfile"
-               ;; TODO ronn is used for generating the manual
-               (("gem 'ronn'.*") "\n")
-               ;; ruby-haml has a runtime dependency on ruby-tilt, so don't
-               ;; pass it in as a native-input
-               (("gem 'haml'.*") "\n")
-               ;; TODO Not all of these gems are packaged for Guix yet:
-               ;; less, coffee-script, livescript, babel-transpiler,
-               ;; typescript-node
-               (("if can_execjs") "if false")
-               ;; Disable the secondary group to reduce the number of
-               ;; dependencies. None of the normal approaches work, so patch
-               ;; the Gemfile instead.
-               (("group :secondary") "[].each"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; Patch some tests
+              (substitute* "test/tilt_sasstemplate_test.rb"
+                (("}\",") "}
+\","))))
+          (add-after 'unpack 'remove-some-dependencies
+            (lambda _
+              (substitute* "Gemfile"
+                (("gem 'less'") "\n")
+                (("gem 'coffee-script'") "\n")
+                (("gem 'livescript'") "\n")
+                (("gem 'babel-transpiler'") "\n")
+                (("gem 'typescript-node'") "\n")
+                (("gem 'typescript-node'") "\n")
+                (("gem 'duktape'.*") "\n")
+                ;; TODO ronn is used for generating the manual
+                (("gem 'ronn'.*") "\n")
+                ;; ruby-haml has a runtime dependency on ruby-tilt, so don't
+                ;; pass it in as a native-input
+                (("gem 'haml'.*") "\n")
+                ;; TODO Not all of these gems are packaged for Guix yet:
+                ;; less, coffee-script, livescript, babel-transpiler,
+                ;; typescript-node
+                (("if can_execjs") "if false")
+                ;; Disable the secondary group to reduce the number of
+                ;; dependencies. None of the normal approaches work, so patch
+                ;; the Gemfile instead.
+                (("group :secondary") "[].each"))))
+          (add-before 'check 'set-SASS_IMPLEMENTATION
+            (lambda _
+              (setenv "SASS_IMPLEMENTATION" "sassc"))))))
     (propagated-inputs
      (list ruby-pandoc-ruby ruby-sassc))
     (native-inputs
