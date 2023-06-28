@@ -2958,7 +2958,11 @@ of nodes and the styles of edges, may be adjusted.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((gs (search-input-file inputs "/bin/gs")))
                 (substitute* "scripts/epstopdf/epstopdf.pl"
-                  (("\"gs\"") (string-append "\"" gs "\"")))))))))
+                  (("\"gs\"") (string-append "\"" gs "\""))))))
+          (add-after 'link-scripts 'add-repstopdf
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (symlink "epstopdf" "repstopdf")))))))
     (home-page "https://ctan.org/pkg/epstopdf")
     (synopsis "Convert EPS to PDF using Ghostscript")
     (inputs (list ghostscript perl))
