@@ -17066,37 +17066,37 @@ to an artifact/contaminant file.")
                   (delete-file-recursively "third-party")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("OPENMP=t")
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'fix-zlib-include
-           (lambda _
-             (substitute* "src/binarySequences.c"
-               (("../third-party/zlib-1.2.3/zlib.h") "zlib.h"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/velvet")))
-               (mkdir-p bin)
-               (mkdir-p doc)
-               (install-file "velveth" bin)
-               (install-file "velvetg" bin)
-               (install-file "Manual.pdf" doc)
-               (install-file "Columbus_manual.pdf" doc)))))))
+     (list
+      #:make-flags #~(list "OPENMP=t")
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'fix-zlib-include
+            (lambda _
+              (substitute* "src/binarySequences.c"
+                (("../third-party/zlib-1.2.3/zlib.h") "zlib.h"))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (doc (string-append #$output "/share/doc/velvet")))
+                (mkdir-p bin)
+                (mkdir-p doc)
+                (install-file "velveth" bin)
+                (install-file "velvetg" bin)
+                (install-file "Manual.pdf" doc)
+                (install-file "Columbus_manual.pdf" doc)))))))
     (inputs
      (list openmpi zlib))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg
-                    (list texlive-ec
-                          texlive-graphics
-                          texlive-grfext
-                          texlive-hyperref
-                          texlive-infwarerr
-                          texlive-kvoptions
-                          texlive-pdftexcmds)))))
+     (list (texlive-updmap.cfg
+            (list texlive-ec
+                  texlive-graphics
+                  texlive-grfext
+                  texlive-hyperref
+                  texlive-infwarerr
+                  texlive-kvoptions
+                  texlive-pdftexcmds))))
     (home-page "https://www.ebi.ac.uk/~zerbino/velvet/")
     (synopsis "Nucleic acid sequence assembler for very short reads")
     (description
