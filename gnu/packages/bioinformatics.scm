@@ -17089,9 +17089,14 @@ to an artifact/contaminant file.")
     (inputs
      (list openmpi zlib))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-graphics
-                                             texlive-ec
-                                             texlive-hyperref)))))
+     `(("texlive" ,(texlive-updmap.cfg
+                    (list texlive-ec
+                          texlive-graphics
+                          texlive-grfext
+                          texlive-hyperref
+                          texlive-infwarerr
+                          texlive-kvoptions
+                          texlive-pdftexcmds)))))
     (home-page "https://www.ebi.ac.uk/~zerbino/velvet/")
     (synopsis "Nucleic acid sequence assembler for very short reads")
     (description
