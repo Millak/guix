@@ -563,49 +563,49 @@ source files.")
                 "12hp1clg83jfl35x1h2ymzpj5w83wrnqw7hjfc6mqa8lsvpw535r"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-use-bundler-for-tests
-           (lambda _
-             (substitute* "spec/spec_helper.rb"
-               (("Bundler\\.setup.*") ""))))
-         (add-after 'unpack 'relax-version-requirements
-           (lambda _
-             (substitute* ((@@ (guix build ruby-build-system) first-gemspec))
-               (("'rake',.*")
-                "'rake'\n")
-               (("\"rubocop\",.*")
-                "'rubocop'\n")
-               (("\"parser\",.*")
-                "'parser'\n"))))
-         (add-after 'unpack 'patch-protoc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "lib/protobuf/tasks/compile.rake"
-               (("\"protoc\"")
-                (string-append "\"" (search-input-file inputs "bin/protoc")
-                               "\"")))))
-         (add-after 'unpack 'skip-failing-test
-           ;; See: https://github.com/ruby-protobuf/protobuf/issues/419
-           (lambda _
-             (substitute* "spec/lib/protobuf/rpc/connectors/ping_spec.rb"
-               (("expect\\(::IO\\)\\.to receive\\(:select\\).*" all)
-                (string-append "        pending\n" all)))))
-         (add-after 'replace-git-ls-files 'replace-more-git-ls-files
-           (lambda _
-             (substitute* ((@@ (guix build ruby-build-system) first-gemspec))
-               (("`git ls-files -- \\{test,spec,features\\}/*`")
-                "`find test spec features -type f | sort`")
-               (("`git ls-files -- bin/*`")
-                "`find bin -type f | sort`"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "rspec")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-use-bundler-for-tests
+            (lambda _
+              (substitute* "spec/spec_helper.rb"
+                (("Bundler\\.setup.*") ""))))
+          (add-after 'unpack 'relax-version-requirements
+            (lambda _
+              (substitute* ((@@ (guix build ruby-build-system) first-gemspec))
+                (("'rake',.*")
+                 "'rake'\n")
+                (("\"rubocop\",.*")
+                 "'rubocop'\n")
+                (("\"parser\",.*")
+                 "'parser'\n"))))
+          (add-after 'unpack 'patch-protoc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "lib/protobuf/tasks/compile.rake"
+                (("\"protoc\"")
+                 (string-append "\"" (search-input-file inputs "bin/protoc")
+                                "\"")))))
+          (add-after 'unpack 'skip-failing-test
+            ;; See: https://github.com/ruby-protobuf/protobuf/issues/419
+            (lambda _
+              (substitute* "spec/lib/protobuf/rpc/connectors/ping_spec.rb"
+                (("expect\\(::IO\\)\\.to receive\\(:select\\).*" all)
+                 (string-append "        pending\n" all)))))
+          (add-after 'replace-git-ls-files 'replace-more-git-ls-files
+            (lambda _
+              (substitute* ((@@ (guix build ruby-build-system) first-gemspec))
+                (("`git ls-files -- \\{test,spec,features\\}/*`")
+                 "`find test spec features -type f | sort`")
+                (("`git ls-files -- bin/*`")
+                 "`find bin -type f | sort`"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec")))))))
     (native-inputs
      (list ruby-benchmark-ips
            ruby-ffi-rzmq
            ruby-parser
-           ruby-pry-byebug
            ruby-pry-stack-explorer
            ruby-rake
            ruby-rspec
