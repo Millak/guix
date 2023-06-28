@@ -33,7 +33,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
-;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2022, 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
@@ -6034,6 +6034,28 @@ installed.")
 or JSON::XS is already loaded, in which case it uses that module.  Otherwise
 it tries to load Cpanel::JSON::XS, then JSON::XS, then JSON::PP in order, and
 either uses the first module it finds or throws an error.")
+    (license (package-license perl))))
+
+(define-public perl-json-parse
+  (package
+    (name "perl-json-parse")
+    (version "0.62")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/B/BK/BKB/JSON-Parse-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1nb6zxf6p42dmdmdv4c8x0dnra2sdxq21n6nvl0p8jcjjc7ihwv2"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/JSON-Parse")
+    (synopsis "Perl Module for parsing JSON")
+    (description "@code{JSON::Parse} is a module for parsing JSON.  It offers
+@code{parse_json} which takes a string containing JSON and returns an
+equivalent Perl structure, @code{valid_json} which returns true or false
+depending on whether the JSON is correct or not, @code{assert_valid_json}
+which produces a descriptive fatal error if the JSON is invalid, and so on.")
     (license (package-license perl))))
 
 (define-public perl-json-xs
