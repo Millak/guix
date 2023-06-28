@@ -3704,18 +3704,18 @@ It is a low-dependency variant of ruby-hydra.")
     (inherit ruby-hydra-minimal)
     (name "ruby-hydra")
     (arguments
-        '(#:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'make-files-writable
-                      (lambda _
-                        (for-each make-file-writable (find-files "."))
-                        #t))
-                    (replace 'check
-                      (lambda _
-                        (invoke "rspec"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-files-writable
+            (lambda _
+              (for-each make-file-writable (find-files "."))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec")))))))
     (native-inputs
      (list ruby-rspec))
-    (propagated-inputs
-     (list ruby-byebug))
     (description
      "ruby-hydra is a Ruby library for working with hyphenation patterns.")))
 
