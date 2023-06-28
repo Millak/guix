@@ -11846,7 +11846,7 @@ part of the Prawn PDF generator.")
 (define-public ruby-puma
   (package
     (name "ruby-puma")
-    (version "6.2.0")
+    (version "6.3.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -11856,17 +11856,23 @@ part of the Prawn PDF generator.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0d71h5ggvfgnxq9msd1hmcz3s8mspzf7kqas1hzr0w9pfafddyv3"))))
+         "0qnayzgyr23w87jc849r00394hv1gw2rk9080nws43ilnycagzxq"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-Gemfile
+            (lambda _
+              (substitute* "Gemfile"
+                (("gem \"rake-compiler\".*")
+                 "gem 'rake-compiler'\n"))))
           (add-after 'unpack 'disable-rubocop
             (lambda _
               (setenv "PUMA_NO_RUBOCOP" "1")))
           (add-after 'unpack 'use-rack-2
             (lambda _
+              (setenv "PUMA_CI_RACK" "rack2")
               (setenv "PUMA_CI_RACK_2" "1")))
           (add-before 'build 'increase-resource-limits
             (lambda _
