@@ -977,18 +977,25 @@ already included in Rails.")
                 "1i1x24afmn09n48fj4yz2pdm6vlfnq14gism0cgxsyqmlrvsxajn"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:test-target "default"
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'disable-problematic-tests
-                          (lambda _
-                            (substitute* "test/mime_type_test.rb"
-                              ;; One test fails because of the newer rack
-                              ;; version used (see:
-                              ;; https://github.com/rails/marcel/issues/91).
-                              (("test \"gets content type.*" all)
-                               (string-append
-                                all "    skip('fails on guix')\n"))))))))
-    (native-inputs (list ruby-byebug ruby-nokogiri ruby-rack))
+     (list
+      #:test-target "default"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              ;; Remove byebug dependency
+              (substitute* "test/test_helper.rb"
+                (("require 'byebug'") ""))))
+          (add-before 'check 'disable-problematic-tests
+            (lambda _
+              (substitute* "test/mime_type_test.rb"
+                ;; One test fails because of the newer rack
+                ;; version used (see:
+                ;; https://github.com/rails/marcel/issues/91).
+                (("test \"gets content type.*" all)
+                 (string-append
+                  all "    skip('fails on guix')\n"))))))))
+    (native-inputs (list ruby-nokogiri ruby-rack))
     (propagated-inputs (list ruby-mimemagic))
     (synopsis "MIME type detection using magic numbers, filenames and extensions")
     (description
