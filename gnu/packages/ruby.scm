@@ -12052,25 +12052,29 @@ associated records.")
 (define-public ruby-timecop
   (package
     (name "ruby-timecop")
-    (version "0.9.1")
+    (version "0.9.6")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "timecop" version))
        (sha256
         (base32
-         "0d7mm786180v4kzvn1f77rhfppsg5n0sq2bdx63x9nv114zm8jrp"))))
+         "0dlx4gx0zh836i7nzna03xdl7fc233s5z6plnr6k3kw46ah8d1fc"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-check-rubylib
-           (lambda _
-             ;; Set RUBYLIB so timecop tests finds its own lib.
-             (setenv "RUBYLIB" "lib")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-check-rubylib
+            (lambda _
+              ;; Set RUBYLIB so timecop tests finds its own lib.
+              (setenv "RUBYLIB" "lib"))))))
     (native-inputs
-     (list bundler ruby-minitest-rg ruby-mocha ruby-activesupport))
+     (list bundler
+           ruby-minitest-rg
+           ruby-mocha
+           ruby-activesupport
+           ruby-pry))
     (synopsis "Test mocks for time-dependent functions")
     (description
      "Timecop provides \"time travel\" and \"time freezing\" capabilities,
