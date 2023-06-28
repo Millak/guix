@@ -9759,6 +9759,7 @@ CI environment from environment variables.")
      (list ruby-cucumber-compatibility-kit
            ruby-nokogiri
            ruby-pry
+           ruby-webrick
            ruby-rspec))
     (synopsis "Describe automated tests in plain language")
     (description "Cucumber is a tool for running automated tests written in
