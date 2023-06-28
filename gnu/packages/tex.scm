@@ -2333,6 +2333,40 @@ also provides an easy way to handle different input and output encodings, and
 features generation of clean UTF-8 patterns.")
     (license license:lppl)))
 
+(define-public texlive-ec
+  (package
+    (name "texlive-ec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ec/"
+                   "fonts/source/jknappen/ec/"
+                   "fonts/tfm/jknappen/ec/")
+             (base32
+              "1cyi0vv9dnp45s0ilsrbkyznj9ji62s5bhkqgh49461mv2f8qj6p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-cm texlive-metafont))
+    (home-page "https://ctan.org/pkg/ec")
+    (synopsis "Computer modern fonts in T1 and TS1 encodings")
+    (description
+     "The EC fonts are European Computer Modern Fonts, supporting the complete
+LaTeX T1 encoding defined at the 1990 TUG conference hold at Cork/Ireland.
+These fonts are intended to be stable with no changes being made to the tfm
+files.  The set also contains a Text Companion Symbol font, called @code{tc},
+featuring many useful characters needed in text typesetting, for example
+oldstyle digits, currency symbols (including the newly created Euro symbol),
+the permille sign, copyright, trade mark and servicemark as well as a copyleft
+sign, and many others.  The fonts are available in (traced) Adobe Type
+1 format, as part of the @code{cm-super} bundle.  The other Computer
+Modern-style T1-encoded Type 1 set, Latin Modern, is not actually a direct
+development of the EC set, and differs from the EC in a number of
+particulars.")
+    (license (license:fsf-free "https://www.tug.org/svn/texlive/tags/\
+texlive-2019.3/Master/texmf-dist/doc/fonts/ec/copyrite.txt"))))
+
+(define-deprecated-package texlive-fonts-ec texlive-ec)
+
 ;; This provides etex.src which is needed to build various formats, including
 ;; luatex.fmt and pdflatex.fmt
 (define-public texlive-etex
@@ -5022,19 +5056,80 @@ part of the LaTeX required set of packages.")
 
 (define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
+(define-public texlive-ifplatform
+  (package
+    (name "texlive-ifplatform")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ifplatform/"
+                   "source/latex/ifplatform/"
+                   "tex/latex/ifplatform/")
+             (base32
+              "1llas0xwq3y9nk7gblg40l99cgmkl9r7rbfazrhpnbaz5cshl8pl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ifplatform")
+    (synopsis "Conditionals to test which platform is being used")
+    (description
+     "This package uses the (La)TeX extension @samp{-shell-escape} to
+establish whether the document is being processed on a Windows or on
+a Unix-like system, or on Cygwin.
+
+Booleans provided are: @code{\\ifwindows}, @code{\\iflinux}, @code{\\ifmacosx}
+and @code{\\ifcygwin}.  The package also preserves the output of
+@command{uname} on a Unix-like system, which may be used to distinguish
+between various classes of Unix systems.")
+    (license license:lppl1.3c)))
+
+(define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
+
+(define-public texlive-iftex
+  (package
+    (name "texlive-iftex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/iftex/" "tex/generic/iftex/")
+             (base32
+              "05p8iw8c8vjs59zb8pgilwpvlzrlb8zxyf34fhyr67y6bwm8phnf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "http://www.ctan.org/pkg/iftex")
+    (synopsis "Determine the currently used TeX engine")
+    (description
+     "This package, which works both for Plain TeX and for LaTeX, defines the
+@code{\\ifPDFTeX}, @code{\\ifXeTeX}, and @code{\\ifLuaTeX} conditionals for
+testing which engine is being used for typesetting.  The package also provides
+the @code{\\RequirePDFTeX}, @code{\\RequireXeTeX}, and @code{\\RequireLuaTeX}
+commands which throw an error if pdfTeX, XeTeX or LuaTeX (respectively) is not
+the engine in use.")
+    (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-generic-iftex texlive-iftex)
+(define-deprecated-package texlive-generic-ifxetex texlive-iftex)
+
 (define-public texlive-updmap.cfg
   (lambda* (#:optional (packages '()))
     "Return a 'texlive-updmap.cfg' package which contains the fonts map
 configuration of a base set of packages plus PACKAGES."
     (let ((default-packages
             (list texlive-bin
+                  texlive-cm
                   texlive-cm-super
                   texlive-dvips
+                  texlive-ec
+                  texlive-epstopdf-pkg
+                  texlive-etex
+                  texlive-etex-pkg
                   texlive-fontname
+                  texlive-ifplatform
+                  texlive-iftex
                   texlive-kpathsea
                   texlive-latex-bin
                   texlive-latex-fonts
                   texlive-metafont
+                  texlive-tex
                   ;; LaTeX packages from the "required" set.
                   texlive-amsmath
                   texlive-amscls
@@ -5901,34 +5996,6 @@ files, used by (mostly? only?) the so-called Hershey Fonts of the late 1960s.
 The package does not include the actual font files, which you can probably
 find in the software repository of your operating system.")
     (license license:eupl1.2)))
-
-(define-public texlive-ifplatform
-  (package
-    (name "texlive-ifplatform")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/latex/ifplatform/"
-                   "source/latex/ifplatform/"
-                   "tex/latex/ifplatform/")
-             (base32
-              "1llas0xwq3y9nk7gblg40l99cgmkl9r7rbfazrhpnbaz5cshl8pl")))
-    (outputs '("out" "doc"))
-    (build-system texlive-build-system)
-    (home-page "https://ctan.org/pkg/ifplatform")
-    (synopsis "Conditionals to test which platform is being used")
-    (description
-     "This package uses the (La)TeX extension @samp{-shell-escape} to
-establish whether the document is being processed on a Windows or on
-a Unix-like system, or on Cygwin.
-
-Booleans provided are: @code{\\ifwindows}, @code{\\iflinux}, @code{\\ifmacosx}
-and @code{\\ifcygwin}.  The package also preserves the output of
-@command{uname} on a Unix-like system, which may be used to distinguish
-between various classes of Unix systems.")
-    (license license:lppl1.3c)))
-
-(define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
 
 (define-public texlive-interchar
   (package
@@ -9078,40 +9145,6 @@ package options.")
     (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-kvoptions texlive-kvoptions)
-
-(define-public texlive-ec
-  (package
-    (name "texlive-ec")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/fonts/ec/"
-                   "fonts/source/jknappen/ec/"
-                   "fonts/tfm/jknappen/ec/")
-             (base32
-              "1cyi0vv9dnp45s0ilsrbkyznj9ji62s5bhkqgh49461mv2f8qj6p")))
-    (outputs '("out" "doc"))
-    (build-system texlive-build-system)
-    (native-inputs (list texlive-cm texlive-metafont))
-    (home-page "https://ctan.org/pkg/ec")
-    (synopsis "Computer modern fonts in T1 and TS1 encodings")
-    (description
-     "The EC fonts are European Computer Modern Fonts, supporting the complete
-LaTeX T1 encoding defined at the 1990 TUG conference hold at Cork/Ireland.
-These fonts are intended to be stable with no changes being made to the tfm
-files.  The set also contains a Text Companion Symbol font, called @code{tc},
-featuring many useful characters needed in text typesetting, for example
-oldstyle digits, currency symbols (including the newly created Euro symbol),
-the permille sign, copyright, trade mark and servicemark as well as a copyleft
-sign, and many others.  The fonts are available in (traced) Adobe Type
-1 format, as part of the @code{cm-super} bundle.  The other Computer
-Modern-style T1-encoded Type 1 set, Latin Modern, is not actually a direct
-development of the EC set, and differs from the EC in a number of
-particulars.")
-    (license (license:fsf-free "https://www.tug.org/svn/texlive/tags/\
-texlive-2019.3/Master/texmf-dist/doc/fonts/ec/copyrite.txt"))))
-
-(define-deprecated-package texlive-fonts-ec texlive-ec)
 
 (define-public texlive-ekdosis
   (package
@@ -13761,32 +13794,6 @@ may be used instead of @code{\\marginpar} at almost every place where
 @code{\\marginpar} cannot be used, e.g., inside floats, footnotes, or in
 frames made with the @code{framed} package.")
     (license license:lppl1.3c+)))
-
-(define-public texlive-iftex
-  (package
-    (name "texlive-iftex")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/generic/iftex/" "tex/generic/iftex/")
-             (base32
-              "05p8iw8c8vjs59zb8pgilwpvlzrlb8zxyf34fhyr67y6bwm8phnf")))
-    (outputs '("out" "doc"))
-    (build-system texlive-build-system)
-    (home-page "http://www.ctan.org/pkg/iftex")
-    (synopsis "Determine the currently used TeX engine")
-    (description
-     "This package, which works both for Plain TeX and for LaTeX, defines the
-@code{\\ifPDFTeX}, @code{\\ifXeTeX}, and @code{\\ifLuaTeX} conditionals for
-testing which engine is being used for typesetting.  The package also provides
-the @code{\\RequirePDFTeX}, @code{\\RequireXeTeX}, and @code{\\RequireLuaTeX}
-commands which throw an error if pdfTeX, XeTeX or LuaTeX (respectively) is not
-the engine in use.")
-    (license license:lppl1.3+)))
-
-(define-deprecated-package texlive-generic-iftex texlive-iftex)
-
-(define-deprecated-package texlive-generic-ifxetex texlive-iftex)
 
 (define-public texlive-tabu
   (package
