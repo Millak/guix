@@ -1232,7 +1232,13 @@ mountable_engine")
                               ;; valid, store".
                               "test_cache_works_with_etags"
                               ;; Likewise.
-                              "test_cache_works_with_last_modified")))))
+                              "test_cache_works_with_last_modified")
+                  (skip-tests "application/initializers/frameworks_test.rb"
+                              ;; These tests are either broken, or rely on
+                              ;; database availability
+                              "expire schema cache dump if the version can't be checked because the database is unhealthy"
+                              "does not expire schema cache dump if check_schema_cache_dump_version is false and the database unhealthy"
+                              "does not expire schema cache dump if check_schema_cache_dump_version is false")))))
           (add-before 'check 'set-paths
             (lambda _
               (setenv "PATH" (string-append (getenv "PATH") ":"
