@@ -5186,7 +5186,7 @@ Ruby, but can be used for all programs.")
 (define-public ruby-maxitest
   (package
     (name "ruby-maxitest")
-    (version "4.4.1")
+    (version "5.1.0")
     (home-page "https://github.com/grosser/maxitest")
     (source (origin
               ;; Pull from git because the gem does not contain tests.
@@ -5197,31 +5197,32 @@ Ruby, but can be used for all programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l646lgrgsfgg9qh05b8a3jd43kgrmr6xzbdvyspmdlhchk1qszg"))))
+                "0qj410krfm497ggmf71xpnabbb6814y0585by4nlzyjvg9hpgg3m"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "default"
-       #:phases (modify-phases %standard-phases
-                  (replace 'replace-git-ls-files
-                    (lambda _
-                      (substitute* "maxitest.gemspec"
-                        (("`git ls-files lib/ bin/ MIT-LICENSE Readme.md`")
-                         "`find lib/ bin/ MIT-LICENSE Readme.md -type f | sort`"))))
-                  (add-before 'check 'remove-version-constraints
-                    (lambda _
-                      ;; Don't use specific versions of dependencies, instead
-                      ;; take whatever is available in Guix.
-                      (delete-file "Gemfile.lock")))
-                  (add-before 'check 'add-mtest-on-PATH
-                    (lambda _
-                      ;; Tests use 'mtest' which is not automatically added on
-                      ;; PATH.
-                      (setenv "PATH" (string-append (getcwd) "/bin:"
-                                                    (getenv "PATH"))))))))
+     (list
+      #:test-target "default"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "maxitest.gemspec"
+                (("`git ls-files lib/ bin/ MIT-LICENSE Readme.md`")
+                 "`find lib/ bin/ MIT-LICENSE Readme.md -type f | sort`"))))
+          (add-before 'check 'remove-version-constraints
+            (lambda _
+              ;; Don't use specific versions of dependencies, instead
+              ;; take whatever is available in Guix.
+              (delete-file "Gemfile.lock")))
+          (add-before 'check 'add-mtest-on-PATH
+            (lambda _
+              ;; Tests use 'mtest' which is not automatically added on
+              ;; PATH.
+              (setenv "PATH" (string-append (getcwd) "/bin:"
+                                            (getenv "PATH"))))))))
     (native-inputs
      (list procps
            ruby-bump
-           ruby-byebug
            ruby-rspec
            ruby-wwtd))
     (propagated-inputs
