@@ -5995,7 +5995,8 @@ you to merge elements inside a hash together recursively.")
            ruby-rspec
            ruby-simplecov
            ruby-simplecov-lcov
-           ruby-zeitwerk))
+           ruby-zeitwerk
+           ruby-mini-portile-2))
     (propagated-inputs
      (list ruby-activesupport))
     (synopsis "Asynchronous background tasks execution library")
