@@ -6917,16 +6917,18 @@ development tools to catch coverage problems early.")
 (define-public ruby-oedipus-lex
   (package
     (name "ruby-oedipus-lex")
-    (version "2.6.0")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "oedipus_lex" version))
        (sha256
         (base32
-         "094nd7jd3klv45mvprfn2ivcgw8cckq3jhlly77j903vlamfi0df"))))
+         "06l4d3l75vhdcmnavnkzr7bd39rb0njxhkbmwrw6ni64z2hlj7w7"))))
     (build-system ruby-build-system)
-    (native-inputs (list ruby-hoe))
+    (native-inputs
+     (list ruby-hoe
+           ruby-minitest))
     (synopsis "Ruby lexer")
     (description
      "Oedipus Lex is a lexer generator in the same family as Rexical and Rex.
