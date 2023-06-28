@@ -16474,8 +16474,7 @@ markdown syntax document and passes the Markdown 1.0 test suite.")
            ruby-rdf
            ruby-rdf-vocab))
     (native-inputs
-     (list ruby-byebug
-           ruby-cucumber
+     (list ruby-cucumber
            ruby-minitest
            ruby-yard))
     (arguments
