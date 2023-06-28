@@ -12683,14 +12683,14 @@ your application.")
 (define-public ruby-kpeg
   (package
   (name "ruby-kpeg")
-  (version "1.1.0")
+  (version "1.3.3")
   (source
     (origin
       (method url-fetch)
       (uri (rubygems-uri "kpeg" version))
       (sha256
         (base32
-          "0x2kpfrcagj931masm5y1kwbnc6nxl60cqdcd3lyd1d2hz7kzlia"))))
+          "0jxddpyb23digcd8b1b02gn94057a7mw17680c3c8s3bcb5xqfnp"))))
   (build-system ruby-build-system)
   (native-inputs
    (list ruby-hoe))
