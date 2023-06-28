@@ -929,6 +929,7 @@ already included in Rails.")
                  (lambda _
                    (delete-file "gemfiles/rails_7_propshaft.gemfile.lock")
                    (substitute* "gemfiles/rails_7_propshaft.gemfile"
+                     ((".*gem \"byebug\".*") "")
                      ;; Remove appraisal, and add tzinfo-data, which needs to
                      ;; be in the Gemfile to become available.
                      ((".*appraisal.*")
@@ -947,8 +948,7 @@ already included in Rails.")
                    (delete-file "test/npm_integration_test.rb")
                    (delete-file "test/packager_integration_test.rb"))))))
     (native-inputs
-     (list ruby-byebug
-           ruby-capybara
+     (list ruby-capybara
            ruby-propshaft
            ruby-rails
            ruby-rexml
