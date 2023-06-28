@@ -5800,6 +5800,7 @@ set.")
                                      texlive-helvetic
                                      texlive-hyperref
                                      texlive-jknapltx
+                                     texlive-latexmk
                                      texlive-listofitems
                                      texlive-multirow
                                      texlive-natbib
