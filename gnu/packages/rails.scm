@@ -35,7 +35,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system ruby))
 
-(define %ruby-rails-version "7.0.4.3")
+(define %ruby-rails-version "7.0.5.1")
 
 (define ruby-rails-monorepo
   (origin
@@ -46,7 +46,7 @@
     (file-name (git-file-name "ruby-rails" %ruby-rails-version))
     (sha256
      (base32
-      "0f5f8r8wdmdmbyl07b0z555arai4ys2j8dj3fy0mq63y9bfhcqqk"))))
+      "0s16i73rqzlrx5icn848mf2nmblmgxk06wj9576dkadsb8pspv0l"))))
 
 (define-public ruby-activesupport
   (package
@@ -109,10 +109,7 @@
     (propagated-inputs
      (list ruby-concurrent
            ruby-i18n
-           ;; This is sub-optimal, but apparently necessary (see:
-           ;; https://github.com/rails/rails/commit/
-           ;; 9766eb4a833c26c64012230b96dd1157ebb8e8a2).
-           ruby-minitest-5.15
+           ruby-minitest
            ruby-tzinfo
            ruby-tzinfo-data))
     (synopsis "Ruby on Rails utility library")
@@ -344,7 +341,9 @@ serialization, internationalization, and testing.")
               ;; A few tests require to set the timezone.
               (setenv "TZDIR" (search-input-directory (or native-inputs inputs)
                                                       "share/zoneinfo")))))))
-    (native-inputs (list tzdata-for-tests))
+    (native-inputs
+     (list tzdata-for-tests
+           ruby-mini-portile-2))
     (propagated-inputs (list ruby-activemodel ruby-activesupport ruby-sqlite3))
     (synopsis "Ruby library to connect to relational databases")
     (description
