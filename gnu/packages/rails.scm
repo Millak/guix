@@ -882,7 +882,7 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
               (substitute* "bootsnap.gemspec"
                 (("`git ls-files -z ext lib`")
                  "`find ext lib -type f -print0 | sort -z`")))))))
-    (native-inputs (list ruby-mocha ruby-rake-compiler))
+    (native-inputs (list ruby-mocha-1 ruby-rake-compiler))
     (propagated-inputs (list ruby-msgpack))
     (synopsis "Accelerator for large Ruby/Rails application")
     (description "Bootsnap is a library that plugs into Ruby, with optional
