@@ -12706,7 +12706,7 @@ technique.")
 (define-public ruby-rdoc
   (package
     (name "ruby-rdoc")
-    (version "6.2.0")
+    (version "6.5.0")
     (source
      (origin
        (method git-fetch)
@@ -12716,7 +12716,7 @@ technique.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dhk29nidv93b5vnjvlm9gcixgn4i0jcyzrgxdk6pdg019bw4cj6"))))
+         "06dcjs4s2phvg9bq42mlfqv4c4zpdr8w7aq107lm2q0qqqw7xjlr"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
