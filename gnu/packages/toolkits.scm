@@ -168,4 +168,10 @@ standard operating system features.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02a7b05zrka20jhzag2jb4jl624i1m456bsv69jb9zgys2p9dv1n"))))))
+                "02a7b05zrka20jhzag2jb4jl624i1m456bsv69jb9zgys2p9dv1n"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments imgui)
+       ((#:make-flags flags ''())
+        ;; Remove the "-DImDrawIdx=unsigned int" make-flag as this breaks
+        ;; mangohud, the only user of this version.
+        #~(delete "-DImDrawIdx=unsigned int" #$flags))))))
