@@ -16196,24 +16196,23 @@ and Nokogiri.")
 (define-public ruby-wapiti
   (package
     (name "ruby-wapiti")
-    (version "2.0.0")
+    (version "2.1.0")
     ;; the gem archive lacks tests
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/inukshuk/wapiti-ruby")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kawqw45j7mqk5zmwbn67x1vxiapdgm2ypqqz2bs9l5s7nglzr5b"))))
+                "1273dqvn6flq2qv9qbp104rgc7zp1gqx4096s0v0z5f0qnhzc7d6"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-builder
            ruby-rexml))
     (native-inputs
-     (list ruby-byebug
-           ruby-pry
+     (list ruby-pry
            ruby-rake-compiler
            ruby-rspec
            ruby-simplecov))
