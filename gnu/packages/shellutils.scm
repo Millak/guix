@@ -188,33 +188,32 @@ in Zsh intelligently.")
     (build-system gnu-build-system)
     (native-inputs
      (list ruby
-           ruby-byebug
            ruby-pry
            ruby-rspec
            ruby-rspec-wait
            tmux
            zsh))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; Failing tests since tmux-3.2a
-             (delete-file "spec/options/buffer_max_size_spec.rb")))
-         (delete 'configure)
-         (replace 'check ; Tests use ruby's bundler; instead execute rspec directly.
-           (lambda _
-             (setenv "TMUX_TMPDIR" (getenv "TMPDIR"))
-             (setenv "SHELL" (which "zsh"))
-             (invoke "rspec")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (zsh-plugins
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; Failing tests since tmux-3.2a
+              (delete-file "spec/options/buffer_max_size_spec.rb")))
+          (delete 'configure)
+          (replace 'check ; Tests use ruby's bundler; instead execute rspec directly.
+            (lambda _
+              (setenv "TMUX_TMPDIR" (getenv "TMPDIR"))
+              (setenv "SHELL" (which "zsh"))
+              (invoke "rspec")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (zsh-plugins
                       (string-append out "/share/zsh/plugins/zsh-autosuggestions")))
-               (invoke "make" "all")
-               (install-file "zsh-autosuggestions.zsh" zsh-plugins)
-               #t))))))
+                (invoke "make" "all")
+                (install-file "zsh-autosuggestions.zsh" zsh-plugins)))))))
     (home-page "https://github.com/zsh-users/zsh-autosuggestions")
     (synopsis "Fish-like autosuggestions for zsh")
     (description
