@@ -7267,26 +7267,27 @@ IANA Time Zone database packaged as Ruby modules for use with @code{TZInfo}.")
 (define-public ruby-rb-inotify
   (package
     (name "ruby-rb-inotify")
-    (version "0.9.10")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "rb-inotify" version))
        (sha256
         (base32
-         "0yfsgw5n7pkpyky6a9wkf1g9jafxb0ja7gz0qw0y14fd2jnzfh71"))))
+         "1jm76h8f8hji38z3ggf4bzi8vps6p7sagxn3ab57qc0xyga64005"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f ; there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; Building the gemspec with rake is not working here since it is
-         ;; generated with Jeweler.  It is also unnecessary because the
-         ;; existing gemspec does not use any development tools to generate a
-         ;; list of files.
-         (replace 'build
-          (lambda _
-            (invoke "gem" "build" "rb-inotify.gemspec"))))))
+     (list
+      #:tests? #f ; there are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Building the gemspec with rake is not working here since it is
+          ;; generated with Jeweler.  It is also unnecessary because the
+          ;; existing gemspec does not use any development tools to generate a
+          ;; list of files.
+          (replace 'build
+            (lambda _
+              (invoke "gem" "build" "rb-inotify.gemspec"))))))
     (propagated-inputs
      (list ruby-ffi))
     (native-inputs
