@@ -901,8 +901,10 @@ emphasis on quality rather than speed.")
      (list gfortran
            (texlive-updmap.cfg
             (list texlive-ec
+                  texlive-epstopdf
                   texlive-geometry
-                  texlive-graphics))))
+                  texlive-graphics
+                  texlive-latexmk))))
     (home-page "https://github.com/greglandrum/yaehmop")
     (synopsis "Perform extended Hückel calculations")
     (description "@acronym{YAeHMOP, Yet Another extended Hueckel Molecular
