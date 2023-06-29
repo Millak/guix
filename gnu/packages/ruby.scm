@@ -9104,7 +9104,7 @@ top of Faraday.")
 (define-public ruby-octokit
   (package
     (name "ruby-octokit")
-    (version "6.1.0")
+    (version "6.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9113,15 +9113,22 @@ top of Faraday.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01njrd17bz28mlsa8hi9gad7s6d1d0vpyn0g66p3d42zgplr9qkq"))))
+                "02bcmh0b0v80cis1l80lhzxw8adb69xkz6qgg4m7qcmj3y5arwmk"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-unnecessary-dependencies
+            (lambda _
+              (substitute* "spec/spec_helper.rb"
+                (("require 'pry-byebug'") "")))))))
     (native-inputs
      (list ruby-faraday-multipart
            ruby-jwt
            ruby-mime-types
            ruby-multi-json
            ruby-netrc
-           ruby-pry-byebug
            ruby-rbnacl
            ruby-rspec
            ruby-simplecov
