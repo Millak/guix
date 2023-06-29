@@ -42069,7 +42069,7 @@ other crates to create safe wrappers around Oniguruma.")
 (define-public rust-once-cell-1
   (package
     (name "rust-once-cell")
-    (version "1.17.1")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
@@ -42077,7 +42077,7 @@ other crates to create safe wrappers around Oniguruma.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1lrsy9c5ikf2iwxr4iwgd3rlq9mg8alh0np1g8abnvp1k4151rdp"))))
+         "0vapcd5ambwck95wyz3ymlim35jirgnqn9a0qmi19msymv95v2yx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -42086,8 +42086,6 @@ other crates to create safe wrappers around Oniguruma.")
         ("rust-parking-lot-core" ,rust-parking-lot-core-0.9))
        #:cargo-development-inputs
        (("rust-critical-section" ,rust-critical-section-1)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/matklad/once_cell")
     (synopsis "Single assignment cells and lazy values")
