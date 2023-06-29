@@ -1020,18 +1020,18 @@ two-dimensional renderings such as scatter plots and histograms.
 (define-public python-pandas-flavor
   (package
     (name "python-pandas-flavor")
-    (version "0.2.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas_flavor" version))
        (sha256
         (base32
-         "12g4av8gpl6l83yza3h97j3f2jblqv69frlidrvdq8ny2rc6awbq"))))
+         "0473lkbdnsag3w5x65sxwjlyq0i7z938ssxqwn2cpcml282vksx1"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-pandas python-xarray))
-    (home-page "https://github.com/Zsailer/pandas_flavor")
+     (list python-lazy-loader python-packaging python-pandas python-xarray))
+    (home-page "https://github.com/pyjanitor-devs/pandas_flavor")
     (synopsis "Write your own flavor of Pandas")
     (description "Pandas 0.23 added a simple API for registering accessors
 with Pandas objects.  Pandas-flavor extends Pandas' extension API by
