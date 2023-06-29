@@ -29,7 +29,7 @@
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2018, 2021–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -19136,6 +19136,34 @@ feels like an AST.")
      "The @code{typing_inspect} module defines experimental API for runtime
 inspection of types defined in the Python standard typing module.")
     (license license:expat)))
+
+(define-public python-lazy-loader
+  (package
+    (name "python-lazy-loader")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lazy_loader" version))
+              (sha256
+               (base32
+                "12piaj94m5wbx33cxb80xgnsvzgya6cp90zj12qsq064fm8pmp0f"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-pytest-cov))
+    (propagated-inputs
+     (list python-flit-core))
+    (home-page "https://scientific-python.org/specs/spec-0001/")
+    (synopsis "Load subpackages and functions on demand")
+    (description "@code{python-lazy-loader} makes it easy to load subpackages
+and functions on demand.  Its main features are:
+
+@itemize
+@item Allow subpackages to be made visible to users without incurring import
+costs.
+@item Allow external libraries to be imported only when used, improving import
+times.
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public python-lazy-object-proxy
   (package
