@@ -12263,7 +12263,8 @@ libraries for compiling Ruby native extensions.")
          "1nq859b0gh2vjhvl1qh1zrk09pc7p54r9i6nnn6sb06iv07db2jb"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list ruby-hoe))
+     (list ruby-hoe
+           ruby-minitest))
     (synopsis "RFC 2617 HTTP digest authentication library")
     (description
      "This library implements HTTP's digest authentication scheme based on
