@@ -14475,7 +14475,6 @@ can be used to build formatters, linters, language servers, and more.")
            ruby-rubocop-performance
            ruby-concurrent-ruby
            ruby-pry
-           ruby-pry-byebug
            ruby-parser
            ruby-subprocess))
     (synopsis "Runtime type checking component for Sorbet")
