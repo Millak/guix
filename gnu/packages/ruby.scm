@@ -7695,30 +7695,42 @@ a native C extension.")
 (define-public ruby-jwt
   (package
     (name "ruby-jwt")
-    (version "2.1.0")
+    (version "2.7.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "jwt" version))
+       ;; For tests
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jwt/ruby-jwt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1w0kaqrbl71cq9sbnixc20x5lqah3hs2i93xmhlfdg2y3by7yzky"))))
+         "12ss6knfis6a6a41qndalnlvq3yykhpg6igzll8qyssnnwi9zdw7"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-unnecessary-dependencies
-           (lambda _
-             (substitute* "spec/spec_helper.rb"
-               (("require 'simplecov.*") "\n")
-               ;; Use [].each to disable running the SimpleCov configuration
-               ;; block
-               (("SimpleCov\\.configure") "[].each")
-               (("require 'codeclimate-test-reporter'") "")
-               (("require 'codacy-coverage'") "")
-               (("Codacy::Reporter\\.start") ""))
-             #t)))))
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-unnecessary-dependencies
+            (lambda _
+              (substitute* "ruby-jwt.gemspec"
+                (("spec\\.add_development_dependency 'appraisal'") "")
+                (("spec\\.add_development_dependency 'simplecov'") ""))
+              (substitute* "Gemfile"
+                (("gem 'rubocop'.*") ""))
+              (substitute* "Rakefile"
+                (("require 'rubocop/rake_task'") "")
+                (("RuboCop::RakeTask\\.new\\(:rubocop\\)") ""))
+              (substitute* "spec/spec_helper.rb"
+                (("require 'simplecov.*") "\n")
+                ;; Use [].each to disable running the SimpleCov configuration
+                ;; block
+                (("SimpleCov\\.configure") "[].each")
+                (("require 'codeclimate-test-reporter'") "")
+                (("require 'codacy-coverage'") "")
+                (("Codacy::Reporter\\.start") "")))))))
     (native-inputs
      (list bundler ruby-rspec ruby-rbnacl))
     (synopsis "Ruby implementation of the JSON Web Token standard")
