@@ -14310,6 +14310,10 @@ development kit for Ruby.")
      (list #:phases #~(modify-phases %standard-phases
                         (add-after 'extract-gemspec 'relax-requirements
                           (lambda _
+                            (substitute* "spy.gemspec"
+                              ((".*pry-byebug.*") ""))
+                            (substitute* "test/test_helper.rb"
+                              ((".*pry-byebug.*") ""))
                             (substitute* "Gemfile"
                               ((".*redcarpet.*") "")
                               ((".*yard.*") "")))))))
@@ -14317,7 +14321,6 @@ development kit for Ruby.")
      (list ruby-coveralls
            ruby-minitest-reporters
            ruby-pry
-           ruby-pry-byebug
            ruby-rspec-core
            ruby-rspec-expectations))
     (synopsis "Mocking library for Ruby")
