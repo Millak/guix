@@ -592,7 +592,7 @@ graphs and can export its output to different formats.")
 (define-public facter
   (package
     (name "facter")
-    (version "4.0.52")
+    (version "4.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -601,63 +601,61 @@ graphs and can export its output to different formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05j4q87sak1f1isj7ngzr59h3j3xskfwjjwfv0xd7lhwcaxg3a3c"))))
+                "080v0ml2svw2vbzfa659v8718pmhh2kav0l0q1jjvc6mm8sgnmmn"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-facter-ng-gemspec
-           (lambda _
-             ;; XXX: ruby-build-system incorrectly finds
-             ;; facter-ng.gemspec from this directory and tries to
-             ;; build that instead of the proper facter.gemspec.
-             ;; Just delete it as a workaround, as it appears to
-             ;; only exist for backwards-compatibility after the
-             ;; facter-ng->facter rename.
-             (delete-file "agent/facter-ng.gemspec")
-             #t))
-         (add-after 'unpack 'embed-absolute-references
-           ;; Refer to absolute executable file names to avoid propagation.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "lib/facter/resolvers" "\\.rb$")
-               (("execute\\('(which |)([^ ']+)" _ _ name)
-                (string-append "execute('" (or (which name)
-                                               name))))
-             #t))
-         (delete 'check)
-         (add-after 'wrap 'check
-           (lambda* (#:key tests? outputs #:allow-other-keys)
-             ;; XXX: The test suite wants to run Bundler and
-             ;; complains that the gemspec is invalid.  For now
-             ;; just make sure that we can run the wrapped
-             ;; executable directly.
-             (if tests?
-                 (invoke (string-append (assoc-ref outputs "out")
-                                        "/bin/facter")
-                         ;; Many facts depend on /sys, /etc/os-release,
-                         ;; etc, so we only run a small sample.
-                         "facterversion" "architecture"
-                         "kernel" "kernelversion")
-                 (format #t "tests disabled~%"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-facter-ng-gemspec
+            (lambda _
+              ;; XXX: ruby-build-system incorrectly finds
+              ;; facter-ng.gemspec from this directory and tries to
+              ;; build that instead of the proper facter.gemspec.
+              ;; Just delete it as a workaround, as it appears to
+              ;; only exist for backwards-compatibility after the
+              ;; facter-ng->facter rename.
+              (delete-file "agent/facter-ng.gemspec")))
+          (add-after 'unpack 'embed-absolute-references
+            ;; Refer to absolute executable file names to avoid propagation.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "lib/facter/resolvers" "\\.rb$")
+                (("execute\\('(which |)([^ ']+)" _ _ name)
+                 (string-append "execute('" (or (which name)
+                                                name))))))
+          (delete 'check)
+          (add-after 'wrap 'check
+            (lambda* (#:key tests? outputs #:allow-other-keys)
+              ;; XXX: The test suite wants to run Bundler and
+              ;; complains that the gemspec is invalid.  For now
+              ;; just make sure that we can run the wrapped
+              ;; executable directly.
+              (if tests?
+                  (invoke (string-append (assoc-ref outputs "out")
+                                         "/bin/facter")
+                          ;; Many facts depend on /sys, /etc/os-release,
+                          ;; etc, so we only run a small sample.
+                          "facterversion" "architecture"
+                          "kernel" "kernelversion")
+                  (format #t "tests disabled~%")))))))
     (inputs
-     `(("ruby-hocon" ,ruby-hocon)
-       ("ruby-sys-filesystem" ,ruby-sys-filesystem)
-       ("ruby-thor" ,ruby-thor)
+     (list ruby-hocon
+           ruby-sys-filesystem
+           ruby-thor
 
-       ;; For ‘embed-absolute-references’.
-       ("dmidecode" ,dmidecode)
-       ("inetutils" ,inetutils)         ; for ‘hostname’
-       ("iproute" ,iproute)
-       ("pciutils" ,pciutils)
-       ("util-linux" ,util-linux)))
+           ;; For ‘embed-absolute-references’.
+           dmidecode
+           inetutils                    ; for ‘hostname’
+           iproute
+           pciutils
+           util-linux))
     (synopsis "Collect and display system facts")
     (description
      "Facter is a tool that gathers basic facts about nodes (systems) such
 as hardware details, network settings, OS type and version, and more.  These
 facts can be collected on the command line with the @command{facter} command
 or via the @code{facter} Ruby library.")
-    (home-page "https://github.com/puppetlabs/facter-ng")
+    (home-page "https://github.com/puppetlabs/facter")
     (license license:expat)))
 
 (define-public ttyload
