@@ -16102,7 +16102,7 @@ any unhandled exceptions.")
 (define-public ruby-braintree
   (package
     (name "ruby-braintree")
-    (version "4.10.0")
+    (version "4.12.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -16111,27 +16111,30 @@ any unhandled exceptions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01b5bp8q038ray5wwg3qhg4hj3r5a48vnfzs3gxkdjm5ky6bmn4p"))))
+        (base32 "0gfgkymy3655drwgs42bj9ap9qib1l30sajxmypmp6s75m9w3gsh"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "test:unit"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-rubocop
-           (lambda _
-             (substitute* "Rakefile"
-               (("sh \"rubocop\"") ""))))
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "Gemfile"
-               (("gem \"libxml-ruby\", \"3.2.0\"")
-                "gem \"libxml-ruby\", \"~> 3.0.0\"")
-               (("gem \"rspec\", \"3.9.0\"")
-                "gem \"rspec\", \">= 3.9.0\"")
-               (("gem \"webrick\", \"~>1.7.0\"")
-                "gem \"webrick\", \">=1.7.0\"")
-               ((".*gem \"rubocop\".*") "")
-               ((".*gem \"rspec_junit_formatter\".*") "")))))))
+     (list
+      #:test-target "test:unit"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-rubocop
+            (lambda _
+              (substitute* "Rakefile"
+                (("sh \"rubocop\"") ""))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "Gemfile"
+                (("gem \"pry\".*") "gem 'pry'\n")
+                (("gem \"rake\".*") "gem 'rake'\n")
+                (("gem \"libxml-ruby\", \"3.2.0\"")
+                 "gem \"libxml-ruby\", \"~> 3.0.0\"")
+                (("gem \"rspec\", \"3.9.0\"")
+                 "gem \"rspec\", \">= 3.9.0\"")
+                (("gem \"webrick\", \"~>1.7.0\"")
+                 "gem \"webrick\", \">=1.7.0\"")
+                ((".*gem \"rubocop\".*") "")
+                ((".*gem \"rspec_junit_formatter\".*") "")))))))
     (native-inputs
      (list ruby-libxml
            ruby-pry
