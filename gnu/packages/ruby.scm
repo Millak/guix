@@ -1368,29 +1368,30 @@ line of code.")
 (define-public ruby-awesome-print
   (package
     (name "ruby-awesome-print")
-    (version "1.8.0")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "awesome_print" version))
        (sha256
         (base32
-         "14arh1ixfsd6j5md0agyzvksm5svfkvchb90fp32nn7y3avcmc2h"))))
+         "0vkq6c8y2jvaw03ynds5vjzl1v9wg608cimkd3bidzxc0jvk56z9"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; Remove failing test.
-             (for-each delete-file
-                       '("spec/ext/nokogiri_spec.rb"
-                         "spec/colors_spec.rb"
-                         "spec/formats_spec.rb"
-                         "spec/methods_spec.rb"
-                         "spec/misc_spec.rb"
-                         "spec/objects_spec.rb"))
-             (invoke "rspec" "-c" "spec"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              ;; Remove failing test.
+              (for-each delete-file
+                        '("spec/ext/nokogiri_spec.rb"
+                          "spec/colors_spec.rb"
+                          "spec/formats_spec.rb"
+                          "spec/methods_spec.rb"
+                          "spec/misc_spec.rb"
+                          "spec/objects_spec.rb"))
+              (invoke "rspec" "-c" "spec"))))))
     (native-inputs
      (list ruby-nokogiri ruby-rspec ruby-simplecov))
     (synopsis "Pretty print Ruby objects to visualize their structure")
