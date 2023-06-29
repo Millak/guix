@@ -162,7 +162,7 @@ libcdio.")
 (define-public xorriso
   (package
     (name "xorriso")
-    (version "1.5.4")
+    (version "1.5.6.pl02")
     (outputs '("out" "gui"))
     (source (origin
              (method url-fetch)
@@ -170,7 +170,7 @@ libcdio.")
                                  version ".tar.gz"))
              (sha256
               (base32
-               "14p3r6jahfqqw2gf739l5myz5x4qb8h34zyczbpdps2krbq5bh9s"))))
+               "1qfs9ybd9k67r78rp1csijmlrq7mq39f7kpyq6qcap46z5fryvvq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
