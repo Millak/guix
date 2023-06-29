@@ -14929,27 +14929,27 @@ is also included.")
 (define-public swagger-diff
   (package
     (name "swagger-diff")
-    (version "1.1.2")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "swagger-diff" version))
        (sha256
         (base32
-         "1hxx50nga1bqn254iqjcdwkc9c72364ks9lyjyw10ajz0l0ly7sn"))))
+         "18kbrijkafs3vfsbaqz0cqfj7jrz3aj8xr4fgn5if63wlximybv2"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         ;; Don't run or require rubocop, the code linting tool, as this is a
-         ;; bit unnecessary.
-         (add-after 'unpack 'dont-run-rubocop
-           (lambda _
-             (substitute* "Rakefile"
-               ((".*rubocop.*") "")
-               ((".*RuboCop.*") ""))
-             #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't run or require rubocop, the code linting tool, as this is a
+          ;; bit unnecessary.
+          (add-after 'unpack 'dont-run-rubocop
+            (lambda _
+              (substitute* "Rakefile"
+                ((".*rubocop.*") "")
+                ((".*RuboCop.*") "")))))))
     (propagated-inputs
      (list ruby-json-schema))
     (native-inputs
