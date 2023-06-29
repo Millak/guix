@@ -5355,7 +5355,7 @@ with processes on remote servers, via SSH2.")
         (base32 "1mdxh81z2hkcc359g6z96fywbr57azlv2yj4zq76adn5lyqq4hgw"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list bundler ruby-test-unit ruby-mocha))
+     (list bundler ruby-test-unit ruby-mocha-1))
     (propagated-inputs
      (list ruby-net-ssh))
     (synopsis "Pure-Ruby SCP client library")
