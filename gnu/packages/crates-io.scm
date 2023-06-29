@@ -45011,7 +45011,7 @@ implementation suitable for use with cryptographic private keys.")
 (define-public rust-percent-encoding-2
   (package
     (name "rust-percent-encoding")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
@@ -45019,7 +45019,7 @@ implementation suitable for use with cryptographic private keys.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "13nrpp6r1f4k14viksga3094krcrxgv4b42kqbriy63k7ln5g327"))))
+         "152slflmparkh27hprw62sph8rv77wckzhwl2dhqk6bf563lfalv"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/servo/rust-url/")
     (synopsis "Percent encoding and decoding")
