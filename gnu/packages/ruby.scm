@@ -2192,14 +2192,14 @@ or a background processing library.")
 (define-public ruby-text-hyphen
   (package
     (name "ruby-text-hyphen")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (rubygems-uri "text-hyphen" version))
         (sha256
           (base32
-            "1gj4awvs9ryf960m0iawg43jyjmfwcqgfwrbcfp890a57b9ag7q1"))))
+            "01js0wxz84cc5hzxgqbcqnsa0y6crhdi6plmgkzyfm55p0rlajn4"))))
     (build-system ruby-build-system)
     (native-inputs
      (list ruby-hoe))
