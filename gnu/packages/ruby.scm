@@ -4322,16 +4322,18 @@ help tests uncover more bugs.")
 (define-public ruby-net-http-persistent
   (package
     (name "ruby-net-http-persistent")
-    (version "3.0.0")
+    (version "4.0.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "net-http-persistent" version))
               (sha256
                (base32
-                "156rv95bgxfz6qw5y1r7c7bswr77918hygl8dyl14qzbqc5vyp18"))))
+                "0i1as2lgnw7b4jid0gw5glv5hnxz36nmfsbr9rmxbcap72ijgy03"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list ruby-connection-pool ruby-hoe))
+     (list ruby-connection-pool
+           ruby-hoe
+           ruby-rake-manifest))
     (synopsis "Persistent HTTP connection manager")
     (description "Net::HTTP::Persistent manages persistent HTTP connections
 using Net::HTTP, supporting reconnection and retry according to RFC 2616.")
