@@ -8967,15 +8967,30 @@ abstraction for Ruby.")
 (define-public ruby-benchmark-ips
   (package
     (name "ruby-benchmark-ips")
-    (version "2.8.2")
+    (version "2.12.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "benchmark-ips" version))
+       (method git-fetch)               ;no tests in distributed gem
+       (uri (git-reference
+             (url "https://github.com/evanphx/benchmark-ips")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1n9397j7kh4vvikfann1467qgksc679imlr50hax3lk1q3af8kdw"))))
+         "19pa2a1lgjzrxcz6vxwfiq5qq337vr15bbbpc2mfwzljdlx5059s"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Gemfile"
+                (("gem 'rake'.*")
+                 "gem 'rake'"))
+              (substitute* "benchmark-ips.gemspec"
+                (("git ls-files -- examples lib")
+                 "find examples lib -type f | sort")))))))
     (native-inputs
      (list ruby-hoe))
     (synopsis "Iterations per second enhancement for the Ruby Benchmark module")
