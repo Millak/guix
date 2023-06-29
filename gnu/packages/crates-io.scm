@@ -72220,7 +72220,7 @@ comparable to calling @code{unwrap_err()}.")
 (define-public rust-url-2
   (package
     (name "rust-url")
-    (version "2.3.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
@@ -72229,12 +72229,12 @@ comparable to calling @code{unwrap_err()}.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0hs67jw257y0a7mj2p9wi0n61x8fc2vgwxg37y62nxkmmscwfs0d"))))
+         "1jw89ack5ldvajpzsvhq9sy12y2xqa2x0cbin62hl80r3s1zggsh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-form-urlencoded" ,rust-form-urlencoded-1)
-        ("rust-idna" ,rust-idna-0.3)
+        ("rust-idna" ,rust-idna-0.4)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
