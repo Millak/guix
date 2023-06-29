@@ -30082,17 +30082,17 @@ with hyper.")
      "Utility for applying case rules to Rust identifiers.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-idna-0.3
+(define-public rust-idna-0.4
   (package
     (name "rust-idna")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "idna" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1rh9f9jls0jy3g8rh2bfpjhvvhh4q80348jc4jr2s844133xykg1"))))
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "idna" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0z4i1dhqk83bbv230pp1c31dqdlnscvqxvc85n40ihgvgfqdc83x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -30108,6 +30108,28 @@ with hyper.")
     (description
      "IDNA (Internationalizing Domain Names in Applications) and Punycode.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-idna-0.3
+  (package
+    (inherit rust-idna-0.4)
+    (name "rust-idna")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "idna" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rh9f9jls0jy3g8rh2bfpjhvvhh4q80348jc4jr2s844133xykg1"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-unicode-bidi" ,rust-unicode-bidi-0.3)
+        ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-bencher" ,rust-bencher-0.1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tester" ,rust-tester-0.9))))))
 
 (define-public rust-idna-0.2
   (package
