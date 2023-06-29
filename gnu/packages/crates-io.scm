@@ -24106,14 +24106,14 @@ implementation that is more efficient for smaller hash keys.")
 (define-public rust-form-urlencoded-1
   (package
     (name "rust-form-urlencoded")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "form_urlencoded" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y3bwavygjzv7b0yqsjqk33yi6wz25b7q2aaq9h54vqmc7qq9hx9"))))
+        (base32 "0ljn0kz23nr9yf3432k656k178nh4jqryfji9b0jw343dz7w2ax6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
