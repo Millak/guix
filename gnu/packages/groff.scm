@@ -32,6 +32,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ruby)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages bison)
@@ -229,27 +230,33 @@ It is typically used to display man pages on a web site.")
          "1slxfg57cabmh98fw507z4ka6lwq1pvbrqwppflxw6700pi8ykfh"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'extract-gemspec 'fix-gemspec-mustache
-           (lambda _
-             (substitute* "ronn-ng.gemspec"
-               (("(<mustache>.freeze.*~>).*(\".*$)" all start end)
-                (string-append start " 1.0" end)))
-             #t))
-         (add-after 'wrap 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref %outputs "out") "/bin/ronn")))
-               (wrap-program prog
-                 `("PATH" ":" suffix ,(map
-                                       (lambda (exp_inpt)
-                                         (string-append
-                                          (assoc-ref %build-inputs exp_inpt)
-                                          "/bin"))
-                                       '("ruby-kramdown"
-                                         "ruby-mustache"
-                                         "ruby-nokogiri")))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-test
+            (lambda _
+              ;; TODO This should be removed once the upstream fix is released
+              ;; https://github.com/apjanke/ronn-ng/commit/e194bf62b1d0c0828cc83405e60dc5ece829e62f
+              (substitute* "test/test_ronn_document.rb"
+                (("YAML\\.load\\(@doc\\.to_yaml\\)")
+                 "YAML.load(@doc.to_yaml, permitted_classes: [Time])"))))
+          (add-after 'extract-gemspec 'fix-gemspec-mustache
+            (lambda _
+              (substitute* "ronn-ng.gemspec"
+                (("(<mustache>.freeze.*~>).*(\".*$)" all start end)
+                 (string-append start " 1.0" end)))))
+          (add-after 'wrap 'wrap-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((prog (string-append (assoc-ref %outputs "out") "/bin/ronn")))
+                (wrap-program prog
+                  `("PATH" ":" suffix ,(map
+                                        (lambda (exp_inpt)
+                                          (string-append
+                                           (assoc-ref %build-inputs exp_inpt)
+                                           "/bin"))
+                                        '("ruby-kramdown"
+                                          "ruby-mustache"
+                                          "ruby-nokogiri"))))))))))
     (inputs
      (list ruby-kramdown ruby-mustache ruby-nokogiri))
     (synopsis
