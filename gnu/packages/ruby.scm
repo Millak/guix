@@ -6093,16 +6093,14 @@ objects back to a @code{String}.")
 (define-public ruby-slop
   (package
     (name "ruby-slop")
-    (version "4.5.0")
+    (version "4.10.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "slop" version))
               (sha256
                (base32
-                "0bfm8535g0rkn9cbjndkckf0f7a3wj0rg4rqhrpsgxnbfdf2lm0p"))))
+                "1iyrjskgxyn8i1679qwkzns85p909aq77cgx2m4fs5ygzysj4hw4"))))
     (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-minitest))
     (synopsis "Ruby command line option parser")
     (description "Slop provides a Ruby domain specific language for gathering
 options and parsing command line flags.")
