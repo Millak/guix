@@ -224,22 +224,21 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.31")
+    (version "2.32")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1nn1akjc3l29gcr0n6g7y39qvmbw8vf5sfmnxd794sgmbki7vbsb"))))
+        (base32 "1rp67fqsnsknlhlq75vgdjg9rggx8j7wbmixvps967m2f92m2qsv"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("openssl" ,openssl)
        ("pkg-config" ,pkg-config)
        ;; For building documentation.
-       ,@(if (member (%current-system)
-                     (package-transitive-supported-systems ruby-asciidoctor))
+       ,@(if (supported-package? ruby-asciidoctor)
            `(("asciidoctor" ,ruby-asciidoctor))
            `())))
     (inputs
