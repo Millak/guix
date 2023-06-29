@@ -23564,8 +23564,32 @@ enumeration-based bit flags in rust.")
     (description "A profiling and flamegraph library.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-flamer-0.4
+  (package
+    (name "rust-flamer")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "flamer" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1avszq3fn4ix7p6wjfdkli6fjyxccks1qhzja92a6kpxakd35drn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-flame" ,rust-flame-0.2)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/llogiq/flamer")
+    (synopsis "Macro to insert @code{flame::start_guard(_)}")
+    (description
+     "A procedural macro to insert @code{flame::start_guard(_)} calls.")
+    (license license:asl2.0)))
+
 (define-public rust-flamer-0.3
   (package
+    (inherit rust-flamer-0.4)
     (name "rust-flamer")
     (version "0.3.0")
     (source
@@ -23577,18 +23601,12 @@ enumeration-based bit flags in rust.")
        (sha256
         (base32
          "1b2d7jx80f3p7hqpgdi7wksaiq18k9w23p0cs2sxf7jbx2jx3bgj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Uses features not available in stable Rust release
        #:cargo-inputs
        (("rust-flame" ,rust-flame-0.2)
         ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))))
-    (home-page "https://github.com/llogiq/flamer")
-    (synopsis "Macro to insert @code{flame::start_guard(_)}")
-    (description
-     "A procedural macro to insert @code{flame::start_guard(_)} calls.")
-    (license license:asl2.0)))
+        ("rust-syn" ,rust-syn-0.15))))))
 
 (define-public rust-flatbuffers-2
   (package
