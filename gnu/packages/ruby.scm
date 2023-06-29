@@ -14272,6 +14272,10 @@ for scalable network clients and servers.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-unnecessary-dependencies
+            (lambda _
+              (substitute* "Gemfile"
+                (("gem \"pry-byebug\"") ""))))
           (replace 'replace-git-ls-files
             (lambda _
               (substitute* "language_server-protocol.gemspec"
@@ -14284,8 +14288,7 @@ for scalable network clients and servers.")
            ruby-benchmark-ips
            ruby-m
            ruby-minitest
-           ruby-minitest-power-assert
-           ruby-pry-byebug))
+           ruby-minitest-power-assert))
     (synopsis "Language Server Protocol (LSP) development kit for Ruby")
     (description "This package provides a Language Server Protocol (LSP)
 development kit for Ruby.")
