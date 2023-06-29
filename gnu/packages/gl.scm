@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
@@ -267,7 +267,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "23.0.3")
+    (version "23.1.4")
     (source
       (origin
         (method url-fetch)
@@ -277,7 +277,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   "mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "1mcjf41x2bhxs6yxars7nh2vfryfw50g6rvbcfbb1wqdv2jn4qrq"))))
+          "0n89l7lvawh85hq2a7g5pp5v017s03qs3n4hbbff6rs8p5zs2qbj"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
