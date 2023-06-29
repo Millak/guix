@@ -4170,14 +4170,26 @@ for breakage.")
 (define-public ruby-connection-pool
   (package
     (name "ruby-connection-pool")
-    (version "2.2.2")
+    (version "2.4.1")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "connection_pool" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mperham/connection_pool")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lflx29mlznf1hn0nihkgllzbj8xp5qasn8j7h838465pi399k68"))))
+                "1iijshb1n9xl5knvpzzx0vqlw7v7mskiw1cpfj1cmdmssavyhsx5"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                (("require \"standard/rake\"") "")
+                ((":\"standard:fix\",") "")))))))
     (native-inputs
      (list bundler))
     (synopsis "Generic connection pool for Ruby")
