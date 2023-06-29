@@ -7450,28 +7450,32 @@ types.")
 (define-public rust-bitflags-2
   (package
     (name "rust-bitflags")
-    (version "2.1.0")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bitflags" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cxcbx6mm1w2d7x9xd2vcqgr69a2ydw9k110ir7rrkmmrdwyn2y7"))))
+        (base32 "0hifjw3191g3w5cwqqvbx8knrr3zchdwfc3rs6mn11p5si9yf2v3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-test" ,rust-serde-test-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-zerocopy" ,rust-zerocopy-0.6))))
     (home-page "https://github.com/bitflags/bitflags")
     (synopsis "Macro to generate structures which behave like bitflags")
     (description "This package provides a macro to generate structures which
