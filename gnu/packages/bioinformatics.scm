@@ -9673,7 +9673,7 @@ differently labelled data.")
 (define-public r-pando
   (package
     (name "r-pando")
-    (version "1.0.1")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -9682,21 +9682,22 @@ differently labelled data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c83anzdrbvg47p9xns2bxpjlx5z328can3jmzilw6rygwp7hyii"))))
+        (base32 "04gii2ciyvybifl8kxqqmhznha80l3fd8qcr5zshrn9n6js5322c"))))
     (properties `((upstream-name . "Pando")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bayestestr
-           r-brms
            r-foreach
            r-genomicranges
            r-ggplot2
            r-ggpointdensity
            r-ggraph
            r-glmnetutils
+           r-grr
            r-iranges
            r-irlba
            r-matrix
+           r-matrixgenerics
            r-motifmatchr
            r-pals
            r-patchwork
@@ -9706,8 +9707,7 @@ differently labelled data.")
            r-tfbstools
            r-tidygraph
            r-tidyverse
-           r-uwot
-           r-xgboost))
+           r-uwot))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/quadbiolab/Pando")
     (synopsis "Infer regulomes from multi-modal single-cell genomics data")
