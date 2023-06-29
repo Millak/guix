@@ -71675,7 +71675,7 @@ Unicode and Internationalization Crates (UNIC) project.")
 (define-public rust-unicode-bidi-0.3
   (package
     (name "rust-unicode-bidi")
-    (version "0.3.4")
+    (version "0.3.13")
     (source
      (origin
        (method url-fetch)
@@ -71684,14 +71684,13 @@ Unicode and Internationalization Crates (UNIC) project.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1malx8ljgm7v1gbaazkn7iicy5wj0bwcyadj3l727a38ch6bvwj9"))))
+         "0q0l7rdkiq54pan7a4ama39dgynaf1mnjj1nddrq1w1zayjqp24j"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
        (("rust-flame" ,rust-flame-0.2)
-        ("rust-flamer" ,rust-flamer-0.3)
-        ("rust-matches" ,rust-matches-0.1)
+        ("rust-flamer" ,rust-flamer-0.4)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde-test" ,rust-serde-test-1))))
