@@ -71773,7 +71773,7 @@ breaking algorithm in Rust.")
 (define-public rust-unicode-normalization-0.1
   (package
     (name "rust-unicode-normalization")
-    (version "0.1.19")
+    (version "0.1.22")
     (source
      (origin
        (method url-fetch)
@@ -71781,7 +71781,7 @@ breaking algorithm in Rust.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yabhmg8zlcksda3ajly9hpbzqgbhknxwch8dwkfkaa1569r0ifm"))))
+        (base32 "08d95g7b1irc578b2iyhzv4xhsa4pfvwsqxcl9lbcpabzkq16msw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
