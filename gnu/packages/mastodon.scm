@@ -27,6 +27,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -44,29 +45,24 @@
 (define-public toot
   (package
     (name "toot")
-    (version "0.36.0")
+    (version "0.37.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "toot" version))
         (sha256
-         (base32 "1n79jwr3kpnc2xsr9isbgrj5as5i6zbkhxrdpdjfg87qbbjz7xca"))))
+         (base32 "0qx8hyb74r85dxf97k23w0f5rzkrs16mq7h3y37nwp6hl6gia0ci"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'adjust-test-suite
-           (lambda _
-             ;; This test contains integration tests meant to run against a test
-             ;; Mastodon instance.
-             (delete-file "tests/test_integration.py")))
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
                (add-installed-pythonpath inputs outputs)
                (invoke "py.test")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-psycopg2 python-pytest))
     (inputs
      (list python-beautifulsoup4 python-requests python-urwid
            python-wcwidth))
