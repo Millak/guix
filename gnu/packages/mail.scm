@@ -3187,8 +3187,8 @@ from the Cyrus IMAP project.")
     (inputs
      (list bdb
            libevent
-           libressl ; recommended, and supports e.g. ECDSA
            linux-pam
+           openssl                      ; XXX recommended libressl segfaults
            zlib))
     (native-inputs
      (list bison groff))               ; for man pages
