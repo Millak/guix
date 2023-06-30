@@ -6645,17 +6645,32 @@ Amongst the included tools are @code{Sexp}, @code{SexpProcessor} and
 (define-public ruby-ruby-parser
   (package
     (name "ruby-ruby-parser")
-    (version "3.14.2")
+    (version "3.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ruby_parser" version))
        (sha256
         (base32
-         "09qcdyjjw3p7g6cjm5m9swkms1xnv35ndiy7yw24cas16qrhha6c"))))
+         "0q851n8654wkjrq8jawq8vi5yhr1y9vpyr2vj7cnn3sa4ikg6d3z"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                (("`which bison`")
+                 (string-append "\"" (which "bison") "\""))
+                (("which unifdef")
+                 (which "unifdef"))))))))
     (native-inputs
-     (list ruby-hoe ruby-racc unifdef))
+     (list ruby-hoe
+           ruby-racc
+           unifdef
+           bison
+           ruby-minitest))
     (propagated-inputs
      (list ruby-sexp-processor))
     (home-page "https://github.com/seattlerb/ruby_parser/")
