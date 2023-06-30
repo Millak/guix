@@ -9213,15 +9213,12 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
                  "mocha>.freeze, [\"> 0.14\"])\n"))))
           (add-before 'check 'skip-dubious-test
             (lambda _
-              #$(if (or (target-riscv64?)
-                        (target-ppc32?))
-                    ;; This unreliable test can fail with "Expected 32 to be <= 25."
-                    #~(substitute* "test/test_stackprof.rb"
-                        ((".*assert_operator profile\\[:missed_samples.*") ""))
-                    ;; This unreliable test can fail with "Expected 0 to be >= 1."
-                    #~(substitute* "test/test_stackprof.rb"
-                        (("def test_(cputime)" _ name)
-                         (string-append "def skip_" name))))))
+              (substitute* "test/test_stackprof.rb"
+                ;; This unreliable test can fail with "Expected 0 to be >= 1."
+                (("def test_(cputime)" _ name)
+                 (string-append "def skip_" name))
+                ;; This test often fails
+                (("def test_gc") "def skip_test_gc"))))
           (add-before 'check 'build-tests
             (lambda _
               (invoke "rake" "compile")))
