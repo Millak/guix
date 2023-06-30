@@ -15604,7 +15604,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.6.6")
+    (version "9.6.7")
     (source
      (origin
        (method git-fetch)
@@ -15613,7 +15613,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z3n2dzvgr225f33lvpwwdssrw32lsa1c27l2h9irzv7p33pl1zf"))))
+        (base32 "0b8ys2syk33kz4qygwy2qvkvv4g10hj4zdjfr5iw911v1rp61vcr"))))
     (build-system emacs-build-system)
     (arguments
      (list
