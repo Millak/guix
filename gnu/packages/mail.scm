@@ -3186,7 +3186,6 @@ from the Cyrus IMAP project.")
     (build-system gnu-build-system)
     (inputs
      (list bdb
-           libasr
            libevent
            libressl ; recommended, and supports e.g. ECDSA
            linux-pam

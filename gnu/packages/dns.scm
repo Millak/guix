@@ -510,41 +510,6 @@ the two.")
                    license:gpl2
                    license:gpl3))))
 
-(define-public libasr
-  (package
-    (name "libasr")
-    (version "1.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.opensmtpd.org/archives/"
-                           "libasr-" version ".tar.gz"))
-       (sha256
-        (base32 "1d6s8njqhvayx2gp47409sp1fn8m608ws26hr1srfp6i23nnpyqr"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "src/asr_run.3"
-                             (string-append out "/share/man/man3"))
-               #t))))))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (home-page "https://www.opensmtpd.org")
-    (synopsis "Asynchronous resolver library by the OpenBSD project")
-    (description
-     "libasr is a free, simple and portable asynchronous resolver library.
-It runs DNS queries and performs hostname resolution in a fully
-asynchronous fashion.")
-    (license (list license:isc
-                   license:bsd-2 ; last part of getrrsetbyname_async.c
-                   license:bsd-3
-                   (license:non-copyleft "file://LICENSE") ; includes.h
-                   license:openssl))))
-
 (define-public nsd
   (package
     (name "nsd")
