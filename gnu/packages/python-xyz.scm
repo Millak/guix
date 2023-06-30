@@ -8496,27 +8496,33 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
 (define-public python-pikepdf
   (package
     (name "python-pikepdf")
-    (version "2.16.1")
+    (version "7.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pikepdf" version))
        (sha256
-        (base32 "1phdpi9cm2pbvgcxqvwr8ck327sxhdw4dnxmzhrbf7hzydmgykg2"))))
+        (base32 "1vp3q85l2w7wpc8kqs26ijg3ivvvgj50z7g14p3pc0zdz8vbi0md"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #false))                ;require python-xmp-toolkit
     (native-inputs
      (list pybind11
-           python-setuptools
-           python-setuptools-scm
-           python-setuptools-scm-git-archive
-           python-toml
-           python-wheel))
+           python-attrs
+           python-coverage
+           python-hypothesis
+           python-psutil
+           python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-pytest-xdist
+           python-dateutil
+           ;; python-xmp-toolkit
+           python-tomli))
     (inputs
      (list qpdf))
     (propagated-inputs
-     (list python-lxml python-pillow))
+     (list python-deprecation python-lxml python-packaging python-pillow))
     (home-page "https://github.com/pikepdf/pikepdf")
     (synopsis "Read and write PDFs with Python")
     (description
