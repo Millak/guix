@@ -8101,36 +8101,35 @@ with PostgreSQL 9.3 and later.")
                (("require \"bundler/setup\".*") "")))))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'sanitize-dependencies
-           (lambda _
-             (substitute* "Rakefile"
-               ((".*chandler/tasks.*") ""))))
-         (add-after 'unpack 'skip-tmp-path-sensitive-test
-           (lambda _
-             (substitute* "test/commands/where_test.rb"
-               (("unless /cygwin\\|mswin\\|mingw\\|darwin/.*")
-                "unless true\n"))))
-         (add-before 'build 'compile
-           (lambda _
-             (invoke "rake" "compile")))
-         (add-before 'check 'disable-misbehaving-test
-           ;; Expects 5, gets 162. From a file containing ~10 lines.
-           (lambda _
-             (substitute* "test/commands/finish_test.rb"
-               (("test_finish_inside_autoloaded_files")
-                "finish_inside_autoloaded_files"))))
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'sanitize-dependencies
+            (lambda _
+              (substitute* "Rakefile"
+                ((".*chandler/tasks.*") ""))))
+          (add-after 'unpack 'skip-tmp-path-sensitive-test
+            (lambda _
+              (substitute* "test/commands/where_test.rb"
+                (("unless /cygwin\\|mswin\\|mingw\\|darwin/.*")
+                 "unless true\n"))))
+          (add-before 'build 'compile
+            (lambda _
+              (invoke "rake" "compile")))
+          (add-before 'check 'patch-tests
+            (lambda _
+              ;; srand': no implicit conversion of nil into Integer (TypeError)
+              (delete-file "test/minitest_runner_test.rb")
+              ;; Expects 5, gets 162. From a file containing ~10 lines.
+              (substitute* "test/commands/finish_test.rb"
+                (("test_finish_inside_autoloaded_files")
+                 "finish_inside_autoloaded_files"))))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list bundler
-           ;; Using minitest 5.17 would cause 5 new bug failures.  This is
-           ;; probably related to
-           ;; https://github.com/deivid-rodriguez/byebug/pull/837.  Use
-           ;; minitest 5.15 until this is resolved and released.
-           ruby-minitest-5.15
+           ruby-minitest
            ruby-pry
            ruby-rake-compiler
            ruby-rubocop
