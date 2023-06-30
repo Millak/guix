@@ -2446,7 +2446,7 @@ conventions and aliases in the same expression.")
              (setenv "MAGICK_HOME" (assoc-ref inputs "imagemagick"))
              (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16")))
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest" "-vv")))))))
     (native-inputs
