@@ -5412,17 +5412,6 @@ default (and first) theme.  It's what you get when you run @code{jekyll new}.")
 facilities supporting TDD, BDD, mocking, and benchmarking.")
     (license license:expat)))
 
-(define-public ruby-minitest-5.15
-  (package
-    (inherit ruby-minitest)
-    (version "5.15.0")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "minitest" version))
-              (sha256
-               (base32
-                "06xf558gid4w8lwx13jwfdafsch9maz8m0g85wnfymqj63x5nbbd"))))))
-
 ;; This is the last release of Minitest 4, which is used by some packages.
 (define-public ruby-minitest-4
   (package
