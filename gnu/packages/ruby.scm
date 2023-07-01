@@ -13636,7 +13636,7 @@ hashes more powerful.")
                 "14ijr2fsjwhrkjkcaz81d5xnfa4vvgvcflrff83avqw9klm011yw"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list ruby-hoe))
+     (list ruby-hoe-3))
     (home-page "https://github.com/adrianomitre/heredoc_unindent")
     (synopsis "Heredoc indentation cleaner")
     (description "This gem removes common margin from indented strings, such
