@@ -1086,8 +1086,8 @@ for calling methods on remote servers by exchanging JSON objects.")
       (license license:expat))))
 
 (define-public guile-squee
-  (let ((commit "fab9d9590792f3ededd4abd8cfa6be5e56659678")
-        (revision "4"))
+  (let ((commit "9f2609563fc53466e46d37c8d8d2fbcfce67b2ba")
+        (revision "5"))
     (package
       (name "guile-squee")
       (version (string-append "0-" revision "." (string-take commit 7)))
@@ -1099,19 +1099,20 @@ for calling methods on remote servers by exchanging JSON objects.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "03wdawx14sqs6xkw1vl06s58xyjicg2js2k4syn0z64bjbxxjvps"))))
+                  "0r322mfxx08siw656h7bm31rgzkchmp3yrgjpkc2d3qw286ilqi7"))))
       (build-system guile-build-system)
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "squee.scm"
-                 (("dynamic-link \"libpq\"")
-                  (string-append
-                   "dynamic-link \""
-                   (search-input-file inputs "/lib/libpq.so")
-                   "\""))))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "squee.scm"
+                  (("dynamic-link \"libpq\"")
+                   (string-append
+                    "dynamic-link \""
+                    (search-input-file inputs "/lib/libpq.so")
+                    "\""))))))))
       (inputs
        (list postgresql))
       (native-inputs
