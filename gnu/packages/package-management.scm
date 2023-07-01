@@ -736,7 +736,7 @@ high-performance computing} clusters.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/NixOS/nix")
+             (url "http://github.com/NixOS/nix")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
