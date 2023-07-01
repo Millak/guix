@@ -547,6 +547,13 @@ the following features:
 @item Peer whitelist/blacklist
 @end itemize")))
 
+(define-public qbittorrent-enhanced-nox
+  (package
+    (inherit qbittorrent-enhanced)
+    (name "qbittorrent-enhanced-nox")
+    (arguments (package-arguments qbittorrent-nox))
+    (inputs (package-inputs qbittorrent-nox))))
+
 (define-public deluge
   (package
     (name "deluge")
