@@ -4698,7 +4698,16 @@ It allows writing tests, checking results and automated testing in Ruby.")
                (base32
                 "0yhmqp8mprjqf9m7wzc4hhi50qbfax86r89w852csns0ijaffjjs"))))
     (build-system ruby-build-system)
-    (arguments (list #:test-target "spec"))
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "spec/mapping/model_spec.rb"
+                ;; From https://github.com/ioquatix/mapping/pull/2
+                (("offset:") "offset =")))))))
     (native-inputs (list ruby-rspec))
     (synopsis "Map model objects based on their class to a given output model")
     (description "The @code{mapping} gem maps model objects based on their
