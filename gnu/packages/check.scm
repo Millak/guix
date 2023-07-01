@@ -43,7 +43,6 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3146,46 +3145,6 @@ application \"sees\".  It is meant to be loaded using the dynamic linker's
 @code{LD_PRELOAD} environment variable.  The @command{faketime} command
 provides a simple way to achieve this.")
     (license license:gpl2)))
-
-(define-public rapidcheck
-  (let ((commit "a5724ea5b0b00147109b0605c377f1e54c353ba2")
-        (revision "0"))
-    (package
-      (name "rapidcheck")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/emil-e/rapidcheck")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0f2dmsym8ibnwkaidxmgp73mg0sdniwsyn6ppskh74246h29bbcy"))))
-      (arguments
-       (list
-        #:tests? #f                     ;require fetching submodules
-        #:configure-flags #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'install-extra-headers
-              (lambda _
-                (with-directory-excursion "../source/extras"
-                  (for-each
-                   (lambda (dir)
-                     (let ((dir (string-append dir "/include/rapidcheck/"))
-                           (dest (string-append #$output
-                                                "/include/rapidcheck")))
-                       (copy-recursively dir dest)))
-                   '("boost" "boost_test" "catch" "gmock" "gtest"))))))))
-      (build-system cmake-build-system)
-      (home-page "https://github.com/emil-e/rapidcheck")
-      (synopsis "Property based testing framework for C++")
-      (description "Rapidcheck is a property based testing framework for C++.
-It works by generating random data to try and find a case breaks your given
-pre-condition.")
-      (license license:bsd-2))))
 
 (define-public umockdev
   (package
