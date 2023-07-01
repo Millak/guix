@@ -352,7 +352,8 @@ of those files are returned that are unexpectedly installed."
                          (map strip-directory-prefix existing) files))))
 
 (define (files->locations files)
-  (define name->parts (cut string-split <> #\/))
+  (define (trim-filename entry)
+    (string-join (drop-right (string-split entry #\/) 1) "/" 'suffix))
   ;; Generic locations are shared by multiple packages.  Provide the full file
   ;; name to make so as to extract only the files related to the package being
   ;; imported.
@@ -362,13 +363,10 @@ of those files are returned that are unexpectedly installed."
                                   texlive-generic-locations))
                            files)))
     (append generic
-            (map (cut string-join <> "/" 'suffix)
-                 (delete-duplicates (map (lambda (file)
-                                           (drop-right (name->parts file) 1))
-                                         (sort specific string<))
-                                    ;; Remove sub-directories, i.e. more
-                                    ;; specific entries with the same prefix.
-                                    (lambda (x y) (every equal? x y)))))))
+            ;; Remove sub-directories, i.e., more specific entries with the
+            ;; same prefix.
+            (delete-duplicates (sort (map trim-filename specific) string<)
+                               string-prefix?))))
 
 (define (tlpdb->package name version package-database)
   (and-let* ((data (assoc-ref package-database name))
