@@ -56,6 +56,7 @@
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3258,6 +3259,35 @@ Spleen also has support for Powerline symbols out of the box.")
 minor tweaks to improve readability (a matter of taste of course).
 Most characters are just 4px wide, which is brilliant for low dpi(90-120) displays.")
     (license license:silofl1.1)))
+
+(define-public font-velvetyne-jgs
+  ;; There are no releases nor tags.
+  (let ((revision "1")
+        (commit "b1fe344c6ab4cb97aa9ceb09ba3b6056f826b040"))
+    (package
+      (name "font-velvetyne-jgs")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/velvetyne/jgs")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1hwaylgih66cqwcf68i2xdccrn0p0rbvmlz5f3mlzvm51s5pzqb8"))))
+      (build-system font-build-system)
+      (home-page "http://www.velvetyne.org/fonts/jgs-font")
+      (synopsis "Font designed especially for ASCII art")
+      (description
+       "The jgs font family can be used to combine several
+characters to form contiguous lines.  It contains several fonts:
+@enumerate
+@item jgs5 for sizes multiple of 1o (10px, 20px, 30px)
+@item jgs7 for sizes multiple of 14 (14px, 28px, 42px)
+@item jgs9 for sizes multiples of 18 (18px, 36px, 54px)
+@end enumerate")
+      (license license:silofl1.1))))
 
 (define-public font-recursive
   (package
