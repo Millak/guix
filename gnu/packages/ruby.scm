@@ -406,6 +406,17 @@ announcement.")
     (home-page "https://www.zenspider.com/projects/hoe.html")
     (license license:expat)))
 
+(define-public ruby-hoe-3
+  (package
+    (inherit ruby-hoe)
+    (version "3.26.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "hoe" version))
+              (sha256
+               (base32
+                "02vmphnfzna1dbb1l5nczcvlvvsg4flr26bdhmvdyf447bpswa63"))))))
+
 (define-public ruby-rake-compiler
   (package
     (name "ruby-rake-compiler")
