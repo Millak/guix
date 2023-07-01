@@ -12103,16 +12103,20 @@ programs for inferring phylogenies (evolutionary trees).")
      (list automake
            autoconf
            openmpi
-           (texlive-updmap.cfg (list texlive-amsfonts
-                                     texlive-caption
-                                     texlive-cite
-                                     texlive-ec
-                                     texlive-fancyvrb
-                                     texlive-graphics
-                                     texlive-grfext
-                                     texlive-hyperref
-                                     texlive-psfrag
-                                     texlive-xcolor))))
+           (texlive-updmap.cfg
+            (list texlive-amsfonts
+                  texlive-caption
+                  texlive-cite
+                  texlive-ec
+                  texlive-fancyvrb
+                  texlive-graphics
+                  texlive-grfext
+                  texlive-hyperref
+                  texlive-infwarerr
+                  texlive-kvoptions
+                  texlive-pdftexcmds
+                  texlive-psfrag
+                  texlive-xcolor))))
     (home-page "https://github.com/stephaneguindon/phyml")
     (synopsis "Programs for working on SAM/BAM files")
     (description
