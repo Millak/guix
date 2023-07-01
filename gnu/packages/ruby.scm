@@ -12067,7 +12067,7 @@ or JRuby.")
          "10jmmbjm0lkglwxbn4rpqghgg1ipjxrswm117n50adhmy8yij650"))))
     (build-system ruby-build-system)
     (propagated-inputs
-     (list ruby-hoe))
+     (list ruby-hoe-3))
     (synopsis "Hoe plugins for tighter Git integration")
     (description
      "This package provides a set of Hoe plugins for tighter Git integration.
