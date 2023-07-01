@@ -189,16 +189,16 @@ in print.  With attention to detail for high resolution rendering.")
 (define-public font-intel-one-mono
   (package
     (name "font-intel-one-mono")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/intel/intel-one-mono")
-                    (commit "9effabe19a60bdd46cbfbdcc6e81facd8a13b762")))
+                    (commit (string-append "V" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12lywni8bgkr8h4pz1lkw4imr2y896rnsvipbqgqv3c1b54b5g7n"))))
+                "1md57997nzkz75ambsahawzy1x71qvkp6f87zcqibksm66yvcjdc"))))
     (build-system font-build-system)
     (home-page "https://github.com/intel/intel-one-mono")
     (synopsis "Expressive monospaced font family")
