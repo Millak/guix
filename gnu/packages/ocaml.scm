@@ -10255,8 +10255,12 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
     (native-inputs
      `(("which" ,which)
        ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-ec texlive-preprint
-                          texlive-hyperref texlive-bibtex)))))
+                    (list texlive-bibtex
+                          texlive-hyperref
+                          texlive-infwarerr
+                          texlive-kvoptions
+                          texlive-pdftexcmds
+                          texlive-preprint)))))
     (propagated-inputs
      (list hevea))
     (home-page "https://www.lri.fr/~filliatr/bibtex2html/")
