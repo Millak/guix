@@ -11909,25 +11909,11 @@ libraries with LuaLaTeX, with some extra functionality added.")
                    "tex/context/third/pgf/math/"
                    "tex/context/third/pgf/systemlayer/"
                    "tex/context/third/pgf/utilities/"
-                   "tex/generic/pgf/basiclayer/"
-                   "tex/generic/pgf/frontendlayer/tikz/libraries/circuits/"
-                   "tex/generic/pgf/frontendlayer/tikz/libraries/datavisualization/"
-                   "tex/generic/pgf/frontendlayer/tikz/libraries/graphs/"
-                   "tex/generic/pgf/graphdrawing/lua/"
-                   "tex/generic/pgf/graphdrawing/tex/experimental/"
-                   "tex/generic/pgf/libraries/datavisualization/"
-                   "tex/generic/pgf/libraries/decorations/"
-                   "tex/generic/pgf/libraries/luamath/pgf/luamath/"
-                   "tex/generic/pgf/libraries/shapes/circuits/"
-                   "tex/generic/pgf/lua/pgf/"
-                   "tex/generic/pgf/math/"
-                   "tex/generic/pgf/modules/"
-                   "tex/generic/pgf/systemlayer/"
-                   "tex/generic/pgf/utilities/"
+                   "tex/generic/pgf/"
                    "tex/latex/pgf/basiclayer/"
                    "tex/latex/pgf/compatibility/"
                    "tex/latex/pgf/doc/"
-                   "tex/latex/pgf/frontendlayer/libraries/"
+                   "tex/latex/pgf/frontendlayer/"
                    "tex/latex/pgf/math/"
                    "tex/latex/pgf/systemlayer/"
                    "tex/latex/pgf/utilities/"
@@ -11937,7 +11923,7 @@ libraries with LuaLaTeX, with some extra functionality added.")
                    "tex/plain/pgf/systemlayer/"
                    "tex/plain/pgf/utilities/")
              (base32
-              "1rkrp839snkfmxn0ff3kcvgq4k59lj2c3xz05hmmnprzymsx1zvd")))
+              "16kdxcyk60i1c8y3i3d0v2076kapg2vs2pd4pbb434w3vjf8jfm5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
