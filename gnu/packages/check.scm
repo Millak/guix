@@ -615,7 +615,7 @@ pattern.")
      (list
       #:configure-flags
       #~(list "-DCATCH_DEVELOPMENT_BUILD=ON"
-              "-DENABLE_WERROR=OFF"
+              "-DCATCH_ENABLE_WERROR=OFF"
               "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list python-wrapper))
     (synopsis "Automated test framework for C++ and Objective-C")
