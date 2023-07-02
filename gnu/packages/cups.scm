@@ -79,13 +79,10 @@
                   "033g461qzwrzi6x24pfasyx9g7fkn5iy5f8c3h8bczg2bvscxyym"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:configure-flags
-         (list (string-append "-DCUPS_DATA_DIR="
-                              (assoc-ref %outputs "out")
-                              "/share/cups")
-               (string-append "-DCUPS_SERVER_BIN="
-                              (assoc-ref %outputs "out")
-                              "/lib/cups"))))
+       (list
+        #:configure-flags
+        #~(list (string-append "-DCUPS_DATA_DIR=" #$output "/share/cups")
+                (string-append "-DCUPS_SERVER_BIN=" #$output "/lib/cups"))))
       (inputs
        (list ghostscript cups zlib))
       (home-page "https://github.com/pdewacht/brlaser")
