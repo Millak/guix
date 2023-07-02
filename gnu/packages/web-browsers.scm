@@ -294,30 +294,30 @@ and the GTK+ toolkit.")
                   gzip
                   bzip2))
     (arguments
-     `(#:configure-flags
-       (let ((openssl (assoc-ref %build-inputs "openssl")))
-         `("--with-pkg-config"
-           "--with-screen=ncurses"
-           "--with-zlib"
-           "--with-bzlib"
-           ,(string-append "--with-ssl=" openssl)
-           ;; "--with-socks5"    ; XXX TODO
-           "--enable-widec"
-           "--enable-ascii-ctypes"
-           "--enable-local-docs"
-           "--enable-htmlized-cfg"
-           "--enable-gzip-help"
-           "--enable-nls"
-           "--enable-ipv6"))
-       #:tests? #f  ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-makefile-shell
-           (lambda _ (substitute* "po/makefile.inn"
-                       (("/bin/sh") (which "sh")))))
-         (replace 'install
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "install-full" make-flags))))))
+     (list #:configure-flags
+           #~(let ((openssl #$(this-package-input "openssl")))
+               (list "--with-pkg-config"
+                     "--with-screen=ncurses"
+                     "--with-zlib"
+                     "--with-bzlib"
+                     (string-append "--with-ssl=" openssl)
+                     ;; "--with-socks5"    ; XXX TODO
+                     "--enable-widec"
+                     "--enable-ascii-ctypes"
+                     "--enable-local-docs"
+                     "--enable-htmlized-cfg"
+                     "--enable-gzip-help"
+                     "--enable-nls"
+                     "--enable-ipv6"))
+           #:tests? #f                  ; no check target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-makefile-shell
+                 (lambda _ (substitute* "po/makefile.inn"
+                        (("/bin/sh") (which "sh")))))
+               (replace 'install
+                 (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                   (apply invoke "make" "install-full" make-flags))))))
     (synopsis "Text Web Browser")
     (description
      "Lynx is a fully-featured World Wide Web (WWW) client for users running
