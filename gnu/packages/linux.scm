@@ -4700,9 +4700,9 @@ compliance.")
      "https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb")
     (synopsis "Wireless regulatory database")
     (description
-     "This package contains the wireless regulatory database for the Central
-Regulatory Database Agent (CRDA).  The database contains information on
-country-specific regulations for the wireless spectrum.")
+     "This package contains the wireless regulatory database for the
+@acronym{CRDA, Central Regulatory Database Agent}.  The database contains
+information on country-specific regulations for the wireless spectrum.")
     (license license:isc)))
 
 (define-public lm-sensors
