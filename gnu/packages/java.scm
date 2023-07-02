@@ -1538,6 +1538,32 @@ blacklisted.certs.pem"
 (define-public openjdk openjdk19)
 
 
+(define-public jbr17
+  (package
+    (inherit openjdk17)
+    (name "jbr")
+    (version "17.0.7-b1020")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JetBrains/JetBrainsRuntime.git")
+                     (commit (string-append "jb" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))))
+    (synopsis "JetBrains Java Runtime")
+    (description "This package provides a Java runtime environment for
+and Java development kit.  It supports enhanced class redefinition (DCEVM),
+features optional JCEF, a framework for embedding Chromium-based browsers,
+includes a number of improvements in font rendering, keyboards support,
+windowing/focus subsystems, HiDPI, accessibility, and performance,
+provides better desktop integration and bugfixes not yet present in
+OpenJDK.")
+    (home-page "https://www.jetbrains.com/")
+    (license license:gpl2+)))
+
+
 (define-public ant/java8
   (package
     (name "ant")
