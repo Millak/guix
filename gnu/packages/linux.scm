@@ -4569,60 +4569,60 @@ interface.")
        (patches (search-patches "crda-optional-gcrypt.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'gzip-determinism
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("gzip") "gzip --no-name"))))
-                  ,@(if (%current-target-system)
-                        '((add-after
-                            'unpack 'fix-pkg-config
-                            (lambda* (#:key target #:allow-other-keys)
-                                     (substitute*
-                                       "Makefile"
-                                       (("pkg-config")
-                                        (string-append target "-pkg-config"))))))
-                        '())
-                  (add-before 'build 'patch-Makefile
-                   (lambda _
-                     (substitute* "Makefile"
-                       (("ldconfig") "true"))))
-                  (add-before 'build 'set-regulatory-db-file-name
-                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     ;; Tell CRDA where to find our database.
-                     (let ((regdb (assoc-ref (or native-inputs inputs)
-                                             "wireless-regdb")))
-                       (substitute* "crda.c"
-                         (("\"/lib/crda/regulatory.bin\"")
-                          (string-append "\"" regdb
-                                         "/lib/crda/regulatory.bin\"")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'gzip-deterministically
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("gzip" command)
+                      (string-append command " --no-name")))))
+               #$@(if (%current-target-system)
+                     #~((add-after 'unpack 'fix-pkg-config
+                         (lambda* (#:key target #:allow-other-keys)
+                           (substitute* "Makefile"
+                             (("pkg-config" command)
+                              (string-append target "-" command))))))
+                     #~())
+               (add-before 'build 'patch-Makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("ldconfig") "true"))))
+               (add-before 'build 'set-regulatory-db-file-name
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   ;; Tell CRDA where to find our database.
+                   (let ((regdb (assoc-ref (or native-inputs inputs)
+                                           "wireless-regdb")))
+                     (substitute* "crda.c"
+                       (("\"/lib/crda/regulatory.bin\"")
+                        (string-append "\"" regdb
+                                       "/lib/crda/regulatory.bin\"")))))))
        #:test-target "verify"
-       #:make-flags (let ((out     (assoc-ref %outputs "out"))
-                          (regdb   (assoc-ref %build-inputs "wireless-regdb")))
-                      (list
-                       (string-append "CC=" ,(cc-for-target))
-                       "V=1"
+       #:make-flags
+       #~(list
+          (string-append "CC=" #$(cc-for-target))
+          "V=1"
 
-                       ;; Disable signature-checking on 'regulatory.bin'.
-                       ;; The reason is that this simplifies maintenance
-                       ;; on our side (no need to manage a distro key
-                       ;; pair), and we can guarantee integrity of
-                       ;; 'regulatory.bin' by other means anyway, such as
-                       ;; 'guix gc --verify'.  See
-                       ;; <https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb>
-                       ;; for a discssion.
-                       "USE_OPENSSL=0"
+          ;; Disable signature-checking on 'regulatory.bin'.
+          ;; The reason is that this simplifies maintenance
+          ;; on our side (no need to manage a distro key
+          ;; pair), and we can guarantee integrity of
+          ;; 'regulatory.bin' by other means anyway, such as
+          ;; 'guix gc --verify'.  See
+          ;; <https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb>
+          ;; for a discssion.
+          "USE_OPENSSL=0"
 
-                       (string-append "PREFIX=" out)
-                       (string-append "SBINDIR=" out "/sbin/")
-                       (string-append "UDEV_RULE_DIR="
-                                      out "/lib/udev/rules.d")
-                       (string-append "LDFLAGS=-Wl,-rpath="
-                                      out "/lib -L.")
-                       (string-append "REG_BIN=" regdb
-                                      "/lib/crda/regulatory.bin")
-                       "all_noverify"))))
+          (string-append "PREFIX=" #$output)
+          (string-append "SBINDIR=" #$output "/sbin/")
+          (string-append "UDEV_RULE_DIR="
+                         #$output "/lib/udev/rules.d")
+          (string-append "LDFLAGS=-Wl,-rpath="
+                         #$output "/lib -L.")
+          (string-append "REG_BIN="
+                         #$(this-package-native-input "wireless-regdb")
+                         "/lib/crda/regulatory.bin")
+          "all_noverify")))
     (native-inputs (list pkg-config wireless-regdb))
     (inputs (list libnl))
     (home-page
