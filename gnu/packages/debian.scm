@@ -349,7 +349,10 @@ distributions such as Debian and Trisquel.")
          (base32 "0b5czgif5g6pdjzcw60hzzj0i1llxvajf3nlx115axmpa3y4iynd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:modules
+       ((srfi srfi-71)
+        ,@%gnu-build-system-modules)
+       #:phases
        (modify-phases %standard-phases
          (add-before 'bootstrap 'patch-version
            (lambda _
@@ -358,12 +361,13 @@ distributions such as Debian and Trisquel.")
                (lambda () (display ,version)))))
          (add-after 'unpack 'set-perl-libdir
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out  (assoc-ref outputs "out"))
-                   (perl (assoc-ref inputs "perl")))
+             (let* ((out  (assoc-ref outputs "out"))
+                    (perl (assoc-ref inputs "perl"))
+                    (_ perl-version (package-name->name+version perl)))
                (setenv "PERL_LIBDIR"
                        (string-append out
                                       "/lib/perl5/site_perl/"
-                                      ,(package-version perl))))))
+                                      perl-version)))))
          (add-after 'install 'wrap-scripts
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
