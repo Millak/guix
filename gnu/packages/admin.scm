@@ -3553,15 +3553,17 @@ a new command using the matched rule, and runs it.")
         (base32 "07vsnn1gxm3r7dchbrq63iazd64gza2ac7b2m1039708rf5flxdp"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; obscure test failures
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'setup-environment
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "CC" ,(cc-for-target))
-             (setenv "prefix" (assoc-ref outputs "out")))))
-       #:make-flags (list "--environment-overrides")))
+     (list
+      #:tests? #f                       ; obscure test failures
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'override-environment
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              (setenv "prefix" #$output))))
+      #:make-flags
+      #~(list "--environment-overrides")))
     (home-page "https://gentoo.com/di/")
     (synopsis "Advanced df like disk information utility")
     (description
