@@ -249,6 +249,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
   (package
     (name "cups-minimal")
     (version "2.4.2")
+    (replacement cups-minimal/fixed)
     (source
      (origin
        (method git-fetch)
@@ -334,6 +335,20 @@ supported through legacy PPD-based printer drivers called ``printer
 applications''.  These must be installed separately.")
     ;; CUPS is Apache 2.0 with exceptions, see the NOTICE file.
     (license license:asl2.0)))
+
+(define cups-minimal/fixed
+  (package
+    (inherit cups-minimal)
+    (version "2.4.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenPrinting/cups")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cups" version))
+       (sha256
+        (base32 "0z70rhfd96qmdx82gdhh2nqjiia0lnvfdwpngjkag2sidw4cm3c1"))))))
 
 (define-public cups
   (package/inherit cups-minimal
