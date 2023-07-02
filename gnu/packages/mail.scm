@@ -776,7 +776,7 @@ It adds a large amount of new and improved features to mutt.")
     (inputs (list glib gpgme zlib))
     (arguments
      `(#:configure-flags
-         (list "--enable-introspection=yes" "--enable-vapigen=yes")
+         (list "--enable-introspection=yes")
        #:phases
        (modify-phases %standard-phases
          (add-after
