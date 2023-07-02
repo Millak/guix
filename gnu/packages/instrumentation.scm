@@ -551,31 +551,32 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
                (base32 "0gk0hv3rnf5czvazz1prg21rf9qlniz42g5b389n8a29hqj4q6xr"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list
-        (string-append "CC=" ,(cc-for-target)))
-       ;; runtest hang at some point -- probably dues to
-       ;; failed socket connection -- but we want to keep the
-       ;; unit tests.  Change the target to "test" when fixed.
-       #:test-target "unittest"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs target #:allow-other-keys)
-             (let ((arch ,(platform-linux-architecture
-                           (lookup-platform-by-target-or-system
-                            (or (%current-target-system)
-                                (%current-system))))))
-               (setenv "ARCH"
-                       (cond
-                        ((string=? arch "arm64") "aarch64")
-                        (else arch)))
-               (when target
-                 (setenv "CROSS_COMPILE" (string-append target "-"))))
-             (setenv "SHELL" (which "sh"))
-             (invoke "./configure"
-                     (string-append "--prefix="
-                                    (assoc-ref outputs "out"))))))))
+     (list
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target)))
+      ;; runtest hangs at some point -- probably due to
+      ;; failed socket connection -- but we want to keep the
+      ;; unit tests.  Change the target to "test" when fixed.
+      #:test-target "unittest"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs target #:allow-other-keys)
+              (let ((arch #$(platform-linux-architecture
+                             (lookup-platform-by-target-or-system
+                              (or (%current-target-system)
+                                  (%current-system))))))
+                (setenv "ARCH"
+                        (cond
+                         ((string=? arch "arm64") "aarch64")
+                         (else arch)))
+                (when target
+                  (setenv "CROSS_COMPILE" (string-append target "-"))))
+              (setenv "SHELL" (which "sh"))
+              (invoke "./configure"
+                      (string-append "--prefix="
+                                     #$output)))))))
     (inputs
      (list capstone
            elfutils
