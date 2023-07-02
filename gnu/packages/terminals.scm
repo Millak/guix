@@ -23,7 +23,7 @@
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright @ 2020 luhux <luhux@outlook.com>
+;;; Copyright © 2020 luhux <luhux@outlook.com>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2022 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
