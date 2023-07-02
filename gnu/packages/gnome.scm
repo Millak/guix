@@ -3303,7 +3303,7 @@ compiles to GTKBuilder XML.")
 (define-public cambalache
   (package
     (name "cambalache")
-    (version "0.12.0")
+    (version "0.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3311,7 +3311,7 @@ compiles to GTKBuilder XML.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "12dhc7mx04cpc9qwcvqiplphh3mar7wy6cbkv208j7pcg5fzkqh0"))))
+               (base32 "1da8d5msk4ivmk5inaq8w0m78dsp7crarr9jmybag1c8qmqsjq4h"))))
     (build-system meson-build-system)
     (arguments
      (list
