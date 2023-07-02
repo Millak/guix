@@ -1225,7 +1225,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/genimage-mke2fs-test.patch		\
   %D%/packages/patches/geoclue-config.patch			\
   %D%/packages/patches/gettext-libunicode-update.patch		\
-  %D%/packages/patches/git-header-cmd.patch			\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
   %D%/packages/patches/ghc-9.2-glibc-2.33-link-order.patch \
   %D%/packages/patches/ghc-9.2-grep-warnings.patch \
