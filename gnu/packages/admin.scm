@@ -2733,7 +2733,7 @@ various ways that may be running with too much privilege.")
 (define-public smartmontools
   (package
     (name "smartmontools")
-    (version "7.2")
+    (version "7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2741,7 +2741,7 @@ various ways that may be running with too much privilege.")
                     version "/smartmontools-" version ".tar.gz"))
               (sha256
                (base32
-                "1mlc25sd5rgj5xmzcllci47inmfdw7cp185fday6hc9rwqkqmnaw"))))
+                "0ax2wf5j8k2fbm85s0rbj9sajn5q3j2a2k22wyqcyn0cin0ghi55"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
