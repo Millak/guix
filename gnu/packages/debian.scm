@@ -337,7 +337,7 @@ distributions such as Debian and Trisquel.")
 (define-public dpkg
   (package
     (name "dpkg")
-    (version "1.21.21")
+    (version "1.21.22")
     (source
       (origin
         (method git-fetch)
@@ -346,7 +346,7 @@ distributions such as Debian and Trisquel.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0vgc5irrjyyb5y5hza2hbq3dgfylrxvfdzysw8zzlhgf4bhm69zq"))))
+         (base32 "0b5czgif5g6pdjzcw60hzzj0i1llxvajf3nlx115axmpa3y4iynd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
