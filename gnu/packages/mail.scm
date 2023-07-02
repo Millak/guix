@@ -501,45 +501,47 @@ messages) using IDLE.  Implemented in Go.")
         (base32 "0md8cf90fl2yf3zh9njjy42a673v4j4ygyq95xg7fzkygdigm1lq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-tls"
-             "--localstatedir=/var"
-             "--sysconfdir=/etc")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-test-FHS-file-names
-           (lambda _
-             (with-directory-excursion "test"
-               (substitute* (list "functions.in"
-                                  "tests/send")
-                 ;; Fix some shebangs later generated on the fly.
-                 (("/bin/sh") (which "bash"))))))
-         (add-before 'check 'pass-PATH-to-tests
-           ;; ‘runtest’ launches each test through ‘env -’, clearing $PATH. The
-           ;; tests then source ‘functions’, which first demands a working $PATH
-           ;; only to clobber it later.  Pass our $PATH to the test environment
-           ;; and don't touch it after that.
-           (lambda _
-             (with-directory-excursion "test"
-               (substitute* "runtests"
-                 (("env - bash")
-                  (string-append "env - PATH=\"" (getenv "PATH") "\" bash")))
-               (substitute* "functions.in"
-                 (("export PATH=.*") "")))))
-         (add-before 'check 'delete-failing-tests
-           (lambda _
-             (with-directory-excursion "test/tests"
-               (for-each delete-file
-                         (list
-                          ;; XXX ‘nullmailer-inject: nullmailer-queue failed: 15’
-                          "inject/queue"
-                          ;; XXX These require the not-yet-packaged tcpserver.
-                          "protocols" "smtp-auth")))))
-         (add-before 'install 'skip-install-data-local
-           ;; Don't attempt to install run-time files outside of the store.
-           (lambda _
-             (substitute* "Makefile"
-               ((" install-data-local") "")))))))
+     (list #:configure-flags
+           #~(list "--enable-tls"
+                   "--localstatedir=/var"
+                   "--sysconfdir=/etc")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'patch-test-FHS-file-names
+                 (lambda _
+                   (with-directory-excursion "test"
+                     (substitute* (list "functions.in"
+                                        "tests/send")
+                       ;; Fix some shebangs later generated on the fly.
+                       (("/bin/sh") (which "bash"))))))
+               (add-before 'check 'pass-PATH-to-tests
+                 ;; ‘runtest’ launches each test through ‘env -’, clearing
+                 ;; $PATH. The tests then source ‘functions’, which first
+                 ;; demands a working $PATH only to clobber it later.  Pass
+                 ;; our $PATH to the test environment and don't touch it after
+                 ;; that.
+                 (lambda _
+                   (with-directory-excursion "test"
+                     (substitute* "runtests"
+                       (("env - bash")
+                        (string-append "env - PATH=\"" (getenv "PATH") "\" bash")))
+                     (substitute* "functions.in"
+                       (("export PATH=.*") "")))))
+               (add-before 'check 'delete-failing-tests
+                 (lambda _
+                   (with-directory-excursion "test/tests"
+                     (for-each
+                      delete-file
+                      (list
+                       ;; XXX ‘nullmailer-inject: nullmailer-queue failed: 15’
+                       "inject/queue"
+                       ;; XXX These require the not-yet-packaged tcpserver.
+                       "protocols" "smtp-auth")))))
+               (add-before 'install 'skip-install-data-local
+                 ;; Don't try to install run-time files outside of the store.
+                 (lambda _
+                   (substitute* "Makefile"
+                     ((" install-data-local") "")))))))
     (native-inputs
      ;; For tests.
      (list daemontools))   ; for svc
