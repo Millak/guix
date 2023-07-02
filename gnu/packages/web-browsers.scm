@@ -320,13 +320,14 @@ and the GTK+ toolkit.")
                    (apply invoke "make" "install-full" make-flags))))))
     (synopsis "Text Web Browser")
     (description
-     "Lynx is a fully-featured World Wide Web (WWW) client for users running
-cursor-addressable, character-cell display devices.  It will display Hypertext
-Markup Language (HTML) documents containing links to files on the local
-system, as well as files on remote systems running http, gopher, ftp, wais,
-nntp, finger, or cso/ph/qi servers.  Lynx can be used to access information on
-the WWW, or to build information systems intended primarily for local
-access.")
+     "Lynx is a fully-featured @acronym{WWW, World Wide Web} client for users
+of cursor-addressable, character-cell display devices.  It will display
+@acronym{HTML, Hypertext Markup Language} documents containing links to files
+on the local system, as well as files on remote systems running http, gopher,
+ftp, wais, nntp, finger, or cso/ph/qi servers.
+
+Lynx can be used to access information on the WWW, or to build information
+systems intended primarily for local access.")
     (home-page "https://lynx.invisible-island.net/")
     ;; This was fixed in 2.8.9dev.10.
     (properties `((lint-hidden-cve . ("CVE-2016-9179"))))
