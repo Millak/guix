@@ -88,8 +88,12 @@ resources).  It supports virtualized, parallel, and GPU-based applications.")
   ;; TODO: consolidate them?
   (package (inherit boinc-client)
     (name "boinc-server")
-    (arguments '(#:configure-flags '("--disable-client" "--disable-manager")
-                 #:parallel-build? #f))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--disable-client"
+              "--disable-manager")
+      #:parallel-build? #f))
     (inputs `(("openssl" ,openssl)
               ("curl" ,curl)
               ("mariadb:dev" ,mariadb "dev")
