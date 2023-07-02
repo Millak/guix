@@ -46,7 +46,7 @@
 (define-public boinc-client
   (package
     (name "boinc-client")
-    (version "7.22.0")
+    (version "7.22.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -57,7 +57,7 @@
               (file-name (git-file-name "boinc" version))
               (sha256
                (base32
-                "0af7j6zg3saa5x7lfsg41p7j9r1d1dsdsz5b241p1f2yrhba0m81"))))
+                "06qlfrn9bxcdgs9b4j7l4mwikrkvfizccprip18rlzl3i34jys7l"))))
     (build-system gnu-build-system)
     (arguments
      (list
