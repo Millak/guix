@@ -761,22 +761,31 @@ It adds a large amount of new and improved features to mutt.")
   (package
     (name "gmime")
     (version "3.2.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/gmime/"
-                                  (version-major+minor version)
-                                  "/gmime-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0i3xfc84qn1z99i70q68kbnp9rmgqrnprqb418ba52s6g9j9dsia"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jstedfast/gmime")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yiylbw9iy49hgj29czinv246hh5c18qv6qkvbdrmq9z5m00sp01"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config gnupg ; for tests only
-           gobject-introspection vala))
+     (list autoconf
+           automake
+           pkg-config
+           gnupg                        ; for tests only
+           gobject-introspection
+           gtk-doc
+           libtool
+           vala
+           which))                      ; to find libtool, &c.
     (inputs (list glib gpgme zlib))
     (arguments
      `(#:configure-flags
-         (list "--enable-introspection=yes")
+         (list "--enable-gtk-doc=yes"
+               "--enable-introspection=yes")
        #:phases
        (modify-phases %standard-phases
          (add-after
@@ -792,8 +801,7 @@ It adds a large amount of new and improved features to mutt.")
                  (let* ((base (basename prog-path))
                         (prog (which base)))
                    (string-append pre
-                                  (or prog (error "not found: " base)))))))
-            #t)))))
+                                  (or prog (error "not found: " base))))))))))))
     (home-page "http://spruce.sourceforge.net/gmime/")
     (synopsis "MIME message parser and creator library")
     (description
