@@ -244,7 +244,7 @@ keybindings have different functions.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -253,7 +253,7 @@ keybindings have different functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pcrghfi9p1p40d0339lcmhcv24hm1vxqr4rsdln34v385vqv14a"))))
+        (base32 "0mqn12h51nqdmn1ya7hw1l2z2893937dqq4b1zh32y6bazd807fl"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
