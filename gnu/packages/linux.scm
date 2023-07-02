@@ -74,6 +74,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7255,48 +7256,50 @@ under OpenGL graphics workloads.")
     (license license:gpl3)))
 
 (define-public efivar
-  (package
-    (name "efivar")
-    (version "38")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/rhboot/" name
-                                  "/releases/download/" version "/" name
-                                  "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))
-              (patches
-               (search-patches "efivar-211.patch"))))
-
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      ;; Tests require a UEFI system and is not detected in the chroot.
-       #:tests? #f
-       #:make-flags
-       #~(list (string-append "prefix=" #$output)
-               (string-append "libdir=" #$output "/lib")
-               (string-append "CC=" #$(cc-for-target))
-               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'build-deterministically
-             (lambda _
-               (substitute* "src/include/defaults.mk"
-                 ;; Don't use -march=native.
-                 (("-march=native")
-                  ""))))
-           (delete 'configure))))
-    (native-inputs
-     (list mandoc pkg-config))
-    (inputs
-     (list popt))
-    (home-page "https://github.com/rhboot/efivar")
-    (synopsis "Tool and library to manipulate EFI variables")
-    (description "This package provides a library and a command line
+  ;; XXX: 15622b7e5761f3dde3f0e42081380b2b41639a48 fixes compilation on i686.
+  ;; ca48d3964d26f5e3b38d73655f19b1836b16bd2d fixes cross-compilation.
+  (let ((commit "ca48d3964d26f5e3b38d73655f19b1836b16bd2d")
+        (revision "0"))
+    (package
+      (name "efivar")
+      (version (git-version "38" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rhboot/efivar")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0zsab3hcv1v53cxwkvsk09ifnwhs48a6xa3kxlwvs87yxswspvi8"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; Tests require a UEFI system and is not detected in the chroot.
+        #:tests? #f
+        #:make-flags #~(list (string-append "prefix="
+                                            #$output)
+                             (string-append "libdir="
+                                            #$output "/lib")
+                             (string-append "CC="
+                                            #$(cc-for-target)) "HOSTCC=gcc"
+                             (string-append "LDFLAGS=-Wl,-rpath="
+                                            #$output "/lib"))
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'build-deterministically
+                       (lambda _
+                         (substitute* "src/include/defaults.mk"
+                           ;; Don't use -march=native.
+                           (("-march=native")
+                            ""))))
+                     (delete 'configure))))
+      (native-inputs (list mandoc pkg-config))
+      (inputs (list popt))
+      (home-page "https://github.com/rhboot/efivar")
+      (synopsis "Tool and library to manipulate EFI variables")
+      (description "This package provides a library and a command line
 interface to the variable facility of UEFI boot firmware.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public efibootmgr
   (package
