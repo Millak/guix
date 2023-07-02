@@ -2695,10 +2695,11 @@ on FITS files:
 
 @itemize
 @item add/edit FITS header keywords
-@item split/join Multi-Extension-FITS (MEF) files
+@item split/join @acronym{MEF, Multi-Extension-FITS} files
 @item unpack/pack FITS data-cubes
-@item create/check/update FITS checksums, using R. Seaman's protocol
-      (see http://www.adass.org/adass/proceedings/adass94/seamanr.html)
+@item create/check/update FITS checksums, using
+@uref{http://www.adass.org/adass/proceedings/adass94/seamanr.html,
+R. Seaman's protocol}
 @end itemize\n")
     (license license:gpl3+)))
 
