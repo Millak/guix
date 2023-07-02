@@ -18626,6 +18626,28 @@ over a documented variable, it will print the one-line documentation for that
 variable instead, to remind you of that variable's meaning.")
     (license license:gpl3+)))
 
+(define-public emacs-eldoc-box
+  (package
+    (name "emacs-eldoc-box")
+    (version "1.10.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/casouri/eldoc-box")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "076bbn2nnrx02zk2hs4b39q0w3s7afbgfdxnwk2y2s8lkq1l6l87"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/casouri/eldoc-box")
+    (synopsis "Childframe doc for eglot and anything that uses eldoc")
+    (description
+     "This package displays ElDoc documentations in a childframe.  The
+childfrme is selectable and scrollable with mouse, even thought the cursor is
+hidden.")
+    (license license:gpl3+)))
+
 ;; Tests for ert-runner have a circular dependency with ecukes, and therefore
 ;; cannot be run
 (define-public emacs-ert-runner
