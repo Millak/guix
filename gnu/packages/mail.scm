@@ -513,8 +513,7 @@ messages) using IDLE.  Implemented in Go.")
                (substitute* (list "functions.in"
                                   "tests/send")
                  ;; Fix some shebangs later generated on the fly.
-                 (("/bin/sh") (which "bash"))))
-             #t))
+                 (("/bin/sh") (which "bash"))))))
          (add-before 'check 'pass-PATH-to-tests
            ;; ‘runtest’ launches each test through ‘env -’, clearing $PATH. The
            ;; tests then source ‘functions’, which first demands a working $PATH
@@ -526,8 +525,7 @@ messages) using IDLE.  Implemented in Go.")
                  (("env - bash")
                   (string-append "env - PATH=\"" (getenv "PATH") "\" bash")))
                (substitute* "functions.in"
-                 (("export PATH=.*") "")))
-             #t))
+                 (("export PATH=.*") "")))))
          (add-before 'check 'delete-failing-tests
            (lambda _
              (with-directory-excursion "test/tests"
@@ -536,14 +534,12 @@ messages) using IDLE.  Implemented in Go.")
                           ;; XXX ‘nullmailer-inject: nullmailer-queue failed: 15’
                           "inject/queue"
                           ;; XXX These require the not-yet-packaged tcpserver.
-                          "protocols" "smtp-auth")))
-             #t))
+                          "protocols" "smtp-auth")))))
          (add-before 'install 'skip-install-data-local
            ;; Don't attempt to install run-time files outside of the store.
            (lambda _
              (substitute* "Makefile"
-               ((" install-data-local") ""))
-             #t)))))
+               ((" install-data-local") "")))))))
     (native-inputs
      ;; For tests.
      (list daemontools))   ; for svc
