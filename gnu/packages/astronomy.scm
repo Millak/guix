@@ -1145,8 +1145,8 @@ objects.")
     (description
      "Stuff is a program that simulates \"perfect\" astronomical catalogues.
 It generates object lists in ASCII which can read by the SkyMaker program to
-produce realistic astronomical fields.  Stuff is part of the EFIGI development
-project.")
+produce realistic astronomical fields.  Stuff is part of the
+@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
     (license license:gpl3+)))
 
 (define-public swarp
