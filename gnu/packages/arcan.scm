@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 L  p R n  d n <guix@lprndn.info>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,7 +20,8 @@
 
 (define-module (gnu packages arcan)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -29,6 +31,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
@@ -39,6 +42,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ocr)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages ruby)
@@ -185,61 +189,66 @@ engine programmable using Lua.")
     (synopsis "Combined display server, multimedia framework and game engine (SDL)")))
 
 (define-public xarcan
-  (let ((commit "8e6ee029388326cfe5cddeffe482eb3702e9b7f3")
-        (revision "1" ))
     (package
       (name "xarcan")
-      (version (git-version "0.5.4" revision commit))
+      (version "0.6.1")
       (source
        (origin
          (method git-fetch)
          (file-name (git-file-name name version))
          (uri (git-reference
                (url "https://github.com/letoram/xarcan")
-               (commit commit)))
+               (commit version)))
          (sha256
-          (base32 "0zng7cs6733mnf0p6g5wv02981f2sf567n56csax6cmzb8fpamym"))))
-      (build-system gnu-build-system)
+          (base32 "1z4sf101i2y6rg2vcxfwmp1nkzfa3rw1pp48ym1ds1ka513vy128"))))
+      (build-system meson-build-system)
       (arguments
-       `(#:configure-flags
-         `("--enable-kdrive" "--enable-xarcan"
-           "--disable-xorg" "--disable-xwayland"
-           "--disable-xnest" "--disable-xvfb"
-           "--enable-glamor" "--enable-glx"
-           "--disable-int10-module" "--enable-ipv6"
-           "--enable-record" "--without-systemd-daemon"
-           "--enable-xcsecurity" "--disable-static"
-           ,(string-append "--with-xkb-path="
-                           (assoc-ref %build-inputs "xkeyboard-config")
-                           "/share/X11/xkb")
-           ,(string-append "--with-xkb-bin-directory="
-                           (assoc-ref %build-inputs "xkbcomp")
-                           "/bin")
-           ,(string-append "--with-xkb-output="
-                           "/tmp"))))   ; FIXME: Copied from xorg
+       (list
+        #:configure-flags
+        #~(list
+           "-Dglamor=true" "-Dint10=false"
+           "-Dipv6=true"
+           "-Dsystemd_logind=false"
+
+           ;; The following arguments were taken from the Xwayland package.
+
+           ;; The build system insist on providing a default font path; give
+           ;; that of dejavu, the same used for our fontconfig package.
+           (string-append "-Ddefault_font_path="
+                          #$(this-package-input "font-dejavu") "/share/fonts")
+           (string-append "-Dxkb_dir=" #$(this-package-input "xkeyboard-config")
+                          "/share/X11/xkb")
+           (string-append "-Dxkb_bin_dir=" #$(this-package-input "xkbcomp") "/bin")
+           (format #f "-Dbuilder_string=\"Build ID: ~a ~a\"" #$name #$version))))
       (native-inputs
        (list pkg-config autoconf automake libtool util-macros))
       (inputs
-       `(("arcan" ,arcan)
-         ("font-util" ,font-util)
-         ("libdrm" ,libdrm)
-         ("libepoxy" ,libepoxy)
-         ("libkbfile" ,libxkbfile)
-         ("libressl" ,libressl)
-         ("libx11" ,libx11)
-         ("libxfont2" ,libxfont2)
-         ("mesa" ,mesa)
-         ("pixman" ,pixman)
-         ("xkeyboard-config" ,xkeyboard-config)
-         ("xkbcomp" ,xkbcomp)
-         ("xorgproto" ,xorgproto)
-         ("xtrans" ,xtrans)))
+       (list arcan
+             font-dejavu
+             font-util
+             libdrm
+             libepoxy
+             libtirpc
+             libx11
+             libxfont2
+             libxkbfile
+             libxshmfence
+             mesa
+             openssl
+             pixman
+             xcb-util
+             xcb-util-wm
+             xkbcomp
+             xkeyboard-config
+             xorgproto
+             xtrans))
       (home-page "https://arcan-fe.com")
       (synopsis "Patched Xserver that bridges connections to Arcan")
       (description "Patched Xserver with a KDrive backend that uses the arcan-shmif
  to map Xlib/Xcb/X clients to a running arcan instance.  It allows running an X session
 as a window under Arcan.")
-      (license license:expat))))
+      (license (list license:expat
+                     license:bsd-3))))
 
 (define-public arcan-wayland
   (package
