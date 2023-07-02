@@ -274,7 +274,7 @@ and the GTK+ toolkit.")
 (define-public lynx
   (package
     (name "lynx")
-    (version "2.9.0dev.9")
+    (version "2.9.0dev.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -282,7 +282,7 @@ and the GTK+ toolkit.")
                     "/lynx" version ".tar.bz2"))
               (sha256
                (base32
-                "06jhv8ibfw1xkf8d8zrnkc2aw4d462s77hlp6f6xa6k8awzxvmkg"))))
+                "1rg8dqafq8ray37s0w855mahq7ywfb4qa4h5q676sxq0klamnid6"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config perl))
     (inputs (list ncurses
@@ -314,12 +314,10 @@ and the GTK+ toolkit.")
        (modify-phases %standard-phases
          (add-before 'configure 'set-makefile-shell
            (lambda _ (substitute* "po/makefile.inn"
-                       (("/bin/sh") (which "sh")))
-                     #t))
+                       (("/bin/sh") (which "sh")))))
          (replace 'install
            (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "install-full" make-flags)
-             #t)))))
+             (apply invoke "make" "install-full" make-flags))))))
     (synopsis "Text Web Browser")
     (description
      "Lynx is a fully-featured World Wide Web (WWW) client for users running
