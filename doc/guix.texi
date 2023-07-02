@@ -36904,7 +36904,8 @@ Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{cgit-configuration} parameter} file-object readme
-Text which will be used as default value for @code{cgit-repo-readme}.
+Text which will be used as default @code{repository-cgit-configuration}
+@code{readme}.
 
 Defaults to @samp{""}.
 
@@ -37069,7 +37070,7 @@ Defaults to @samp{"/"}.
 @end deftypevr
 
 @deftypevr {@code{cgit-configuration} parameter} repository-cgit-configuration-list repositories
-A list of @dfn{cgit-repo} records to use with config.
+A list of @code{repository-cgit-configuration} records.
 
 Defaults to @samp{'()}.
 
