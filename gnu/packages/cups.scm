@@ -63,8 +63,8 @@
   #:use-module (ice-9 match))
 
 (define-public brlaser
-  (let ((commit "9d7ddda8383bfc4d205b5e1b49de2b8bcd9137f1")
-        (revision "1"))
+  (let ((commit "2a49e3287c70c254e7e3ac9dabe9d6a07218c3fa")
+        (revision "2"))
     (package
       (name "brlaser")
       (version (git-version "6" revision commit))
@@ -76,7 +76,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1drh0nk7amn9a8wykki4l9maqa4vy7vwminypfy1712alwj31nd4"))))
+                  "033g461qzwrzi6x24pfasyx9g7fkn5iy5f8c3h8bczg2bvscxyym"))))
       (build-system cmake-build-system)
       (arguments
        `(#:configure-flags
