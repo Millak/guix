@@ -3403,9 +3403,9 @@ compiles to GTKBuilder XML.")
            xorg-server-for-tests))
     (home-page "https://gitlab.gnome.org/jpu/cambalache")
     (synopsis "Rapid application development tool")
-    (description "Cambalache is a rapid application development (RAD) tool for
-Gtk 4 and 3 with a clear model-view-controller (MVC) design and
-data model first philosophy.")
+    (description "Cambalache is a @acronym{RAD, rapid application development}
+tool for Gtk 4 and 3 with a clear @acronym{MVC, model-view-controller} design
+and data model first philosophy.")
     (license (list license:lgpl2.1
                    license:gpl2)))) ; tools
 
