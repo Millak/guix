@@ -217,40 +217,40 @@
         (base32 "0hi0njnw3q7kngmjk837ynagighrbz8a4wpf8bim2nsh85lf5sc5"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
-             "--disable-gtk")
-       #:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'unpack-plugins
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((plugins (assoc-ref inputs "audacious-plugins")))
-               (invoke "tar" "xvf" plugins))))
-         (add-after 'unpack-plugins 'configure-plugins
-           (lambda* (#:key configure-flags outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion
-                   (string-append "audacious-plugins-" ,version)
-                 (substitute* "configure"
-                   (("/bin/sh") (which "sh")))
-                 (apply invoke "./configure"
-                        (append configure-flags
-                                ;; audacious-plugins requires audacious to build.
-                                (list (string-append "PKG_CONFIG_PATH="
-                                                     out "/lib/pkgconfig:"
-                                                     (getenv "PKG_CONFIG_PATH"))
-                                      (string-append "--prefix=" out))))))))
-         (add-after 'configure-plugins 'build-plugins
-           (lambda _
-             (with-directory-excursion
-                 (string-append "audacious-plugins-" ,version)
-               (invoke "make" "-j" (number->string (parallel-job-count))))))
-         (add-after 'build-plugins 'install-plugins
-           (lambda _
-             (with-directory-excursion
-                 (string-append "audacious-plugins-" ,version)
-               (invoke "make" "install")))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              "--disable-gtk")
+      #:tests? #f                       ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'unpack-plugins
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "tar" "xvf"
+                      #$(this-package-native-input "audacious-plugins"))))
+          (add-after 'unpack-plugins 'configure-plugins
+            (lambda* (#:key configure-flags outputs #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append "audacious-plugins-" #$version)
+                (substitute* "configure"
+                  (("/bin/sh") (which "sh")))
+                (apply invoke "./configure"
+                       (append configure-flags
+                               ;; audacious-plugins requires audacious to build.
+                               (list (string-append "PKG_CONFIG_PATH="
+                                                    #$output "/lib/pkgconfig:"
+                                                    (getenv "PKG_CONFIG_PATH"))
+                                     (string-append "--prefix=" #$output)))))))
+          (add-after 'configure-plugins 'build-plugins
+            (lambda _
+              (with-directory-excursion
+                  (string-append "audacious-plugins-" #$version)
+                (invoke "make" "-j" (number->string (parallel-job-count))))))
+          (add-after 'build-plugins 'install-plugins
+            (lambda _
+              (with-directory-excursion
+                  (string-append "audacious-plugins-" #$version)
+                (invoke "make" "install")))))))
     (native-inputs
      `(("audacious-plugins"
         ,(origin
