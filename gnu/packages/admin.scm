@@ -3543,13 +3543,14 @@ a new command using the matched rule, and runs it.")
 (define-public di
   (package
     (name "di")
-    (version "4.51")
+    (version "4.52")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/diskinfo-di/di-" version ".tar.gz"))
+       (uri (string-append "mirror://sourceforge/diskinfo-di/"
+                           "di-" version ".tar.gz"))
        (sha256
-        (base32 "1fv12j9b9sw6p38lcbzcw87zl5qp1aa7a4a4jn3449zz9af15ckr"))))
+        (base32 "07vsnn1gxm3r7dchbrq63iazd64gza2ac7b2m1039708rf5flxdp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; obscure test failures
