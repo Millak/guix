@@ -1153,7 +1153,7 @@ interactive mode.")
                      (lambda _
                        (substitute* "Makefile"
                          (("= /etc")
-                          (string-append "= " #$output "/etc")))))
+                          (string-append "= $(PREFIX)/etc")))))
                    (delete 'check)
                    (add-after 'install 'wrap-scripts
                      (lambda* (#:key inputs outputs #:allow-other-keys)
