@@ -771,6 +771,26 @@ It adds a large amount of new and improved features to mutt.")
        (sha256
         (base32 "0yiylbw9iy49hgj29czinv246hh5c18qv6qkvbdrmq9z5m00sp01"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-gtk-doc=yes"
+                   "--enable-introspection=yes")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths-in-tests
+                 (lambda _
+                   ;; The test programs run several programs using 'system' with
+                   ;; hard-coded paths.  Here we patch them all.
+                   ;; We use ISO-8859-1 here because test-iconv.c contains
+                   ;; raw byte sequences in several different encodings.
+                   (with-fluids ((%default-port-encoding #f))
+                     (substitute* (find-files "tests" "\\.c$")
+                       (("(system *\\(\")(/[^ ]*)" all pre prog-path)
+                        (let* ((base (basename prog-path))
+                               (prog (which base)))
+                          (string-append pre
+                                         (or prog (error "not found: "
+                                                         base))))))))))))
     (native-inputs
      (list autoconf
            automake
@@ -782,26 +802,6 @@ It adds a large amount of new and improved features to mutt.")
            vala
            which))                      ; to find libtool, &c.
     (inputs (list glib gpgme zlib))
-    (arguments
-     `(#:configure-flags
-         (list "--enable-gtk-doc=yes"
-               "--enable-introspection=yes")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after
-          'unpack 'patch-paths-in-tests
-          (lambda _
-            ;; The test programs run several programs using 'system' with
-            ;; hard-coded paths.  Here we patch them all.
-            ;; We use ISO-8859-1 here because test-iconv.c contains
-            ;; raw byte sequences in several different encodings.
-            (with-fluids ((%default-port-encoding #f))
-              (substitute* (find-files "tests" "\\.c$")
-                (("(system *\\(\")(/[^ ]*)" all pre prog-path)
-                 (let* ((base (basename prog-path))
-                        (prog (which base)))
-                   (string-append pre
-                                  (or prog (error "not found: " base))))))))))))
     (home-page "http://spruce.sourceforge.net/gmime/")
     (synopsis "MIME message parser and creator library")
     (description
