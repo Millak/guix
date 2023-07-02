@@ -712,6 +712,10 @@ header.")
        (sha256
         (base32 "1zaqd8d9rpgcwjsp92q3lkfaa22i20gppb91dz34ym54swisjc2p"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-fcommon")))      ; fix build with GCC 10
     (home-page "https://www.astromatic.net/software/weightwatcher")
     (synopsis "Weight-map/flag-map multiplexer and rasteriser")
     (description
