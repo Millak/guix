@@ -70,16 +70,14 @@
 (define-public babeltrace
   (package
     (name "babeltrace")
-    (version "2.0.4")
+    (version "2.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.efficios.com/files/babeltrace/babeltrace2-"
                                   version ".tar.bz2"))
               (sha256
-               (base32 "1jlv925pr7hykc48mdvbmqm4ipy1r11xwzapa6fdpdfshmk12kvp"))))
-
+               (base32 "1d7jxljbfb4y8jmxm7744ndhh9k9rw8qhmnljb19wz7flzr9x3vv"))))
     (build-system gnu-build-system)
-
     (arguments
      `(#:tests? #f  ; FIXME - When Python's bindings are enabled, tests do not
                     ; pass.
