@@ -207,14 +207,14 @@
 (define-public audacious
   (package
     (name "audacious")
-    (version "4.3")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://distfiles.audacious-media-player.org/"
                            "audacious-" version ".tar.bz2"))
        (sha256
-        (base32 "14chrsh1dacw5r2qpzw0rhg2lchpbya90y96r6w0vry78p44sn17"))))
+        (base32 "0hi0njnw3q7kngmjk837ynagighrbz8a4wpf8bim2nsh85lf5sc5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -258,7 +258,7 @@
            (uri (string-append "https://distfiles.audacious-media-player.org/"
                                "audacious-plugins-" version ".tar.bz2"))
            (sha256
-            (base32 "1ilzz2fv0mirlfhzhrcbccv996slj65z1ifibzrx0w5xqk4gcbk6"))))
+            (base32 "19n8zpayakszm00bakfzagbbqci95dxv4h7j9ml2sfjqmzijdsid"))))
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for gdbus-codegen
        ("pkg-config" ,pkg-config)))
