@@ -4556,15 +4556,17 @@ interface.")
 (define-public crda
   (package
     (name "crda")
-    (version "3.18")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kernel.org/software/network/crda/"
-                                  "crda-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1gydiqgb08d9gbx4l6gv98zg3pljc984m50hmn3ysxcbkxkvkz23"))
-              (patches (search-patches "crda-optional-gcrypt.patch"))))
+    (version "4.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/crda.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ajh8zx84p15y9wawh764zawniwn059iw9m32v56ajvkz9xbnkp2"))
+       (patches (search-patches "crda-optional-gcrypt.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -4572,8 +4574,7 @@ interface.")
                   (add-after 'unpack 'gzip-determinism
                     (lambda _
                       (substitute* "Makefile"
-                        (("gzip") "gzip --no-name"))
-                      #t))
+                        (("gzip") "gzip --no-name"))))
                   ,@(if (%current-target-system)
                         '((add-after
                             'unpack 'fix-pkg-config
@@ -4581,18 +4582,13 @@ interface.")
                                      (substitute*
                                        "Makefile"
                                        (("pkg-config")
-                                        (string-append target "-pkg-config")))
-                                     #t)))
+                                        (string-append target "-pkg-config"))))))
                         '())
-                  (add-before
-                   'build 'no-werror-no-ldconfig
+                  (add-before 'build 'patch-Makefile
                    (lambda _
                      (substitute* "Makefile"
-                       (("-Werror")  "")
-                       (("ldconfig") "true"))
-                     #t))
-                  (add-before
-                   'build 'set-regulator-db-file-name
+                       (("ldconfig") "true"))))
+                  (add-before 'build 'set-regulatory-db-file-name
                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
                      ;; Tell CRDA where to find our database.
                      (let ((regdb (assoc-ref (or native-inputs inputs)
@@ -4600,8 +4596,7 @@ interface.")
                        (substitute* "crda.c"
                          (("\"/lib/crda/regulatory.bin\"")
                           (string-append "\"" regdb
-                                         "/lib/crda/regulatory.bin\"")))
-                       #t))))
+                                         "/lib/crda/regulatory.bin\"")))))))
        #:test-target "verify"
        #:make-flags (let ((out     (assoc-ref %outputs "out"))
                           (regdb   (assoc-ref %build-inputs "wireless-regdb")))
