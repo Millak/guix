@@ -669,9 +669,8 @@ feature detection and cosmetic corrections.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "ftp://ftp.atnf.csiro.au/pub/software/wcslib/wcslib-" version
-             ".tar.bz2"))
+       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+                           "wcslib-" version ".tar.bz2"))
        (sha256
         (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))))
     (inputs
