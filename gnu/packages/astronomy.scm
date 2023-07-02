@@ -660,12 +660,13 @@ International Astronomical Union}.")
     (home-page "https://www.astromatic.net/software/eye")
     (synopsis "Small image feature detector using machine learning")
     (description
-     "In EyE (Enhance Your Extraction) an artificial neural network connected to
-pixels of a moving window (retina) is trained to associate these input stimuli
-to the corresponding response in one or several output image(s).  The resulting
-filter can be loaded in SExtractor to operate complex, wildly non-linear filters
-on astronomical images.  Typical applications of EyE include adaptive filtering,
-feature detection and cosmetic corrections.")
+     "In @acronym{EyE, Enhance Your Extraction} an artificial neural network
+connected to pixels of a moving window (@dfn{retina}) is trained to associate
+these input stimuli to the corresponding response in one or several output
+image(s).  The resulting filter can be loaded in SExtractor to operate
+complex, wildly non-linear filters on astronomical images.  Typical
+applications of EyE include adaptive filtering, feature detection and cosmetic
+corrections.")
     (license license:cecill)))
 
 (define-public wcslib
