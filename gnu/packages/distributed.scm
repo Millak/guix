@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages distributed)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
@@ -58,7 +59,10 @@
                (base32
                 "0af7j6zg3saa5x7lfsg41p7j9r1d1dsdsz5b241p1f2yrhba0m81"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--disable-server")))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--disable-server")))
     (inputs (list openssl
                   curl
                   wxwidgets
