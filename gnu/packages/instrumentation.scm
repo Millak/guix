@@ -552,6 +552,9 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:modules
+      `((ice-9 match)
+        ,@%gnu-build-system-modules)
       #:make-flags
       #~(list
          (string-append "CC=" #$(cc-for-target)))
@@ -568,9 +571,9 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
                               (or (%current-target-system)
                                   (%current-system))))))
                 (setenv "ARCH"
-                        (cond
-                         ((string=? arch "arm64") "aarch64")
-                         (else arch)))
+                        (match arch
+                          ("arm64" "aarch64")
+                          (_ arch)))
                 (when target
                   (setenv "CROSS_COMPILE" (string-append target "-"))))
               (setenv "SHELL" (which "sh"))
