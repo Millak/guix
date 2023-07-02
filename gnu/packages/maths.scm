@@ -210,14 +210,14 @@ beginners.")
 (define-public bitwise
   (package
     (name "bitwise")
-    (version "0.42")
+    (version "0.43")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mellowcandle/bitwise"
                                   "/releases/download/v" version
                                   "/bitwise-v" version ".tar.gz"))
               (sha256
-               (base32 "1lniw4bsb5qs5ybf018qllf95pzixb1q3lvybzl4k3xz8zpkrm6k"))))
+               (base32 "1yrgrbfgp6cavc6gyfp9b0zgjf9p1g7xhwzn9pydw44a32agf97m"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
