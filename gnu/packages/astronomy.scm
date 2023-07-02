@@ -651,6 +651,10 @@ International Astronomical Union}.")
        (sha256
         (base32 "092qhzcbrkcfidbx4bv9wz42w297n80jk7a6kwyi9a3fjfz81d7k"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon")))    ; fix build with GCC 10
     (home-page "https://www.astromatic.net/software/eye")
     (synopsis "Small image feature detector using machine learning")
     (description
