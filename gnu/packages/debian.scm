@@ -349,58 +349,57 @@ distributions such as Debian and Trisquel.")
          (base32 "0b5czgif5g6pdjzcw60hzzj0i1llxvajf3nlx115axmpa3y4iynd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules
-       ((srfi srfi-71)
-        ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'patch-version
-           (lambda _
-             (patch-shebang "build-aux/get-version")
-             (with-output-to-file ".dist-version"
-               (lambda () (display ,version)))))
-         (add-after 'unpack 'set-perl-libdir
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (perl (assoc-ref inputs "perl"))
-                    (_ perl-version (package-name->name+version perl)))
-               (setenv "PERL_LIBDIR"
-                       (string-append out
-                                      "/lib/perl5/site_perl/"
-                                      perl-version)))))
-         (add-after 'install 'wrap-scripts
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion (string-append out "/bin")
-                 (for-each
-                   (lambda (file)
-                     (wrap-script file
-                       ;; Make sure all perl scripts in "bin" find the
-                       ;; required Perl modules at runtime.
-                       `("PERL5LIB" ":" prefix
-                         (,(string-append out
-                                          "/lib/perl5/site_perl")
-                           ,(getenv "PERL5LIB")))
-                       ;; DPKG perl modules always expect dpkg to be installed.
-                       ;; Work around this by adding dpkg to the path of the scripts.
-                       `("PATH" ":" prefix (,(string-append out "/bin")))))
-                   (list "dpkg-architecture"
-                         "dpkg-buildflags"
-                         "dpkg-buildpackage"
-                         "dpkg-checkbuilddeps"
-                         "dpkg-distaddfile"
-                         "dpkg-genbuildinfo"
-                         "dpkg-genchanges"
-                         "dpkg-gencontrol"
-                         "dpkg-gensymbols"
-                         "dpkg-mergechangelogs"
-                         "dpkg-name"
-                         "dpkg-parsechangelog"
-                         "dpkg-scanpackages"
-                         "dpkg-scansources"
-                         "dpkg-shlibdeps"
-                         "dpkg-source"
-                         "dpkg-vendor")))))))))
+     (list #:modules
+           `((srfi srfi-71)
+             ,@%gnu-build-system-modules)
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'bootstrap 'patch-version
+                 (lambda _
+                   (patch-shebang "build-aux/get-version")
+                   (with-output-to-file ".dist-version"
+                     (lambda () (display #$version)))))
+               (add-after 'unpack 'set-perl-libdir
+                 (lambda _
+                   (let* ((perl #$(this-package-input "perl"))
+                          (_ perl-version (package-name->name+version perl)))
+                     (setenv "PERL_LIBDIR"
+                             (string-append #$output
+                                            "/lib/perl5/site_perl/"
+                                            perl-version)))))
+               (add-after 'install 'wrap-scripts
+                 (lambda _
+                   (with-directory-excursion (string-append #$output "/bin")
+                     (for-each
+                      (lambda (file)
+                        (wrap-script file
+                          ;; Make sure all perl scripts in "bin" find the
+                          ;; required Perl modules at runtime.
+                          `("PERL5LIB" ":" prefix
+                            (,(string-append #$output
+                                             "/lib/perl5/site_perl")
+                             ,(getenv "PERL5LIB")))
+                          ;; DPKG perl modules expect dpkg to be installed.
+                          ;; Work around it by adding dpkg to the script's path.
+                          `("PATH" ":" prefix (,(string-append #$output
+                                                               "/bin")))))
+                      (list "dpkg-architecture"
+                            "dpkg-buildflags"
+                            "dpkg-buildpackage"
+                            "dpkg-checkbuilddeps"
+                            "dpkg-distaddfile"
+                            "dpkg-genbuildinfo"
+                            "dpkg-genchanges"
+                            "dpkg-gencontrol"
+                            "dpkg-gensymbols"
+                            "dpkg-mergechangelogs"
+                            "dpkg-name"
+                            "dpkg-parsechangelog"
+                            "dpkg-scanpackages"
+                            "dpkg-scansources"
+                            "dpkg-shlibdeps"
+                            "dpkg-source"
+                            "dpkg-vendor"))))))))
     (native-inputs
      (list autoconf
            automake
