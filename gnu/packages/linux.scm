@@ -4627,10 +4627,10 @@ interface.")
     (inputs (list libnl))
     (home-page
      "https://wireless.wiki.kernel.org/en/developers/Regulatory/CRDA")
-    (synopsis "Central regulatory domain agent (CRDA) for WiFi")
+    (synopsis "@acronym{CRDA, Central Regulatory Domain Agent} for WiFi")
     (description
-     "The Central Regulatory Domain Agent (CRDA) acts as the udev helper for
-communication between the kernel Linux and user space for regulatory
+     "The @acronym{CRDA, Central Regulatory Domain Agent} acts as the udev
+helper for communication between the kernel Linux and user space for regulatory
 compliance.")
     (license license:copyleft-next)))
 
