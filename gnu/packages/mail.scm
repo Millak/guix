@@ -576,12 +576,12 @@ to run without any changes.")
        (sha256
         (base32 "1sk9grjiibmaq8swfkr30vbfdz2i4ra1xrvsqdmbx6iyi5fjw62a"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-ssl="
+                                  #$(this-package-input "openssl")))))
     (inputs
      (list openssl))
-    (arguments
-     `(#:configure-flags
-       (list (string-append "--with-ssl="
-                            (assoc-ref %build-inputs "openssl")))))
     (home-page "https://www.fetchmail.info/")
     (synopsis "Remote-mail retrieval and forwarding utility")
     (description
