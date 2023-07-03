@@ -2177,7 +2177,7 @@ to save time in the following ways:
 (define-public ruby-chunky-png
   (package
     (name "ruby-chunky-png")
-    (version "1.3.14")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -2186,17 +2186,17 @@ to save time in the following ways:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m7y11ix38h5a2pj5v81qdmvqh980ql9hp62hk2dxwkwsa4nh22h"))))
+        (base32 "05qwj72dy2fcy0n2jnf3bfriybfj36m7s6pv9xash6295dbcp901"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-bundler
-           (lambda _
-             (substitute* (find-files "." "\\.rb$")
-               (("require.*bundler/setup.*") ""))
-             #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-bundler
+            (lambda _
+              (substitute* (find-files "." "\\.rb$")
+                (("require.*bundler/setup.*") "")))))))
     (native-inputs
      (list bundler ruby-rspec ruby-standard ruby-yard))
     (synopsis "Ruby library to handle PNG images")
