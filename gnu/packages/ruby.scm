@@ -7491,34 +7491,33 @@ development of Ruby gems.")
                 "0xlyh94iirvssix157ng2akr9nqhdygdd0c6094hhv7dqcfrn9fn"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-test-include-path
-          (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((minitest (assoc-ref inputs "ruby-minitest-4")))
-               (substitute* "Rakefile"
-                 (("Hoe\\.add_include_dirs .*")
-                  (string-append "Hoe.add_include_dirs \""
-                                 minitest "/lib/ruby/vendor_ruby"
-                                 "/gems/minitest-"
-                                 ,(package-version ruby-minitest-4)
-                                 "/lib" "\""))))
-             #t))
-         (add-before 'check 'fix-test-assumptions
-          (lambda _
-            ;; The test output includes the file name, so a couple of tests
-            ;; fail.  Changing the regular expressions slightly fixes this
-            ;; problem.
-            (substitute* "test/test_mini_test.rb"
-              (("output.sub!\\(.*, 'FILE:LINE'\\)")
-               "output.sub!(/\\/.+-[\\w\\/\\.]+:\\d+/, 'FILE:LINE')")
-              (("gsub\\(/.*, 'FILE:LINE'\\)")
-               "gsub(/\\/.+-[\\w\\/\\.]+:\\d+/, 'FILE:LINE')"))
-            #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test-include-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((minitest (assoc-ref inputs "ruby-minitest")))
+                (substitute* "Rakefile"
+                  (("Hoe\\.add_include_dirs .*")
+                   (string-append "Hoe.add_include_dirs \""
+                                  minitest "/lib/ruby/vendor_ruby"
+                                  "/gems/minitest-"
+                                  #$(package-version ruby-minitest-4)
+                                  "/lib" "\""))))))
+          (add-before 'check 'fix-test-assumptions
+            (lambda _
+              ;; The test output includes the file name, so a couple of tests
+              ;; fail.  Changing the regular expressions slightly fixes this
+              ;; problem.
+              (substitute* "test/test_mini_test.rb"
+                (("output.sub!\\(.*, 'FILE:LINE'\\)")
+                 "output.sub!(/\\/.+-[\\w\\/\\.]+:\\d+/, 'FILE:LINE')")
+                (("gsub\\(/.*, 'FILE:LINE'\\)")
+                 "gsub(/\\/.+-[\\w\\/\\.]+:\\d+/, 'FILE:LINE')")))))))
     (propagated-inputs
-     `(("ruby-minitest-4" ,ruby-minitest-4)))
+     (list ruby-minitest-4))
     (native-inputs
-     (list ruby-hoe))
+     (list ruby-hoe-3))
     (synopsis "Adapter library between minitest and test/unit")
     (description
      "This library bridges the gap between the small and fast minitest and
