@@ -971,7 +971,7 @@ support for stubbing and mocking.")
 (define-public ruby-rspec-block-is-expected
   (package
     (name "ruby-rspec-block-is-expected")
-    (version "1.0.2")
+    (version "1.0.5")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -980,7 +980,7 @@ support for stubbing and mocking.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w8mj00k8am24yw7lbhg616m111p7h7bbfxaw7np4i7wnlwzm8fk"))))
+                "1zi5z12lkw3fiwgr7g61845wj73asr2vzw4zsjv45klnnfspwass"))))
     (build-system ruby-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -991,7 +991,12 @@ support for stubbing and mocking.")
                               (("RuboCop::RakeTask.new") ""))
                             ;; Contains extraneous requirements not actually
                             ;; needed for the test suite.
-                            (delete-file "Gemfile"))))))
+                            (delete-file "Gemfile")))
+                        (add-before 'build 'drop-signing-key-requirement
+                          (lambda _
+                            (substitute* "rspec-block_is_expected.gemspec"
+                              (("spec.signing_key =.*")
+                               "spec.signing_key = nil")))))))
     (native-inputs (list ruby-rspec-pending-for ruby-rspec-expectations))
     (propagated-inputs (list ruby-rspec-core))
     (synopsis "Simplify testing of blocks in RSpec")
