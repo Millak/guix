@@ -1597,6 +1597,16 @@ converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
     (home-page "https://asciidoctor.org")
     (license license:expat)))
 
+(define-public ruby-asciidoctor/minimal
+  (hidden-package
+   (package
+     (inherit ruby-asciidoctor)
+     (arguments
+      (ensure-keyword-arguments
+       (package-arguments ruby-asciidoctor)
+       (list #:tests? #f)))
+     (native-inputs '()))))
+
 (define-public ruby-asciidoctor-multipage
   (package
     (name "ruby-asciidoctor-multipage")
@@ -3812,8 +3822,6 @@ It is a low-dependency variant of ruby-hydra.")
     (build-system ruby-build-system)
     ;; Tests need Internet access.
     (arguments `(#:tests? #f))
-    (native-inputs
-     (list ruby-rspec ruby-yard))
     (synopsis "Rake tasks for managing and releasing Ruby Gems")
     (description "Rubygems-task provides Rake tasks for managing and releasing
 Ruby Gems.")
@@ -4552,7 +4560,7 @@ including @code{Array}, @code{Enumerable}, @code{Hash}, @code{Numeric}, and
     ;; dependency cycle we disable tests.
     (arguments `(#:tests? #f))
     (native-inputs
-     (list bundler ruby-yard))
+     (list bundler ruby-yard/minimal))
     (synopsis "Ruby library providing basic localization APIs")
     (description
      "Ruby-Locale is the pure ruby library which provides basic APIs for
@@ -4634,7 +4642,7 @@ Soundex, Metaphone, Double Metaphone, Porter Stemming.")
     (propagated-inputs
      (list ruby-locale ruby-text ruby-erubi))
     (native-inputs
-     (list bundler ruby-yard))
+     (list bundler ruby-yard/minimal))
     (synopsis "GNU gettext-like program for Ruby")
     (description
      "Gettext is a GNU gettext-like program for Ruby.  The catalog
@@ -4713,6 +4721,16 @@ extreme programming software development methodology, for Smalltalk's SUnit.
 It allows writing tests, checking results and automated testing in Ruby.")
     (home-page "https://test-unit.github.io/")
     (license (list license:psfl license:ruby))))
+
+(define-public ruby-test-unit/minimal
+  (hidden-package
+   (package
+     (inherit ruby-test-unit)
+     (arguments
+      (ensure-keyword-arguments
+       (package-arguments ruby-test-unit)
+       (list #:tests? #f)))
+     (native-inputs '()))))
 
 (define-public ruby-mapping
   (package
@@ -4847,7 +4865,7 @@ HTML, and PDF through LaTeX.")
                                  "/lib\""))))
              #t)))))
     (native-inputs
-     (list bundler ruby-test-unit))
+     (list bundler ruby-test-unit/minimal))
     (synopsis "Ruby library adding metaclass method to all objects")
     (description
      "Metaclass is a Ruby library adding a @code{metaclass} method to all Ruby
@@ -8275,7 +8293,7 @@ including comments and whitespace.")
                   "0n3gq8rx49f7ln6zqlshqfg2mgqyy30rsdjlnki5mv307ykc7ad4"))))
       (build-system ruby-build-system)
       (native-inputs
-       (list ruby-rspec ruby-yard ruby-rubygems-tasks))
+       (list ruby-rspec ruby-yard/minimal ruby-rubygems-tasks))
       (synopsis "Calculate the differences between two tree-like structures")
       (description
        "This library provides functions to calculate the differences between two
@@ -8303,7 +8321,7 @@ tree-like structures.  It is similar to Ruby's built-in @code{TSort} module.")
        (list ruby-tdiff
              ruby-nokogiri))
       (native-inputs
-       (list ruby-rspec ruby-yard ruby-rubygems-tasks))
+       (list ruby-rspec ruby-yard/minimal ruby-rubygems-tasks))
       (synopsis "Calculate the differences between two XML/HTML documents")
       (description
        "@code{Nokogiri::Diff} adds the ability to calculate the
@@ -10196,7 +10214,7 @@ A modified copy of yajl is used, and included in the package.")
 (define-public ruby-yard
   (package
     (name "ruby-yard")
-    (version "0.9.25")
+    (version "0.9.34")
     (source
      (origin
        (method git-fetch)
@@ -10207,20 +10225,42 @@ A modified copy of yajl is used, and included in the package.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1x7y4s557hrnq439lih7nqg1y7ximardw75jx9i92x3yzpviqqwa"))))
+         "10jq0hyzyy0d6l63jxld32g36fhrclkb3rwnyp47igcik73kbagb"))))
     (build-system ruby-build-system)
     (arguments
-     ;; Note: Tests are willfully disabled to alleviate dependency cycle
-     ;; problems.
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'do-not-set-date-in-gemspec
-                    ;; Fix a reproducibility issue (see:
-                    ;; https://github.com/lsegal/yard/issues/1343).
-                    (lambda _
-                      (substitute* "yard.gemspec"
-                        ((".*s\\.date.*") ""))
-                      #t)))))
+     (list
+      #:test-target "default"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-set-date-in-gemspec
+            ;; Fix a reproducibility issue (see:
+            ;; https://github.com/lsegal/yard/issues/1343).
+            (lambda _
+              (substitute* "yard.gemspec"
+                ((".*s\\.date.*") ""))))
+          (add-before 'check 'prepare-for-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "Rakefile"
+                  ((".*[Ss]amus.*") ""))
+                ;; Delete the Gemfile to avoid errors relating to it.
+                (delete-file "Gemfile")
+                ;; $HOME needs to be set to somewhere writeable for tests to
+                ;; run.
+                (setenv "HOME" "/tmp")
+                ;; This test fails
+                ;; #<File (class)> received :open with unexpected arguments
+                ;; expected: ("gem1.gem", "rb")
+                ;; got: ("/gnu/store/.../lib/ruby/vendor_ruby/specifications/asciidoctor-2.0.18.gemspec", "r:UTF-8:-")
+                (substitute* "spec/cli/diff_spec.rb"
+                  (("it \"searches for .gem file")
+                   "xit \"searches for .gem file"))))))))
+    (native-inputs
+     (list ruby-rspec
+           ruby-rack
+           ruby-redcloth
+           ruby-webrick
+           ruby-asciidoctor/minimal))
     (synopsis "Documentation generation tool for Ruby")
     (description "YARD is a documentation generation tool for the Ruby
 programming language.  It enables the user to generate consistent, usable
@@ -10230,27 +10270,15 @@ definitions.")
     (home-page "https://yardoc.org")
     (license license:expat)))
 
-(define-public ruby-yard-with-tests
-  (package
-    (inherit ruby-yard)
-    (name "ruby-yard-with-tests")
-    (arguments
-     (substitute-keyword-arguments
-         (strip-keyword-arguments '(#:tests?) (package-arguments ruby-yard))
-       ((#:test-target _ "default") "default")
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'prepare-for-tests
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (substitute* "Rakefile"
-                   ((".*[Ss]amus.*") ""))
-                 ;; Delete the Gemfile to avoid errors relating to it.
-                 (delete-file "Gemfile")
-                 ;; $HOME needs to be set to somewhere writeable for tests to
-                 ;; run.
-                 (setenv "HOME" "/tmp"))))))))
-    (native-inputs (list ruby-rspec ruby-rack ruby-redcloth ruby-asciidoctor))))
+(define-public ruby-yard/minimal
+  (hidden-package
+   (package
+     (inherit ruby-yard)
+     (arguments
+      (ensure-keyword-arguments
+       (package-arguments ruby-yard)
+       (list #:tests? #f)))
+     (native-inputs '()))))
 
 (define-public ruby-spectroscope
   (package
@@ -12622,7 +12650,7 @@ programs running in the background, in Ruby.")
                (("RuboCop::RakeTask\\.new") ""))
              #t)))))
     (native-inputs
-     (list bundler ruby-yard ruby-mocha ruby-minitest-reporters))
+     (list bundler ruby-yard/minimal ruby-mocha ruby-minitest-reporters))
     (home-page "https://simonecarletti.com/code/publicsuffix-ruby/")
     (synopsis "Domain name parser")
     (description "The gem @code{public_suffix} is a domain name parser,
@@ -12669,7 +12697,7 @@ all known public suffixes.")
            ruby-rspec-its-minimal
            ruby-simplecov
            ruby-sporkmonger-rack-mount
-           ruby-yard))
+           ruby-yard/minimal))
     (propagated-inputs
      (list ruby-public-suffix))
     (home-page "https://github.com/sporkmonger/addressable")
