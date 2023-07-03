@@ -1942,6 +1942,37 @@ enforcing & linting tool.")
            ruby-rubocop-ast
            ruby-rubocop-capybara))))
 
+(define-public ruby-rubocop-packaging
+  (package
+    (name "ruby-rubocop-packaging")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/utkarsh2102/rubocop-packaging")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "08jsfp42z0aj32002z2hz8vkmza0jvnrqk9rk2v0xb8qdxkgbx3l"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "spec"))
+    (propagated-inputs
+     (list ruby-rubocop))
+    (native-inputs
+     (list ruby-rspec
+           ruby-yard
+           ruby-bump))
+    (synopsis
+     "Collection of RuboCop checks for downstream compatibility issues")
+    (description
+     "This package provides a collection of RuboCop cops to check for
+downstream compatibility issues in the Ruby code.")
+    (home-page "https://github.com/utkarsh2102/rubocop-packaging")
+    (license license:expat)))
+
 (define-public ruby-rubocop-performance
   (package
     (name "ruby-rubocop-performance")
