@@ -802,6 +802,199 @@ This package contains the binaries.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
     (home-page "https://www.tug.org/texlive/")))
 
+;; This package must be located before `texlive-updmap.cfg' in the module.
+(define-public texlive-scheme-basic
+  (package
+    (name "texlive-scheme-basic")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs (list texlive-collection-basic texlive-collection-latex))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Basic scheme (plain and latex)")
+    (description
+     "This is the basic TeX Live scheme: it is a small set of files sufficient
+to typeset plain TeX or LaTeX documents in PostScript or PDF, using the
+Computer Modern fonts.  This scheme corresponds to @code{collection-basic} and
+@code{collection-latex}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
+(define-deprecated-package texlive-base texlive-scheme-basic)
+
+(define-public texlive-scheme-bookpub
+  (package
+    (name "texlive-scheme-bookpub")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-barcodes
+           texlive-biber
+           texlive-biblatex
+           texlive-bookcover
+           texlive-caption
+           texlive-collection-basic
+           texlive-collection-latex
+           texlive-enumitem
+           texlive-fontspec
+           texlive-latexmk
+           texlive-lipsum
+           texlive-listings
+           texlive-markdown
+           texlive-memoir
+           texlive-microtype
+           texlive-minted
+           texlive-novel
+           texlive-octavo
+           texlive-pdfpages
+           texlive-pgf
+           texlive-qrcode
+           texlive-shapes
+           texlive-titlesec
+           texlive-tocloft
+           texlive-tufte-latex
+           texlive-willowtreebook))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Book publishing scheme (core LaTeX and add-ons)")
+    (description
+     "This is a book publishing scheme, containing core (Lua)LaTeX and
+selected additional packages likely to be useful for non-technical book
+publication.  It does not contain additional fonts (different books need
+different fonts, and the packages are large), nor does it contain additional
+mathematical or other technical packages.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
+(define-public texlive-scheme-context
+  (package
+    (name "texlive-scheme-context")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-antt
+           texlive-asana-math
+           texlive-ccicons
+           texlive-collection-context
+           texlive-collection-metapost
+           texlive-dejavu
+           texlive-eulervm
+           texlive-gentium-tug
+           texlive-iwona
+           texlive-kurier
+           texlive-ly1
+           texlive-manfnt-font
+           texlive-marvosym
+           texlive-mflogo-font
+           texlive-poltawski
+           texlive-pxfonts
+           texlive-tex-gyre
+           texlive-tex-gyre-math
+           texlive-txfonts
+           texlive-wasy
+           texlive-xits))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "ConTeXt scheme")
+    (description "This is the TeX Live scheme for installing ConTeXt.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
+(define-public texlive-scheme-minimal
+  (package
+    (name "texlive-scheme-minimal")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs (list texlive-collection-basic))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Minimal scheme (plain only)")
+    (description
+     "This is the minimal TeX Live scheme, with support for only plain
+TeX. (No LaTeX macros.) LuaTeX is included because Lua scripts are used in TeX
+Live infrastructure.  This scheme corresponds exactly to
+@code{collection-basic}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
+
+;; This package must be located before any package adding it to its native
+;; inputs.
+(define-public texlive-updmap.cfg
+  (lambda* (#:optional (packages '()))
+    "Return a 'texlive-updmap.cfg' package which contains the fonts map
+configuration of a base set of packages plus PACKAGES."
+    (let ((default-packages (list texlive-scheme-basic)))
+      (package
+        (version (number->string %texlive-revision))
+        (source (package-source texlive-scripts))
+        (name "texlive-updmap.cfg")
+        (build-system copy-build-system)
+        (arguments
+         (list
+          #:modules '((guix build copy-build-system)
+                      (guix build utils)
+                      (ice-9 popen)
+                      (ice-9 textual-ports))
+          #:install-plan
+          #~'(("texmf-dist/web2c/updmap.cfg" "share/texmf-config/web2c/")
+              ("texmf-dist/web2c/map" "share/texmf-dist/fonts/map"))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-before 'install 'regenerate-updmap.cfg
+                (lambda _
+                  (with-directory-excursion "texmf-dist/web2c"
+                    (make-file-writable "updmap.cfg")
+
+                    ;; Disable unavailable map files.
+                    (let* ((port (open-pipe* OPEN_WRITE "updmap-sys"
+                                             "--syncwithtrees"
+                                             "--nohash"
+                                             "--cnffile" "updmap.cfg")))
+                      (display "Y\n" port)
+                      (when (not (zero? (status:exit-val (close-pipe port))))
+                        (error "failed to filter updmap.cfg")))
+
+                    ;; Set TEXMFSYSVAR to a sane and writable value; updmap fails
+                    ;; if it cannot create its log file there.
+                    (setenv "TEXMFSYSVAR" (getcwd))
+
+                    ;; Generate maps.
+                    (invoke "updmap-sys"
+                            "--cnffile"           "updmap.cfg"
+                            "--dvipdfmxoutputdir" "map/dvipdfmx/updmap/"
+                            "--dvipsoutputdir"    "map/dvips/updmap/"
+                            "--pdftexoutputdir"   "map/pdftex/updmap/")))))))
+        (native-inputs (list texlive-scripts))
+        (propagated-inputs (map (lambda (package)
+                                  (list (package-name package) package))
+                                (append default-packages packages)))
+        (home-page (package-home-page texlive-bin))
+        (synopsis "TeX Live fonts map configuration")
+        (description "This package contains the fonts map configuration file
+generated for the base TeX Live packages as well as, optionally, user-provided
+ones.")
+        (license (delete-duplicates
+                  (fold (lambda (package result)
+                          (match (package-license package)
+                            ((lst ...)
+                             (append lst result))
+                            ((? license:license? license)
+                             (cons license result))))
+                        '()
+                        (append default-packages packages))))))))
+
+(define-deprecated/alias texlive-union texlive-updmap.cfg)
+(export texlive-union)
+
+;; For use in package definitions only
+(define-public texlive-tiny
+  (package
+    (inherit (texlive-updmap.cfg))
+    (name "texlive-tiny")
+    (description "This is a very limited subset of the TeX Live distribution.
+It includes little more than the required set of LaTeX packages.")))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
@@ -5149,105 +5342,6 @@ the engine in use.")
 
 (define-deprecated-package texlive-generic-iftex texlive-iftex)
 (define-deprecated-package texlive-generic-ifxetex texlive-iftex)
-
-(define-public texlive-updmap.cfg
-  (lambda* (#:optional (packages '()))
-    "Return a 'texlive-updmap.cfg' package which contains the fonts map
-configuration of a base set of packages plus PACKAGES."
-    (let ((default-packages
-            (list texlive-bin
-                  texlive-cm
-                  texlive-cm-super
-                  texlive-dvips
-                  texlive-ec
-                  texlive-epstopdf-pkg
-                  texlive-etex
-                  texlive-etex-pkg
-                  texlive-fontname
-                  texlive-ifplatform
-                  texlive-iftex
-                  texlive-kpathsea
-                  texlive-latex-bin
-                  texlive-latex-fonts
-                  texlive-metafont
-                  texlive-tex
-                  ;; LaTeX packages from the "required" set.
-                  texlive-amsmath
-                  texlive-amscls
-                  texlive-babel
-                  texlive-babel-english
-                  texlive-cyrillic
-                  texlive-psnfss
-                  texlive-tools)))
-      (package
-        (version (number->string %texlive-revision))
-        (source (package-source texlive-scripts))
-        (name "texlive-updmap.cfg")
-        (build-system copy-build-system)
-        (arguments
-         (list
-          #:modules '((guix build copy-build-system)
-                      (guix build utils)
-                      (ice-9 popen)
-                      (ice-9 textual-ports))
-          #:install-plan
-          #~'(("texmf-dist/web2c/updmap.cfg" "share/texmf-config/web2c/")
-              ("texmf-dist/web2c/map" "share/texmf-dist/fonts/map"))
-          #:phases
-          #~(modify-phases %standard-phases
-              (add-before 'install 'regenerate-updmap.cfg
-                (lambda _
-                  (with-directory-excursion "texmf-dist/web2c"
-                    (make-file-writable "updmap.cfg")
-
-                    ;; Disable unavailable map files.
-                    (let* ((port (open-pipe* OPEN_WRITE "updmap-sys"
-                                             "--syncwithtrees"
-                                             "--nohash"
-                                             "--cnffile" "updmap.cfg")))
-                      (display "Y\n" port)
-                      (when (not (zero? (status:exit-val (close-pipe port))))
-                        (error "failed to filter updmap.cfg")))
-
-                    ;; Set TEXMFSYSVAR to a sane and writable value; updmap fails
-                    ;; if it cannot create its log file there.
-                    (setenv "TEXMFSYSVAR" (getcwd))
-
-                    ;; Generate maps.
-                    (invoke "updmap-sys"
-                            "--cnffile"           "updmap.cfg"
-                            "--dvipdfmxoutputdir" "map/dvipdfmx/updmap/"
-                            "--dvipsoutputdir"    "map/dvips/updmap/"
-                            "--pdftexoutputdir"   "map/pdftex/updmap/")))))))
-        (native-inputs (list texlive-scripts))
-        (propagated-inputs (map (lambda (package)
-                                  (list (package-name package) package))
-                                (append default-packages packages)))
-        (home-page (package-home-page texlive-bin))
-        (synopsis "TeX Live fonts map configuration")
-        (description "This package contains the fonts map configuration file
-generated for the base TeX Live packages as well as, optionally, user-provided
-ones.")
-        (license (delete-duplicates
-                  (fold (lambda (package result)
-                          (match (package-license package)
-                            ((lst ...)
-                             (append lst result))
-                            ((? license:license? license)
-                             (cons license result))))
-                        '()
-                        (append default-packages packages))))))))
-
-(define-deprecated/alias texlive-union texlive-updmap.cfg)
-(export texlive-union)
-
-;; For use in package definitions only
-(define-public texlive-tiny
-  (package
-    (inherit (texlive-updmap.cfg))
-    (name "texlive-tiny")
-    (description "This is a very limited subset of the TeX Live distribution.
-It includes little more than the required set of LaTeX packages.")))
 
 (define-public texlive-tipa
   (package
@@ -18869,120 +18963,6 @@ the loop may be prematurely terminated.  The action is akin to the C/Java
 break statement, except that the loop does not terminate until the end of the
 current iteration.")
     (license license:lppl)))
-
-(define-public texlive-scheme-basic
-  (package
-    (name "texlive-scheme-basic")
-    (version (number->string %texlive-revision))
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments (list #:builder #~(mkdir #$output)))
-    (propagated-inputs (list texlive-collection-basic texlive-collection-latex))
-    (home-page "https://www.tug.org/texlive/")
-    (synopsis "Basic scheme (plain and latex)")
-    (description
-     "This is the basic TeX Live scheme: it is a small set of files sufficient
-to typeset plain TeX or LaTeX documents in PostScript or PDF, using the
-Computer Modern fonts.  This scheme corresponds to @code{collection-basic} and
-@code{collection-latex}.")
-    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
-
-(define-deprecated-package texlive-base texlive-scheme-basic)
-
-(define-public texlive-scheme-bookpub
-  (package
-    (name "texlive-scheme-bookpub")
-    (version (number->string %texlive-revision))
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments (list #:builder #~(mkdir #$output)))
-    (propagated-inputs
-     (list texlive-barcodes
-           texlive-biber
-           texlive-biblatex
-           texlive-bookcover
-           texlive-caption
-           texlive-collection-basic
-           texlive-collection-latex
-           texlive-enumitem
-           texlive-fontspec
-           texlive-latexmk
-           texlive-lipsum
-           texlive-listings
-           texlive-markdown
-           texlive-memoir
-           texlive-microtype
-           texlive-minted
-           texlive-novel
-           texlive-octavo
-           texlive-pdfpages
-           texlive-pgf
-           texlive-qrcode
-           texlive-shapes
-           texlive-titlesec
-           texlive-tocloft
-           texlive-tufte-latex
-           texlive-willowtreebook))
-    (home-page "https://www.tug.org/texlive/")
-    (synopsis "Book publishing scheme (core LaTeX and add-ons)")
-    (description
-     "This is a book publishing scheme, containing core (Lua)LaTeX and
-selected additional packages likely to be useful for non-technical book
-publication.  It does not contain additional fonts (different books need
-different fonts, and the packages are large), nor does it contain additional
-mathematical or other technical packages.")
-    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
-
-(define-public texlive-scheme-context
-  (package
-    (name "texlive-scheme-context")
-    (version (number->string %texlive-revision))
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments (list #:builder #~(mkdir #$output)))
-    (propagated-inputs
-     (list texlive-antt
-           texlive-asana-math
-           texlive-ccicons
-           texlive-collection-context
-           texlive-collection-metapost
-           texlive-dejavu
-           texlive-eulervm
-           texlive-gentium-tug
-           texlive-iwona
-           texlive-kurier
-           texlive-ly1
-           texlive-manfnt-font
-           texlive-marvosym
-           texlive-mflogo-font
-           texlive-poltawski
-           texlive-pxfonts
-           texlive-tex-gyre
-           texlive-tex-gyre-math
-           texlive-txfonts
-           texlive-wasy
-           texlive-xits))
-    (home-page "https://www.tug.org/texlive/")
-    (synopsis "ConTeXt scheme")
-    (description "This is the TeX Live scheme for installing ConTeXt.")
-    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
-
-(define-public texlive-scheme-minimal
-  (package
-    (name "texlive-scheme-minimal")
-    (version (number->string %texlive-revision))
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments (list #:builder #~(mkdir #$output)))
-    (propagated-inputs (list texlive-collection-basic))
-    (home-page "https://www.tug.org/texlive/")
-    (synopsis "Minimal scheme (plain only)")
-    (description
-     "This is the minimal TeX Live scheme, with support for only plain
-TeX. (No LaTeX macros.) LuaTeX is included because Lua scripts are used in TeX
-Live infrastructure.  This scheme corresponds exactly to
-@code{collection-basic}.")
-    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
