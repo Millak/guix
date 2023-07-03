@@ -2005,8 +2005,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/twinkle-bcg729.patch			\
   %D%/packages/patches/u-boot-allow-disabling-openssl.patch	\
   %D%/packages/patches/u-boot-fix-build-python-3.10.patch	\
-  %D%/packages/patches/u-boot-infodocs-target.patch		\
-  %D%/packages/patches/u-boot-patman-guix-integration.patch	\
   %D%/packages/patches/u-boot-nintendo-nes-serial.patch		\
   %D%/packages/patches/u-boot-rockchip-inno-usb.patch		\
   %D%/packages/patches/u-boot-sifive-prevent-reloc-initrd-fdt.patch	\

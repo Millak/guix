@@ -648,23 +648,21 @@ tree binary files.  These are board description files used by Linux and BSD.")
 (define u-boot
   (package
     (name "u-boot")
-    (version "2022.10")
+    (version "2023.07.02")
     (source (origin
               (patches
                (list %u-boot-rockchip-inno-usb-patch
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
                      %u-boot-rk3399-enable-emmc-phy-patch
-                     (search-patch "u-boot-fix-build-python-3.10.patch")
-                     (search-patch "u-boot-infodocs-target.patch")
-                     (search-patch "u-boot-patman-guix-integration.patch")))
+                     (search-patch "u-boot-fix-build-python-3.10.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "1y5x8vxdgsqdqlsvq01mn8lmw53fqairkhvhhjx83hjva0m4id2h"))))
+                "1m91w3fpywllkwm000dqsw3294j0szs1lz6qbgwv1aql3ic4hskb"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -676,6 +674,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
            perl
            pkg-config                   ;for 'make menuconfig'
            python
+           python-pyelftools
            swig
            (list util-linux "lib")))
     (home-page "https://www.denx.de/wiki/U-Boot/")
@@ -726,7 +725,12 @@ Info manual.")))
     (name "u-boot-tools")
     (native-inputs
      (modify-inputs (package-native-inputs u-boot)
-       (prepend python-coverage python-pycryptodomex python-pytest sdl2)))
+       (prepend python-coverage
+                python-filelock
+                python-pycryptodomex
+                python-pytest
+                python-pytest-xdist
+                sdl2)))
     (arguments
      `(#:make-flags '("HOSTCC=gcc")
        #:test-target "tcheck"
@@ -739,7 +743,7 @@ Info manual.")))
                (("/bin/false") (which "false")))
              (substitute* "tools/dtoc/fdt_util.py"
                (("'cc'") "'gcc'"))
-             (substitute* "tools/patman/test_util.py"
+             (substitute* "tools/u_boot_pylib/test_util.py"
                ;; python3-coverage is simply called coverage in guix.
                (("python3-coverage") "coverage")
 
@@ -777,7 +781,16 @@ def test_ctrl_c"))
                            ;; See https://bugs.gnu.org/34717 for
                            ;; details.
                            (("CONFIG_FIT_SIGNATURE=y")
-                            "CONFIG_FIT_SIGNATURE=n\nCONFIG_UT_LIB_ASN1=n\nCONFIG_TOOLS_LIBCRYPTO=n")
+                            "CONFIG_FIT_SIGNATURE=n
+CONFIG_UT_LIB_ASN1=n
+CONFIG_TOOLS_LIBCRYPTO=n")
+                           ;; Catch instances of implied CONFIG_FIG_SIGNATURE
+                           ;; with VPL targets
+                           (("CONFIG_SANDBOX_VPL=y")
+                            "CONFIG_SANDBOX_VPL=y
+CONFIG_FIT_SIGNATURE=n
+CONFIG_VPL_FIT_SIGNATURE=n
+CONFIG_TOOLS_LIBCRYPTO=n")
                            ;; This test requires a sound system, which is un-used
                            ;; in u-boot-tools.
                            (("CONFIG_SOUND=y") "CONFIG_SOUND=n")))
@@ -1009,6 +1022,9 @@ removed so that it fits within common partitioning schemes.")))
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  ;; Avoid dependency on crust-firmware
+                  ;; https://issues.guix.gnu.org/48371
+                  (setenv "SCP" "/dev/null")
                   (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
       (inputs
        (modify-inputs (package-inputs base)
@@ -1104,7 +1120,7 @@ partition."))
               (delete 'strip)
               (delete 'validate-runpath)))))
       (inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs (package-inputs base)
          (append arm-trusted-firmware-rk3399))))))
 
 (define-public u-boot-qemu-arm
@@ -1170,7 +1186,20 @@ Documentation} for more information (for example by running @samp{info
                 (append sdl2))))))
 
 (define-public u-boot-sifive-unleashed
-  (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu"))
+  (let ((base (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "OPENSBI" (search-input-file inputs
+                                                       "fw_dynamic.bin"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append opensbi-generic))))))
 
 (define-public u-boot-sifive-unmatched
   (let ((base (make-u-boot-package "sifive_unmatched" "riscv64-linux-gnu")))
@@ -1230,7 +1259,11 @@ Documentation} for more information (for example by running @samp{info
                                                "CONFIG_SATA_SIL=y"
                                                "CONFIG_SCSI=y"
                                                "CONFIG_SCSI_AHCI=y"
-                                               "CONFIG_DM_SCSI=y"))))
+                                               "CONFIG_DM_SCSI=y"
+                                               ;; Disable SPL FIT signatures,
+                                               ;; due to GPLv2 and Openssl
+                                               ;; license incompatibilities
+                                               "# CONFIG_SPL_FIT_SIGNATURE is not set"))))
     (package
       (inherit base)
       (arguments
