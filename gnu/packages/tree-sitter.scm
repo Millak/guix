@@ -359,6 +359,13 @@ will be used in description and synopsis."
        #:commit commit
        #:inputs (list tree-sitter-c))))
 
+(define-public tree-sitter-cmake
+  (tree-sitter-grammar
+   "cmake" "CMake"
+   "1z49jdachwxwbzrrapskpi2kxq3ydihfj45ab9892gbamfij2zp5"
+   "0.4.1"
+   #:repository-url "https://github.com/uyha/tree-sitter-cmake"))
+
 (define-public tree-sitter-elixir
   ;; No tags at all, version in the source code is 0.19.0
   (let ((commit "b20eaa75565243c50be5e35e253d8beb58f45d56")
