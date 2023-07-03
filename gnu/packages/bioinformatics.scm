@@ -3859,17 +3859,21 @@ file formats including SAM/BAM, Wiggle/BigWig, BED, GFF/GTF, VCF.")
 (define-public python-dnaio
   (package
     (name "python-dnaio")
-    (version "0.6.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dnaio" version))
        (sha256
         (base32
-         "14v5yyasq2bz34j38wi3xfcp06jj7l35ppibjcn95l2n73hz3zwi"))))
-    (build-system python-build-system)
+         "064xc4j8plb4fpkm8mw55715mvpvi2sxsknpjx18c2zh904salfy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
     (native-inputs
-     (list python-cython python-pytest python-xopen))
+     (list python-cython python-pytest python-setuptools-scm))
+    (propagated-inputs
+     (list python-xopen))
     (home-page "https://github.com/marcelm/dnaio/")
     (synopsis "Read FASTA and FASTQ files efficiently")
     (description
