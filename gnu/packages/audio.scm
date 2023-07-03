@@ -739,7 +739,7 @@ purposes developed at Queen Mary, University of London.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "7.4")
+    (version "7.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -756,7 +756,7 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "0v66h9fghjyjinldw9yfhhlfi3my235x6n4dpxx432z35lka2h89"))
+                "18pgxnxfp0pqsy24cmf3hanr6vh0pnimsh48x5nfbflqy7ljsrkj"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
