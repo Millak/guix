@@ -309,6 +309,7 @@ colors, styles, options and details.")
            (texlive-updmap.cfg
             (list texlive-epsf
                   texlive-etoolbox
+                  texlive-hypdoc
                   texlive-infwarerr
                   texlive-kvdefinekeys
                   texlive-kvoptions
