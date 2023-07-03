@@ -1551,7 +1551,8 @@ blacklisted.certs.pem"
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))))
+                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
+              (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (synopsis "JetBrains Java Runtime")
     (description "This package provides a Java runtime environment for
 and Java development kit.  It supports enhanced class redefinition (DCEVM),
