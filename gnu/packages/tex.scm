@@ -1891,6 +1891,40 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
+(define-public texlive-cweb
+  (package
+    (name "texlive-cweb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/ctangle.1"
+                   "doc/man/man1/ctangle.man1.pdf"
+                   "doc/man/man1/ctwill-refsort.1"
+                   "doc/man/man1/ctwill-refsort.man1.pdf"
+                   "doc/man/man1/ctwill-twinx.1"
+                   "doc/man/man1/ctwill-twinx.man1.pdf"
+                   "doc/man/man1/ctwill.1"
+                   "doc/man/man1/ctwill.man1.pdf"
+                   "doc/man/man1/cweave.1"
+                   "doc/man/man1/cweave.man1.pdf"
+                   "doc/man/man1/cweb.1"
+                   "doc/man/man1/cweb.man1.pdf"
+                   "doc/man/man1/twill.1"
+                   "doc/man/man1/twill.man1.pdf"
+                   "tex/plain/cweb/")
+             (base32
+              "1p6zj6zc6c3i5caj1217gkjjk0wyfks85x33i5p28znzc2fgvbdi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cwebbin")
+    (synopsis "CWEB for ANSI-C/C++ compilers")
+    (description
+     "This package provides a highly portable and extended version of
+Levy/Knuth CWEB 3.64c.  TeX macros, CWEB macros, and NLS catalogs are included
+for German, French (partially), and Italian program documentation on any
+machine.")
+    (license license:knuth)))
+
 (define-public texlive-tex-gyre
   (package
     (name "texlive-tex-gyre")
