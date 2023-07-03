@@ -52,10 +52,12 @@
 ;; Package definitions should single out files stored there, or all files in
 ;; the directory from all involved packages would be downloaded.
 (define texlive-generic-locations
-  (list "doc/generic/hyph-utf8/"
-        "doc/info/"
-        "doc/man/"
+  (list "doc/info/"
+        "doc/man/man1/"
+        "doc/man/man5/"
         "doc/web2c/"
+        "scripts/context/lua/"
+        "scripts/context/perl/"
         "scripts/texlive/"
         "scripts/texlive-extra/"
         "tex/generic/config/"
@@ -359,7 +361,9 @@ of those files are returned that are unexpectedly installed."
   ;; imported.
   (let-values (((generic specific)
                 (partition (lambda (f)
-                             (any (cut string-prefix? <> f)
+                             ;; Only grab files from generic locations, not
+                             ;; sub-directories.
+                             (any (cut string=? <> (trim-filename f))
                                   texlive-generic-locations))
                            files)))
     (append generic
