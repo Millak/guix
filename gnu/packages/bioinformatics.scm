@@ -3945,28 +3945,40 @@ annotations of the genome.")
 (define-public cutadapt
   (package
     (name "cutadapt")
-    (version "2.1")
+    (version "4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cutadapt" version))
               (sha256
                (base32
-                "1vqmsfkm6llxzmsz9wcfcvzx9a9f8iabvwik2rbyn7nc4wm25z89"))))
-    (build-system python-build-system)
+                "0xgsv88mrlw2b1radmd1104y7bg8hvv54ay7xfdpnjiw2jgkrha9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'always-cythonize
-           (lambda _
-             (delete-file "src/cutadapt/_align.c")
-             ;; If PKG-INFO exists, setup.py decides not to run Cython.
-             (substitute* "setup.py"
-               (("os.path.exists\\('PKG-INFO'\\):")
-                "os.path.exists('totally-does-not-exist'):")))))))
+     (list
+      #:test-flags
+      '(list "-k" "not test_no_read_only_comment_fasta_input")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test
+            (lambda _
+              (let ((site (string-append
+                           #$output "/lib/python"
+                           #$(version-major+minor
+                              (package-version python))
+                           "/site-packages")))
+                (substitute* "tests/test_command.py"
+                  (("env=\\{\"LC_CTYPE\": \"C\"\\},")
+                   (string-append "env={\"LC_CTYPE\": \"C\", \"GUIX_PYTHONPATH\": \""
+                                  (getenv "GUIX_PYTHONPATH") ":" site
+                                  "\"},")))))))))
     (inputs
      (list python-dnaio python-xopen))
     (native-inputs
-     (list python-cython python-pytest python-setuptools-scm))
+     (list python-cython
+           python-pytest
+           python-pytest-mock
+           python-pytest-timeout
+           python-setuptools-scm))
     (home-page "https://cutadapt.readthedocs.io/en/stable/")
     (synopsis "Remove adapter sequences from nucleotide sequencing reads")
     (description
