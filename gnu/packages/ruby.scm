@@ -4243,7 +4243,7 @@ interface for Ruby programs.")
 (define-public ruby-fast-gettext
   (package
     (name "ruby-fast-gettext")
-    (version "2.0.3")
+    (version "2.3.0")
     (home-page "https://github.com/grosser/fast_gettext")
     (source (origin
               (method git-fetch)
@@ -4252,34 +4252,16 @@ interface for Ruby programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dg14apq5sfjshhcq0idphhs7aq9ikzswhqmn689p1h76mxqr1v6"))))
+                "0ba1wv96qarvvh19s8m1cgd26a9jgil4wl8nwgv4sl9fg5sqgksm"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'remove-version-constraints
-                    (lambda _
-                      (delete-file "Gemfile.lock")
-                      #t))
-                  (add-before 'check 'remove-activerecord-test
-                    (lambda _
-                      ;; FIXME: This test fails because ActiveRecord depends on
-                      ;; a different version of ruby-sqlite than the currently
-                      ;; available one.
-                      (delete-file
-                       "spec/fast_gettext/translation_repository/db_spec.rb")
-                      #t))
-                  (add-before 'check 'disable-i18n-test
-                    (lambda _
-                      ;; XXX: This test checks i18n intricasies with Rails 3 and
-                      ;; automatically disables itself for Rails 4.0, but does
-                      ;; not know about newer versions as it has not been updated
-                      ;; since 2014.  Disable for later versions of Rails too.
-                      (substitute* "spec/fast_gettext/vendor/string_spec.rb"
-                        (((string-append "ActiveRecord::VERSION::MAJOR == 4 and "
-                                         "ActiveRecord::VERSION::MINOR == 0"))
-                         "ActiveRecord::VERSION::MAJOR >= 4"))
-                      #t)))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-version-constraints
+            (lambda _
+              (delete-file "Gemfile.lock"))))))
     (native-inputs
      (list ;; For tests.
            ruby-activerecord
@@ -4288,6 +4270,7 @@ interface for Ruby programs.")
            ruby-forking-test-runner
            ruby-i18n
            ruby-rubocop
+           ruby-rubocop-packaging
            ruby-rspec
            ruby-single-cov
            ruby-sqlite3
