@@ -181,18 +181,18 @@ compression algorithm.")
 (define-public python-isal
   (package
     (name "python-isal")
-    (version "0.11.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "isal" version))
        (sha256
-        (base32 "1bxj7r24p974pqfgym485s90ydhzji9q7zyfg3sf8fycm9ya01wd"))
-       ;; Remove bundles isa-l source code
+        (base32 "01914gwfrb95dagz9sqnsmvc0hssg2pb6aj204fdamss4piz8r0k"))
+       ;; Remove bundled isa-l source code
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/isal/isa-l"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
