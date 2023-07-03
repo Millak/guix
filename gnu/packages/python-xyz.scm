@@ -20729,24 +20729,26 @@ from the header, as well as section details and data available.")
 (define-public python-xopen
   (package
     (name "python-xopen")
-    (version "0.8.2")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xopen" version))
        (sha256
         (base32
-         "1xrlcnd6fri3w97zzzp6vyk4l21yq1lc8r4wksi06hgpkbh4jdq0"))))
-    (build-system python-build-system)
+         "17qda88irg77qdm2kkxq4zgdhwfgykcpdgd4cx3xfpp9k219q7wh"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-setuptools-scm))
+     (list pigz python-isal python-typing-extensions))
+    (native-inputs
+     (list python-pytest python-pytest-timeout python-setuptools-scm))
     (home-page "https://github.com/marcelm/xopen/")
     (synopsis "Open compressed files transparently")
-    (description "This module provides an @code{xopen} function that works like
-     Python's built-in @code{open} function, but can also deal with compressed files.
-     Supported compression formats are gzip, bzip2 and, xz, and are automatically
-     recognized by their file extensions.  The focus is on being as efficient as
-     possible on all supported Python versions.")
+    (description "This module provides an @code{xopen} function that works
+like Python's built-in @code{open} function, but can also deal with compressed
+files.  Supported compression formats are gzip, bzip2 and, xz, and are
+automatically recognized by their file extensions.  The focus is on being as
+efficient as possible on all supported Python versions.")
     (license license:expat)))
 
 (define-public python-cheetah
