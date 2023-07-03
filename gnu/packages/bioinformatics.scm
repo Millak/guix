@@ -4767,9 +4767,12 @@ data and settings.")
      (list (texlive-updmap.cfg
             (list texlive-doi
                   texlive-examplep
+                  texlive-forloop
+                  texlive-listofitems
                   texlive-ms
                   texlive-natbib
                   texlive-pgf           ;tikz
+                  texlive-readarray
                   texlive-verbatimbox))
            imagemagick))
     (home-page "https://dorina.mdc-berlin.de/public/rajewsky/discrover/")
