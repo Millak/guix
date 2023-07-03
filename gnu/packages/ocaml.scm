@@ -1377,7 +1377,7 @@ libpanel, librsvg and quartz.")
      `(("ocaml" ,ocaml-4.09)
        ;; For documentation
        ("ghostscript" ,ghostscript)
-       ("texlive" ,texlive-tiny)
+       ("texlive" ,(texlive-updmap.cfg))
        ("hevea" ,hevea)
        ("lynx" ,lynx)
        ("which" ,which)))

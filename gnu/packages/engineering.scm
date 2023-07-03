@@ -575,10 +575,11 @@ featuring various improvements and bug fixes.")))
                                        "fastcap-mulGlobal.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     ;; FIXME: with texlive-tiny citation references are rendered as question
-     ;; marks.  During the build warnings like these are printed:
-     ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line 3.
-     `(("texlive" ,texlive-tiny)
+     ;; FIXME: with (texlive-updmap.cfg) citation references are rendered as
+     ;; question marks.  During the build warnings like these are printed:
+     ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line
+     ;; 3.
+     `(("texlive" ,(texlive-updmap.cfg))
        ("ghostscript" ,ghostscript)))
     (arguments
      `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")

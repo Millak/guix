@@ -518,7 +518,6 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "qmake"
             "qttools-5"
             "texinfo"
-            "texlive-tiny"
             "texlive-updmap.cfg"
             "xorg-server-for-tests"
             "yelp-tools")))

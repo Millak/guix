@@ -236,7 +236,7 @@ the real span of the lattice.")
                (base32
                 "03swii601kxnphl6v7wv0rh2xn4rz6xbljzvfw5v9py6w3z5nm63"))))
     (build-system gnu-build-system)
-    (native-inputs (list texlive-tiny))
+    (native-inputs (list (texlive-updmap.cfg)))
     (inputs (list gmp libx11 perl readline))
     (arguments
      '(#:make-flags '("all")
@@ -405,7 +405,7 @@ precision.")
            hevea
            python-wrapper
            readline
-           texlive-tiny))
+           (texlive-updmap.cfg)))
     (home-page "https://www-fourier.ujf-grenoble.fr/~parisse/giac.html")
     (synopsis "Computer algebra system")
     (description

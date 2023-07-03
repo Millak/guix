@@ -829,29 +829,30 @@ integer programming problems and computes Markov bases for statistics.")
     (version "0.94m")
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/cddlib/cddlib")
-            (commit version)))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32
-        "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cddlib/cddlib")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
     (build-system gnu-build-system)
     (inputs
      (list gmp))
-    (native-inputs (list autoconf
-                         automake
-                         libtool
-                         texlive-amsfonts
-                         texlive-l3backend
-                         texlive-graphics
-                         texlive-l3backend
-                         texlive-tiny))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           (texlive-updmap.cfg
+            (list texlive-amsfonts
+                  texlive-graphics
+                  texlive-l3backend
+                  texlive-l3backend))))
     (arguments
      (list #:configure-flags
-             #~(list (string-append "--docdir=" #$output
-                                    "/share/doc/" #$name "-" #$version))))
+           #~(list (string-append "--docdir=" #$output
+                                  "/share/doc/" #$name "-" #$version))))
     (home-page "https://www.inf.ethz.ch/personal/fukudak/cdd_home/index.html")
     (synopsis "Library for convex hulls and extreme rays of polyhedra")
     (description
@@ -1237,7 +1238,7 @@ in the terminal or with an external viewer.")
         (base32 "1kzmj4yyxvlxqzqbrw6sx6dnvhj1zzqnciyb8ryzy6mdrb3pj4lk"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config texlive-tiny))
+     (list pkg-config (texlive-updmap.cfg)))
     (inputs
      (list cairo gd lua pango readline))
     (arguments
@@ -1947,7 +1948,7 @@ the resulting text.")
     ;; FIXME: Even though the fonts are available dvips complains:
     ;; "Font cmmi10 not found; characters will be left blank."
     (native-inputs
-     `(("texlive" ,texlive-tiny)
+     `(("texlive" ,(texlive-updmap.cfg))
        ("ghostscript" ,ghostscript)
        ("doxygen" ,doxygen)))
     (home-page "https://itpp.sourceforge.net")

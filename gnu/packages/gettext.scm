@@ -292,7 +292,7 @@ from Markdown files.")
            ;; For tests.
            docbook-xml-4.1.2
            perl-test-pod
-           texlive-tiny))
+           (texlive-updmap.cfg)))
     (inputs
      (list bash-minimal
            perl-gettext

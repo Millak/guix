@@ -135,9 +135,7 @@
 ;;; module also provides TEXLIVE-UPDMAP.CFG function, which creates a TeX Live
 ;;; tree with font map files updates.  It should be used exclusively for
 ;;; package definitions, as a native input.  It is possible to augment that
-;;; tree, in particular with additional font packages.  TEXLIVE-TINY package
-;;; is a shortcut for TEXLIVE-UPDMAP.CFG called without any additional
-;;; package.
+;;; tree, in particular with additional font packages.
 ;;;
 ;;; Unlike font map files, TeX formats are not built from a profile hook, as
 ;;; the process would be too time-consuming, e.g., when invoking "guix shell".
@@ -984,16 +982,9 @@ ones.")
                         '()
                         (append default-packages packages))))))))
 
+(define-deprecated-package texlive-tiny texlive-scheme-basic)
 (define-deprecated/alias texlive-union texlive-updmap.cfg)
 (export texlive-union)
-
-;; For use in package definitions only
-(define-public texlive-tiny
-  (package
-    (inherit (texlive-updmap.cfg))
-    (name "texlive-tiny")
-    (description "This is a very limited subset of the TeX Live distribution.
-It includes little more than the required set of LaTeX packages.")))
 
 (define-public texlive-tex
   (package
@@ -8263,7 +8254,7 @@ diagrams.")
               "05y5n265in7mrbpgjxqg339l8r8dmp6lvl4k528pr3rkb8z94qaf")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs (list texlive-tiny))
+    (native-inputs (list (texlive-updmap.cfg)))
     (home-page "https://www.ctan.org/pkg/makecmds")
     (synopsis "TeX macro to define or redefine a command")
     (description "The package provides a @code{\\makecommand} command, which

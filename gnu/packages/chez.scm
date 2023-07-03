@@ -1075,10 +1075,10 @@ programming in Scheme.")
       (native-inputs
        (list (chez-scheme-for-system)
              chez-web
-             texlive-tiny))
+             (texlive-updmap.cfg)))
       (arguments
        (list
-        #:tests? #f ; no tests
+        #:tests? #f                     ; no tests
         #:phases
         #~(modify-phases %standard-phases
             (replace 'configure

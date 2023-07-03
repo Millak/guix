@@ -381,7 +381,7 @@ overlapping images, as well as some command line tools.")
            help2man
            imagemagick
            libxml2
-           texlive-tiny
+           (texlive-updmap.cfg)
            tidy-html
            transfig))
     (inputs

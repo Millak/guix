@@ -2472,7 +2472,7 @@ generated discrete signed distance field using the cubic spline kernel.
      (list doxygen graphviz
            ;; TODO: Fix failing LaTeX invocation (which results in equations
            ;; being inserted literally into PNGs rather than being typeset).
-           ;;texlive-tiny
+           ;; (texlive-updmap.cfg)
 
            perl))                            ;used to generate Fortran headers
     (inputs

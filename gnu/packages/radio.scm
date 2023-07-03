@@ -709,7 +709,6 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            python-pyzmq
            python-scipy
            python-sphinx
-           texlive-tiny
            (texlive-updmap.cfg (list texlive-newunicodechar))
            xorg-server-for-tests))
     (inputs
