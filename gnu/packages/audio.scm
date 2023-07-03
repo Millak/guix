@@ -721,21 +721,6 @@ streams from live audio.")
 purposes developed at Queen Mary, University of London.")
     (license license:gpl2+)))
 
-(define (ardour-rpath-phase major-version)
-  `(lambda* (#:key outputs #:allow-other-keys)
-     (let ((libdir (string-append (assoc-ref outputs "out")
-                                  "/lib/ardour" ,major-version)))
-       (substitute* "wscript"
-         (("linker_flags = \\[\\]")
-          (string-append "linker_flags = [\""
-                         "-Wl,-rpath="
-                         libdir ":"
-                         libdir "/backends" ":"
-                         libdir "/engines" ":"
-                         libdir "/panners" ":"
-                         libdir "/surfaces" ":"
-                         libdir "/vamp" "\"]"))))))
-
 (define ardour-bundled-media
   (origin
     (method url-fetch)
@@ -777,7 +762,20 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-rpath-in-LDFLAGS
-          ,(ardour-rpath-phase (version-major version)))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((libdir (string-append (assoc-ref outputs "out")
+                                          "/lib/ardour"
+                                          ,(version-major version))))
+               (substitute* "wscript"
+                 (("linker_flags = \\[\\]")
+                  (string-append "linker_flags = [\""
+                                 "-Wl,-rpath="
+                                 libdir ":"
+                                 libdir "/backends" ":"
+                                 libdir "/engines" ":"
+                                 libdir "/panners" ":"
+                                 libdir "/surfaces" ":"
+                                 libdir "/vamp" "\"]"))))))
          (add-after 'install 'install-freedesktop-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
