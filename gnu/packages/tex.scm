@@ -12740,16 +12740,79 @@ a counter to be reset when another is incremented) and
                    "metapost/context/base/mpiv/"
                    "metapost/context/base/mpxl/"
                    "metapost/context/fonts/mpiv/"
-                   "scripts/context/lua/"
-                   "scripts/context/perl/"
+                   "scripts/context/lua/context.lua"
+                   "scripts/context/lua/mtx-babel.lua"
+                   "scripts/context/lua/mtx-base.lua"
+                   "scripts/context/lua/mtx-bibtex.lua"
+                   "scripts/context/lua/mtx-cache.lua"
+                   "scripts/context/lua/mtx-chars.lua"
+                   "scripts/context/lua/mtx-check.lua"
+                   "scripts/context/lua/mtx-colors.lua"
+                   "scripts/context/lua/mtx-context.lua"
+                   "scripts/context/lua/mtx-context.xml"
+                   "scripts/context/lua/mtx-convert.lua"
+                   "scripts/context/lua/mtx-ctan.lua"
+                   "scripts/context/lua/mtx-dvi.lua"
+                   "scripts/context/lua/mtx-epub.lua"
+                   "scripts/context/lua/mtx-evohome.lua"
+                   "scripts/context/lua/mtx-fcd.lua"
+                   "scripts/context/lua/mtx-flac.lua"
+                   "scripts/context/lua/mtx-fonts.lua"
+                   "scripts/context/lua/mtx-grep.lua"
+                   "scripts/context/lua/mtx-install.lua"
+                   "scripts/context/lua/mtx-interface.lua"
+                   "scripts/context/lua/mtx-kpse.lua"
+                   "scripts/context/lua/mtx-metapost.lua"
+                   "scripts/context/lua/mtx-mk-help.lua"
+                   "scripts/context/lua/mtx-modules.lua"
+                   "scripts/context/lua/mtx-package.lua"
+                   "scripts/context/lua/mtx-patterns.lua"
+                   "scripts/context/lua/mtx-pdf.lua"
+                   "scripts/context/lua/mtx-plain.lua"
+                   "scripts/context/lua/mtx-profile.lua"
+                   "scripts/context/lua/mtx-rsync.lua"
+                   "scripts/context/lua/mtx-scite.lua"
+                   "scripts/context/lua/mtx-server-ctx-fonttest.lua"
+                   "scripts/context/lua/mtx-server-ctx-help.lua"
+                   "scripts/context/lua/mtx-server-ctx-startup.lua"
+                   "scripts/context/lua/mtx-server.lua"
+                   "scripts/context/lua/mtx-spell.lua"
+                   "scripts/context/lua/mtx-synctex.lua"
+                   "scripts/context/lua/mtx-texworks.lua"
+                   "scripts/context/lua/mtx-tools.lua"
+                   "scripts/context/lua/mtx-unicode.lua"
+                   "scripts/context/lua/mtx-unzip.lua"
+                   "scripts/context/lua/mtx-update.lua"
+                   "scripts/context/lua/mtx-vscode.lua"
+                   "scripts/context/lua/mtx-watch.lua"
+                   "scripts/context/lua/mtx-youless.lua"
+                   "scripts/context/lua/mtxlibs.lua"
+                   "scripts/context/lua/mtxrun.lua"
+                   "scripts/context/perl/makempy.pl"
+                   "scripts/context/perl/path_tre.pm"
+                   "scripts/context/perl/pdftrimwhite.pl"
+                   "scripts/context/perl/texfind.pl"
+                   "scripts/context/perl/texfont.pl"
                    "tex/context/"
                    "tex/generic/context/luatex/"
                    "tex/latex/context/ppchtex/")
              (base32
-              "05w9pc0xkralkqsh2zzrisrcyf1rkwmv5chyhmn8vlddckhknxkn")))
+              "0v452m4qi0963crr2fv211fi3a4c74l6b9p8brkcfg29fif7a846")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:link-scripts #~(list "context.lua" "mtxrun.lua")))
+    (arguments
+     (list
+      #:link-scripts #~(list "context.lua" "mtxrun.lua")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-scripts 'add-symlinks
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (symlink "../share/texmf-dist/scripts/context/lua/context.lua"
+                         "context.lua")
+                (symlink "../share/texmf-dist/scripts/context/lua/mtxrun.lua"
+                         "mtxrun.lua")
+                (symlink "mtxrun" "luametatex")))))))
     (propagated-inputs
      (list texlive-amsfonts
            texlive-lm
