@@ -736,6 +736,14 @@ purposes developed at Queen Mary, University of London.")
                          libdir "/surfaces" ":"
                          libdir "/vamp" "\"]"))))))
 
+(define ardour-bundled-media
+  (origin
+    (method url-fetch)
+    (uri "http://stuff.ardour.org/loops/ArdourBundledMedia.zip")
+    (sha256
+     (base32
+      "0k135sm559yywfidrya7h5cddwqa2p2abhimrar2khydf43f03d0"))))
+
 (define-public ardour
   (package
     (name "ardour")
@@ -794,7 +802,14 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
          (add-after 'install 'install-man-page
            (lambda* (#:key outputs #:allow-other-keys)
              (install-file "ardour.1" (string-append (assoc-ref outputs "out")
-                                                     "/share/man/man1")))))
+                                                     "/share/man/man1"))))
+         (add-after 'install 'install-bundled-media
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "unzip" "-d" (string-append (assoc-ref outputs "out")
+                                                 "/share/ardour"
+                                                 ,(version-major version)
+                                                 "/media/")
+                     ,ardour-bundled-media))))
        #:test-target "test"))
     (inputs
      (list alsa-lib
@@ -849,14 +864,17 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            gettext-minimal
            itstool
            perl
-           pkg-config))
+           pkg-config
+           unzip))
     (home-page "https://ardour.org")
     (synopsis "Digital audio workstation")
     (description
      "Ardour is a multi-channel digital audio workstation, allowing users to
 record, edit, mix and master audio and MIDI projects.  It is targeted at audio
 engineers, musicians, soundtrack editors and composers.")
-    (license license:gpl2+)))
+    (license (list license:gpl2+
+                   license:cc0 ;used by MIDI Beats
+                   license:expat)))) ;used by MIDI Chords and Progressions
 
 (define-public audacity
   (package
