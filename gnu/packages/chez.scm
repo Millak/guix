@@ -1008,12 +1008,11 @@ create compilers, making them easier to understand and maintain.")
       (native-inputs
        (list (chez-scheme-for-system)
              ghostscript
-             ;; FIXME: This package fails to build with the error:
-             ;;     mktexpk: don't know how to create bitmap font for bchr8r
-             ;; Replacing the following with `texlive` fixes it.
-             ;; What is missing?
              (texlive-updmap.cfg
-              (list texlive-context texlive-epsf texlive-metapost))))
+              (list texlive-charter
+                    texlive-context
+                    texlive-cweb
+                    texlive-metapost))))
       (arguments
        (list
         #:make-flags
@@ -1023,9 +1022,18 @@ create compilers, making them easier to understand and maintain.")
                 ;; lib/chez-scheme/chezweb ???
                 (string-append "LIBDIR=" #$output "/lib/chezweb")
                 (string-append "TEXDIR=" #$output "/share/texmf-local"))
-        #:tests? #f ; no tests
+        #:tests? #f                     ; no tests
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-tex-input
+              (lambda _
+                ;; Fix "I can't find file `supp-pdf'." error.
+                (substitute* "chezweb.w"
+                  (("supp-pdf") "supp-pdf.mkii"))
+                ;; Recent cweb packages do not include "\acrofalse".  Remove
+                ;; it.
+                (substitute* "doc/cwebman.tex"
+                  (("\\acrofalse.*") ""))))
             ;; This package has a custom "bootstrap" script that
             ;; is meant to be run from the Makefile.
             (delete 'bootstrap)
