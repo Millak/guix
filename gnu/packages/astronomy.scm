@@ -55,6 +55,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -462,6 +463,45 @@ provides many advanced features for manipulating and filtering the information
 in FITS files.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
+
+(define-public python-astroml
+  (package
+    (name "python-astroml")
+    (version "1.0.2.post1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "astroML" version))
+              (sha256
+               (base32
+                "14g2mcd5qdr3nn7icvjs84bjvx17l9glx81sbbna6v53i1x8l625"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore-glob=examples/*")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "setup.cfg"
+               ;; Do not error out on deprecations
+               (("	error::DeprecationWarning.*") "")
+               ;; Do not test examples
+               (("testspaths = astroML doc examples")
+                "testspaths = astroML"))))
+         (add-before 'check 'pre-check
+           ;; Some tests need this
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-astropy python-matplotlib python-numpy
+                             python-scikit-learn python-scipy))
+    (native-inputs (list python-pytest-astropy-header python-pytest-cov
+                         python-pytest-doctestplus python-pytest-remotedata))
+    (home-page "https://astroml.org")
+    (synopsis "Tools for machine learning and data mining in astronomy")
+    (description "This package provides tools for machine learning and data
+mining in astronomy.")
+    (license license:bsd-2)))
 
 (define-public python-fitsio
   (package
