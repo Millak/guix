@@ -390,6 +390,13 @@ will be used in description and synopsis."
    "054fmpf47cwh59gbg00sc0nl237ba4rnxi73miz39yqzcs87055r"
    "0.19.1"))
 
+(define-public tree-sitter-dockerfile
+  (tree-sitter-grammar
+   "dockerfile" "Dockerfile"
+   "0kf4c4xs5naj8lpcmr3pbdvwj526wl9p6zphxxpimbll7qv6qfnd"
+   "0.1.2"
+   #:repository-url "https://github.com/camdencheek/tree-sitter-dockerfile"))
+
 (define-public tree-sitter-elm
   (tree-sitter-grammar
    "elm" "Elm"
