@@ -900,10 +900,7 @@ emphasis on quality rather than speed.")
     (native-inputs
      (list gfortran
            (texlive-updmap.cfg
-            (list texlive-ec
-                  texlive-epstopdf
-                  texlive-geometry
-                  texlive-graphics
+            (list texlive-epstopdf
                   texlive-latexmk))))
     (home-page "https://github.com/greglandrum/yaehmop")
     (synopsis "Perform extended Hückel calculations")

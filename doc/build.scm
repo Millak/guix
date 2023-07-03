@@ -913,9 +913,7 @@ makeinfo OPTIONS."
                      tar
                      texinfo
                      (texlive-updmap.cfg
-                      (list texlive-ec
-                            texlive-epsf
-                            texlive-texinfo)))))))
+                      (list texlive-epsf texlive-texinfo)))))))
 
   (define build
     (with-imported-modules '((guix build utils))

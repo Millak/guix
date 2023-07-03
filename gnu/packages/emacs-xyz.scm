@@ -3985,8 +3985,7 @@ as a library for other Emacs packages.")
     (native-inputs
      (list perl))
     (inputs
-     (list ghostscript
-           (texlive-updmap.cfg (list texlive-amsfonts))))
+     (list ghostscript))
     (home-page "https://www.gnu.org/software/auctex/")
     (synopsis "Integrated environment for TeX")
     (description

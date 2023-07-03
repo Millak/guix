@@ -307,18 +307,12 @@ colors, styles, options and details.")
            rapidjson
            texinfo                      ;for generating documentation
            (texlive-updmap.cfg
-            (list texlive-amsfonts
-                  texlive-ec
-                  texlive-epsf
+            (list texlive-epsf
                   texlive-etoolbox
-                  texlive-geometry
-                  texlive-grfext
-                  texlive-hyperref
                   texlive-infwarerr
                   texlive-kvdefinekeys
                   texlive-kvoptions
                   texlive-media9
-                  texlive-oberdiek      ;for ifluatex
                   texlive-ocgx2
                   texlive-parskip
                   texlive-pdftexcmds

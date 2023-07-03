@@ -236,8 +236,7 @@ the real span of the lattice.")
                (base32
                 "03swii601kxnphl6v7wv0rh2xn4rz6xbljzvfw5v9py6w3z5nm63"))))
     (build-system gnu-build-system)
-    (native-inputs (list (texlive-updmap.cfg
-                          (list texlive-amsfonts))))
+    (native-inputs (list texlive-tiny))
     (inputs (list gmp libx11 perl readline))
     (arguments
      '(#:make-flags '("all")

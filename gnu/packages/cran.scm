@@ -36207,7 +36207,7 @@ package online.")
            texlive-tools
            texlive-ulem
            texlive-upquote
-           (texlive-updmap.cfg (list texlive-amsfonts texlive-lm))))
+           (texlive-updmap.cfg (list texlive-lm))))
     (home-page "https://github.com/crsh/prereg")
     (synopsis
      "R Markdown Templates to preregister Scientific Studies")

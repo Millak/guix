@@ -759,13 +759,7 @@ Chez Scheme.")))
        ;; though it would probably be easy to add.
        (propagated-inputs
         (list xorg-rgb
-              (texlive-updmap.cfg
-               (list texlive-bibtex
-                     texlive-ec
-                     texlive-epsf
-                     texlive-hyperref
-                     texlive-l3backend
-                     texlive-oberdiek))
+              (texlive-updmap.cfg (list texlive-epsf))
               ghostscript
               netpbm))
        ;; Debian uses a versionless path for STEXLIB,
@@ -1018,14 +1012,8 @@ create compilers, making them easier to understand and maintain.")
              ;;     mktexpk: don't know how to create bitmap font for bchr8r
              ;; Replacing the following with `texlive` fixes it.
              ;; What is missing?
-             (texlive-updmap.cfg (list texlive-oberdiek
-                                       texlive-epsf
-                                       texlive-metapost
-                                       texlive-charter
-                                       texlive-pdftex
-                                       texlive-context
-                                       texlive-cm
-                                       texlive-plain))))
+             (texlive-updmap.cfg
+              (list texlive-context texlive-epsf texlive-metapost))))
       (arguments
        (list
         #:make-flags
@@ -1079,7 +1067,7 @@ programming in Scheme.")
       (native-inputs
        (list (chez-scheme-for-system)
              chez-web
-             (texlive-updmap.cfg (list texlive-pdftex))))
+             texlive-tiny))
       (arguments
        (list
         #:tests? #f ; no tests

@@ -8243,10 +8243,7 @@ diagrams.")
               "05y5n265in7mrbpgjxqg339l8r8dmp6lvl4k528pr3rkb8z94qaf")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (native-inputs
-     (list (texlive-updmap.cfg
-            (list texlive-amsfonts
-                  texlive-cm))))
+    (native-inputs (list texlive-tiny))
     (home-page "https://www.ctan.org/pkg/makecmds")
     (synopsis "TeX macro to define or redefine a command")
     (description "The package provides a @code{\\makecommand} command, which
@@ -9487,13 +9484,9 @@ TeX, and LaTeX font definition and other relevant files.")
                 (("\\DocInput\\{innerscript.dtx\\}") "")))))))
     (native-inputs
      (list (texlive-updmap.cfg
-            (list texlive-amsfonts
-                  texlive-booktabs
-                  texlive-epstopdf-pkg
+            (list texlive-booktabs
                   texlive-etoolbox
-                  texlive-geometry
                   texlive-hypdoc
-                  texlive-hyperref
                   texlive-infwarerr
                   texlive-kvoptions
                   texlive-microtype
@@ -11531,13 +11524,13 @@ and PostScript specials.  A working TeX installation is needed.")
                           (("timestamp.*%")
                            (string-append "timestamp{"
                                           ,version "}"))))))))
-      (native-inputs (list autoconf automake
-                           (texlive-updmap.cfg (list texlive-amsfonts
-                                                     texlive-palatino
-                                                     texlive-zapfding
-                                                     texlive-knuth-lib
-                                                     texlive-mflogo-font
-                                                     texlive-pdftex))))
+      (native-inputs
+       (list autoconf
+             automake
+             (texlive-updmap.cfg
+              (list texlive-mflogo-font
+                    texlive-palatino
+                    texlive-zapfding))))
       (home-page "https://www.gnu.org/software/teximpatient/")
       (synopsis "Book on TeX, plain TeX and Eplain")
       (description
@@ -11603,8 +11596,6 @@ and Karl Berry.")
            qtbase-5
            qtsvg-5
            zlib))
-    (propagated-inputs
-     (list (texlive-updmap.cfg (list texlive-ec))))
     (native-inputs
      (list python pkg-config))
     (home-page "https://www.lyx.org/")
@@ -13928,13 +13919,9 @@ facilities of @code{tabu} in a modified @code{longtable} environment.")
                  "usepackage[dvips]{xcolor}")))))))
     (native-inputs
      (list (texlive-updmap.cfg
-            (list texlive-ec
-                  texlive-footmisc
+            (list texlive-footmisc
                   texlive-fourier
-                  texlive-graphics-def
                   texlive-hypdoc
-                  texlive-hyperref
-                  texlive-iftex
                   texlive-infwarerr
                   texlive-kvoptions
                   texlive-listings
@@ -13942,7 +13929,6 @@ facilities of @code{tabu} in a modified @code{longtable} environment.")
                   texlive-pgf
                   texlive-pst-text
                   texlive-pstricks
-                  texlive-url
                   texlive-xcolor))))
     (home-page "https://ctan.org/pkg/xkeyval")
     (synopsis "Extension of the @code{keyval} package")

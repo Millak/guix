@@ -4765,15 +4765,10 @@ data and settings.")
      (list boost cairo rmath-standalone))
     (native-inputs
      (list (texlive-updmap.cfg
-            (list texlive-cm
-                  texlive-amsfonts
-                  texlive-doi
-                  texlive-ec
+            (list texlive-doi
                   texlive-examplep
-                  texlive-hyperref
                   texlive-ms
                   texlive-natbib
-                  texlive-bibtex        ;style files used by natbib
                   texlive-pgf           ;tikz
                   texlive-verbatimbox))
            imagemagick))
@@ -12104,14 +12099,9 @@ programs for inferring phylogenies (evolutionary trees).")
            autoconf
            openmpi
            (texlive-updmap.cfg
-            (list texlive-amsfonts
-                  texlive-caption
+            (list texlive-caption
                   texlive-cite
-                  texlive-ec
                   texlive-fancyvrb
-                  texlive-graphics
-                  texlive-grfext
-                  texlive-hyperref
                   texlive-infwarerr
                   texlive-kvoptions
                   texlive-pdftexcmds
@@ -17094,11 +17084,7 @@ to an artifact/contaminant file.")
      (list openmpi zlib))
     (native-inputs
      (list (texlive-updmap.cfg
-            (list texlive-ec
-                  texlive-graphics
-                  texlive-grfext
-                  texlive-hyperref
-                  texlive-infwarerr
+            (list texlive-infwarerr
                   texlive-kvoptions
                   texlive-pdftexcmds))))
     (home-page "https://www.ebi.ac.uk/~zerbino/velvet/")

@@ -15200,17 +15200,15 @@ time.")
            texlive-ulem
            texlive-unicode-math
            texlive-xcolor
-           (texlive-updmap.cfg (list texlive-amsfonts
-                                     texlive-amsmath
-                                     texlive-eurosym
-                                     texlive-jknapltx
-                                     texlive-lm
-                                     texlive-lm-math
-                                     texlive-mathpazo
-                                     texlive-oberdiek
-                                     texlive-rsfs
-                                     texlive-ucs
-                                     texlive-zapfding))))
+           (texlive-updmap.cfg
+            (list texlive-eurosym
+                  texlive-jknapltx
+                  texlive-lm
+                  texlive-lm-math
+                  texlive-mathpazo
+                  texlive-rsfs
+                  texlive-ucs
+                  texlive-zapfding))))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")
     (description "The @code{nbconvert} tool, @code{jupyter nbconvert}, converts
@@ -29190,13 +29188,7 @@ By default it uses the open Python vulnerability database Safety DB.")
     (propagated-inputs
      `(("wheel" ,python-wheel)))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-ec
-                                        texlive-iftex
-                                        texlive-hyperref
-                                        texlive-lm
-                                        texlive-oberdiek
-                                        texlive-xcolor)))))
+     `(("texlive" ,(texlive-updmap.cfg (list texlive-lm texlive-xcolor)))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

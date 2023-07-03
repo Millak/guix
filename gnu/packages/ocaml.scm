@@ -1377,8 +1377,7 @@ libpanel, librsvg and quartz.")
      `(("ocaml" ,ocaml-4.09)
        ;; For documentation
        ("ghostscript" ,ghostscript)
-       ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-ec texlive-l3backend)))
+       ("texlive" ,texlive-tiny)
        ("hevea" ,hevea)
        ("lynx" ,lynx)
        ("which" ,which)))
@@ -10258,12 +10257,9 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
               (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list (texlive-updmap.cfg
-            (list texlive-bibtex
-                  texlive-hyperref
-                  texlive-infwarerr
+            (list texlive-infwarerr
                   texlive-kvoptions
-                  texlive-pdftexcmds
-                  texlive-preprint))
+                  texlive-pdftexcmds))
            which))
     (propagated-inputs
      (list hevea))

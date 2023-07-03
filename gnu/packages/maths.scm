@@ -5777,50 +5777,44 @@ set.")
            python
            python-breathe
            python-sphinx
-           (texlive-updmap.cfg (list texlive-adjustbox
-                                     texlive-alphalph
-                                     texlive-amsfonts
-                                     texlive-bibtex
-                                     texlive-capt-of
-                                     texlive-caption
-                                     texlive-cm
-                                     texlive-cmap
-                                     texlive-colortbl
-                                     texlive-courier
-                                     texlive-enumitem
-                                     texlive-etoc
-                                     texlive-etoolbox
-                                     texlive-fancyhdr
-                                     texlive-fancyvrb
-                                     texlive-float
-                                     texlive-fncychap
-                                     texlive-framed
-                                     texlive-geometry
-                                     texlive-hanging
-                                     texlive-helvetic
-                                     texlive-hyperref
-                                     texlive-jknapltx
-                                     texlive-latexmk
-                                     texlive-listofitems
-                                     texlive-multirow
-                                     texlive-natbib
-                                     texlive-needspace
-                                     texlive-newunicodechar
-                                     texlive-parskip
-                                     texlive-sectsty
-                                     texlive-stackengine
-                                     texlive-tabulary
-                                     texlive-tex-gyre
-                                     texlive-titlesec
-                                     texlive-tocloft
-                                     texlive-ulem
-                                     texlive-upquote
-                                     texlive-varwidth
-                                     texlive-wasy
-                                     texlive-wasysym
-                                     texlive-wrapfig
-                                     texlive-xcolor
-                                     texlive-xypic))))
+           (texlive-updmap.cfg
+            (list texlive-adjustbox
+                  texlive-alphalph
+                  texlive-capt-of
+                  texlive-caption
+                  texlive-cmap
+                  texlive-courier
+                  texlive-enumitem
+                  texlive-etoc
+                  texlive-etoolbox
+                  texlive-fancyvrb
+                  texlive-float
+                  texlive-fncychap
+                  texlive-framed
+                  texlive-hanging
+                  texlive-helvetic
+                  texlive-jknapltx
+                  texlive-latexmk
+                  texlive-listofitems
+                  texlive-multirow
+                  texlive-natbib
+                  texlive-needspace
+                  texlive-newunicodechar
+                  texlive-parskip
+                  texlive-sectsty
+                  texlive-stackengine
+                  texlive-tabulary
+                  texlive-tex-gyre
+                  texlive-titlesec
+                  texlive-tocloft
+                  texlive-ulem
+                  texlive-upquote
+                  texlive-varwidth
+                  texlive-wasy
+                  texlive-wasysym
+                  texlive-wrapfig
+                  texlive-xcolor
+                  texlive-xypic))))
     (inputs
      (list openblas lapack))
     (arguments

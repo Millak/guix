@@ -382,8 +382,7 @@ graphs in Graphviz's DOT language, written in pure Python.")
     (native-inputs
      (list python-pytest
            (texlive-updmap.cfg
-            (list texlive-geometry
-                  texlive-pgf
+            (list texlive-pgf
                   texlive-preview
                   texlive-pstricks
                   texlive-xcolor

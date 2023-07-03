@@ -39,12 +39,9 @@
     (native-inputs
      (list (texlive-updmap.cfg
             (list texlive-caption
-                  texlive-ec
                   texlive-endnotes
                   texlive-fncychap
-                  texlive-geometry
                   texlive-helvetic
-                  texlive-hyperref
                   texlive-times
                   texlive-ucs))))
     (arguments

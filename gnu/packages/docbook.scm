@@ -534,38 +534,30 @@ the in DocBook SGML DTDs.")
     (build-system python-build-system)
     ;; TODO: Add xfig/transfig for fig2dev utility
     (inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                             texlive-anysize
+     `(("texlive" ,(texlive-updmap.cfg (list texlive-anysize
                                              texlive-appendix
-                                             texlive-bookmark
                                              texlive-changebar
-                                             texlive-colortbl
                                              texlive-fancybox
-                                             texlive-fancyhdr
                                              texlive-fancyvrb
                                              texlive-float
                                              texlive-footmisc
-                                             texlive-hyperref
                                              texlive-jknapltx
                                              texlive-listings
                                              texlive-multirow
                                              texlive-overpic
                                              texlive-pdfpages
                                              texlive-refcount
-                                             texlive-subfigure
-                                             texlive-titlesec
-                                             texlive-wasysym
-
                                              texlive-rsfs
                                              texlive-stmaryrd
-
-                                             texlive-iftex)))
+                                             texlive-subfigure
+                                             texlive-titlesec
+                                             texlive-wasysym)))
        ("imagemagick" ,imagemagick)     ;for convert
        ("inkscape" ,inkscape/stable)    ;for svg conversion
        ("docbook" ,docbook-xml)
        ("libxslt" ,libxslt)))           ;for xsltproc
     (arguments
-     `(;; Using setuptools causes an invalid "package_base" path in
+     `( ;; Using setuptools causes an invalid "package_base" path in
        ;; out/bin/.dblatex-real due to a missing leading '/'.  This is caused
        ;; by dblatex's setup.py stripping the root path when creating the
        ;; script.  (dblatex's setup.py still uses distutils and thus has to

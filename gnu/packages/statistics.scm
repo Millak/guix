@@ -389,17 +389,9 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
            pkg-config
            texinfo                      ; for building HTML manuals
            (texlive-updmap.cfg
-            (list texlive-ae
-                  texlive-amsfonts
-                  texlive-ec
-                  texlive-fancyvrb
-                  texlive-grfext
-                  texlive-hyperref
+            (list texlive-fancyvrb
                   texlive-inconsolata
-                  texlive-oberdiek
-                  texlive-tools
                   texlive-upquote
-                  texlive-url
                   texlive-xkeyval))
            tzdata-for-tests
            xz))
