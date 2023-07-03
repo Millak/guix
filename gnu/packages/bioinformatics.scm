@@ -14644,6 +14644,32 @@ visualize the results within R framework.  The disgenet2r package is designed
 to retrieve data from DisGeNET v6.0 (Jan, 2019).")
       (license license:expat))))
 
+(define-public r-dtmm
+  (let ((commit "3a553b1e17d27d90a496d2e23e98e5dfe4abc266")
+        (revision "1"))
+    (package
+      (name "r-dtmm")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/MaStatLab/DTMM")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19279wafqfs9gk9489f8zsp52qcdb0mkxgvqszq4i733ckr2mmkk"))))
+      (properties `((upstream-name . "DTMM")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ape r-rcpp r-rcpparmadillo))
+      (home-page "https://github.com/MaStatLab/DTMM")
+      (synopsis "Dirichlet-tree multinomial mixtures")
+      (description
+       "This package lets you perform unsupervised clustering of amplicon
+sequencing data in microbiome studies with the Dirichlet-tree Multinomial
+Mixtures.")
+      (license license:cc0))))
+
 (define-public r-dyngen
   (package
     (name "r-dyngen")
