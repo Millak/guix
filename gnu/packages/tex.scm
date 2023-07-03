@@ -1818,6 +1818,26 @@ font filenames.  This makes at most eight-character names from (almost)
 arbitrarily complex font names, thus helping portability of TeX documents.")
     (license license:gpl3+)))
 
+(define-public texlive-forloop
+  (package
+    (name "texlive-forloop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/forloop/" "source/latex/forloop/"
+                   "tex/latex/forloop/")
+             (base32
+              "14sx6zgilmbs5afp1k5gccix6ijhj0m8jg91blxn66995i6md4f5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/forloop")
+    (synopsis "Iteration in LaTeX")
+    (description
+     "The package provides a command @code{\\forloop} for doing iteration in
+LaTeX macro programming.")
+    ;; No version for the LGPL is specified.  Assuming the broader one.
+    (license license:lgpl2.0+)))
+
 (define-public texlive-cbfonts          ;71 MiB of greek fonts
   (package
     (name "texlive-cbfonts")
