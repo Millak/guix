@@ -1532,21 +1532,28 @@ information in the TFM file.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             ;; The first location prevents from downloading all ConTeXt
-             ;; "doc/context/scripts/mkii" directory.
              (list "doc/context/scripts/mkii/mptopdf.man"
                    "doc/man/man1/mptopdf.1"
                    "doc/man/man1/mptopdf.man1.pdf"
-                   "scripts/context/perl/"
+                   "scripts/context/perl/mptopdf.pl"
                    "tex/context/base/mkii/"
                    "tex/generic/context/mptopdf/")
              (base32
-              "08z0hxq0645lf8jyl0wq3kwn1f7xsvj736sqgfin9ldd89zc2ch3")))
+              "19kpqbkmz8al9wxn83fmg89fyv2pl2iqgnh256wi6pz4q3p77f0d")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     (list #:link-scripts #~(list "mptopdf.pl")
-           #:create-formats #~(list "mptopdf")))
+     (list
+      #:link-scripts #~(list "mptopdf.pl")
+      #:create-formats #~(list "mptopdf")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-perl-header
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((perl (search-input-file inputs "/bin/perl")))
+                (substitute* "scripts/context/perl/mptopdf.pl"
+                  (("exec perl") (string-append "exec " perl)))))))))
+    (inputs (list perl))
     (propagated-inputs (list texlive-plain))
     (home-page "https://ctan.org/pkg/mptopdf")
     (synopsis "mpost to PDF, native MetaPost graphics inclusion")
