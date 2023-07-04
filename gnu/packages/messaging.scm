@@ -148,6 +148,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -1089,21 +1090,29 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "3.1.0")
+    (version "4.2.2")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "nbxmpp" version))
        (sha256
-        (base32 "0c32090gr1fiy7hkn73dcj4ad9gfdpks8hivl1dl8bql01jsfdnj"))))
-    (build-system python-build-system)
+        (base32 "095nyy6vjildhrqigxk6vsh49in6mx17bvb3z5zpjmzhv9b8ix46"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: This probably should be an option for pyproject-build-system
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests? (invoke "python" "-m" "unittest" "-v")))))))
     (native-inputs
      (list `(,glib "bin")))
     (inputs
      (list glib
            glib-networking
-           libsoup-minimal-2
+           libsoup-minimal
            python-gssapi
            python-idna
            python-precis-i18n
