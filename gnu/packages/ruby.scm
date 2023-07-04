@@ -12988,14 +12988,19 @@ the @file{spec} directory.")
 (define-public ruby-sass
   (package
     (name "ruby-sass")
-    (version "3.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "sass" version))
-              (sha256
-               (base32
-                "18c6prbw9wl8bqhb2435pd9s0lzarl3g7xf8pmyla28zblvwxmyh"))))
+    (version "3.7.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sass/ruby-sass")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03215h9jkni3l9w6lq28p8adaj3qzb47qgxd20l6kldjnm1a1yky"))))
     (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "test:ruby"))
     (propagated-inputs
      (list ruby-sass-listen))
     (native-inputs
