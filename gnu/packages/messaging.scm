@@ -1127,7 +1127,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.4.7")
+    (version "1.7.3")
     (source
      (origin
        (method url-fetch)
@@ -1136,54 +1136,66 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "1ww46qlxr14nq0ka8wsf8qpn5qfi5dvgyksfh9411crl7azhfj0s"))
+        (base32 "066kvkjw3qcdanr3nczy0wgcwihk9jc9zhzfr5bwlqvcyxcv7k5p"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
-     `(#:imported-modules
-       (,@%python-build-system-modules
+     (list
+      #:imported-modules
+      `(,@%python-build-system-modules
         (guix build glib-or-gtk-build-system))
-       #:modules
-       ((guix build python-build-system)
+      #:modules
+      '((guix build python-build-system)
         ((guix build glib-or-gtk-build-system)
          #:prefix glib-or-gtk:)
         (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             ;; XXX Gajim builds fine on some (my) machines but fails elsewhere:
-             ;; ModuleNotFoundError: No module named 'gajim.gui.emoji_data'
-             ;; https://dev.gajim.org/gajim/gajim/-/issues/11041
-             (delete-file "test/no_gui/test_styling.py")))
-         (replace 'check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             (invoke "dbus-launch" "python" "./setup.py" "test")))
-         ;; Loading gajim_remote require running session bus,
-         ;; which in-turn requires running elogind for XDG_RUNTIME_DIR;
-         ;; neither of which are possible inside build environment.
-         (delete 'sanity-check)
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-         (add-after 'install 'wrap-env
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (name)
-                  (let ((file (string-append out "/bin/" name))
-                        (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                        (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-                    (wrap-program file
-                      `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                      `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("gajim" "gajim-remote"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-before 'build 'build-metadata
+            (lambda _
+              (invoke "./pep517build/build_metadata.py" "-o" "dist/metadata")))
+          ;; TODO: Change to pyproject-build-system once it supports
+          ;; in-tree build backends.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (apply invoke "pip" "--no-cache-dir" "--no-input"
+                     "install" "--no-deps" "--prefix" #$output
+                     (find-files "dist" "\\.whl$"))))
+          (add-after 'install 'install-metadata
+            (lambda _
+              (invoke "./pep517build/install_metadata.py" "dist/metadata"
+                      (string-append "--prefix=" #$output))))
+          (replace 'check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0")
+              (invoke "dbus-launch" "python" "-m" "unittest" "discover" "-s" "test")))
+          (add-after 'install 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'install 'wrap-env
+            (lambda _
+              (for-each
+               (lambda (name)
+                 (let ((file (string-append #$output "/bin/" name))
+                       (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
+                       (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                       (pixbuf-module-file (getenv "GDK_PIXBUF_MODULE_FILE")))
+                   (wrap-program file
+                     `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                     `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
+                     `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-module-file)))))
+               '("gajim" "gajim-remote")))))))
     (native-search-paths
      (list
       (search-path-specification
@@ -1202,7 +1214,7 @@ of xmpppy.")
           ;; FIXME: Cannot use this expression as it would
           ;; introduce a circular dependency at the top level.
           ;; (version-major+minor (package-version python))
-          "3.9"
+          "3.10"
           "/site-packages"))))))
     (native-inputs
      (list gettext-minimal
@@ -1210,6 +1222,7 @@ of xmpppy.")
            gobject-introspection
            `(,gtk+ "bin")
            python-distutils-extra
+           python-pypa-build
            python-setuptools
            xorg-server-for-tests))
     (inputs
