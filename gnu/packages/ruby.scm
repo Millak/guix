@@ -4344,12 +4344,13 @@ fiber, and defaults to a shared thread-local state.")
                 "0pd8gqgy67rp1baq5r7himl0r9jzv5kqlhdmqh8wngynv548w2ai"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:phases
+     (list #:ruby ruby-2.7
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (invoke "rspec")))))))
+                     (invoke "ruby" (which "rspec"))))))))
     (native-inputs (list ruby-rspec ruby-simplecov))
     (synopsis "Fuzzing, randomization, and stress testing library")
     (description "Flores is a fuzzing, randomization, and stress library to
