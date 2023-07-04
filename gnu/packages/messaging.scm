@@ -1094,10 +1094,9 @@ simultaneously and therefore appear under the same nickname on IRC.")
     (source
      (origin
        (method url-fetch)
-       (uri
-        (pypi-uri "nbxmpp" version))
+       (uri (pypi-uri "nbxmpp" version))
        (sha256
-        (base32 "095nyy6vjildhrqigxk6vsh49in6mx17bvb3z5zpjmzhv9b8ix46"))))
+         (base32 "095nyy6vjildhrqigxk6vsh49in6mx17bvb3z5zpjmzhv9b8ix46"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1107,8 +1106,7 @@ simultaneously and therefore appear under the same nickname on IRC.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests? (invoke "python" "-m" "unittest" "-v")))))))
-    (native-inputs
-     (list `(,glib "bin")))
+    (native-inputs (list `(,glib "bin")))
     (inputs
      (list glib
            glib-networking
