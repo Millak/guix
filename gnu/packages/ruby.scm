@@ -13727,17 +13727,18 @@ indentation will probably be an issue and hence this gem.")
     (native-inputs
      (list ruby-rspec ruby-hashie ruby-heredoc-unindent))
     (arguments
-     '(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-TZ
-           (lambda _
-             ;; This test is dependent on the timezone
-             ;; spec/transform/to_date_spec.rb:35
-             ;; # SafeYAML::Transform::ToDate converts times to the local
-             ;; timezone
-             (setenv "TZ" "UTC-11")
-             #t)))))
+     (list
+      #:ruby ruby-2.7
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-TZ
+            (lambda _
+              ;; This test is dependent on the timezone
+              ;; spec/transform/to_date_spec.rb:35
+              ;; # SafeYAML::Transform::ToDate converts times to the local
+              ;; timezone
+              (setenv "TZ" "UTC-11"))))))
     (home-page "https://github.com/dtao/safe_yaml")
     (synopsis "YAML parser")
     (description "The SafeYAML gem provides an alternative implementation of
