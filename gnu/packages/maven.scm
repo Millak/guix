@@ -1509,10 +1509,6 @@ so really just plain objects.")))
        #:tests? #f; dependency loop on maven-core (@Component RepositorySystem)
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'add-sisu-shebang
-           (lambda _
-             (substitute* "sisu.sh"
-               (("^## T") "#!/bin/sh\n## T"))))
          (add-before 'build 'generate-sisu-named
            (lambda _
              (mkdir-p "build/classes/META-INF/sisu")
