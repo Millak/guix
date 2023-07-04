@@ -1129,13 +1129,13 @@ of xmpppy.")
     (source
      (origin
        (method url-fetch)
-       (uri
-        (string-append "https://gajim.org/downloads/"
-                       (version-major+minor version)
-                       "/gajim-" version ".tar.gz"))
+       (uri (string-append "https://gajim.org/downloads/"
+                           (version-major+minor version)
+                           "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "066kvkjw3qcdanr3nczy0wgcwihk9jc9zhzfr5bwlqvcyxcv7k5p"))
-       (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
+         (base32 "066kvkjw3qcdanr3nczy0wgcwihk9jc9zhzfr5bwlqvcyxcv7k5p"))
+       (patches
+         (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1144,8 +1144,7 @@ of xmpppy.")
         (guix build glib-or-gtk-build-system))
       #:modules
       '((guix build python-build-system)
-        ((guix build glib-or-gtk-build-system)
-         #:prefix glib-or-gtk:)
+        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
@@ -1154,12 +1153,14 @@ of xmpppy.")
                        'generate-gdk-pixbuf-loaders-cache-file))
           (add-before 'build 'build-metadata
             (lambda _
-              (invoke "./pep517build/build_metadata.py" "-o" "dist/metadata")))
+              (invoke "./pep517build/build_metadata.py"
+                      "-o" "dist/metadata")))
           ;; TODO: Change to pyproject-build-system once it supports
           ;; in-tree build backends.
           (replace 'build
             (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation"
+                      ".")))
           (replace 'install
             (lambda _
               (apply invoke "pip" "--no-cache-dir" "--no-input"
@@ -1176,11 +1177,14 @@ of xmpppy.")
               (setenv "DISPLAY" ":1")
               ;; For missing '/etc/machine-id'.
               (setenv "DBUS_FATAL_WARNINGS" "0")
-              (invoke "dbus-launch" "python" "-m" "unittest" "discover" "-s" "test")))
+              (invoke "dbus-launch" "python" "-m" "unittest"
+                      "discover" "-s" "test")))
           (add-after 'install 'glib-or-gtk-compile-schemas
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-compile-schemas))
           (add-after 'install 'glib-or-gtk-wrap
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-wrap))
           (add-after 'install 'wrap-env
             (lambda _
               (for-each
@@ -1198,10 +1202,8 @@ of xmpppy.")
      (list
       (search-path-specification
        (variable "GAJIM_PLUGIN_PATH")
-       (separator #f)                   ;single entry
-       (files
-        (list
-         "share/gajim/plugins")))
+       (separator #f) ; single entry
+       (files (list "share/gajim/plugins")))
       ;; Gajim needs to use the propagated inputs of its plugins.
       (search-path-specification
        (variable "GUIX_PYTHONPATH")
