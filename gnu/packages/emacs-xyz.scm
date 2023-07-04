@@ -18545,6 +18545,30 @@ for the current file, using the major mode as a hint.  It prompts you to enter
 one if it fails.")
     (license license:gpl3+)))
 
+(define-public emacs-eglot-x
+  ;; Not tagged.
+  (let ((commit "a09ab28cf01d7cbb223ad83fbbb694c5158c96b8"))
+    (package
+      (name "emacs-eglot-x")
+      (version "0.6")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/nemethf/eglot-x")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0s17nv59gzgqgskid41lfacsqnzdiq2p3ds0vglcfqwypr3k898c"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-eglot))
+      (home-page "https://github.com/nemethf/eglot-x")
+      (synopsis "Protocol extensions for Eglot")
+      (description
+       "This package adds support for some LSP extensions to @code{emacs-eglot}.
+")
+      (license license:gpl3+))))
+
 (define-public emacs-jabber
   ;; No releases available.
   (let ((commit "af0315e174fa6446d5c4dd3e6465d48912950e58")
