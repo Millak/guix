@@ -12889,20 +12889,35 @@ about the changes.")
 (define-public ruby-terminfo
   (package
     (name "ruby-terminfo")
-    (version "0.1.1")
+    (version "0.2")
     (source
       (origin
         (method url-fetch)
-        (uri (rubygems-uri "ruby-terminfo" version))
+        (uri (string-append
+              "http://www.a-k-r.org/" name "/" name "-" version ".tar.gz"))
         (sha256
           (base32
-            "0rl4ic5pzvrpgd42z0c1s2n3j39c9znksblxxvmhkzrc0ckyg2cm"))))
+            "1n59dw351z6nzylgj0gpx4rpz6qhf8lrhzcbp1xqfpqvryhaxrjh"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "test"
-       ;; Rakefile requires old packages and would need modification to
-       ;; work with current software.
-       #:tests? #f))
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'replace-git-ls-files)
+          (replace 'build
+            (lambda _
+              (invoke "ruby" "extconf.rb")
+              (invoke "make")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each (lambda (f)
+                            (invoke "ruby" "-I" "test" f))
+                          (find-files "test" "^test_.*\\.rb$")))))
+          (replace 'install
+            (lambda _
+              (invoke "make" "install" (string-append "prefix=" #$output)))))))
     (inputs
      (list ncurses))
     (native-inputs
