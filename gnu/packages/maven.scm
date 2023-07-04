@@ -4,7 +4,6 @@
 ;;; Copyright © 2019 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2023 Aleksandr Vityazev <avityazew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1839,10 +1838,6 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        #:jdk ,icedtea-8
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'add-sisu-shebang
-           (lambda _
-             (substitute* "sisu.sh"
-               (("^## T") "#!/bin/sh\n## T"))))
          (add-before 'build 'generate-sisu-named
            (lambda _
              (mkdir-p "build/classes/META-INF/sisu")
