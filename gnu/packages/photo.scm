@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -459,7 +459,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.4.0")
+    (version "4.4.1")
     (source
      (origin
        (method url-fetch)
@@ -467,7 +467,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "105hyc8rhc8md683h8mbvqxxc2f5w2bk3348n2c4jz6rmcsgr1w8"))))
+        (base32 "038gdri1mcmq9mlaikq5x9xyrs20b99jpcchfspngnwa5s6x6hz0"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -484,13 +484,6 @@ photographic equipment.")
                  (string-append "\""
                                 (search-input-file inputs "/lib/libOpenCL.so")
                                 "\"")))))
-          (add-after 'unpack 'fix-missing-include
-            (lambda _
-              ;; Fix missing include needed to build tests.  See upstream
-              ;; issue: https://github.com/darktable-org/darktable/issues/12604
-              (substitute* "./src/common/variables.h"
-                (("once")
-                 "once\n#include \"common/image.h\""))))
           (add-before 'configure 'prepare-build-environment
             (lambda _
               ;; Rawspeed fails to build with GCC due to OpenMP error:
