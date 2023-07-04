@@ -2403,10 +2403,6 @@ reporting or the build process.")))
       (substitute-keyword-arguments (package-arguments maven-model-builder)
         ((#:phases phases)
          `(modify-phases ,phases
-            (add-after 'unpack 'add-components-shebang
-              (lambda _
-                (substitute* "components.sh"
-                  (("^## T") "#!/bin/sh\n## T"))))
             (add-before 'build 'generate-components.xml
               (lambda _
                 (mkdir-p "build/classes/META-INF/plexus")
