@@ -12965,20 +12965,20 @@ strings or files.")
         (base32 "1zsw66830w0xlc7kxz6fm4b5nyb44vdsdgm9mgy06s5aixx83pwr"))))
     (build-system ruby-build-system)
     (propagated-inputs
-     `(("ruby-command-line-reporter-3" ,ruby-command-line-reporter-3)
-       ("ruby-diffy" ,ruby-diffy)
-       ("ruby-terminfo" ,ruby-terminfo)))
+     (list ruby-command-line-reporter-3
+           ruby-diffy))
     (arguments
-     `(;; This package contains tests for a sass implementation, and the to
-       ;; avoid any circular dependencies, the tests are not run here
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-test
-           (lambda _
-             (delete-file "spec/values/colors/alpha_hex-3.5/error")
-             (substitute* "spec/values/colors/alpha_hex-3.5/expected_output.css"
-               (("string") "color")))))))
+     (list
+      ;; This package contains tests for a sass implementation, and the to
+      ;; avoid any circular dependencies, the tests are not run here
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-test
+            (lambda _
+              (delete-file "spec/values/colors/alpha_hex-3.5/error")
+              (substitute* "spec/values/colors/alpha_hex-3.5/expected_output.css"
+                (("string") "color")))))))
     (home-page "https://github.com/sass/sass-spec")
     (synopsis "Test suite for Sass")
     (description "Sass Spec is a test suite for Sass.  Test cases are all in
