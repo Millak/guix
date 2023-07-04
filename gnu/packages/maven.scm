@@ -1365,10 +1365,6 @@ simply plain java objects.")))
        #:test-dir "maven-settings-builder/src/test"
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'add-sisu-shebang
-           (lambda _
-             (substitute* "sisu.sh"
-               (("^## T") "#!/bin/sh\n## T"))))
          (add-before 'build 'generate-sisu-named
            (lambda _
              (mkdir-p "build/classes/META-INF/sisu")
