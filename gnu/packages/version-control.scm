@@ -2616,13 +2616,13 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.12.0")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "0qwi2f729mflrv8dazb3xbs23hzprbchjrhjcc8fjvpn7yvnrd7f"))))
+        (base32 "0qpa0ahw1d86mdgs09ykq5pd0lm8083ds6j0knalw757yh31akmn"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
