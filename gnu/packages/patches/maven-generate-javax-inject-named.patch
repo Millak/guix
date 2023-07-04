@@ -13,7 +13,8 @@ new file mode 100755
 index 0000000..979f373
 --- /dev/null
 +++ b/sisu.sh
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,13 @@
++#!/bin/sh
 +## This script generates a rough javax.inject.Named file. It is meant to
 +## replace sisu-maven-plugin as it eventually has a recursive dependency
 +## on maven.
