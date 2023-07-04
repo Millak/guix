@@ -1410,10 +1410,6 @@ inheritance, interpolation, @dots{}")))
              (copy-recursively "src/main/resources"
                                "build/classes")
              #t))
-         (add-after 'unpack 'add-sisu-shebang
-           (lambda _
-             (substitute* "sisu.sh"
-               (("^## T") "#!/bin/sh\n## T"))))
          (add-before 'build 'generate-sisu-named
            (lambda _
              (mkdir-p "build/classes/META-INF/sisu")
