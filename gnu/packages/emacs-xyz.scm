@@ -13393,6 +13393,45 @@ and tooling.")
 and RSS, with a user interface inspired by notmuch.")
     (license license:gpl3+)))
 
+(define-public emacs-elfeed-goodies
+  (let ((commit "544ef42ead011d960a0ad1c1d34df5d222461a6b"))
+    (package
+      (name "emacs-elfeed-goodies")
+      (version commit)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jeetelongname/elfeed-goodies")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "147pwqx2maf430qhigzfd6lqk7a5sbrydf9a4c5bvsw8jv7wzb6l"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list
+        emacs-elfeed
+        emacs-popwin
+        emacs-powerline
+        emacs-link-hint))
+      (home-page "https://github.com/jeetelongname/elfeed-goodies")
+      (synopsis
+       "Various bits and pieces to enhance the Elfeed user experience.")
+      (description
+       "This package enhances the vanilla Elfeed user experience with:
+@itemize @bullet
+@item
+An adaptive, powerline-based header for the @code{*elfeed-search*} and
+@code{*elfeed-entry*} buffers, with a matching entry format.
+
+@item
+Split pane setup.
+
+@item
+A function to toggle the @code{*elfeed-log*} buffer in a popup window.
+@end itemize")
+      (license license:gpl3+))))
+
 (define-public emacs-elfeed-org
   (let ((commit "77b6bbf222487809813de260447d31c4c59902c9"))
     (package
