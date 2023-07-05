@@ -67,6 +67,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
@@ -86,6 +87,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml))
 
 (define-public bitmask
@@ -278,6 +280,48 @@ of trusted service provider all from one app.  Current providers include Riseup
 Networks and The Calyx Institute, where the former is default.")
     (home-page "https://bitmask.net/")
     (license license:gpl3+)))
+
+(define-public gp-saml-gui
+  ;; No release.
+  (let ((commit "258f47cdc4a8ed57a1eef16667f6cad0d1cb49b1")
+        (revision "1"))
+    (package
+      (name "gp-saml-gui")
+      (version (git-version "0.0.0" revision commit))
+      (home-page "https://github.com/dlenski/gp-saml-gui")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qj2mmi6lfkq5c4v6fbzgriajqc27k9kb1i9k2r776pn5pq14pc3"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap-program
+              (lambda _
+                (let ((prog (string-append #$output "/bin/gp-saml-gui")))
+                  (wrap-program prog
+                    `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                    `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+      (inputs
+       (list bash-minimal
+             python-pygobject
+             python-urllib3
+             python-requests
+             webkitgtk-with-libsoup2))
+      (propagated-inputs
+       (list openconnect))
+      (synopsis "Interactively authenticate to GlobalProtect VPNs that require SAML")
+      (description "This is a helper script to allow you to interactively login
+to a GlobalProtect VPN that uses SAML authentication, so that you can
+subsequently connect with OpenConnect.")
+      (license license:gpl3+))))
 
 (define-public gvpe
   (package
