@@ -4296,7 +4296,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'makeinfo
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (invoke "emacs"
                       "--batch"
                       "--eval=(require 'ox-texinfo)"
