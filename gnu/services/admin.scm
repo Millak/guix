@@ -29,6 +29,8 @@
   #:use-module (gnu services configuration)
   #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
+  #:use-module (gnu system accounts)
+  #:use-module ((gnu system shadow) #:select (account-service-type))
   #:use-module ((guix store) #:select (%store-prefix))
   #:use-module (guix gexp)
   #:use-module (guix modules)
@@ -68,6 +70,14 @@
             file-database-configuration-excluded-directories
             %default-file-database-update-schedule
             %default-file-database-excluded-directories
+
+            package-database-service-type
+            package-database-configuration
+            package-database-configuration?
+            package-database-configuration-package
+            package-database-configuration-schedule
+            package-database-configuration-method
+            package-database-configuration-channels
 
             unattended-upgrade-service-type
             unattended-upgrade-configuration
@@ -337,6 +347,49 @@ is passed to the @option{--prunepaths} option of
 which lets you search for files by name.  The database is created by running
 the @command{updatedb} command.")
    (default-value (file-database-configuration))))
+
+(define %default-package-database-update-schedule
+  ;; Default mcron schedule for the periodic 'guix locate --update' job: once
+  ;; every Monday.
+  "10 23 * * 1")
+
+(define-configuration/no-serialization package-database-configuration
+  (package (file-like guix)
+           "The Guix package to use.")
+  (schedule (string-or-gexp
+             %default-package-database-update-schedule)
+            "String or G-exp denoting an mcron schedule for the periodic
+@command{guix locate --update} job (@pxref{Guile Syntax,,, mcron,
+GNU@tie{}mcron}).")
+  (method    (symbol 'store)
+             "Indexing method for @command{guix locate}.  The default value,
+@code{'store}, yields a more complete database but is relatively expensive in
+terms of CPU and input/output.")
+  (channels (gexp #~%default-channels)
+            "G-exp denoting the channels to use when updating the database
+(@pxref{Channels})."))
+
+(define (package-database-mcron-jobs configuration)
+  (match-record configuration <package-database-configuration>
+    (package schedule method channels)
+    (let ((channels (scheme-file "channels.scm" channels)))
+      (list #~(job #$schedule
+                   ;; XXX: The whole thing's running as "root" just because it
+                   ;; needs write access to /var/cache/guix/locate.
+                   (string-append #$(file-append package "/bin/guix")
+                                  " time-machine -C " #$channels
+                                  " -- locate --update --method="
+                                  #$(symbol->string method)))))))
+
+(define package-database-service-type
+  (service-type
+   (name 'package-database)
+   (extensions (list (service-extension mcron-service-type
+                                        package-database-mcron-jobs)))
+   (description
+    "Periodically update the package database used by the @code{guix locate} command,
+which lets you search for packages that provide a given file.")
+   (default-value (package-database-configuration))))
 
 
 ;;;

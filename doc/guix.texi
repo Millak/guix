@@ -4481,7 +4481,9 @@ database, usually under @file{/var/cache/guix/locate}; if it does not
 exist or is too old, it falls back to the per-user database, by default
 under @file{~/.cache/guix/locate}.  On a multi-user system,
 administrators may want to periodically update the system-wide database
-so that all users can benefit from it.
+so that all users can benefit from it, for instance by setting up
+@code{package-database-service-type} (@pxref{File Search Services,
+@code{package-database-service-type}}).
 
 The general syntax is:
 
@@ -24999,6 +25001,51 @@ locate}).  This list is passed to the @option{--prunepaths} option of
 GNU@tie{}Findutils}).
 @end table
 @end deftp
+
+The second service, @code{package-database-service-type}, builds the
+database used by @command{guix locate}, which lets you search for
+packages that contain a given file (@pxref{Invoking guix locate}).  The
+service periodically updates a system-wide database, which will be
+readily available to anyone running @command{guix locate} on the system.
+To use this service with its default settings, add this snippet to your
+service list:
+
+@lisp
+(service package-database-service-type)
+@end lisp
+
+This will run @command{guix locate --update} once a week.
+
+@defvar package-database-service-type
+This is the service type for periodic @command{guix locate} updates
+(@pxref{Invoking guix locate}).  Its value must be a
+@code{package-database-configuration} record, as shown below.
+@end defvar
+
+@deftp {Data Type} package-database-configuration
+Data type to configure periodic package database updates.  It has the
+following fields:
+
+@table @asis
+@item @code{package} (default: @code{guix})
+The Guix package to use.
+
+@item @code{schedule} (default: @code{%default-package-database-update-schedule})
+String or G-exp denoting an mcron schedule for the periodic
+@command{guix locate --update} job (@pxref{Guile Syntax,,, mcron,
+GNU@tie{}mcron}).
+
+@item @code{method} (default: @code{'store})
+Indexing method for @command{guix locate}.  The default value,
+@code{'store}, yields a more complete database but is relatively
+expensive in terms of CPU and input/output.
+
+@item @code{channels} (default: @code{#~%default-channels})
+G-exp denoting the channels to use when updating the database
+(@pxref{Channels}).
+@end table
+@end deftp
+
 
 @node Database Services
 @subsection Database Services
