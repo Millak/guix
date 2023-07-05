@@ -22758,10 +22758,10 @@ bound to whatever value was in the same place in the URL (as a string).")
 
 (define-public sbcl-spinneret
   ;; No release since 2019, no tags.
-  (let ((commit "52709ab953c46b24cbc2f0e3a50ae362916e730c"))
+  (let ((commit "d4398b5a344b5c59e497c9ee78fdbae7cc434f74"))
     (package
       (name "sbcl-spinneret")
-      (version (git-version "3.0" "5" commit))
+      (version (git-version "3.0" "6" commit))
       (source
        (origin
          (method git-fetch)
@@ -22770,7 +22770,7 @@ bound to whatever value was in the same place in the URL (as a string).")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1wzs0hzlwf0vzk4gb66psqz6gqcf3x7yfpi9gghbil97iz6fyc7z"))))
+          (base32 "1mdd92gfxfdsd81fcd8fgz8z7dwsb0kcv7zyzdgnw8lavkib5zly"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
