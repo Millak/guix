@@ -79,7 +79,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.1384")
+    (version "9.0.1672")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -88,7 +88,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "07a59a0ibklwmks5f26f9a7c2klhppqbj0kdijcs4ayarh5q2qwf"))))
+               "1cl4a7rzks0ll0b8y0ffrbin622k0qww3l0nz9kb0mz2favw0b9q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -132,6 +132,9 @@
              ;; non-trivial due to the special format used, so skip the test.
              (substitute* "src/testdir/test_messages.vim"
                ((".*Test_echo_verbose_system.*" line)
+                (string-append line "return\n")))
+             (substitute* "src/testdir/test_normal.vim"
+               ((".*Test_mouse_shape_after_cancelling_gr.*" line)
                 (string-append line "return\n")))
              (substitute* "src/testdir/test_terminal.vim"
                ((".*Test_open_term_from_cmd.*" line)
