@@ -224,13 +224,6 @@ with the editor vim.")))
              "--disable-selinux"
              "--enable-gui")
        ,@(substitute-keyword-arguments (package-arguments vim)
-           ;; This flag fixes the following error:
-           ;; .../libpython3.7m.a(pyexpat.o): undefined reference to symbol 'XML_FreeContentModel'
-           ;; .../libexpat.so.1: error adding symbols: DSO missing from command line
-           ((#:make-flags flags)
-            `(append
-              (list "LDFLAGS=-lexpat")
-              ,flags))
            ((#:phases phases)
             `(modify-phases ,phases
                (add-before 'check 'start-xserver
