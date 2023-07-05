@@ -11121,7 +11121,7 @@ style, or as multiple word prefixes.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'makeinfo
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (invoke "emacs"
                       "--batch"
                       "--eval=(require 'ox-texinfo)"
