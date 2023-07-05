@@ -353,7 +353,12 @@
 
                          (false-if-exception (delete-file #$pid-file))
                          (let ((pid (fork+exec-command
-                                     (cons* dhclient "-nw"
+                                     ;; By default dhclient uses a
+                                     ;; pre-standardization implementation of
+                                     ;; DDNS, which is incompatable with
+                                     ;; non-ISC DHCP servers; thus, pass '-I'.
+                                     ;; <https://kb.isc.org/docs/aa-01091>.
+                                     (cons* dhclient "-nw" "-I"
                                             "-pf" #$pid-file ifaces))))
                            (and (zero? (cdr (waitpid pid)))
                                 (read-pid-file #$pid-file)))))
