@@ -36665,7 +36665,7 @@ hacker.")
 (define-public emacs-osm
   (package
     (name "emacs-osm")
-    (version "0.12")
+    (version "0.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -36674,7 +36674,7 @@ hacker.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wfk8r0szav8hipq0apaix2f83kmxcrmgvykb30acgap9rjs357b"))))
+                "0i1lks8724i2nz9jk5csl4nfkyi49fc928a117sn7438z82r9gyr"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
