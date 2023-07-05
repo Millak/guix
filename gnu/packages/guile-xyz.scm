@@ -4671,33 +4671,31 @@ manipulating graphs and datasets.")
   (package
     (name "guile-jsonld")
     (version "1.0.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://framagit.org/tyreunom/guile-jsonld")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1ryyvh71899z2inivqglb8d78zzp1sd0wv9a56kvcmrxf1966z6r"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://framagit.org/tyreunom/guile-jsonld")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ryyvh71899z2inivqglb8d78zzp1sd0wv9a56kvcmrxf1966z6r"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f)); require network
+     (list #:tests? #f))                ; require network
     (propagated-inputs
-     `(("guile-gnutls" ,guile-gnutls)
-       ("guile-json" ,guile-json-4)
-       ("guile-rdf" ,guile-rdf)))
+     (list guile-gnutls guile-json-4 guile-rdf))
     (inputs
      (list guile-3.0))
     (native-inputs
      (list automake autoconf pkg-config texinfo))
     (home-page "https://framagit.org/tyreunom/guile-jsonld")
     (synopsis "Guile implementation of the JsonLD API specification")
-    (description "Guile JsonLD is an implementation of the JsonLD (Json for
-Linked Data) API defined by the W3C for GNU Guile.  It allows you to express links
-between data, in a way that is very similar to WikiData or RDF for instance.
-An object can have relations (in the form of an IRI) that relates it to one or
+    (description
+     "Guile JsonLD is an implementation of the JsonLD (Json for Linked Data)
+API defined by the W3C for GNU Guile.  It allows you to express links between
+data, in a way that is very similar to WikiData or RDF for instance.  An
+object can have relations (in the form of an IRI) that relates it to one or
 more objects or strings, represented by a Json object or an IRI.")
     (license license:gpl3+)))
 
