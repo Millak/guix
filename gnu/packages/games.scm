@@ -42,7 +42,7 @@
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019 Dan Frumin <dfrumin@cs.ru.nl>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2019 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
@@ -10294,7 +10294,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
 (define-public q5go
   (package
    (name "q5go")
-   (version "1.0")
+   (version "2.1.3")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -10303,10 +10303,10 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1gdlfqcqkqv7vph3qwq78d0qz6dhmdsranxq9bmixiisbzkqby31"))))
+              "0x8x7mp61g3lwabx9z4vsyd743kfqibnqhym7xd0b7811flca3ri"))))
    (build-system gnu-build-system)
    (native-inputs
-    (list pkg-config))
+    (list autoconf automake pkg-config))
    (inputs
     (list qtbase-5 qtmultimedia-5 qtsvg-5))
    (arguments
@@ -10315,32 +10315,34 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
         (add-after 'unpack 'fix-configure-script
           (lambda _
             ;; Bypass the unavailable qtchooser program.
-            (substitute* "configure"
+            (for-each delete-file
+                      '("configure"
+                        "Makefile.in"
+                        "src/Makefile.in"
+                        "src/translations/Makefile.in"))
+            (substitute* "configure.ac"
+              (("AC_PATH_PROG\\(qtchooser, .*\\)")
+               "")
               (("test -z \"QTCHOOSER\"")
                "false")
-              (("qtchooser -run-tool=(.*) -qt=qt5" _ command)
-               command))
-            #t))
-        (add-after 'unpack 'fix-header
-          (lambda _
-            (substitute* "src/bitarray.h"
-              (("#include <cstring>" all)
-               (string-append all "\n#include <stdexcept>")))))
+              (("\\$\\(qtchooser -list-versions\\)")
+               "qt5")
+              (("qtchooser -run-tool=(.*) -qt=\\$QT5_NAME" _ command)
+               command))))
         (add-after 'unpack 'fix-paths
-          (lambda _
-            (substitute* '("src/pics/Makefile.in"
-                           "src/translations/Makefile.in")
-              (("\\$\\(datadir\\)/qGo/")
-               "$(datadir)/q5go/"))
-            #t))
+          (lambda* (#:key outputs #:allow-other-keys)
+            (substitute* '("src/setting.cpp")
+              (("/usr/share/\" PACKAGE \"/translations")
+               (string-append (assoc-ref outputs "out")
+                              "/share/qGo/translations")))))
         (add-after 'install 'install-desktop-file
           (lambda* (#:key outputs #:allow-other-keys)
             (let* ((out (assoc-ref outputs "out"))
                    (apps (string-append out "/share/applications"))
-                   (pics (string-append out "/share/q5go/pics")))
+                   (images (string-append out "/share/qGo/images")))
               (delete-file-recursively (string-append out "/share/applnk"))
               (delete-file-recursively (string-append out "/share/mimelnk"))
-              (install-file "../source/src/pics/Bowl.ico" pics)
+              (install-file "../source/src/images/Bowl.ico" images)
               (mkdir-p apps)
               (with-output-to-file (string-append apps "/q5go.desktop")
                 (lambda _
@@ -10360,8 +10362,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
                            Comment[zh]=围棋~@
                            Terminal=false~@
                            Type=Application~%"
-                          out pics))))
-             #t)))))
+                          out images)))))))))
    (synopsis "Qt GUI to play the game of Go")
    (description
     "This a tool for Go players which performs the following functions:
