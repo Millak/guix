@@ -12300,7 +12300,7 @@ Browser.")
 (define-public bismark
   (package
     (name "bismark")
-    (version "0.20.1")
+    (version "0.24.1")
     (source
      (origin
        (method git-fetch)
@@ -12310,69 +12310,90 @@ Browser.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xchm3rgilj6vfjnyzfzzymfd7djr64sbrmrvs3njbwi66jqbzw9"))))
+         "0j4dy33769f0jr2w1brb710zxwpg3zwjlnvlcpi5pr6mqc8dkg8n"))
+       (snippet '(delete-file "plotly/plot.ly"))))
     (build-system perl-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:modules ((guix build utils)
+     (list
+      #:tests? #f                       ; there are no tests
+      #:modules '((guix build utils)
                   (ice-9 popen)
                   (srfi srfi-26)
                   (guix build perl-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         ;; The bundled plotly.js is minified.
-         (add-after 'unpack 'replace-plotly.js
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((file (assoc-ref inputs "plotly.js"))
-                    (installed "plotly/plotly.js"))
-               (let ((minified (open-pipe* OPEN_READ "uglifyjs" file)))
-                 (call-with-output-file installed
-                   (cut dump-port minified <>))))
-             #t))
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (share   (string-append out "/share/bismark"))
-                    (docdir  (string-append out "/share/doc/bismark"))
-                    (docs    '("Docs/Bismark_User_Guide.html"))
-                    (scripts '("bismark"
-                               "bismark_genome_preparation"
-                               "bismark_methylation_extractor"
-                               "bismark2bedGraph"
-                               "bismark2report"
-                               "coverage2cytosine"
-                               "deduplicate_bismark"
-                               "filter_non_conversion"
-                               "bam2nuc"
-                               "bismark2summary"
-                               "NOMe_filtering")))
-               (substitute* "bismark2report"
-                 (("\\$RealBin/plotly")
-                  (string-append share "/plotly")))
-               (mkdir-p share)
-               (mkdir-p docdir)
-               (mkdir-p bin)
-               (for-each (lambda (file) (install-file file bin))
-                         scripts)
-               (for-each (lambda (file) (install-file file docdir))
-                         docs)
-               (copy-recursively "Docs/Images" (string-append docdir "/Images"))
-               (copy-recursively "plotly"
-                                 (string-append share "/plotly"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'replace-plotly.js
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((share (string-append #$output "/share/bismark"))
+                     (file (assoc-ref inputs "plotly.js"))
+                     (installed "plotly/plotly.js"))
+                ;; The bundled plotly.js is minified.
+                (let ((minified (open-pipe* OPEN_READ "uglifyjs" file)))
+                  (call-with-output-file installed
+                    (cut dump-port minified <>)))
+                (substitute* "bismark2report"
+                  (("plotly_template.tpl")
+                   (string-append share "/plotly/plotly_template.tpl"))
+                  (("my \\$plotly_code = read_report_template\\('plot.ly'\\);")
+                   (string-append "\
+my $plotly_code = read_report_template('" share "/plotly/plotly.js');
+$plotly_code = \"<script>\" . $plotly_code . \"</script>\";"))))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "bismark"
+                (("\\(\\!system \"which samtools >/dev/null 2>&1\"\\)")
+                 "(\"true\")")
+                (("\\$samtools_path = `which samtools`;")
+                 (string-append "$samtools_path = '"
+                                (search-input-file inputs "/bin/samtools")
+                                "';"))
+                (("\\$path_to_bowtie2 = 'bowtie2'")
+                 (string-append "$path_to_bowtie2 = '"
+                                (search-input-file inputs "/bin/bowtie2")
+                                "'"))
+                (("\\$path_to_hisat2 = 'hisat2'")
+                 (string-append "$path_to_hisat2 = '"
+                                (search-input-file inputs "/bin/hisat2")
+                                "'"))
+                (("\\$path_to_minimap2 = 'minimap2'")
+                 (string-append "$path_to_minimap2 = '"
+                                (search-input-file inputs "/bin/minimap2")
+                                "'")))))
+          (delete 'build)
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin"))
+                     (share   (string-append #$output "/share/bismark"))
+                     (docdir  (string-append #$output "/share/doc/bismark"))
+                     (scripts '("bismark"
+                                "bismark_genome_preparation"
+                                "bismark_methylation_extractor"
+                                "bismark2bedGraph"
+                                "bismark2report"
+                                "coverage2cytosine"
+                                "deduplicate_bismark"
+                                "filter_non_conversion"
+                                "bam2nuc"
+                                "bismark2summary"
+                                "NOMe_filtering")))
+                (mkdir-p share)
+                (mkdir-p docdir)
+                (mkdir-p bin)
+                (for-each (lambda (file) (install-file file bin))
+                          scripts)
+                (copy-recursively "docs" docdir)
+                (copy-recursively "plotly"
+                                  (string-append share "/plotly"))
 
-               ;; Fix references to gunzip
-               (substitute* (map (lambda (file)
-                                   (string-append bin "/" file))
-                                 scripts)
-                 (("\"gunzip -c")
-                  (string-append "\"" (assoc-ref inputs "gzip")
-                                 "/bin/gunzip -c")))
-               #t))))))
+                ;; Fix references to gunzip
+                (substitute* (map (lambda (file)
+                                    (string-append bin "/" file))
+                                  scripts)
+                  (("\"gunzip -c")
+                   (string-append "\"" (assoc-ref inputs "gzip")
+                                  "/bin/gunzip -c")))))))))
     (inputs
-     (list gzip perl-carp perl-getopt-long))
+     (list bowtie gzip hisat2 minimap2 perl-carp perl-getopt-long samtools))
     (native-inputs
      `(("plotly.js"
         ,(origin
