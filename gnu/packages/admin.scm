@@ -59,6 +59,7 @@
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5852,3 +5853,44 @@ file or files to several hosts.")
     (description "This package provides a graphical disk usage analyzer in
 text mode.")
     (license license:asl2.0)))
+
+(define-public mactelnet
+  (package
+    (name "mactelnet")
+    (version "0.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/haakonnessjoen/MAC-Telnet")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1z63dz22crrvrm0sh2cwpyqb7wqd9m45m6f2641mwmyp6hcpf4k4"))
+              (patches (search-patches "mactelnet-remove-init.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f))  ; no tests
+    (native-inputs (list autoconf automake gettext-minimal))
+    (synopsis "MAC-Telnet utilities for communicating with RouterOS devices")
+    (description "This package provides an implementation of the MAC-Telnet protocol
+used by RouterOS devices.  It provides the following commands:
+@table @command
+@item{macping}
+Ping RouterOS devices or @command{mactelnetd} hosts.
+@item{mactelnetd}
+MAC-Telnet daemon.
+@item{mactelnet}
+MAC-Telnet client.
+@item{mndp}
+Discover other RouterOS devices or @command{mactelnetd} hosts.
+@end table")
+    (home-page "https://lunatic.no/2010/10/routeros-mac-telnet-application-for-linux-users/")
+    (license
+     (list license:gpl2+
+           ;; Note: applies to src/md5.{c,h}
+           ;; This file is likely to be gone in the next release.
+           license:zlib
+           ;; Bundled uthash-1.9.9.
+           license:bsd-2))))
