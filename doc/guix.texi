@@ -388,6 +388,7 @@ Services
 * Printing Services::           Local and remote printer support.
 * Desktop Services::            D-Bus and desktop services.
 * Sound Services::              ALSA and Pulseaudio services.
+* File Search Services::        Tools to search for files.
 * Database Services::           SQL databases, key-value stores, etc.
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
@@ -18428,6 +18429,7 @@ declaration.
 * Printing Services::           Local and remote printer support.
 * Desktop Services::            D-Bus and desktop services.
 * Sound Services::              ALSA and Pulseaudio services.
+* File Search Services::        Tools to search for files.
 * Database Services::           SQL databases, key-value stores, etc.
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
@@ -24937,6 +24939,66 @@ See @uref{http://plugin.org.uk/ladspa-swh/docs/ladspa-swh.html} for the
 details.
 
 @end defvar
+
+@node File Search Services
+@subsection File Search Services
+
+@cindex file search
+@cindex searching for a file
+The services in this section populate @dfn{file databases} that let you
+search for files on your machine.  These services are provided by the
+@code{(gnu services admin)} module.
+
+The first one, @code{file-database-service-type}, periodically runs the
+venerable @command{updatedb} command (@pxref{Invoking updatedb,,, find,
+GNU Findutils}).  That command populates a database of file names that
+you can then search with the @command{locate} command (@pxref{Invoing
+locate,,, find, GNU Findutils}), as in this example:
+
+@example
+locate important-notes.txt
+@end example
+
+You can enable this service with its default settings by adding this
+snippet to your operating system services:
+
+@lisp
+(service file-database-service-type)
+@end lisp
+
+This updates the database once a week, excluding files from
+@file{/gnu/store}---these are more usefully handled by @command{guix
+locate} (@pxref{Invoking guix locate}).  You can of course provide a
+custom configuration, as described below.
+
+@defvar file-database-service-type
+This is the type of the file database service, which runs
+@command{updatedb} periodically.  Its associated value must be a
+@code{file-database-configuration} record, as described below.
+@end defvar
+
+@deftp {Data Type} file-database-configuration
+Record type for the @code{file-database-service-type} configuration,
+with the following fields:
+
+@table @asis
+@item @code{package} (default: @code{findutils})
+The GNU@tie{}Findutils package from which the @command{updatedb} command
+is taken.
+
+@item @code{schedule} (default: @code{%default-file-database-update-schedule})
+String or G-exp denoting an mcron schedule for the periodic
+@command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).
+
+@item @code{excluded-directories} (default @code{%default-file-database-excluded-directories})
+List of directories to ignore when building the file database.  By
+default, this includes @file{/tmp} and @file{/gnu/store}, which should
+instead be indexed by @command{guix locate} (@pxref{Invoking guix
+locate}).  This list is passed to the @option{--prunepaths} option of
+@command{updatedb} (@pxref{Invoking updatedb,,, find,
+GNU@tie{}Findutils}).
+@end table
+@end deftp
 
 @node Database Services
 @subsection Database Services
