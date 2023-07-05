@@ -209,7 +209,7 @@ human.")
            readline
            yubikey-personalization      ; XC_YUBIKEY
            zlib))
-    (home-page "https://www.keepassxc.org")
+    (home-page "https://keepassxc.org")
     (synopsis "Password manager")
     (description "KeePassXC is a password manager or safe which helps you to
 manage your passwords in a secure way.  You can put all your passwords in one
