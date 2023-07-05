@@ -547,7 +547,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.4.4")
+    (version "4.4.5")
     (source
      (origin
        (method url-fetch)
@@ -555,7 +555,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "05xzafv8ry5k5mzn3i4l71d42q42kjl81q154i97qmqiy3s2fhkb"))
+        (base32 "1gifnb927b51947psbj58c7kdsgncn3d9j7rpk5mls678yf1qd5d"))
        (modules '((guix build utils)))
        (snippet
         '(begin
