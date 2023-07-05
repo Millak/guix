@@ -114,6 +114,7 @@
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
@@ -5867,12 +5868,19 @@ text mode.")
               (sha256
                (base32
                 "1z63dz22crrvrm0sh2cwpyqb7wqd9m45m6f2641mwmyp6hcpf4k4"))
-              (patches (search-patches "mactelnet-remove-init.patch"))))
+              (patches (search-patches "mactelnet-remove-init.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file "src/utlist.h")
+                   (substitute* (find-files "src/" "\\.c$")
+                     (("\"utlist\\.h\"") "<utlist.h>"))))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:tests? #f))  ; no tests
     (native-inputs (list autoconf automake gettext-minimal))
+    (inputs (list uthash))
     (synopsis "MAC-Telnet utilities for communicating with RouterOS devices")
     (description "This package provides an implementation of the MAC-Telnet protocol
 used by RouterOS devices.  It provides the following commands:
@@ -5891,6 +5899,4 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
      (list license:gpl2+
            ;; Note: applies to src/md5.{c,h}
            ;; This file is likely to be gone in the next release.
-           license:zlib
-           ;; Bundled uthash-1.9.9.
-           license:bsd-2))))
+           license:zlib))))
