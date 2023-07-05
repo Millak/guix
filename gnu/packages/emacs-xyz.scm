@@ -13630,6 +13630,34 @@ automatically when Git, Subversion or Mercurial are used.  It also provides
 functions to assist in reviewing changes on files.")
     (license license:gpl3+)))
 
+(define-public emacs-popwin
+  (package
+    (name "emacs-popwin")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacsorphanage/popwin")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x1iimzbwb5izbia6aj6xv49jybzln2qxm5ybcrcq7xync5swiv1"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires an attached terminal
+      ))
+    (native-inputs
+     (list emacs-ert-runner))
+    (home-page "https://github.com/emacsorphanage/popwin")
+    (synopsis "Popup window manager for Emacs")
+    (description
+     "This package provides utilities for treating certain windows as @dfn{pop
+up windows}, which close automatically when quitting a command or selecting
+another window.")
+    (license license:gpl3+)))
+
 (define-public emacs-pyvenv
   (package
     (name "emacs-pyvenv")
