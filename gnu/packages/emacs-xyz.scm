@@ -11361,7 +11361,7 @@ expansion and overwriting the marked region with a new snippet completion.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'makeinfo
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (invoke "emacs"
                       "--batch"
                       "--eval=(require 'ox-texinfo)"
