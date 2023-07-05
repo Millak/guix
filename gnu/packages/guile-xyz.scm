@@ -43,7 +43,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
-;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
@@ -4685,7 +4685,7 @@ manipulating graphs and datasets.")
     (arguments
      `(#:tests? #f)); require network
     (propagated-inputs
-     `(("guile-gnutls" ,gnutls)
+     `(("guile-gnutls" ,guile-gnutls)
        ("guile-json" ,guile-json-4)
        ("guile-rdf" ,guile-rdf)))
     (inputs
