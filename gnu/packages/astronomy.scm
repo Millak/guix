@@ -9,6 +9,8 @@
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2023 Iliya Tikhonenko <tikhonenko@mpe.mpg.de>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,6 +77,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
@@ -3951,3 +3954,38 @@ orbit around the Earth.")
 for optimal @code{matching} of weighted N-dimensional image intensity data
 using (multivariate) polynomials.")
     (license license:bsd-3)))
+
+(define-public unsio
+  ;; There is no versioned tag, use the latest commit.
+  (let ((commit "25e52468298e1194c9726ef5dba9d5fbb46870f5")
+        (revision "0"))
+    (package
+      (name "unsio")
+      (version (git-version "1.3.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.lam.fr/infrastructure/unsio")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "110i2p5608zhh5w3pf3b5r2651hykw2ayspgq6vpqsffhya1p170"))
+                (modules '((guix build utils)))
+                (snippet
+                  ;; force installation into lib/ instead of lib64/
+                  #~(substitute* "cmake/DetectCpackGenerator.cmake"
+                      (("lib64") "lib")))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f ; no tests
+             #:build-type "Release" ; to improve performace
+             #:configure-flags #~(list "-DCMAKE_CXX_STANDARD=14")))
+      (inputs (list gfortran hdf5 perl sqlite zlib))
+      (home-page "https://projets.lam.fr/projects/unsio/wiki")
+      (synopsis "Input and output routines for n-body file formats")
+      (description
+       "@acronym{UNSIO, Universal Nbody Snapshot Input Output} provides
+an API for performing input and output operations on different kinds of
+n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
+      (license license:cecill))))
