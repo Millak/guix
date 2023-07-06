@@ -1399,7 +1399,7 @@ between different versions of ØMQ.")
 (define-public cppzmq
   (package
     (name "cppzmq")
-    (version "4.8.1")
+    (version "4.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1407,7 +1407,7 @@ between different versions of ØMQ.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0zzq20wzk5grshxfqhqgqqfwb38w3k83r821isvyaxghsglpwks3"))
+                "1074316b2n2sbvamnnm8c0p9s0xw2m0g84i9pac02vqbaxbmldqx"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
