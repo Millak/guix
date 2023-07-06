@@ -1426,7 +1426,7 @@ files contain direct mappings of the abstractions provided by the ØMQ C API.")
 (define-public libnatpmp
   (package
     (name "libnatpmp")
-    (version "20150609")
+    (version "20230423")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1434,7 +1434,7 @@ files contain direct mappings of the abstractions provided by the ØMQ C API.")
                     name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1c1n8n7mp0amsd6vkz32n8zj3vnsckv308bb7na0dg0r8969rap1"))))
+                "0w7wvf4yi8qv659dg9d3ndqvh3bqhgm21gd135spwhq6hhnfv106"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
