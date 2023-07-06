@@ -9698,7 +9698,7 @@ differently labelled data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04gii2ciyvybifl8kxqqmhznha80l3fd8qcr5zshrn9n6js5322c"))))
+        (base32 "04kr1b28p5j7h48g32cldkg87xcmxnmd4kspygkfs7a4amihpi66"))))
     (properties `((upstream-name . "Pando")))
     (build-system r-build-system)
     (propagated-inputs
