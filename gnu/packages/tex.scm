@@ -11624,13 +11624,10 @@ required: automatic sectioning and pagination, spell checking and so forth.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "doc/latex/media9/"
-                   "source/latex/media9/files/"
-                   "source/latex/media9/players/"
-                   "tex/latex/media9/javascript/"
-                   "tex/latex/media9/players/")
+             (list "doc/latex/media9/" "source/latex/media9/"
+                   "tex/latex/media9/")
              (base32
-              "03m59icz29sdp50wpl831pl67q9m6kzpq5fzx4jix50z7cmqvfrm")))
+              "1hzwan5y199a6za32h7bn653f2pzd91z9idrq8xdz6fjhns3fcdr")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/media9")
