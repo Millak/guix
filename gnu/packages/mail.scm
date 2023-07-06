@@ -1208,15 +1208,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.3")
+    (version "1.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/djcb/mu/releases/download/v"
                            version "/mu-" version ".tar.xz"))
        (sha256
-        (base32
-         "0pr4w2afhansi151lx3145rsaf3gxfjx21y26p8jfg0nnvy70ff8"))))
+        (base32 "1v20fbpg5pd8p0i6lhc4bnx8903hj5jaqan65cmj2hnlm9j7iflf"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1234,14 +1233,6 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                            (guix build emacs-utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-build-system
-            (lambda _
-              (substitute* "lib/meson.build"
-                (("dependencies: \\[ lib_mu_message_dep" m)
-                 (string-append m ", thread_dep")))
-              (substitute* "lib/utils/meson.build"
-                (("dependencies: \\[glib_dep" m)
-                 (string-append m ", thread_dep")))))
           (add-after 'unpack 'patch-bin-references
             (lambda _
               (substitute* '("guile/tests/test-mu-guile.cc"
