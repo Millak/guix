@@ -49,11 +49,17 @@
   (port avahi-service-port)
   (txt avahi-service-txt))
 
+(define never
+  ;; Never true.
+  (const #f))
+
 (define* (avahi-publish-service-thread name
                                        #:key
                                        type port
-                                       (stop-loop? (const #f))
-                                       (timeout 100)
+                                       (stop-loop? never)
+                                       (timeout (if (eq? stop-loop? never)
+                                                    #f
+                                                    500))
                                        (txt '()))
   "Publish the service TYPE using Avahi, for the given PORT, on all interfaces
 and for all protocols. Also, advertise the given TXT record list.
@@ -89,10 +95,6 @@ when STOP-LOOP? procedure returns true."
     (close-port socket)
     ip))
 
-(define never
-  ;; Never true.
-  (const #f))
-
 (define* (avahi-browse-service-thread proc
                                       #:key
                                       types
@@ -101,7 +103,7 @@ when STOP-LOOP? procedure returns true."
                                       (stop-loop? never)
                                       (timeout (if (eq? stop-loop? never)
                                                    #f
-                                                   100)))
+                                                   500)))
   "Browse services which type is part of the TYPES list, using Avahi.  The
 search is restricted to services with the given FAMILY.  Each time a service
 is found or removed, PROC is called and passed as argument the corresponding
