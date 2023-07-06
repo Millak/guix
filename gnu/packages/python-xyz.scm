@@ -7219,18 +7219,23 @@ with Python.")
 (define-public python-pygments
   (package
     (name "python-pygments")
-    (version "2.12.0")
+    (version "2.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Pygments" version))
        (sha256
         (base32
-         "1sr6iqh21xi6p8aba4wa9pqfhjbbpcvn9jcsx0ggy4lniw8idcay"))))
-    (build-system python-build-system)
+         "0p3p28fif7m2w5mkd0z99zk9xwgrs3m61x85415qk0fl3ly4vkla"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Tests require sphinx, which depends on this.
-     '(#:tests? #f))
+     (list
+      #:test-flags
+      ;; Some tests require sphinx, which depends on this, so we only run
+      ;; basic tests.
+      '(list "--ignore-glob=tests/*/*")))
+    (native-inputs
+     (list python-pytest))
     (home-page "https://pygments.org/")
     (synopsis "Syntax highlighting")
     (description
