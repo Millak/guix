@@ -10259,7 +10259,8 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
      (list (texlive-updmap.cfg
             (list texlive-infwarerr
                   texlive-kvoptions
-                  texlive-pdftexcmds))
+                  texlive-pdftexcmds
+                  texlive-preprint))
            which))
     (propagated-inputs
      (list hevea))
