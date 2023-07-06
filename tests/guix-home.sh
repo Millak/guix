@@ -1,7 +1,7 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 # Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-# Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -94,6 +94,9 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
                    (home-bash-extension
                     (environment-variables
                       '(("PS1" . "$GUIX_ENVIRONMENT λ ")))
+                    (aliases
+                      `(("run" . "guix shell")
+                        ("path" . ,(literal-string "echo $PATH"))))
                     (bashrc
                      (list
                       (plain-file
@@ -149,6 +152,8 @@ EOF
     test -d "${HOME}/.guix-home"
     test -h "${HOME}/.bash_profile"
     test -h "${HOME}/.bashrc"
+    grep 'alias run="guix shell"' "$HOME/.bashrc"
+    grep "alias path='echo \$PATH'" "$HOME/.bashrc"
     test "$(tail -n 2 "${HOME}/.bashrc")" == "\
 # dot-bashrc test file for guix home
 # the content of bashrc-test-config.sh"

@@ -53,6 +53,7 @@
             literal-string?
             literal-string-value
 
+            with-shell-quotation-bindings
             environment-variable-shell-definitions
             home-files-directory
             xdg-configuration-files-directory
@@ -183,11 +184,10 @@ configuration files that the user has declared in their
   literal-string?
   (str literal-string-value))
 
-(define (environment-variable-shell-definitions variables)
-  "Return a gexp that evaluates to a list of POSIX shell statements defining
-VARIABLES, a list of environment variable name/value pairs.  The returned code
-ensures variable values are properly quoted."
-  #~(let* ((quote-string
+(define (with-shell-quotation-bindings exp)
+  "Insert EXP, a gexp, in a lexical environment providing the
+'shell-single-quote' and 'shell-double-quote' bindings."
+#~(let* ((quote-string
             (lambda (value quoted-chars)
               (list->string (string-fold-right
                              (lambda (chr lst)
@@ -206,24 +206,31 @@ ensures variable values are properly quoted."
               ;; Single-quote VALUE to enter a literal string.
               (string-append "'" (quote-string value '(#\'))
                              "'"))))
-      (string-append
-       #$@(map (match-lambda
-                 ((key . #f)
-                  "")
-                 ((key . #t)
-                  #~(string-append "export " #$key "\n"))
-                 ((key . (or (? string? value)
-                             (? file-like? value)
-                             (? gexp? value)))
-                  #~(string-append "export " #$key "="
-                                   (shell-double-quote #$value)
-                                   "\n"))
-                 ((key . (? literal-string? value))
-                  #~(string-append "export " #$key "="
-                                   (shell-single-quote
-                                    #$(literal-string-value value))
-                                   "\n")))
-               variables))))
+      #$exp))
+
+(define (environment-variable-shell-definitions variables)
+  "Return a gexp that evaluates to a list of POSIX shell statements defining
+VARIABLES, a list of environment variable name/value pairs.  The returned code
+ensures variable values are properly quoted."
+  (with-shell-quotation-bindings
+   #~(string-append
+      #$@(map (match-lambda
+                ((key . #f)
+                 "")
+                ((key . #t)
+                 #~(string-append "export " #$key "\n"))
+                ((key . (or (? string? value)
+                            (? file-like? value)
+                            (? gexp? value)))
+                 #~(string-append "export " #$key "="
+                                  (shell-double-quote #$value)
+                                  "\n"))
+                ((key . (? literal-string? value))
+                 #~(string-append "export " #$key "="
+                                  (shell-single-quote
+                                   #$(literal-string-value value))
+                                  "\n")))
+              variables))))
 
 (define (environment-variables->setup-environment-script vars)
   "Return a file that can be sourced by a POSIX compliant shell which

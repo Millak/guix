@@ -313,16 +313,24 @@ source ~/.profile
 ;;;
 
 (define (bash-serialize-aliases field-name val)
-  #~(string-append
-     #$@(map
-         (match-lambda
-           ((key . #f)
-            "")
-           ((key . #t)
-            #~(string-append "alias " #$key "\n"))
-           ((key . value)
-            #~(string-append "alias " #$key "=\"" #$value "\"\n")))
-         val)))
+  (with-shell-quotation-bindings
+   #~(string-append
+      #$@(map
+          (match-lambda
+            ((key . #f)
+             "")
+            ((key . #t)
+             #~(string-append "alias " #$key "\n"))
+            ((key . (? literal-string? value))
+             #~(string-append "alias " #$key "="
+                              (shell-single-quote
+                               #$(literal-string-value value))
+                              "\n"))
+            ((key . value)
+             #~(string-append "alias " #$key "="
+                              (shell-double-quote #$value)
+                              "\n")))
+          val))))
 
 (define-configuration home-bash-configuration
   (package
