@@ -11422,8 +11422,8 @@ well as completely new features.")
 
 (define-public emacs-dumbparens
   ;; There are no releases.
-  (let ((commit "18b668772f25e5f7b62c0a000b8169eaf7515057")
-        (revision "0"))
+  (let ((commit "59bb5aeb85bdc0772a7a21d1194be87aae6f2b7b")
+        (revision "1"))
     (package
       (name "emacs-dumbparens")
       (version (git-version "0" revision commit))
@@ -11432,17 +11432,17 @@ well as completely new features.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/raxod502/dumbparens")
+           (url "https://github.com/radian-software/dumbparens")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0xv2yzjzq2450z007jppf86knnwzb2s3sxvqyk1yp6qs9mgrmnyp"))))
+          (base32 "0c5zw9qcq5n33212p8fcnjvgn6z582178dnv0jhnrl887h5xr9w2"))))
       (build-system emacs-build-system)
       (arguments
        (list
         #:tests? #t
         #:test-command #~(list "make" "test")))
-      (home-page "https://github.com/raxod502/dumbparens/")
+      (home-page "https://github.com/radian-software/dumbparens")
       (synopsis "Minor mode that provides improvements on Smartparens")
       (description
        "@code{emacs-dumbparens} is a minor mode for Emacs that deals with parens
