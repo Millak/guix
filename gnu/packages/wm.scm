@@ -877,9 +877,9 @@ used on each workspace.  Xinerama is fully supported, allowing windows to be
 tiled on several screens.")
     (license license:bsd-3)))
 
-(define-public xmobar
+(define-public ghc-xmobar
   (package
-    (name "xmobar")
+    (name "ghc-xmobar")
     (version "0.46")
     (source (origin
               (method url-fetch)
@@ -896,17 +896,18 @@ tiled on several screens.")
            ghc-alsa-mixer
            ghc-dbus
            ghc-hinotify
-           ghc-http
+           ghc-http-client-tls
            ghc-http-conduit
            ghc-http-types
-           ghc-iwlib
            ghc-libmpd
            ghc-netlink
+           ghc-cereal
            ghc-old-locale
            ghc-parsec-numbers
            ghc-regex-compat
            ghc-temporary
            ghc-timezone-olson
+           ghc-timezone-series
            ghc-x11
            ghc-x11-xft
            ghc-cairo
@@ -914,18 +915,35 @@ tiled on several screens.")
            libxpm))
     (arguments
      `(#:configure-flags (list "--flags=all_extensions")
-       ;; Haddock documentation is for the library.
-       #:haddock? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'register 'remove-libraries
+         (add-after 'install 'remove-binaries
              (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib"))))
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/bin"))))
          (add-before 'build 'patch-test-shebang
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "test/Xmobar/Plugins/Monitors/AlsaSpec.hs"
                (("/bin/bash") (which "bash"))))))))
     (home-page "https://xmobar.org")
+    (synopsis "Haskell library for minimalistic text based status bars")
+    (description
+     "@code{ghc-xmobar} is the haskell library that @code{xmobar} is based on.
+It can be used to extend @code{xmobar} with other Haskell code.")
+    (license license:bsd-3)))
+
+(define-public xmobar
+  (package
+    (inherit ghc-xmobar)
+    (name "xmobar")
+    (inputs
+     (list ghc-xmobar
+           libxpm))
+    (arguments
+     `(#:configure-flags (list "--flags=all_extensions" "exe:xmobar")
+       ;; Haddock documentation is for the library.
+       #:haddock? #f
+       ;; Tests are for the library.
+       #:tests? #f))
     (synopsis "Minimalistic text based status bar")
     (description
      "@code{xmobar} is a lightweight, text-based, status bar written in
