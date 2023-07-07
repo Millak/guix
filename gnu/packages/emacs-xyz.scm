@@ -3952,31 +3952,32 @@ as a library for other Emacs packages.")
     ;; We use 'emacs' because AUCTeX requires dbus at compile time
     ;; ('emacs-minimal' does not provide dbus).
     (arguments
-     `(#:emacs ,emacs
-       #:include '("\\.el$" "^images/" "^latex/" "\\.info$")
-       #:exclude '("^tests/" "^latex/README")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (emacs-substitute-variables "preview.el"
-               ("preview-gs-command"
-                (search-input-file inputs "/bin/gs")))
-             ;; Leave "dvipng" and "dvips" executables as-is.  Otherwise, this
-             ;; would require to add a TeX Live system to inputs, which is
-             ;; much for an Emacs package.
-             (substitute* "preview.el"
-               (("\"pdf2dsc ")
-                (let ((pdf2dsc (search-input-file inputs "/bin/pdf2dsc")))
-                  (string-append "\"" pdf2dsc " "))))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc-dir (string-append out "/share/doc/" ,name "-" ,version)))
-               (with-directory-excursion "doc"
-                 (setenv "HOME" (getenv  "TMPDIR")) ; for mktextfm
-                 (invoke "pdftex" "tex-ref")
-                 (install-file "tex-ref.pdf" doc-dir))))))))
+     (list
+      #:emacs emacs
+      #:include #~(cons* "^images/" "^latex/" %default-include)
+      #:exclude #~(cons "^latex/README" %default-exclude)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "preview.el"
+                ("preview-gs-command"
+                 (search-input-file inputs "/bin/gs")))
+              ;; Leave "dvipng" and "dvips" executables as-is.  Otherwise, this
+              ;; would require to add a TeX Live system to inputs, which is
+              ;; much for an Emacs package.
+              (substitute* "preview.el"
+                (("\"pdf2dsc ")
+                 (let ((pdf2dsc (search-input-file inputs "/bin/pdf2dsc")))
+                   (string-append "\"" pdf2dsc " "))))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((doc-dir (string-append #$output "/share/doc/"
+                                            #$name "-" #$version)))
+                (with-directory-excursion "doc"
+                  (setenv "HOME" (getenv  "TMPDIR")) ; for mktextfm
+                  (invoke "pdftex" "tex-ref")
+                  (install-file "tex-ref.pdf" doc-dir))))))))
     (native-inputs
      (list perl (texlive-updmap.cfg)))
     (inputs
