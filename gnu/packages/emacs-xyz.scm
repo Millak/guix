@@ -21055,9 +21055,6 @@ federated blogging platform WriteFreely.")
               ;; XXX: Skip failing tests.
               (substitute* "testing/lisp/test-ob-shell.el"
                 (("ob-shell/remote-with-stdin-or-cmdline .*" all)
-                 (string-append all "  (skip-unless nil)\n")))
-              (substitute* "testing/lisp/test-org.el"
-                (("test-org/org-(encode-time|time-string-to-time) .*" all)
                  (string-append all "  (skip-unless nil)\n")))))
           (replace 'build
             (lambda args
@@ -21084,7 +21081,7 @@ federated blogging platform WriteFreely.")
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
     (native-inputs
-     (list texinfo))
+     (list texinfo tzdata))
     (home-page "https://orgmode.org/")
     (synopsis "Outline-based notes management and organizer")
     (description "Org is an Emacs mode for keeping notes, maintaining TODO
