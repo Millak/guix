@@ -35807,6 +35807,29 @@ uncluttered design pattern to achieve optimal focus and readability for code
 syntax highlighting and UI components.")
     (license license:expat)))
 
+(define-public emacs-weyland-yutani-theme
+  (let ((commit "e89a63a62e071180c9cdd9067679fadc3f7bf796")
+        (revision "0"))
+    (package
+      (name "emacs-weyland-yutani-theme")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jstaursky/weyland-yutani-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gxlz9b7fvbjkqxsyb4l75g7jsxyms0i1vpnb6y499hl115akcaz"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/jstaursky/weyland-yutani-theme")
+      (synopsis "Emacs theme based on the Alien movie franchise")
+      (description
+       "Weyland Yutani is a dark Emacs theme based on the Alien movie
+franchise.")
+      (license license:gpl3+))))
+
 (define-public emacs-janet-mode
   (let ((commit "2f5bcabcb6953e1ed1926ba6a2328c453e8b4ac7"))
     (package
