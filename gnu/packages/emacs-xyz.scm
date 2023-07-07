@@ -3962,28 +3962,23 @@ as a library for other Emacs packages.")
              (emacs-substitute-variables "preview.el"
                ("preview-gs-command"
                 (search-input-file inputs "/bin/gs")))
+             ;; Leave "dvipng" and "dvips" executables as-is.  Otherwise, this
+             ;; would require to add a TeX Live system to inputs, which is
+             ;; much for an Emacs package.
              (substitute* "preview.el"
-               (("\"dvipng ")
-                (let ((dvipng (search-input-file inputs "/bin/dvipng")))
-                  (string-append "\"" dvipng " ")))
-               (("\"dvips ")
-                (let ((dvips (search-input-file inputs "/bin/dvips")))
-                  (string-append "\"" dvips " ")))
                (("\"pdf2dsc ")
                 (let ((pdf2dsc (search-input-file inputs "/bin/pdf2dsc")))
                   (string-append "\"" pdf2dsc " "))))))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (etc-dir (string-append out "/share/" ,name "/"
-                                            ,version "/etc")))
+                    (doc-dir (string-append out "/share/doc/" ,name "-" ,version)))
                (with-directory-excursion "doc"
                  (setenv "HOME" (getenv  "TMPDIR")) ; for mktextfm
                  (invoke "pdftex" "tex-ref")
-                 (install-file "tex-ref.pdf"
-                               (string-append etc-dir "/refcards")))))))))
+                 (install-file "tex-ref.pdf" doc-dir))))))))
     (native-inputs
-     (list perl))
+     (list perl (texlive-updmap.cfg)))
     (inputs
      (list ghostscript))
     (home-page "https://www.gnu.org/software/auctex/")
