@@ -2264,41 +2264,49 @@ building design matrices.")
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statsmodels" version))
        (sha256
-        (base32 "0sbsyxgpzhys5padhkhrj71z4i1q41sm938pz0x8ff6jjvcchvh0"))
+        (base32 "1927ysv7m46m1x3wz05i0s3r5x0nasmidf2yy54djrp9i7bcfxb8"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (for-each delete-file (find-files "." "\\.c$"))))))
-    (build-system python-build-system)
+        '(for-each delete-file (find-files "." "\\.c$")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; The test suite is very large and rather brittle.  Tests often fail
-       ;; because of minor changes in dependencies that upstream hasn't fixed
-       ;; in a new release.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-matplotlib-backend-to-agg
-          (lambda _
-            ;; Set the matplotlib backend to Agg to avoid problems using the
-            ;; GTK backend without a display.
-            (substitute* (append (find-files "statsmodels/graphics/tests" "\\.py")
-                                 '("statsmodels/tsa/vector_ar/tests/test_var.py"
-                                   "statsmodels/duration/tests/test_survfunc.py"))
-              (("import matplotlib\\.pyplot as plt" line)
-               (string-append "import matplotlib;matplotlib.use('Agg');"
-                              line)))
-            #t)))))
+     (list
+      ;; The test suite is very large and rather brittle.  Tests often fail
+      ;; because of minor changes in dependencies that upstream hasn't fixed
+      ;; in a new release.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-matplotlib-backend-to-agg
+            (lambda _
+              ;; Set the matplotlib backend to Agg to avoid problems using the
+              ;; GTK backend without a display.
+              (substitute* (append (find-files "statsmodels/graphics/tests" "\\.py")
+                                   '("statsmodels/tsa/vector_ar/tests/test_var.py"
+                                     "statsmodels/duration/tests/test_survfunc.py"))
+                (("import matplotlib\\.pyplot as plt" line)
+                 (string-append "import matplotlib;matplotlib.use('Agg');"
+                                line))))))))
     (propagated-inputs
-     (list python-numpy python-scipy python-pandas python-patsy
-           python-matplotlib))
+     (list python-numpy python-packaging python-pandas python-patsy
+           python-scipy))
     (native-inputs
-     (list python-cython python-nose python-sphinx))
+     (list python-colorama
+           python-cython
+           python-flake8
+           python-isort
+           python-joblib
+           python-matplotlib
+           python-pytest
+           python-pytest-randomly
+           python-pytest-xdist
+           python-setuptools-scm))
     (home-page "https://statsmodels.sourceforge.net/")
     (synopsis "Statistical modeling and econometrics in Python")
     (description
