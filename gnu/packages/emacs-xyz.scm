@@ -5485,24 +5485,24 @@ allows easily move between them.")
     (license license:gpl3+)))
 
 (define-public emacs-undo-fu
-  ;; There are no tagged releases upstream on gitlab, instead we are using
+  ;; There are no tagged releases upstream, instead we are using
   ;; the most recent commit.
-  (let ((commit "c0806c1903c5a0e4c69b6615cdc3366470a9b8ca")
+  (let ((commit "0e22308de8337a9291ddd589edae167d458fbe77")
         (revision "0"))
     (package
       (name "emacs-undo-fu")
-      (version (git-version "0.4" revision commit))
+      (version (git-version "0.5" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://gitlab.com/ideasman42/emacs-undo-fu")
+               (url "https://codeberg.org/ideasman42/emacs-undo-fu")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1n594aakmcgyl7qbda86v4wsx8clm62ypiv3h559xz3x72h7mr3j"))))
+          (base32 "18c8lq4h3i5rzz8jwwszmq9ga1m7jk3sbrh76sgrsbdawpap3ak5"))))
       (build-system emacs-build-system)
-      (home-page "https://gitlab.com/ideasman42/emacs-undo-fu")
+      (home-page "https://codeberg.org/ideasman42/emacs-undo-fu")
       (synopsis "Simple, stable linear undo with redo for Emacs")
       (description
        "This is a light weight wrapper for Emacs built-in undo system,
