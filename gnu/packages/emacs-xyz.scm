@@ -5511,34 +5511,38 @@ allowing you to visit all previous states of the document if you need.")
       (license license:gpl3+))))
 
 (define-public emacs-undo-fu-session
-  ;; There are no tagged releases upstream on gitlab, instead we are using the
+  ;; There are no tagged releases upstream, instead we are using the
   ;; most recent commit.
-  (let ((commit "56cdd3538a058c6916bdf2d9010c2179f2505829")
+  (let ((commit "a6c4f73bc22401fd36e0f2fd4fe058bb28566d84")
         (revision "0"))
     (package
       (name "emacs-undo-fu-session")
-      (version (git-version "0.2" revision commit))
+      (version (git-version "0.6" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://gitlab.com/ideasman42/emacs-undo-fu-session")
+               (url "https://codeberg.org/ideasman42/emacs-undo-fu-session")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "04wq1alrzzlidcb4mjb5j7pg68pks1vgv7kvvmi6dzb3l602mb2a"))))
+          (base32 "03pb88bi5z4f01972jbk9z6w9iqamqflfp20mih29ghvbiyn6ahj"))))
       (build-system emacs-build-system)
       (arguments
        (list
         #:tests? #t
-        #:test-command #~(list "emacs" "--batch" "-l" "undo-fu-session.el"
-                               "-l" "undo-fu-session-test.el")
+        ;; The tests require temp files handling which a recent change disabled
+        ;; by default. We re-enable it here to make tests work again.
+        #:test-command #~(list "emacs" "--batch" "--eval"
+                               "(setq undo-fu-session-ignore-temp-files nil)"
+                               "-l" "tests/undo-fu-session-test.el"
+                               "-f" "undo-fu-session-test-run-all")
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'check 'set-home
               (lambda _
                 (setenv "HOME" "/tmp"))))))
-      (home-page "https://gitlab.com/ideasman42/emacs-undo-fu-session")
+      (home-page "https://codeberg.org/ideasman42/emacs-undo-fu-session")
       (synopsis "Save & recover undo steps between Emacs sessions")
       (description "This package writes undo/redo information upon file save
 which is restored where possible when the file is loaded again.")
