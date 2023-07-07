@@ -2111,7 +2111,7 @@ that parenthetically inclined game developers need to make 2D (and eventually
 @item keyboard, mouse, controller input
 @item REPL-driven development model
 @end enumerate\n")
-    (license license:gpl3+)))
+    (license license:asl2.0)))
 
 (define-public bennu-game-development
   (package
