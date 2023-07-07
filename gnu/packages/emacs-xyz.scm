@@ -32107,23 +32107,24 @@ Helm and Ivy.")
     (license license:gpl3+)))
 
 (define-public emacs-spell-fu
-  ;; There are no tagged releases upstream on gitlab, instead we are using the
+  ;; There are no tagged releases upstream, instead we are using the
   ;; most recent commit.
-  (let ((commit "50be652a6ec8590c3098f46094a92213623349c1") (revision "0"))
+  (let ((commit "67a26b7a00449ee8ef3a80ab662c93a32adef679")
+        (revision "1"))
     (package
       (name "emacs-spell-fu")
       (version (git-version "0.3" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://gitlab.com/ideasman42/emacs-spell-fu")
+                      (url "https://codeberg.org/ideasman42/emacs-spell-fu")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0n7qwnirvkh2aprb7l1wj9rywdsn33a7s32716m3afcvy7z9pyh4"))))
+                  "0gbfzd4zpqn0kbag3a6axc7y17r5qgwgpprsd1x5hnixji1vzhxr"))))
       (build-system emacs-build-system)
-      (home-page "https://gitlab.com/ideasman42/emacs-spell-fu")
+      (home-page "https://codeberg.org/ideasman42/emacs-spell-fu")
       (synopsis "Fast highlighting of misspelled words")
       (description
        "This is a light weight spell checker for Emacs,
