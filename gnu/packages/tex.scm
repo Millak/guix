@@ -14244,13 +14244,10 @@ and write them to an external XML file at the end of the document.")
     (source (texlive-origin
              name version
              (list "bibtex/bib/biblatex/biblatex/"
-                   "bibtex/bst/biblatex/"
-                   "doc/latex/biblatex/"
-                   "tex/latex/biblatex/bbx/"
-                   "tex/latex/biblatex/cbx/"
-                   "tex/latex/biblatex/lbx/")
+                   "bibtex/bst/biblatex/" "doc/latex/biblatex/"
+                   "tex/latex/biblatex/")
              (base32
-              "0s4i9ck77cldf37j01pgjm6qznfwkmy0vmrcdichq8bvzx8w89zg")))
+              "08wvsdwcixj50kklv4zwjs9rpjmhwzxxd242hvyi6lzkd7r0fnq4")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
