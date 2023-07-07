@@ -665,7 +665,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
               (sha256
                (base32
                 "1y5x8vxdgsqdqlsvq01mn8lmw53fqairkhvhhjx83hjva0m4id2h"))))
-    (build-system  gnu-build-system)
+    (build-system gnu-build-system)
     (native-inputs
      (list bison
            dtc
