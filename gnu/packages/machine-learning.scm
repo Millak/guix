@@ -1489,6 +1489,73 @@ number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
 
+(define-public python-tslearn
+  (package
+    (name "python-tslearn")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tslearn-team/tslearn")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fhs8c28hdqsyj8kdhzrmrxrh4w92x6nf3gm026xapp9divvljd6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; This one fails because of a difference in accuracy.
+              "not test_all_estimators[LearningShapelets-LearningShapelets]"
+              ;; XXX: It's embarrassing to disable these two, but the truth is
+              ;; that there's only so much we can do to force this package to
+              ;; work with Tensorflow 1.9.  It's still worth having this
+              ;; package, because it can be used without the Tensorflow
+              ;; backend.
+              ;; TypeError: cannot pickle '_thread.RLock' object
+              " and not test_shapelets"
+              ;; TypeError: Expected binary or unicode string, got 2
+              " and not test_serialize_shapelets"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "tslearn/tests/sklearn_patches.py"
+               (("_pairwise_estimator_convert_X")
+                "_enforce_estimator_tags_X")
+               (("pairwise_estimator_convert_X\\(([^,]+), ([^,\\)]+)" _ a b)
+                (string-append "pairwise_estimator_convert_X(" b ", " a)))
+             (substitute* "tslearn/tests/test_shapelets.py"
+               (("tf.optimizers.Adam")
+                "tf.keras.optimizers.Adam"))
+             (substitute* "tslearn/shapelets/shapelets.py"
+               (("tf.keras.utils.set_random_seed")
+                "tf.set_random_seed")
+               (("def __call__\\(self, shape, dtype=None\\):")
+                "def __call__(self, shape, dtype=None, partition_info=None):")
+               (("tf.math.is_finite")
+                "tf.is_finite")))))))
+    (propagated-inputs (list python-cesium
+                             python-h5py
+                             python-joblib
+                             python-numba
+                             python-numpy
+                             python-pandas
+                             python-scipy
+                             python-scikit-learn
+                             tensorflow
+                             python-wheel))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/tslearn-team/tslearn")
+    (synopsis "Machine learning toolkit for time series data")
+    (description "This is a Python library for time series data mining.
+It provides tools for time series classification, clustering
+and forecasting.")
+    (license license:bsd-2)))
+
 (define-public python-imbalanced-learn
   (package
     (name "python-imbalanced-learn")
