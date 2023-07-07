@@ -25042,8 +25042,8 @@ current upstream.")
     (license license:gpl3+)))
 
 (define-public emacs-scroll-on-drag
-  (let ((commit "888abd04c34753b1fc4b2fe541bc004ebec5c996")
-        (revision "1"))
+  (let ((commit "179c2acecc48d3ceca4b449b2a225d684002bb32")
+        (revision "2"))
     (package
       (name "emacs-scroll-on-drag")
       (version (git-version "0.1" revision commit))
@@ -25051,14 +25051,14 @@ current upstream.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://gitlab.com/ideasman42/emacs-scroll-on-drag.git")
+               (url "https://codeberg.org/ideasman42/emacs-scroll-on-drag")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1si4hdqa3jw1inbyh3wb3i5i9grbms1nwky3vyk9zg7iznwm8a9p"))))
+           "0v7d4mrsvckbb66kvskfb9rfrhg8p0zbkr6jqdspfl1p3x8zs2nk"))))
       (build-system emacs-build-system)
-      (home-page "https://gitlab.com/ideasman42/emacs-scroll-on-drag")
+      (home-page "https://codeberg.org/ideasman42/emacs-scroll-on-drag")
       (synopsis "Interactive scrolling")
       (description "This package permits scrolling at increasing speeds based
 on drag distance.")
