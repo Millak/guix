@@ -678,7 +678,7 @@ error reporting, better tracing, profiling, and a debugger.")
     (inputs
      (list gdb capnproto python python-pexpect zlib))
     (home-page "https://rr-project.org/")
-    (synopsis "Record and reply debugging framework")
+    (synopsis "Record and replay debugging framework")
     (description
      "rr is a lightweight tool for recording, replaying and debugging
 execution of applications (trees of processes and threads).  Debugging extends
