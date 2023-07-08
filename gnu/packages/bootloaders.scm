@@ -655,7 +655,8 @@ tree binary files.  These are board description files used by Linux and BSD.")
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
                      %u-boot-rk3399-enable-emmc-phy-patch
-                     (search-patch "u-boot-fix-build-python-3.10.patch")))
+                     (search-patch "u-boot-fix-build-python-3.10.patch")
+                     (search-patch "u-boot-fix-u-boot-lib-build.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
@@ -840,6 +841,26 @@ CONFIG_TOOLS_LIBCRYPTO=n")
                   (package-description u-boot)
                   "  This package provides board-independent tools "
                   "of U-Boot."))))
+
+(define-public python-u-boot-pylib
+  (package
+    (inherit u-boot)
+    (name "python-u-boot-pylib")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "tools/u_boot_pylib")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./u_boot_pylib")))))))
+    (synopsis "U-Boot Python library")
+    (description "This package provides common Python code used by some of the
+commands part of the U-Boot project, such as Patman.")))
 
 ;;; This is packaged separately, as it can be used in other contexts than for
 ;;; U-Boot development.
