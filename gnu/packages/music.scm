@@ -7048,14 +7048,14 @@ midi devices to JACK midi devices.")
 (define-public opustags
   (package
     (name "opustags")
-    (version "1.6.0")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/fmang/opustags")
                     (commit version)))
               (sha256
-               (base32 "1wsfw713rhi2gg5xc04cx5i31hlw0l3wdflj3r1y8w45bdk6ag1z"))
+               (base32 "1f1bj0ng89plivdwpjc8qkfy8nn1kw5gqnbc74scigz7mw9z443i"))
               (file-name (git-file-name name version))))
     (arguments
      (list
@@ -7073,9 +7073,14 @@ midi devices to JACK midi devices.")
                     (perl-exporter-tiny-lib
                       (string-append #$(this-package-native-input "perl-exporter-tiny")
                                      "/lib/perl5/site_perl/"
+                                     #$(package-version perl)))
+                    (perl-test-deep-lib
+                      (string-append #$(this-package-native-input "perl-test-deep")
+                                     "/lib/perl5/site_perl/"
                                      #$(package-version perl))))
                (setenv "PERL5LIB" (string-append perl-list-moreutils-lib ":"
-                                                 perl-exporter-tiny-lib))))))))
+                                                 perl-exporter-tiny-lib ":"
+                                                 perl-test-deep-lib))))))))
     (build-system cmake-build-system)
     (inputs
       (list libogg))
@@ -7084,6 +7089,7 @@ midi devices to JACK midi devices.")
             ffmpeg
             perl-exporter-tiny
             perl-list-moreutils
+            perl-test-deep
             perl-test-harness))
     (synopsis "Ogg Opus tags editor")
     (description "@code{opustags} is an Ogg Opus tag editor.  It reads and edits
