@@ -35561,6 +35561,7 @@ interactive commands for handling Lojban text.")
          (uri (git-reference
                (url "https://github.com/seanfarley/xonsh-mode")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "0lfi2372clkkzi4a940fwparsfhxxzb7bmysfd50n1myakgldri5"))))
       (build-system emacs-build-system)
