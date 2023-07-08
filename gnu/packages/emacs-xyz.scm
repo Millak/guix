@@ -3377,6 +3377,7 @@ code completion and project management support.")
               (uri (git-reference
                     (url "https://github.com/emacscollective/auto-compile")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0p2znbid7a32shgh1zidrr53hv79dhw1jcjaad2aglqfqjz7a3qn"))))
