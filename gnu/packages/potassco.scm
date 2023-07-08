@@ -232,6 +232,7 @@ satisfiability checking (SAT).")
               (uri (git-reference
                     (url "https://github.com/santifa/pasp-mode")
                     (commit commit)))
+              (file-name (git-file-name name version))
               (patches
                (search-patches "emacs-pasp-mode-quote-file-names.patch"))
               (sha256
