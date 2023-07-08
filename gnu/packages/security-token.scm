@@ -406,12 +406,12 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
     (inputs
      (list gengetopt perl pcsc-lite openssl))
     (native-inputs
-     (list doxygen
+     (list check
+           doxygen
            graphviz
            help2man
-           check
-           texlive-bin
-           pkg-config))
+           pkg-config
+           (texlive-updmap.cfg)))
     (home-page "https://developers.yubico.com/yubico-piv-tool/")
     (synopsis "Interact with the PIV application on a YubiKey")
     (description
