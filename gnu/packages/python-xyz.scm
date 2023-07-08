@@ -10847,9 +10847,11 @@ computing.")
            python-sphinx
            python-sphinx-rtd-theme
            texinfo
-           texlive-bin
-           texlive-polyglossia
-           texlive-xindy))))
+           (texlive-updmap.cfg
+            (list texlive-latexmk
+                  texlive-polyglossia
+                  texlive-xetex
+                  texlive-xindy))))))
 
 (define-public python-urwid
   (package
