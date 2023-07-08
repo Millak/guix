@@ -1226,6 +1226,7 @@ buffer.")
               (uri (git-reference
                     (url "https://github.com/alphapapa/prism.el")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0n2gf7302hqdnhsax1y3ahksfmmpd8cmiv1zgb7rjg8qhcs0iqp2"))))
