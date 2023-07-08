@@ -26462,6 +26462,7 @@ incompatible versions of it.")
                 (uri (git-reference
                       (url "https://github.com/charlesroelli/org-board")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "1kryrg988c3sbxyp1sdgc6xdv2iz6kiflpzn2rw4z3l4grzab53b"))))
