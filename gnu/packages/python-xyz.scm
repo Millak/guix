@@ -7247,13 +7247,15 @@ capabilities.")
            python-sphinx-4
            python-sphinx-panels
            texinfo
-           texlive-bin
-           texlive-cbfonts
-           texlive-cm-super
-           texlive-expdlist
-           texlive-greek-fontenc
-           texlive-polyglossia
-           texlive-xindy))
+           (texlive-updmap.cfg
+            (list texlive-cbfonts
+                  texlive-cm-super
+                  texlive-expdlist
+                  texlive-greek-fontenc
+                  texlive-latexmk
+                  texlive-polyglossia
+                  texlive-xetex
+                  texlive-xindy))))
     (inputs '())
     (propagated-inputs '())
     (synopsis "Documentation for the @code{python-numpy} package")
