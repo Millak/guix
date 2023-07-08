@@ -2994,6 +2994,7 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
               (uri (git-reference
                     (url (string-append "https://github.com/yory8/" name "/"))
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256 (base32
                         "0b9kvj0dif4221dy6c1npknhhjxvbc4kygzhwxjirpwjws0yv6v9"))))
     (build-system go-build-system)
