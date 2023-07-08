@@ -1107,6 +1107,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
               (uri (git-reference
                     (url "https://github.com/bitcoin-core/secp256k1")
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "12wksk7bi3yfzmk1zwh5b6846zcaycqz1w4w4p23apjc8da4jwpn"))))
