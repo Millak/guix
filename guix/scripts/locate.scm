@@ -418,19 +418,24 @@ for each package to insert."
       (()
        entries)
       ((profile . rest)
-       (let* ((manifest (profile-manifest profile))
-              (entries visited
-                       (fold2 (lambda (entry lst visited)
-                                (let ((item (manifest-entry-item entry)))
-                                  (if (set-contains? visited item)
-                                      (values lst visited)
-                                      (values (cons entry lst)
-                                              (set-insert item
-                                                          visited)))))
-                              entries
-                              visited
-                              (manifest-transitive-entries manifest))))
-         (loop visited rest entries))))))
+       (match (false-if-exception (profile-manifest profile))
+         (#f
+          ;; PROFILE's manifest is unreadable for some reason such as an
+          ;; unsupported version.
+          (loop visited rest entries))
+         (manifest
+          (let ((entries visited
+                         (fold2 (lambda (entry lst visited)
+                                  (let ((item (manifest-entry-item entry)))
+                                    (if (set-contains? visited item)
+                                        (values lst visited)
+                                        (values (cons entry lst)
+                                                (set-insert item
+                                                            visited)))))
+                                entries
+                                visited
+                                (manifest-transitive-entries manifest))))
+            (loop visited rest entries))))))))
 
 (define (insert-manifest-entry db entry)
   "Insert a manifest ENTRY into DB."
