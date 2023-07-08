@@ -1164,8 +1164,6 @@ such as:
           (add-before 'build 'defconfig
             (lambda* (#:key make-flags #:allow-other-keys)
               (let ((config-name (string-append #$platform "_defconfig")))
-                (pk 'MAKE-FLAGS: make-flags)
-                                        ;                (error 's)
                 (apply invoke "make" (cons config-name make-flags)))))
           (replace 'install
             (lambda _
