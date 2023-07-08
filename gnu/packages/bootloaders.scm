@@ -876,10 +876,13 @@ commands part of the U-Boot project, such as Patman.")))
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
+          ;; Patman fails to run during 'sanity-check phase, as it needs to be
+          ;; run within a git directory.
+          (delete 'sanity-check)
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "tools/patman"))))))
-    (inputs (list python-pygit2 python-requests))
+    (inputs (list python-pygit2 python-requests python-u-boot-pylib))
     (synopsis "Patch automation tool")
     (description "Patman is a patch automation script which:
 @itemize
