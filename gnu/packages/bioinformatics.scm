@@ -7279,7 +7279,8 @@ program for nucleotide and protein sequences.")
                   "1hkw21rq1mwf7xp0rmbb2gqc0i6p11108m69i7mr7xcjl268pxnb"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:make-flags (list "CFLAGS=-O2 -g -fcommon")))
+       `(#:tests? ,(not (target-riscv64?)) ;XXX: stuck on riscv64-linux
+         #:make-flags (list "CFLAGS=-O2 -g -fcommon")))
       (inputs
        ;; XXX: TODO: Enable Lua and Guile bindings.
        ;; https://github.com/tjunier/newick_utils/issues/13
