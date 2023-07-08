@@ -172,6 +172,7 @@ download.")
               (uri (git-reference
                     (url "https://github.com/elementary/wallpapers/")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256 (base32
                        "0km3h52kapbm8ymwxdxasz80qbgzkfni7981pdyf740wjp7linwb"))))
     (build-system meson-build-system)
