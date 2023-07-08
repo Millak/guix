@@ -21,6 +21,7 @@
 (define-module (gnu packages mastodon)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -94,15 +95,15 @@ Features include:
         (base32 "1xhyz6wi17g4m76lr6qc75q4xnnw7c3dh3d04dg8m5gzk6j0y89x"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags (list "-Ddistro=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'glib-or-gtk-wrap 'symlink-package
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion
-               (string-append (assoc-ref outputs "out") "/bin")
-               (symlink "dev.geopjr.Tuba" "tuba")))))))
+      (list
+        #:glib-or-gtk? #t
+        #:configure-flags #~(list "-Ddistro=true")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'glib-or-gtk-wrap 'symlink-package
+              (lambda _
+                (with-directory-excursion (string-append #$output "/bin")
+                  (symlink "dev.geopjr.Tuba" "tuba")))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin") ; for glib-compile-resources
