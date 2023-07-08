@@ -364,11 +364,12 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-	     (url "https://github.com/emacsmirror/bookmark-plus")
-	     (commit "3db369056a722c42b3eafd10a91831f87d056dfa")))
+             (url "https://github.com/emacsmirror/bookmark-plus")
+             (commit "3db369056a722c42b3eafd10a91831f87d056dfa")))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-	 "0fnq24f597zfr8jj5h3vr87kdil5lhy11m81q6ayqc03qm0jymrf"))))
+         "0fnq24f597zfr8jj5h3vr87kdil5lhy11m81q6ayqc03qm0jymrf"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emacsmirror/bookmark-plus")
     (synopsis "Extensions to the Bookmark library in Emacs")
