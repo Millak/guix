@@ -36,6 +36,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2643,7 +2644,12 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1pkzv75kavkhrbdd2kvq755jyr0vamgrfr7lc33dq3ipkzmqvs2l"))))
+                  "1pkzv75kavkhrbdd2kvq755jyr0vamgrfr7lc33dq3ipkzmqvs2l"))
+                ;; This patch required to build PrusaSlicer 2.6.
+                ;;
+                ;; It is taken from
+                ;; <https://github.com/fltk/nanosvg/commit/abcd277ea45e9098bed752cf9c6875b533c0892f.patch>
+                (patches (search-patches "nanosvg-prusa-slicer.patch"))))
       (build-system cmake-build-system)
       (arguments (list #:tests? #f    ;no test suite
                        #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
