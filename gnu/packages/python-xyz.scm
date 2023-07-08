@@ -11973,11 +11973,11 @@ applications.")
        (list (string-append "--zmq=" (assoc-ref %build-inputs "zeromq")))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-problematic-tests
+         (add-before 'build 'configure
            (lambda _
-             ;; FIXME: The test_draft.TestDraftSockets test fails with:
-             ;;   zmq.error.Again: Resource temporarily unavailable
-             (delete-file "zmq/tests/test_draft.py")))
+             ;; Our zeromq package is built with '--enable-drafts'; also
+             ;; enable draft support for pyzmq so the draft test passes.
+             (setenv "ZMQ_DRAFT_API" "1")))
          (add-before 'check 'build-extensions
            (lambda _
              ;; Cython extensions have to be built before running the tests.
