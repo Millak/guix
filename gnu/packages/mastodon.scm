@@ -33,6 +33,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
@@ -100,16 +101,28 @@ Features include:
         #:configure-flags #~(list "-Ddistro=true")
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'glib-or-gtk-wrap 'symlink-package
+            (add-after 'glib-or-gtk-wrap 'lib-vars-wrap
+              (lambda _
+                (let ((gstvar "GST_PLUGIN_SYSTEM_PATH")
+                      (pixvar "GDK_PIXBUF_MODULE_FILE"))
+                  (wrap-program (string-append #$output "/bin/dev.geopjr.Tuba")
+                    `(,gstvar ":" suffix (,(getenv gstvar)))
+                    `(,pixvar ":" = (,(getenv pixvar)))))))
+            (add-after 'lib-vars-wrap 'symlink-package
               (lambda _
                 (with-directory-excursion (string-append #$output "/bin")
                   (symlink "dev.geopjr.Tuba" "tuba")))))))
     (native-inputs
-     (list gettext-minimal
+     (list gdk-pixbuf ; so pixbuf loader cache (for webp) is generated
+           gettext-minimal
            `(,glib "bin") ; for glib-compile-resources
            pkg-config))
     (inputs
-     (list gtk
+     (list gst-plugins-bad
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
+           gtk
            gtksourceview
            json-glib
            libadwaita
@@ -118,7 +131,8 @@ Features include:
            libsecret
            libwebp
            libxml2
-           vala))
+           vala
+           webp-pixbuf-loader))
     (home-page "https://tuba.geopjr.dev/")
     (synopsis "GTK client for Mastodon")
     (description "Tuba is a GTK client for Mastodon.  It provides a clean,
