@@ -1046,8 +1046,7 @@ using a stylus.")
            libzip
            lua
            poppler
-           portaudio
-           texlive-bin))
+           portaudio))
     (home-page "https://github.com/xournalpp/xournalpp")
     (synopsis "Handwriting notetaking software with PDF annotation support")
     (description "Xournal++ is a hand note taking software written in
