@@ -11567,6 +11567,33 @@ secure hash algorithm for hashing passwords.")
     (home-page "https://github.com/bcrypt-ruby/bcrypt-ruby")
     (license license:expat)))
 
+(define-public ruby-bcrypt-pbkdf
+  (package
+    (name "ruby-bcrypt-pbkdf")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "bcrypt_pbkdf" version))
+              (sha256
+               (base32
+                "0ndamfaivnkhc6hy0yqyk2gkwr6f3bz6216lh74hsiiyk3axz445"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'compile
+                          (lambda _
+                            (invoke "rake" "compile"))))))
+    (native-inputs (list ruby-minitest ruby-rake-compiler
+                         ruby-rake-compiler-dock ruby-rdoc))
+    (synopsis "Reading password encrypted Ed25519 keys in Ruby")
+    (description
+     "This gem implements @samp{bcrypt_pbkdf}, which is a variant of
+PBKDF2 (Password-Based Key Derivation Function 2) with bcrypt-based
+pseudorandom function.  This is currently used by @samp{net-ssh} to
+read password encrypted Ed25519 keys.")
+    (home-page "https://github.com/net-ssh/bcrypt_pbkdf-ruby")
+    (license license:expat)))
+
 (define-public ruby-bio-commandeer
   (package
     (name "ruby-bio-commandeer")
