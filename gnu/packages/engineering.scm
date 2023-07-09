@@ -1302,9 +1302,9 @@ with the kernel and various utilities such as per-cpu counters.")
     (arguments
      '(#:configure-flags '("CFLAGS=-fcommon")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gtk" ,gtk+-2)
-       ("libgnome" ,libgnomeui)))
+     (list pkg-config))
+    (inputs
+     (list gtk+-2 libgnomeui))
     (home-page "https://jcoppens.com/soft/linsmith/index.en.php")
     (synopsis "Smith Charting program")
     (description "LinSmith is a Smith Charting program, mainly designed for
