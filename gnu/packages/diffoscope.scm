@@ -86,59 +86,61 @@
         (base32 "16v6p970kckyv5pa93sj7r5k4b0hgbyralvzddbj73g7srysa02v"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  ;; These tests are broken because our `file` package has a
-                  ;; bug in berkeley-db and wasm file type detection.
-                  (add-after 'unpack 'remove-broken-file-type-detection-test
-                    (lambda _
-                      (delete-file "tests/comparators/test_berkeley_db.py")
-                      (delete-file "tests/comparators/test_wasm.py")))
-                  (add-after 'unpack 'embed-tool-references
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "diffoscope/comparators/utils/compare.py"
-                        (("\\[\"xxd\",")
-                         (string-append "[\"" (which "xxd") "\",")))
-                      (substitute* "diffoscope/diff.py"
-                        (("@tool_required\\(\"diff\"\\)") "")
-                        (("get_tool_name\\(\"diff\"\\)")
-                         (string-append "get_tool_name(\"" (which "diff") "\")")))
-                      (substitute* "diffoscope/comparators/directory.py"
-                        (("@tool_required\\(\"stat\"\\)") "")
-                        (("@tool_required\\(\"getfacl\"\\)") "")
-                        (("\\[\"stat\",")
-                         (string-append "[\"" (which "stat") "\","))
-                        (("\\[\"getfacl\",")
-                         (string-append "[\"" (which "getfacl") "\",")))))
-                  (add-after 'build 'build-man-page
-                    (lambda _
-                      (invoke "make" "-C" "doc")))
-                  (add-before 'check 'writable-test-data
-                    (lambda _
-                      ;; Tests may need write access to tests directory.
-                      (for-each make-file-writable (find-files "tests"))))
-                  (add-before 'check 'fix-failing-test
-                    (lambda _
-                      ;; There is no user name mapping in the build environment.
-                      ;; Pytest made it so much harder than should be necessary,
-                      ;; so I'm leaving… this here in case I ever need it again:
-                      ;; (substitute* "tests/comparators/test_squashfs.py"
-                      ;;   (("^def test_symlink_root.*" match)     ; no, I don't
-                      ;;    (string-append                         ; know Python
-                      ;;     match "\n    raise ValueError("       ; why do you
-                      ;;     "differences_root[1].unified_diff)\n"))) ; ask
-                      (substitute* "tests/data/squashfs_root_expected_diff"
-                        (("root/root")
-                         '"0/0      "))))
-                  (add-before 'check 'delete-failing-test
-                    ;; Please add new tests to fix-failing-test and not here ;-)
-                    (lambda _
-                      ;; This requires /sbin to be in $PATH.
-                      (delete-file "tests/test_tools.py")))
-                  (add-after 'install 'install-man-page
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (man (string-append out "/share/man/man1")))
-                        (install-file "doc/diffoscope.1" man)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; These tests are broken because our `file` package has a
+          ;; bug in berkeley-db and wasm file type detection.
+          (add-after 'unpack 'remove-broken-file-type-detection-test
+            (lambda _
+              (delete-file "tests/comparators/test_berkeley_db.py")
+              (delete-file "tests/comparators/test_wasm.py")))
+          (add-after 'unpack 'embed-tool-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "diffoscope/comparators/utils/compare.py"
+                (("\\[\"xxd\",")
+                 (string-append "[\"" (which "xxd") "\",")))
+              (substitute* "diffoscope/diff.py"
+                (("@tool_required\\(\"diff\"\\)") "")
+                (("get_tool_name\\(\"diff\"\\)")
+                 (string-append "get_tool_name(\"" (which "diff") "\")")))
+              (substitute* "diffoscope/comparators/directory.py"
+                (("@tool_required\\(\"stat\"\\)") "")
+                (("@tool_required\\(\"getfacl\"\\)") "")
+                (("\\[\"stat\",")
+                 (string-append "[\"" (which "stat") "\","))
+                (("\\[\"getfacl\",")
+                 (string-append "[\"" (which "getfacl") "\",")))))
+          (add-after 'build 'build-man-page
+            (lambda _
+              (invoke "make" "-C" "doc")))
+          (add-before 'check 'writable-test-data
+            (lambda _
+              ;; Tests may need write access to tests directory.
+              (for-each make-file-writable (find-files "tests"))))
+          (add-before 'check 'fix-failing-test
+            (lambda _
+              ;; There is no user name mapping in the build environment.
+              ;; Pytest made it so much harder than should be necessary,
+              ;; so I'm leaving… this here in case I ever need it again:
+              ;; (substitute* "tests/comparators/test_squashfs.py"
+              ;;   (("^def test_symlink_root.*" match)     ; no, I don't
+              ;;    (string-append                         ; know Python
+              ;;     match "\n    raise ValueError("       ; why do you
+              ;;     "differences_root[1].unified_diff)\n"))) ; ask
+              (substitute* "tests/data/squashfs_root_expected_diff"
+                (("root/root")
+                 '"0/0      "))))
+          (add-before 'check 'delete-failing-test
+            ;; Please add new tests to fix-failing-test and not here ;-)
+            (lambda _
+              ;; This requires /sbin to be in $PATH.
+              (delete-file "tests/test_tools.py")))
+          (add-after 'install 'install-man-page
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (man (string-append out "/share/man/man1")))
+                (install-file "doc/diffoscope.1" man)))))))
     (inputs (list rpm                   ;for rpm-python
                   python-debian
                   python-libarchive-c
