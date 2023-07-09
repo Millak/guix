@@ -1211,7 +1211,7 @@ Features:
      (list pkg-config))
     (inputs
      (list nettle libxml2))
-    (home-page "http://stoken.sf.net")
+    (home-page "https://stoken.sf.net")
     (synopsis "Software Token for cryptographic authentication")
     (description
      "@code{stoken} is a token code generator compatible with RSA SecurID
