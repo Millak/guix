@@ -3133,6 +3133,47 @@ error streams.")
     (home-page "https://github.com/tobyclemson/lino")
     (license license:expat)))
 
+(define-public ruby-x25519
+  (package
+    (name "ruby-x25519")
+    (version "1.0.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/RubyCrypto/x25519")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g0311ly32f6hfn4q5fvkbjbl2bhv1l9fx6s0kglxfsrwq51926y"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'remove-unnecessary-dependencies
+                          (lambda _
+                            (substitute* "Gemfile"
+                              ((".*rubocop.*")
+                               ""))
+                            (substitute* "Rakefile"
+                              (("require \"rubocop/rake_task\"")
+                               "")
+                              (("RuboCop::RakeTask.new")
+                               ""))))
+                        (add-before 'build 'compile
+                          (lambda _
+                            (invoke "rake" "compile"))))))
+    (native-inputs (list ruby-rake-compiler ruby-rspec))
+    (synopsis "Cryptography library for Ruby providing the X25519
+Diffie-Hellman function")
+    (description
+     "The x25519 gem is an efficient public key cryptography library for
+Ruby providing key exchange/agreement via the X25519 (as known as
+Curve25519) Elliptic Curve Diffie-Hellman function as described in
+@url{https://www.ietf.org/rfc/rfc7748.txt, RFC 7748}.")
+    (home-page "https://github.com/RubyCrypto/x25519")
+    (license license:bsd-3)))
+
 (define-public ruby-xml-simple
   (package
     (name "ruby-xml-simple")
