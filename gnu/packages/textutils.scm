@@ -606,7 +606,9 @@ regular expression object can be specified.")
     (version "0.37")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.winfield.demon.nl/linux"
+              ;; Development stopped in 2005; as of 2023 the home page 404s.
+              (uri (string-append "https://web.archive.org/web/20200621222738/"
+                                  "http://www.winfield.demon.nl/linux"
                                   "/antiword-" version ".tar.gz"))
               (sha256
                (base32
@@ -634,7 +636,8 @@ regular expression object can be specified.")
          (replace 'install
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" `("global_install" ,@make-flags)))))))
-    (home-page "http://www.winfield.demon.nl/")
+    (home-page (string-append "https://web.archive.org/web/20220121050627/"
+                              "http://www.winfield.demon.nl"))
     (synopsis "Microsoft Word document reader")
     (description "Antiword is an application for displaying Microsoft Word
 documents.  It can also convert the document to PostScript or XML.  Only
