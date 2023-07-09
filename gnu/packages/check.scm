@@ -2334,9 +2334,9 @@ failures.")
   (package/inherit python-pytest-enabler-bootstrap
     (arguments
      (substitute-keyword-arguments
-         (package-arguments python-pytest-enabler-bootstrap)
-       ((#:tests? _ #f)
-        #t)
+       (strip-keyword-arguments
+         '(#:tests?)
+         (package-arguments python-pytest-enabler-bootstrap))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
