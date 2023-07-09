@@ -39441,6 +39441,24 @@ and names, built from Unicode CLDR and the IANA subtag registry, if you
 install @code{python-language-data}.")
     (license license:expat)))
 
+(define-public python-anyascii
+  (package
+    (name "python-anyascii")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "anyascii" version))
+              (sha256
+               (base32
+                "0c27rr3fmc1cx9mkmgx94zdf9yil0napzfkwpjw2bqjghkpk4pcx"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-setuptools))
+    (home-page "https://anyascii.com")
+    (synopsis "Unicode to ASCII transliteration")
+    (description "@code{anyascii} converts Unicode characters to their best
+ASCII representation.")
+    (license license:isc)))
+
 (define-public python-geomet
   (package
     (name "python-geomet")
