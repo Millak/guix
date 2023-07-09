@@ -326,7 +326,7 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
     (version "1.1.37")
     (source (origin
              (method url-fetch)
-             (uri (string-append "https://download.gnome.org/sources"
+             (uri (string-append "mirror://gnome/sources"
                                  "/libxslt/" (version-major+minor version)
                                  "/libxslt-" version ".tar.xz"))
              (sha256
