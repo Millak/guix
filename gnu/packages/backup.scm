@@ -391,7 +391,7 @@ list and implement the backup strategy.")
 (define-public snapraid
   (package
     (name "snapraid")
-    (version "12.0")
+    (version "12.2")
     (source
      (origin
        (method git-fetch)
@@ -400,7 +400,7 @@ list and implement the backup strategy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k8pynafkx8bhnqnjhc3jsds5p40sflz4drm88i6dg6ifv35mhh9"))))
+        (base32 "0xgvyhyyl2v6azxwzqbpgyln4r2dw34xa8z09116vpkgdgivh36z"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
