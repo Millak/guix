@@ -3250,50 +3250,50 @@ same log file.")
   (package
     (name "ruby-rbnacl")
     (version "7.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "rbnacl" version))
-       (sha256
-        (base32
-         "0y8yzianlkc9w6sbqy8iy8l0yym0y6x7p5rjflkfixq76fqmhvzk"))))
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rbnacl" version))
+              (sha256
+               (base32
+                "0y8yzianlkc9w6sbqy8iy8l0yym0y6x7p5rjflkfixq76fqmhvzk"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-unnecessary-dependencies
-           (lambda _
-             ;; Coveralls relates to a network service, and Rubocop to code
-             ;; linting and both are unnecessary to run the tests
-             (substitute* "Gemfile"
-               ((".*rubocop.*") "\n")
-               ((".*guard-rspec.*") "\n")
-               ((".*coveralls.*") "\n"))
-             (substitute* "spec/spec_helper.rb"
-               (("require \"coveralls\"") "")
-               (("Coveralls.wear!") ""))
-             #t))
-         (add-after 'unpack 'use-libsodium-from-store
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("lib/rbnacl/init.rb"
-                            "lib/rbnacl/sodium.rb")
-               (("ffi_lib \\[.+\\]")
-                (string-append "ffi_lib [\""
-                               (assoc-ref inputs "libsodium") "/lib/libsodium.so"
-                               "\"]")))
-             #t))
-         ;; Run Rspec directly to avoid the Rubocop dependency in the Rakefile
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "rspec"))
-             #t)))))
-    (propagated-inputs
-     (list ruby-ffi))
-    (inputs
-     (list libsodium))
-    (native-inputs
-     (list bundler ruby-rspec))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-unnecessary-dependencies
+            (lambda _
+              ;; Coveralls relates to a network service, and Rubocop to code
+              ;; linting and both are unnecessary to run the tests
+              (substitute* "Gemfile"
+                ((".*rubocop.*")
+                 "\n")
+                ((".*guard-rspec.*")
+                 "\n")
+                ((".*coveralls.*")
+                 "\n"))
+              (substitute* "spec/spec_helper.rb"
+                (("require \"coveralls\"")
+                 "")
+                (("Coveralls.wear!")
+                 ""))))
+          (add-after 'unpack 'use-libsodium-from-store
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("lib/rbnacl/init.rb"
+                             "lib/rbnacl/sodium.rb")
+                (("ffi_lib \\[.+\\]")
+                 (string-append "ffi_lib [\""
+                                (assoc-ref inputs "libsodium")
+                                "/lib/libsodium.so" "\"]")))))
+          ;; Run Rspec directly to avoid the Rubocop dependency in the
+          ;; Rakefile
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec")))))))
+    (propagated-inputs (list ruby-ffi))
+    (inputs (list libsodium))
+    (native-inputs (list bundler ruby-rspec))
     (synopsis "Ruby FFI binding to libsodium")
     (description
      "This package provides Ruby FFI bindings to the Networking and
