@@ -1642,7 +1642,9 @@ exec -a \"$0\" ~a/.brdf-real~%"
        (list qttools-5)) ;for 'qmake'
       (inputs
        (list qtbase-5 mesa glew freeglut zlib))
-      (home-page "https://www.disneyanimation.com/technology/brdf.html")
+      (home-page
+       (string-append "https://web.archive.org/web/20190115030100/"
+                      "https://www.disneyanimation.com/technology/brdf.html"))
       (synopsis
        "Analyze bidirectional reflectance distribution functions (BRDFs)")
       (description
