@@ -408,11 +408,11 @@ sugar and output formatting inspired from @code{httpie}.")
     (native-inputs (list python))
     (inputs (list curl))
     (home-page "https://curl.se/trurl/")
-    (synopsis "Command line tool for URL parsing and manipulatio")
-    (description "@code{trurl} is a tool in a similar spirit of @code{tr} but
-for URLs.  Here, @code{tr} stands for translate or transpose.
+    (synopsis "Command line tool for URL parsing and manipulation")
+    (description "@code{trurl} is a command line tool that parses and
+manipulates URLs, designed to help shell script authors everywhere.
 
-@code{trurl} is a command line tool that parses and manipulates URLs, designed
-to help shell script authors everywhere.")
+It is similar in spirit to @code{tr}.  Here, @code{tr} stands for translate or
+transpose.")
    (license (license:non-copyleft "file://COPYING"
                                   "See COPYING in the distribution."))))
