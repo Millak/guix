@@ -2412,26 +2412,19 @@ To download a zchunk file.
 (define-public zutils
   (package
     (name "zutils")
-    (version "1.10")
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/zutils/zutils-" version ".tar.lz"))
        (sha256
-        (base32 "15dimqp8zlqaaa2l46r22srp1py38mlmn69ph1j5fmrd54w43m0d"))))
+        (base32 "1vl8mhvsl0zlh34hwhc05vj33a2xfr0w7i978hcwaw8wn1w59bkq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list "--sysconfdir=/etc")
        #:phases
        (modify-phases %standard-phases
-         (add-before 'check 'disable-failing-tests
-           ;; XXX https://lists.nongnu.org/archive/html/zutils-bug/2020-07/msg00005.html
-           (lambda _
-             (substitute* "testsuite/check.sh"
-               (("\"\\$\\{ZGREP\\}\" -N -L \"GNU\"") "true")
-               (("\"\\$\\{ZGREP\\}\" -N -L \"nx_pattern\"") "false"))
-             #t))
          (replace 'install
           (lambda* (#:key make-flags outputs #:allow-other-keys)
             (apply invoke "make" "install"
