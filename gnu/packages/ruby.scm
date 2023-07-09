@@ -5422,16 +5422,25 @@ Mocha stubbing and mocking library with Bacon, a small RSpec clone.")
 (define-public ruby-net-ssh
   (package
     (name "ruby-net-ssh")
-    (version "4.2.0")
+    (version "7.1.0")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "net-ssh" version))
+              (method git-fetch) ;for tests
+              (uri (git-reference
+                    (url "https://github.com/net-ssh/net-ssh")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "07c4v97zl1daabmri9zlbzs6yvkl56z1q14bw74d53jdj0c17nhx"))))
+                "1dkbyzpl31jygnnva5sa754vk42q1fih4qz5ipqw5gqiafrrlb91"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list bundler ruby-mocha ruby-test-unit))
+     (list bundler
+           ruby-bcrypt-pbkdf
+           ruby-ed25519
+           ruby-mocha
+           ruby-rbnacl
+           ruby-test-unit
+           ruby-x25519))
     (synopsis "Ruby implementation of the SSH2 client protocol")
     (description "@code{Net::SSH} is a pure-Ruby implementation of the SSH2
 client protocol.  It allows you to write programs that invoke and interact
