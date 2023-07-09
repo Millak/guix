@@ -97,20 +97,22 @@
               (delete-file "tests/comparators/test_wasm.py")))
           (add-after 'unpack 'embed-tool-references
             (lambda* (#:key inputs #:allow-other-keys)
+              (define (bin command)
+                (search-input-file inputs (string-append "bin/" command)))
               (substitute* "diffoscope/comparators/utils/compare.py"
-                (("\\[\"xxd\",")
-                 (string-append "[\"" (which "xxd") "\",")))
+                (("\\[\"(xxd)\"," _ command)
+                 (string-append "[\"" (bin command) "\",")))
               (substitute* "diffoscope/diff.py"
                 (("@tool_required\\(\"diff\"\\)") "")
-                (("get_tool_name\\(\"diff\"\\)")
-                 (string-append "get_tool_name(\"" (which "diff") "\")")))
+                (("get_tool_name\\(\"(diff)\"\\)" _ command)
+                 (string-append "get_tool_name(\"" (bin command) "\")")))
               (substitute* "diffoscope/comparators/directory.py"
                 (("@tool_required\\(\"stat\"\\)") "")
                 (("@tool_required\\(\"getfacl\"\\)") "")
-                (("\\[\"stat\",")
-                 (string-append "[\"" (which "stat") "\","))
-                (("\\[\"getfacl\",")
-                 (string-append "[\"" (which "getfacl") "\",")))))
+                (("\\[\"(stat)\"," _ command)
+                 (string-append "[\"" (bin command) "\","))
+                (("\\[\"(getfacl)\"," _ command)
+                 (string-append "[\"" (bin command) "\",")))))
           (add-after 'build 'build-man-page
             (lambda _
               (invoke "make" "-C" "doc")))
