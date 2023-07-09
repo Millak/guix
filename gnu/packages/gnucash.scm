@@ -264,7 +264,7 @@ to be read using the GNOME Yelp program.")
      (list libgcrypt gnutls openssl gtk+))
     (native-inputs
      (list pkg-config))
-    (home-page "https://www.aquamaniac.de/sites/aqbanking/index.php")
+    (home-page "https://www.aquamaniac.de")
     (synopsis "Utility library for networking and security applications")
     (description
      "This package provides a helper library for networking and security
@@ -303,7 +303,7 @@ applications and libraries.  It is used by AqBanking.")
      (list gmp xmlsec gnutls))
     (native-inputs
      (list pkg-config gettext-minimal libltdl))
-    (home-page "https://www.aquamaniac.de/sites/aqbanking/index.php")
+    (home-page "https://www.aquamaniac.de")
     (synopsis "Interface for online banking tasks")
     (description
      "AqBanking is a modular and generic interface to online banking tasks,
