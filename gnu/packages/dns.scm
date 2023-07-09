@@ -636,14 +636,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.17.0")
+    (version "1.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0h8k5yh49vasyzwkm3n1xsidxr7xybqwkvg4cq6937qxi7brbg6w"))))
+        (base32 "1x55f5aqlzynpy24ryf1rsmdy8m8iyi19n7k03k889g1rk78ah7f"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -678,8 +678,7 @@ BIND and djbdns---whilst using relatively little memory.")
                  (("^PYTHON_SITE_PKG=.*$")
                   (string-append
                    "PYTHON_SITE_PKG="
-                   pyout "/lib/python-" ver "/site-packages\n"))))
-             #t))
+                   pyout "/lib/python-" ver "/site-packages\n"))))))
          (add-before 'check 'fix-missing-nss-for-tests
            ;; Unfortunately, the package's unittests involve some checks
            ;; looking up protocols and services which are not provided
@@ -780,8 +779,7 @@ struct servent *getservbyport(int port, const char *proto) {
                ;; The preload library only affects the unittests.
                (substitute* "Makefile"
                  (("./unittest")
-                  "LD_PRELOAD=/tmp/nss_preload.so ./unittest")))
-             #t)))))
+                  "LD_PRELOAD=/tmp/nss_preload.so ./unittest"))))))))
     (home-page "https://www.unbound.net")
     (synopsis "Validating, recursive, and caching DNS resolver")
     (description
