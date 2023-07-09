@@ -6133,7 +6133,7 @@ find_package(louvain_communities)")
    (inputs (list btor2tools
                  boost cryptominisat louvain-community sqlite))
    (native-inputs (list googletest pkg-config python-wrapper))
-   (home-page "http://boolector.github.io/")
+   (home-page "https://boolector.github.io")
    (synopsis "Bitvector-based theory solver")
    (description "Boolector is a @acronym{SMT, satisfiability modulo theories}
 solver for the theories of fixed-size bit-vectors, arrays and uninterpreted
