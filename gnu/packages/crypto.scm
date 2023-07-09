@@ -229,12 +229,13 @@ communication, encryption, decryption, signatures, etc.")
     ;; TODO Build with libwaive (described in README.md), to implement something
     ;; like OpenBSD's pledge().
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (native-inputs
      (list pkg-config))
     (inputs
