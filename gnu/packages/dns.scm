@@ -866,79 +866,77 @@ Extensions} (DNSSEC).")
     (build-system gnu-build-system)
     (outputs (list "out" "doc" "lib" "tools"))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--docdir=" (assoc-ref %outputs "doc")
-                            "/share/" ,name "-" ,version)
-             (string-append "--infodir=" (assoc-ref %outputs "doc")
-                            "/share/info")
-             (string-append "--libdir=" (assoc-ref %outputs "lib") "/lib")
-             "--sysconfdir=/etc"
-             "--localstatedir=/var"
-             "--disable-static"         ; static libraries are built by default
-             "--enable-dnstap"          ; let tools read/write capture files
-             "--enable-fastparser"      ; disabled by default when .git/ exists
-             "--enable-xdp=yes"
-             "--with-module-dnstap=yes") ; detailed query capturing & logging
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'link-missing-libbpf-dependency
-           ;; Linking against -lbpf later would fail to find -lz: libbpf.pc has
-           ;; zlib in its Requires.private (not Requires) field.  Add it here.
-           (lambda _
-             (substitute* "configure.ac"
-               (("enable_xdp=yes" match)
-                (string-append match "\nlibbpf_LIBS=\"$libbpf_LIBS -lz\"")))))
-         (add-before 'bootstrap 'update-parser
-           (lambda _
-             (with-directory-excursion "src"
-               (invoke "sh" "../scripts/update-parser.sh"))))
-         (add-before 'configure 'disable-directory-pre-creation
-           (lambda _
-             ;; Don't install empty directories like ‘/etc’ outside the store.
-             ;; This is needed even when using ‘make config_dir=... install’.
-             (substitute* "src/Makefile.in" (("\\$\\(INSTALL\\) -d") "true"))))
-         (add-after 'build 'build-info
-           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-             (apply invoke "make" "info"
-                    `(,@(if parallel-build?
-                            `("-j" ,(number->string (parallel-job-count)))
-                            '())
-                      ,@make-flags))))
-         (replace 'install
-           (lambda* (#:key make-flags outputs parallel-build? #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version))
-                    (etc (string-append doc "/examples/etc")))
-               (apply invoke "make" "install"
-                      (string-append "config_dir=" etc)
-                      `(,@(if parallel-build?
-                              `("-j" ,(number->string (parallel-job-count)))
-                              '())
-                        ,@make-flags)))))
-         (add-after 'install 'install-info
-           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-             (apply invoke "make" "install-info"
-                    `(,@(if parallel-build?
-                            `("-j" ,(number->string (parallel-job-count)))
-                            '())
-                      ,@make-flags))))
-         (add-after 'install 'break-circular-:lib->:out-reference
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (assoc-ref outputs "lib")))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("(prefix=).*" _ assign)
-                              (string-append assign lib "\n"))))
-                         (find-files lib "\\.pc$")))))
-         (add-after 'install 'split-:tools
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (tools (assoc-ref outputs "tools")))
-               (mkdir-p (string-append tools "/share/man"))
-               (rename-file (string-append out   "/bin")
-                            (string-append tools "/bin"))
-               (rename-file (string-append out   "/share/man/man1")
-                            (string-append tools "/share/man/man1"))))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--docdir=" #$output:doc
+                             "/share/" #$name "-" #$version)
+              (string-append "--infodir=" #$output:doc "/share/info")
+              (string-append "--libdir=" #$output:lib "/lib")
+              "--sysconfdir=/etc"
+              "--localstatedir=/var"
+              "--disable-static"       ; static libraries are built by default
+              "--enable-dnstap"        ; let tools read/write capture files
+              "--enable-fastparser"    ; disabled by default when .git/ exists
+              "--enable-xdp=yes"
+              "--with-module-dnstap=yes") ; detailed query capturing & logging
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'link-missing-libbpf-dependency
+            ;; Linking against -lbpf later would fail to find -lz: libbpf.pc has
+            ;; zlib in its Requires.private (not Requires) field.  Add it here.
+            (lambda _
+              (substitute* "configure.ac"
+                (("enable_xdp=yes" match)
+                 (string-append match "\nlibbpf_LIBS=\"$libbpf_LIBS -lz\"")))))
+          (add-before 'bootstrap 'update-parser
+            (lambda _
+              (with-directory-excursion "src"
+                (invoke "sh" "../scripts/update-parser.sh"))))
+          (add-before 'configure 'disable-directory-pre-creation
+            (lambda _
+              ;; Don't install empty directories like ‘/etc’ outside the store.
+              ;; This is needed even when using ‘make config_dir=... install’.
+              (substitute* "src/Makefile.in" (("\\$\\(INSTALL\\) -d") "true"))))
+          (add-after 'build 'build-info
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make" "info"
+                     `(,@(if parallel-build?
+                             `("-j" ,(number->string (parallel-job-count)))
+                             '())
+                       ,@make-flags))))
+          (replace 'install
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (let* ((doc (string-append #$output "/share/doc/"
+                                         #$name "-" #$version))
+                     (etc (string-append doc "/examples/etc")))
+                (apply invoke "make" "install"
+                       (string-append "config_dir=" etc)
+                       `(,@(if parallel-build?
+                               `("-j" ,(number->string (parallel-job-count)))
+                               '())
+                         ,@make-flags)))))
+          (add-after 'install 'install-info
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make" "install-info"
+                     `(,@(if parallel-build?
+                             `("-j" ,(number->string (parallel-job-count)))
+                             '())
+                       ,@make-flags))))
+          (add-after 'install 'break-circular-:lib->:out-reference
+            (lambda _
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("(prefix=).*" _ assign)
+                             (string-append assign #$output:lib "\n"))))
+                        (find-files #$output:lib "\\.pc$"))))
+          (add-after 'install 'split:tools
+            (lambda _
+              (define (move source target file)
+                (mkdir-p (dirname (string-append target "/" file)))
+                (rename-file (string-append source "/" file)
+                             (string-append target "/" file)))
+              (move #$output #$output:tools "bin")
+              (move #$output #$output:tools "share/man/man1"))))))
     (native-inputs
      (list autoconf
            automake
