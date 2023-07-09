@@ -148,7 +148,6 @@
        "http://www.x.org/releases/" ; main mirrors
        "http://mirror.csclub.uwaterloo.ca/x.org/" ; North America
        "http://xorg.mirrors.pair.com/"
-       "http://mirror.us.leaseweb.net/xorg/"
        "ftp://mirror.csclub.uwaterloo.ca/x.org/"
        "ftp://xorg.mirrors.pair.com/"
        "ftp://artfiles.org/x.org/" ; Europe
@@ -165,8 +164,7 @@
        "ftp://mirror.switch.ch/mirror/X11/"
        "ftp://mirrors.ircam.fr/pub/x.org/"
        "ftp://x.mirrors.skynet.be/pub/ftp.x.org/"
-       "http://x.cs.pu.edu.tw/" ; East Asia
-       "ftp://ftp.cs.cuhk.edu.hk/pub/X11"
+       "ftp://ftp.cs.cuhk.edu.hk/pub/X11" ; East Asia
        "ftp://ftp.u-aizu.ac.jp/pub/x11/x.org/"
        "ftp://ftp.yz.yamagata-u.ac.jp/pub/X11/x.org/"
        "ftp://ftp.kaist.ac.kr/x.org/"
