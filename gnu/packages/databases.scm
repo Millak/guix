@@ -2423,7 +2423,7 @@ similar to BerkeleyDB, LevelDB, etc.")
     (version "7.0.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://download.redis.io/releases/redis-"
+              (uri (string-append "https://download.redis.io/releases/redis-"
                                   version".tar.gz"))
               (sha256
                (base32
