@@ -1920,7 +1920,7 @@ connections.")
     (version "5.24.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://download.kde.org/stable/plasma/"
+              (uri (string-append "mirror://kde/stable/plasma/"
                                   version "/plasma-mobile-" version ".tar.xz"))
               (sha256
                (base32
