@@ -91,8 +91,7 @@
        "ftp://ftp.gnupg.org/gcrypt/")
       (gnome
        "https://download.gnome.org/"
-       "http://ftp.gnome.org/pub/GNOME/"
-       "http://mirror.yandex.ru/mirrors/ftp.gnome.org/")
+       "http://ftp.gnome.org/pub/GNOME/")
       (hackage
        "http://hackage.haskell.org/")
       (savannah           ; http://download0.savannah.gnu.org/mirmon/savannah/
