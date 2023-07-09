@@ -814,7 +814,7 @@ LP/MIP solver is included in the package.")
      (list (@ (gnu packages base) which))) ; for the tests
     (inputs
      (list glpk gmp))
-    (home-page "http://www.4ti2.de/")
+    (home-page "https://4ti2.github.io")
     (synopsis "Mathematical tool suite for problems on linear spaces")
     (description
      "4ti2 implements algorithms for solving algebraic, geometric and
