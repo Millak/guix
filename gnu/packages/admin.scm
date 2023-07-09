@@ -2472,14 +2472,14 @@ utilization, temperature and power.")
 (define-public stress
   (package
     (name "stress")
-    (version "1.0.5")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://debian/pool/main/s/stress/stress_"
                                   version ".orig.tar.gz"))
               (sha256
                (base32
-                "09shpd85g8dvpiw0mnwykss676g0s7lbi8ab37xjinb5lfff960p"))))
+                "1cg0mklfrwfyzwqkzidd0151r8n2jgbiiqz1v0p3w4q62mkmdand"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
