@@ -514,14 +514,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.23.3")
+    (version "3.23.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "1dh7gqhzv03a6j1kbkiaksy9a752k90xwqi5x0hqvn5ilac0l9p4"))
+                "1j6bjn4zplxl7w15xrc1v5l3p9a0x0345756ahvgq8mi97bmx3pn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
