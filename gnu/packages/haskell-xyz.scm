@@ -15813,7 +15813,7 @@ benchmarks](https://hackage.haskell.org/package/random-bytestring-0.1.3.2/src/be
                 "0lcj4g55sj5iv727g7k57pscgyj0fx3smwapm1gmd5qkc3yfa9fa"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "Cabal-syntax")))
-    (home-page "http://www.haskell.org/cabal/")
+    (home-page "https://www.haskell.org/cabal/")
     (synopsis "A library for working with .cabal files")
     (description
      "This library provides tools for reading and manipulating the .cabal file format.
