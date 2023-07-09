@@ -3249,14 +3249,14 @@ same log file.")
 (define-public ruby-rbnacl
   (package
     (name "ruby-rbnacl")
-    (version "6.0.1")
+    (version "7.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "rbnacl" version))
        (sha256
         (base32
-         "0ajxy5kj2jw09wdsla3jmha8w07vj5l14288xr9djpl327g3lzhn"))))
+         "0y8yzianlkc9w6sbqy8iy8l0yym0y6x7p5rjflkfixq76fqmhvzk"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -3299,7 +3299,7 @@ same log file.")
      "This package provides Ruby FFI bindings to the Networking and
 Cryptography (NaCl) library, also known as libsodium.  This provides a
 high-level toolkit for building cryptographic systems and protocols.")
-    (home-page "https://github.com/crypto-rb/rbnacl")
+    (home-page "https://github.com/RubyCrypto/rbnacl")
     (license license:expat)))
 
 (define-public ruby-rbtree
