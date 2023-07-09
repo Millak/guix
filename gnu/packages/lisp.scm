@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017-2019, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2019, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2019–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
@@ -1315,7 +1315,7 @@ assembler, PEG) is less than 1MB.")
                                   (dirname
                                    (search-input-file
                                     inputs "include/stdlib.h"))))))
-  
+
                      (for-each wrap-carp-program
                                (list "carp"
                                      "carp-header-parse")))))))
@@ -1587,8 +1587,10 @@ be built as a stand-alone REPL interpreter.")
     (inherit s7-bootstrap)
     (name "s7")
     (arguments
-     (substitute-keyword-arguments (package-arguments s7-bootstrap)
-       ((#:tests? _) #t)
+     (substitute-keyword-arguments
+       (strip-keyword-arguments
+         '(#:tests?)
+         (package-arguments s7-bootstrap))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'patch
