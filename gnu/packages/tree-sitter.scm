@@ -398,6 +398,13 @@ will be used in description and synopsis."
    #:article "an"
    #:repository-url "https://github.com/elm-tooling/tree-sitter-elm"))
 
+(define-public tree-sitter-gomod
+  (tree-sitter-grammar
+   "gomod" "Go .mod"
+   "1hblbi2bs4hlil703myqhvvq2y1x41rc3w903hg2bhbazh7x8yyf"
+   "1.0.0"
+   #:repository-url "https://github.com/camdencheek/tree-sitter-go-mod.git"))
+
 (define-public tree-sitter-go
   ;; There are a lot of additions, the last tag was placed more than 1 year ago
   (let ((commit "64457ea6b73ef5422ed1687178d4545c3e91334a")
