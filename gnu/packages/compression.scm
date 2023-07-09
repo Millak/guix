@@ -2373,13 +2373,14 @@ reading from and writing to ZIP archives.")
                 "19rw870150w1c730wzg2pn68ixmscq8cwa3vricqhwxs5l63r5wr"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "src/zck_gen_zdict.c"
-                        (("/usr/bin/zstd")
-                         (string-append (assoc-ref inputs "zstd")
-                                        "/bin/zstd"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/zck_gen_zdict.c"
+                (("/usr/(bin/zstd)" _ file)
+                 (string-append (search-input-file inputs file)))))))))
     (native-inputs
      (list pkg-config))
     (inputs
