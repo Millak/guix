@@ -1488,3 +1488,31 @@ Sphinx documentation.")
      "This package provides a Bootstrap-based Sphinx theme from the PyData
 community.")
     (license license:bsd-3)))
+
+(define-public python-sphinx-autoapi
+  (package
+    (name "python-sphinx-autoapi")
+    (version "2.0.1") ;higher versions require Sphinx >= 5.2.0
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sphinx-autoapi" version))
+              (sha256
+               (base32
+                "1fmss6ihjjx22nmjzy7qiapj1f2b86gd1vycn3zg8lh8q9l7kx6d"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-sphinx python-wheel))
+    (propagated-inputs
+     (list python-astroid
+           python-jinja2
+           python-pyyaml
+           python-sphinx
+           python-unidecode))
+    (home-page "https://github.com/readthedocs/sphinx-autoapi")
+    (synopsis "Sphinx API documentation generator")
+    (description
+     "Sphinx AutoAPI is a Sphinx extension for generating complete
+API documentation without needing to load, run, or import the project being
+documented.  In contrast to the traditional Sphinx @code{autodoc}, which
+requires manual authoring and uses code imports, AutoAPI finds and generates
+documentation by parsing source code.")
+    (license license:expat)))
