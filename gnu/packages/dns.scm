@@ -795,16 +795,16 @@ served by AS112.  Stub and forward zones are supported.")
 (define-public yadifa
   (package
     (name "yadifa")
-    (version "2.5.3")
+    (version "2.6.4")
     (source
-     (let ((build "10333"))
+     (let ((build "10892"))
        (origin
          (method url-fetch)
          (uri
           (string-append "https://www.yadifa.eu/sites/default/files/releases/"
                          "yadifa-" version "-" build ".tar.gz"))
          (sha256
-          (base32 "1mwy6sfnlaslx26f3kpj9alh8i8y8bf1nbnsdd5j04hjsbavd07p")))))
+          (base32 "0wdm0gc01bhd04p3jqxy3y8lgx5v8wlm8saiy35llna5ssi77fyq")))))
     (build-system gnu-build-system)
     (native-inputs
      (list which))
@@ -813,6 +813,12 @@ served by AS112.  Stub and forward zones are supported.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'unhard-code
+           (lambda _
+             (substitute* (list "lib/dnslg/Makefile.in"
+                                "lib/dnsdb/Makefile.in"
+                                "lib/dnscore/Makefile.in")
+               (("/usr/bin/(install)" _ command) command))))
          (add-before 'configure 'omit-example-configurations
            (lambda _
              (substitute* "Makefile.in"
