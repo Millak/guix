@@ -92,16 +92,16 @@
     (inputs
      (list linux-pam openssl xmlsec-openssl))
     (home-page "https://www.nongnu.org/oath-toolkit/")
-    (synopsis "One-time password (OTP) components")
+    (synopsis "@acronym{OTP, one-time password} components")
     (description
-     "The @dfn{OATH} (Open AuTHentication) Toolkit provides various components
-for building one-time password (@dfn{OTP}) authentication systems:
+     "The @acronym{OATH, Open AuTHentication} Toolkit provides various
+components for building @acronym{OTP, One-Time Password} authentication systems:
 
 @itemize
 @item @command{oathtool}, a command-line tool for generating & validating OTPs.
 @item @code{liboath}, a C library for OATH handling.
 @item @command{pskctool}, a command-line tool for manipulating secret key
-files in the Portable Symmetric Key Container (@dfn{PSKC}) format
+files in the @acronym{PSKC, Portable Symmetric Key Container} format
 described in RFC6030.
 @item @code{libpskc}, a shared and static C library for PSKC handling.
 @item @code{pam_oath}, a PAM module for pluggable login authentication.
@@ -110,8 +110,7 @@ described in RFC6030.
 Supported technologies include the event-based @acronym{HOTP, Hash-based Message
 Authentication Code One-Time Password} algorithm (RFC4226), the time-based
 @acronym{TOTP, Time-based One-Time Password} algorithm (RFC6238), and
-@acronym{PSKC, Portable Symmetric Key Container} (RFC6030) to manage secret key
-data.")
+PSKC (RFC6030) to manage secret key data.")
     (license (list license:lgpl2.1+     ; the libraries (liboath/ & libpskc/)
                    license:gpl3+))))    ; the tools (everything else)
 
