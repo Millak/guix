@@ -128,9 +128,7 @@
        "ftp://www.lt.netfilter.org/pub/")
       (kernel.org
        "http://linux-kernel.uio.no/pub/"
-       "http://kernel.osuosl.org/pub/"
        "http://ftp.be.debian.org/pub/"
-       "http://mirror.linux.org.au/"
        "https://mirrors.edge.kernel.org/pub/"
        "ftp://ftp.funet.fi/pub/mirrors/ftp.kernel.org/pub/")
       (apache             ; from http://www.apache.org/mirrors/dist.html
