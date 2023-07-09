@@ -1646,15 +1646,15 @@ exec -a \"$0\" ~a/.brdf-real~%"
        (string-append "https://web.archive.org/web/20190115030100/"
                       "https://www.disneyanimation.com/technology/brdf.html"))
       (synopsis
-       "Analyze bidirectional reflectance distribution functions (BRDFs)")
+       "@acronym{BRDF, bidirectional reflectance distribution function} analyzer")
       (description
        "BRDF Explorer is an application that allows the development and analysis
-of bidirectional reflectance distribution functions (BRDFs).  It can load and
-plot analytic BRDF functions (coded as functions in OpenGL's GLSL shader
-language), measured material data from the MERL database, and anisotropic
-measured material data from MIT CSAIL.  Graphs and visualizations update in
-real time as parameters are changed, making it a useful tool for evaluating
-and understanding different BRDFs (and other component functions).")
+of @acronym{BRDF, bidirectional reflectance distribution functions}.  It can
+load and plot analytic BRDF functions (coded as functions in OpenGL's GLSL
+shader language), measured material data from the MERL database, and anisotropic
+measured material data from MIT CSAIL.  Graphs and visualizations update in real
+time as parameters are changed, making it a useful tool for evaluating and
+understanding different BRDFs (and other component functions).")
       (license license:ms-pl))))
 
 (define-public agg
