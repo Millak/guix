@@ -7686,7 +7686,7 @@ optimized algorithms and implementation.")
     (version "1.9.9")
     (source (origin
              (method url-fetch)
-             (uri (string-append "http://fmv.jku.at/aiger/aiger-"
+             (uri (string-append "https://fmv.jku.at/aiger/aiger-"
                                  version ".tar.gz"))
              (sha256
                (base32
@@ -7725,7 +7725,7 @@ optimized algorithms and implementation.")
                      (for-each (lambda (f) (install-file f incl))
                                (find-files "." "\\.h$"))))))))
     (inputs (list gzip))
-    (home-page "http://fmv.jku.at/aiger")
+    (home-page "https://fmv.jku.at/aiger")
     (synopsis "Utilities for And-Inverter Graphs")
     (description "AIGER is a format, library and set of utilities for
 @acronym{AIG, And-Inverter Graphs}s.  The focus is on conversion utilities and a
