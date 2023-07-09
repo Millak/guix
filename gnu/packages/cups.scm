@@ -860,9 +860,9 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
   (package
     (name "epson-inkjet-printer-escpr")
     (version "1.7.24")
-    ;; XXX: This currently works.  But it will break as soon as a newer
-    ;; version is available since the URLs for older versions are not
-    ;; preserved.  An alternative source will be added as soon as
+    ;; XXX: This currently works.  But it will break as soon as a newer version
+    ;; is available since the URLs for older versions are not preserved.  Since
+    ;; 1.8.0, source tarballs have been discontinued and only a ‘source RPM’ is
     ;; available.
     (source
      (origin
