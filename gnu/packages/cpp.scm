@@ -677,7 +677,7 @@ intuitive syntax and trivial integration.")
 (define-public xtl
   (package
     (name "xtl")
-    (version "0.7.4")
+    (version "0.7.5")
     (source (origin
               (method git-fetch)
               (uri
@@ -686,7 +686,7 @@ intuitive syntax and trivial integration.")
                 (commit version)))
               (sha256
                (base32
-                "134pgvmf9cx5dxs0m0m3qhp3m3r1gl86ic3xax21zc4sdj8sdq46"))
+                "1llfy6pkzqx2va74h9xafjylyvw6839a843mqc05n6x6wll5bkam"))
               (file-name (git-file-name name version))))
     (native-inputs
      (list doctest googletest nlohmann-json))
