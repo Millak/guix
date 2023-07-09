@@ -103,7 +103,6 @@
        "https://mirror.csclub.uwaterloo.ca/nongnu/"
        "https://nongnu.askapache.com/"
        "https://savannah.c3sl.ufpr.br/"
-       "http://download.savannah.gnu.org/releases-noredirect/"
        "https://download-mirror.savannah.gnu.org/releases/"
        "ftp://ftp.twaren.net/Unix/NonGNU/"
        "ftp://mirror.csclub.uwaterloo.ca/nongnu/"
