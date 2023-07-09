@@ -85,13 +85,13 @@ clients.")
 (define-public xandikos
   (package
     (name "xandikos")
-    (version "0.2.3")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xandikos" version))
        (sha256
-        (base32 "13ikmcja9p42azb5ccqj2bw98zybna6zlflj10hqy0kvbib70l94"))))
+        (base32 "00ghmzcc37b17pp0r6d9v5vpxmz500kzxqj1k9ppcjhbbpvp9w8n"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-aiohttp
