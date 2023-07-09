@@ -839,7 +839,7 @@ Extension (MIME).")
     (arguments
      (list
       #:make-flags
-      #~(list "CC=gcc"
+      #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "PREFIX=" #$output))
       #:tests? #f                       ; there are none
       #:phases
@@ -866,7 +866,11 @@ Extension (MIME).")
           (add-after 'unpack 'disable-Werror
             (lambda _
               (substitute* "Makefile"
-                (("-Werror") "")))))))
+                (("-Werror") ""))))
+          (add-after 'unpack 'do-not-strip
+            (lambda _
+              (substitute* "Makefile"
+                (("\\bstrip\\b") "true")))))))
     (home-page "https://pldaniels.com/altermime/")
     (synopsis "Modify MIME-encoded messages")
     (description
