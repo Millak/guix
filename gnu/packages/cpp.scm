@@ -691,14 +691,15 @@ intuitive syntax and trivial integration.")
     (native-inputs
      (list doctest googletest nlohmann-json))
     (arguments
-     '(#:configure-flags
-       '("-DBUILD_TESTS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* _
-             (with-directory-excursion "test"
-               (invoke "./test_xtl")))))))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (with-directory-excursion "test"
+                (invoke "./test_xtl")))))))
     (home-page "https://github.com/QuantStack/xtl")
     (build-system cmake-build-system)
     (synopsis "C++ template library providing some basic tools")
