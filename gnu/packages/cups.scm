@@ -354,9 +354,10 @@ applications''.  These must be installed separately.")
   (package/inherit cups-minimal
     (name "cups")
     (arguments
-     (substitute-keyword-arguments (package-arguments cups-minimal)
-       ((#:tests? _ #t)
-        #t)
+     (substitute-keyword-arguments
+       (strip-keyword-arguments
+         '(#:tests?)
+         (package-arguments cups-minimal))
        ((#:configure-flags flags #~'())
         #~(append #$flags
                   (list "--with-languages=all"))) ; no ‘=all’ means none(!)
