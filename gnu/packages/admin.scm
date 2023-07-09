@@ -1958,7 +1958,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.13p2")
+    (version "1.9.14p1")
     (source (origin
               (method url-fetch)
               (uri
@@ -1968,7 +1968,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "0kapjhgyzaqk2nfzzz04ss9x6cy61s79afd3vhgkn0y1wkyh886z"))
+                "1bwg2bn1sbc6l2gx2r9vfqyf8dyvgp7nad0wj3p5gn095vpza6z9"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1987,9 +1987,9 @@ system administrator.")
 
              ;; 'visudo.c' expects _PATH_MV to be defined, but glibc doesn't
              ;; provide it.
-             (string-append "CPPFLAGS=-D_PATH_MV='\""
+             (string-append "CPPFLAGS=-D_PATH_MV=\\\""
                             (assoc-ref %build-inputs "coreutils")
-                            "/bin/mv\"'"))
+                            "/bin/mv\\\""))
 
        ;; Avoid non-determinism; see <http://bugs.gnu.org/21918>.
        #:parallel-build? #f
