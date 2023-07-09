@@ -2386,7 +2386,7 @@ reading from and writing to ZIP archives.")
     (inputs
      (list curl zstd))
     (propagated-inputs
-     `(("zstd:lib" ,zstd "lib")))       ;in Requires.private of zck.pc
+     (list `(,zstd "lib")))             ; in Requires.private of zck.pc
     (home-page "https://github.com/zchunk/zchunk")
     (synopsis "Compressed file format for efficient deltas")
     (description "The zchunk compressed file format allows splitting a file
