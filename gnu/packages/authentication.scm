@@ -62,15 +62,14 @@
 (define-public oath-toolkit
   (package
     (name "oath-toolkit")
-    (version "2.6.7")
+    (version "2.6.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.savannah.nongnu.org/releases/"
                            name "/" name "-" version ".tar.gz"))
-       (patches (search-patches "oath-toolkit-xmlsec-compat.patch"))
        (sha256
-        (base32 "1aa620k05lsw3l3slkp2mzma40q3p9wginspn9zk8digiz7dzv9n"))))
+        (base32 "11g9r1avl3d2nnkglk0g7d6z6gs5padk75xqzvbxp9pir0qwhfik"))))
     (build-system gnu-build-system)
     (arguments
      ;; TODO ‘--enable-pskc’ causes xmlsec-related test suite failures.
