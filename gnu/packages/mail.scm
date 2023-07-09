@@ -837,37 +837,36 @@ Extension (MIME).")
                 "15zxg6spcmd35r6xbidq2fgcg2nzyv1sbbqds08lzll70mqx4pj7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "CC=gcc"
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'fix-bugs
-           (lambda _
-             (substitute* "MIME_headers.c"
-               (("hinfo->filename, sizeof\\(hinfo->name\\)")
-                "hinfo->filename, sizeof(hinfo->filename)")
-               (("memset\\(hinfo->defects, 0, _MIMEH_DEFECT_ARRAY_SIZE\\);")
-                "memset(hinfo->defects, 0, sizeof(hinfo->defects));"))
-             (substitute* "pldstr.c"
-               (("if \\(\\(st->start\\)&&\\(st->start != '\\\\0'\\)\\)")
-                "if ((st->start)&&(*st->start != '\\0'))"))
-             (substitute* "qpe.c"
-               (("if \\(lineend != '\\\\0'\\)")
-                "if (*lineend != '\\0')"))
-             #t))
-         (add-after 'unpack 'install-to-prefix
-           (lambda _
-             (substitute* "Makefile"
-               (("/usr/local") "${PREFIX}")
-               (("cp altermime.*") "install -D -t ${PREFIX}/bin altermime\n"))
-             #t))
-         (add-after 'unpack 'disable-Werror
-           (lambda _
-             (substitute* "Makefile"
-               (("-Werror") ""))
-             #t)))))
+     (list
+      #:make-flags
+      #~(list "CC=gcc"
+              (string-append "PREFIX=" #$output))
+      #:tests? #f                       ; there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'fix-bugs
+            (lambda _
+              (substitute* "MIME_headers.c"
+                (("hinfo->filename, sizeof\\(hinfo->name\\)")
+                 "hinfo->filename, sizeof(hinfo->filename)")
+                (("memset\\(hinfo->defects, 0, _MIMEH_DEFECT_ARRAY_SIZE\\);")
+                 "memset(hinfo->defects, 0, sizeof(hinfo->defects));"))
+              (substitute* "pldstr.c"
+                (("if \\(\\(st->start\\)&&\\(st->start != '\\\\0'\\)\\)")
+                 "if ((st->start)&&(*st->start != '\\0'))"))
+              (substitute* "qpe.c"
+                (("if \\(lineend != '\\\\0'\\)")
+                 "if (*lineend != '\\0')"))))
+          (add-after 'unpack 'install-to-prefix
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr/local") "${PREFIX}")
+                (("cp altermime.*") "install -D -t ${PREFIX}/bin altermime\n"))))
+          (add-after 'unpack 'disable-Werror
+            (lambda _
+              (substitute* "Makefile"
+                (("-Werror") "")))))))
     (home-page "https://pldaniels.com/altermime/")
     (synopsis "Modify MIME-encoded messages")
     (description
