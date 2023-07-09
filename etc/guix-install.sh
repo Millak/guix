@@ -437,13 +437,11 @@ sys_enable_guix_daemon()
             { # systemd .mount units must be named after the target directory.
               # Here we assume a hard-coded name of /gnu/store.
               # XXX Work around <https://issues.guix.gnu.org/41356> until next release.
-              if [ -f ~root/.config/guix/current/lib/systemd/system/gnu-store.mount ]; then
-                  cp ~root/.config/guix/current/lib/systemd/system/gnu-store.mount \
-                     /etc/systemd/system/;
-                  chmod 664 /etc/systemd/system/gnu-store.mount;
-                  systemctl daemon-reload &&
-                      systemctl enable gnu-store.mount;
-              fi
+              cp ~root/.config/guix/current/lib/systemd/system/gnu-store.mount \
+                 /etc/systemd/system/;
+              chmod 664 /etc/systemd/system/gnu-store.mount;
+              systemctl daemon-reload &&
+                  systemctl enable gnu-store.mount;
 
               cp ~root/.config/guix/current/lib/systemd/system/guix-daemon.service \
                  /etc/systemd/system/;
