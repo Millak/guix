@@ -145,6 +145,7 @@ printing, and psresize, for adjusting page sizes.")
   (package
     (name "ghostscript")
     (version "9.56.1")
+    (replacement ghostscript/fixed)
     (source
      (origin
        (method url-fetch)
@@ -265,6 +266,12 @@ capabilities of the PostScript language.  It supports a wide variety of
 output file formats and printers.")
     (home-page "https://www.ghostscript.com/")
     (license license:agpl3+)))
+
+(define ghostscript/fixed
+  (package-with-patches
+   ghostscript
+   (search-patches "ghostscript-CVE-2023-36664.patch"
+                   "ghostscript-CVE-2023-36664-fixup.patch")))
 
 (define-public ghostscript/x
   (package/inherit ghostscript
