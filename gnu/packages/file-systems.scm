@@ -296,7 +296,7 @@ Example file names:
 
 @code{emacs-dired-hacks} has @code{dired-avfs} module which enables seamless
 integration with @code{avfs}.")
-    (home-page "http://avf.sourceforge.net/")
+    (home-page "https://avf.sourceforge.net")
     (license license:gpl2+)))
 
 (define-public davfs2
