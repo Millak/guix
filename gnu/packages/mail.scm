@@ -3794,7 +3794,7 @@ operators and scripters.")
        ;; the patched version, and so do we to not break expectations.
        ;; http://alpine.freeiz.com/alpine/readme/README.patches
        (uri (git-reference
-             (url "http://repo.or.cz/alpine.git")
+             (url "https://repo.or.cz/alpine.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
