@@ -1441,7 +1441,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1452,7 +1452,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fz5nbx58058lzfhwgvlnrmhpc4bg8sv8fp48gdgp1l82ajbl3lg"))))
+        (base32 "17a7v32gxsy79cj1ap71ckrypxv7i9jv4lnibg0ymcpwk9zpwxjz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
@@ -1460,7 +1460,7 @@ basic input/output.")
        #:cargo-inputs
        (("rust-alacritty-config" ,rust-alacritty-config-0.1)
         ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
-        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.18)
+        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.19)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-clap" ,rust-clap-3)
         ("rust-cocoa" ,rust-cocoa-0.24)
