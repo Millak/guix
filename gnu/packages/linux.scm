@@ -3476,6 +3476,7 @@ settings.")
     (source (origin
               (method url-fetch)
               (uri (string-append
+                    "https://web.archive.org/web/20211201184543/"
                     "http://www.jpj.net/~trevor/aumix/releases/aumix-"
                     version ".tar.bz2"))
               (sha256
@@ -3486,7 +3487,8 @@ settings.")
      ;; Allow compilation with GCC 10.
      '(#:configure-flags '("CFLAGS=-O2 -g -fcommon")))
     (inputs (list ncurses))
-    (home-page "http://www.jpj.net/~trevor/aumix.html")
+    (home-page (string-append "https://web.archive.org/web/20211201184543/"
+                              "http://jpj.net/~trevor/aumix.html"))
     (synopsis "Audio mixer for X and the console")
     (description
      "Aumix adjusts an audio mixer from X, the console, a terminal,
