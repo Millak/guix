@@ -2421,16 +2421,16 @@ To download a zchunk file.
         (base32 "1vl8mhvsl0zlh34hwhc05vj33a2xfr0w7i978hcwaw8wn1w59bkq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--sysconfdir=/etc")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-          (lambda* (#:key make-flags outputs #:allow-other-keys)
-            (apply invoke "make" "install"
-                   (string-append "sysconfdir=" (assoc-ref outputs "out")
-                                  "/etc")
-                   make-flags))))))
+     (list
+      #:configure-flags
+      #~(list "--sysconfdir=/etc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "install"
+                     (string-append "sysconfdir=" #$output "/etc")
+                     make-flags))))))
     (native-inputs
      ;; Needed to extract the source tarball and run the test suite.
      (list lzip))
