@@ -1289,7 +1289,7 @@ with the kernel and various utilities such as per-cpu counters.")
 (define-public linsmith
   (package
     (name "linsmith")
-    (version "0.99.31")
+    (version "0.99.33")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1297,7 +1297,7 @@ with the kernel and various utilities such as per-cpu counters.")
                     version "/linsmith-" version ".tar.gz"))
               (sha256
                (base32
-                "13qj7n9826qc9shkkgd1p6vcpj78v4h9d67wbg45prg7rbnzkzds"))))
+                "1629p29casy9pgy8hzva1bmgrvh923qk01ls3anik6zqn6swkjfn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("CFLAGS=-fcommon")))
