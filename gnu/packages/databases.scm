@@ -2420,14 +2420,14 @@ similar to BerkeleyDB, LevelDB, etc.")
 (define-public redis
   (package
     (name "redis")
-    (version "7.0.9")
+    (version "7.0.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.redis.io/releases/redis-"
                                   version".tar.gz"))
               (sha256
                (base32
-                "0rczzcy2mwy6hjdgg10l9lr4vavh8jrs7zlb0ba534bwlk13awgp"))
+                "1dwayif99cipf0xs26zipbnj800px31pbsxz747bzclb4xdkvn4x"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled jemalloc, as the package will use the libc one
@@ -2435,7 +2435,7 @@ similar to BerkeleyDB, LevelDB, etc.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags #~(list #$(string-append "CC=" (cc-for-target))
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                            "MALLOC=libc"
                            "LDFLAGS=-ldl"
                            (string-append "PREFIX=" #$output))
@@ -2452,7 +2452,7 @@ similar to BerkeleyDB, LevelDB, etc.")
                  (which "env")))))
           (add-after 'unpack 'adjust-tests
             (lambda _
-              ;; Disable failing tests
+              ;; Disable failing tests.
               (substitute* "tests/test_helper.tcl"
                 ;; The AOF tests cause the test suite to hang waiting for a
                 ;; "background AOF rewrite to finish", perhaps because dead
