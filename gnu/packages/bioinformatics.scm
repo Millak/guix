@@ -1254,7 +1254,9 @@ libblasr_gtest_dep = cpp.find_library('gtest_main', dirs : '~a')\n"
      (list boost hdf5 htslib pbbam zlib))
     (native-inputs
      (list googletest pkg-config))
-    (home-page "https://github.com/PacificBiosciences/blasr_libcpp")
+    (home-page
+     (string-append "https://web.archive.org/web/20201106122415/"
+                    "https://github.com/PacificBiosciences/blasr_libcpp"))
     (synopsis "Library for analyzing PacBio genomic sequences")
     (description
      "This package provides three libraries used by applications for analyzing
@@ -1296,7 +1298,8 @@ cpp.find_library('hdf5_cpp', dirs : '~a'), "
      (list boost blasr-libcpp hdf5 pbbam zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "https://github.com/PacificBiosciences/blasr")
+    (home-page (string-append "https://web.archive.org/web/20210813124135/"
+                              "https://github.com/PacificBiosciences/blasr"))
     (synopsis "PacBio long read aligner")
     (description
      "Blasr is a genomic sequence aligner for processing PacBio long reads.")
