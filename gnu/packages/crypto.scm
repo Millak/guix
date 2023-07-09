@@ -1675,7 +1675,7 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
 (define-public libxcrypt
   (package
     (name "libxcrypt")
-    (version "4.4.33")
+    (version "4.4.36")
     (source
      (origin
        (method git-fetch)
@@ -1684,7 +1684,7 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "174k5cj95617akg6pplv371mpd35j9q8il245f2zcpq76yz4qydl"))))
+        (base32 "1yhpjjjv38y14nrj15bkndq824v42plndgi3k8mmc04grj1fbnjf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
