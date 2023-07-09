@@ -1847,7 +1847,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
     (version "5.24.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://download.kde.org/stable/plasma/"
+              (uri (string-append "mirror://kde/stable/plasma/"
                                   version "/plasma-nano-" version ".tar.xz"))
               (sha256
                (base32
