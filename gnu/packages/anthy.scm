@@ -57,7 +57,7 @@
 hiragana text to mixed kana and kanji.  It is written in the C
 programming language.  Anthy stores personal customizations (words it
 has learned from the user's input, words the user has explicitly
-added, etc.) in the ~/.anthy/ directory.  This package contains the
+added, etc.) in the @file{~/.anthy/} directory.  This package contains the
 anthy C libraries, the cannadic and alt-cannadic kana dictionaries, as
 well as command-line tools for using anthy and managing
 dictionaries.")
