@@ -4955,8 +4955,10 @@ libxml to ease remote use of the RESTful API.")
                (base32
                 "1qy2291d2vprdbbxmf0sa98izk09nl3znzzv7lckwf6f1v0sarlj"))))
     (build-system meson-build-system)
-    (arguments (substitute-keyword-arguments (package-arguments rest)
-                 ((#:tests? _ #f) #t)
+    (arguments (substitute-keyword-arguments
+                 (strip-keyword-arguments
+                   '(#:tests?)
+                   (package-arguments rest))
                  ((#:configure-flags _)
                   ;; Do not build the optional 'librest-demo' program as it
                   ;; depends on gtksourceview and libadwaita and thus,
