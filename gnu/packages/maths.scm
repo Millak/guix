@@ -7757,7 +7757,7 @@ generic reader and writer API.")
                 (lambda* (#:key tests? #:allow-other-keys)
                   (when tests?
                     (invoke "sh" "test/runtests.sh")))))))
-   (home-page "http://boolector.github.io/")
+   (home-page "https://boolector.github.io")
    (synopsis "Parser for BTOR2 format")
    (description "This package provides a parser for the BTOR2 format used by
 Boolector.")
