@@ -513,14 +513,14 @@ the two.")
 (define-public nsd
   (package
     (name "nsd")
-    (version "4.6.1")
+    (version "4.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.nlnetlabs.nl/downloads/nsd/nsd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0ym2fgkjar94y99lyvp93p7jpj33ysprvqd7py28xxn37shs6q1z"))))
+        (base32 "057jxhhyggqhy4swwqlwf1lflc96cfqpm200l1gr3lls557a9b4g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
