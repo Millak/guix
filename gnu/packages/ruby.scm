@@ -16724,6 +16724,57 @@ process citations, a dedicated processor engine is required: a pure Ruby
 engine is available in the @code{citeproc-ruby} gem.")
     (license (list license:agpl3+ license:bsd-2))))
 
+(define-public ruby-ed25519
+  (package
+    (name "ruby-ed25519")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/RubyCrypto/ed25519")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jm5w2dyhyrndcx0d02v0gjbzl1abhbx2wkp3gxzwcndghmkz98r"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'compile
+            (lambda _
+              (invoke "rake" "compile")))
+          (add-after 'unpack 'remove-unnecessary-dependencies
+            (lambda _
+              ;; Coveralls relates to a network service, and RuboCop to code
+              ;; linting and both are unnecessary to run the tests
+              (substitute* "Gemfile"
+                ((".*coveralls.*")
+                 "\n")
+                ((".*rubocop.*")
+                 "\n"))
+              (substitute* "spec/spec_helper.rb"
+                (("require \"coveralls\"")
+                 "")
+                (("Coveralls.wear!")
+                 ""))
+              (substitute* "Rakefile"
+                (("require \"rubocop/rake_task\"")
+                 "")
+                (("RuboCop::RakeTask.new")
+                 "")))))))
+    (native-inputs (list ruby-rake-compiler ruby-rspec))
+    (synopsis
+     "Ruby binding to the Ed25519 elliptic curve public-key signature system")
+    (description
+     "This package provides a Ruby binding to the Ed25519 elliptic curve
+public-key signature system described in
+@url{https://www.ietf.org/rfc/rfc8032.txt, RFC 8032}.")
+    (home-page "https://github.com/RubyCrypto/ed25519")
+    (license license:expat)))
+
 (define-public ruby-edtf
   (package
     (name "ruby-edtf")
