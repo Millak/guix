@@ -523,41 +523,42 @@ the two.")
         (base32 "057jxhhyggqhy4swwqlwf1lflc96cfqpm200l1gr3lls557a9b4g"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-pie"             ; fully benefit from ASLR
-             "--enable-ratelimit"
-             "--enable-recvmmsg"
-             "--enable-relro-now"       ; protect GOT and .dtor areas
-             "--disable-radix-tree"
-             (string-append "--with-libevent="
-                            (assoc-ref %build-inputs "libevent"))
-             (string-append "--with-ssl="
-                            (assoc-ref %build-inputs "openssl"))
-             "--with-configdir=/etc"
-             "--with-nsd_conf_file=/etc/nsd/nsd.conf"
-             "--with-logfile=/var/log/nsd.log"
-             "--with-pidfile=/var/db/nsd/nsd.pid"
-             "--with-dbfile=/var/db/nsd/nsd.db"
-             "--with-zonesdir=/etc/nsd"
-             "--with-xfrdfile=/var/db/nsd/xfrd.state"
-             "--with-zonelistfile=/var/db/nsd/zone.list")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-installation-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               ;; The ‘make install’ target tries to create the parent
-               ;; directories of run-time things like ‘pidfile’ above, and
-               ;; useless empty directories like 'configdir'.  Remove such
-               ;; '$(INSTALL)' lines and install the example configuration file
-               ;; in an appropriate location.
-               (substitute* "Makefile.in"
-                 ((".*INSTALL.*\\$\\((config|pid|xfr|db)dir" command)
-                  (string-append "#" command))
-                 (("\\$\\(nsdconfigfile\\)\\.sample" file-name)
-                  (string-append doc "/examples/" file-name)))))))
-       #:tests? #f))                    ; no tests
+     (list
+      #:configure-flags
+      #~(list "--enable-pie"            ; fully benefit from tasty ASLR
+              "--enable-ratelimit"
+              "--enable-recvmmsg"
+              "--enable-relro-now"      ; protect GOT and .dtor areas
+              "--disable-radix-tree"
+              (string-append "--with-libevent="
+                             #$(this-package-input "libevent"))
+              (string-append "--with-ssl="
+                             #$(this-package-input "openssl"))
+              "--with-configdir=/etc"
+              "--with-nsd_conf_file=/etc/nsd/nsd.conf"
+              "--with-logfile=/var/log/nsd.log"
+              "--with-pidfile=/var/db/nsd/nsd.pid"
+              "--with-dbfile=/var/db/nsd/nsd.db"
+              "--with-zonesdir=/etc/nsd"
+              "--with-xfrdfile=/var/db/nsd/xfrd.state"
+              "--with-zonelistfile=/var/db/nsd/zone.list")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-installation-paths
+            (lambda _
+              (let ((doc (string-append #$output "/share/doc/"
+                                        #$name "-" #$version)))
+                ;; The ‘make install’ target tries to create the parent
+                ;; directories of run-time things like ‘pidfile’ above, and
+                ;; useless empty directories like 'configdir'.  Remove such
+                ;; '$(INSTALL)' lines and install the example configuration file
+                ;; in an appropriate location.
+                (substitute* "Makefile.in"
+                  ((".*INSTALL.*\\$\\((config|pid|xfr|db)dir" command)
+                   (string-append "#" command))
+                  (("\\$\\(nsdconfigfile\\)\\.sample" file-name)
+                   (string-append doc "/examples/" file-name)))))))
+      #:tests? #f))                    ; no tests
     (inputs
      (list libevent openssl))
     (home-page "https://www.nlnetlabs.nl/projects/nsd/about/")
