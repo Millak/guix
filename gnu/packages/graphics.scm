@@ -824,7 +824,8 @@ many more.")
      ;; precision), as was discussed and patched long ago:
      ;; <https://issues.guix.gnu.org/22049>.  It seems the relevant fixes
      ;; didn't make it upstream, so skip tests.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (target-x86-32?)
+                             (%current-target-system)))))
     (home-page "https://github.com/AcademySoftwareFoundation/Imath")
     (synopsis "Library of math operations for computer graphics")
     (description
