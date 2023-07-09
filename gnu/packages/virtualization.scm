@@ -620,6 +620,9 @@ server and embedded PowerPC, and S390 guests.")
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
+       ;; sys/io.h is not present from glibc on non-x86 systems.
+       #:tests? ,(and (target-x86?)
+                      (not (%current-target-system)))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch
