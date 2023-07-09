@@ -122,13 +122,13 @@ efficient syncing
 (define-public vdirsyncer
   (package
     (name "vdirsyncer")
-    (version "0.19.1")
+    (version "0.19.2")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri name version))
              (sha256
               (base32
-               "1bh3kz0d8g07xnlkb5l2fj6fdakqps1wviab6zv139x5b9rcfxma"))))
+               "1fl21m10ghrpmkqa12g0qri99cxk9879pkb60jd4b4w2mgp8q1gx"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; The test suite is very flakey.
