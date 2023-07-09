@@ -850,14 +850,14 @@ laid out on the image.")
 (define-public libburn
   (package
     (name "libburn")
-    (version "1.5.4")
+    (version "1.5.6")
     (source (origin
              (method url-fetch)
              (uri (string-append "http://files.libburnia-project.org/releases/"
                                  "libburn-" version ".tar.gz"))
              (sha256
               (base32
-               "0m1vyry6pi115nysfgb0cg313qqhnlxqdg7f920wpiar0z8mjl2j"))))
+               "0jv447ixwvj68vslbgbbvkzmaabf4dz0dcizg9garvp59cdlk5bj"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
