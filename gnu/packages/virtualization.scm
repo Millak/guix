@@ -596,58 +596,54 @@ server and embedded PowerPC, and S390 guests.")
     (name "libx86emu")
     (version "3.5")
     (home-page "https://github.com/wfeldt/libx86emu")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url home-page)
-         (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11nj3y7maz9ch15b1c2b69gd8d7mpaha377zpdbvfsmg5w9zz93l"))
-       (modules
-        '((guix build utils)))
-       (snippet
-        `(begin
-           ;; Remove git2log program file.
-           (delete-file "git2log")
-           ;; Remove variables that depends on git2log.
-           (substitute* "Makefile"
-             (("GIT2LOG.*=.*$") "")
-             (("GITDEPS.*=.*$") "")
-             (("BRANCH.*=.*$") ""))))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "11nj3y7maz9ch15b1c2b69gd8d7mpaha377zpdbvfsmg5w9zz93l"))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          ;; Remove git2log program file.
+                          (delete-file "git2log")
+                          ;; Remove variables that depends on git2log.
+                          (substitute* "Makefile"
+                            (("GIT2LOG.*=.*$") "")
+                            (("GITDEPS.*=.*$") "")
+                            (("BRANCH.*=.*$") ""))))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
        ;; sys/io.h is not present from glibc on non-x86 systems.
        #:tests? ,(and (target-x86?)
                       (not (%current-target-system)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (include (string-append out "/include"))
-                    (lib (string-append out "/lib")))
-               ;; Correct the values of version and install directories.
-               (substitute* "Makefile"
-                 (("VERSION.*=.*$")
-                  (string-append "VERSION := "
-                                 ,version "\n"))
-                 (("PREFIX.*=.*$")
-                  (string-append "PREFIX := " out "\n"))
-                 (("MAJOR_VERSION.*=.*$")
-                  (string-append "MAJOR_VERSION := "
-                                 ,(version-major version) "\n"))
-                 (("LIBDIR.*=.*$")
-                  (string-append "LIBDIR = " lib "\n"))
-                 (("/usr/include") include)))))
-         (delete 'configure))))         ; no configure script
-    (native-inputs
-     (list nasm perl))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (include (string-append out "/include"))
+                             (lib (string-append out "/lib")))
+                        ;; Correct the values of version and install directories.
+                        (substitute* "Makefile"
+                          (("VERSION.*=.*$")
+                           (string-append "VERSION := "
+                                          ,version "\n"))
+                          (("PREFIX.*=.*$")
+                           (string-append "PREFIX := " out "\n"))
+                          (("MAJOR_VERSION.*=.*$")
+                           (string-append "MAJOR_VERSION := "
+                                          ,(version-major version) "\n"))
+                          (("LIBDIR.*=.*$")
+                           (string-append "LIBDIR = " lib "\n"))
+                          (("/usr/include")
+                           include)))))
+                  (delete 'configure)))) ;no configure script
+    (native-inputs (list nasm perl))
     (synopsis "Library for x86 emulation")
-    (description "Libx86emu is a small library to emulate x86 instructions.  The
+    (description
+     "Libx86emu is a small library to emulate x86 instructions.  The
 focus here is not a complete emulation but to cover enough for typical
 firmware blobs.  You can
 @enumerate
