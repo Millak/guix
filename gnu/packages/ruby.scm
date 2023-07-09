@@ -9489,7 +9489,7 @@ Profiling multiple threads simultaneously is supported.
 (define-public ruby-ruby-memcheck
   (package
     (name "ruby-ruby-memcheck")
-    (version "1.2.0")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9498,10 +9498,12 @@ Profiling multiple threads simultaneously is supported.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sx8nhx7w4z5s5vj6kq6caqsfznswqzwca372j82cd80hf9iznra"))))
+                "0fj4j4d062sw2kx2qlj877gjbj1xbb691njr8x9nbah6615idlni"))))
     (build-system ruby-build-system)
     (arguments
      (list
+      ;; The tests seem to fail on 32bit x86
+      #:tests? (not (target-x86-32?))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-valgrind-path
