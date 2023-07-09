@@ -768,19 +768,19 @@ backups on untrusted computers.")
 (define-public wimlib
   (package
     (name "wimlib")
-    (version "1.13.5")
+    (version "1.14.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://wimlib.net/downloads/"
                                   "wimlib-" version ".tar.gz"))
               (sha256
                (base32
-                "08z3xxm5hq1n4wmyhgz14p1cv0w2lx610vn8nhfwpds4n7lwkz1j"))))
+                "0hkgcf3v3hmwck02s0623brdx1ijvk1la0h5mgly1whnaqviajj9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse libxml2 ntfs-3g openssl))
+     (list fuse-3 libxml2 ntfs-3g openssl))
     (arguments
      `(#:configure-flags
        (list "--disable-static"
