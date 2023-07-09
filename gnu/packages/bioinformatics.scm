@@ -3350,7 +3350,9 @@ and more accurate.  BWA-MEM also has better performance than BWA-backtrack for
                  (("inline int map") "int map"))))))))
     (inputs
      (list gdsl zlib perl))
-    (home-page "http://bwa-pssm.binf.ku.dk/")
+    ;; https://bwa-pssm.binf.ku.dk is down, and all Web Archived copies are
+    ;; blank (they actually have "display:none" for some nefarious reason).
+    (home-page "https://github.com/pkerpedjiev/bwa-pssm")
     (synopsis "Burrows-Wheeler transform-based probabilistic short read mapper")
     (description
      "BWA-PSSM is a probabilistic short genomic sequence read aligner based on
