@@ -830,7 +830,7 @@ Extension (MIME).")
     (version "0.3.11")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://pldaniels.com/altermime/altermime-"
+              (uri (string-append "https://pldaniels.com/altermime/altermime-"
                                   version ".tar.gz"))
               (sha256
                (base32
