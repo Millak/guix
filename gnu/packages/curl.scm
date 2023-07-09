@@ -386,7 +386,7 @@ sugar and output formatting inspired from @code{httpie}.")
 (define-public trurl
   (package
     (name "trurl")
-    (version "0.5")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -395,7 +395,7 @@ sugar and output formatting inspired from @code{httpie}.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mvkpjs6wnz5hzmp2iglik85zljrzglsa6fm839l78fhw89dg3w6"))))
+        (base32 "19zdpjp01n7s7zgixq3irqfnx66dmqf8zyp0dlb6y7ga673lqwi8"))))
     (build-system gnu-build-system)
     (arguments
      (list
