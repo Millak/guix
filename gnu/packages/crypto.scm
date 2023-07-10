@@ -783,6 +783,7 @@ data on your platform, so the seed itself will be as random as possible.
                      (apply invoke "make" target jobs make-flags)
                      (apply invoke "make" "libcryptopp.pc" jobs
                             make-flags)))))))
+    (properties '((tunable? . #t)))
     (native-inputs
      (list unzip))
     (home-page "https://cryptopp.com/")
