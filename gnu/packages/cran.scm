@@ -7009,6 +7009,37 @@ non-parametric analysis of structured data, and other energy
 statistics/methods are implemented.")
     (license license:gpl2+)))
 
+(define-public r-envstats
+  (package
+    (name "r-envstats")
+    (version "2.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "EnvStats" version))
+              (sha256
+               (base32
+                "17fgwa5rdjpsxk95p1j48bkpbmm01vy25vzbgggj31a1k2i4i85p"))))
+    (properties `((upstream-name . "EnvStats")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-mass r-nortest))
+    (home-page "https://github.com/alexkowa/EnvStats")
+    (synopsis
+     "Package for environmental statistics, including US EPA guidance")
+    (description
+     "This is a package for graphical and statistical analyses of
+environmental data, with a focus on analyzing chemical concentrations and
+physical parameters, usually in the context of mandated environmental
+monitoring.  It provides major environmental statistical methods found in the
+literature and regulatory guidance documents, with extensive help that
+explains what these methods do, how to use them, and where to find them in the
+literature.  It comes with numerous built-in data sets from regulatory
+guidance documents and environmental statistics literature.  It includes
+scripts reproducing analyses presented in the book \"EnvStats: An R Package
+for Environmental Statistics\" (Millard, 2013, Springer, ISBN
+978-1-4614-8455-4,
+@url{https://link.springer.com/book/10.1007/978-1-4614-8456-1}).")
+    (license license:gpl3+)))
+
 (define-public r-suppdists
   (package
     (name "r-suppdists")
