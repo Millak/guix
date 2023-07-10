@@ -23,6 +23,7 @@
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix monads)
+  #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module ((guix build svn) #:prefix build:)
@@ -79,22 +80,38 @@
   "Return a fixed-output derivation that fetches REF, a <svn-reference>
 object.  The output is expected to have recursive hash HASH of type
 HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
-  (define build
-    (with-imported-modules '((guix build svn)
-                             (guix build utils))
-      #~(begin
-          (use-modules (guix build svn)
-                       (ice-9 match))
 
-          (svn-fetch (getenv "svn url")
-                     (string->number (getenv "svn revision"))
-                     #$output
-                     #:svn-command #+(file-append svn "/bin/svn")
-                     #:recursive? (match (getenv "svn recursive?")
-                                    ("yes" #t)
-                                    (_ #f))
-                     #:user-name (getenv "svn user name")
-                     #:password (getenv "svn password")))))
+  (define guile-json
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
+
+  (define guile-lzlib
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
+
+  (define guile-gnutls
+    (module-ref (resolve-interface '(gnu packages tls)) 'guile-gnutls))
+
+  (define build
+    (with-imported-modules
+        (source-module-closure '((guix build svn)
+                                 (guix build download-nar)
+                                 (guix build utils)))
+      (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
+                             guile-lzlib)
+        #~(begin
+            (use-modules (guix build svn)
+                         (guix build download-nar)
+                         (ice-9 match))
+
+            (or (svn-fetch (getenv "svn url")
+                           (string->number (getenv "svn revision"))
+                           #$output
+                           #:svn-command #+(file-append svn "/bin/svn")
+                           #:recursive? (match (getenv "svn recursive?")
+                                          ("yes" #t)
+                                          (_ #f))
+                           #:user-name (getenv "svn user name")
+                           #:password (getenv "svn password"))
+                (download-nar #$output))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
