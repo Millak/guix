@@ -5973,14 +5973,14 @@ algorithms.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-33")
+    (version "1.1-34")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "0409nhvdkkh571gdi9w21z6szkgnmj4sssw3988idh5wgknsamnr"))))
+         "1bbaxkrd5m3d40y6jdyrdr4vsjyzkfixbqjwj6c8inmks98f2wp8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot
@@ -5988,8 +5988,8 @@ algorithms.")
            r-mass
            r-matrix
            r-minqa
-           r-nloptr
            r-nlme
+           r-nloptr
            r-rcpp
            r-rcppeigen))
     (native-inputs
