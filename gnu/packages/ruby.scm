@@ -9503,7 +9503,8 @@ Profiling multiple threads simultaneously is supported.
     (arguments
      (list
       ;; The tests seem to fail on 32bit x86
-      #:tests? (not (target-x86-32?))
+      #:tests? (not (or (target-x86-32?)
+                        (%current-target-system)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-valgrind-path
