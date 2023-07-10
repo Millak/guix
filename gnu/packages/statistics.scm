@@ -4566,13 +4566,13 @@ features present in other programming languages.")
 (define-public r-plotly
   (package
     (name "r-plotly")
-    (version "4.10.1")
+    (version "4.10.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "0yin1kid3a69fcwrrajwzqbhx4xc81x8p8m0yfh1fkm2rfhj22dc"))
+                "0y2jiyfx895f15wcpizybssic4draw1vgvqz2b7f82z73319m01b"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib/"
@@ -4616,8 +4616,8 @@ features present in other programming languages.")
     (propagated-inputs
      (list r-base64enc
            r-crosstalk
-           r-digest
            r-data-table
+           r-digest
            r-dplyr
            r-ggplot2
            r-htmltools
