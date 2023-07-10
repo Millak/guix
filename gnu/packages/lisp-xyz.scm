@@ -27871,7 +27871,7 @@ implementation by Kent M. Pitman.")
 (define-public sbcl-ospm
   (package
     (name "sbcl-ospm")
-    (version "0.0.1")
+    (version "0.0.2")
     (source
      (origin
        (method git-fetch)
@@ -27880,7 +27880,7 @@ implementation by Kent M. Pitman.")
              (commit version)))
        (file-name (git-file-name "cl-ospm" version))
        (sha256
-        (base32 "1b64ar6x08bcig4brlsim445favjf1zhyj6qz018cildp3xs4miz"))))
+        (base32 "1z2wz2xg7rn7p1lladdhj789iz2f3wfjgpi2hjr08vkf1pkp15xf"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
