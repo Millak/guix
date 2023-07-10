@@ -18630,20 +18630,17 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-gmp
   (package
     (name "r-gmp")
-    (version "0.7-1")
+    (version "0.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gmp" version))
        (sha256
         (base32
-         "1djxhc4v874asmrj8qy054779wsq499f5f2wc6vmr40qab33v1x6"))))
+         "12rd0j3sawzipfz4xr3ikrxrjabpjp4s3y4ikvk16z8rhjs2i5bw"))))
+    (properties
+     '((updater-extra-inputs . ("gmp"))))
     (build-system r-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-CC
-           (lambda _ (setenv "CC" "gcc") #t)))))
     (inputs (list gmp))
     (home-page "https://cran.r-project.org/web/packages/gmp")
     (synopsis "Multiple precision arithmetic")
