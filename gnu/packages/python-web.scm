@@ -3679,6 +3679,29 @@ files with gzip, deflate or brotli.  Flask-Compress both adds the various
 headers required for a compressed response and compresses the response data.")
     (license license:expat)))
 
+(define-public python-flask-seasurf
+  (package
+    (name "python-flask-seasurf")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Flask-SeaSurf" version))
+              (sha256
+               (base32
+                "1aaib4n27q0f2alp87mhv3f79vg7qckp71rphbd0mb39qw470lsl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
+    (propagated-inputs (list python-flask))
+    (home-page "https://github.com/maxcountryman/flask-seasurf/")
+    (synopsis "CSRF extension for Flask")
+    (description "SeaSurf is a Flask extension for preventing cross-site
+request forgery (CSRF).  CSRF attacks are problematic because the mechanism
+they use is relatively easy to exploit.  This extension attempts to aid you in
+securing your application from such attacks.  This extension is based on the
+Django middleware.")
+    (license license:bsd-3)))
+
 (define-public python-flask-wtf
   (package
     (name "python-flask-wtf")
