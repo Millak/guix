@@ -1138,8 +1138,8 @@ standards of the IceCat project.")
     "ru" "sco" "si" "sk" "sl" "son" "sq" "sr" "sv-SE" "szl" "ta" "te" "th" "tl"
     "tr" "trs" "uk" "ur" "uz" "vi" "xh" "zh-CN" "zh-TW"))
 
-(define %icedove-build-id "20230607000000") ;must be of the form YYYYMMDDhhmmss
-(define %icedove-version "102.12.0")
+(define %icedove-build-id "20230705000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-version "102.13.0")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.
@@ -1148,11 +1148,11 @@ standards of the IceCat project.")
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/releases/comm-esr102")
-          (changeset "9d42734e12597ccdb59fee178bf369d8c328dcad")))
+          (changeset "2bf94c4d195694485df5d632f2453888cf4f6657")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "159jdxcg62fq24hgpp5pd8yb0xmqzjhcmd706yzs8lnydm9kjpcg"))))
+      "1nzbvw1n6wdjbsq0cvyq8av2xf775cp4gkvsjc7i5qzvhl84wg4l"))))
 
 (define (comm-source->locales+changeset source)
   "Given SOURCE, a checkout of the Thunderbird 'comm' component, return the
