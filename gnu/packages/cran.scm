@@ -4058,51 +4058,66 @@ expression estimates for all genes.")
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.4.2")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "069ghbzp0bsmbw2nzw28cmbym65i3a90v50y7qksy2g4pfhvfh4s"))
+         "05fi1cbb33hvrxx3vibbai7bzlx60jxd3iaqpc86x0224b3gpim2"))
        (snippet
         '(for-each delete-file
-                   '("inst/lib/bs-a11y-p/plugins/js/bootstrap-accessibility.min.js"
+                   '("inst/components/accordion.min.js"
+                     "inst/components/card.min.js"
+                     "inst/components/sidebar.min.js"
+                     "inst/lib/bs-a11y-p/plugins/js/bootstrap-accessibility.min.js"
                      "inst/lib/bs3/assets/javascripts/bootstrap.min.js"
                      "inst/lib/bs4/dist/js/bootstrap.bundle.min.js"
                      "inst/lib/bs5/dist/js/bootstrap.bundle.min.js")))))
     (properties `((upstream-name . "bslib")))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build utils)
+     (list
+      #:modules '((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'process-javascript
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "inst/lib/"
-               (call-with-values
-                   (lambda ()
-                     (unzip2
-                      `(("bs-a11y-p/plugins/js/bootstrap-accessibility.js"
-                         "bs-a11y-p/plugins/js/bootstrap-accessibility.min.js")
-                        ("bs-colorpicker/js/bootstrap-colorpicker.js"
-                         "bs-colorpicker/js/bootstrap-colorpicker.min.js")
-                        ("bs3/assets/javascripts/bootstrap.js"
-                         "bs3/assets/javascripts/bootstrap.min.js")
-                        (,(assoc-ref inputs "js-bootstrap4-bundle")
-                         "bs4/dist/js/bootstrap.bundle.min.js")
-                        (,(assoc-ref inputs "js-bootstrap5-bundle")
-                         "bs5/dist/js/bootstrap.bundle.min.js"))))
-                 (lambda (sources targets)
-                   (for-each (lambda (source target)
-                               (format #t "Processing ~a --> ~a~%"
-                                       source target)
-                               (invoke "esbuild" source "--minify"
-                                       (string-append "--outfile=" target)))
-                             sources targets)))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; See srcts/build/index.ts
+              (for-each (lambda (component)
+                          (invoke "esbuild"
+                                  "--bundle" "--minify" "--sourcemap"
+                                   "--target=es6" ;"--external=:bootstrap"
+                                  (string-append
+                                   #$(this-package-native-input "typescript-components")
+                                   "/srcts/src/components/" component ".ts")
+                                  (string-append "--outfile=inst/components/"
+                                                 component ".min.js")))
+                        '("accordion" "sidebar" "card"))
+              (with-directory-excursion "inst/lib/"
+                (call-with-values
+                    (lambda ()
+                      (unzip2
+                       `(("bs-a11y-p/plugins/js/bootstrap-accessibility.js"
+                          "bs-a11y-p/plugins/js/bootstrap-accessibility.min.js")
+                         ("bs-colorpicker/js/bootstrap-colorpicker.js"
+                          "bs-colorpicker/js/bootstrap-colorpicker.min.js")
+                         ("bs3/assets/javascripts/bootstrap.js"
+                          "bs3/assets/javascripts/bootstrap.min.js")
+                         (,(assoc-ref inputs "js-bootstrap4-bundle")
+                          "bs4/dist/js/bootstrap.bundle.min.js")
+                         (,(assoc-ref inputs "js-bootstrap5-bundle")
+                          "bs5/dist/js/bootstrap.bundle.min.js"))))
+                  (lambda (sources targets)
+                    (for-each (lambda (source target)
+                                (format #t "Processing ~a --> ~a~%"
+                                        source target)
+                                (invoke "esbuild" source "--minify"
+                                        (string-append "--outfile=" target)))
+                              sources targets)))))))))
     (propagated-inputs
      (list r-base64enc
            r-cachem
@@ -4128,7 +4143,17 @@ expression estimates for all genes.")
            (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.2.2/dist/js/bootstrap.bundle.js")
            (sha256
             (base32
-             "1ibfb1lwwm50did0b4fvxaqc7xyljmp20f3qb1ybdlvcy22mk8bg"))))))
+             "1ibfb1lwwm50did0b4fvxaqc7xyljmp20f3qb1ybdlvcy22mk8bg"))))
+       ("typescript-components"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/rstudio/bslib")
+                 (commit (string-append "v" version))))
+           (file-name (git-file-name name version))
+           (sha256
+            (base32
+             "1krmavvbnpikiyxgv36vf70p8qzy1rymh1l41pjc7z74hk526p7c"))))))
     (home-page "https://rstudio.github.io/bslib/")
     (synopsis "Custom Bootstrap Sass themes for shiny and rmarkdown")
     (description
