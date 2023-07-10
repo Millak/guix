@@ -1017,7 +1017,7 @@ technology, such as head mounted displays with built in head tracking.")
 (define-public openrgb
   (package
     (name "openrgb")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -1026,7 +1026,7 @@ technology, such as head mounted displays with built in head tracking.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yz7sdrjcxajm1zpa5djinmych5dvck0r1fvk0x5qmk87va4p9z3"))
+        (base32 "0rdh87w4j47dr0vakva94fhcbdc67d9aad0p3najg9zf8zhf64jw"))
        (patches
         (search-patches "openrgb-unbundle-hueplusplus.patch"))
        (modules '((guix build utils)))
