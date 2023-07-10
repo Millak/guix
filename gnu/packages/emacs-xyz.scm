@@ -131,6 +131,7 @@
 ;;; Copyright © 2022-2023 Simon Josefsson <simon@josefsson.org>
 ;;; Copyright © 2023 Fabio Natali <me@fabionatali.com>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
+;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32551,6 +32552,29 @@ color.  Designed for 256-color terminals.  Comes in light and dark!")
 a theme for Spacemacs.  The theme comes with dark and light variants
 and it should work well with 256 color terminals.")
     (license license:gpl3+)))
+
+(define-public emacs-starlit-theme
+  (let ((commit "d6f327fb09497be7bee64d5d204d27f655cc5b04")
+        (revision "0"))
+    (package
+      (name "emacs-starlit-theme")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/SFTtech/starlit-emacs")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "118b3ii9gpjq70q3qf0lyd53jp5a7qvhsl4bbjh4akck96cjdnnj"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/SFTtech/starlit-emacs")
+      (synopsis "Deep blue and colorful Emacs theme like a clear night sky")
+      (description
+       "Starlit theme customizes your Emacs to be deep blue with bright colors
+from a starlit sky.")
+      (license license:gpl3+))))
 
 (define-public emacs-elixir-mode
   (package
