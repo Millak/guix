@@ -5041,6 +5041,28 @@ DocView mode, and revisiting those PDF files later using the same mode will
 restore the saved place.")
     (license license:gpl3+)))
 
+(define-public emacs-sakura-theme
+  (package
+    (name "emacs-sakura-theme")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacsfodder/emacs-theme-sakura")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nxj6gx5virv95sfxbasvr2mh427w5srzjsfawhf58ixif8wkhd0"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-autothemer))
+    (home-page "https://github.com/emacsfodder/emacs-theme-sakura")
+    (synopsis "Emacs theme of cherry blossoms")
+    (description
+     "Sakura Emacs theme is the rose tinted fork of @code{Creamsody},
+inspired by the Deep Purple.")
+    (license license:gpl3+)))
+
 (define-public emacs-pdfgrep
   ;; XXX: Upstream does not tag releases.  The commit below matches latest
   ;; version bump.
