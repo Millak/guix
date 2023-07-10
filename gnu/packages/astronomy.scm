@@ -428,7 +428,7 @@ made to get a better separation of core libraries and applications.
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
+             "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
         (base32 "128qsv2q0f0g714ahlsixiikvvbwxi9bg9q9pcr5cd3f7wdkv9gb"))))
