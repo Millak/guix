@@ -12034,6 +12034,28 @@ The following completions are currently available:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public emacs-sweet-theme
+  (let ((commit "78f741806ecebe01224bf54d09ad80e306652508")
+        (revision "0"))
+    (package
+      (name "emacs-sweet-theme")
+      (version (git-version "4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/2bruh4me/sweet-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yqz15l6xa1vkll4gaa3jpr30vq3yjgbgadjilsmz5p8mblawhyx"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/2bruh4me/sweet-theme")
+      (synopsis "Emacs theme inspired by the GTK theme Sweet")
+      (description "Sweet is an Emacs theme inspired by the GTK theme with
+the same name.")
+      (license license:gpl3+))))
+
 (define-public emacs-swiper
   (package
     (name "emacs-swiper")
