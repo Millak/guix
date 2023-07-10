@@ -3729,6 +3729,30 @@ always indented.  It reindents after every change, making it more reliable
 than @code{electric-indent-mode}.")
     (license license:gpl2+)))
 
+(define-public emacs-gc-stats
+  (package
+    (name "emacs-gc-stats")
+    (version "1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/"
+                                  "emacs-gc-stats-" version ".tar"))
+              (sha256
+               (base32
+                "19195s2nw87nmdz861j6shw5m2lv0spbcb1wff0y338fgx9sicgz"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~yantar92/emacs-gc-stats")
+    (synopsis "Collect Emacs GC statistics")
+    (description
+     "This package collects Emacs @dfn{garbage collection} (GC) statistics over
+time and saves it in the format that can be shared with Emacs maintainers.
+
+This package does not upload anything automatically.  You will need to upload
+the data manually, by sending email attachment.  If necessary, you can review
+@code{emacs-gc-stats-file} (defaults to @code{~/.emacs.d/emacs-gc-stats.eld})
+before uploading-it is just a text file.")
+    (license license:gpl3+)))
+
 (define-public emacs-gcmh
   ;; No tagged release upstream, but the commit below correspond to the 0.2.1
   ;; release.
