@@ -93,6 +93,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages web)
@@ -3211,6 +3212,30 @@ of nodes and the styles of edges, may be adjusted.")
     (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-auxhook texlive-auxhook)
+
+(define-public texlive-epspdf
+  (package
+    (name "texlive-epspdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/epspdf.info" "doc/support/epspdf/"
+                   "scripts/epspdf/")
+             (base32
+              "0sxn3dff0nxiw68h1kr86rmnc72xkc62fk94j590a4di1lh2firl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "epspdf.tlu" "epspdftk.tcl")))
+    (inputs (list tcl tk))
+    (home-page "https://ctan.org/pkg/epspdf")
+    (synopsis "Converter for PostScript, EPS and PDF")
+    (description
+     "Epspdftk.tcl is a GUI PS/EPS/PDF converter.  Epspdf.tlu, its
+command-line backend, can be used by itself.  Options include grayscaling,
+cropping margins and single-page selection.  Some conversion options are made
+possible by converting in multiple steps.")
+    (license license:gpl2)))
 
 (define-public texlive-epstopdf
   (package
