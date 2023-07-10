@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -742,7 +743,7 @@ data on your platform, so the seed itself will be as random as possible.
 (define-public crypto++
   (package
     (name "crypto++")
-    (version "8.6.0")
+    (version "8.8.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -754,62 +755,34 @@ data on your platform, so the seed itself will be as random as possible.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vm821wpx59ccz6gr4xplqpxj3f1qq3jijyybj2g4npqmmldhx3b"))))
+                "11gfnsqbb531zwgzpm0x9hsgshzcj1j049vg0zqsaqf8lvky03l6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             ;; Override "/sbin/ldconfig" with simply "echo" since
-             ;; we don't need ldconfig(8).
-             "LDCONF=echo")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-native-optimisation
-           ;; This package installs more than just headers.  Ensure that the
-           ;; cryptest.exe binary & static library aren't CPU model specific.
-           (lambda _
-             (substitute* "GNUmakefile"
-               ((" -march=native") ""))
-             #t))
-         (delete 'configure)
-         (replace 'build
-           ;; By default, only the static library is built.
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "shared"
-                    "-j" (number->string (parallel-job-count))
-                    make-flags)))
-         (add-after 'install 'install-shared-library-links
-           ;; By default, only .so and .so.x.y.z are installed.
-           ;; Create all the ‘intermediates’ expected by dependent packages.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (prefix "libcryptopp.so.")
-                    (target (string-append prefix ,version)))
-               (with-directory-excursion lib
-                 (symlink target
-                          (string-append prefix ,(version-major+minor version)))
-                 (symlink target
-                          (string-append prefix ,(version-major version)))
-                 #t))))
-         (add-after 'install 'install-pkg-config
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pkg-dir (string-append out "/lib/pkgconfig")))
-               (mkdir-p pkg-dir)
-               (with-output-to-file (string-append pkg-dir "/libcrypto++.pc")
-                 (lambda _
-                   (display
-                    (string-append
-                     "prefix=" out "\n"
-                     "libdir=" out "/lib\n"
-                     "includedir=" out "/include\n\n"
-                     "Name: libcrypto++-" ,version "\n"
-                     "Description: Class library of cryptographic schemes\n"
-                     "Version: " ,version "\n"
-                     "Libs: -L${libdir} -lcryptopp\n"
-                     "Cflags: -I${includedir}\n"))
-                   #t))))))))
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target))
+                   (string-append "AR=" #$(ar-for-target))
+                   ;; Override "/sbin/ldconfig" with simply "echo" since
+                   ;; we don't need ldconfig(8).
+                   "LDCONF=echo")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'build
+                 ;; By default, only the static library is built.
+                 (lambda* (#:key make-flags parallel-build?
+                           #:allow-other-keys)
+                   (let* ((job-count (if parallel-build?
+                                         (number->string (parallel-job-count))
+                                         1))
+                          (jobs (string-append "-j" job-count))
+                          (target #$(if (target-mingw?)
+                                        "static"
+                                        "shared")))
+                     (apply invoke "make" target jobs make-flags)
+                     (apply invoke "make" "libcryptopp.pc" jobs
+                            make-flags)))))))
     (native-inputs
      (list unzip))
     (home-page "https://cryptopp.com/")
