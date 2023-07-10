@@ -60,6 +60,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
@@ -756,6 +757,66 @@ header.")
 polygon data in order to produce control maps which can directly be used in
 astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
     (license license:gpl3+)))
+
+(define-public glnemo2
+  (package
+    (name "glnemo2")
+    (version "1.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.lam.fr/jclamber/glnemo2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jmmxszh8d2jmfghig36nhykff345mqnpssfa64d0r7l9cnfp3cn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f        ; No test target
+      #:configure-flags #~(list "CPPFLAGS=-fcommon")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-libraries-paths
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; There is some not straightforward logic on how to set
+                ;; the installation prefix for the project; inherit it
+                ;; from the build-system default flags.
+                (("CMAKE_INSTALL_PREFIX  \"/usr\"")
+                 "CMAKE_INSTALL_PREFIX")
+                (("/usr/include/CCfits")
+                 (string-append
+                  #$(this-package-input "ccfits") "/include/CCfits"))
+                (("/usr/include/tirpc")
+                 (string-append
+                  #$(this-package-input "libtirpc") "/include/tirpc"))
+                ;; It tries to detect library in two "predictable" paths,
+                ;; required during the link phase.
+                (("/usr/lib64/libtirpc.so")
+                 (string-append
+                  #$(this-package-input "libtirpc") "/lib/libtirpc.so"))))))))
+    (inputs
+     (list ccfits
+           cfitsio
+           glm
+           glu
+           hdf5
+           libtirpc
+           qtbase-5
+           zlib))
+    (home-page "https://projets.lam.fr/projects/unsio/wiki")
+    (synopsis "3D interactive visualization program for n-body like particles")
+    (description
+     "GLNEMO2 is an interactive 3D visualization program which displays
+particles positions of the different components (gas, stars, disk, dark
+matter halo, bulge) of an N-body snapshot.  It is a tool for running
+N-body simulations from isolated galaxies to cosmological simulations.
+It has a graphical user interface (based on QT 5.X API), uses a fast
+3D engine (OPenGL and GLSL), and is generic with the possibility to load
+different kinds of input files.")
+    (license license:cecill)))
 
 (define-public gnuastro
   (package
