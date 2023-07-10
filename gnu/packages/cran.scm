@@ -5109,19 +5109,21 @@ including functions for geolocation and routing.")
 (define-public r-haven
   (package
     (name "r-haven")
-    (version "2.5.2")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "haven" version))
        (sha256
         (base32
-         "07an4d8638m27765l6l4p6vfjxm8nfwbxx2bwpxfy6xffw1znc91"))
+         "1qxp0hp7clmd70383lsbiijq1i5037zv4haja60czw09mnprjncs"))
        (modules '((guix build utils)))
        (snippet
         ;; unvendor readstat
         '(delete-file-recursively "src/readstat"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-inputs . ("readstat"))))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -5137,15 +5139,15 @@ including functions for geolocation and routing.")
     (inputs
      (list readstat zlib))
     (native-inputs
-     (list r-knitr))
+     (list pkg-config r-knitr))
     (propagated-inputs
      (list r-cli
            r-cpp11
            r-forcats
            r-hms
            r-lifecycle
-           r-rlang
            r-readr
+           r-rlang
            r-tibble
            r-tidyselect
            r-vctrs))
