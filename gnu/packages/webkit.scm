@@ -199,6 +199,13 @@ engine that uses Wayland for graphics output.")
                 (substitute* "Source/WebKit/UIProcess/glib/WebProcessPoolGLib.cpp"
                   (("libWPEBackend-fdo-[\\.0-9]+\\.so" all)
                    (search-input-file inputs (string-append "lib/" all)))))))
+          #$@(if (target-x86-32?)
+                 ;; Don't include x86intrin.h on i686-linux.
+                 '((add-after 'unpack 'fix-headers
+                     (lambda _
+                       (substitute* "Source/ThirdParty/ANGLE/src/common/platform.h"
+                         (("\\|\\| defined\\(__i386__\\)") "")))))
+                 '())
           #$@(if (target-x86-64?)
                  '()
                  '((add-after 'unpack 'disable-sse2
