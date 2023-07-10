@@ -2808,6 +2808,7 @@ validating international phone numbers.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
+           itstool
            pkg-config
            protobuf
            xorg-server-for-tests))
