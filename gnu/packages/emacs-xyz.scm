@@ -2616,6 +2616,30 @@ can take association lists, hash tables, and in some cases vectors (where the
 index is considered the key).")
     (license license:gpl3+)))
 
+(define-public emacs-abyss-theme
+  (package
+    (name "emacs-abyss-theme")
+    (version "0.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mgrbyte/emacs-abyss-theme")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07z0djv7h3yrv4iw9n633j6dxzxb4nnzijsqkmz22ik6fbwxg5mh"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/mgrbyte/emacs-abyss-theme")
+    (synopsis "Dark theme with strong colours for Emacs")
+    (description
+     "A dark theme with contrasting colours for Emacs based on the
+@url{https://github.com/andre-richter/emacs-lush-theme, @code{lush}} theme by
+Andre Richter, using the same colours palette as the the built-in
+@code{dichromacy} theme; intended to be suitable
+for red/green colour blind users.")
+    (license license:gpl3+)))
+
 (define-public emacs-ace-jump-mode
   (package
     (name "emacs-ace-jump-mode")
