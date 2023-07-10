@@ -956,19 +956,20 @@ effects of different types of color-blindness.")
 (define-public r-digest
   (package
     (name "r-digest")
-    (version "0.6.31")
+    (version "0.6.33")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "digest" version))
        (sha256
-        (base32 "1f9isi4i2502f88c2sh4l461hgyary2aa02zd47pb9mc1r4lya2s"))))
+        (base32 "06bq696wpmn8ivbrpxw0qlcf835kc515m8jfv9zbwf8ndf42qw5y"))))
     (build-system r-build-system)
     ;; Vignettes require r-knitr, which requires r-digest, so we have to
     ;; disable them and the tests.
     (arguments
      `(#:tests? #f
        #:configure-flags (list "--no-build-vignettes")))
+    (native-inputs (list r-simplermarkdown))
     (home-page "https://dirk.eddelbuettel.com/code/digest.html")
     (synopsis "Create cryptographic hash digests of R objects")
     (description
