@@ -1426,8 +1426,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
   %D%/packages/patches/libziparchive-add-includes.patch		\
   %D%/packages/patches/lightdm-arguments-ordering.patch		\
-  %D%/packages/patches/lightdm-vncserver-check.patch		\
+  %D%/packages/patches/lightdm-vnc-ipv6.patch			\
   %D%/packages/patches/lightdm-vnc-color-depth.patch		\
+  %D%/packages/patches/lightdm-vncserver-check.patch		\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
   %D%/packages/patches/kcontacts-incorrect-country-name.patch	\
   %D%/packages/patches/kde-cli-tools-delay-mime-db.patch	\
