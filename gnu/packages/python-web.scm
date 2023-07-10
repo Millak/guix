@@ -3658,6 +3658,27 @@ and Jinja2 template engine.  It is called a micro framework because it does not
 presume or force a developer to use a particular tool or library.")
     (license license:bsd-3)))
 
+(define-public python-flask-compress
+  (package
+    (name "python-flask-compress")
+    (version "1.13")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Flask-Compress" version))
+              (sha256
+               (base32
+                "178jzz6jxlxllcjqamzh5q7ahfh90m5cl1il9vmjs3xhz65z35pf"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-brotli python-flask))
+    (native-inputs (list python-setuptools-scm))
+    (home-page "https://github.com/colour-science/flask-compress")
+    (synopsis "Compress responses in a Flask app")
+    (description
+     "This package lets you compress Flask application responses and static
+files with gzip, deflate or brotli.  Flask-Compress both adds the various
+headers required for a compressed response and compresses the response data.")
+    (license license:expat)))
+
 (define-public python-flask-wtf
   (package
     (name "python-flask-wtf")
