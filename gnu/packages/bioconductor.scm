@@ -8313,6 +8313,29 @@ the results is also provided.  All PCA methods make use of the same data
 structure (pcaRes) to provide a common interface to the PCA results.")
     (license license:gpl3+)))
 
+(define-public r-pfamanalyzer
+  (package
+    (name "r-pfamanalyzer")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "pfamAnalyzeR" version))
+              (sha256
+               (base32
+                "0zff887lc4bjrv683kqsw47vjwmf6886wybklsf2wd6hpy23mxfy"))))
+    (properties `((upstream-name . "pfamAnalyzeR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-magrittr r-readr r-stringr r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/pfamAnalyzeR")
+    (synopsis "Identification of domain isotypes in pfam data")
+    (description
+     "This R package enables the user to read pfam predictions into R.  Most
+human protein domains exist as multiple distinct variants termed domain
+isotypes. This R package enables the identification and classification of such
+domain isotypes from pfam data.")
+    (license license:expat)))
+
 ;; This is a CRAN package, but it depends on a Bioconductor package:
 ;; r-aroma-light, r-dnacopy..
 (define-public r-pscbs
