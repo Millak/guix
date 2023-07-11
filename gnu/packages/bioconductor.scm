@@ -7367,13 +7367,13 @@ Binomial data via estimation of latent structure in the natural parameter.")
 (define-public r-limma
   (package
     (name "r-limma")
-    (version "3.56.1")
+    (version "3.56.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "limma" version))
               (sha256
                (base32
-                "02c559an6hzk00bbvlrq1qljsnby4a53ng9jj6ff570mc6pabjn6"))))
+                "0miyba9frn1p4pkclzpr0bfazsk0br2jgpwpwwh773d3103hkn0r"))))
     (build-system r-build-system)
     (home-page "https://bioinf.wehi.edu.au/limma")
     (synopsis "Package for linear models for microarray and RNA-seq data")
