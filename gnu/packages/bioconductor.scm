@@ -8864,13 +8864,13 @@ comprehensive scDblFinder method.")
 (define-public r-scistreer
   (package
     (name "r-scistreer")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "scistreer" version))
               (sha256
                (base32
-                "0cdp26ngfp5rxa21nqnj6j2098f6996368g4msb3shh7n75np4s9"))))
+                "03nd4p7ik66v09yv18c0z1bvdnkr5m0axk78yapd2ri80ihmyi3c"))))
     (properties `((upstream-name . "scistreer")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
