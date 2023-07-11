@@ -6424,14 +6424,14 @@ distribution.")
 (define-public r-deseq2
   (package
     (name "r-deseq2")
-    (version "1.40.1")
+    (version "1.40.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DESeq2" version))
        (sha256
         (base32
-         "1910nvcm1lj5mcg8jdvfql6a6h1wnrgfl616gz942g4ngl18ya3p"))))
+         "0rb6b2aqn3an5ria4yjasjr7aldr5606rkc4yw275x9ddii22djg"))))
     (properties `((upstream-name . "DESeq2")))
     (build-system r-build-system)
     (propagated-inputs
