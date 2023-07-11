@@ -84,7 +84,9 @@ when STOP-LOOP? procedure returns true."
                                   client-flag/ignore-user-config)
                                  client-callback)))
        (while (not (stop-loop?))
-         (iterate-simple-poll poll timeout))))))
+         (if timeout
+             (iterate-simple-poll poll timeout)
+             (iterate-simple-poll poll)))))))
 
 (define (interface->ip-address interface)
   "Return the local IP address of the given INTERFACE."
