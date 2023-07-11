@@ -18349,14 +18349,14 @@ be imported and then exported via the @code{gridSVG} package.")
 (define-public r-kohonen
   (package
     (name "r-kohonen")
-    (version "3.0.11")
+    (version "3.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kohonen" version))
        (sha256
         (base32
-         "1bk3j0n8w4fhffv89rgyn4n21c0wcx6lr8jv4wbagpxprl585381"))))
+         "188cxw2fvpfr3dyi8g52igcyc8d5jffyn6rhc84dja52da8lp520"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
