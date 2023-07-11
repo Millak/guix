@@ -1947,14 +1947,14 @@ side.")
 (define-public r-locfit
   (package
     (name "r-locfit")
-    (version "1.5-9.7")
+    (version "1.5-9.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "locfit" version))
        (sha256
         (base32
-         "1zvsa7hvnp0pvjyy0nnrg8bdv8gv4l23jb66wkc0kipvi78grra8"))))
+         "1qqxw69p42l4szr2fl73bdydpcbxn68iyxyyjy7qy3p56bxrn2hd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
