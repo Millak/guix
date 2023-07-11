@@ -9096,14 +9096,14 @@ estimated from a given sample.")
 (define-public r-vctrs
   (package
     (name "r-vctrs")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vctrs" version))
        (sha256
         (base32
-         "117fh63r96i811y8dbrawmphlzqq8acaavykfx1y0mbc3zhspv7y"))))
+         "1hm5rw85ln0mk1mfmhgygnhjgs2lyc74cq12ddc41d78rl6j5p4k"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang))
