@@ -6844,14 +6844,14 @@ classes in the @code{stats4} package.")
 (define-public r-emdbook
   (package
     (name "r-emdbook")
-    (version "1.3.12")
+    (version "1.3.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emdbook" version))
        (sha256
         (base32
-         "0ls3zxxlwmdv7zn1v9i1y9zc2sn0hbgmyjvsj7zn3ajsw7wwlih6"))))
+         "069w10i1590bcyzv4kfsg7wsr1yl9nlsyj6yvys088xll5z4n116"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbmle r-coda r-lattice r-mass r-plyr))
