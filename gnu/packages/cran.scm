@@ -2703,13 +2703,13 @@ conventions.")
 (define-public r-ecp
   (package
     (name "r-ecp")
-    (version "3.1.4")
+    (version "3.1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ecp" version))
               (sha256
                (base32
-                "0kf0kkawds86kqx3p2ahyzw9xvaz5bz51ffik3f1g5b5lwjvz60v"))))
+                "17m2m3nz7kqzjw2bkkp6c1a3zhwjq2c5mw9pk5g0ma274iiqj8wy"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
