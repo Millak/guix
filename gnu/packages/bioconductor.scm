@@ -7386,13 +7386,13 @@ different technologies, including microarrays, RNA-seq, and quantitative PCR.")
 (define-public r-maaslin2
   (package
     (name "r-maaslin2")
-    (version "1.13.0")
+    (version "1.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Maaslin2" version))
        (sha256
-        (base32 "05xha6y6ssf80l4xb7skbjafpqww2d85l4b6wn72r5djidyxxw6y"))))
+        (base32 "06mb72hbzihdficv73yqbb2m86bkw78w3vbw1rm98n0npxq2fch6"))))
     (properties `((upstream-name . "Maaslin2")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7409,7 +7409,6 @@ different technologies, including microarrays, RNA-seq, and quantitative PCR.")
            r-lme4
            r-lmertest
            r-logging
-           r-lpsymphony
            r-mass
            r-metagenomeseq
            r-optparse
@@ -7418,6 +7417,7 @@ different technologies, including microarrays, RNA-seq, and quantitative PCR.")
            r-pheatmap
            r-pscl
            r-robustbase
+           r-tibble
            r-vegan))
     (native-inputs (list r-knitr))
     (home-page "http://huttenhower.sph.harvard.edu/maaslin2")
