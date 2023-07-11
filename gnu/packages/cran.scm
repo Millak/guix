@@ -21007,22 +21007,23 @@ plotting functions are available for analyzing clustering results.")
 (define-public r-remacor
   (package
     (name "r-remacor")
-    (version "0.0.11")
+    (version "0.0.16")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "remaCor" version))
               (sha256
                (base32
-                "0hhk1zrjz6sxg219h9ca7jya0vc8dmrvwaddajkcdns6bv3rj1km"))))
+                "1xznj2y3qszw8s1fgbs8fiadg7c0gl3ml1blxmwixb32kr2cv5vq"))))
     (properties `((upstream-name . "remaCor")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-clustergeneration
+     (list r-envstats
            r-ggplot2
            r-mvtnorm
+           r-rcpp
+           r-rcpparmadillo
            r-rdpack
-           r-reshape2
-           r-runit))
+           r-reshape2))
     (native-inputs (list r-knitr))
     (home-page "https://diseaseneurogenomics.github.io/remaCor/")
     (synopsis "Random effects meta-analysis for correlated test statistics")
