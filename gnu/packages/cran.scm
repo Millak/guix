@@ -768,14 +768,14 @@ such as counts or binary matrices.")
 (define-public r-googledrive
   (package
     (name "r-googledrive")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "googledrive" version))
        (sha256
         (base32
-         "0x2biilbphh77p7cxp2cvinjx45hnb5xksw775nwksqvpwxkaw0d"))))
+         "10pv70nvsqh1yc12g5fj7avfihjzpj02m8s9f8sb0c1np9s4z2qb"))))
     (properties `((upstream-name . "googledrive")))
     (build-system r-build-system)
     (propagated-inputs
