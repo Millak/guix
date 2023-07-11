@@ -34937,13 +34937,13 @@ other R users.")
 (define-public r-seurat
   (package
     (name "r-seurat")
-    (version "4.3.0")
+    (version "4.3.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Seurat" version))
               (sha256
                (base32
-                "0z7rzxi1gli56k50s6w1363ndw18wykgk5xmc3g7jhpphqxwpfky"))))
+                "04lbwk8mcv7gsi70sij264mz80frx1pr60ihv9dqg63sgr234ax4"))))
     (properties `((upstream-name . "Seurat")))
     (build-system r-build-system)
     (propagated-inputs
