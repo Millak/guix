@@ -1462,7 +1462,7 @@ Library.")
     ;; Based on LLVM 14 as of v5.0.0
     (inherit llvm-14)
     (name "llvm-for-rocm")
-    (version "5.1.3")                         ;this must match '%rocm-version'
+    (version "5.6.0")                         ;this must match '%rocm-version'
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1471,10 +1471,7 @@ Library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0j6ydfkwrxwskgnhxc3cmry42n5faqbnwf2747qgf7lz5id8h8g5"))
-              (patches
-               (search-patches "llvm-roc-5.0.0-linkdl.patch"
-                               "llvm-roc-4.0.0-remove-isystem-usr-include.patch"))))
+                "1kg6q6aqijjrwaznj0gr3nd01gykrnqqnk8vz8wyfifr18l9jrgx"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-14)
        ((#:configure-flags flags)

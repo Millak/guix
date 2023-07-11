@@ -50,7 +50,7 @@
 # Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 # Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 # Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-# Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+# Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 # Copyright © 2022 muradm <mail@muradm.net>
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
@@ -1547,8 +1547,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-9-fix-bitcast-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-lpad-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-scev-miscompilation.patch	\
-  %D%/packages/patches/llvm-roc-4.0.0-remove-isystem-usr-include.patch \
-  %D%/packages/patches/llvm-roc-5.0.0-linkdl.patch \
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
   %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
   %D%/packages/patches/lsof-fatal-test-failures.patch		\
@@ -1880,9 +1878,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
+  %D%/packages/patches/rocclr-5.6.0-enable-gfx800.patch		\
+  %D%/packages/patches/rocm-bandwidth-test-5.5.0-fix-includes.patch	\
   %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch 	\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
-  %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch 	\
   %D%/packages/patches/rottlog-direntry.patch 			\
   %D%/packages/patches/ruby-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch	\

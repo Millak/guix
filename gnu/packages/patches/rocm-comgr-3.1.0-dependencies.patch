@@ -1,4 +1,5 @@
-https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/pull/25
+See https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/pull/25 for
+original patch.
 
 From c65cba2e73f9118e128b9ab7e655ee0f8a7798e7 Mon Sep 17 00:00:00 2001
 From: Craig Andrews <candrews@integralblue.com>
@@ -12,23 +13,23 @@ Without these additional required dependencies, linking fails with errors such a
  1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/lib/comgr/CMakeLists.txt b/lib/comgr/CMakeLists.txt
-index 8b5ca2f..a7d226f 100644
+index fd3ae4a..131e581 100644
 --- a/lib/comgr/CMakeLists.txt
 +++ b/lib/comgr/CMakeLists.txt
-@@ -294,7 +294,11 @@ install(FILES
-   DESTINATION "${AMD_COMGR_PACKAGE_PREFIX}")
+@@ -322,7 +322,11 @@ install(FILES
  
- set(CLANG_LIBS
--  clangFrontendTool)
-+  clangFrontendTool
-+  clangFrontend
-+  clangBasic
-+  clangDriver
-+  clangSerialization)
- 
- set(LLD_LIBS
-   lldELF
-@@ -305,8 +309,21 @@ if (LLVM_LINK_LLVM_DYLIB)
+ if(TARGET clangFrontendTool)
+   set(CLANG_LIBS
+-    clangFrontendTool)
++    clangFrontendTool
++    clangFrontend
++    clangBasic
++    clangDriver
++    clangSerialization)
+ else()
+   set(CLANG_LIBS
+     clang-cpp)
+@@ -337,8 +341,23 @@ if (LLVM_LINK_LLVM_DYLIB)
  else()
    llvm_map_components_to_libnames(LLVM_LIBS
      ${LLVM_TARGETS_TO_BUILD}
@@ -38,6 +39,8 @@ index 8b5ca2f..a7d226f 100644
 +    Symbolize
 +    Support
 +    Object
++    TargetParser
++    Bitreader
 +    BitWriter
 +    MC
 +    MCParser
