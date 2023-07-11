@@ -13679,12 +13679,12 @@ frequency matrices from nine public sources, for multiple organisms.")
 (define-public r-motifbreakr
   (package
    (name "r-motifbreakr")
-   (version "2.13.7")
+   (version "2.14.2")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "motifbreakR" version))
             (sha256
-             (base32 "0j4i3059n0g9n73nyxaca7pd4hncvgp0ww63i3kyp5pnvwycsax2"))))
+             (base32 "13fv0rkyb32grswlgzd3zr35p9xpibj2iq62sr23if4w6z5nbml2"))))
    (properties `((upstream-name . "motifbreakR")))
    (build-system r-build-system)
    (propagated-inputs
