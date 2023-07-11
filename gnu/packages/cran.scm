@@ -14075,14 +14075,14 @@ subsequence} (LCS) using a dynamic programming algorithm.")
 (define-public r-labelled
   (package
     (name "r-labelled")
-    (version "2.11.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "labelled" version))
        (sha256
         (base32
-         "1pg5l2c3ai8gkrqryq5xzsal85pljmdzc2ln8k1ak3j4racm5p7d"))))
+         "1f6jh1mrbwb3v1kc49pb65sf5ffqs0h9vizpig4r5rhhv4n3q17y"))))
     (properties `((upstream-name . "labelled")))
     (build-system r-build-system)
     (propagated-inputs
