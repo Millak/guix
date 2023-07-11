@@ -33711,21 +33711,26 @@ model.")
 (define-public r-igraph
   (package
     (name "r-igraph")
-    (version "1.4.3")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "igraph" version))
        (sha256
         (base32
-         "08b0q5fb9wrnzq32izylq8fxyagibrng5yb80acsbmnfdkxb7g86"))))
+         "01kkzl0akq5ygz2mvn29myhnfx4b74xkpmn592ih1vnh1zzph1yq"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
     (inputs
-     (list gmp glpk libxml2 zlib))
+     (list glpk gmp libxml2 zlib))
     (propagated-inputs
-     (list r-cpp11 r-magrittr r-matrix r-pkgconfig r-rlang))
+     (list r-cli
+           r-cpp11
+           r-magrittr
+           r-matrix
+           r-pkgconfig
+           r-rlang))
     (home-page "https://igraph.org")
     (synopsis "Network analysis and visualization")
     (description
