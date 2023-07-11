@@ -160,33 +160,50 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   "Return a fixed-output derivation that fetches REF, a <svn-multi-reference>
 object.  The output is expected to have recursive hash HASH of type
 HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
-  (define build
-    (with-imported-modules '((guix build svn)
-                             (guix build utils))
-      #~(begin
-          (use-modules (guix build svn)
-                       (guix build utils)
-                       (srfi srfi-1)
-                       (ice-9 match))
 
-          (for-each (lambda (location)
-                      ;; The directory must exist if we are to fetch only a
-                      ;; single file.
-                      (unless (string-suffix? "/" location)
-                        (mkdir-p (string-append #$output "/" (dirname location))))
-                      (svn-fetch (string-append (getenv "svn url") "/" location)
-                                 (string->number (getenv "svn revision"))
-                                 (if (string-suffix? "/" location)
-                                     (string-append #$output "/" location)
-                                     (string-append #$output "/" (dirname location)))
-                                 #:svn-command #+(file-append svn "/bin/svn")
-                                 #:recursive? (match (getenv "svn recursive?")
-                                                ("yes" #t)
-                                                (_ #f))
-                                 #:user-name (getenv "svn user name")
-                                 #:password (getenv "svn password")))
-                    (call-with-input-string (getenv "svn locations")
-                      read)))))
+  (define guile-json
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
+
+  (define guile-lzlib
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
+
+  (define guile-gnutls
+    (module-ref (resolve-interface '(gnu packages tls)) 'guile-gnutls))
+
+  (define build
+    (with-imported-modules
+        (source-module-closure '((guix build svn)
+                                 (guix build download-nar)
+                                 (guix build utils)))
+      (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
+                             guile-lzlib)
+        #~(begin
+            (use-modules (guix build svn)
+                         (guix build utils)
+                         (guix build download-nar)
+                         (srfi srfi-1)
+                         (ice-9 match))
+
+            (or (every
+                 (lambda (location)
+                   ;; The directory must exist if we are to fetch only a
+                   ;; single file.
+                   (unless (string-suffix? "/" location)
+                     (mkdir-p (string-append #$output "/" (dirname location))))
+                   (svn-fetch (string-append (getenv "svn url") "/" location)
+                              (string->number (getenv "svn revision"))
+                              (if (string-suffix? "/" location)
+                                  (string-append #$output "/" location)
+                                  (string-append #$output "/" (dirname location)))
+                              #:svn-command #+(file-append svn "/bin/svn")
+                              #:recursive? (match (getenv "svn recursive?")
+                                             ("yes" #t)
+                                             (_ #f))
+                              #:user-name (getenv "svn user name")
+                              #:password (getenv "svn password")))
+                 (call-with-input-string (getenv "svn locations")
+                   read))
+                (download-nar #$output))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
