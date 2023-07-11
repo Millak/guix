@@ -103,14 +103,13 @@ devices on various operating systems.")
     (arguments
      (list #:configure-flags
            #~(list "--disable-static"
-                   ;; Extending the RUNPATH is necessary, otherwise loading
-                   ;; the libusb-1.0.so.0 library fails.
-                   (string-append "LDFLAGS=-Wl,-rpath="
-                                  #$(this-package-input "libusb") "/lib"))))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     (list libusb))
+                   ;; Provide the absolute file name of libusb-1.0.so so
+                   ;; dlopen works.
+                   (string-append "LIBUSB_1_0_SONAME="
+                                  #$(this-package-input "libusb")
+                                  "/lib/libusb-1.0.so"))))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list libusb))
     (home-page "https://libusb.info")
     (synopsis "Compatibility shim for libusb")
     (description
