@@ -8803,6 +8803,40 @@ differential expression analysis, RNAseq data and related problems.")
     ;; Any version of the LGPL
     (license license:lgpl3+)))
 
+(define-public r-saturn
+  (package
+    (name "r-saturn")
+    (version "1.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "satuRn" version))
+              (sha256
+               (base32
+                "0frm7iblxkc8ajcdqrfgsvf4krn6x8cr3mx7fnzq06xij0mqm3sj"))))
+    (properties `((upstream-name . "satuRn")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocparallel
+                             r-boot
+                             r-ggplot2
+                             r-limma
+                             r-locfdr
+                             r-matrix
+                             r-pbapply
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/statOmics/satuRn")
+    (synopsis
+     "Analysis of differential transcript usage for scRNA-seq applications")
+    (description
+     "satuRn provides a framework for performing differential transcript usage
+analyses.  The package consists of three main functions.  The first function,
+@code{fitDTU}, fits quasi-binomial generalized linear models that model
+transcript usage in different groups of interest.  The second function,
+@code{testDTU}, tests for differential usage of transcripts between groups of
+interest.  Finally, @code{plotDTU} visualizes the usage profiles of
+transcripts in groups of interest.")
+    (license license:artistic2.0)))
+
 (define-public r-scannotatr
   (package
     (name "r-scannotatr")
