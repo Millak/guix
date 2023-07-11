@@ -31950,18 +31950,23 @@ multi-state models.")
 (define-public r-scatterpie
   (package
     (name "r-scatterpie")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scatterpie" version))
        (sha256
         (base32
-         "06crdylakwig8ryi1w5a6mmfy67gakmk6gp0xbrg749da1asd7a9"))))
+         "0wfrckyvy4zw34qdvgg1gwqfdi1xhs63v3gfwa4akm7ifd1canlb"))))
     (properties `((upstream-name . "scatterpie")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr r-ggforce r-ggfun r-ggplot2 r-rlang r-tidyr))
+     (list r-dplyr
+           r-ggforce
+           r-ggfun
+           r-ggplot2
+           r-rlang
+           r-tidyr))
     (native-inputs
      (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/scatterpie/")
