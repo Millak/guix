@@ -33611,13 +33611,13 @@ value.")
 (define-public r-confintr
   (package
     (name "r-confintr")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "confintr" version))
               (sha256
                (base32
-                "0p2k1bflyb82grp6ikh7dw3dacvsch8zfwxwwr4v325q0yk98iiz"))))
+                "0gi9cnk2cd67vmywrkb19g6f9gr8k999kg0k03khad7lgqp4l43s"))))
     (properties `((upstream-name . "confintr")))
     (build-system r-build-system)
     (propagated-inputs (list r-boot))
