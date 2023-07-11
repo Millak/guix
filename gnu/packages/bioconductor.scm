@@ -10358,13 +10358,13 @@ fitting of some classes of graphical Markov models.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "1.7.0")
+    (version "1.7.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "0rw2nrmnniff5hb56r21rk0mphba74fppxsa5ps2xamg1a63qfyw"))))
+                "0a4ykfybwx1qhgn7ic29dzigiazj248iihdr1597jxj505q21gay"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
     (propagated-inputs (list r-aldex2
@@ -10374,6 +10374,7 @@ fitting of some classes of graphical Markov models.")
                              r-dplyr
                              r-edger
                              r-ggally
+                             r-ggh4x
                              r-ggplot2
                              r-ggprism
                              r-lefser
@@ -10382,7 +10383,6 @@ fitting of some classes of graphical Markov models.")
                              r-metagenomeseq
                              r-microbiomestat
                              r-patchwork
-                             r-phyloseq
                              r-readr
                              r-summarizedexperiment
                              r-tibble
