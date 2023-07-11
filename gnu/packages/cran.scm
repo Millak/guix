@@ -5640,16 +5640,17 @@ functions and compiled functions callable by other packages.")
 (define-public r-rcppthread
   (package
     (name "r-rcppthread")
-    (version "2.1.3")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppThread" version))
        (sha256
         (base32
-         "0iprpidf7q1wlrgr9dwiikb6apqk80pyjcyni56k64nl7lrkszhj"))))
+         "0rra7qqbq2y4bj54x76559p5ghpj3r03c4vlpg96phwafwnc2y8m"))))
     (properties `((upstream-name . "RcppThread")))
     (build-system r-build-system)
+    (native-inputs (list r-r-rsp))
     (home-page
      "https://github.com/tnagler/RcppThread")
     (synopsis "R threading in C++")
