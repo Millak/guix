@@ -2859,13 +2859,13 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-ancombc
   (package
     (name "r-ancombc")
-    (version "2.2.0")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANCOMBC" version))
               (sha256
                (base32
-                "1wfbi8xyh2pxpjdv2zhml2l1h8c7fyfl5wyici3nm3rcs00n7m9w"))))
+                "05gngz6cqihxg4zlf7ymw93qj61a1i19hgp4fkc0cxnkq0pambrd"))))
     (properties `((upstream-name . "ANCOMBC")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2873,25 +2873,21 @@ analysis, modelling, and visualization of spike-in controls.")
            r-desctools
            r-doparallel
            r-dorng
-           r-dplyr
-           r-emmeans
            r-energy
            r-foreach
+           r-gtools
            r-hmisc
            r-lme4
            r-lmertest
-           r-magrittr
            r-mass
+           r-matrix
            r-mia
+           r-multcomp
            r-nloptr
            r-rdpack
-           r-rlang
-           r-rngtools
            r-s4vectors
            r-singlecellexperiment
            r-summarizedexperiment
-           r-tibble
-           r-tidyr
            r-treesummarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/FrederickHuangLin/ANCOMBC")
