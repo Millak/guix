@@ -34851,14 +34851,14 @@ as allowing spectra with different resolutions.")
 (define-public r-scattermore
   (package
     (name "r-scattermore")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scattermore" version))
        (sha256
         (base32
-         "1iairy18k1k66863f5avxs5mq1a42477w1kcl6w465is1awc1sb3"))))
+         "1l820rc4ncmqd5sacdc420xf6r5dh34sbhgzzgq7a4yx1dxshd2m"))))
     (properties `((upstream-name . "scattermore")))
     (build-system r-build-system)
     (propagated-inputs
