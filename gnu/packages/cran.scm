@@ -8954,14 +8954,14 @@ of merit, ordering functions, and enhanced versions of @code{pairs} and
 (define-public r-webshot
   (package
     (name "r-webshot")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webshot" version))
        (sha256
         (base32
-         "094ggb6yby5irf3hj45p6vp5wdy6rjwpc0h6xbgf2mbqxyxbkhix"))))
+         "04xrrf72323sgzsdkbl05p2fdsi486i9avrrxvw0l3n8r8y92xfn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-callr r-jsonlite r-magrittr))
