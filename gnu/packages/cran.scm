@@ -36088,14 +36088,14 @@ AGG to use as alternative to the raster devices provided through the
 (define-public r-downlit
   (package
     (name "r-downlit")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "downlit" version))
        (sha256
         (base32
-         "0g3yncj3gmaqsc6cw7g9slgvd0kfk2414yz5m1dilk8h15lzdprk"))))
+         "1gdk6rj3539vnm979spd8py0rpvlaniyiy336abi39g8xjcbw3vc"))))
     (properties `((upstream-name . "downlit")))
     (build-system r-build-system)
     (propagated-inputs
