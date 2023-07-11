@@ -38241,14 +38241,14 @@ more.")
 (define-public r-paws-analytics
   (package
     (name "r-paws-analytics")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.analytics" version))
        (sha256
         (base32
-         "1ixgrcfixx7h17wryml63n28ldgxi2srqw3bqglws54h5acgqza9"))))
+         "0qjk1gn4p41l4ryqf9xppiphfakypl0xdjk23c9c8xdhqkbw0lcw"))))
     (properties
      `((upstream-name . "paws.analytics")))
     (build-system r-build-system)
