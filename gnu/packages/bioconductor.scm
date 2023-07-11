@@ -7346,16 +7346,16 @@ Shiny-based display methods for Bioconductor objects.")
 (define-public r-lfa
   (package
     (name "r-lfa")
-    (version "1.28.2")
+    (version "2.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lfa" version))
        (sha256
-        (base32 "0z8aa2435f7v2l6zwv47v2a6p9hal156dsh8v1iri233d1qx7fax"))))
+        (base32 "0x169fxwlccsqwj1bpviaky3hfr0zdwsdrlgfvrb4j6j95qfgnns"))))
     (properties `((upstream-name . "lfa")))
     (build-system r-build-system)
-    (propagated-inputs (list r-corpcor))
+    (propagated-inputs (list r-corpcor r-rspectra))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/StoreyLab/lfa")
     (synopsis "Logistic Factor Analysis for categorical data")
