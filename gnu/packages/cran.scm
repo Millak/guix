@@ -35766,13 +35766,13 @@ annealing.")
 (define-public r-mlr3tuning
   (package
     (name "r-mlr3tuning")
-    (version "0.18.0")
+    (version "0.19.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3tuning" version))
               (sha256
                (base32
-                "1wvrdg977a2nibgyvccz2mw8043nsvm716mmwkspx4sgacf0sgx7"))))
+                "1iz7izmkx11jma95305wq8aapi4dmqg20flgxxvdvrfy6hf98k33"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbotk
@@ -35783,6 +35783,8 @@ annealing.")
            r-mlr3misc
            r-paradox
            r-r6))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://mlr3tuning.mlr-org.com/")
     (synopsis "Tuning for @code{mlr3}")
     (description "@code{mlr3tuning} implements methods for hyperparameter
