@@ -20596,14 +20596,14 @@ using aCGH or sequencing.")
 (define-public r-bionero
   (package
     (name "r-bionero")
-    (version "1.8.0")
+    (version "1.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNERO" version))
        (sha256
         (base32
-         "0733v4mijf94gn0sbkhiinb3hxlsfqw2l89gx94k88sp3qy2qzvc"))))
+         "0nrvq6cn55qzp66pqssyfxl2wh5dfqndchcv8qgfqajsnz8i35xm"))))
     (properties `((upstream-name . "BioNERO")))
     (build-system r-build-system)
     (propagated-inputs
@@ -20611,8 +20611,8 @@ using aCGH or sequencing.")
            r-complexheatmap
            r-dynamictreecut
            r-genie3
+           r-ggdendro
            r-ggnetwork
-           r-ggnewscale
            r-ggplot2
            r-ggrepel
            r-igraph
@@ -20620,10 +20620,10 @@ using aCGH or sequencing.")
            r-matrixstats
            r-minet
            r-netrep
-           r-networkd3
            r-patchwork
            r-rcolorbrewer
            r-reshape2
+           r-rlang
            r-summarizedexperiment
            r-sva
            r-wgcna))
