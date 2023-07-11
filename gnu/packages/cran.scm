@@ -25749,13 +25749,13 @@ to ODEs by numerical differencing.")
 (define-public r-pmcmrplus
   (package
     (name "r-pmcmrplus")
-    (version "1.9.6")
+    (version "1.9.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PMCMRplus" version))
        (sha256
-        (base32 "1mvj3cwrdkl3frk7fvh6l7v7yya5p3xm4z0qhc4fvykxdmb92ivz"))))
+        (base32 "06i5vsf8hpzv0c8v156072xbqpxk1wf2iami7mnsjfp9xjjjzbhx"))))
     (properties `((upstream-name . "PMCMRplus")))
     (build-system r-build-system)
     (inputs (list gmp))
@@ -25768,7 +25768,7 @@ to ODEs by numerical differencing.")
            r-mvtnorm
            r-rmpfr
            r-suppdists))
-    (native-inputs (list gfortran r-knitr))
+    (native-inputs (list gfortran r-knitr r-rmarkdown))
     (home-page "https://cran.r-project.org/package=PMCMRplus")
     (synopsis "Calculate pairwise multiple comparisons of mean rank sums extended")
     (description
