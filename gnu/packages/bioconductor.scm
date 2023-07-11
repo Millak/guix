@@ -5652,13 +5652,13 @@ microarrays.")
 (define-public r-annotationdbi
   (package
     (name "r-annotationdbi")
-    (version "1.62.1")
+    (version "1.62.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnnotationDbi" version))
               (sha256
                (base32
-                "0a5brfd010p0ks8b7kvrynirmzv3p74r9vqwv5wyz4kbnasfd1v1"))))
+                "0vprm84k79pfnkkg9vf3gyb1nhzmin5lp5375rsaj6fnzbd46dw9"))))
     (properties
      `((upstream-name . "AnnotationDbi")))
     (build-system r-build-system)
@@ -5666,8 +5666,8 @@ microarrays.")
      (list r-biobase
            r-biocgenerics
            r-dbi
-           r-keggrest
            r-iranges
+           r-keggrest
            r-rsqlite
            r-s4vectors))
     (native-inputs
