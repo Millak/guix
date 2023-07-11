@@ -5473,13 +5473,13 @@ processes.  Most of its code is based on the @code{psutil} Python package.")
 (define-public r-pkgbuild
   (package
     (name "r-pkgbuild")
-    (version "1.4.0")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgbuild" version))
        (sha256
-        (base32 "1mjyln5njbvi0k97w8az2v5klmas6pqiz68mlylfll4nr503qzrm"))))
+        (base32 "1ic2zjcz29jbfwmsqsja4jjalzsz9ayac5zjz6nv482lsx2s4d13"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-callr
@@ -5489,8 +5489,7 @@ processes.  Most of its code is based on the @code{psutil} Python package.")
            r-prettyunits
            r-processx
            r-r6
-           r-rprojroot
-           r-withr))
+           r-rprojroot))
     (home-page "https://github.com/r-pkgs/pkgbuild")
     (synopsis "Find tools needed to build R packages")
     (description
