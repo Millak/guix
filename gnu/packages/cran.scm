@@ -102,6 +102,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tbb)
@@ -25423,21 +25424,25 @@ emphasize hidden group structures in networks or focus on specific nodes.")
 (define-public r-terra
   (package
     (name "r-terra")
-    (version "1.7-29")
+    (version "1.7-39")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "terra" version))
        (sha256
         (base32
-         "19bwakxccgyn054p7nrf820jq7nwpcjlrgj2ldk137scld9b0f9z"))))
+         "03kc2m89236qh50qfxl1101ys466ddhgjwp80x6hjpmd9fz5jf5l"))))
     (properties `((upstream-name . "terra")))
     (build-system r-build-system)
     (inputs
-     (list gdal
+     (list curl
+           gdal
            geos
+           openssh
+           openssl
+           pcre2
            proj
-           sqlite ; needed for proj
+           sqlite
            zlib))
     (propagated-inputs
      (list r-rcpp))
