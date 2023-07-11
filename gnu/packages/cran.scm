@@ -25082,14 +25082,16 @@ guaranteeing well-connected communities.\" <arXiv:1810.08473>.")
 (define-public r-leidenalg
   (package
     (name "r-leidenalg")
-    (version "1.0.5")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leidenAlg" version))
        (sha256
-        (base32 "1z96zrsms93gspylmficaggb0xj94kq9rg3p2svdbb451jbga9an"))))
-    (properties `((upstream-name . "leidenAlg")))
+        (base32 "1hn5fps5m5am4s82wvhr4fgfw49h0jar4i687czbkab3l9x1dr68"))))
+    (properties
+     `((upstream-name . "leidenAlg")
+       (updater-extra-inputs . ("gmp"))))
     (build-system r-build-system)
     (inputs
      (list glpk gmp libxml2))
