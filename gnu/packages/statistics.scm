@@ -2759,13 +2759,13 @@ pure C implementation of the Git core methods.")
 (define-public r-rstudioapi
   (package
     (name "r-rstudioapi")
-    (version "0.14")
+    (version "0.15.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rstudioapi" version))
               (sha256
                (base32
-                "1i5g9l2739mlaglzg98iifycx98jlzxj5933qfb8lwmdn63hk7a6"))))
+                "1kvc870gx02cpb800zjvdrhfhyfpzgkydgw2g7kxdlrpr8fwhnwk"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
