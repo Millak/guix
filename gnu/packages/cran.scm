@@ -32411,25 +32411,20 @@ Kemeny distance and correlation coefficient.")
 (define-public r-fastshap
   (package
     (name "r-fastshap")
-    (version "0.0.7")
+    (version "0.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastshap" version))
        (sha256
         (base32
-         "0gxch67i3bj6m8nb94m5hswq058w6n1q9war4dy2qnimlv7cmhdv"))))
+         "112hc585aryzc5pgvr3qaa7arlx2h2sj9jlq9xha3nncyzqkh7c6"))))
     (properties `((upstream-name . "fastshap")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-abind
-           r-ggplot2
-           r-gridextra
-           r-matrixstats
-           r-plyr
-           r-rcpp
-           r-rcpparmadillo
-           r-tibble))
+     (list r-foreach r-rcpp r-rcpparmadillo))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://github.com/bgreenwell/fastshap")
     (synopsis "Fast approximate Shapley values")
     (description
