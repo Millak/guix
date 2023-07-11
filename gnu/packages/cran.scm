@@ -10732,13 +10732,13 @@ also be used as an engine for writing package vignettes.")
 (define-public r-sitar
   (package
     (name "r-sitar")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sitar" version))
        (sha256
-        (base32 "0lhwbbpq6anqrk3818xw3nrl63bj3vwgsmxad0dpl8y50rkcc4cs"))))
+        (base32 "14qc5qy21qyj4gml0gwfn8izbsmzwy30ddc7mazhszi487jrcrp0"))))
     (properties `((upstream-name . "sitar")))
     (build-system r-build-system)
     (propagated-inputs
