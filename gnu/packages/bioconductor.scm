@@ -15034,14 +15034,14 @@ index.")
 (define-public r-quasr
   (package
     (name "r-quasr")
-    (version "1.40.0")
+    (version "1.40.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "QuasR" version))
        (sha256
         (base32
-         "09k4r5a735022rc33k6a7pr98qxwy8ijsn451hcw18dimqzm78bx"))))
+         "08vns1wbgpxw1x6djp84f9hl3gqaybbw9917ghfzk0x3ijpvggbg"))))
     (properties `((upstream-name . "QuasR")))
     (build-system r-build-system)
     (propagated-inputs
