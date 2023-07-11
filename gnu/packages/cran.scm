@@ -13079,13 +13079,13 @@ distribution).")
 (define-public r-golem
   (package
     (name "r-golem")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "golem" version))
               (sha256
                (base32
-                "0qjnrkwyn8im5zfd0fxf7rkz0gxdywnckpzsn0cqb0fxsa0z0xmv"))))
+                "0pcvp2rmwzvl0wi73fp9pmjq1rrknq2h45sfvbjhmbz8ilvr8zpa"))))
     (properties `((upstream-name . "golem")))
     (build-system r-build-system)
     (propagated-inputs
