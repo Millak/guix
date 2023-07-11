@@ -3581,16 +3581,16 @@ Notation (JSON) using the rapidjsonr library.")
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
-    (version "1.8.4")
+    (version "1.8.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jsonlite" version))
               (sha256
                (base32
-                "0y0jzf74c3q1sghgarvwmrkvxs7yahywd342m8c0jsr28bhapskr"))))
+                "07301wdpf014m8pfr7x3zwaj07pmin0rfax0irljimvj9dwbfhkx"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-r-rsp))
     (home-page "https://arxiv.org/abs/1403.2805")
     (synopsis "Robust, high performance JSON parser and generator for R")
     (description
