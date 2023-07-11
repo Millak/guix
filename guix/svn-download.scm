@@ -203,7 +203,10 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                               #:password (getenv "svn password")))
                  (call-with-input-string (getenv "svn locations")
                    read))
-                (download-nar #$output))))))
+                (begin
+                  (when (file-exists? #$output)
+                    (delete-file-recursively #$output))
+                  (download-nar #$output)))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
