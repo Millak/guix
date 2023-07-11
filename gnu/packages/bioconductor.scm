@@ -8016,18 +8016,20 @@ specific parser.")
 (define-public r-mzr
   (package
     (name "r-mzr")
-    (version "2.34.0")
+    (version "2.34.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mzR" version))
        (sha256
         (base32
-         "0dz9wqaawhkvswv4035xknlicia0m79r8n666s1yf59cfpmdqgs3"))
+         "1jsna4xwyph1gg72wwqlpavb65g5nc3db1vmcs1qcw1mdgasdjhk"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/boost"))))
-    (properties `((upstream-name . "mzR")))
+    (properties
+     `((upstream-name . "mzR")
+       (updater-extra-inputs . ("boost"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
