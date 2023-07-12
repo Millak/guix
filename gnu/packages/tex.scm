@@ -16642,6 +16642,33 @@ graphics part, as far as LaTeX part does not do it; and rescaling and rotating
 of complete graphics.")
     (license license:gpl3+)))
 
+(define-public texlive-curve
+  (package
+    (name "texlive-curve")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/curve/" "source/latex/curve/"
+                   "tex/latex/curve/")
+             (base32
+              "0780i6zr24v30ixn6zcalqr2pdp5jkxk8ksfw090aaq03wpxmggg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/curve")
+    (synopsis "Class for making curriculum vitae")
+    (description
+     "CurVe is a class for writing a CV, with configuration for the language
+in which you write.  The class provides a set of commands to create rubrics,
+entries in these rubrics etc.  CurVe then format the CV (possibly splitting it
+onto multiple pages, repeating the titles etc), which is usually the most
+painful part of CV writing.  Another nice feature of CurVe is its ability to
+manage different CV flavours simultaneously.  It is often the case that you
+want to maintain slightly divergent versions of your CV at the same time, in
+order to emphasize on different aspects of your background.  CurVe also comes
+with support for use with AUC-TeX.")
+    (license license:lppl)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
