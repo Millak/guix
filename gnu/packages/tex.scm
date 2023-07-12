@@ -17602,6 +17602,28 @@ expanded local variables, then ending the group with
 @code{\\expandafter\\endgroup\\macro}.")
     (license license:lppl)))
 
+(define-public texlive-istgame
+  (package
+    (name "texlive-istgame")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/istgame/" "tex/latex/istgame/")
+             (base32
+              "00hpr45s31bhvhhzmgm49knjb8jb3v53gd0w87rlx9ghll38lg0m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/istgame")
+    (synopsis "Draw game trees with TikZ")
+    (description
+     "This LaTeX package provides macros based on TikZ to draw a game tree.
+The main idea underlying its core macros is the completion of a whole tree by
+using a sequence of simple parent-child tree structures, with no longer nested
+relations involved (like the use of grandchildren or great-grandchildren).
+Using this package you can draw a game tree as easily as drawing a game tree
+with pen and paper.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
