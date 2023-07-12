@@ -17323,6 +17323,31 @@ script (LaTeX must be running with @samp{\\write 18} enabled).  The Lua script
 may be used from the command line; a Bash version is provided.")
     (license license:lppl)))
 
+(define-public texlive-gnuplottex
+  (package
+    (name "texlive-gnuplottex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gnuplottex/"
+                   "source/latex/gnuplottex/"
+                   "tex/latex/gnuplottex/")
+             (base32
+              "1c99xc24bqp0j1xy31ayna4xmdsyshs9fjarb8cmn4m3ffwvlrmw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gnuplottex")
+    (synopsis "Embed Gnuplot commands in LaTeX documents")
+    (description
+     "This package allows you to include Gnuplot graphs in your LaTeX
+documents.  The Gnuplot code is extracted from the document and written to
+@file{.gnuplot} files.  Then, if shell escape is used, the graph files are
+automatically processed to graphics or LaTeX code files which will then be
+included in the document.  If shell escape isn't used, the user will have to
+manually convert the files by running Gnuplot on the extracted @file{.gnuplot}
+files.")
+    (license license:gpl2)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
