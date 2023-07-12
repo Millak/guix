@@ -15955,6 +15955,25 @@ ligatures (ff, fi, ffi, fl, ffl) in legacy TrueType fonts (those
 lacking a liga table) accessed via @code{fontspec}.")
     (license license:public-domain)))
 
+(define-public texlive-adigraph
+  (package
+    (name "texlive-adigraph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/adigraph/" "tex/latex/adigraph/")
+             (base32
+              "0qzljcd1g0a9mwj0nrqc2xbka9si27a5d9hg3y7kk73n50zsxv5x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adigraph")
+    (synopsis "Augmenting directed graphs")
+    (description
+     "This LaTeX package provides the means to easily draw augmenting oriented
+graphs, as well as cuts on them, to demonstrate steps of algorithms for
+solving max-flow min-cut problems.")
+    (license license:expat)))
+
 (define-public texlive-adjustbox
   (package
     (name "texlive-adjustbox")
