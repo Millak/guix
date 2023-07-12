@@ -16175,6 +16175,31 @@ is also possible to use Barracuda with a standalone Lua interpreter to draw
 barcodes in different graphic formats like SVG.")
     (license license:gpl2)))
 
+(define-public texlive-beamerswitch
+  (package
+    (name "texlive-beamerswitch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerswitch/"
+                   "source/latex/beamerswitch/"
+                   "tex/latex/beamerswitch/")
+             (base32
+              "1kz257kv9fdy9fvphd8sx1k0swsynrl6kxqidnh8lp70k8f24ggj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerswitch")
+    (synopsis "Convenient mode selection in Beamer documents")
+    (description
+     "This class is a wrapper around the beamer class to make it easier to use
+the same document to generate the different forms of the presentation: the
+slides themselves, an abbreviated slide set for transparencies or online
+reference, an n-up handout version (various layouts are provided), and
+a transcript or set of notes using the article class.  The class provides
+a variety of handout layouts, and allows the mode to be chosen from the
+command line (without changing the document itself).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bezierplot
   (package
     (name "texlive-bezierplot")
