@@ -1888,14 +1888,14 @@ asynchronous jobs.")
            qtspeech
            qtx11extras))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "HOME"
+                                      (getcwd))
+                              (setenv "DBUS_FATAL_WARNINGS" "0")
+                              (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Desktop notifications")
     (description "KNotification is used to notify the user of an event.  It
