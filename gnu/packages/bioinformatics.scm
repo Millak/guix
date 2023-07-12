@@ -687,6 +687,59 @@ and utilities for PacBio C++ applications.")
 suite native in R.")
       (license license:expat))))
 
+(define-public r-bpcells
+  (let ((commit "32ce67312185d3ed1046b4218dd3aaf1b35dcfda")
+        (revision "1"))
+    (package
+      (name "r-bpcells")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bnprks/BPCells/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0im4sqvbii326acmd1hnimyzsllnbvnh9al3dp1nla6isgi7s6cg"))))
+      (properties `((upstream-name . "BPCells")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'do-not-tune
+             (lambda _
+               (substitute* "configure"
+                 (("\"-march=native\"") "\"\"")))))))
+      (inputs (list hdf5 zlib))
+      (propagated-inputs (list r-dplyr
+                               r-ggplot2
+                               r-ggrepel
+                               r-hexbin
+                               r-magrittr
+                               r-matrix
+                               r-patchwork
+                               r-rcolorbrewer
+                               r-rcpp
+                               r-rcppeigen
+                               r-rlang
+                               r-scales
+                               r-scattermore
+                               r-stringr
+                               r-tibble
+                               r-tidyr
+                               r-vctrs))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/bnprks/BPCells/")
+      (synopsis "Single cell counts matrices to PCA")
+      (description
+       "This is a package providing efficient operations for single cell
+ATAC-seq fragments and RNA counts matrices.  It is interoperable with standard
+file formats, and introduces efficient bit-packed formats that allow large
+storage savings and increased read speeds.")
+      (license license:gpl3))))
+
 (define-public r-btools
   (let ((commit "fa21d4ca01d37ea4d98b45582453f3bf95cbc2b5")
         (revision "1"))
