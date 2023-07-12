@@ -2397,7 +2397,7 @@ started on demand.")
 (define-public kdesignerplugin
   (package
     (name "kdesignerplugin")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2406,7 +2406,7 @@ started on demand.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17b0javl6k5zcmx04aqzmh3qdgwvzhf62x603m4pg6xbl3zns67g"))))
+                "0ibd1sgyiawl7b25ag1qs80s0vai16ab1zmdrhx85gd1583vkyab"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools-5))
