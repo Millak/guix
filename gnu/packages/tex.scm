@@ -17696,6 +17696,27 @@ LaTeX.  The fonts are available both as Metafont source and in Adobe Type
 1 format.")
     (license license:lppl1.3+)))
 
+(define-public texlive-knittingpattern
+  (package
+    (name "texlive-knittingpattern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/knittingpattern/"
+                   "tex/latex/knittingpattern/")
+             (base32
+              "0q52213yj08bhhgwr622ss3gwhx3l1yvgv0a2g3arhp3a8iq2g9a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/knittingpattern")
+    (synopsis "Create knitting patterns")
+    (description
+     "The class provides a simple, effective method for knitters to produce
+high-quality, attractive patterns using LaTeX.  It does this by providing
+commands to handle as much of the layout of the document as possible, leaving
+the author free to concentrate on the pattern.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
