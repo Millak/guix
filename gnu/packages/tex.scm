@@ -16832,6 +16832,29 @@ in your document (DOT and Neato are both part of @code{graphviz}; DOT creates
 directed graphs, Neato undirected graphs).")
     (license license:gpl3+)))
 
+(define-public texlive-dpcircling
+  (package
+    (name "texlive-dpcircling")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dpcircling/"
+                   "tex/latex/dpcircling/")
+             (base32
+              "0wpskh9rixgjvn4h5kand9ggiqa2mqca5fc0l565pxq8a9sq2bm0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dpcircling")
+    (synopsis "Decorated text boxes using TikZ")
+    (description
+     "This simple package provides four types of text decorations using TikZ.
+You can frame your text with circles, rectangles, jagged rectangles, and
+fan-shapes.  The baseline will be adjusted properly according to the
+surroundings.  You can use these decorations both in text mode and in math
+mode.  You can specify line color, line width, width, and height using option
+keys.")
+    (license license:expat)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
