@@ -16319,6 +16319,26 @@ programming and control theory.  It is an English translation of the
 @code{schemabloc} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bodegraph
+  (package
+    (name "texlive-bodegraph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bodegraph/"
+                   "tex/latex/bodegraph/")
+             (base32
+              "0r89cnn42yyxpvbxfasalwfdmcq0aksdm3cmqy9wfv4qnc48wmcd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bodegraph")
+    (synopsis "Draw Bode, Nyquist and Black plots with gnuplot and TikZ")
+    (description
+     "The package provides facilities to draw Bode, Nyquist and Black plots
+using Gnuplot and Tikz.  Elementary Transfer Functions and basic correctors
+are preprogrammed for use.")
+    (license license:lppl)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
