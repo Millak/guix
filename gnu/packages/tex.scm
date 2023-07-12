@@ -17151,6 +17151,27 @@ viewed in a web-browser, in which case the figures are interactive.  A variety
 of interactive widgets are included.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-fitbox
+  (package
+    (name "texlive-fitbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fitbox/" "source/latex/fitbox/"
+                   "tex/latex/fitbox/")
+             (base32
+              "0li1nvwv8ifw1dkfsqgnhapkagndibs75lp03byxnwrmc99r7a2y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fitbox")
+    (synopsis "Fit graphics on a page")
+    (description
+     "The package allows a box (usually an @code{\\includegraphics} box) to
+fit on the page.  It scales the box to the maximal allowed size within the
+user-set limits.  If there is not enough space on the page, the box is moved
+to the next one.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
