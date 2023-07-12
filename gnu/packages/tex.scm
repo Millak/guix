@@ -16873,6 +16873,28 @@ keys.")
 a high-level (@file{AlDraTex.sty}) drawing package written entirely in TeX.")
     (license license:lppl)))
 
+(define-public texlive-drs
+  (package
+    (name "texlive-drs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/drs/" "tex/latex/drs/")
+             (base32
+              "0vvwbn1qxxh42v1jjvk3nra79zv0lz0fyrj5c6q8yjppn2rj10h0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/drs")
+    (synopsis "Typeset Discourse Representation Structures (DRS)")
+    (description
+     "The package draws Discourse Representation Structures (DRSs).  It can
+draw embedded DRSs, if-then conditions and quantificational duplex
+conditions (with a properly scaled connecting diamond).  Formatting parameters
+allow the user to control the appearance and placement of DRSs, and of DRS
+variables and conditions.  The package is based on DRS macros in the
+@code{covington} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
