@@ -1617,7 +1617,7 @@ integrated it into your application's other widgets.")
 (define-public kcontacts
   (package
     (name "kcontacts")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1628,10 +1628,10 @@ integrated it into your application's other widgets.")
                (search-patches "kcontacts-incorrect-country-name.patch"))
               (sha256
                (base32
-                "0g3lg1i9rg7hjw7xjx9228sy54dy35lgwghcjds5cawszl5yi106"))))
+                "15x6f05ngs3nmxpdi11bi4k4zpjnvx5cy3yxbdklls3f2wpq6jd4"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules xorg-server)) ; for the tests
+     (list extra-cmake-modules xorg-server-for-tests)) ; for the tests
     (inputs
      (list qtbase-5))
     (propagated-inputs
@@ -1640,18 +1640,11 @@ integrated it into your application's other widgets.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; The test suite requires a running X server.
-             ;; Xvfb doesn't have proper glx support and needs a pixeldepth
-             ;; of 24 bit to avoid "libGL error: failed to load driver: swrast"
-             ;;                    "Could not initialize GLX"
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (system "Xvfb :1 -screen 0 640x480x24 &")
-               (setenv "DISPLAY" ":1")
-               (invoke "ctest" "-E"
-                "(kcontacts-birthdaytest|kcontacts-testroundtrip|kcontacts-addresstest)")))))))
+         (add-before 'check 'check-setup
+           (lambda _
+             (setenv "HOME" (getcwd))
+             (system "Xvfb +extension GLX :1 -screen 0 640x480x24 &")
+             (setenv "DISPLAY" ":1"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "API for contacts/address book data following the vCard standard")
     (description "This library provides a vCard data model, vCard
