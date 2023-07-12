@@ -502,15 +502,16 @@ GZip format, via a subclass of QIODevice.")
     (inputs
      (list libical qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda* (#:key inputs #:allow-other-keys) ;;; XXX: failing test
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             (setenv "TZ" "Europe/Prague")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda* (#:key inputs #:allow-other-keys) ;;; XXX: failing test
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (setenv "TZ" "Europe/Prague")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Library for interfacing with calendars")
     (description "This library provides access to and handling of calendar
