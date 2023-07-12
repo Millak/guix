@@ -16023,6 +16023,26 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
 elements in Beamer.")
     (license license:lppl1.3+)))
 
+(define-public texlive-askmaps
+  (package
+    (name "texlive-askmaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/askmaps/" "tex/latex/askmaps/")
+             (base32
+              "0l61gq2i1di9zn6s2nf5sn0pdp3z78rij17sgjywy0xka43znhlk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/askmaps")
+    (synopsis "Typeset American style Karnaugh maps")
+    (description
+     "The package provides 1, 2, 3, 4 and 5 variable Karnaugh maps, in the
+style used in numerous American textbooks on digital design.  The package
+draws K-maps where the most significant input variables are placed on top of
+the columns and the least significant variables are placed left of the rows.")
+    (license license:lppl)))
+
 (define-public texlive-auto-pst-pdf-lua
   (package
     (name "texlive-auto-pst-pdf-lua")
