@@ -16934,6 +16934,33 @@ support.")
 LaTeX documents, using the TikZ package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ecgdraw
+  (package
+    (name "texlive-ecgdraw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ecgdraw/" "source/latex/ecgdraw/"
+                   "tex/latex/ecgdraw/")
+             (base32
+              "16kbmf9fckms0vhi41h2p6k8znv6plzwn4f2j374zmpqphq1m3il")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-hypdoc
+                  texlive-layaureo
+                  texlive-listings
+                  texlive-pgf
+                  texlive-tools))))
+    (home-page "https://ctan.org/pkg/ecgdraw")
+    (synopsis "Draws electrocardiograms (ECG)")
+    (description
+     "This package provides the @code{\\ECG} command, which draws
+electrocardiograms (ECG).  It can generate different types of wave.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
