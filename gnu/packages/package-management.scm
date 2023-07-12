@@ -961,6 +961,59 @@ transactions from C or Python.")
     ;; The whole is GPLv2+; librpm itself is dual-licensed LGPLv2+ | GPLv2+.
     (license license:gpl2+)))
 
+(define-public bffe
+  (let ((commit "634d3444c094dd594bdf2b15b9a71055462ae676")
+        (revision "1"))
+    (package
+      (name "bffe")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.cbaines.net/guix/bffe")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0z13hyaq6bs2j3hnr7ys2vsyx2554zy69ka21savywx0ci3hhfk3"))
+                (file-name (string-append name "-" version "-checkout"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list pkg-config
+             autoconf
+             automake
+
+             ;; Guile libraries are needed here for cross-compilation.
+             guile-next
+             guile-gnutls
+             guile-json-4
+             guix
+             guix-data-service
+             guix-build-coordinator
+             guile-fibers-1.3
+             guile-prometheus
+             guile-lib))
+      (inputs
+       (list guile-next))
+      (propagated-inputs
+       (list guile-gnutls
+             guile-json-4
+             guix
+             guix-data-service
+             guix-build-coordinator
+             guile-fibers-1.3
+             guile-prometheus
+             guile-lib))
+      (home-page "https://git.cbaines.net/guix/bffe")
+      (synopsis "Build Farm Front-end for Guix")
+      (description
+       "The BFFE of Build Farm Front-end is an experimental frontend for Guix
+build farms.  It works together with the Guix Data Service and Guix Build
+Coordinator to submit builds and monitor the activity.
+
+It functions as a Guile library, with the @code{run-bffe-service} procedure in
+the @code{(bffe)} module as the entry point.")
+      (license license:gpl3+))))
+
 (define-public python-anaconda-client
   (package
     (name "python-anaconda-client")
