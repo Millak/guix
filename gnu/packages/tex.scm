@@ -17109,6 +17109,28 @@ created by XFig --- in particular, graphics which use the combined
 PS/LaTeX (or PDF/LaTeX) export method.")
     (license license:gpl3)))
 
+(define-public texlive-figchild
+  (package
+    (name "texlive-figchild")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/figchild/" "tex/latex/figchild/")
+             (base32
+              "1q02q8cpkjwjqlykjq64vm65shqm6bn281j2jsv7qnay19lqmd3n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/figchild")
+    (synopsis "Pictures for creating children's activities")
+    (description
+     "This package was created with the aim of facilitating the work of
+Elementary School teachers who need to create colorful and attractive
+activities for their students.  It is a product of the Computational
+Mathematics discipline offered at the Federal University of Vicosa --- Campus
+UFV --- Florestal by professor Fernando de Souza Bastos.  It makes use of the
+TikZ and @code{xcolor} packages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
