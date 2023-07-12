@@ -833,13 +833,14 @@ other special events for a geographical region.")
     (inputs
      (list qtbase-5 qtdeclarative-5 qtscript iso-codes))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (invoke "ctest" "-E" "(kcountrytest|kcountrysubdivisiontest)")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "HOME"
+                                      (getcwd))
+                              (invoke "ctest" "-E"
+                               "(kcountrytest|kcountrysubdivisiontest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Gettext-based UI text internationalization")
     (description "KI18n provides functionality for internationalizing user
