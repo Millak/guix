@@ -16043,6 +16043,31 @@ draws K-maps where the most significant input variables are placed on top of
 the columns and the least significant variables are placed left of the rows.")
     (license license:lppl)))
 
+(define-public texlive-asyfig
+  (package
+    (name "texlive-asyfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/asyfig/" "source/latex/asyfig/"
+                   "tex/latex/asyfig/")
+             (base32
+              "0116a920z8hq3v50gmgh3f8diq7307wx0zsh2pmznw7gkvn6rn4k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list texlive-filecontents))
+    (home-page "https://ctan.org/pkg/asyfig")
+    (synopsis "Commands for using Asymptote figures")
+    (description
+     "The package provides a means of reading Asymptote figures from separate
+files, rather than within the document, as is standard in the @code{asymptote}
+package, which is provided as part of the Asymptote bundle.  The Asymptote way
+can prove cumbersome in a large document; the present package allows the user
+to process one picture at a time, in simple test documents, and then to
+migrate (with no fuss) to their use in the target document.")
+    (license license:lppl)))
+
 (define-public texlive-auto-pst-pdf-lua
   (package
     (name "texlive-auto-pst-pdf-lua")
