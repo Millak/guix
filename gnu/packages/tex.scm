@@ -16248,6 +16248,29 @@ figures in the document.  There is an option to use automatic file naming:
 useful if the trees are often moved around.")
     (license license:lppl1.3+)))
 
+(define-public texlive-blochsphere
+  (package
+    (name "texlive-blochsphere")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/blochsphere/"
+                   "source/latex/blochsphere/"
+                   "tex/latex/blochsphere/")
+             (base32
+              "03gl19r0cc1ajychh6f31bdjqpmmlk0cxg1akxg3h47yrf2np245")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/blochsphere")
+    (synopsis "Draw pseudo-3D diagrams of Bloch spheres")
+    (description
+     "This package is used to draw pseudo-3D Blochsphere diagrams.  It
+supports various annotations, such as great and small circles, axes, rotation
+markings and state vectors.  It can be used in a standalone fashion, or nested
+within a @code{tikzpicture} environment by setting the environment option
+@code{nested} to @code{true}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
