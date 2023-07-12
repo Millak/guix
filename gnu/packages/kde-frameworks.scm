@@ -1194,20 +1194,21 @@ configuration pages, message boxes, and password requests.")
            xcb-util-keysyms
            xcb-util-wm))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; The test suite requires a running window anager
-             (when tests?
-               (setenv "XDG_RUNTIME_DIR" "/tmp")
-               (system "Xvfb :1 -ac -screen 0 640x480x24 &")
-               (setenv "DISPLAY" ":1")
-               (sleep 5) ;; Give Xvfb a few moments to get on it's feet
-               (system "openbox &")
-               (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; The test suite requires a running window anager
+              (when tests?
+                (setenv "XDG_RUNTIME_DIR" "/tmp")
+                (system "Xvfb :1 -ac -screen 0 640x480x24 &")
+                (setenv "DISPLAY" ":1")
+                (sleep 5) ;; Give Xvfb a few moments to get on it's feet
+                (system "openbox &")
+                (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE access to the windowing system")
     (description "KWindowSystem provides information about and allows
