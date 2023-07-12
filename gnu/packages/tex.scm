@@ -16616,6 +16616,32 @@ saved by printing stains directly on the page rather than adding them
 manually.")
     (license license:public-domain)))
 
+(define-public texlive-combinedgraphics
+  (package
+    (name "texlive-combinedgraphics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/combinedgraphics/"
+                   "source/latex/combinedgraphics/"
+                   "tex/latex/combinedgraphics/")
+             (base32
+              "1jb0bc5s8kn5aplgmry94laj92c2h16xv77km6fz0pcd4wvpng6i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/combinedgraphics")
+    (synopsis "Include graphic (EPS or PDF)/LaTeX combinations")
+    (description
+     "This package provides the @code{\\includecombinedgraphics} macro for the
+inclusion of combined EPS/LaTeX and PDF/LaTeX graphics.  Instead of including
+the graphics with a simple @code{\\input}, the
+@code{\\includecombinedgraphics} macro has some comforts: changing the font
+and color of the text of the LaTeX part; rescaling the graphics without
+affecting the font of the LaTeX part; automatic inclusion of the vector
+graphics part, as far as LaTeX part does not do it; and rescaling and rotating
+of complete graphics.")
+    (license license:gpl3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
