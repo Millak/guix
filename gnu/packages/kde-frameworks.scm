@@ -557,7 +557,7 @@ Internet).")
 (define-public kconfig
   (package
     (name "kconfig")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -566,7 +566,7 @@ Internet).")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15m2bggfr682q68dym7nzmvz7q7pwarzijad1wj0r5cs62l3bkjy"))))
+                "0gq30f5yx3razkn12zq7224sivl76jikf7c4xdfc9fw1k54sxbjd"))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus extra-cmake-modules inetutils qttools-5
