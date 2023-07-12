@@ -16669,6 +16669,29 @@ order to emphasize on different aspects of your background.  CurVe also comes
 with support for use with AUC-TeX.")
     (license license:lppl)))
 
+(define-public texlive-curve2e
+  (package
+    (name "texlive-curve2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/curve2e/" "source/latex/curve2e/"
+                   "tex/latex/curve2e/")
+             (base32
+              "0fa2xp3yh1bv8ivxf48ywiwi9wjgq0bnvnyc2rcy73wczwilsyk4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/curve2e")
+    (synopsis "Extensions for package @code{pict2e}")
+    (description
+     "The package extends the drawing capacities of the @code{pict2e} package
+that serves as a LaTeX2e replacement for @code{picture} mode.  In particular,
+@code{curve2e} introduces new macros for lines and vectors, new specifications
+for line terminations and joins, arcs with any angular aperture, arcs with
+arrows at one or both ends, generic curves specified with their nodes and the
+tangent direction at these nodes.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
