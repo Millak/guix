@@ -17298,6 +17298,31 @@ uses an autolayout algorithm which can be customized, e.g., to prioritize
 certain paths.")
     (license license:lppl1.3+)))
 
+
+(define-public texlive-getmap
+  (package
+    (name "texlive-getmap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/getmap/" "scripts/getmap/"
+                   "tex/latex/getmap/")
+             (base32
+              "12pip7a1pibjlbllkrbz0fss0i5zdd8x1pbvzzbwn6rb3ragqwl9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "getmapdl.lua")))
+    (home-page "https://ctan.org/pkg/getmap")
+    (synopsis "Download OpenStreetMap maps for use in documents")
+    (description
+     "The package provides a simple interface to OpenStreetMap, and to Google
+Maps, map images.  In the simplest case, it is sufficient to specify the
+address you need.  The package loads the map image using an external Lua
+script (LaTeX must be running with @samp{\\write 18} enabled).  The Lua script
+may be used from the command line; a Bash version is provided.")
+    (license license:lppl)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
