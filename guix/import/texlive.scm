@@ -93,6 +93,7 @@
     ("lppl1.3a" 'lppl1.3a)
     ("lppl1.3b" 'lppl1.3b)
     ("lppl1.3c" 'lppl1.3c)
+    ("cc0" 'cc0)
     ("cc-by-2" 'cc-by2.0)
     ("cc-by-3" 'cc-by3.0)
     ("cc-by-4" 'cc-by4.0)
@@ -106,6 +107,7 @@
     ;; <https://www.gust.org.pl/projects/e-foundry/licenses>).  It has de
     ;; facto become GUST Font License 1.0.
     ((or "gfl" "gfsl") 'gfl1.0)
+    ("isc" 'isc)
 
     ;; These are known non-free licenses
     ("noinfo" 'unknown)
