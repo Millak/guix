@@ -17494,6 +17494,28 @@ large trees.")
 a document.")
     (license license:gpl3+)))
 
+(define-public texlive-here
+  (package
+    (name "texlive-here")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/here/" "tex/latex/here/")
+             (base32
+              "0pmjh9xvwmv6cf775lzfagf9wziwrgx6fri4jjhl4mzkxmxhsnpp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/here")
+    (synopsis "Emulation of obsolete package for @code{here} floats")
+    (description
+     "This package provides the @samp{H} option for floats in LaTeX to signify
+that the environment is not really a float, and should therefore be placed
+@emph{here} and not float at all.  The package emulates an older package of
+the same name, which has long been suppressed by its author.  The job is done
+by nothing more than loading the @code{float} package, which has long provided
+the option in an acceptable framework.")
+    (license license:public-domain)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
