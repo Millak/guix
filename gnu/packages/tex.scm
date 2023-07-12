@@ -16570,6 +16570,31 @@ output to be read by PSTricks, TikZ commands for use by the PGF bundle, or
 SVG.")
     (license license:lppl1.3c)))
 
+(define-public texlive-circuitikz
+  (package
+    (name "texlive-circuitikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/circuitikz/"
+                   "doc/generic/circuitikz/"
+                   "doc/latex/circuitikz/"
+                   "tex/context/third/circuitikz/"
+                   "tex/generic/circuitikz/"
+                   "tex/latex/circuitikz/")
+             (base32
+              "1vgsrr94wqab264vkqwdm29k1a18x03rb30jff0p7zgm3gn54z17")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/circuitikz")
+    (synopsis "Draw electrical networks with TikZ")
+    (description
+     "The package provides a set of macros for naturally typesetting
+electrical and electronic networks.  It is designed as a tool that is native
+to LaTeX, and directly supporting PDF output format.  It has therefore been
+based on the PGF/TikZ package.")
+    (license (list license:lppl license:gpl3+))))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
