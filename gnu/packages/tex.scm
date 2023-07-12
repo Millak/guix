@@ -2477,6 +2477,30 @@ several options for the appearance of the liftarms, a command which connects
 two liftarms and an environment to describe a construction.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lpic
+  (package
+    (name "texlive-lpic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lpic/" "tex/latex/lpic/")
+             (base32
+              "15jzvpn3gnj5c0wachbsjazll9qlibyzxf4i2g8ad7l4yd967m3c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lpic")
+    (synopsis "Put LaTeX material over included graphics")
+    (description
+     "The package defines a convenient interface to put any LaTeX material on
+top of included graphics.  The LaTeX material may also be rotated and typeset
+on top of a white box overshadowing the graphics.  The coordinates of the
+LaTeX boxes are given relative to the original, unscaled graphics; when the
+graphics is rescaled, the LaTeX annotations stay at their right places (unless
+you do something extreme).  In a draft mode, the package enables you to draw
+a coordinate grid over the picture for easy adjustment of positions of the
+annotations.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
