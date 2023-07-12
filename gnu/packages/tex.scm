@@ -16068,6 +16068,31 @@ to process one picture at a time, in simple test documents, and then to
 migrate (with no fuss) to their use in the target document.")
     (license license:lppl)))
 
+(define-public texlive-asypictureb
+  (package
+    (name "texlive-asypictureb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/asypictureb/"
+                   "source/latex/asypictureb/"
+                   "tex/latex/asypictureb/")
+             (base32
+              "1djlphr3iz0l0x2pf8abd251q78rml6435f6ng7fa553anwgwya9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asypictureb")
+    (synopsis "User-friendly integration of Asymptote into LaTeX")
+    (description
+     "The package is an unofficial alternative to the package provided with
+the Asymptote distribution, for including pictures within a LaTeX source file.
+While it does not duplicate all the features of the official package, this
+package is more user-friendly in several ways.  Most notably, Asymptote errors
+are repackaged as LaTeX errors, making debugging less of a pain.  It also has
+a more robust mechanism for identifying unchanged pictures that need not be
+recompiled.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-auto-pst-pdf-lua
   (package
     (name "texlive-auto-pst-pdf-lua")
