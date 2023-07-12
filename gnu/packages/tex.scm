@@ -16438,6 +16438,30 @@ command creates a TikZ picture from the stated elements with multiple
 possibilities to modify the result in color and position.")
     (license (list license:cc-by4.0 license:lppl1.3+))))
 
+(define-public texlive-byrne
+  (package
+    (name "texlive-byrne")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/byrne/" "metapost/byrne/"
+                   "tex/latex/byrne/")
+             (base32
+              "1h4543pimjsv30phinbhs8070ymqaf43vd2wx1yhjmwsqj4fcjmc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/byrne")
+    (synopsis
+     "Typeset geometric proofs in the style of Euclid's @emph{Elements}")
+    (description
+     "This package is a LaTeX adaptation of a set of tools developed for
+ConTeXt reproduction of Oliver Byrne's 1847 edition of the first six books of
+Euclid's @emph{Elements}; see
+@url{https://github.com/jemmybutton/byrne-euclid}.  It consists of a MetaPost
+library, responsible for all the drawing and a set of LaTeX macros to
+conveniently use them.")
+    (license license:gpl3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
