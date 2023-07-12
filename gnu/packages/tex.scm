@@ -2523,6 +2523,29 @@ chiefly useful for examples, but also has macros for particular types of boxes
 which are useful on their own.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luamesh
+  (package
+    (name "texlive-luamesh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luamesh/" "metapost/luamesh/"
+                   "scripts/luamesh/" "tex/lualatex/luamesh/")
+             (base32
+              "02qq6d51pihkxz4zbcxppikkzpr99mw8kmp64gm986fpcn6k2wns")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luamesh")
+    (synopsis "Computes and draws 2D Delaunay triangulation")
+    (description
+     "The package allows to compute and draw 2D Delaunay triangulation.
+The algorithm is written with Lua, and depending upon the choice of the
+engine, the drawing is done by MetaPost (with @code{luamplib}) or by TikZ.
+The Delaunay triangulation algorithm is the Bowyer and Watson algorithm.
+Several macros are provided to draw the global mesh, the set of points, or
+a particular step of the algorithm.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
