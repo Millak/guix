@@ -2422,6 +2422,42 @@ fonts.")
 
 (define-deprecated-package texlive-fonts-latex texlive-latex-fonts)
 
+(define-public texlive-latex-make
+  (package
+    (name "texlive-latex-make")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/latex-make/"
+                   "scripts/latex-make/"
+                   "source/support/latex-make/"
+                   "tex/latex/latex-make/")
+             (base32
+              "0ll6v1mdi1m5fp3s0c4dkgh351lg9ckzdfwz3k488y6cbcvrpm5x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/latex-make")
+    (synopsis "Easy compiling of complex (and simple) LaTeX documents")
+    (description
+     "This package provides several tools that aim to simplify the compilation
+of LaTeX documents:
+
+@itemize
+
+@item @file{LaTeX.mk}: a Makefile snippet to help compiling LaTeX documents in
+DVI, PDF, PS, ...  format.  Dependencies are automatically tracked: one should
+be able to compile documents with a one-line Makefile containing @samp{include
+LaTeX.mk}.  Complex documents (with multiple bibliographies, indexes,
+glossaries, ...)  should be correctly managed.
+
+@item @file{figlatex.sty}: a LaTeX package to easily insert Xfig figures.  It
+can interact with LaTeX.mk so that the latter automatically invokes
+@command{transfig} if needed.
+
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
