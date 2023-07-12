@@ -305,13 +305,14 @@ Phonon-GStreamer is a backend based on the GStreamer multimedia library.")
                 "15didd7llqamp9wbvrynnf9cap2dqmwr51mz0pcjdk0iqs6ym4qq"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-network-tests
-           (lambda _
-             ;; These tests require network access.
-             (substitute* "autotests/CMakeLists.txt"
-               ((".*providertest.cpp") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-network-tests
+            (lambda _
+              ;; These tests require network access.
+              (substitute* "autotests/CMakeLists.txt"
+                ((".*providertest.cpp") "")))))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
