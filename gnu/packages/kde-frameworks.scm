@@ -1299,7 +1299,7 @@ which are used in DBus communication.")
 (define-public oxygen-icons
   (package
     (name "oxygen-icons")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1308,7 +1308,7 @@ which are used in DBus communication.")
                     name "5" "-" version ".tar.xz"))
               (sha256
                (base32
-                "03wk52hqrgj0r73nb4yiq7rnmdn4rrqzrj3cdzbg3flkw5r7wbbq"))))
+                "0w9zcgii9z91060cnqcalv8vnj03xrnjr5k6crx28szrpplqcvxd"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules fdupes))
