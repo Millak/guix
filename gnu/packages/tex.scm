@@ -17376,6 +17376,25 @@ files.")
 The gradients of the frames are drawn using the @code{color} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-grafcet
+  (package
+    (name "texlive-grafcet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grafcet/" "tex/latex/grafcet/")
+             (base32
+              "1swrap90i4l3a6azvy40b991zkqvyfw2z3mk6cq727yplmr1hkwk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grafcet")
+    (synopsis "Draw Grafcet/SFC with TikZ")
+    (description
+     "The package provides a library (GRAFCET) that can draw Grafcet
+Sequential Function Chart (SFC) diagrams, in accordance with EN 60848, using
+PGF/TikZ.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
