@@ -2490,7 +2490,7 @@ emoticons coming from different providers.")
 (define-public kglobalaccel
   (package
     (name "kglobalaccel")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2499,7 +2499,7 @@ emoticons coming from different providers.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1vr6k7lpxsxa6in60ld2wcdqfpaan5xgbmwm3xyr584x6pv737cl"))))
+                "0sf6v86pfhxva7n465p9pfidyzfjviam5kk8d6lrc23zjb559f3w"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools-5))
