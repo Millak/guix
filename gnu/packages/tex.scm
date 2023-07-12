@@ -17415,6 +17415,26 @@ calculator (and other models).  It can draw the whole calculator, or parts of
 it.")
     (license license:lppl1.3+)))
 
+(define-public texlive-graphicxpsd
+  (package
+    (name "texlive-graphicxpsd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphicxpsd/"
+                   "tex/latex/graphicxpsd/")
+             (base32
+              "04fll1h90rl75bqbkhjp2yp8bragfkv5rj2kwrbbi6p7zq9nfrpn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphicxpsd")
+    (synopsis
+     "Adobe Photoshop Data format (PSD) support for @code{graphicx} package")
+    (description
+     "This package provides Adobe Photoshop Data format (PSD) support for the
+@code{graphicx} package with the @command{convert} command from ImageMagick.")
+    (license license:expat)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
