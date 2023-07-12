@@ -16339,6 +16339,23 @@ using Gnuplot and Tikz.  Elementary Transfer Functions and basic correctors
 are preprogrammed for use.")
     (license license:lppl)))
 
+(define-public texlive-bondgraph
+  (package
+    (name "texlive-bondgraph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bondgraph/"
+                   "tex/latex/bondgraph/")
+             (base32
+              "165fgkcybazd2jqgcfqc8hh8askl1hdv86d8bz5b1s4aff95hv24")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bondgraph")
+    (synopsis "Create bond graph figures in LaTeX documents")
+    (description "The package draws bond graphs using PGF and TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
