@@ -8,6 +8,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2023 Graham James Addis <graham@addis.org.uk>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -201,6 +202,16 @@ target the profile's @file{bin/env} file:
     (x
      (leave (G_ "~a: invalid symlink specification~%")
             arg))))
+
+(define (entry-point-argument-spec-option-parser opt name arg result)
+  "A SRFI-37 opion parser for the --entry-point-argument option. The spec
+takes multiple occurances. The entries are used in the exec form for the
+docker entry-point. The values are used as parameters in conjunction with
+the --entry-point option which is used as the first value in the exec form."
+  (let ((entry-point-argument (assoc-ref result 'entry-point-argument)))
+    (alist-cons 'entry-point-argument
+                (append entry-point-argument (list arg))
+                (alist-delete 'entry-point-argument result eq?))))
 
 (define (set-utf8-locale profile)
   "Configure the environment to use the \"en_US.utf8\" locale provided by the
@@ -562,10 +573,22 @@ the image.  EXTRA-OPTIONS may contain the IMAGE-TAG keyword argument."
               `((directory "/tmp" ,(getuid) ,(getgid) #o1777)
                 ,@(append-map symlink->directives '#$symlinks)))
 
+            (define (form-entry-point prefix entry-point entry-point-argument)
+              ;; Construct entry-point parameter for build-docker-image.  The
+              ;; first entry is constructed by prefixing the entry-point with
+              ;; the supplied index subsequent entries are taken from the
+              ;; --entry-point-argument options.
+              (and=> entry-point
+                     (lambda (entry-point)
+                       (cons* (string-append prefix "/" entry-point)
+		              entry-point-argument))))
+
             (setenv "PATH" #+(file-append archiver "/bin"))
 
             (let-keywords '#$extra-options #f
-                          ((image-tag #f))
+                          ((image-tag #f)
+                           (entry-point-argument #f))
+
               (build-docker-image #$output
                                   (map store-info-item
                                        (call-with-input-file "profile"
@@ -578,11 +601,10 @@ the image.  EXTRA-OPTIONS may contain the IMAGE-TAG keyword argument."
                                   #:database #+database
                                   #:system (or #$target %host-type)
                                   #:environment environment
-                                  #:entry-point
-                                  #$(and entry-point
-                                         #~(list
-                                            (string-append #$profile "/"
-                                                           #$entry-point)))
+                                  #:entry-point (form-entry-point
+                                                 #$profile
+                                                 #$entry-point
+                                                 entry-point-argument)
                                   #:extra-files directives
                                   #:compressor
                                   #+(compressor-command compressor)
@@ -1264,6 +1286,7 @@ last resort for relocation."
     (debug . 0)
     (verbosity . 1)
     (symlinks . ())
+    (entry-point-argument . ())
     (compressor . ,(first %compressors))))
 
 (define %formats
@@ -1299,7 +1322,9 @@ last resort for relocation."
                    rest))))
 
 (define %docker-format-options
-  (list (required-option 'image-tag)))
+  (list (required-option 'image-tag)
+        (option '(#\A "entry-point-argument") #t #f
+                entry-point-argument-spec-option-parser)))
 
 (define (show-docker-format-options)
   (display (G_ "
@@ -1308,7 +1333,12 @@ last resort for relocation."
 (define (show-docker-format-options/detailed)
   (display (G_ "
       --image-tag=NAME
-                         Use the given NAME for the Docker image repository"))
+                         Use the given NAME for the Docker image repository
+
+      -A, --entry-point-argument=COMMAND/PARAMETER
+                         Value(s) to use for the Docker EntryPoint arguments.
+                         Multiple instances are accepted. This is only valid
+                         in conjunction with the --entry-point option"))
   (newline)
   (exit 0))
 
@@ -1619,7 +1649,9 @@ Create a bundle of PACKAGE.\n"))
                    (extra-options (match pack-format
                                     ('docker
                                      (list #:image-tag
-                                           (assoc-ref opts 'image-tag)))
+                                           (assoc-ref opts 'image-tag)
+                                           #:entry-point-argument
+                                           (assoc-ref opts 'entry-point-argument)))
                                     ('deb
                                      (list #:control-file
                                            (process-file-arg opts 'control-file)
