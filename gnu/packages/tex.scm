@@ -17516,6 +17516,25 @@ by nothing more than loading the @code{float} package, which has long provided
 the option in an acceptable framework.")
     (license license:public-domain)))
 
+(define-public texlive-hf-tikz
+  (package
+    (name "texlive-hf-tikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hf-tikz/" "source/latex/hf-tikz/"
+                   "tex/latex/hf-tikz/")
+             (base32
+              "02zkax3k50rb080yn5bwy12680y0mdzddv9an3wgsycl9ycxrmi8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hf-tikz")
+    (synopsis "Highlight formulas and formula parts")
+    (description
+     "The package provides a way to highlight formulas and formula parts in
+both documents and presentations, us TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
