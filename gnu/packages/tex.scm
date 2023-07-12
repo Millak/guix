@@ -17348,6 +17348,34 @@ manually convert the files by running Gnuplot on the extracted @file{.gnuplot}
 files.")
     (license license:gpl2)))
 
+(define-public texlive-gradientframe
+  (package
+    (name "texlive-gradientframe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gradientframe/"
+                   "source/latex/gradientframe/"
+                   "tex/latex/gradientframe/")
+             (base32
+              "0qy3ri6fdgzdslaaa7gakswvpc299xyarm8ng4cs8w64q14675r1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-charter
+                  texlive-emp
+                  texlive-hypdoc
+                  texlive-listings
+                  texlive-tools))))
+    (home-page "https://ctan.org/pkg/gradientframe")
+    (synopsis "Simple gradient frames around objects")
+    (description
+     "The package provides a means of drawing graded frames around objects.
+The gradients of the frames are drawn using the @code{color} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
