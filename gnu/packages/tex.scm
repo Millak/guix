@@ -16771,6 +16771,26 @@ using @code{pict2e} so that the restrictions on line direction are removed.")
 can be embedded directly into LaTeX files.")
     (license license:lppl)))
 
+(define-public texlive-doc-pictex
+  (package
+    (name "texlive-doc-pictex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/doc-pictex/")
+             (base32
+              "0fdvqhkgi5j33rx0r4fifj69f4smn5w0n99vx90a3fw15qzxsg5y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/doc-pictex")
+    (synopsis "Summary list of PicTeX documentation")
+    (description
+     "This package provides a summary of available resources providing
+documentation of PicTeX.")
+    (license
+     (list
+      (license:fsf-free "share/texmf-dist/doc/generic/doc-pictex/Doc-PiCTeX.txt")))))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
