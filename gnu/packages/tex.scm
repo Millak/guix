@@ -16791,6 +16791,27 @@ documentation of PicTeX.")
      (list
       (license:fsf-free "share/texmf-dist/doc/generic/doc-pictex/Doc-PiCTeX.txt")))))
 
+(define-public texlive-dot2texi
+  (package
+    (name "texlive-dot2texi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dot2texi/" "tex/latex/dot2texi/")
+             (base32
+              "1m8774ds3hsky4nk0krj4a582fyznrxdfbfma5z8hp083nrlm469")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dot2texi")
+    (synopsis "Create graphs within LaTeX using the @code{dot2tex} tool")
+    (description
+     "The @code{dot2texi} package allows you to embed graphs in the DOT graph
+description language in your LaTeX documents.  The @code{dot2tex} tool is used
+to invoke Graphviz for graph layout, and to transform the output from Graphviz
+to LaTeX code.  The generated code relies on the TikZ and PGF package or the
+PSTricks package.")
+    (license license:gpl3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
