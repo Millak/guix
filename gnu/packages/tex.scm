@@ -17085,6 +17085,30 @@ TikZ/PGF tools.  FAST diagrams are useful for functional analysis techniques
 in design methods.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fig4latex
+  (package
+    (name "texlive-fig4latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/fig4latex/"
+                   "scripts/fig4latex/")
+             (base32
+              "0z4dnd369q1ynpb3xd4pwyhmysn78zx8izq7va1s5kpwdr2hdj99")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "fig4latex")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/fig4latex")
+    (synopsis "Management of figures for large LaTeX documents")
+    (description
+     "Fig4LaTeX simplifies management of the figures in a large LaTeX document.
+Fig4LaTeX is appropriate for projects that include figures with graphics
+created by XFig --- in particular, graphics which use the combined
+PS/LaTeX (or PDF/LaTeX) export method.")
+    (license license:gpl3)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
