@@ -17435,6 +17435,25 @@ it.")
 @code{graphicx} package with the @command{convert} command from ImageMagick.")
     (license license:expat)))
 
+(define-public texlive-graphviz
+  (package
+    (name "texlive-graphviz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphviz/"
+                   "source/latex/graphviz/"
+                   "tex/latex/graphviz/")
+             (base32
+              "0abg1cmzr449gd5pbg3ppgf35xixjyszy3jxnrg37kqly7c26l6s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphviz")
+    (synopsis "Write Graphviz inline in LaTeX documents")
+    (description
+     "The package allows inline use of Graphviz code, in a LaTeX document.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
