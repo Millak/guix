@@ -17624,6 +17624,26 @@ Using this package you can draw a game tree as easily as drawing a game tree
 with pen and paper.")
     (license license:lppl1.3c)))
 
+(define-public texlive-kblocks
+  (package
+    (name "texlive-kblocks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kblocks/" "tex/latex/kblocks/")
+             (base32
+              "0x85k295bxn4b3i083qmfvjvz2nqrh1r4r6njn491lgsfymyc0pq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kblocks")
+    (synopsis "Easily typeset control block diagrams and signal flow graphs")
+    (description
+     "Kblocks defines a number of commands to make drawing control block
+diagrams using TikZ/PGF more structured and easier.  It reduces the learning
+curve for TikZ/PGF and serves as a frontend, by focusing on the block or flow
+diagrams only.")
+    (license license:expat)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
