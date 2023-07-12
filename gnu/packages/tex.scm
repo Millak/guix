@@ -17454,6 +17454,27 @@ it.")
      "The package allows inline use of Graphviz code, in a LaTeX document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gtrlib-largetrees
+  (package
+    (name "texlive-gtrlib-largetrees")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gtrlib-largetrees/"
+                   "source/latex/gtrlib-largetrees/"
+                   "tex/latex/gtrlib-largetrees/")
+             (base32
+              "0yfc18v919brdj6psah8q9hsjpqs8zalnz3ridrhgir98x0l8wq9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gtrlib-largetrees")
+    (synopsis "Library for genealogytree aiming at large trees")
+    (description
+     "The main goal of this package is to offer additional database fields and
+formats for the @code{genealogytree} package, particularly for typesetting
+large trees.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
