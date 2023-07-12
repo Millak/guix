@@ -16271,6 +16271,24 @@ within a @code{tikzpicture} environment by setting the environment option
 @code{nested} to @code{true}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bloques
+  (package
+    (name "texlive-bloques")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bloques/" "tex/latex/bloques/")
+             (base32
+              "10mxqjfljcphg4nifg8xy3s6k49vxvxhs5s805640npc8jgmbf64")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bloques")
+    (synopsis "Generate control diagrams")
+    (description
+     "The package uses TikZ to provide commands for generating control
+diagrams (specially in power electronics).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
