@@ -2458,6 +2458,25 @@ can interact with LaTeX.mk so that the latter automatically invokes
 @end itemize")
     (license license:gpl3+)))
 
+(define-public texlive-liftarm
+  (package
+    (name "texlive-liftarm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/liftarm/" "tex/latex/liftarm/")
+             (base32
+              "1dqi322kqlqbh4hli6nwm88nsg4dkr2fnrwi4i70gxyzxdh1mjj4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/liftarm")
+    (synopsis "Draw liftarms")
+    (description
+     "This package can be used to draw liftarms with TikZ.  It provides
+several options for the appearance of the liftarms, a command which connects
+two liftarms and an environment to describe a construction.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
