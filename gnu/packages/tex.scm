@@ -16714,6 +16714,27 @@ symbols or dash patterns along curves.  It provides facilities equivalent to
 technical pens with compasses and French curves.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dcpic
+  (package
+    (name "texlive-dcpic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/dcpic/" "tex/generic/dcpic/")
+             (base32
+              "1s4292g12r2vrnsdj4qsa9jgj9ndgdg7h27n2ig3mf305h5h5hfr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dcpic")
+    (synopsis "Commutative diagrams in a LaTeX and TeX documents")
+    (description
+     "DCpic is a package for typesetting commutative diagrams within a LaTeX
+and TeX documents.  Its distinguishing features are: a powerful graphical
+engine, the PiCTeX package; an easy specification syntax in which
+a commutative diagram is described in terms of its objects and its
+arrows (morphism), positioned in a Cartesian coordinate system.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
