@@ -1811,29 +1811,31 @@ by applications to write metadata.")
            openexr-2 ; for OpenEXR high dynamic-range images
            qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             (setenv "QT_PLUGIN_PATH"
-                     (string-append (getcwd) "/bin:"
-                                    (getenv "QT_PLUGIN_PATH")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               ;; FIXME: I guess kde's qt no this fail.
-               ;; see https://invent.kde.org/frameworks/kimageformats/-/jobs/1046283
-               (invoke "ctest" "-E" "kimageformats-read-psd")))))
-       ;; FIXME: The header files of ilmbase (propagated by openexr) are not
-       ;; found when included by the header files of openexr, and an explicit
-       ;; flag needs to be set.
-       #:configure-flags
-       (list (string-append "-DCMAKE_CXX_FLAGS=-I"
-                            (assoc-ref %build-inputs "ilmbase")
-                            "/include/OpenEXR"))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              ;; make Qt render "offscreen", required for tests
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (setenv "QT_PLUGIN_PATH"
+                      (string-append (getcwd) "/bin:"
+                                     (getenv "QT_PLUGIN_PATH")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME"
+                        (getcwd))
+                ;; FIXME: I guess kde's qt no this fail.
+                ;; see https://invent.kde.org/frameworks/kimageformats/-/jobs/1046283
+                (invoke "ctest" "-E" "kimageformats-read-psd")))))
+      ;; FIXME: The header files of ilmbase (propagated by openexr) are not
+      ;; found when included by the header files of openexr, and an explicit
+      ;; flag needs to be set.
+      #:configure-flags #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
+                                               (assoc-ref %build-inputs
+                                                          "ilmbase")
+                                               "/include/OpenEXR"))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Plugins to allow QImage to support extra file formats")
     (description "This framework provides additional image format plugins for
