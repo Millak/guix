@@ -16462,6 +16462,28 @@ library, responsible for all the drawing and a set of LaTeX macros to
 conveniently use them.")
     (license license:gpl3+)))
 
+(define-public texlive-cachepic
+  (package
+    (name "texlive-cachepic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cachepic/" "scripts/cachepic/"
+                   "tex/latex/cachepic/")
+             (base32
+              "0kc713pig67igi0h294k692lmm12mx611z3v73awsf5xv14ms3yx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "cachepic.tlu")))
+    (home-page "https://ctan.org/pkg/cachepic")
+    (synopsis "Convert document fragments into graphics")
+    (description
+     "The bundle simplifies and automates conversion of document fragments
+into external EPS or PDF files.  The bundle consists of two parts: a LaTeX
+package that implements a document level interface, and a command line tool
+that generates the external graphics.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
