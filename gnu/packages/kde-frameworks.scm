@@ -1421,13 +1421,12 @@ feel.")
                 "0m4i7csrz167nm6h4pcd0413x6jvnd39cx13k9ayga9my36ba2r8"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "DBUS_FATAL_WARNINGS" "0")
+                              (invoke "dbus-launch" "ctest")))))))
     (native-inputs
      (list bison dbus extra-cmake-modules flex qttools-5))
     (inputs
