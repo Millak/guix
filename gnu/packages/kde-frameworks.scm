@@ -1793,7 +1793,7 @@ by applications to write metadata.")
 (define-public kimageformats
   (package
     (name "kimageformats")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1802,7 +1802,7 @@ by applications to write metadata.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0v4jr1lh2qjk453q8mpz94cd98k4kmjrykn8kxrd7zvrkaa4snfy"))))
+                "07myvknlvp28kn20l30x6q22fkva72qrfziryinxgsqlhgc3j87c"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -1813,20 +1813,20 @@ by applications to write metadata.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; This test fails regularly (also at KDE CI, see
-         ;; https://build.kde.org/job/Frameworks%20kimageformats%20kf5-qt5%20XenialQt5.7/6/testReport/)
-         ;; delete offending portion
-         (add-after 'unpack 'neuter-read-xcf-test
-           (lambda _
-             (delete-file "autotests/read/xcf/simple-rgba-gimp-2.8.10.png")
-             (delete-file "autotests/read/xcf/simple-rgba-gimp-2.8.10.xcf")))
          (add-before 'check 'check-setup
            (lambda _
              ;; make Qt render "offscreen", required for tests
              (setenv "QT_QPA_PLATFORM" "offscreen")
              (setenv "QT_PLUGIN_PATH"
                      (string-append (getcwd) "/bin:"
-                                    (getenv "QT_PLUGIN_PATH"))))))
+                                    (getenv "QT_PLUGIN_PATH")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               ;; FIXME: I guess kde's qt no this fail.
+               ;; see https://invent.kde.org/frameworks/kimageformats/-/jobs/1046283
+               (invoke "ctest" "-E" "kimageformats-read-psd")))))
        ;; FIXME: The header files of ilmbase (propagated by openexr) are not
        ;; found when included by the header files of openexr, and an explicit
        ;; flag needs to be set.
