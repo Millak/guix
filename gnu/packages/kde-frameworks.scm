@@ -409,7 +409,7 @@ It is the default icon theme for the KDE Plasma 5 desktop.")
 (define-public kapidox
   (package
     (name "kapidox")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -418,10 +418,10 @@ It is the default icon theme for the KDE Plasma 5 desktop.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1k2qk8ibv5dqdhkn2992n8rlmslpmngz83hxb7zrh3pkphdg8v2n"))))
+                "1xpapgzja66lwxagrynns2ycx4cdllld5b3xrxg67si3bjz9p70a"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f  ; has no test target
+     `(#:tests? #f ; test need network
        #:phases (modify-phases %standard-phases
                   (delete 'sanity-check)))) ;its insane.
     (propagated-inputs
