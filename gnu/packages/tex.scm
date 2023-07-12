@@ -17044,6 +17044,27 @@ code.  ESK behaves in a similar fashion to EMP (which encapsulates MetaPost
 files), and was in fact developed from it.")
     (license license:gpl3+)))
 
+(define-public texlive-euflag
+  (package
+    (name "texlive-euflag")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/euflag/" "source/latex/euflag/"
+                   "tex/latex/euflag/")
+             (base32
+              "0dhbz79grhdls4cl7idk0hvr6vddniwgn1h21f5bvxqcv1xj0d8v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/euflag")
+    (synopsis "Command to reproduce the flag of the European Union")
+    (description
+     "This LaTeX package implements a command to reproduce the official flag
+of the European Union (EU).  The flag is reproduced at 1em high based on the
+current font size, so it can be scaled arbitrarily by changing the font
+size.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
