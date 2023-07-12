@@ -17214,6 +17214,39 @@ documentation shows how to build a flowchart from these elements, using
 PGF/TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-forest
+  (package
+    (name "texlive-forest")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/forest/" "makeindex/forest/"
+                   "source/latex/forest/" "tex/latex/forest/")
+             (base32
+              "00zyxfi59kglnby7l24l1bz08afv7r9qc1wifcxrb6s5xygj42zs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-elocalloc
+           texlive-environ
+           texlive-etoolbox
+           texlive-inlinedef
+           texlive-l3packages
+           texlive-pgf
+           texlive-pgfopts))
+    (home-page "https://ctan.org/pkg/forest")
+    (synopsis "Drawing (linguistic) trees")
+    (description
+     "The package provides a PGF/TikZ-based mechanism for drawing
+linguistic (and other kinds of) trees.  Its main features are: a packing
+algorithm which can produce very compact trees; a user-friendly interface
+consisting of the familiar bracket encoding of trees plus the key-value
+interface to option-setting; many tree-formatting options, with control over
+option values of individual nodes and mechanisms for their manipulation; the
+possibility to decorate the tree using the full power of PGF/TikZ; and an
+externalization mechanism sensitive to code-changes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
