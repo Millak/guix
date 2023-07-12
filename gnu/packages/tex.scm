@@ -16115,6 +16115,26 @@ Niepraschk.  The package allows the use of LuaLaTeX together with PostScript
 related code, e.g., PSTricks.")
     (license license:lppl1.3c)))
 
+(define-public texlive-autoarea
+  (package
+    (name "texlive-autoarea")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/autoarea/" "tex/latex/autoarea/")
+             (base32
+              "09a9wiihb397ljasnkxrqygsi34bd9a5spq8h3njf6awra2x2m6c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pictex-autoarea")
+    (synopsis "Automatic computation of bounding boxes with PiCTeX")
+    (description
+     "This package makes PiCTeX recognize lines and arcs in determining the
+bounding box of a picture.  The bounding box is essential for proper placement
+of a picture between running text and margins and for keeping the running text
+away.")
+    (license license:lppl)))
+
 (define-public texlive-barracuda
   (package
     (name "texlive-barracuda")
