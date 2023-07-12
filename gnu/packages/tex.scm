@@ -17131,6 +17131,26 @@ UFV --- Florestal by professor Fernando de Souza Bastos.  It makes use of the
 TikZ and @code{xcolor} packages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-figput
+  (package
+    (name "texlive-figput")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/figput/" "tex/latex/figput/")
+             (base32
+              "0ckwbrsl5075902pmmjp1r3n31pdpbqvydh69vq6mkfwk3ipp4gj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/figput")
+    (synopsis "Create interactive figures in LaTeX")
+    (description
+     "FigPut allows figures to be specified using JavaScript.  The resulting
+document can be viewed as a static PDF, as usual, or the document can be
+viewed in a web-browser, in which case the figures are interactive.  A variety
+of interactive widgets are included.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
