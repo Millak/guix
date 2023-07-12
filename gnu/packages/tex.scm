@@ -16895,6 +16895,26 @@ variables and conditions.  The package is based on DRS macros in the
 @code{covington} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-duotenzor
+  (package
+    (name "texlive-duotenzor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/duotenzor/"
+                   "tex/latex/duotenzor/")
+             (base32
+              "1l99ah5p2cp1qikk3jrbn1xrs6fz23c9h7wqc228jnrkmni7kn98")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/duotenzor")
+    (synopsis "Drawing package for circuit and duotensor diagrams")
+    (description
+     "This is a drawing package for circuit and duotensor diagrams within
+LaTeX documents.  It consists of about eighty commands, calling on TikZ for
+support.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
