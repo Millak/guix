@@ -1862,7 +1862,7 @@ asynchronous jobs.")
 (define-public knotifications
   (package
     (name "knotifications")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1871,7 +1871,7 @@ asynchronous jobs.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "10whr3wjldaxdvbj6i250rqgsy2m1n606ja1yka571f1fz7laqcd"))))
+                "05qdmjjxj362zhwyk0vv83wfzsgjd4nxnvk2avhiscr2k46swn96"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules dbus pkg-config qttools-5))
