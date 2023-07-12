@@ -1545,7 +1545,7 @@ with other frameworks.")
 (define-public kauth
   (package
     (name "kauth")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1554,7 +1554,7 @@ with other frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0nzdvx2mibpq1cgzpll9ffjr46vch1qvriaywyqih0iybx6mx5z6"))))
+                "0xn0v1rzjsv1a856zcw9s9qkbfaq184663akc5rrapvvfcrm2vjz"))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus extra-cmake-modules qttools-5))
