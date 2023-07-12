@@ -16981,6 +16981,25 @@ electrocardiograms (ECG).  It can generate different types of wave.")
 using the standard LaTeX2e @code{picture} environment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-endofproofwd
+  (package
+    (name "texlive-endofproofwd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/endofproofwd/"
+                   "tex/latex/endofproofwd/common/")
+             (base32
+              "0lgygqfzklf3l0pijas4g1489p3k5hwb0nwijz7fmva6c7sn124i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/endofproofwd")
+    (synopsis "End of proof sign")
+    (description
+     "This package provides an additional end of proof sign.  The command's
+name is @code{\\wasserdicht}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
