@@ -16378,6 +16378,27 @@ macros, to generate the drawings.  As such it can be more flexible than his,
 but requires more TikZ knowledge of the user.")
     (license license:lppl1.3+)))
 
+(define-public texlive-braids
+  (package
+    (name "texlive-braids")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/braids/" "source/latex/braids/"
+                   "tex/latex/braids/")
+             (base32
+              "1ld7kzr96bh7gdjllxn888j92p7j1l4b1krlp8dmhy6fq3a2qn22")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/braids")
+    (synopsis "Draw Braid diagrams with PGF/TikZ")
+    (description
+     "The package enables drawing of Braid diagrams with PGF/TikZ using
+a simple syntax.  The Braid itself is specified by giving a word in the Braid
+group, and there are many options for styling the strands and for drawing
+floors.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
