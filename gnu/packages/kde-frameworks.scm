@@ -421,9 +421,9 @@ It is the default icon theme for the KDE Plasma 5 desktop.")
                 "1xpapgzja66lwxagrynns2ycx4cdllld5b3xrxg67si3bjz9p70a"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ; test need network
-       #:phases (modify-phases %standard-phases
-                  (delete 'sanity-check)))) ;its insane.
+     (list #:tests? #f ; test need network
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'sanity-check)))) ;its insane.
     (propagated-inputs
      ;; kapidox is a python programm
      ;; TODO: check if doxygen has to be installed, the readme does not
