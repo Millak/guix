@@ -17644,6 +17644,30 @@ curve for TikZ/PGF and serves as a frontend, by focusing on the block or flow
 diagrams only.")
     (license license:expat)))
 
+(define-public texlive-kinematikz
+  (package
+    (name "texlive-kinematikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kinematikz/"
+                   "tex/latex/kinematikz/")
+             (base32
+              "0cg1s59xq8dkfzhnf9mh2lgyrwnlwgpqf1wjwqqnscvds85s52l2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kinematikz")
+    (synopsis "Design kinematic chains and mechanisms")
+    (description
+     "This package provides functionalities to draw kinematic diagrams for
+mechanisms using dedicate symbols (some from the ISO standard and others).
+The intention is not to represent CAD mechanical drawings of mechanisms and
+robots, but only to represent 2D and 3D kinematic chains.  The package
+provides links, joints and other symbols, mostly in the form of TikZ pic
+objects.  These pictures can be placed in the canvas either by a central point
+for joints, and start and end points for some links.")
+    (license (list license:lppl1.3+ license:gpl3+))))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
