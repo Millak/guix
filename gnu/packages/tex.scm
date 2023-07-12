@@ -17065,6 +17065,26 @@ current font size, so it can be scaled arbitrarily by changing the font
 size.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fast-diagram
+  (package
+    (name "texlive-fast-diagram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fast-diagram/"
+                   "tex/latex/fast-diagram/")
+             (base32
+              "03ygmgh6gnlkn7dwnwyifv946ja6yswm3gdgv7ad39h5s0ay99hy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fast-diagram")
+    (synopsis "Easy generation of FAST diagrams")
+    (description
+     "The package provides simple means of producing FAST diagrams, using
+TikZ/PGF tools.  FAST diagrams are useful for functional analysis techniques
+in design methods.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
