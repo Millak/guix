@@ -16855,6 +16855,24 @@ mode.  You can specify line color, line width, width, and height using option
 keys.")
     (license license:expat)))
 
+(define-public texlive-dratex
+  (package
+    (name "texlive-dratex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/dratex/" "tex/generic/dratex/")
+             (base32
+              "02qpchj2ws1d9d80284k7akzafbgdm358qxd41ms21rszyzdj11c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dratex")
+    (synopsis "General drawing macros")
+    (description
+     "This package provides a low level (@file{DraTex.sty}) and
+a high-level (@file{AlDraTex.sty}) drawing package written entirely in TeX.")
+    (license license:lppl)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
