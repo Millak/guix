@@ -16224,6 +16224,30 @@ numeric precision).  @code{bezierplot} also finds special points such as
 extreme points and inflection points and reduces the number of used points.")
     (license license:lppl1.3c)))
 
+(define-public texlive-binarytree
+  (package
+    (name "texlive-binarytree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/binarytree/"
+                   "source/latex/binarytree/"
+                   "tex/latex/binarytree/")
+             (base32
+              "1lip6npfggc6p14hhpwn1g52xmyyb5rp34znb437frks4n1bk66s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/binarytree")
+    (synopsis "Drawing binary trees using TikZ")
+    (description
+     "This package provides an easy but flexible way to draw binary trees
+using TikZ.  A path specification and the setting of various options determine
+the style for each edge of the tree.  There is support for the external
+library of TikZ which does not affect externalization of the rest of the TikZ
+figures in the document.  There is an option to use automatic file naming:
+useful if the trees are often moved around.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
