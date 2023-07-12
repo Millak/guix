@@ -16503,6 +16503,24 @@ notes, arrows, and the like can be placed to describe certain parts of
 a picture.")
     (license license:lppl)))
 
+(define-public texlive-celtic
+  (package
+    (name "texlive-celtic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/celtic/" "source/latex/celtic/"
+                   "tex/latex/celtic/")
+             (base32
+              "0zqz87y0wx5v50qnzvz6gqsz1z81ikcj4ma8mwgclrfyazpll9d0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/celtic")
+    (synopsis "TikZ library for drawing celtic knots")
+    (description
+     "The package provides a TikZ library for drawing celtic knots.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
