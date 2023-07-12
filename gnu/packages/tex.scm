@@ -17668,6 +17668,34 @@ objects.  These pictures can be placed in the canvas either by a central point
 for joints, and start and end points for some links.")
     (license (list license:lppl1.3+ license:gpl3+))))
 
+(define-public texlive-knitting
+  (package
+    (name "texlive-knitting")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/knitting/"
+                   "fonts/afm/public/knitting/"
+                   "fonts/map/dvips/knitting/"
+                   "fonts/source/public/knitting/"
+                   "fonts/tfm/public/knitting/"
+                   "fonts/type1/public/knitting/"
+                   "tex/latex/knitting/"
+                   "tex/plain/knitting/")
+             (base32
+              "106p9wx4zdkz609kxsyk4zjdb0zvhnwihlnrqd1wh2p5ij7mv7vx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/knitting")
+    (synopsis "Produce knitting charts, in Plain TeX or LaTeX")
+    (description
+     "The package provides symbol fonts and commands to write charted
+instructions for cable and lace knitting patterns, using either plain TeX or
+LaTeX.  The fonts are available both as Metafont source and in Adobe Type
+1 format.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
