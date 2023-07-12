@@ -17020,6 +17020,30 @@ PDF, on the fly.  It serves as a vehicle for passing conversion options (such
 as grayscale, prepress or pdfversion) to the @code{epspdf} converter.")
     (license license:lppl)))
 
+(define-public texlive-esk
+  (package
+    (name "texlive-esk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/esk/" "source/latex/esk/"
+                   "tex/latex/esk/")
+             (base32
+              "0hx58ajinbfc6axd4xbj395vyhr7mj247fvlzfjx71hcg9jnwkp4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/esk")
+    (synopsis "Package to encapsulate Sketch files in LaTeX sources")
+    (description
+     "The ESK package allows to encapsulate Sketch files in LaTeX sources.
+This is very useful for keeping illustrations synchronized with the text.  It
+also frees the user from inventing descriptive names for new files that fit
+into the confines of file system conventions.  Sketch is a 3D scene
+description language by Eugene K. Ressler and can generate TikZ and PSTricks
+code.  ESK behaves in a similar fashion to EMP (which encapsulates MetaPost
+files), and was in fact developed from it.")
+    (license license:gpl3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
