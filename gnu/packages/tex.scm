@@ -2501,6 +2501,28 @@ a coordinate grid over the picture for easy adjustment of positions of the
 annotations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lroundrect
+  (package
+    (name "texlive-lroundrect")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lroundrect/"
+                   "source/latex/lroundrect/"
+                   "tex/latex/lroundrect/")
+             (base32
+              "1yjfg9z0s8drij13fdhii1r9j9i57c112iv2q0airndycm6y8wsg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lroundrect")
+    (synopsis "LaTeX macros for using the @code{roundrect} MetaPost routines")
+    (description
+     "This LaTeX package provides ways to use the extremely configurable
+rounded rectangles of the @code{roundrect} MetaPost package with LaTeX.  It is
+chiefly useful for examples, but also has macros for particular types of boxes
+which are useful on their own.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
