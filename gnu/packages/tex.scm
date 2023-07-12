@@ -16915,6 +16915,25 @@ LaTeX documents.  It consists of about eighty commands, calling on TikZ for
 support.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dynkin-diagrams
+  (package
+    (name "texlive-dynkin-diagrams")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dynkin-diagrams/"
+                   "tex/latex/dynkin-diagrams/")
+             (base32
+              "0s2bf8l51ngpf9bg8vx8s4xa0dmdxj02h0hcyf23kh58xpxvmylh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dynkin-diagrams")
+    (synopsis "Draw Dynkin, Coxeter, and Satake diagrams using TikZ")
+    (description
+     "This is a drawing package for Dynkin, Coxeter, and Satake diagrams in
+LaTeX documents, using the TikZ package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
