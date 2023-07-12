@@ -16003,6 +16003,26 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
 @code{\\minsizebox}, @code{\\maxsizebox} and @code{\\phantombox}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-aobs-tikz
+  (package
+    (name "texlive-aobs-tikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aobs-tikz/"
+                   "source/latex/aobs-tikz/"
+                   "tex/latex/aobs-tikz/")
+             (base32
+              "04p3ghywqb3nr91vh6l39f8z9gbb3r6ca6yvq3nrcsqarxypfqny")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aobs-tikz")
+    (synopsis "TikZ styles for creating overlaid pictures in beamer")
+    (description
+     "The package defines auxiliary TikZ styles useful for overlaying pictures
+elements in Beamer.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-auto-pst-pdf-lua
   (package
     (name "texlive-auto-pst-pdf-lua")
