@@ -2269,19 +2269,21 @@ KCModules can be created with the KConfigWidgets framework.")
            qtbase-5
            qttools-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "src/khelpclient.cpp"
-               ;; make QDirIterator follow symlinks
-               (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
-                (string-append a " | QDirIterator::FollowSymlinks" b)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (invoke "ctest" "-E" "kstandardactiontest")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "src/khelpclient.cpp"
+                ;; make QDirIterator follow symlinks
+                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
+                 (string-append a " | QDirIterator::FollowSymlinks" b)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME"
+                        (getcwd))
+                (invoke "ctest" "-E" "kstandardactiontest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Widgets for configuration dialogs")
     (description "KConfigWidgets provides easy-to-use classes to create
