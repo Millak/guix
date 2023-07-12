@@ -16961,6 +16961,26 @@ LaTeX documents, using the TikZ package.")
 electrocardiograms (ECG).  It can generate different types of wave.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ellipse
+  (package
+    (name "texlive-ellipse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ellipse/" "source/latex/ellipse/"
+                   "tex/latex/ellipse/")
+             (base32
+              "0biya15r55hr41vnqsviqqsqlb7p47i2n814dahfs0r65vlfnz23")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ellipse")
+    (synopsis
+     "Draw ellipses and elliptical arcs using @code{picture} environment")
+    (description
+     "This package provides commands to draw ellipses and elliptical arcs
+using the standard LaTeX2e @code{picture} environment.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
