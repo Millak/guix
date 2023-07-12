@@ -665,7 +665,7 @@ many more.")
 (define-public kdbusaddons
   (package
     (name "kdbusaddons")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -674,7 +674,7 @@ many more.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0fwdmlnci2xn5pi1ywgia3xka3zsh6gl6xpx1gvql7lczk1y490a"))))
+                "1siv9ndk0zr9yq6pwjs248zzsh4kgllfj1294jym80rxcb0z6g9r"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules dbus qttools-5))
@@ -683,21 +683,22 @@ many more.")
     ;; kinit-bootstrap: kinit package which does not depend on kdbusaddons.
     (arguments
      (list #:phases
-       #~(modify-phases %standard-phases
-         (add-before 'configure 'patch-source
-          (lambda* (#:key inputs #:allow-other-keys)
-            ;; look for the kdeinit5 executable in kinit's store directory,
-            ;; instead of the current application's directory:
-            (substitute* "src/kdeinitinterface.cpp"
-              (("<< QCoreApplication::applicationDirPath..")
-               (string-append
-                "<< QString::fromUtf8(\"/" (dirname (search-input-file inputs
-                "bin/kdeinit5")) "\")" )))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest")))))))
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-source
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; look for the kdeinit5 executable in kinit's store directory,
+                   ;; instead of the current application's directory:
+                   (substitute* "src/kdeinitinterface.cpp"
+                     (("<< QCoreApplication::applicationDirPath..")
+                      (string-append
+                       "<< QString::fromUtf8(\"/"
+                       (dirname (search-input-file inputs "bin/kdeinit5"))
+                       "\")" )))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "DBUS_FATAL_WARNINGS" "0")
+                     (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Convenience classes for DBus")
     (description "KDBusAddons provides convenience classes on top of QtDBus,
@@ -3259,7 +3260,7 @@ the passwords on KDE work spaces.")
                (setenv "HOME" (getcwd))
                (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
                (invoke "ctest" "-E"
-			   "(ktoolbar_unittest|kxmlgui_unittest)")))))))
+			   "(ktoolbar_unittest|kmainwindow_unittest|kxmlgui_unittest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for managing menu and toolbar actions")
     (description "KXMLGUI provides a framework for managing menu and toolbar
