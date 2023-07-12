@@ -17717,6 +17717,24 @@ commands to handle as much of the layout of the document as possible, leaving
 the author free to concentrate on the pattern.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ladder
+  (package
+    (name "texlive-ladder")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ladder/" "tex/latex/ladder/")
+             (base32
+              "0wm0c75g6k8pb9kqdbw7rmbhs9sjdq8pn01nsaxfv2zqxnbc1znz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ladder")
+    (synopsis "Draw simple ladder diagrams using TikZ")
+    (description
+     "This package permits the creation of simple ladder diagrams within LaTeX
+documents.")
+    (license license:expat)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
