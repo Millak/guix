@@ -2373,6 +2373,29 @@ developments based on, or complementary to, the matter in his distribution
 directories.")
     (license license:public-domain)))
 
+(define-public texlive-lapdf
+  (package
+    (name "texlive-lapdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lapdf/" "tex/latex/lapdf/")
+             (base32
+              "0rnwgb3fy8f4app543lx72f4rhc5c4kladnazkay9lr8hkfa8s4d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lapdf")
+    (synopsis "PDF drawing directly in TeX documents")
+    (description
+     "The package provides the means to use PDF drawing primitives to produce
+high quality, colored graphics.  It uses Bezier curves (integral and rational)
+from degree one to seven, allows TeX typesetting in the graphic, offers most
+of the standard math functions, allows plotting normal, parametric and polar
+functions.  The package has linear, logx, logy, logxy and polar grids with
+many specs; it can rotate, clip and do many nice things easily it has two
+looping commands for programming and many instructive example files.")
+    (license license:gpl3+)))
+
 (define-public texlive-latex-fonts
   (package
     (name "texlive-latex-fonts")
