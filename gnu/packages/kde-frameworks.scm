@@ -3221,7 +3221,7 @@ the passwords on KDE work spaces.")
 (define-public kxmlgui
   (package
     (name "kxmlgui")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3230,7 +3230,7 @@ the passwords on KDE work spaces.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "08n5l3zgkh0fxaqwrfx5mk4j5wq9ylkpxd37751qcivpag7l0x45"))))
+                "0v6nzq86wvbalbqq3dp47vymp31ws098c8dq0g43f6g7q3xjfxa1"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfig kconfigwidgets))
@@ -3259,8 +3259,7 @@ the passwords on KDE work spaces.")
              (when tests?
                (setenv "HOME" (getcwd))
                (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
-               (invoke "ctest" "-E"
-			   "(ktoolbar_unittest|kmainwindow_unittest|kxmlgui_unittest)")))))))
+               (invoke "ctest" "-E" "(ktoolbar_unittest|kxmlgui_unittest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for managing menu and toolbar actions")
     (description "KXMLGUI provides a framework for managing menu and toolbar
