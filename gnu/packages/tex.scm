@@ -16981,6 +16981,27 @@ electrocardiograms (ECG).  It can generate different types of wave.")
 using the standard LaTeX2e @code{picture} environment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-elocalloc
+  (package
+    (name "texlive-elocalloc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/elocalloc/"
+                   "source/latex/elocalloc/"
+                   "tex/latex/elocalloc/")
+             (base32
+              "121hpnka88y6laayjbhgiphbqn8qv42024bjda21qcc076s4b632")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/elocalloc")
+    (synopsis "Local allocation macros for LaTeX 2015")
+    (description
+     "This package provides local allocation macros, with names taken from
+@file{etex.sty} but with implementation based on the LaTeX 2015 allocation
+macros.")
+    (license license:lppl)))
+
 (define-public texlive-endofproofwd
   (package
     (name "texlive-endofproofwd")
