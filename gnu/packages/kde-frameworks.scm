@@ -632,26 +632,27 @@ propagate their changes to their respective configuration files.")
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules qttools-5 shared-mime-info))
-           ;; TODO: FAM: File alteration notification http://oss.sgi.com/projects/fam
+    ;; TODO: FAM: File alteration notification http://oss.sgi.com/projects/fam
     (inputs
      (list qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'blacklist-failing-test
-           (lambda _
-             ;; Blacklist failing tests.
-             (with-output-to-file "autotests/BLACKLIST"
-               (lambda _
-                 ;; FIXME: Make it pass.  Test failure caused by stout/stderr
-                 ;; being interleaved.
-                 (display "[test_channels]\n*\n")
-                 ;; FIXME
-                 (display "[test_inheritance]\n*\n")))))
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (setenv "TMPDIR" (getcwd)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'blacklist-failing-test
+            (lambda _
+              ;; Blacklist failing tests.
+              (with-output-to-file "autotests/BLACKLIST"
+                (lambda _
+                  ;; FIXME: Make it pass.  Test failure caused by stout/stderr
+                  ;; being interleaved.
+                  (display "[test_channels]\n*\n")
+                  ;; FIXME
+                  (display "[test_inheritance]\n*\n")))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (setenv "TMPDIR" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt addon library with a collection of non-GUI utilities")
     (description "KCoreAddons provides classes built on top of QtCore to
