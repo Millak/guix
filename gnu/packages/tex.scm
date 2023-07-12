@@ -17275,6 +17275,29 @@ TeX implementation, running in any current environment, requires the
 interpreter, not just LuaTeX.")
     (license license:lppl)))
 
+(define-public texlive-genealogytree
+  (package
+    (name "texlive-genealogytree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/genealogytree/"
+                   "tex/latex/genealogytree/")
+             (base32
+              "10h12qgjrh37ax1grpkyas5blf3s4g6bfp6g5d9x7y1ddfpxjmix")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/genealogytree")
+    (synopsis "Pedigree and genealogical tree diagrams")
+    (description
+     "Pedigree and genealogical tree diagrams are proven tools to visualize
+genetic and relational connections between individuals.  The package provides
+a set of tools to typeset genealogical trees, i.e., to typeset a set of
+special graphs for the description of family-like structures.  The package
+uses an autolayout algorithm which can be customized, e.g., to prioritize
+certain paths.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
