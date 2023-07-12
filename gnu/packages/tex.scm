@@ -17242,6 +17242,34 @@ TeX implementation, running in any current environment, requires the
 interpreter, not just LuaTeX.")
     (license license:lppl)))
 
+(define-public texlive-inlinedef
+  (package
+    (name "texlive-inlinedef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inlinedef/"
+                   "source/latex/inlinedef/"
+                   "tex/latex/inlinedef/")
+             (base32
+              "0ys2pb8dmgg41nwh9r9qhmxlfw5wxrfwryvdx1ppab4ndi138baw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inlinedef")
+    (synopsis "Inline expansions within definitions")
+    (description
+     "The package provides a macro @code{\\Inline} that precedes
+a @code{\\def} or @code{\\gdef}.  Within the definition text of an inlined
+definition, keywords such as @code{\\Expand} may be used to selectively inline
+certain expansions at definition-time.  This eases the process of redefining
+macros in terms of the original definition, as well as definitions in which
+the token that must be expanded is deep within, where @code{\\expandafter}
+would be difficult and @code{\\edef} is not suitable.  Another application is
+as an easier version of @code{\\aftergroup}, by defining a macro in terms of
+expanded local variables, then ending the group with
+@code{\\expandafter\\endgroup\\macro}.")
+    (license license:lppl)))
+
 (define-public texlive-qrcode
   (package
     (name "texlive-qrcode")
