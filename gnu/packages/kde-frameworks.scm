@@ -1996,7 +1996,7 @@ and communicating with them using a pty.")
 (define-public kunitconversion
   (package
     (name "kunitconversion")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2005,7 +2005,7 @@ and communicating with them using a pty.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0lhyg1d1k25kqk94lzy8mb06p4c17limmcrzirnsnxjvhjrc6r05"))))
+                "1kwz5wx0s522mwb5gxjz6cxqdkzflcckmra9qikpjrzsngamrq3j"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ;; Requires network.
     (native-inputs
