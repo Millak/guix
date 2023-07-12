@@ -17395,6 +17395,26 @@ Sequential Function Chart (SFC) diagrams, in accordance with EN 60848, using
 PGF/TikZ.")
     (license license:lppl1.0+)))
 
+(define-public texlive-graph35
+  (package
+    (name "texlive-graph35")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graph35/" "source/latex/graph35/"
+                   "tex/latex/graph35/")
+             (base32
+              "0012mfpl8cxqm0grmgazixqbgicfgzr4z891zgjw60xy6df8qhwb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graph35")
+    (synopsis "Draw keys and screen items of several Casio calculators")
+    (description
+     "This package defines commands to draw the Casio Graph 35 / Fx-9750GII
+calculator (and other models).  It can draw the whole calculator, or parts of
+it.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
