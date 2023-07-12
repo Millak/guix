@@ -16812,6 +16812,26 @@ to LaTeX code.  The generated code relies on the TikZ and PGF package or the
 PSTricks package.")
     (license license:gpl3+)))
 
+(define-public texlive-dottex
+  (package
+    (name "texlive-dottex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dottex/" "source/latex/dottex/"
+                   "tex/latex/dottex/")
+             (base32
+              "0lk3ylbbgq2glni6qp6spmn8mr2qv4q1b06raadsb7hh75p1r218")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dottex")
+    (synopsis "Use DOT code in LaTeX")
+    (description
+     "The @code{dottex} package allows you to encapsulate DOT and Neato files
+in your document (DOT and Neato are both part of @code{graphviz}; DOT creates
+directed graphs, Neato undirected graphs).")
+    (license license:gpl3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
