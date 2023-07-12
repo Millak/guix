@@ -16735,6 +16735,24 @@ a commutative diagram is described in terms of its objects and its
 arrows (morphism), positioned in a Cartesian coordinate system.")
     (license license:lppl1.3+)))
 
+(define-public texlive-diagmac2
+  (package
+    (name "texlive-diagmac2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/diagmac2/" "tex/latex/diagmac2/")
+             (base32
+              "002p9qmrbbkqc72iippnjhxmb7yybx06xr6bs76hg04pzvh5a49f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/diagmac2")
+    (synopsis "Diagram macros, using @code{pict2e}")
+    (description
+     "This is a development of the long-established @code{diagmac} package,
+using @code{pict2e} so that the restrictions on line direction are removed.")
+    (license license:lppl)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
