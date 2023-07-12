@@ -3692,7 +3692,7 @@ support.")
 (define-public kjsembed
   (package
     (name "kjsembed")
-    (version "5.98.0")
+    (version "5.108.0")
     (source
      (origin
        (method url-fetch)
@@ -3701,7 +3701,7 @@ support.")
              (version-major+minor version) "/portingAids/"
              name "-" version ".tar.xz"))
        (sha256
-        (base32 "0zb4vr0hp73lzc1gfnpq1grwmlpdvnp8awf3ydx4vqjh9n6jbaf2"))))
+        (base32 "1nfi9mfph3yjglafm8clw8d1z4f4h9b71j5z4l50qsds65yv9b9a"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools-5))
