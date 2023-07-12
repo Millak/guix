@@ -1928,31 +1928,36 @@ covers feedback and persistent events.")
            ki18n
            qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "src/kpackage/package.cpp"
-               (("externalPaths.false.") "externalPaths(true)"))
-             ;; Make QDirIterator follow symlinks
-             (substitute* '("src/kpackage/packageloader.cpp")
-               (("^\\s*(const QDirIterator::IteratorFlags flags = QDirIterator::Subdirectories)(;)" _ a b)
-                (string-append a " | QDirIterator::FollowSymlinks" b))
-               (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
-                (string-append a " | QDirIterator::FollowSymlinks" b)))))
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; /bin/ls doesn't exist in the build-container use /etc/passwd
-             (substitute* "autotests/packagestructuretest.cpp"
-               (("(addDirectoryDefinition\\(\")bin(\".*\")bin(\".*\")bin\""
-                 _ a b c)
-                (string-append a "etc" b "etc" c "etc\""))
-               (("filePath\\(\"bin\", QStringLiteral\\(\"ls\"))")
-                "filePath(\"etc\", QStringLiteral(\"passwd\"))")
-               (("\"/bin/ls\"") "\"/etc/passwd\""))))
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" (getcwd)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "src/kpackage/package.cpp"
+                (("externalPaths.false.")
+                 "externalPaths(true)"))
+              ;; Make QDirIterator follow symlinks
+              (substitute* '("src/kpackage/packageloader.cpp")
+                (("^\\s*(const QDirIterator::IteratorFlags flags = QDirIterator::Subdirectories)(;)"
+                  _ a b)
+                 (string-append a " | QDirIterator::FollowSymlinks" b))
+                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)"
+                  _ a b)
+                 (string-append a " | QDirIterator::FollowSymlinks" b)))))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; /bin/ls doesn't exist in the build-container use /etc/passwd
+              (substitute* "autotests/packagestructuretest.cpp"
+                (("(addDirectoryDefinition\\(\")bin(\".*\")bin(\".*\")bin\""
+                  _ a b c)
+                 (string-append a "etc" b "etc" c "etc\""))
+                (("filePath\\(\"bin\", QStringLiteral\\(\"ls\"))")
+                 "filePath(\"etc\", QStringLiteral(\"passwd\"))")
+                (("\"/bin/ls\"")
+                 "\"/etc/passwd\""))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Installation and loading of additional content as packages")
     (description "The Package framework lets the user install and load packages
