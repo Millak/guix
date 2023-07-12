@@ -17172,6 +17172,27 @@ user-set limits.  If there is not enough space on the page, the box is moved
 to the next one.")
     (license license:lppl1.3+)))
 
+(define-public texlive-flowchart
+  (package
+    (name "texlive-flowchart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flowchart/"
+                   "source/latex/flowchart/"
+                   "tex/latex/flowchart/")
+             (base32
+              "1r0n7wr7ljhlvyhmm7f85h1c5imj9iqy7afv4mjy1ychcaws233w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flowchart")
+    (synopsis "Shapes for drawing flowcharts, using TikZ")
+    (description
+     "The package provides a set of traditional flowchart element shapes; the
+documentation shows how to build a flowchart from these elements, using
+PGF/TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
