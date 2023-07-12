@@ -1636,15 +1636,16 @@ integrated it into your application's other widgets.")
      (list qtbase-5))
     (propagated-inputs
      (list ;; As required by KF5ContactsConfig.cmake.
-          iso-codes kcodecs kconfig kcoreaddons qtdeclarative-5 ki18n))
+      iso-codes kcodecs kconfig kcoreaddons qtdeclarative-5 ki18n))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (system "Xvfb +extension GLX :1 -screen 0 640x480x24 &")
-             (setenv "DISPLAY" ":1"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (system "Xvfb +extension GLX :1 -screen 0 640x480x24 &")
+              (setenv "DISPLAY" ":1"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "API for contacts/address book data following the vCard standard")
     (description "This library provides a vCard data model, vCard
