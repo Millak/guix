@@ -1705,28 +1705,30 @@ application crashes.")
            perl-uri
            qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'cmake-find-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "cmake" "\\.cmake$")
-               (("CMAKE_SYSTEM_PREFIX_PATH")
-                "CMAKE_PREFIX_PATH"))
-             (substitute* "cmake/FindDocBookXML4.cmake"
-               (("^.*xml/docbook/schema/dtd.*$")
-                "xml/dtd/docbook\n"))
-             (substitute* "cmake/FindDocBookXSL.cmake"
-               (("^.*xml/docbook/stylesheet.*$")
-                (string-append "xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl) "\n")))))
-         (add-after 'install 'add-symlinks
-           ;; Some package(s) (e.g. kdelibs4support) refer to this locale by a
-           ;; different spelling.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((xsl (string-append (assoc-ref outputs "out")
-                                       "/share/kf5/kdoctools/customization/xsl/")))
-               (symlink (string-append xsl "pt_br.xml")
-                        (string-append xsl "pt-BR.xml"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cmake-find-docbook
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "cmake" "\\.cmake$")
+                (("CMAKE_SYSTEM_PREFIX_PATH")
+                 "CMAKE_PREFIX_PATH"))
+              (substitute* "cmake/FindDocBookXML4.cmake"
+                (("^.*xml/docbook/schema/dtd.*$")
+                 "xml/dtd/docbook\n"))
+              (substitute* "cmake/FindDocBookXSL.cmake"
+                (("^.*xml/docbook/stylesheet.*$")
+                 (string-append "xml/xsl/docbook-xsl-"
+                                #$(package-version docbook-xsl)
+                                "\n")))))
+          (add-after 'install 'add-symlinks
+            ;; Some package(s) (e.g. kdelibs4support) refer to this locale by a
+            ;; different spelling.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((xsl (string-append (assoc-ref outputs "out")
+                                        "/share/kf5/kdoctools/customization/xsl/")))
+                (symlink (string-append xsl "pt_br.xml")
+                         (string-append xsl "pt-BR.xml"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Create documentation from DocBook")
     (description "Provides tools to generate documentation in various format
