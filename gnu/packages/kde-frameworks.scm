@@ -1561,24 +1561,25 @@ with other frameworks.")
     (inputs
      (list kcoreaddons polkit-qt qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-cmake-install-directories
-           (lambda _
-             ;; Make packages using kauth put their policy files and helpers
-             ;; into their own prefix.
-             (substitute* "KF5AuthConfig.cmake.in"
-               (("@KAUTH_POLICY_FILES_INSTALL_DIR@")
-                "${KDE_INSTALL_DATADIR}/polkit-1/actions")
-               (("@KAUTH_HELPER_INSTALL_DIR@")
-                "${KDE_INSTALL_LIBEXECDIR}")
-               (("@KAUTH_HELPER_INSTALL_ABSOLUTE_DIR@")
-                "${KDE_INSTALL_LIBEXECDIR}"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake-install-directories
+            (lambda _
+              ;; Make packages using kauth put their policy files and helpers
+              ;; into their own prefix.
+              (substitute* "KF5AuthConfig.cmake.in"
+                (("@KAUTH_POLICY_FILES_INSTALL_DIR@")
+                 "${KDE_INSTALL_DATADIR}/polkit-1/actions")
+                (("@KAUTH_HELPER_INSTALL_DIR@")
+                 "${KDE_INSTALL_LIBEXECDIR}")
+                (("@KAUTH_HELPER_INSTALL_ABSOLUTE_DIR@")
+                 "${KDE_INSTALL_LIBEXECDIR}"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Execute actions as privileged user")
     (description "KAuth provides a convenient, system-integrated way to offload
