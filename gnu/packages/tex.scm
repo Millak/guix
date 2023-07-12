@@ -7533,6 +7533,7 @@ create new @samp{List of ...}.  The ToC @code{\\parskip} may be changed.")
               ;; The "ins" file refers to the wrong source file.
               (substitute* "source/latex/trimspaces/trimspaces.ins"
                 (("pstool\\.tex") "trimspaces.tex")))))))
+    (native-inputs (list texlive-filecontents))
     (home-page "https://ctan.org/pkg/trimspaces")
     (synopsis "Trim spaces around an argument or within a macro")
     (description
