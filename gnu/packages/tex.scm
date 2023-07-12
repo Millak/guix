@@ -16753,6 +16753,24 @@ arrows (morphism), positioned in a Cartesian coordinate system.")
 using @code{pict2e} so that the restrictions on line direction are removed.")
     (license license:lppl)))
 
+(define-public texlive-ditaa
+  (package
+    (name "texlive-ditaa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ditaa/" "tex/latex/ditaa/")
+             (base32
+              "1dk915p169hnpy9888kpslawhkmlipbkdrsnk1pajypcl7jyrniw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ditaa")
+    (synopsis "Use ditaa diagrams within LaTeX documents")
+    (description
+     "With this package, @acronym{DITAA, DIagrams Through Ascii Art} diagrams
+can be embedded directly into LaTeX files.")
+    (license license:lppl)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
