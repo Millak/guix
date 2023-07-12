@@ -1467,7 +1467,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/kobodeluxe-graphics-window-signed-char.patch	\
   %D%/packages/patches/kodi-set-libcurl-ssl-parameters.patch		\
   %D%/packages/patches/kodi-mesa-eglchromium.patch		\
-  %D%/packages/patches/kwayland-skip-flaky-test.patch		\
   %D%/packages/patches/laby-make-install.patch			\
   %D%/packages/patches/laby-use-tmpdir-from-runtime.patch	\
   %D%/packages/patches/ldns-drill-examples.patch		\
