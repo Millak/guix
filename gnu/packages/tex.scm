@@ -16416,6 +16416,28 @@ floors.")
      "The package provides an Eepic driver to use @code{pict2e} facilities.")
     (license license:expat)))
 
+(define-public texlive-byo-twemojis
+  (package
+    (name "texlive-byo-twemojis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/byo-twemojis/"
+                   "source/latex/byo-twemojis/"
+                   "tex/latex/byo-twemojis/")
+             (base32
+              "0wnl6jcwrkxvzfsq04kabxanraa8zi08fjg4a1b7cqpawiphf8jp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/byo-twemojis")
+    (synopsis "Build Your Own Twemojis with TikZ")
+    (description
+     "This package provides the means to create your own emojis (the simple,
+round, and mostly yellow ones) from elements of existing emojis.  The provided
+command creates a TikZ picture from the stated elements with multiple
+possibilities to modify the result in color and position.")
+    (license (list license:cc-by4.0 license:lppl1.3+))))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
