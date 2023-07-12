@@ -37553,6 +37553,32 @@ a Vertico extension which provides a way to pop up a frame at point to show
 a vertical completion UI.")
     (license license:gpl3+)))
 
+;; No tagged release upstream
+(define-public emacs-transient-posframe
+  (let ((commit "dcd898d1d35183a7d4f2c8f0ebcb43b4f8e70ebe")
+        (revision "0"))
+    (package
+      (name "emacs-transient-posframe")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/yanghaoxie/transient-posframe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1aq1vbkww55xplyaa3xagz9z4kdlsxk13x054asnk0dqps4bcgbf"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-posframe emacs-transient))
+      (home-page "https://github.com/yanghaoxie/transient-posframe")
+      (synopsis "Pop up a posframe (a child frame) to show Transients")
+      (description
+       "This package is a @code{transient} extension, which uses @code{posframe}
+(a child frame) to show @code{transient} popups in Emacs.  It was developed with
+@code{transient} popups of @code{magit} in mind.")
+      (license license:gpl3+))))
+
 (define-public emacs-tintin-mode
   (let ((commit "82e71e1db92ee3d94c7d0208bafc5de337193de8")
 	(revision "1"))
