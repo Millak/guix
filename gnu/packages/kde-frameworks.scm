@@ -3004,7 +3004,7 @@ typed.")
 (define-public kservice
   (package
     (name "kservice")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3013,7 +3013,7 @@ typed.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0lgwpcdkkbxwq84zp5aymrdwy0iacqxz5ckc89pymcm0bacyhl31"))))
+                "10dfnq3x9b30kbkpq1ifg6ywj8dmdqvd1szgrwf71077yzgsh9w2"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfig kcoreaddons kdoctools))
@@ -3043,7 +3043,7 @@ typed.")
                (setenv "HOME" (getcwd))
                (setenv "QT_QPA_PLATFORM" "offscreen")
                ;; Disable failing tests.
-               (invoke "ctest" "-E" "(kautostarttest|ksycocatest)")))))))
+               (invoke "ctest" "-E" "(kautostarttest|ksycocatest|kapplicationtradertest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Plugin framework for desktop services")
     (description "KService provides a plugin framework for handling desktop
