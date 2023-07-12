@@ -19351,6 +19351,34 @@ available key bindings that follow C-x (or as many as space allows given your
 settings).")
     (license license:gpl3+)))
 
+;; Tagged release upstream is from before the package was orphaned.
+;; The base version is extracted from the "Version" keyword in the main file
+;; with "-git" suffix removed.
+(define-public emacs-which-key-posframe
+  (let ((commit "e4a9ce9a1b20de550fca51f14d055821980d534a")
+        (revision "0"))
+    (package
+      (name "emacs-which-key-posframe")
+      (version (git-version "0.2.0.50" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/emacsorphanage/which-key-posframe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0kgc29pb5k6cb2m13cz1yhys1k8l4dpx6wjjgldpdlg9qw2i1b53"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-posframe emacs-which-key))
+      (home-page "https://github.com/emacsorphanage/which-key-posframe")
+      (synopsis "Display which-key popup in a posframe (a child frame)")
+      (description
+       "This package is a @code{which-key} extension, which uses posframe
+(a child frame) to show @code{which-key} popups.")
+      (license license:gpl3+))))
+
 (define-public emacs-display-wttr
   (package
     (name "emacs-display-wttr")
