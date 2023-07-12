@@ -16521,6 +16521,27 @@ a picture.")
      "The package provides a TikZ library for drawing celtic knots.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chemfig
+  (package
+    (name "texlive-chemfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/chemfig/"
+                   "tex/generic/chemfig/")
+             (base32
+              "01mai7drwm3y4i3yj4fkwqjyzwlr4dvq467lwdzsbj3dl5fxwgpg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemfig")
+    (synopsis "Draw molecules with easy syntax")
+    (description
+     "The package provides the command @code{\\chemfig}, which draws molecules
+using the TikZ package.  While the diagrams produced are essentially
+2-dimensional, the package supports many of the conventional notations for
+illustrating the 3-dimensional layout of a molecule.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
