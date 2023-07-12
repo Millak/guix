@@ -1148,13 +1148,15 @@ represented by a QPoint or a QSize.")
     (inputs
      (list qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
-               (invoke "ctest" "-E" "(ksqueezedtextlabelautotest|\
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
+                (invoke "ctest" "-E"
+                        "(ksqueezedtextlabelautotest|\
 kwidgetsaddons-kcolumnresizertest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Large set of desktop widgets")
