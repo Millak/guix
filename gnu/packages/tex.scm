@@ -17535,6 +17535,26 @@ the option in an acceptable framework.")
 both documents and presentations, us TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hobby
+  (package
+    (name "texlive-hobby")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hobby/" "source/latex/hobby/"
+                   "tex/latex/hobby/")
+             (base32
+              "1y0np4xpra136y2rqlwsifas33avfrv1psr8nxa92m7vmpd7l7fg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hobby")
+    (synopsis "Implementation of Hobby's algorithm for PGF/TikZ")
+    (description
+     "This package defines a path generation function for PGF/TikZ which
+implements Hobby's algorithm for a path built out of Bezier curves which
+passes through a given set of points.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
