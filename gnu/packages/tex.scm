@@ -16135,6 +16135,25 @@ of a picture between running text and margins and for keeping the running text
 away.")
     (license license:lppl)))
 
+(define-public texlive-bardiag
+  (package
+    (name "texlive-bardiag")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bardiag/" "tex/latex/bardiag/")
+             (base32
+              "1iy0cr24ki93jlnmzr1fgqa7jqg0zhxds422cz322zwr19936zz9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bardiag")
+    (synopsis "LaTeX package for drawing bar diagrams")
+    (description
+     "The main purpose of the package is to make the drawing of bar diagrams
+possible and easy in LaTeX.  The BarDiag package is inspired by and based on
+PSTricks.")
+    (license license:lppl)))
+
 (define-public texlive-barracuda
   (package
     (name "texlive-barracuda")
