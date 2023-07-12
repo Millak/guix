@@ -16692,6 +16692,28 @@ arrows at one or both ends, generic curves specified with their nodes and the
 tangent direction at these nodes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-curves
+  (package
+    (name "texlive-curves")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/curves/" "source/latex/curves/"
+                   "tex/latex/curves/")
+             (base32
+              "1diwxq6maizcnmwr6shnl044cvhnd7c2f55avgsyap6ds5wv86wn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/curves")
+    (synopsis "Curves for LaTeX picture environment")
+    (description
+     "This package draws curves in the standard LaTeX picture environment
+using parabolas between data points with continuous slope at joins; for
+circles and arcs, it uses up to 16 parabolas.  The package can also draw
+symbols or dash patterns along curves.  It provides facilities equivalent to
+technical pens with compasses and French curves.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
