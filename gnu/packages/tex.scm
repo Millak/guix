@@ -2546,6 +2546,27 @@ Several macros are provided to draw the global mesh, the set of points, or
 a particular step of the algorithm.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luasseq
+  (package
+    (name "texlive-luasseq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luasseq/" "scripts/luasseq/"
+                   "source/lualatex/luasseq/"
+                   "tex/lualatex/luasseq/")
+             (base32
+              "1mkhzysyhpbblpwwy4d4983b5np23jnxl9ai986g0n1vpyv0kc47")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luasseq")
+    (synopsis "Drawing spectral sequences in LuaLaTeX")
+    (description
+     "The package is an update of the author's @code{sseq} package, for use
+with LuaLaTeX.  This version uses less memory, and operates faster than the
+original; it also offers several enhancements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
