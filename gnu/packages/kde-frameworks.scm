@@ -619,7 +619,7 @@ propagate their changes to their respective configuration files.")
 (define-public kcoreaddons
   (package
     (name "kcoreaddons")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -628,7 +628,7 @@ propagate their changes to their respective configuration files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0lqmyxqsw7w1qgdgmax63v64cy7dwk7n4zi8k53xmrqjmd9jir52"))))
+                "0l8f59ijmcjvrpgysvrw2nmh3jqlzhlqxmgrvybipxpywams3cy8"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules qttools-5 shared-mime-info))
