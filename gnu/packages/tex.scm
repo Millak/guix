@@ -16356,6 +16356,28 @@ are preprogrammed for use.")
     (description "The package draws bond graphs using PGF and TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bondgraphs
+  (package
+    (name "texlive-bondgraphs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bondgraphs/"
+                   "source/latex/bondgraphs/"
+                   "tex/latex/bondgraphs/")
+             (base32
+              "1gisr9f2n3mwf2qaqdj9sjmxscrpa9zrb9jm7v5l96ba8kqqw6hx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bondgraphs")
+    (synopsis "Draws bond graphs in LaTeX, using PGF/TikZ")
+    (description
+     "The package is used to draw bond graphs in LaTeX.  Compared to the
+@code{bondgraph} package this package relies more on TikZ styles and less on
+macros, to generate the drawings.  As such it can be more flexible than his,
+but requires more TikZ knowledge of the user.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
