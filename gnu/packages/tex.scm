@@ -17555,6 +17555,25 @@ implements Hobby's algorithm for a path built out of Bezier curves which
 passes through a given set of points.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hvfloat
+  (package
+    (name "texlive-hvfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hvfloat/" "tex/latex/hvfloat/")
+             (base32
+              "0qfmgxn77vzb9jv3njfpzbqrs2c31z6kl89nwmr3la4kphb7y91w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hvfloat")
+    (synopsis "Controlling captions, fullpage and doublepage floats")
+    (description
+     "This package defines a macro to place objects (tables and figures) and
+their captions in different positions with different rotating angles within
+a float.  All objects and captions can be framed.")
+    (license license:lppl)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
