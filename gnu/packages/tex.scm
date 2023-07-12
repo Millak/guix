@@ -17000,6 +17000,26 @@ using the standard LaTeX2e @code{picture} environment.")
 name is @code{\\wasserdicht}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-epspdfconversion
+  (package
+    (name "texlive-epspdfconversion")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/epspdfconversion/"
+                   "tex/latex/epspdfconversion/")
+             (base32
+              "1czh9ppkgk9lxw4imagnwm4b88vylr4vwhzb1k63ik749h047kg2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epspdfconversion")
+    (synopsis "On-the-fly conversion of EPS to PDF")
+    (description
+     "The package calls the @code{epstopdf} package to convert EPS graphics to
+PDF, on the fly.  It serves as a vehicle for passing conversion options (such
+as grayscale, prepress or pdfversion) to the @code{epspdf} converter.")
+    (license license:lppl)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
