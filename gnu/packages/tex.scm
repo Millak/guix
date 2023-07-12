@@ -16595,6 +16595,27 @@ to LaTeX, and directly supporting PDF output format.  It has therefore been
 based on the PGF/TikZ package.")
     (license (list license:lppl license:gpl3+))))
 
+(define-public texlive-coffeestains
+  (package
+    (name "texlive-coffeestains")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coffeestains/"
+                   "tex/latex/coffeestains/")
+             (base32
+              "0nc2nmxg378gg16q6gxj68w94fl3nd5lcgk2fq9hp17mg6q27gsc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coffeestains")
+    (synopsis "Add coffee stains to documents")
+    (description
+     "This package provides an essential feature that LaTeX has been missing
+for too long: It adds coffee stains to your documents.  A lot of time can be
+saved by printing stains directly on the page rather than adding them
+manually.")
+    (license license:public-domain)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
