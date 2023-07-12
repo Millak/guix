@@ -16399,6 +16399,23 @@ group, and there are many options for styling the strands and for drawing
 floors.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bxeepic
+  (package
+    (name "texlive-bxeepic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxeepic/" "tex/latex/bxeepic/")
+             (base32
+              "1zxmysbnv4s47qx0yajr9h62x8azjh660811yd4qcv0ih9mcdyy7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxeepic")
+    (synopsis "Eepic facilities using @code{pict2e}")
+    (description
+     "The package provides an Eepic driver to use @code{pict2e} facilities.")
+    (license license:expat)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
