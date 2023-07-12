@@ -17475,6 +17475,25 @@ formats for the @code{genealogytree} package, particularly for typesetting
 large trees.")
     (license license:lppl1.2+)))
 
+(define-public texlive-harveyballs
+  (package
+    (name "texlive-harveyballs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/harveyballs/"
+                   "tex/latex/harveyballs/")
+             (base32
+              "15zng922zyc0jiq8yrdgl3gwj1gvdqk71zc1bcc8gl08j4y0cxgi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/harveyballs")
+    (synopsis "Create Harvey Balls using TikZ")
+    (description
+     "The package provides five commands to create Harvey Balls in
+a document.")
+    (license license:gpl3+)))
+
 (define-public texlive-inlinedef
   (package
     (name "texlive-inlinedef")
