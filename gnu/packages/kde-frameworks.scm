@@ -1226,7 +1226,7 @@ lower level classes for interaction with the X Windowing System.")
 (define-public modemmanager-qt
   (package
     (name "modemmanager-qt")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1235,7 +1235,7 @@ lower level classes for interaction with the X Windowing System.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0gk4jy3r1451a2dajhnz6lin4lfawc4qdlxp7n7m43ca4d89h13k"))))
+                "1rkz1m2dlfhny9zvy8axzgjxgh41cfnmpb52rwargmrsgplcx7rz"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules dbus pkg-config))
