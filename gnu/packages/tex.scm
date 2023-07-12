@@ -19597,6 +19597,27 @@ It is particularly useful in the page footer that says: @samp{Page N of M}.")
 
 (define-deprecated-package texlive-latex-lastpage texlive-lastpage)
 
+(define-public texlive-layaureo
+  (package
+    (name "texlive-layaureo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/layaureo/" "source/latex/layaureo/"
+                   "tex/latex/layaureo/")
+             (base32
+              "021dcqv8flqv665falbiq7ga56zpihzrdi6kc59nbk0l4jmxf1w9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/layaureo")
+    (synopsis "Improve the A4 page layout")
+    (description
+     "This package produces a wide page layout for documents that use A4 paper
+size.  Moreover, LayAureo provides both a simple hook for leaving an empty
+space, which is required if pages are bundled by a press binding, and an
+option called @code{big} that forces typearea to become maximum.")
+    (license license:lppl)))
+
 (define-public texlive-tabto-ltx
   (package
     (name "texlive-tabto-ltx")
