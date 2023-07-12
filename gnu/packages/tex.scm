@@ -16289,6 +16289,36 @@ within a @code{tikzpicture} environment by setting the environment option
 diagrams (specially in power electronics).")
     (license license:lppl1.3+)))
 
+(define-public texlive-blox
+  (package
+    (name "texlive-blox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/blox/" "source/latex/blox/"
+                   "tex/latex/blox/")
+             (base32
+              "0xkv6rvkbchkwgfam5kiymng0xnc4vja5xb3b5d89rngdr041xwk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-fancyvrb
+                  texlive-hypdoc
+                  texlive-hyperref
+                  texlive-infwarerr
+                  texlive-kvoptions
+                  texlive-pgf
+                  texlive-tools))))
+    (home-page "https://ctan.org/pkg/blox")
+    (synopsis "Draw block diagrams, using TikZ")
+    (description
+     "This package, along with TikZ, will typeset block diagrams for use with
+programming and control theory.  It is an English translation of the
+@code{schemabloc} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
