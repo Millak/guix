@@ -1979,13 +1979,13 @@ were traditional plugins.")
            ;; TODO: utempter, for managing UTMP entries
            qtbase-5))
     (arguments
-     `(#:tests? #f ; FIXME: 1/1 tests fail.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* "autotests/kptyprocesstest.cpp"
-               (("/bin/bash") (which "bash"))))))))
+     (list #:tests? #f ; FIXME: 1/1 tests fail.
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-tests
+                          (lambda _
+                            (substitute* "autotests/kptyprocesstest.cpp"
+                              (("/bin/bash")
+                               (which "bash"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Interfacing with pseudo terminal devices")
     (description "This library provides primitives to interface with pseudo
