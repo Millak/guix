@@ -16542,6 +16542,34 @@ using the TikZ package.  While the diagrams produced are essentially
 illustrating the 3-dimensional layout of a molecule.")
     (license license:lppl1.3c)))
 
+(define-public texlive-circuit-macros
+  (package
+    (name "texlive-circuit-macros")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/circuit-macros/"
+                   "tex/latex/circuit-macros/")
+             (base32
+              "0f1k951bm18m0y2b6hjmz5x8gsl7sdqa2ky4sdnv4fkwwmh1icw5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/circuit-macros")
+    (synopsis "M4 macros for electric circuit diagrams")
+    (description
+     "This package provides a set of m4 macros for drawing high-quality
+electric circuits containing fundamental elements, amplifiers, transistors,
+and basic logic gates to include in TeX, LaTeX, or similar documents.  Some
+tools and examples for other types of diagrams are also included.  The macros
+can be evaluated to drawing commands in the @code{pic} language, which
+contains elements of a simple programming language, and is well-suited to line
+drawings requiring parametric or conditional components, fine tuning,
+significant geometric calculations or repetition, or that are naturally block
+structured or tree structured.  Alternative output macros can create TeX
+output to be read by PSTricks, TikZ commands for use by the PGF bundle, or
+SVG.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
