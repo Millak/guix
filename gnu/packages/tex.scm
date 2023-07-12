@@ -16484,6 +16484,25 @@ package that implements a document level interface, and a command line tool
 that generates the external graphics.")
     (license license:lppl1.3+)))
 
+(define-public texlive-callouts
+  (package
+    (name "texlive-callouts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/callouts/" "tex/latex/callouts/")
+             (base32
+              "1yb2vc1wiffap0dbq0jw40ax9kmk6np269ayij67vcmg0iqnmb11")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/callouts")
+    (synopsis "Put simple annotations and notes inside a picture")
+    (description
+     "The package defines the @code{annotation} environment in which callouts,
+notes, arrows, and the like can be placed to describe certain parts of
+a picture.")
+    (license license:lppl)))
+
 (define-public texlive-gates
   (package
     (name "texlive-gates")
