@@ -293,7 +293,7 @@ Phonon-GStreamer is a backend based on the GStreamer multimedia library.")
 (define-public attica
   (package
     (name "attica")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -302,7 +302,7 @@ Phonon-GStreamer is a backend based on the GStreamer multimedia library.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0w1w6w2jia1q32jnn2dhyxmkq64ha1dcbsqj233v4f224rp3aknp"))))
+                "15didd7llqamp9wbvrynnf9cap2dqmwr51mz0pcjdk0iqs6ym4qq"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
