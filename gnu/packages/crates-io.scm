@@ -51506,7 +51506,7 @@ initial value.")
 (define-public rust-ref-cast-1
   (package
     (name "rust-ref-cast")
-    (version "1.0.2")
+    (version "1.0.18")
     (source
      (origin
        (method url-fetch)
@@ -51515,13 +51515,15 @@ initial value.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "08r6qz7228k55nlyl5v7ykdzxrasnawgzmb1jrbfbnkx2s3ifp3l"))))
+         "0sxzy3f0zmclsmi1z17n16xbjbp99d5c6nh7592yy6f3fya82h8n"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f          ; Doesn't always interact well with the test crate.
+       #:cargo-inputs
        (("rust-ref-cast-impl" ,rust-ref-cast-impl-1))
        #:cargo-development-inputs
-       (("rust-rustversion" ,rust-rustversion-1)
+       (("rust-ref-cast-test-suite" ,rust-ref-cast-test-suite-0.0.0)
+        ("rust-rustversion" ,rust-rustversion-1)
         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/ref-cast")
     (synopsis "Safely cast &T to &U")
