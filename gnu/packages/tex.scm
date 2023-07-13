@@ -4915,6 +4915,25 @@ into sublibraries: @code{topology}, @code{trafficcontrol}, @code{vehicles},
 Beveridge's article Too good to be Truchet in issue 08 of Chalkdust.")
     (license license:expat)))
 
+(define-public texlive-tikzbricks
+  (package
+    (name "texlive-tikzbricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzbricks/"
+                   "tex/latex/tikzbricks/")
+             (base32
+              "1wf5hdwpprbbxmd0rrwvk54raiwpv4q6qgd2gpbba6d26bmgjd1w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzbricks")
+    (synopsis "Drawing bricks with TikZ")
+    (description
+     "This package provides a small LaTeX package to draw bricks with TikZ.
+The user can modify color, shape, and viewpoint.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
