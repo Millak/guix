@@ -5134,6 +5134,29 @@ footer and header area of the current page.  They are inspired by the current
 page node defined by PGF/TikZ itself.")
     (license license:lppl)))
 
+(define-public texlive-tikzpeople
+  (package
+    (name "texlive-tikzpeople")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzpeople/"
+                   "tex/latex/tikzpeople/")
+             (base32
+              "1sgxabjy54zcw0dkb5hgi9d84ilq4ik30xwwd1n8jhhmi4vg2sm7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzpeople")
+    (synopsis "Draw people-shaped nodes in TikZ")
+    (description
+     "This package provides people-shaped nodes in the style of Microsoft
+Visio clip art, to be used with TikZ.  The available, highly customizable,
+node shapes are: alice, bob, bride, builder, businessman, charlie, chef,
+conductor, cowboy, criminal, dave, devil, duck, graduate, groom, guard,
+jester, judge, maninblack, mexican, nun, nurse, physician, pilot, police,
+priest, sailor, santa, surgeon.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
