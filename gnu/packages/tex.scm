@@ -3280,6 +3280,26 @@ plots, bar plots, area plots, mesh-- and surface plots and some more.
 PGFPlots is based on PGF/TikZ (PGF); it runs equally for LaTeX/TeX/ConTeXt.")
     (license license:gpl3+)))
 
+(define-public texlive-picinpar
+  (package
+    (name "texlive-picinpar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/picinpar/" "tex/latex/picinpar/")
+             (base32
+              "1s6ymq4zg0wl6pfx34shansv3y1qlh6h3q58a97zpz5x21n1a5pq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/picinpar")
+    (synopsis "Insert pictures into paragraphs")
+    (description
+     "This package provides a legacy package for creating windows in
+paragraphs, for inserting graphics, etc.  Users should note that Pieter van
+Oostrum (in a published review of packages of this sort) does not recommend
+this package; Picins is recommended instead.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
