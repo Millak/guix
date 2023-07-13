@@ -64488,17 +64488,19 @@ memory all at once.")
 (define-public rust-target-lexicon-0.12
   (package
     (name "rust-target-lexicon")
-    (version "0.12.4")
+    (version "0.12.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "target-lexicon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hfk4v8gbhczr6jwsy1ja6yg4npkvznym6b7r4fbgjc0fw428960"))))
+        (base32 "180iwqwvdk586b1b27anfddq5zbfckisgi3yjhdzaqbsfp5pg3nz"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/CraneStation/target-lexicon")
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/bytecodealliance/target-lexicon")
     (synopsis "Targeting utilities for compilers and related tools")
     (description
      "This package provides targeting utilities for compilers and related
