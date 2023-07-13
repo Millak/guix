@@ -5444,6 +5444,25 @@ teachers and students easy access to the programming of Euclidean geometry
 with TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tkz-fct
+  (package
+    (name "texlive-tkz-fct")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-fct/" "tex/latex/tkz-fct/")
+             (base32
+              "0czwqkdws24qdp22s6p3m87fpfqmwdqjzwxckzkn3ig6rcl63nqj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-fct")
+    (synopsis "Tools for drawing graphs of functions")
+    (description
+     "The @code{tkz-fct} package is designed to give math teachers (and
+students) easy access to programming graphs of functions with TikZ and
+Gnuplot.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
