@@ -5034,6 +5034,27 @@ sheep, sloth, snowman, squirrel, and wolf.  These little drawings can be
 customized in many ways.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikzmark
+  (package
+    (name "texlive-tikzmark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzmark/"
+                   "source/latex/tikzmark/"
+                   "tex/latex/tikzmark/")
+             (base32
+              "0m3yij12kgbgficln9vdgc43bi0si7j0j86lv2k69f1bwf865w4z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzmark")
+    (synopsis "Use TikZ's method of remembering a position on a page")
+    (description
+     "The @code{tikzmark} package defines a command to remember a position on
+a page for later (or earlier) use, primarily (but not exclusively) with
+TikZ.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
