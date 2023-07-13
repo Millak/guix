@@ -5157,6 +5157,29 @@ jester, judge, maninblack, mexican, nun, nurse, physician, pilot, police,
 priest, sailor, santa, surgeon.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikzpfeile
+  (package
+    (name "texlive-tikzpfeile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzpfeile/"
+                   "source/latex/tikzpfeile/"
+                   "tex/latex/tikzpfeile/")
+             (base32
+              "0h6kkrm462hk2hvbdqqjai3gxsslibghxbjyq3ih0vps7fakglc6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzpfeile")
+    (synopsis "Draw arrows using PGF/TikZ")
+    (description
+     "In a document with a lot of diagrams created with PGF/TikZ, there is
+a possibility of the reader being distracted by different sorts of arrowheads
+in the diagrams and in the text (as, e.g., in @code{\\rightarrow}).  The
+package defines macros to create all arrows using PGF/TikZ, so as to avoid the
+problem.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
