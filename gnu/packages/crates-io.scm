@@ -8864,20 +8864,46 @@ alphabet.")
      "This crate provides encoding and decoding support for BSON.")
     (license license:expat)))
 
-(define-public rust-bstr-0.2
+(define-public rust-bstr-1
   (package
     (name "rust-bstr")
-    (version "0.2.17")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bstr" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "08rjbhysy6gg27db2h3pnhvr2mlr5vkj797i9625kwg8hgrnjdds"))))
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bstr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01bvsr3x9n75klbwxym0zf939vzim0plsmy786p0zzzvrj6i9637"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-memchr" ,rust-memchr-2)
+        ("rust-regex-automata" ,rust-regex-automata-0.3)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-ucd-parse" ,rust-ucd-parse-0.1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
+    (home-page "https://github.com/BurntSushi/bstr")
+    (synopsis "String type that is not required to be valid UTF-8")
+    (description
+     "This package provides a string type that is not required to be valid
+UTF-8.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-bstr-0.2
+  (package
+    (inherit rust-bstr-1)
+    (name "rust-bstr")
+    (version "0.2.17")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bstr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08rjbhysy6gg27db2h3pnhvr2mlr5vkj797i9625kwg8hgrnjdds"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -8888,14 +8914,7 @@ alphabet.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.8)
         ("rust-ucd-parse" ,rust-ucd-parse-0.1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
-    (home-page "https://github.com/BurntSushi/bstr")
-    (synopsis
-     "String type that is not required to be valid UTF-8")
-    (description
-     "This package provides a string type that is not required to be valid
-UTF-8.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
 (define-public rust-buf-redux-0.8
   (package
