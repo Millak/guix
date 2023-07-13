@@ -23010,6 +23010,27 @@ floats.")
      "This package provides a simple and fast random number generator.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-fat-macho-0.4
+  (package
+    (name "rust-fat-macho")
+    (version "0.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fat-macho" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ywr3xqi884i12d5mfidbma1hrd4rxj9f8jw7p4bignagmy13yk3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-goblin" ,rust-goblin-0.7)
+        ("rust-llvm-bitcode" ,rust-llvm-bitcode-0.1))))
+    (home-page "https://github.com/messense/fat-macho-rs.git")
+    (synopsis "Mach-O Fat Binary Reader and Writer")
+    (description "This package provides a Mach-O Fat Binary Reader and Writer.")
+    (license license:expat)))
+
 (define-public rust-fd-lock-3
   (package
     (name "rust-fd-lock")
