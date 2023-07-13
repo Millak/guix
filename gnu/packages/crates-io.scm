@@ -53814,6 +53814,23 @@ the file-system during development.")
      "This package provides a library for parsing @file{.eml} files.")
     (license license:asl2.0)))
 
+(define-public rust-equivalent-1
+  (package
+    (name "rust-equivalent")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "equivalent" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1malmx5f4lkfvqasz319lq6gb3ddg19yzf9s8cykfsgzdmyq0hsl"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/cuviper/equivalent")
+    (synopsis "Traits for key comparison in maps")
+    (description "Traits for key comparison in maps.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rust-hawktracer-0.7
   (package
     (name "rust-rust-hawktracer")
