@@ -4825,6 +4825,28 @@ the circuit library of TikZ and allows you to draw an SFC diagram in same way
 you would draw any other circuit.")
     (license license:lppl1.0+)))
 
+(define-public texlive-tikz-swigs
+  (package
+    (name "texlive-tikz-swigs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-swigs/"
+                   "tex/latex/tikz-swigs/")
+             (base32
+              "0brbq02vafaajzrwrkg20gy5k3zlzvv7ycgkw0aa20l8rxjcyv71")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-swigs")
+    (synopsis "Horizontally and vertically split elliptical nodes")
+    (description
+     "This package provides horizontally and vertically split
+elliptical (pairs of) nodes in TikZ.  The package name derives from the fact
+that split ellipses of this type are used to represent Single-World
+Intervention Graph (SWIG) models which are used in counterfactual causal
+inference.")
+    (license (list license:lppl1.3c license:gpl3+))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
