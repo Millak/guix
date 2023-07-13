@@ -1508,7 +1508,7 @@ uses a job-based interface to queue tasks and execute them in an efficient way."
 (define-public kactivities
   (package
     (name "kactivities")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1517,7 +1517,7 @@ uses a job-based interface to queue tasks and execute them in an efficient way."
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0n7r88y1b8mph5al2xh8fbw5ckdzdmdzjipf205y20ib35bskd9i"))))
+                "0lqhfml91wh9376xr31ky8fl49yamfzz336bdjzj3i3ygqzyc7lh"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
