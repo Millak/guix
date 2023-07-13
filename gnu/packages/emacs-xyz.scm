@@ -34270,7 +34270,7 @@ launching other commands/applications from within Emacs, similar to the
 (define-public emacs-no-littering
   (package
     (name "emacs-no-littering")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -34279,7 +34279,7 @@ launching other commands/applications from within Emacs, similar to the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i5fcci8fg14hbd4cjb84q3mx6rfwhbwkw0g21v25dal61kw4yvb"))))
+        (base32 "14f07irjbk3akc07a0y5awyflmhsxvj8gg67y81zp90danjkgvvr"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
