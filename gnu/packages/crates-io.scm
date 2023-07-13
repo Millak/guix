@@ -58982,7 +58982,7 @@ exactly where a binary came from and how it was built.")
 (define-public rust-shell-escape-0.1
   (package
     (name "rust-shell-escape")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
@@ -58991,7 +58991,7 @@ exactly where a binary came from and how it was built.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1fgs1iyx3b124b7njjmhfn9q5ipmhxrafavh8mxbfl9a9zk162hp"))))
+         "0kqq83dk0r1fqj4cfzddpxrni2hpz5i1y607g366c4m9iyhngfs5"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/sfackler/shell-escape")
     (synopsis
