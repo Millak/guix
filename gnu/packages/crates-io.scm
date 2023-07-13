@@ -49414,6 +49414,24 @@ ecosystem.")
      "This package provides code generation backends for PyO3.")
     (license license:asl2.0)))
 
+(define-public rust-pyo3-macros-backend-0.18
+  (package
+    (inherit rust-pyo3-macros-backend-0.19)
+    (name "rust-pyo3-macros-backend")
+    (version "0.18.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-macros-backend" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "062rxf7cj1dn82yiaws3dmxw5qq9ssccq92jgdc210y4lh4gznlp"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-pyo3-macros-backend-0.16
   (package
     (inherit rust-pyo3-macros-backend-0.19)
