@@ -2588,6 +2588,28 @@ calling to Arduino or Processing files.  All these options support the syntax
 highlighting of the official IDE.")
     (license license:lppl1.3c)))
 
+(define-public texlive-makeshape
+  (package
+    (name "texlive-makeshape")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makeshape/"
+                   "source/latex/makeshape/"
+                   "tex/latex/makeshape/")
+             (base32
+              "1mc7qxqs87f87s4rzdd7fqy44sxc9a6imz62kqmigfap2kjwnflb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makeshape")
+    (synopsis "Declare new PGF shapes")
+    (description
+     "The package simplifies production of custom shapes with correct anchor
+borders, in PGF/TikZ; the only requirement is a PGF path describing the anchor
+border.  The package also provides macros that help with the management of
+shape parameters, and the definition of anchor points.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
