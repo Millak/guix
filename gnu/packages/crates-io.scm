@@ -25330,21 +25330,20 @@ and removes almost all unsafe code from it.")
 (define-public rust-futures-macro-0.3
   (package
     (name "rust-futures-macro")
-    (version "0.3.26")
+    (version "0.3.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0w3ahy69varlfw57rb2pag7jwngy771vvzmcag7mlfx3gpw3m9wm"))))
+        (base32 "0wpfsqxwqk5k569xl0jzz4zxy85x695mndf7y9jn66q6jid59jl9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis "@code{futures-rs} procedural macro implementations")
     (description
