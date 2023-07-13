@@ -4410,6 +4410,30 @@ longer ones, some shortcut commands for quickly customizing the diagrams look,
 and the new feature of putting one propagator on top of another.")
     (license license:gpl3+)))
 
+(define-public texlive-tikz-feynman
+  (package
+    (name "texlive-tikz-feynman")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-feynman/"
+                   "tex/latex/tikz-feynman/")
+             (base32
+              "1yndmpghf3z5jddr3zcm5xw7v7zb6715d870ckjd5gifkvyv3nsy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-iftex texlive-pgfopts))
+    (home-page "https://ctan.org/pkg/tikz-feynman")
+    (synopsis "Feynman diagrams with TikZ")
+    (description
+     "This is a LaTeX package allowing Feynman diagrams to be easily generated
+within LaTeX with minimal user instructions and without the need of external
+programs.  It builds upon the TikZ package and leverages the graph placement
+algorithms from TikZ in order to automate the placement of many vertices.
+@code{tikz-feynman} allows fine-tuned placement of vertices so that even
+complex diagrams can still be generated with ease.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
