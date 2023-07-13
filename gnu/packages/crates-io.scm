@@ -57892,7 +57892,7 @@ serializing Rust structures.")
 (define-public rust-serde-stacker-0.1
   (package
     (name "rust-serde-stacker")
-    (version "0.1.7")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
@@ -57901,7 +57901,7 @@ serializing Rust structures.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1zgwd22cswfsjsxmnpf97nw5fzyv0s6mif5blbb948q7qgskvxrm"))))
+         "13kz9x2f1bhv6n997ydkykkhz479ki25wm6jxmr5rfsj1dxh2njp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
