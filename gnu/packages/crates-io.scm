@@ -52941,6 +52941,32 @@ Rust.")
 functionality as retain but gives mutable borrow to the predicate.")
     (license license:expat)))
 
+(define-public rust-rfc2047-decoder-0.2
+  (package
+    (name "rust-rfc2047-decoder")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rfc2047-decoder" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0bpc2k7dp3nxc3pnsvz6zd3vc58j8q29nzibn4q3wz49a974pz31"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-charset" ,rust-charset-0.1)
+        ("rust-chumsky" ,rust-chumsky-0.9)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-quoted-printable" ,rust-quoted-printable-0.4)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/soywod/rfc2047-decoder")
+    (synopsis "Rust library for decoding RFC 2047 MIME Message Headers")
+    (description "This package provides a rust library for decoding RFC 2047
+MIME Message Headers.")
+    (license license:expat)))
+
 (define-public rust-rfc6979-0.4
   (package
     (name "rust-rfc6979")
