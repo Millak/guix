@@ -3575,6 +3575,27 @@ connections under e-pTeX and @code{dvipdfmx}.  The package uses existing
 features of @code{dvipdfmx} to fix this problem.")
     (license license:expat)))
 
+(define-public texlive-pxpic
+  (package
+    (name "texlive-pxpic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pxpic/" "source/latex/pxpic/"
+                   "tex/latex/pxpic/")
+             (base32
+              "01k4c7fakc2wjbjasxqm9gnzhchn2bqnj3vvz5rrcxiq0wibmiyi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxpic")
+    (synopsis "Draw pixel pictures")
+    (description
+     "With @code{pxpic} you draw pictures pixel by pixel.  It was inspired by
+a lovely post by Paulo Cereda, among other things (most notably a beautiful
+duck) showcasing the use of characters from the Mario video games by Nintendo
+in LaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
