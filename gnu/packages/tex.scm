@@ -5075,6 +5075,25 @@ These little figures are constructed in such a way that they may even borrow
 some garments and other attributes from the TikZducks.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikzorbital
+  (package
+    (name "texlive-tikzorbital")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzorbital/"
+                   "tex/latex/tikzorbital/")
+             (base32
+              "0rjbl8gcsf752hkrn2j7angvwh55vldsd168w581frmx3g25d9rb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzorbital")
+    (synopsis "Atomic and molecular orbitals using TikZ")
+    (description
+     "This package draws atomic s, p and d orbitals, as well as molecular
+orbital diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
