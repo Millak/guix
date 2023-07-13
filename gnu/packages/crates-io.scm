@@ -68805,14 +68805,14 @@ Rust.")
 (define-public rust-tokio-test-0.4
   (package
     (name "rust-tokio-test")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-test" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gwrqdwlfih6ib66wxc7yaaq7a9mlsmnxj2ahag3zc2rdxgj0zbw"))))
+        (base32 "1qv3h6y0c87i22p3q6sqvq2a1y5lzim9abbzs4q6a5jymqkl6isk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
