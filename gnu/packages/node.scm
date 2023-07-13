@@ -874,7 +874,36 @@ source files.")
                  (copy-file (string-append llhttp "/src/http.c")
                             "deps/llhttp/src/http.c")
                  (copy-file (string-append llhttp "/include/llhttp.h")
-                            "deps/llhttp/include/llhttp.h"))))))))
+                            "deps/llhttp/include/llhttp.h"))))
+           ;; npm installs dependencies by copying their files over a tar
+           ;; stream.  A file with more than one hardlink is marked as a
+           ;; "Link".  pacote/lib/fetcher.js calls node-tar's extractor with a
+           ;; filter that ignores any "Link" entries.  This means that
+           ;; dependending on the number of hardlinks on files in a node-*
+           ;; package *some* of its files may not be installed when generating
+           ;; another package's "node_modules" directory.  The build output
+           ;; would differ depending on irrelevant file system state.
+           ;;
+           ;; To avoid this, we patch node-tar to treat files with hardlinks
+           ;; the same as any other file, so that node-tar has no choice but
+           ;; to extract all of them --- independent of pacote's filter.
+           ;;
+           ;; Why not patch pacote's filter instead?  This has led to subtle
+           ;; differences in where the files are installed, so it's easier to
+           ;; just ensure that files with hardlinks are always treated as
+           ;; regular files.
+           ;;
+           ;; Discussion:
+           ;;   https://lists.gnu.org/archive/html/guix-devel/2023-07/msg00040.html
+           ;; Upstream bug report:
+           ;;   https://github.com/npm/pacote/issues/285
+           (add-after 'install 'ignore-number-of-hardlinks
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((file (string-append (assoc-ref outputs "out")
+                                          "/lib/node_modules/npm/node_modules"
+                                          "/tar/lib/write-entry.js")))
+                 (substitute* file
+                   (("this.stat.nlink > 1") "false")))))))))
     (native-inputs
      (list ;; Runtime dependencies for binaries used as a bootstrap.
            c-ares-for-node
