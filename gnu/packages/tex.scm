@@ -4709,6 +4709,31 @@ to the user.")
 layout materials.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-palattice
+  (package
+    (name "texlive-tikz-palattice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-palattice/"
+                   "tex/latex/tikz-palattice/")
+             (base32
+              "0vbzr6821q88x4yipa9czcqgpwnkzkkzynxxbxyzy1kh9657hqvg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-palattice")
+    (synopsis "Draw particle accelerator lattices with TikZ")
+    (description
+     "This package allows for drawing a map of a particle accelerator just by
+giving a list of elements --- similar to lattice files for simulation
+software.  The package includes 12 common element types like dipoles,
+quadrupoles, cavities, or screens, as well as automatic labels with element
+names, a legend, a rule, and an environment to fade out parts of the
+accelerator.  The coordinate of any element can be saved and used for custom
+TikZ drawings or annotations.  Thereby, lattices can be connected to draw
+injection/extraction or even a complete accelerator facility.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
