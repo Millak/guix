@@ -3873,6 +3873,25 @@ From now on, Scratch is now version 3 with a new design.  Use the
 @url{https://scratch.mit.edu, Scratch} project.")
     (license license:lppl1.3c)))
 
+(define-public texlive-scsnowman
+  (package
+    (name "texlive-scsnowman")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scsnowman/"
+                   "tex/latex/scsnowman/")
+             (base32
+              "1qr1cb19383hsxqh3a0640713m343v3jgxfk9whdxm0z11am5if0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scsnowman")
+    (synopsis "Snowman variants using TikZ")
+    (description
+     "This LaTeX package provides a command @code{\\scsnowman} which can
+display many variants of snowman")
+    (license license:bsd-2)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
