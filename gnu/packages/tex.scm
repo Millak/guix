@@ -4953,6 +4953,24 @@ The user can modify color, shape, and viewpoint.")
 graphic programming languages like Scratch, NEPO or PXT.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikzducks
+  (package
+    (name "texlive-tikzducks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tikzducks/"
+                   "tex/generic/tikzducks/")
+             (base32
+              "08gigdsi0gc0npv2jrd2i0yqs53s0ckwk1m0lrsiaxk66bb864y3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzducks")
+    (synopsis "Package for using rubber ducks in TikZ")
+    (description
+     "The package is a LaTeX package for ducks to be used in TikZ pictures.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
