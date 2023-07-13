@@ -3363,18 +3363,20 @@ setUrl, setUserAgent and call.")
                   qtx11extras
                   solid))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
-               (invoke "ctest" "-E" (string-append "(plasma-dialogstatetest"
-                                                   "|plasma-iconitemtest"
-                                                   "|plasma-themetest"
-                                                   "|iconitemhidpitest"
-                                                   "|dialognativetest)"))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME"
+                             (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
+                     (invoke "ctest" "-E"
+                             (string-append "(plasma-dialogstatetest"
+                                            "|plasma-iconitemtest"
+                                            "|plasma-themetest"
+                                            "|iconitemhidpitest"
+                                            "|dialognativetest)"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Libraries, components and tools of Plasma workspaces")
     (description "The plasma framework provides QML components, libplasma and
