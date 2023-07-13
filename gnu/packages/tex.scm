@@ -4472,6 +4472,25 @@ of TikZ.  This may be used to label certain features in an image.")
      "The package extends TikZ with macros to draw interaction nets.")
     (license license:lppl)))
 
+(define-public texlive-tikz-kalender
+  (package
+    (name "texlive-tikz-kalender")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-kalender/"
+                   "tex/latex/tikz-kalender/")
+             (base32
+              "1cwdssvbaibjf7nla0d88nyzip407kgqvndid2p2gxc0b2afp69f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-kalender")
+    (synopsis "LaTeX based calendar using TikZ")
+    (description
+     "This package generates a calendar included events provided as
+@file{.events} files.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
