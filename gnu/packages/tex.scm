@@ -5764,6 +5764,27 @@ a Cistercian numeral, and @code{\\cisterciannum@{<integer>@}}, formats the
 integer (given as a string) as a Cistercian numeral.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xpicture
+  (package
+    (name "texlive-xpicture")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xpicture/"
+                   "source/latex/xpicture/"
+                   "tex/latex/xpicture/")
+             (base32
+              "0pzqnrk7mw1k9madah2ym9qsy20d8i1x1abkvkxvx7rxw7w38s2p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xpicture")
+    (synopsis "Extensions of LaTeX picture drawing")
+    (description
+     "The package extends the facilities of the @code{pict2e} and the
+@code{curve2e} packages, providing extra reference frames, conic section
+curves, graphs of elementary functions and other parametric curves.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
