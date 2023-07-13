@@ -3361,6 +3361,24 @@ package uses coordinates derived from GhostView and labels are placed with
 automatic and consistent spacing relative to the object labelled.")
     (license license:lppl)))
 
+(define-public texlive-pixelart
+  (package
+    (name "texlive-pixelart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pixelart/" "tex/latex/pixelart/")
+             (base32
+              "14hridmq92md46vxaiv8ja5lij2zl449vbvq2x2dv4qqs7bi42ab")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pixelart")
+    (synopsis "Draw pixel-art pictures")
+    (description
+     "This package provides a LuaLaTeX package to draw pixel-art pictures
+using TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
