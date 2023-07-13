@@ -5201,6 +5201,27 @@ and a vast set of gadgets and extras (capable of changing the wing-positions,
 body-types, and more).")
     (license license:gpl3)))
 
+(define-public texlive-tikzposter
+  (package
+    (name "texlive-tikzposter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzposter/"
+                   "source/latex/tikzposter/"
+                   "tex/latex/tikzposter/")
+             (base32
+              "0hl5p14a79575s5n5rx4yy8vxcb2qrdhx851rhms7dk2sqcfynn5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzposter")
+    (synopsis "Create scientific posters using TikZ")
+    (description
+     "This package provides a document class provides a simple way of using
+TikZ for generating posters.  Several formatting options are available, and
+spacing and layout of the poster is to a large extent automated.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
