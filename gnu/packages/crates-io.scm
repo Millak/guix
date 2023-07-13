@@ -55289,14 +55289,14 @@ sub-processes using a fork-like interface.")
 (define-public rust-rkyv-0.7
   (package
     (name "rust-rkyv")
-    (version "0.7.40")
+    (version "0.7.42")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rkyv" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1hsd81bkm1rvh3kl66fhnadji4h88w2pgf0yrp4cnqdav52is3y3"))))
+                "0n2wzwnghkr2ny16c08f5szbkljfqrp3s8fnnb096f011ciwh002"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
