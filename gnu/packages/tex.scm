@@ -2853,6 +2853,25 @@ create molecular orbital diagrams using TikZ.")
 designed for neural network diagrams.")
     (license license:gpl3+)))
 
+(define-public texlive-nl-interval
+  (package
+    (name "texlive-nl-interval")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nl-interval/"
+                   "tex/latex/nl-interval/")
+             (base32
+              "0n11a26d48jr6lngfc128fpvahdnbvnlxz9kxp7hirl0cm8ssiwa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nl-interval")
+    (synopsis "Represent intervals on the number line")
+    (description
+     "This package provides macros to simplify the process of representing
+intervals on the number line.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
