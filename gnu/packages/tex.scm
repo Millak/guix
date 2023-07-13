@@ -3535,6 +3535,26 @@ of this package.  The macros provided in this package aid in the construction
 of sphere model diagrams in the style of Lewis.")
     (license license:lppl1.3c)))
 
+(define-public texlive-puyotikz
+  (package
+    (name "texlive-puyotikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/puyotikz/" "scripts/puyotikz/"
+                   "tex/latex/puyotikz/")
+             (base32
+              "15vw485phk523kby1q1wn0s0f7185cqj7sjsr8hc6iccdbzwknc0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/puyotikz")
+    (synopsis "Quickly typeset board states of Puyo Puyo games")
+    (description
+     "This LaTeX package permits to quickly typeset board states of Puyo Puyo
+games.  It supports large and small boards with arbitrary shape, hidden rows,
+current and next puyos, labels and move planning markers.")
+    (license license:expat)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
