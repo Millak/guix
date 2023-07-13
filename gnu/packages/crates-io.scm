@@ -49391,23 +49391,21 @@ ecosystem.")
      "This crate provides Rust FFI declarations for Python 3.")
     (license license:asl2.0)))
 
-(define-public rust-pyo3-macros-backend-0.16
+(define-public rust-pyo3-macros-backend-0.19
   (package
     (name "rust-pyo3-macros-backend")
-    (version "0.16.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pyo3-macros-backend" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1bvzvdx2a6hhliny12n2vy7v7gbsgzanxjckjr1cbxbkizss1gak"))))
+    (version "0.19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-macros-backend" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "12zs1vx0h4hainb0lpnw8knd9i9l0g2rdzdnrmb1bnv0n75qrdz0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/pyo3/pyo3")
@@ -49415,6 +49413,26 @@ ecosystem.")
     (description
      "This package provides code generation backends for PyO3.")
     (license license:asl2.0)))
+
+(define-public rust-pyo3-macros-backend-0.16
+  (package
+    (inherit rust-pyo3-macros-backend-0.19)
+    (name "rust-pyo3-macros-backend")
+    (version "0.16.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-macros-backend" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bvzvdx2a6hhliny12n2vy7v7gbsgzanxjckjr1cbxbkizss1gak"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-pyo3-macros-backend-0.15
   (package
