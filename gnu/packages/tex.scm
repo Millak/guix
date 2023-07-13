@@ -5094,6 +5094,24 @@ some garments and other attributes from the TikZducks.")
 orbital diagrams.")
     (license license:lppl)))
 
+(define-public texlive-tikzpackets
+  (package
+    (name "texlive-tikzpackets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzpackets/"
+                   "tex/latex/tikzpackets/")
+             (base32
+              "0i5v0yblm3fw0wy0vhl2a0g1r8ib72d2knk60apqvqizl98fn8ff")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzpackets")
+    (synopsis "Display network packets")
+    (description
+     "This package allows you to easily display network packets graphically.")
+    (license license:expat)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
