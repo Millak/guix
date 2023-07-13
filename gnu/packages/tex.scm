@@ -3225,6 +3225,30 @@ multiple physical pages, for example as for arranging pages to make
 booklets.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pgfopts
+  (package
+    (name "texlive-pgfopts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgfopts/" "source/latex/pgfopts/"
+                   "tex/latex/pgfopts/")
+             (base32
+              "0p4bfqgkwmzhismrs7a10sblbgx4b6w259vdp1dd3hxvhc2kbnyn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-pgf))
+    (home-page "https://ctan.org/pkg/pgfopts")
+    (synopsis "LaTeX package options with @code{pgfkeys}")
+    (description
+     "The @code{pgfkeys} package (part of the PGF distribution) is a way of
+defining and using large numbers of keys for key-value syntaxes.  However,
+@code{pgfkeys} itself does not offer means of handling LaTeX class and package
+options.  This package adds such option handling to @code{pgfkeys}, in the
+same way that @code{kvoptions} adds the same facility to the LaTeX standard
+@code{keyval} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pgfornament
   (package
     (name "texlive-pgfornament")
