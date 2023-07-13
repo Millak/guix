@@ -3676,6 +3676,25 @@ to draw random walks with a given number of steps.  Lengths and angles of the
 steps can be customized in various ways.")
     (license license:lppl1.3c)))
 
+(define-public texlive-realhats
+  (package
+    (name "texlive-realhats")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/realhats/"
+                   "source/latex/realhats/"
+                   "tex/latex/realhats/hats/")
+             (base32
+              "0y9s12kzzrrmzkx57yqy4mzx50bcsv972825nnlgcsgkxcd8wv51")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/realhats")
+    (synopsis "Put real hats on symbols instead of @samp{^}")
+    (description
+     "This LaTeX package makes @code{\\hat} put real hats on symbols.")
+    (license license:expat)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
