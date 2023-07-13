@@ -49353,20 +49353,17 @@ ecosystem.")
 (define-public rust-pyo3-ffi-0.18
   (package
     (name "rust-pyo3-ffi")
-    (version "0.18.1")
+    (version "0.18.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3-ffi" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1r8fmkfad60wdidsj4h5w16h0n2avn5bcy9nh92gy5vsq2jjd5c3"))))
+                "0p7n9zs9ifrzcnna0lwyhwscyhw45q4x288x5bm1c6c26x9pqkgx"))))
     (build-system cargo-build-system)
     (arguments
-     `(;; The doctests fail with this error: `core::slice::<impl
-       ;; [T]>::as_mut_ptr` is not yet stable as a const fn
-       #:tests? #false
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.18))))
     (native-inputs (list python))
