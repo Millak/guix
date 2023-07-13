@@ -4254,6 +4254,28 @@ these symbols.")
 graphical models and (directed) factor graphs in LaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-bbox
+  (package
+    (name "texlive-tikz-bbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-bbox/"
+                   "tex/latex/tikz-bbox/")
+             (base32
+              "0h224gmdbx63dff0zikv9grf5p7780rdxng2ws9d68k7rk961lb7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-bbox")
+    (synopsis "Precise determination of bounding boxes in TikZ")
+    (description
+     "The built-in determination of the bounding box in TikZ is not entirely
+accurate.  This is because, for Bezier curves, it is the smallest box that
+contains all control points, which is in general larger than the box that just
+contains the curve.  This library determines the exact bounding box of the
+curve.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
