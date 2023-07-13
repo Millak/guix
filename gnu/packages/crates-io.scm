@@ -25477,7 +25477,7 @@ futures-rs library.")
 (define-public rust-futures-test-0.3
   (package
     (name "rust-futures-test")
-    (version "0.3.26")
+    (version "0.3.28")
     (source
      (origin
        (method url-fetch)
@@ -25485,7 +25485,7 @@ futures-rs library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0pbdzvbmzrnc67bpp7hbh7l5mavqifpgk2vhaprr0vlr6qrpcyi4"))))
+         "0j83960iv317xj8bfq5jay4s1yqdjidfcb1lz8js793h91s2gbw4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Doc tests fail.
