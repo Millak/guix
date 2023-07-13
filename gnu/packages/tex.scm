@@ -4454,6 +4454,24 @@ complex diagrams can still be generated with ease.")
 of TikZ.  This may be used to label certain features in an image.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-inet
+  (package
+    (name "texlive-tikz-inet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-inet/"
+                   "tex/latex/tikz-inet/")
+             (base32
+              "1f4n5mp9hb92li2xywfzfrs8hjyrkd15xp97nh5rdgan695hvdpq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-inet")
+    (synopsis "Draw interaction nets with TikZ")
+    (description
+     "The package extends TikZ with macros to draw interaction nets.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
