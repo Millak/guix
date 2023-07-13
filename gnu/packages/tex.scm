@@ -3224,6 +3224,28 @@ multiple physical pages, for example as for arranging pages to make
 booklets.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pgfornament
+  (package
+    (name "texlive-pgfornament")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgfornament/"
+                   "tex/generic/pgfornament/am/"
+                   "tex/generic/pgfornament/pgfhan/"
+                   "tex/generic/pgfornament/vectorian/"
+                   "tex/latex/pgfornament/")
+             (base32
+              "02fmyyp1hgasa8k6v0nkdvdmqfbiscyyk3hpqg63b5956ksgap21")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgfornament")
+    (synopsis "Drawing of vectorian ornaments with PGF/TikZ")
+    (description
+     "This package allows the drawing of vectorian ornaments (196) with
+PGF/TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
