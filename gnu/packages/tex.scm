@@ -5424,6 +5424,26 @@ the author's packages @code{tkz-base}, @code{tkz-euclide}, @code{tkz-fct},
 @code{tkz-linknodes}, and @code{tkz-tab}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tkz-euclide
+  (package
+    (name "texlive-tkz-euclide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-euclide/"
+                   "tex/latex/tkz-euclide/")
+             (base32
+              "0ykhhyvrjy2q731m8dm2k73kiddy1xnznhsayyid4yjjnwdqq1bw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-euclide")
+    (synopsis "Tools for drawing Euclidean geometry")
+    (description
+     "The @code{tkz-euclide} package is a set of files designed to give math
+teachers and students easy access to the programming of Euclidean geometry
+with TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
