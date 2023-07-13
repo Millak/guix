@@ -4871,6 +4871,30 @@ produce the graphics.  A tabular-like environment is provided to produce
 larger timing diagrams.")
     (license license:lppl)))
 
+(define-public texlive-tikz-trackschematic
+  (package
+    (name "texlive-tikz-trackschematic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-trackschematic/"
+                   "tex/latex/tikz-trackschematic/")
+             (base32
+              "11dak88q9n54i385sjk4nxini2fycdfmhs2h41fdf9k2012ykdnx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-trackschematic")
+    (synopsis "TikZ library for creating track diagrams in railways")
+    (description
+     "This TikZ library is a toolbox of symbols geared primarily towards
+creating track schematic for either research or educational purposes.  It
+provides a TikZ frontend to some of the symbols which may be needed to
+describe situations and layouts in railway operation.  The library is divided
+into sublibraries: @code{topology}, @code{trafficcontrol}, @code{vehicles},
+@code{constructions}, @code{electrics}, @code{symbology}, and
+@code{measures}.")
+    (license license:isc)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
