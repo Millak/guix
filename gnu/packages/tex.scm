@@ -2792,6 +2792,29 @@ graphics package does already but additionally it writes useful information
 such as the label and scaling factor into these boxes.")
     (license license:lppl)))
 
+(define-public texlive-mkpic
+  (package
+    (name "texlive-mkpic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/mkpic/" "scripts/mkpic/")
+             (base32
+              "1a8jzsgw63siirifpsvwjmfbj68fv58hnn5vrv737i9vbjrv0vm7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "mkpic")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/mkpic")
+    (synopsis "Perl interface to @code{mfpic}")
+    (description
+     "@code{mkpic} provides an easy interface for making small pictures with
+@code{mfpic}.  To this end you create an input file consisting of commands,
+one per line, with space separated parameters (or you modify the DATA section
+of the @code{mkpic} script, which is used if you run it without an input
+file).")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
