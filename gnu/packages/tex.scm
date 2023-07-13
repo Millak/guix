@@ -5306,6 +5306,28 @@ allows the user to either set the bandwidth value for each plot or use
 a default value.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tile-graphic
+  (package
+    (name "texlive-tile-graphic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tile-graphic/"
+                   "source/latex/tile-graphic/"
+                   "tex/latex/tile-graphic/")
+             (base32
+              "1vg2nrb6cjgkmbkv8igs76vzl1vzvisqlm1y612j4144v26n05nw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tile-graphic")
+    (synopsis "Create tiles of a graphical file")
+    (description
+     "This package breaks a given graphical file into @samp{n} rows and
+@samp{m} columns of subgraphics, which are called tiles.  The tiles can be
+written separately to individual PDF files, or packaged into a single PDF
+file.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
