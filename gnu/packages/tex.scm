@@ -5404,6 +5404,26 @@ temporarily out of circulation to give the author time to investigate some
 problems.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tkz-doc
+  (package
+    (name "texlive-tkz-doc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-doc/")
+             (base32
+              "00awi2m8ak949r6bxzw1l69fx8gjcn4kmrr0q0yp8qghga40c6n3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-doc")
+    (synopsis "Documentation macros for the TKZ series of packages")
+    (description
+     "This bundle offers a documentation class (@code{tkz-doc}) and
+a package (@code{tkzexample}).  These files are used in the documentation of
+the author's packages @code{tkz-base}, @code{tkz-euclide}, @code{tkz-fct},
+@code{tkz-linknodes}, and @code{tkz-tab}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
