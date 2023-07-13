@@ -2934,7 +2934,7 @@ to easily extend the contacts collection.")
 (define-public krunner
   (package
     (name "krunner")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2943,8 +2943,8 @@ to easily extend the contacts collection.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kch839xw09h1lddqgdcfwniq6rza5wdyyzcx99hcasn7l60nhsj"))))
-    (build-system cmake-build-system)
+                "0yam10c31jzwsl4qzrrcr4caxk79jqg1fyrsavjzg14ahsknb5ih"))))
+    (build-system qt-build-system)
     (propagated-inputs
      (list plasma-framework))
     (native-inputs
@@ -2969,7 +2969,6 @@ to easily extend the contacts collection.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           qtbase-5
            qtdeclarative-5
            solid
            threadweaver))
