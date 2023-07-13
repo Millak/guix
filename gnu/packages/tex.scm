@@ -4195,6 +4195,25 @@ user-specified functions in spherical polar coordinates, where both the radius
 and fill color can be expressed as parametric functions of polar angles.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-among-us
+  (package
+    (name "texlive-tikz-among-us")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-among-us/"
+                   "tex/latex/tikz-among-us/")
+             (base32
+              "0rrkzh1hain7mvnx4r5s7pccxvcj0izjbjwyrjg3nwin03mqqxy1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-among-us")
+    (synopsis "Create some AmongUs characters in TikZ environments")
+    (description
+     "This package recreates some AmongUs characters in TikZ environments.
+Some interesting uses alongside other packages are also supported.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
