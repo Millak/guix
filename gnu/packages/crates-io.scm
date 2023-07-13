@@ -57571,19 +57571,23 @@ Semantic Versioning.")
          (base32
           "18vhypw6zgccnrlm5ps1pwa0khz7ry927iznpr88b87cagr1v2iq"))))))
 
-(define-public rust-send-wrapper-0.5
+(define-public rust-send-wrapper-0.6
   (package
     (name "rust-send-wrapper")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "send_wrapper" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1mwbg1nv36d5kdjb0iwmprz24km0m8ck08dn59gdngqdc77hl34k"))))
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "send-wrapper" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0wrxzsh9fzgkkkms621ydnz8mj30ilyq299a8cf65jn1y72hw2yd"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3))))
     (home-page "https://github.com/thk1/send_wrapper")
     (synopsis "Wrapper moving around non-@code{Send} types between threads")
     (description
@@ -57593,6 +57597,20 @@ as you access the contained value only from within the original thread.  You
 also have to make sure that the wrapper is dropped from within the original
 thread.  If any of these constraints is violated, a panic occurs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-send-wrapper-0.5
+  (package
+    (inherit rust-send-wrapper-0.6)
+    (name "rust-send-wrapper")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "send_wrapper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mwbg1nv36d5kdjb0iwmprz24km0m8ck08dn59gdngqdc77hl34k"))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-send-wrapper-0.4
   (package
