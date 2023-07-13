@@ -69860,27 +69860,26 @@ server @code{Service} tests.")
 (define-public rust-tracing-0.1
   (package
     (name "rust-tracing")
-    (version "0.1.36")
+    (version "0.1.38")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01s3qsm1jfz4h4l401lhy8j2yfds45kpb234l447v9k0pmkrbkig"))))
+        (base32 "0kc1mpsh00l2zd9wryf1jyzwvilmbjdg5dmnn240rx6k2flgd76g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-log" ,rust-log-0.4)
+     `(#:tests? #f
+       #:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-tracing-attributes" ,rust-tracing-attributes-0.1)
         ("rust-tracing-core" ,rust-tracing-core-0.1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-futures" ,rust-futures-0.1)
+        ("rust-futures" ,rust-futures-0.3)
         ("rust-log" ,rust-log-0.4)
-        ("rust-tokio" ,rust-tokio-0.2)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://tokio.rs")
     (synopsis "Application-level tracing for Rust")
