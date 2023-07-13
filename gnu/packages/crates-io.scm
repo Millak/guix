@@ -17874,7 +17874,7 @@ for Rust.")
 (define-public rust-data-encoding-2
   (package
     (name "rust-data-encoding")
-    (version "2.3.1")
+    (version "2.4.0")
     (source
       (origin
         (method url-fetch)
@@ -17882,7 +17882,7 @@ for Rust.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "027rcrwdschrkdr2n9d24gnh03vl41qmvhjqn9vn6z1njy2n0flr"))))
+          "023k3dk8422jgbj7k72g63x51h1mhv91dhw1j4h205vzh6fnrrn2"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/ia0/data-encoding")
     (synopsis "Efficient and customizable data-encoding functions")
