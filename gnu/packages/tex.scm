@@ -3855,6 +3855,24 @@ From now on, Scratch is now version 3 with a new design.  Use the
 @code{scratch3} package to draw blocks with the new design.")
     (license license:lppl1.3c)))
 
+(define-public texlive-scratch3
+  (package
+    (name "texlive-scratch3")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scratch3/" "tex/latex/scratch3/")
+             (base32
+              "0g8s0p7j058z7hdm4p7kgh7nsyk4wn22lp3j25d5b4hr0xyxmhby")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scratch3")
+    (synopsis "Draw programs like Scratch")
+    (description
+     "This package permits to draw program charts in the style of the
+@url{https://scratch.mit.edu, Scratch} project.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
