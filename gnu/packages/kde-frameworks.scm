@@ -2578,7 +2578,7 @@ in applications using the KDE Frameworks.")
 (define-public kinit
   (package
     (name "kinit")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2587,7 +2587,7 @@ in applications using the KDE Frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04654hz3yipnlhy5gz3bkh988fcfl1lv7608k4xa5qnbsxaqh141"))
+                "1i03gn0s01jg2ridlymxf34ib88rkf30yz27h38g9fzaijjr46fi"))
               ;; Use the store paths for other packages and dynamically loaded
               ;; libs
               (patches (search-patches "kinit-kdeinit-extra_libs.patch"))))
