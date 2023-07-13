@@ -52200,6 +52200,31 @@ uses finite automata and guarantees linear time matching on all inputs.")
        (("rust-quickcheck" ,rust-quickcheck-0.2)
         ("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-regex-test-0.1
+  (package
+    (name "rust-regex-test")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "regex-test" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "012nj2qjkxlv5zmnk53hc5a95kdsz8ss469s0a6fp5xdqbpi9f8l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-toml" ,rust-toml-0.7))))
+    (home-page "https://github.com/rust-lang/regex/tree/master/regex-test")
+    (synopsis "Infrastructure for testing regexes")
+    (description
+     "Infrastructure for testing regexes.  You probably don't want to use this
+crate unless you're working on a regex implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-region-3
   (package
     (name "rust-region")
