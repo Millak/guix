@@ -5384,6 +5384,26 @@ items.")
 teachers (and students) easy access to programming of drawings with TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tkz-berge
+  (package
+    (name "texlive-tkz-berge")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-berge/" "tex/latex/tkz-berge/")
+             (base32
+              "16pgdkf0s97gkd662pddvxr5jbk68mcbikz4rclmv88d9zlgccxr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-berge")
+    (synopsis "Macros for drawing graphs of graph theory")
+    (description
+     "The package provides a collection of useful macros for drawing classic
+graphs of graph theory, or to make other graphs.  This package has been taken
+temporarily out of circulation to give the author time to investigate some
+problems.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
