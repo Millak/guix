@@ -4276,6 +4276,29 @@ contains the curve.  This library determines the exact bounding box of the
 curve.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikz-cd
+  (package
+    (name "texlive-tikz-cd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-cd/" "tex/generic/tikz-cd/"
+                   "tex/latex/tikz-cd/")
+             (base32
+              "188vd02cwy7r58cnam4aj4lq1jp295mmn3q1w3ki7p6n8v1gnl0c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-cd")
+    (synopsis "Create commutative diagrams with TikZ")
+    (description
+     "The general-purpose drawing package TiKZ can be used to typeset
+commutative diagrams and other kinds of mathematical pictures.  The purpose of
+this package is to make the process of creation of such diagrams easier by
+providing a convenient set of macros and reasonable default settings.  This
+package also includes an arrow tip library that match closely the arrows
+present in the Computer Modern typeface.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
