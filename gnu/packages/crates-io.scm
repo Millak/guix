@@ -49877,14 +49877,14 @@ transport protocol in Rust.")
 (define-public rust-quote-1
   (package
     (name "rust-quote")
-    (version "1.0.25")
+    (version "1.0.29")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "quote" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "117y035vad1a67md2r9fk9663i5cvbax1ykc998f3hr9hwhfh22k"))))
+                "019ij5fwp56ydww6zr46dhmzsf078qkdq9vz6mw1cri7mgl1ac2p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
