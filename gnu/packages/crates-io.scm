@@ -45395,6 +45395,35 @@ implementation suitable for use with cryptographic private keys.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
 
+(define-public rust-pep440-rs-0.3
+  (package
+    (name "rust-pep440-rs")
+    (version "0.3.9")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pep440-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0l3nyvfz8qq62dvilwfbzgdqxyz9kbf006s0gpx2qhhi79lia7gy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-pyo3" ,rust-pyo3-0.18)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-indoc" ,rust-indoc-2))))
+    (home-page "https://github.com/konstin/pep440-rs")
+    (synopsis
+     "Library for python version numbers and specifiers, implementing PEP 440")
+    (description
+     "This package provides a library for python version numbers and specifiers,
+implementing PEP 440.")
+    (license (list license:asl2.0 license:bsd-2))))
+
 (define-public rust-percent-encoding-2
   (package
     (name "rust-percent-encoding")
