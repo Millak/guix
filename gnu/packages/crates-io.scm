@@ -77601,6 +77601,29 @@ file into an in-memory tree structure.")
 algorithm in Rust.")
     (license license:boost1.0)))
 
+(define-public rust-xz-0.1
+  (package
+    (name "rust-xz")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "xz" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d6sq57g1969hjl5k7gzzdbyr60za9hk8qs9iqz26biazy87d21w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-xz2" ,rust-xz2-0.1))))
+    (native-inputs
+     (list pkg-config xz))
+    (home-page "https://github.com/alexcrichton/xz2-rs")
+    (synopsis "Alias of `xz2` crate")
+    (description
+     "Rust bindings to @code{liblzma} providing Read/Write streams as well as
+low-level in-memory encoding/decoding.  Alias of @code{xz2} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-xz2-0.1
   (package
     (name "rust-xz2")
