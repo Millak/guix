@@ -3971,6 +3971,26 @@ popular Java script Bootstrap.")
 mirrors for use in optical diagrams.")
     (license license:lppl1.3c)))
 
+(define-public texlive-smartdiagram
+  (package
+    (name "texlive-smartdiagram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/smartdiagram/"
+                   "source/latex/smartdiagram/"
+                   "tex/latex/smartdiagram/")
+             (base32
+              "0qlgafprxqjhy14imb3isgqjsp1y78qrcqlr0n1rvgwppmi1fd0c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/smartdiagram")
+    (synopsis "Generate diagrams from lists")
+    (description
+     "The package will create smart diagrams from lists of items, for simple
+documents and for presentations.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
