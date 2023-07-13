@@ -3615,6 +3615,24 @@ typeset quantum circuits, using @code{xy-pic} package, offering macros
 designed to help users generate circuits.")
     (license license:gpl2)))
 
+(define-public texlive-quantikz
+  (package
+    (name "texlive-quantikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quantikz/" "tex/latex/quantikz/")
+             (base32
+              "1pa9ry2sn70sjkxqj0f569148xfc5iq77rw0sjnd344m3xsz38db")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quantikz")
+    (synopsis "Draw quantum circuit diagrams")
+    (description
+     "The purpose of this package is to extend TikZ with the functionality for
+drawing quantum circuit diagrams.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
