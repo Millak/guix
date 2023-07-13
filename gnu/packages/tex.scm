@@ -4320,6 +4320,25 @@ Basic facilities of the package include a lot of styling facilities, to let
 you personalize the look and feel of the graphs.")
     (license (list license:lppl license:gpl2))))
 
+(define-public texlive-tikz-dimline
+  (package
+    (name "texlive-tikz-dimline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-dimline/"
+                   "tex/latex/tikz-dimline/")
+             (base32
+              "15zxc3zxl8mk0rq3b30d2a89lxlnybih49j8w8c6xsfn5mqbn8br")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-dimline")
+    (synopsis "Technical dimension lines using PGF/TikZ")
+    (description
+     "@code{tikz-dimline} helps drawing technical dimension lines in TikZ
+@code{picture} environments.")
+    (license license:wtfpl2)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
