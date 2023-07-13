@@ -3039,6 +3039,29 @@ occuring on a screen if monochromatic light is diffracted at regular
 structures of slits.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pgf-periodictable
+  (package
+    (name "texlive-pgf-periodictable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-periodictable/"
+                   "tex/latex/pgf-periodictable/flags/"
+                   "tex/latex/pgf-periodictable/lattice/"
+                   "tex/latex/pgf-periodictable/spectra/")
+             (base32
+              "0jxl52m4ik710n14crr6b2ymgnl58asw78mb0p5vdz21r6qgb11n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgf-periodictable")
+    (synopsis "Create custom periodic tables of elements")
+    (description
+     "The purpose of this package is to provide the periodic table of elements
+in a simple way.  It relies on PGF/TikZ to offer a full or partial periodic
+table with a variety of options and displaying the desired data for all the
+118 elements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
