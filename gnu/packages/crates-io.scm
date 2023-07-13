@@ -54077,8 +54077,38 @@ It is automatically published using the compiler repository at
 hex conversion traits.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustc-rayon-0.5
+  (package
+    (name "rust-rustc-rayon")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustc-rayon" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "040p2am25g3isnpsixrcrjrv70yz2lzkbq8gpv76xjipi3fam0gb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-either" ,rust-either-1)
+        ("rust-rustc-rayon-core" ,rust-rustc-rayon-core-0.5))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3))))
+    (home-page "https://github.com/rust-lang/rustc-rayon")
+    (synopsis "Simple work-stealing parallelism for Rust - fork for rustc")
+    (description
+     "Rustc-rayon is a fork of the Rayon crate.  It adds a few \"in progress\"
+features that rustc is using, mostly around deadlock detection.  These features
+are not stable and should not be used by others -- though they may find their
+way into rayon proper at some point.  In general, if you are not rustc, you
+should be using the real rayon crate, not rustc-rayon.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rustc-rayon-0.4
   (package
+    (inherit rust-rustc-rayon-0.5)
     (name "rust-rustc-rayon")
     (version "0.4.0")
     (source (origin
@@ -54088,7 +54118,6 @@ hex conversion traits.")
               (sha256
                (base32
                 "0ykjr1i56jmi8ykkcr7x555wnxki1vsi703mz6n2x7k0naqg0y8s"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;XXX can not find rayon?
        #:cargo-inputs
@@ -54097,17 +54126,7 @@ hex conversion traits.")
         ("rust-either" ,rust-either-1)
         ("rust-rustc-rayon-core" ,rust-rustc-rayon-core-0.4))
        #:cargo-development-inputs
-       (("rust-docopt" ,rust-docopt-1))))
-    (home-page "https://github.com/rust-lang/rustc-rayon")
-    (synopsis
-     "Simple work-stealing parallelism for Rust - fork for rustc")
-    (description
-     "Rustc-rayon is a fork of the Rayon crate.  It adds a few \"in progress\"
-features that rustc is using, mostly around deadlock detection.  These features
-are not stable and should not be used by others -- though they may find their
-way into rayon proper at some point.  In general, if you are not rustc, you
-should be using the real rayon crate, not rustc-rayon.")
-    (license (list license:asl2.0 license:expat))))
+       (("rust-docopt" ,rust-docopt-1))))))
 
 (define-public rust-rustc-rayon-core-0.5
   (package
