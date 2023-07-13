@@ -49496,6 +49496,25 @@ ecosystem.")
      "This package provides compiler macros for use with PyO3.")
     (license license:asl2.0)))
 
+(define-public rust-pyo3-macros-0.18
+  (package
+    (inherit rust-pyo3-macros-0.19)
+    (name "rust-pyo3-macros")
+    (version "0.18.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13b454p012l1487lbfqkr952qifsl88arldv4m5mmz5kv9arrlx9"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.18)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-pyo3-macros-backend-0.13
   (package
     (inherit rust-pyo3-macros-backend-0.15)
