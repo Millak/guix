@@ -9286,14 +9286,14 @@ of built-in fundamental numeric types.")
 (define-public rust-bytecheck-0.6
   (package
     (name "rust-bytecheck")
-    (version "0.6.10")
+    (version "0.6.11")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bytecheck" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "07vxs7y441f7d6mjzmli80ykmfajwk9jqci549b29sr319j13zhk"))))
+                "09xnpjfhw36a973dpdd2mcmb93rrix539j49vkkgcqf878174qwb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -9301,7 +9301,7 @@ of built-in fundamental numeric types.")
         ("rust-ptr-meta" ,rust-ptr-meta-0.1)
         ("rust-simdutf8" ,rust-simdutf8-0.1)
         ("rust-uuid" ,rust-uuid-1))))
-    (home-page "https://github.com/djkoloski/bytecheck")
+    (home-page "https://github.com/rkyv/bytecheck")
     (synopsis "Type validation framework")
     (description "This package provides a type validation framework for
 Rust.")
