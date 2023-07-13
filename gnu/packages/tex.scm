@@ -5112,6 +5112,28 @@ orbital diagrams.")
      "This package allows you to easily display network packets graphically.")
     (license license:expat)))
 
+(define-public texlive-tikzpagenodes
+  (package
+    (name "texlive-tikzpagenodes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzpagenodes/"
+                   "source/latex/tikzpagenodes/"
+                   "tex/latex/tikzpagenodes/")
+             (base32
+              "13ddkwm4a1x2b47zqjk2m55y2dwl09rl3s0pm1vmxv7h2sawgqbr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ydoc))
+    (home-page "https://ctan.org/pkg/tikzpagenodes")
+    (synopsis "Single TikZ node for the whole page")
+    (description
+     "The package provides special PGF/TikZ nodes for the text, marginpar,
+footer and header area of the current page.  They are inspired by the current
+page node defined by PGF/TikZ itself.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
