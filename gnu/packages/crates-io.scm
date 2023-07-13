@@ -63535,14 +63535,14 @@ interface")
 (define-public rust-syn-2
   (package
     (name "rust-syn")
-    (version "2.0.15")
+    (version "2.0.25")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "syn" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "08n8c235bj7f86a5jg561s5zjfijdn8jw6ih2im7xxb0iczcykx3"))))
+                "1qjswb3cifay6x9l0qjpm9c42ikacpxybr9ny4npw9kl1j6grqqm"))))
     (build-system cargo-build-system)
     (arguments
      ;; Tests fail to compile
