@@ -51598,6 +51598,24 @@ initial value.")
         (base32
          "0av43xxjlinfqklb67rpj217cmaxfjsf8151gs0hbs4hnr5664ck"))))))
 
+(define-public rust-ref-cast-test-suite-0.0.0
+  (package
+    (name "rust-ref-cast-test-suite")
+    (version "0.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ref-cast-test-suite" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cx15bhs8zq99qidrhjmjhc5krlfclcaq0y5c68pq48vlds72idl"))))
+    (build-system cargo-build-system)
+    (arguments (list #:skip-build? #t))
+    (home-page "https://github.com/dtolnay/ref-cast")
+    (synopsis "Test suite of the ref-cast crate")
+    (description "Test suite of the ref-cast crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-refpool-0.4
   (package
     (name "rust-refpool")
