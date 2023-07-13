@@ -4689,6 +4689,26 @@ geometrically (in)correct computation of light rays through the setup is left
 to the user.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-page
+  (package
+    (name "texlive-tikz-page")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-page/"
+                   "source/latex/tikz-page/"
+                   "tex/latex/tikz-page/")
+             (base32
+              "1ck1jr37wd7mx8irm0niv43pmfy2ix5s08vybai8k0jgpvvwwi1j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-page")
+    (synopsis "Small macro to help building nice and complex layout materials")
+    (description
+     "The package provides a small macro to help building nice and complex
+layout materials.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
