@@ -4041,6 +4041,25 @@ designed error reporting system intended to ensure that it is as clear as
 possible what is going wrong.")
     (license license:lppl)))
 
+(define-public texlive-strands
+  (package
+    (name "texlive-strands")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/strands/" "source/latex/strands/"
+                   "tex/latex/strands/")
+             (base32
+              "1jhvbzy8qjrjmb6j7kjwjn1iqgnszvhwlnpsag8sl1f8qgg1ns9z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/strands")
+    (synopsis "Draw objects constructed from strands")
+    (description
+     "This package permits to draw objects constructed from strands, like set
+partitions, permutations, braids, etc.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
