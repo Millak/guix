@@ -4668,6 +4668,27 @@ seamlessly integrated into the underlying LaTeX files.")
 LaTeX and PGF/TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-optics
+  (package
+    (name "texlive-tikz-optics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-optics/"
+                   "tex/latex/tikz-optics/")
+             (base32
+              "0ii7h57klxq8fjag363wmaaxi9bnds898nl6s1abiqb13pgbmb9n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-optics")
+    (synopsis "Library for drawing optical setups with TikZ")
+    (description
+     "This package provides a new TikZ library designed to easily draw optical
+setups with TikZ.  It provides shapes for lens, mirror, etc.  The
+geometrically (in)correct computation of light rays through the setup is left
+to the user.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
