@@ -2610,6 +2610,38 @@ border.  The package also provides macros that help with the management of
 shape parameters, and the definition of anchor points.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mathspic
+  (package
+    (name "texlive-mathspic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathspic/"
+                   "doc/man/man1/mathspic.1"
+                   "doc/man/man1/mathspic.man1.pdf"
+                   "scripts/mathspic/" "tex/latex/mathspic/")
+             (base32
+              "0rlcskfvpl4niv680v8fgfpfxkrhfavmm8431ffp3vjjbqrhv7xr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "mathspic.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/mathspic")
+    (synopsis "Perl filter program for use with PiCTeX")
+    (description
+     "MathsPIC (Perl) is a development of the earlier MathsPIC (DOS) program,
+now implemented as a Perl script, being much more portable than the earlier
+program.  MathsPIC parses a plain text input file and generates a plain text
+output-file containing commands for drawing a diagram.  It produces output
+containing PiCTeX and (La)TeX commands, which may then be processed by plain
+TeX or LaTeX in the usual way.  MathsPIC also outputs a comprehensive log
+file.  MathsPIC facilitates creating figures using PiCTeX by providing an
+environment for manipulating named points and also allows the use of variables
+and maths (advance, multiply, and divide)---in short---it takes the pain out
+of PiCTeX.")
+    (license license:lppl)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
