@@ -4934,6 +4934,25 @@ Beveridge's article Too good to be Truchet in issue 08 of Chalkdust.")
 The user can modify color, shape, and viewpoint.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikzcodeblocks
+  (package
+    (name "texlive-tikzcodeblocks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzcodeblocks/"
+                   "tex/latex/tikzcodeblocks/")
+             (base32
+              "04c8bjl3l97vsh7cydbh20wnq93my19avkhcf4kh0g5cvq02nizp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzcodeblocks")
+    (synopsis "Helps to draw codeblocks like Scratch, NEPO and PXT in TikZ")
+    (description
+     "@code{tikzcodeblocks} is a LaTeX package for typesetting blockwise
+graphic programming languages like Scratch, NEPO or PXT.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
