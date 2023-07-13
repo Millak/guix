@@ -3751,6 +3751,34 @@ steps can be customized in various ways.")
 example to be used in educational material.")
     (license license:lppl1.3+)))
 
+(define-public texlive-rviewport
+  (package
+    (name "texlive-rviewport")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rviewport/"
+                   "source/latex/rviewport/"
+                   "tex/latex/rviewport/")
+             (base32
+              "13mrihyid25h70800ix0mbqhs8dbi39nyif8f12mj54jpfdjhxcz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rviewport")
+    (synopsis "Relative viewport for graphics inclusion")
+    (description
+     "Package @code{graphicx} provides a useful keyword viewport which allows
+to show just a part of an image.  However, one needs to put there the actual
+coordinates of the viewport window.  Sometimes it is useful to have relative
+coordinates as fractions of natural size.  For example, one may want to print
+a large image on a spread, putting a half on a verso page, and another half on
+the next recto page.  For this one would need a viewport occupying exactly one
+half of the file's bounding box, whatever the actual width of the image may
+be.  This package adds a new keyword @code{rviewport} to the @code{graphicx}
+package specifiying relative viewport for graphics inclusion: a window defined
+by the given fractions of the natural width and height of the image.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
