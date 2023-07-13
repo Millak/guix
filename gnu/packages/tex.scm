@@ -3160,6 +3160,27 @@ allows the user to draw spectra using their own data.")
      "This package provides LaTeX macros to draw UML diagrams using PGF.")
     (license license:gpl3+)))
 
+(define-public texlive-pgfkeyx
+  (package
+    (name "texlive-pgfkeyx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgfkeyx/" "tex/latex/pgfkeyx/")
+             (base32
+              "0g5wvhlyfplv0fd0nsxpw3al9wmk0hw0pjvyyplh1vzdk5rr3xzq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgfkeyx")
+    (synopsis "Extended and more robust version of @code{pgfkeys}")
+    (description
+     "The package extends and improves the robustness of the @code{pgfkeys}
+package.  In particular, it can deal with active comma, equality sign, and
+slash in key parsing.  The difficulty with active characters has long been
+a problem with the @code{pgfkeys} package.  The package also introduces
+handlers beyond those that @code{pgfkeys} can offer.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
