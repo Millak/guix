@@ -3062,6 +3062,25 @@ table with a variety of options and displaying the desired data for all the
 118 elements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pgf-pie
+  (package
+    (name "texlive-pgf-pie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-pie/" "tex/latex/pgf-pie/")
+             (base32
+              "1nvg61v9pzc0mqs8m818ixi8rmw2wv3h7s17shjc7mcdqkp7k1qq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-carlisle texlive-latex texlive-pgf))
+    (home-page "https://ctan.org/pkg/pgf-pie")
+    (synopsis "Draw pie charts, using PGF")
+    (description
+     "The package provides the means to draw pie (and variant) charts,
+using PGF/TikZ.")
+    (license (list license:gpl2 license:lppl1.3c))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
