@@ -30866,14 +30866,14 @@ Rust.")
 (define-public rust-indoc-2
   (package
     (name "rust-indoc")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indoc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "142nzc474x1xgdzk057yv1yfrgxsk5a9zybbcwwrzp5ih65v8b4z"))))
+        (base32 "19xv7xcwln384m5m3p93hva9vv3yicjgsa69z1vrhakyq90dw73n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
