@@ -1381,7 +1381,7 @@ libpulse.")
 (define-public qqc2-desktop-style
   (package
     (name "qqc2-desktop-style")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1390,7 +1390,7 @@ libpulse.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1af7izd4k220dzngf1nwgcw0bi7vl772lpjrqd9fp9rijh74dx7d"))))
+                "1icv871q0z2wh147j3bg9xqizp2cyrsrsrsgbyyscpa9x5nlpvw9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
