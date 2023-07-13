@@ -2641,7 +2641,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2650,7 +2650,7 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0z1ikpa3an3qmd26h2v48kxxw1jph21i12x4nawvc4x1dp4vkm1d"))
+                "1v5bpj90s5pwdvdkzcfpfgsgym7pxb3r22m4r7w9piq6n9s4c122"))
               (patches (search-patches "kio-search-smbd-on-PATH.patch"))))
     (build-system cmake-build-system)
     (propagated-inputs
@@ -2732,6 +2732,7 @@ consumption.")
                                        "|commandlauncherjob_servicetest"
                                        "|kiowidgets-kdirmodeltest"
                                        "|kiowidgets-kurifiltertest-colon-separator"
+                                       "|kiofilewidgets-kfilewidgettest"
                                        "|kiowidgets-kurifiltertest-space-separator)")))))
           (add-after 'install 'add-symlinks
             ;; Some package(s) (e.g. bluedevil) refer to these service types by
