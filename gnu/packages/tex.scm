@@ -3340,6 +3340,27 @@ modifies @code{\\plot} to use a rule instead of dots if the line segment is
 horizontal or vertical.")
     (license license:lppl)))
 
+(define-public texlive-pinlabel
+  (package
+    (name "texlive-pinlabel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pinlabel/" "tex/latex/pinlabel/")
+             (base32
+              "0hfa6gdmc6f59840fia3pdll2bgjwyqk57plcqxb4vc0f7kdqqay")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pinlabel")
+    (synopsis "TeX labelling package")
+    (description
+     "Pinlabel is a labelling package for attaching perfectly formatted TeX
+labels to figures and diagrams in both EPS and PDF formats.  It is suitable
+both for labelling a new diagram and for relabelling an existing diagram.  The
+package uses coordinates derived from GhostView and labels are placed with
+automatic and consistent spacing relative to the object labelled.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
