@@ -5347,6 +5347,25 @@ file.")
 timing diagrams, using TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tipfr
+  (package
+    (name "texlive-tipfr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tipfr/" "tex/latex/tipfr/")
+             (base32
+              "1frgk49mw7wi18065y4ikg75vg03d2vbdflfnyanixn46zpf2p8z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tipfr")
+    (synopsis "Produces calculator's keys with the help of TikZ")
+    (description
+     "The package provides commands to draw calculator keys with the help of
+TikZ.  It also provides commands to draw the content of screens and of menu
+items.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
