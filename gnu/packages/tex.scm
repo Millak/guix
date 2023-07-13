@@ -2975,6 +2975,30 @@ themselves can be deformed and will still (hopefully!) fit together in the
 correct fashion.")
     (license license:lppl1.3c)))
 
+(define-public texlive-petri-nets
+  (package
+    (name "texlive-petri-nets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/petri-nets/"
+                   "scripts/petri-nets/"
+                   "tex/generic/petri-nets/")
+             (base32
+              "0m6qmahbw1q5vs63mr30kf75di86drhi8z3a8p7yn9n524jn435c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pn2pdf")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/petri-nets")
+    (synopsis "Set TeX/LaTeX packages for drawing Petri nets")
+    (description
+     "Petri-nets offers a set of TeX/LaTeX packages about Petri nets and
+related models.  Three packages are available: the first allows the user to
+draw Petri-nets in PostScript documents; the second defines macros related to
+PBC, M-nets and B(PN) models; and a third that combines the other two.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
