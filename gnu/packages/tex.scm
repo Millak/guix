@@ -4777,6 +4777,30 @@ arrows between nodes); and it improves on @code{pst-qtree} in being usable
 with pdfTeX and XeTeX.")
     (license license:gpl3+)))
 
+(define-public texlive-tikz-relay
+  (package
+    (name "texlive-tikz-relay")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-relay/"
+                   "tex/latex/tikz-relay/")
+             (base32
+              "06q0iamg001lvqmi51j61xbwamgnhiah0aw9qv61n7fnxqpwj66c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-relay")
+    (synopsis "TikZ library for typesetting electrical diagrams")
+    (description
+     "This package contains a collection of symbols for typesetting electrical
+wiring diagrams for relay control systems.  The symbols are meant to be in
+agreement with the international standard IEC-60617 which has been adopted
+worldwide, with perhaps the exception of the USA.  It extends and modifies,
+when needed, the TikZ-libray @code{circuits.ee.IEC}.  A few non-standard
+symbols are also included mainly to be used in presentations, particularly
+with the @code{beamer} package.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
