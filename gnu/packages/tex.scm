@@ -4514,6 +4514,29 @@ considered as an upgrade and extension of Andreas W. Wieland's @code{karnaugh}
 package towards TikZ supporting.")
     (license license:lppl1.0+)))
 
+(define-public texlive-tikz-ladder
+  (package
+    (name "texlive-tikz-ladder")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-ladder/"
+                   "tex/latex/tikz-ladder/")
+             (base32
+              "1fkq7z58h7g71ag4j77vy87hqgpp5q8qvw7kv1pmkff7ycrj8alw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-ladder")
+    (synopsis "Draw ladder diagrams using TikZ")
+    (description
+     "The @code{tikz-ladder} package contains a collection of symbols for
+typesetting ladder diagrams (PLC program) in agreement with the international
+standard IEC-61131-3/2013.  It includes blocks (for representing functions and
+function blocks) besides contacts and coils.  It extends the circuit library
+of TikZ and allows you to draw a ladder diagram in the same way as you would
+draw any other circuit.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
