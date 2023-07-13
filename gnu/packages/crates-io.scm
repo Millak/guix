@@ -66773,6 +66773,25 @@ unstable language features.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-term" ,rust-term-0.4))))))
 
+(define-public rust-testing-logger-0.1
+  (package
+    (name "rust-testing-logger")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "testing-logger" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "087pi7y9iisspafyzblj41qvrw95dfb6px7pavlkmls5rckvg4kd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/brucechapman/rust_testing_logger")
+    (synopsis "Supports writing tests to verify `log` crate calls")
+    (description "Supports writing tests to verify `log` crate calls.")
+    (license license:bsd-3)))
+
 (define-public rust-text-size-1
   (package
     (name "rust-text-size")
