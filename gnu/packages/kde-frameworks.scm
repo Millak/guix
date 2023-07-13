@@ -3514,7 +3514,7 @@ workspace.")
 (define-public kdelibs4support
   (package
     (name "kdelibs4support")
-    (version "5.98.0")
+    (version "5.108.0")
     (source
      (origin
        (method url-fetch)
@@ -3523,7 +3523,7 @@ workspace.")
              (version-major+minor version) "/portingAids/"
              name "-" version ".tar.xz"))
        (sha256
-        (base32 "0hyyrxic1rkw2jrr92rnmbk6bqkfrcnpc917vs7xyansk9799b8f"))))
+        (base32 "1pqpcn4i6zcli8a2yf7fda6rwr0vs55jd9bjl0fgallyd6wl8qkf"))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus
