@@ -4434,6 +4434,26 @@ algorithms from TikZ in order to automate the placement of many vertices.
 complex diagrams can still be generated with ease.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-imagelabels
+  (package
+    (name "texlive-tikz-imagelabels")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-imagelabels/"
+                   "source/latex/tikz-imagelabels/"
+                   "tex/latex/tikz-imagelabels/")
+             (base32
+              "1hvyrkpabnqscnsqz56hby71vpbby03va0xa6gcjjxak65lscwkv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-imagelabels")
+    (synopsis "Put labels on images using TikZ")
+    (description
+     "This package allows to add label texts to an existing image with the aid
+of TikZ.  This may be used to label certain features in an image.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
