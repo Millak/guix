@@ -2879,6 +2879,26 @@ options to use calloc or a mutable global variable for pre-zeroed memory.")
 be used with the stdlib.")
     (license license:bsd-3)))
 
+(define-public rust-allocator-api2-0.2
+  (package
+    (name "rust-allocator-api2")
+    (version "0.2.15")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "allocator-api2" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1sdgkqs0pyk61m4yjksl5fv8wld11s5rp7v4v3p5hhccvkw6rz2n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--lib")
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/zakarumych/allocator-api2")
+    (synopsis "Mirror of Rust's allocator API")
+    (description "Mirror of Rust's allocator API.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-always-assert-0.1
   (package
     (name "rust-always-assert")
