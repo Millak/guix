@@ -31611,23 +31611,20 @@ bytestring representations.")
      "Simple procedural macro attribute for repetitive tests.")
     (license license:expat)))
 
-(define-public rust-inventory-0.2
+(define-public rust-inventory-0.3
   (package
     (name "rust-inventory")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "inventory" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "06h9xw67wx18rank4yyz93iq89j0fk6fbazryfvf5ach1dp4qd44"))))
+    (version "0.3.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "inventory" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yd0qljqk29vkgpgac1vnigs44li8sd029jbrlrj8xg2w2hqg2n3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ctor" ,rust-ctor-0.1)
-        ("rust-ghost" ,rust-ghost-0.1))
-       #:cargo-development-inputs
+     `(#:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/inventory")
@@ -31636,8 +31633,27 @@ bytestring representations.")
      "This package provides a way to set up a plugin registry into which
 plugins can be registered from any source file linked into your program.
 There does not need to be a central list of all the plugins.")
-    ;; Either license can be chosen at the users option.
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-inventory-0.2
+  (package
+    (inherit rust-inventory-0.3)
+    (name "rust-inventory")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "inventory" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06h9xw67wx18rank4yyz93iq89j0fk6fbazryfvf5ach1dp4qd44"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ctor" ,rust-ctor-0.1)
+        ("rust-ghost" ,rust-ghost-0.1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-inventory-0.1
   (package
