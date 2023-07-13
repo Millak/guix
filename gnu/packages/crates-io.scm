@@ -27254,31 +27254,48 @@ timers.")
 libraries GMP, MPFR, and MPC.")
     (license license:lgpl3+)))
 
-(define-public rust-goblin-0.2
+(define-public rust-goblin-0.6
   (package
     (name "rust-goblin")
-    (version "0.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "goblin" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1j38fkqadbsjxawr3wnj9m0qaihcwp6pmfakmhsar881509y7mfx"))))
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "goblin" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0s7zs27b192virbp88y2fgq8p6nb8blkn7byqyl4cv7bm3j4ssqd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
-       (("rust-scroll" ,rust-scroll-0.10)
+       (("rust-log" ,rust-log-0.4)
         ("rust-plain" ,rust-plain-0.2)
-        ("rust-log" ,rust-log-0.4))))
+        ("rust-scroll" ,rust-scroll-0.11))))
     (home-page "https://github.com/m4b/goblin")
     (synopsis "ELF, Mach-o, and PE binary parsing and loading crate")
     (description "This package provides an ELF, Mach-o, and PE binary parsing
 and loading crate.")
     (license license:expat)))
+
+(define-public rust-goblin-0.2
+  (package
+    (inherit rust-goblin-0.6)
+    (name "rust-goblin")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "goblin" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1j38fkqadbsjxawr3wnj9m0qaihcwp6pmfakmhsar881509y7mfx"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-scroll" ,rust-scroll-0.10)
+        ("rust-plain" ,rust-plain-0.2)
+        ("rust-log" ,rust-log-0.4))))))
 
 (define-public rust-greetd-ipc-0.8
   (package
