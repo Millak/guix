@@ -5011,6 +5011,29 @@ rhombi are provided.")
 a file holding multiple images.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikzlings
+  (package
+    (name "texlive-tikzlings")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzlings/"
+                   "tex/latex/tikzlings/")
+             (base32
+              "0cqja06i3s8w3wbz6dhlhbri1zhqsyh8jhyahi5v8q9ywdm389yd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzlings")
+    (synopsis "Collection of cute little animals and similar creatures")
+    (description
+     "This package provides a collection of LaTeX packages for drawing cute
+little animals and similar creatures using TikZ.  Currently, the following
+TikZlings are included: anteater, bat, bear, bee, bug, cat, chicken, coati,
+elephant, hippo, koala, marmot, mole, mouse, owl, panda, penguin, pig, rhino,
+sheep, sloth, snowman, squirrel, and wolf.  These little drawings can be
+customized in many ways.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
