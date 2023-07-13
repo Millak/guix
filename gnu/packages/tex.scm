@@ -5482,6 +5482,24 @@ Gnuplot.")
 using TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tkz-orm
+  (package
+    (name "texlive-tkz-orm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-orm/" "tex/latex/tkz-orm/")
+             (base32
+              "0qmwiglz59djq0xkpsfgqzdf6872z33z9faxn86krs5mxmrik6cc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-orm")
+    (synopsis "Create Object-Role Model (ORM) diagrams")
+    (description
+     "The package provides styles for drawing Object-Role Model (ORM) diagrams
+in TeX based on the PGF and TikZ picture environment.")
+    (license (list license:gpl2 license:lppl1.3+))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
