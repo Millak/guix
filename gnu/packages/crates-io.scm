@@ -70816,14 +70816,14 @@ the Trust-DNS client to use rustls for TLS.")
 (define-public rust-trybuild-1
   (package
     (name "rust-trybuild")
-    (version "1.0.77")
+    (version "1.0.81")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trybuild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04rlcx55q7qbc17hv4znypwnm5n5d5ynbh5vsca8wk0nyakaakd4"))))
+        (base32 "0ab7ahdx563n6kbm14pm3qnxq4fp06pz42nh5ii4acvlzycnwdh4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -70834,7 +70834,8 @@ the Trust-DNS client to use rustls for TLS.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-termcolor" ,rust-termcolor-1))))
+        ("rust-termcolor" ,rust-termcolor-1))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))
     (home-page "https://github.com/dtolnay/trybuild")
     (synopsis "Test harness for ui tests of compiler diagnostics")
     (description
