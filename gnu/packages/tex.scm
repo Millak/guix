@@ -4123,6 +4123,32 @@ known as railroad diagrams.")
 a function and a convexity table of its graph.")
     (license license:lppl1.3+)))
 
+(define-public texlive-texdraw
+  (package
+    (name "texlive-texdraw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/texdraw.info"
+                   "doc/support/texdraw/"
+                   "tex/generic/texdraw/")
+             (base32
+              "1pqrmyc8jnwk06qbrf18cyny1z4ncq0snp4jc0r7qgnh6bmlbncs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texdraw")
+    (synopsis "Graphical macros, using embedded PostScript")
+    (description
+     "TeXdraw is a set of macro definitions for TeX, which allow the user to
+produce PostScript drawings from within TeX and LaTeX.  TeXdraw has been
+designed to be extensible.  Drawing segments are relocatable, self-contained
+units.  Using a combination of TeX's grouping mechanism and the
+@code{gsave}/@code{grestore} mechanism in PostScript, drawing segments allow
+for local changes to the scaling and line parameters.  Using TeX's macro
+definition capability, new drawing commands can be constructed from drawing
+segments.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
