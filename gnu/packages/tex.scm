@@ -5620,6 +5620,27 @@ open source emojis through LaTeX commands.  This relies on images, so no fancy
 Unicode font stuff is needed and it should work on every installation.")
     (license (list license:lppl1.3+ license:cc-by4.0))))
 
+(define-public texlive-tzplot
+  (package
+    (name "texlive-tzplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tzplot/" "tex/latex/tzplot/")
+             (base32
+              "09k84vjvl3qkp8jffv3j5bksq3jaad2p71yj715z39qf36hwvm7s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tzplot")
+    (synopsis "Plot graphs with TikZ abbreviations")
+    (description
+     "This is a LaTeX package that provides TikZ-based macros to make it easy
+to draw graphs.  The macros provided in this package are just abbreviations
+for TikZ codes, which can be complicated; but using the package will hopefully
+make drawing easier, especially when drawing repeatedly.  The macros were
+chosen and developed with an emphasis on drawing graphs in economics.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
