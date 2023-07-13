@@ -3826,13 +3826,14 @@ offers abstract functionality to deal with scripts.")
     (inputs
      (list kcoreaddons ki18n kio qtbase-5 qtxmlpatterns))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? ;; Seems to require network.
-               (invoke "ctest" "-E"
-                       "(kdav-davcollectionsmultifetchjobtest|kdav-davitemfetchjob)")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                               ;; Seems to require network.
+                              (invoke "ctest" "-E"
+                                      "(kdav-davcollectionsmultifetchjobtest|\
+kdav-davitemfetchjob)")))))))
     (home-page "https://invent.kde.org/frameworks/kdav")
     (synopsis "DAV protocol implementation with KJobs")
     (description "This is a DAV protocol implementation with KJobs.  Calendars
