@@ -3141,6 +3141,25 @@ allows the user to draw spectra using their own data.")
      "This package provides some LaTeX macros for UML class diagrams.")
     (license (list license:gpl2 license:lppl1.3c))))
 
+(define-public texlive-pgf-umlsd
+  (package
+    (name "texlive-pgf-umlsd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-umlsd/"
+                   "tex/latex/pgf-umlsd/")
+             (base32
+              "1bw23gm9x6ijhn3h0q7af0n9wxnc3ixfjc23v8x49s80gh96gmqg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-latex texlive-pgf))
+    (home-page "https://ctan.org/pkg/pgf-umlsd")
+    (synopsis "Draw UML sequence diagrams")
+    (description
+     "This package provides LaTeX macros to draw UML diagrams using PGF.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
