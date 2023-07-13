@@ -3081,6 +3081,25 @@ table with a variety of options and displaying the desired data for all the
 using PGF/TikZ.")
     (license (list license:gpl2 license:lppl1.3c))))
 
+(define-public texlive-pgf-soroban
+  (package
+    (name "texlive-pgf-soroban")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-soroban/"
+                   "tex/latex/pgf-soroban/")
+             (base32
+              "1vcycmd5a3z6p9glbgw4lsxs0zv0lidvs240i18kv8s39yx6f88r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgf-soroban")
+    (synopsis "Create images of the soroban using TikZ/PGF")
+    (description
+     "The package makes it possible to create pictures of the
+soroban (Japanese abacus) using PGF/TikZ.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
