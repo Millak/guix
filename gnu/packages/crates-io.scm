@@ -11551,6 +11551,32 @@ for @code{rust-chrono}.")
 chrono-tz Rust crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-chumsky-0.9
+  (package
+    (name "rust-chumsky")
+    (version "0.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "chumsky" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "179llm5hybq5fr21mi681dq5f51j98laqmwh56kvadk2p4l045r3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-stacker" ,rust-stacker-0.1))
+       #:cargo-development-inputs
+       (("rust-ariadne" ,rust-ariadne-0.1)
+        ("rust-pom" ,rust-pom-3))))
+    (home-page "https://github.com/zesterer/chumsky")
+    (synopsis "Parser library for humans with powerful error recovery")
+    (description
+     "This package provides a parser library for humans with powerful error
+recovery.")
+    (license license:expat)))
+
 (define-public rust-chunked-transfer-1
   (package
     (name "rust-chunked-transfer")
