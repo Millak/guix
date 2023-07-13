@@ -4650,6 +4650,24 @@ supported:
 seamlessly integrated into the underlying LaTeX files.")
     (license license:gpl3+)))
 
+(define-public texlive-tikz-opm
+  (package
+    (name "texlive-tikz-opm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-opm/" "tex/latex/tikz-opm/")
+             (base32
+              "0kv26i1lfm9zsvqsajaz9fmz1gv7az3pknk29gg6zwjlg5nxqac3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-opm")
+    (synopsis "Typeset OPM diagrams")
+    (description
+     "This package typesets OPM (Object-Process Methodology) diagrams using
+LaTeX and PGF/TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
