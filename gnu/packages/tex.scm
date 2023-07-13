@@ -5243,6 +5243,25 @@ spacing and layout of the poster is to a large extent automated.")
 PGFPlots to a given width or height without changing the text size.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikzsymbols
+  (package
+    (name "texlive-tikzsymbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzsymbols/"
+                   "source/latex/tikzsymbols/"
+                   "tex/latex/tikzsymbols/")
+             (base32
+              "0q19w9adpfxrsh7jmf4qpjarhgb4wng66kjkmalcxijd99kxbkhk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzsymbols")
+    (synopsis "Some symbols created using TikZ")
+    (description
+     "The package provides various emoticons, cooking symbols and trees.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
