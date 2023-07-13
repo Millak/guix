@@ -4847,6 +4847,30 @@ Intervention Graph (SWIG) models which are used in counterfactual causal
 inference.")
     (license (list license:lppl1.3c license:gpl3+))))
 
+(define-public texlive-tikz-timing
+  (package
+    (name "texlive-tikz-timing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-timing/"
+                   "source/latex/tikz-timing/"
+                   "tex/latex/tikz-timing/")
+             (base32
+              "19zs6agcli2glm92z8y89nr4049v5sqvnlddbwlwym5rni33kh1m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ydoc))
+    (propagated-inputs (list texlive-svn-prov))
+    (home-page "https://ctan.org/pkg/tikz-timing")
+    (synopsis "Easy generation of timing diagrams as TikZ pictures")
+    (description
+     "This package provides macros and an environment to generate timing
+diagrams (digital waveforms) without much effort.  The TikZ package is used to
+produce the graphics.  A tabular-like environment is provided to produce
+larger timing diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
