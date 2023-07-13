@@ -2305,7 +2305,7 @@ their settings.")
 (define-public kdeclarative
   (package
     (name "kdeclarative")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2314,7 +2314,7 @@ their settings.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y5scmcnzhwvyb7x6fdb59xgdhghw8v9i3r05gx1x7g1gfsw0wh6"))))
+                "1kdg18a2xpgl6xkrk68nnbj57nwn8rv5yd5q5bfbfc8chibk9y4z"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfig kpackage qtdeclarative-5))
@@ -2353,9 +2353,7 @@ their settings.")
                (setenv "XDG_RUNTIME_DIR" (getcwd))
                (setenv "QT_QPA_PLATFORM" "offscreen")
                (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest"
-                       "-E" ; FIXME: test fails.
-                       "fullmodelaccesstest")))))))
+               (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Integration of QML and KDE work spaces")
     (description "KDeclarative provides integration of QML and KDE work spaces.
