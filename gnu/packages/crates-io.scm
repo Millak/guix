@@ -49534,8 +49534,64 @@ ecosystem.")
         ("rust-syn" ,rust-syn-1))))
     (native-inputs (list python))))
 
+(define-public rust-pyo3-0.19
+  (package
+    (name "rust-pyo3")
+    (version "0.19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0nca4p22jxwcg5dvg907j9m9618bvi8lmb20vvy4nsrhbzh8mf7z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-eyre" ,rust-eyre-0.6)
+        ("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indoc" ,rust-indoc-1)
+        ("rust-inventory" ,rust-inventory-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.9)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.19)
+        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.19)
+        ("rust-pyo3-macros" ,rust-pyo3-macros-0.19)
+        ("rust-rust-decimal" ,rust-rust-decimal-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unindent" ,rust-unindent-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rust-decimal" ,rust-rust-decimal-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-send-wrapper" ,rust-send-wrapper-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-widestring" ,rust-widestring-0.5))))
+    (inputs (list python))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Rust bindings for the Python interpreter")
+    (description
+     "This package provides Rust bindings for Python, including tools for
+creating native Python extension modules.  Running and interacting with
+Python code from a Rust binary is also supported.")
+    (license license:asl2.0)))
+
 (define-public rust-pyo3-0.16
   (package
+    (inherit rust-pyo3-0.19)
     (name "rust-pyo3")
     (version "0.16.5")
     (source
@@ -49545,7 +49601,6 @@ ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1p5kjsj3jdw2gnahdjrzljmi93w3nxdp11qq8x3i80b0a3l04qqy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
@@ -49577,15 +49632,7 @@ ecosystem.")
         ("rust-trybuild" ,rust-trybuild-1)
         ("rust-widestring" ,rust-widestring-0.5))
        ;; FIXME: fails to initialize Python interpreter.
-       #:tests? #f))
-    (inputs (list python))
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Rust bindings for the Python interpreter")
-    (description
-     "This package provides Rust bindings for Python, including tools for
-creating native Python extension modules.  Running and interacting with
-Python code from a Rust binary is also supported.")
-    (license license:asl2.0)))
+       #:tests? #f))))
 
 (define-public rust-pyo3-macros-0.13
   (package
