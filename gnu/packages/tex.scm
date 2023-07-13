@@ -5519,6 +5519,25 @@ signs and variations, using PGF.  This package has been taken temporarily out
 of circulation to give the author time to investigate some problems.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tkzexample
+  (package
+    (name "texlive-tkzexample")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkzexample/"
+                   "tex/latex/tkzexample/")
+             (base32
+              "1y445fjvy13cqa9y1sbac43wbmidvfn7vb7jws11fl4lj7vvgvhz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkzexample")
+    (synopsis "Package for the documentation of all @samp{tkz-} packages")
+    (description
+     "This package is needed to compile the documentation of all @samp{tkz-}
+packages (like @code{tkz-euclide}).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
