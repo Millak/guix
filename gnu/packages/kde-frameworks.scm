@@ -2472,13 +2472,13 @@ with su and ssh respectively.")
     (inputs
      (list karchive kconfig kcoreaddons qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" (getcwd))
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'check-setup
+                          (lambda _
+                            (setenv "HOME"
+                                    (getcwd))
+                            ;; make Qt render "offscreen", required for tests
+                            (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Convert text emoticons to graphical emoticons")
     (description "KEmoticons converts emoticons from text to a graphical
