@@ -3019,6 +3019,26 @@ PBC, M-nets and B(PN) models; and a third that combines the other two.")
 It is configured as a TikZ/PGF library module.")
     (license (list license:lppl license:public-domain))))
 
+(define-public texlive-pgf-interference
+  (package
+    (name "texlive-pgf-interference")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-interference/"
+                   "tex/latex/pgf-interference/")
+             (base32
+              "1aa741h358iwn0zd25y3wsr4mr1q2fia1mrfqrbz6p00fvv0rgv5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgf-interference")
+    (synopsis "Drawing interference patterns with PGF/TikZ")
+    (description
+     "This LaTeX package makes it possible to simulate interference patterns
+occuring on a screen if monochromatic light is diffracted at regular
+structures of slits.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
