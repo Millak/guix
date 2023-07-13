@@ -25209,7 +25209,7 @@ intrusive collections.")
 (define-public rust-futures-io-0.3
   (package
     (name "rust-futures-io")
-    (version "0.3.26")
+    (version "0.3.28")
     (source
      (origin
        (method url-fetch)
@@ -25218,9 +25218,8 @@ intrusive collections.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0cc5s3qdgls25rlm3zpdf9fdk6gwmfp0fiiph39b5bmjdwdkgf5z"))))
+         "0r4rhkdhq1my4fahlhz59barqa511bylq813w3w4gvbidq4p9zsg"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis
      "@code{AsyncRead} and @code{AsyncWrite} traits for the @code{futures-rs}
