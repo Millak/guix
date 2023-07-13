@@ -2912,6 +2912,26 @@ and uses PSTricks to plot the results.  The package provides Matlab functions
 to transform Matlab results to plottable data.")
     (license license:gpl3)))
 
+(define-public texlive-outilsgeomtikz
+  (package
+    (name "texlive-outilsgeomtikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/outilsgeomtikz/"
+                   "tex/latex/outilsgeomtikz/")
+             (base32
+              "0zk47dlz9jl2xk0q1sfnd6f57iww8qaq5wd0l1k23pci86x4nv6a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/outilsgeomtikz")
+    (synopsis "Some geometric tools, with TikZ")
+    (description
+     "This package provides some commands, with French keys, to display
+geometric tools using TikZ, for example a pen, a compass, a rule, a square, or
+a protractor.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
