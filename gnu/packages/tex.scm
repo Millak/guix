@@ -3655,6 +3655,27 @@ marginal plots (using the packages PSTricks and @code{pst-plot}), and
 coordinate system).")
     (license license:lppl)))
 
+(define-public texlive-randomwalk
+  (package
+    (name "texlive-randomwalk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/randomwalk/"
+                   "source/latex/randomwalk/"
+                   "tex/latex/randomwalk/")
+             (base32
+              "1mmisgiy0c6qww6xyp9r825snh1dkmn81qjg39c7n1jxig3a8rj3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/randomwalk")
+    (synopsis "Random walks using TikZ")
+    (description
+     "The @code{randomwalk} package provides a user command, @code{\\RandomWalk},
+to draw random walks with a given number of steps.  Lengths and angles of the
+steps can be customized in various ways.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
