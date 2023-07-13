@@ -5599,6 +5599,27 @@ which produced lines at an arbitrary orientation.  The present package
 emulates the macro, using TikZ.")
     (license license:public-domain)))
 
+(define-public texlive-twemojis
+  (package
+    (name "texlive-twemojis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/twemojis/"
+                   "source/latex/twemojis/"
+                   "tex/latex/twemojis/")
+             (base32
+              "0wim1325dcx779305cany8rsifi67y8pbwifs4qbh090dzx5sy6r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/twemojis")
+    (synopsis "Use Twitter's open source emojis through LaTeX commands")
+    (description
+     "This package provides a simple wrapper which allows to use Twitter's
+open source emojis through LaTeX commands.  This relies on images, so no fancy
+Unicode font stuff is needed and it should work on every installation.")
+    (license (list license:lppl1.3+ license:cc-by4.0))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
