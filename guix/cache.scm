@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2020-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -55,7 +55,7 @@
 time\" computed as its timestamp + TTL seconds.  Call TIMESTAMP to obtain the
 relevant timestamp from the result of 'stat'."
   (lambda (file)
-    (match (stat file #f)
+    (match (false-if-exception (lstat file))
       (#f 0)                       ;FILE may have been deleted in the meantime
       (st (+ (timestamp st) ttl)))))
 

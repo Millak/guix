@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +55,18 @@
                   (guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26))
+      ;; The build phase does not use make but we will use make-flags in a
+      ;; similar fashion to make inheritance for older imgui versions easier.
+      #:make-flags
+      ;; This first option is necessary at least for OpenBoardView, otherwise
+      ;; it would fail with the "Too many vertices in ImDrawList using 16-bit
+      ;; indices".
+      #~(list "-DImDrawIdx=unsigned int"
+              "-I" (string-append (getcwd) "/source")
+              "-I" (search-input-directory %build-inputs "include/freetype2")
+              "-g" "-O2" "-fPIC" "-shared"
+              "-lGL" "-lSDL2" "-lglfw"
+              "-o" "libimgui.so")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'adjust-includes
@@ -64,32 +76,24 @@
                  "#include <SDL2/SDL"))))
           (delete 'configure)
           (replace 'build
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda* (#:key make-flags #:allow-other-keys)
               ;; Build main library.
               (apply invoke #$(cc-for-target)
-                     ;; This option is necessary at least for OpenBoardView,
-                     ;; otherwise it would fail with the "Too many vertices in
-                     ;; ImDrawList using 16-bit indices".
-                     "-DImDrawIdx=unsigned int"
-                     "-I" (getcwd)
-                     "-I" (search-input-directory inputs "include/freetype2")
-                     "-g" "-O2" "-fPIC" "-shared"
-                     "-lGL" "-lSDL2" "-lglfw"
-                     "-o" "libimgui.so"
-                     "imgui.cpp"
-                     "imgui_draw.cpp"
-                     "imgui_tables.cpp"
-                     "imgui_widgets.cpp"
-                     ;; Include the supported backends.
-                     "backends/imgui_impl_glfw.cpp"
-                     (if (file-exists? "backends/imgui_impl_sdl2.cpp")
-                         "backends/imgui_impl_sdl2.cpp"
-                         "backends/imgui_impl_sdl.cpp")
-                     "backends/imgui_impl_opengl2.cpp"
-                     "backends/imgui_impl_opengl3.cpp"
-                     ;; Include wrappers for C++ standard library (STL) and
-                     ;; fontconfig.
-                     (find-files "misc" "\\.cpp$"))))
+                     (append make-flags
+                             `("imgui.cpp"
+                               "imgui_draw.cpp"
+                               "imgui_tables.cpp"
+                               "imgui_widgets.cpp"
+                               ;; Include the supported backends.
+                               "backends/imgui_impl_glfw.cpp"
+                               ,(if (file-exists? "backends/imgui_impl_sdl2.cpp")
+                                    "backends/imgui_impl_sdl2.cpp"
+                                    "backends/imgui_impl_sdl.cpp")
+                               "backends/imgui_impl_opengl2.cpp"
+                               "backends/imgui_impl_opengl3.cpp"
+                               ;; Include wrappers for C++ standard library (STL) and
+                               ;; fontconfig.
+                               ,@(find-files "misc" "\\.cpp$"))))))
           (replace 'install
             (lambda _
               (let* ((header? (cut string-suffix? ".h" <>))
@@ -164,4 +168,10 @@ standard operating system features.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02a7b05zrka20jhzag2jb4jl624i1m456bsv69jb9zgys2p9dv1n"))))))
+                "02a7b05zrka20jhzag2jb4jl624i1m456bsv69jb9zgys2p9dv1n"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments imgui)
+       ((#:make-flags flags ''())
+        ;; Remove the "-DImDrawIdx=unsigned int" make-flag as this breaks
+        ;; mangohud, the only user of this version.
+        #~(delete "-DImDrawIdx=unsigned int" #$flags))))))

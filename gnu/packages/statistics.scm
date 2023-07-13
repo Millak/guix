@@ -81,6 +81,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -622,14 +623,14 @@ for reading and writing some dBase files.")
 (define-public r-kernsmooth
   (package
     (name "r-kernsmooth")
-    (version "2.23-21")
+    (version "2.23-22")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "KernSmooth" version))
        (sha256
         (base32
-         "12qsy90cmcg8pdvcpasdskh82x9d83xdznibi9b7z1hkw8ccnqrx"))))
+         "1sblhl7b9d3m6034xd3254ddkj9ssqxawknzksfbgjh68s849q3n"))))
     (properties `((upstream-name . "KernSmooth")))
     (build-system r-build-system)
     (native-inputs
@@ -666,14 +667,14 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-matrix
   (package
     (name "r-matrix")
-    (version "1.5-4.1")
+    (version "1.6-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Matrix" version))
        (sha256
         (base32
-         "0bh87f6yll06q0068wavwmagvsc0p95g7071zsjr2yzb2dr5i2b5"))))
+         "17dpfqyr68dldlj4v26rjrwv6pv87czj9szqqp64fwczyy0fdszb"))))
     (properties `((upstream-name . "Matrix")))
     (build-system r-build-system)
     (propagated-inputs
@@ -955,19 +956,20 @@ effects of different types of color-blindness.")
 (define-public r-digest
   (package
     (name "r-digest")
-    (version "0.6.31")
+    (version "0.6.33")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "digest" version))
        (sha256
-        (base32 "1f9isi4i2502f88c2sh4l461hgyary2aa02zd47pb9mc1r4lya2s"))))
+        (base32 "06bq696wpmn8ivbrpxw0qlcf835kc515m8jfv9zbwf8ndf42qw5y"))))
     (build-system r-build-system)
     ;; Vignettes require r-knitr, which requires r-digest, so we have to
     ;; disable them and the tests.
     (arguments
      `(#:tests? #f
        #:configure-flags (list "--no-build-vignettes")))
+    (native-inputs (list r-simplermarkdown))
     (home-page "https://dirk.eddelbuettel.com/code/digest.html")
     (synopsis "Create cryptographic hash digests of R objects")
     (description
@@ -1717,13 +1719,13 @@ R packages that praise their users.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.1.8")
+    (version "3.1.10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "09y8gdzssb41m8j2ph12g6nlwxm02075aiyc5bb6lsqgvnpzi4rl"))))
+                "1xh80rxv0whz618kpwzlzg0jg2vhm4073nyx03hd4xpg0ifhhd9i"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brio
@@ -1862,14 +1864,14 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "1b3zf2ai4kp96wd6i4jg9b3n37bwbw7lfvxvs1i1kcn6brch1p0d"))))
+         "1d3m7bhd8n5l0x1phfwzgrw2kwfyahb9yd61bbcnryd6m8c8kr3w"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-blob
@@ -1945,14 +1947,14 @@ side.")
 (define-public r-locfit
   (package
     (name "r-locfit")
-    (version "1.5-9.7")
+    (version "1.5-9.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "locfit" version))
        (sha256
         (base32
-         "1zvsa7hvnp0pvjyy0nnrg8bdv8gv4l23jb66wkc0kipvi78grra8"))))
+         "1qqxw69p42l4szr2fl73bdydpcbxn68iyxyyjy7qy3p56bxrn2hd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
@@ -2026,6 +2028,74 @@ and fast file reading.")
      "This package provides tools to export R data as LaTeX and HTML tables.")
     (license license:gpl2+)))
 
+(define-public python-vega-datasets
+  (package
+    (name "python-vega-datasets")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vega_datasets" version))
+       (sha256
+        (base32 "1h1zv607mars2j73v8fdwihjh479blqxyw29nhmc73lf40s9iglx"))
+       (modules '((guix build utils)))
+       (patches
+        (search-patches "python-vega-datasets-remove-la-riots-code.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-la-riots-dataset
+                 ;; Remove dataset with unclear license.
+                 (lambda _
+                   (delete-file "vega_datasets/_data/la-riots.csv"))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-pandas))
+    (home-page "https://github.com/altair-viz/vega_datasets")
+    (synopsis "Example datasets used by Vega-related projects")
+    (description "This package provides a collection of datasets used in Vega
+and Vega-Lite examples.")
+    (license license:expat)))
+
+(define-public python-altair
+  (package
+    (name "python-altair")
+    (version "5.0.1")
+    (source (origin
+              (method git-fetch)        ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/altair-viz/altair")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r74v5n51br9pjhxdzrr62cdgnwkapci93aifnl8dqmfpizfpd7d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; First two open an external connection.
+     ;; Last introduces a circular dependency on altair-viewer.
+     (list #:test-flags #~(list "-k" (string-append
+                                      "not test_from_and_to_json_roundtrip"
+                                      " and not test_render_examples_to_chart"
+                                      " and not test_save_html"))))
+    (propagated-inputs (list python-jinja2
+                             python-jsonschema
+                             python-numpy
+                             python-pandas
+                             python-toolz
+                             python-typing-extensions))
+    (native-inputs (list python-black
+                         python-hatchling
+                         python-ipython
+                         python-m2r
+                         python-pytest
+                         python-vega-datasets))
+    (home-page "https://altair-viz.github.io/")
+    (synopsis "Declarative statistical visualization library for Python")
+    (description
+     "Vega-Altair is a declarative statistical visualization library for Python.")
+    (license license:expat)))
+
 (define-public python-hdmedians
   (package
     (name "python-hdmedians")
@@ -2054,6 +2124,111 @@ this Python package provides a number of fast implementations of these
 definitions.  Medians are extremely useful due to their high breakdown
 point (up to 50% contamination) and have a number of nice applications in
 machine learning, computer vision, and high-dimensional statistics.")
+    (license license:asl2.0)))
+
+(define-public python-arviz
+  (package
+    (name "python-arviz")
+    (version "0.15.1")
+    (source (origin
+              (method git-fetch)        ; PyPI misses some test files
+              (uri (git-reference
+                    (url "https://github.com/arviz-devs/arviz")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nqr4v927r9kc50z7rwlk2m8nw3dnnmmwmwcfijzd93gbg53wc4f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; FIXME: matplotlib tests fail because of the "--save" test flag.
+     (list #:test-flags #~'("--ignore"
+                            "arviz/tests/base_tests/test_plots_matplotlib.py")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-radon
+                 (lambda _
+                   (delete-file
+                    ;; This dataset is loaded remotely, it's not supposed to
+                    ;; be copied locally.
+                    "arviz/data/example_data/code/radon/radon.json")))
+               (add-before 'check 'write-permission
+                 (lambda _
+                   ;; 3 tests require write permission.
+                   (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-cloudpickle python-pytest))
+    (propagated-inputs (list python-h5netcdf
+                             python-matplotlib
+                             python-numpy
+                             python-packaging
+                             python-pandas
+                             python-scipy
+                             python-typing-extensions
+                             python-xarray
+                             python-xarray-einstats))
+    (home-page "https://github.com/arviz-devs/arviz")
+    (synopsis "Exploratory analysis of Bayesian models")
+    (description
+     "ArviZ is a Python package for exploratory analysis of Bayesian models.
+It includes functions for posterior analysis, data storage, model checking,
+comparison and diagnostics.")
+    (license license:asl2.0)))
+
+(define-public python-pymc
+  (package
+    (name "python-pymc")
+    (version "5.5.0")
+    (source (origin
+              (method git-fetch)        ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/pymc-devs/pymc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "077xigv3lfcn9fqc14rsnam4v95fmqk2wpzfrgj08vg8m7f69wdj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f ; tests are too computationally intensive
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'versioneer
+                          (lambda _
+                            (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = pymc/_version.py
+versionfile_build = pymc/_version.py
+tag_prefix =
+parentdir_prefix = pymc-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\"")))))
+                        ;; To create the compiledir for tests.
+                        (add-before 'check 'write-permissions
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "HOME" "/tmp")))))))
+    (native-inputs (list python-pytest-cov python-versioneer))
+    (propagated-inputs (list python-arviz
+                             python-cachetools
+                             python-cloudpickle
+                             python-fastprogress
+                             python-numpy
+                             python-pandas
+                             python-pytensor
+                             python-scipy
+                             python-typing-extensions))
+    (home-page "https://github.com/pymc-devs/pymc")
+    (synopsis "Library for probabilistic programming in Python")
+    (description
+     "PyMC (formerly PyMC3) is a Python package for Bayesian statistical
+modeling focusing on advanced Markov chain Monte Carlo (MCMC) and variational
+inference (VI) algorithms.")
     (license license:asl2.0)))
 
 (define-public python-patsy
@@ -2090,41 +2265,49 @@ building design matrices.")
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statsmodels" version))
        (sha256
-        (base32 "0sbsyxgpzhys5padhkhrj71z4i1q41sm938pz0x8ff6jjvcchvh0"))
+        (base32 "1927ysv7m46m1x3wz05i0s3r5x0nasmidf2yy54djrp9i7bcfxb8"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (for-each delete-file (find-files "." "\\.c$"))))))
-    (build-system python-build-system)
+        '(for-each delete-file (find-files "." "\\.c$")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; The test suite is very large and rather brittle.  Tests often fail
-       ;; because of minor changes in dependencies that upstream hasn't fixed
-       ;; in a new release.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-matplotlib-backend-to-agg
-          (lambda _
-            ;; Set the matplotlib backend to Agg to avoid problems using the
-            ;; GTK backend without a display.
-            (substitute* (append (find-files "statsmodels/graphics/tests" "\\.py")
-                                 '("statsmodels/tsa/vector_ar/tests/test_var.py"
-                                   "statsmodels/duration/tests/test_survfunc.py"))
-              (("import matplotlib\\.pyplot as plt" line)
-               (string-append "import matplotlib;matplotlib.use('Agg');"
-                              line)))
-            #t)))))
+     (list
+      ;; The test suite is very large and rather brittle.  Tests often fail
+      ;; because of minor changes in dependencies that upstream hasn't fixed
+      ;; in a new release.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-matplotlib-backend-to-agg
+            (lambda _
+              ;; Set the matplotlib backend to Agg to avoid problems using the
+              ;; GTK backend without a display.
+              (substitute* (append (find-files "statsmodels/graphics/tests" "\\.py")
+                                   '("statsmodels/tsa/vector_ar/tests/test_var.py"
+                                     "statsmodels/duration/tests/test_survfunc.py"))
+                (("import matplotlib\\.pyplot as plt" line)
+                 (string-append "import matplotlib;matplotlib.use('Agg');"
+                                line))))))))
     (propagated-inputs
-     (list python-numpy python-scipy python-pandas python-patsy
-           python-matplotlib))
+     (list python-numpy python-packaging python-pandas python-patsy
+           python-scipy))
     (native-inputs
-     (list python-cython python-nose python-sphinx))
+     (list python-colorama
+           python-cython
+           python-flake8
+           python-isort
+           python-joblib
+           python-matplotlib
+           python-pytest
+           python-pytest-randomly
+           python-pytest-xdist
+           python-setuptools-scm))
     (home-page "https://statsmodels.sourceforge.net/")
     (synopsis "Statistical modeling and econometrics in Python")
     (description
@@ -2178,14 +2361,14 @@ and environmental data in the framework of Euclidean exploratory methods.")
 (define-public r-xml2
   (package
     (name "r-xml2")
-    (version "1.3.4")
+    (version "1.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xml2" version))
        (sha256
         (base32
-         "0c1h7fvkrcqcgnky6hhp9ysaraxhqdqjvsdlq0450fk4ishv22rl"))))
+         "10p214gzzcy2zzcq2xkh1vz2wrjsys5gplvk9c1crq3nmfki0six"))))
     (build-system r-build-system)
     (inputs
      (list libxml2 zlib))
@@ -2576,13 +2759,13 @@ pure C implementation of the Git core methods.")
 (define-public r-rstudioapi
   (package
     (name "r-rstudioapi")
-    (version "0.14")
+    (version "0.15.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rstudioapi" version))
               (sha256
                (base32
-                "1i5g9l2739mlaglzg98iifycx98jlzxj5933qfb8lwmdn63hk7a6"))))
+                "1kvc870gx02cpb800zjvdrhfhyfpzgkydgw2g7kxdlrpr8fwhnwk"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -2774,13 +2957,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "0.12.4.0.0")
+    (version "0.12.4.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "1jw2fhbva0qrgd4cwddjgwl8f8fzkxyp6vysl1qabh5bcp259nzn"))))
+                "1mf5dpsbjhfwalf4k3yhzgh0j1f40v1g7a3p6crm6xfp0k85jhq3"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2866,13 +3049,13 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.22")
+    (version "2.23")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "1f47ccph09ilqlr0bnyrxkadja4ddp4klvb933aws3rya0cmaqy6"))))
+          (base32 "09f8gfa4cfjwqb44xdr832blbgknn4ciyisvcrpyz5x51iphi3b6"))))
     (properties
      `((upstream-name . "rmarkdown")
        (updater-extra-propagated-inputs . ("pandoc"))))
@@ -4174,13 +4357,13 @@ vignettes.")
 (define-public r-mvtnorm
   (package
     (name "r-mvtnorm")
-    (version "1.2-0")
+    (version "1.2-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mvtnorm" version))
               (sha256
                (base32
-                "1q1bmsvd10iz003xlsd40dj5bhmy2069p88ydf9f4gj56mysnlpm"))))
+                "047y4sv1ydvszmzrssywhqfhx2mcrlbkypczgbh380wk7yrncmbg"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
@@ -4384,13 +4567,13 @@ features present in other programming languages.")
 (define-public r-plotly
   (package
     (name "r-plotly")
-    (version "4.10.1")
+    (version "4.10.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "0yin1kid3a69fcwrrajwzqbhx4xc81x8p8m0yfh1fkm2rfhj22dc"))
+                "0y2jiyfx895f15wcpizybssic4draw1vgvqz2b7f82z73319m01b"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib/"
@@ -4434,8 +4617,8 @@ features present in other programming languages.")
     (propagated-inputs
      (list r-base64enc
            r-crosstalk
-           r-digest
            r-data-table
+           r-digest
            r-dplyr
            r-ggplot2
            r-htmltools
@@ -5400,14 +5583,14 @@ data for species delimitation, nearest neighbor based noise detection.")
 (define-public r-deoptimr
   (package
     (name "r-deoptimr")
-    (version "1.0-13")
+    (version "1.0-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DEoptimR" version))
        (sha256
         (base32
-         "1wpqg659vpcd6cgy4sa9qygf0s0w44n46yma8990awkgnbxjmfxa"))))
+         "0d2ij0ncwjp9kh5bv7nvha8p1g73y620pw62c1q5chvjpjvxshfp"))))
     (properties `((upstream-name . "DEoptimR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
@@ -5423,14 +5606,14 @@ can be efficiently implemented directly in the R language.")
 (define-public r-robustbase
   (package
     (name "r-robustbase")
-    (version "0.95-1")
+    (version "0.99-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robustbase" version))
        (sha256
         (base32
-         "1sm37gqs35cvkacigsla8kzvpzjzsrgkabf58ymk9pzcndnx4b46"))))
+         "0xshwfv6vq47857xfhwnlxcl1511ghn6pyjylrg39i19xhp44za3"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
@@ -5468,14 +5651,14 @@ analysis} (PCA) by projection pursuit.")
 (define-public r-rrcov
   (package
     (name "r-rrcov")
-    (version "1.7-3")
+    (version "1.7-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rrcov" version))
        (sha256
         (base32
-         "0shcsfxgb37ggys9d4cyfjs1p2szj52lfkva746fqsx64cvkcfw5"))))
+         "0jkm2w38kbzicfx2542rb90r7kcrbm7hiaasajw1zq8gb7ffshb3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-mvtnorm r-pcapp r-robustbase))
@@ -5519,14 +5702,14 @@ generally.")
 (define-public r-robust
   (package
     (name "r-robust")
-    (version "0.7-1")
+    (version "0.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robust" version))
        (sha256
         (base32
-         "1pv5xvns3p8dpaadf6v0fqz099ml768ahgp271wpiclrcc6cgapg"))))
+         "1kryflq2p0c78pggnj5yghjivy4npxfkzcqhxh9jvrngkpxhsrb6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fit-models r-lattice r-mass r-robustbase r-rrcov))
@@ -5620,14 +5803,14 @@ VGLMs can be loosely thought of as multivariate generalised linear models.")
 (define-public r-pbapply
   (package
     (name "r-pbapply")
-    (version "1.7-0")
+    (version "1.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pbapply" version))
        (sha256
         (base32
-         "1h06nz312si2hsy2klrmy6w46q341bl3q5v61g133450w0qykf34"))))
+         "04xf1p7c0066cwnxfmzaikbc322bxnw022ziv8kkhzlc6268rvdf"))))
     (build-system r-build-system)
     (home-page "https://github.com/psolymos/pbapply")
     (synopsis "Adding progress bar to apply functions")
@@ -5790,14 +5973,14 @@ algorithms.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-33")
+    (version "1.1-34")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "0409nhvdkkh571gdi9w21z6szkgnmj4sssw3988idh5wgknsamnr"))))
+         "1bbaxkrd5m3d40y6jdyrdr4vsjyzkfixbqjwj6c8inmks98f2wp8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot
@@ -5805,8 +5988,8 @@ algorithms.")
            r-mass
            r-matrix
            r-minqa
-           r-nloptr
            r-nlme
+           r-nloptr
            r-rcpp
            r-rcppeigen))
     (native-inputs
@@ -6837,14 +7020,14 @@ or eta squared effect size.")
 (define-public r-logspline
   (package
     (name "r-logspline")
-    (version "2.1.19")
+    (version "2.1.20")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "logspline" version))
         (sha256
           (base32
-            "1527cnnn5qdjp8gr4yls0jp0aachjz5s2v79vs79vrfyvxp9w89p"))))
+            "1nsrgz9sh9qg2fj0x7k48lqhpgzq1z78jfz89ckzp5xm4r8lpgcb"))))
     (properties `((upstream-name . "logspline")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
@@ -6929,13 +7112,13 @@ designs, one-way designs, general ANOVA designs, and linear regression.")
 (define-public r-norm
   (package
     (name "r-norm")
-    (version "1.0-11.0")
+    (version "1.0-11.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "norm" version))
               (sha256
                (base32
-                "0bj0d518c5cld1h2ymm7sjhd6b3v2h3w8rcn9b5mki1fg20lx2nd"))))
+                "1g33g721c0f2b275b334ir6n0h81fh567vs9vrxk60y21z1ydzy2"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))

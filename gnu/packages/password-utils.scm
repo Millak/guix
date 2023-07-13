@@ -75,6 +75,7 @@
   #:use-module (gnu packages authentication)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
@@ -102,6 +103,7 @@
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -114,6 +116,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -206,7 +209,7 @@ human.")
            readline
            yubikey-personalization      ; XC_YUBIKEY
            zlib))
-    (home-page "https://www.keepassxc.org")
+    (home-page "https://keepassxc.org")
     (synopsis "Password manager")
     (description "KeePassXC is a password manager or safe which helps you to
 manage your passwords in a secure way.  You can put all your passwords in one
@@ -303,6 +306,58 @@ platforms.")
        "@command{pwsafe} is a command line tool compatible with
 Counterpane's Passwordsafe.")
       (license license:gpl2+))))
+
+(define-public otpclient
+  (package
+    (name "otpclient")
+    (version "3.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/paolostivanin/OTPClient")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cwn4spddhg099hcqcvzgbws3xpmnd29g1vayk36118x94wmajaf"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules `(((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build cmake-build-system)
+                  (guix build utils))
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%cmake-build-system-modules)
+      #:tests? #f                        ; No tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'wrap 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-compile-schemas))
+          (add-after 'wrap 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+    (inputs (list adwaita-icon-theme
+                  libcotp
+                  libgcrypt
+                  libsecret
+                  libzip
+                  hicolor-icon-theme
+                  gtk+
+                  jansson
+                  protobuf
+                  protobuf-c
+                  qrencode
+                  zbar))
+    (native-inputs (list pkg-config protobuf))
+    (home-page "https://github.com/paolostivanin/OTPClient")
+    (synopsis "Two-factor authentication client")
+    (description "OTPClient is a GTK+-based @acronym{OTP, One Time Password}
+client, supporting @acronym{TOTP, Time-based one time passwords} and
+@acronym{HOTP,HMAC-based one time passwords}.")
+    (license license:gpl3)))
 
 (define-public shroud
   (package
@@ -476,6 +531,45 @@ them out, at the source.")
 random passwords that pass the checks.")
     (license license:gpl2+)))
 
+(define-public passwdqc
+  (package
+    (name "passwdqc")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.openwall.com/passwdqc/passwdqc"
+                                  "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1aq40v5094bhnj86v4i2nmqkybmzzp20q7jb92jgc860cibm07zz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests provided
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "DESTDIR=" #$output)
+              "BINDIR=/bin"
+              "DEVEL_LIBDIR=/lib"
+              "SHARED_LIBDIR_REL=."
+              "INCLUDEDIR=/include"
+              "MANDIR=/share/man"
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ;no configure script
+    (inputs (list linux-pam))
+    (home-page "https://www.openwall.com/passwdqc/")
+    (synopsis
+     "Password/passphrase strength checking and policy enforcement toolset")
+    (description
+     "Passwdqc is a password/passphrase strength checking and policy
+enforcement toolset, including an optional PAM module, @code{pam_passwdqc},
+command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
+@command{pwqgen}), and a library, @code{libpasswdqc}.")
+    (license (list license:bsd-3        ;manual pages
+                   license:bsd-1))))    ;code
+
 (define-public assword
   (package
     (name "assword")
@@ -563,6 +657,12 @@ any X11 window.")
                                  "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
                                  extension-dir
                                  "}\"\n"))))))
+         (add-before 'install 'patch-program-name
+           ;; Use pass not .pass-real in tmpdir and cmd_usage
+           (lambda _
+             (substitute* "src/password-store.sh"
+               (("^PROGRAM=.*$")
+                "PROGRAM=\"pass\"\n"))))
          (add-before 'install 'patch-passmenu-path
            ;; FIXME Wayland support requires ydotool and dmenu-wl packages
            ;; We are ignoring part of the script that gets executed if
@@ -898,7 +998,7 @@ from password-store and gopass files.")
 (define-public browserpass-native
   (package
     (name "browserpass-native")
-    (version "3.0.7")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -907,54 +1007,44 @@ from password-store and gopass files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1jkjslbbac49xjyjkc2b07phdm3i64z40kh6h55cl22dxjmpp1nb"))))
+        (base32 "1if72k526sqqxnw250qwxvzwvh1w0k8ag4p4xq3442b22hywx72i"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/browserpass/browserpass-native"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-makefile
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; This doesn't go in #:make-flags because the Makefile itself
-               ;; gets installed.
-               (substitute*
-                   "src/github.com/browserpass/browserpass-native/Makefile"
-                 (("PREFIX \\?= /usr")
-                  (string-append "PREFIX ?= " out)))
-               #t)))
-         (add-before 'build 'configure
-           (lambda _
-               (with-directory-excursion
-                   "src/github.com/browserpass/browserpass-native"
-                 (invoke "make" "configure"))
-             #t))
-         (replace 'build
-           (lambda _
-               (with-directory-excursion
-                   "src/github.com/browserpass/browserpass-native"
-                 (invoke "make"))
-             #t))
-         (replace 'install
-           (lambda _
-             (with-directory-excursion
-                 "src/github.com/browserpass/browserpass-native"
-               (invoke "make" "install"))
-             #t))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gnupg (assoc-ref inputs "gnupg")))
-               (wrap-program (string-append out "/bin/browserpass")
-                 `("PATH" ":" prefix
-                   (,(string-append gnupg "/bin"))))
-               #t))))))
+     (list #:import-path "github.com/browserpass/browserpass-native"
+           #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch-makefile
+                 (lambda _
+                   ;; This doesn't go in #:make-flags because the Makefile
+                   ;; itself gets installed.
+                   (substitute* "src/github.com/browserpass/browserpass-native/Makefile"
+                     (("PREFIX \\?= /usr")
+                      (string-append "PREFIX ?= " #$output)))))
+               (add-before 'build 'configure
+                 (lambda _
+                   (with-directory-excursion
+                       "src/github.com/browserpass/browserpass-native"
+                     (invoke "make" "configure"))))
+               (replace 'build
+                 (lambda _
+                   (with-directory-excursion
+                       "src/github.com/browserpass/browserpass-native"
+                     (invoke "make"))))
+               (replace 'install
+                 (lambda _
+                   (with-directory-excursion
+                       "src/github.com/browserpass/browserpass-native"
+                     (invoke "make" "install"))))
+               (add-after 'install 'wrap-executable
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/browserpass")
+                     `("PATH" ":" prefix
+                       (,(string-append #$(this-package-input "gnupg") "/bin")))))))))
     (native-inputs
      (list which))
     (inputs
-     (list gnupg go-github-com-mattn-go-zglob
+     (list bash-minimal gnupg go-github-com-mattn-go-zglob
            go-github-com-rifflock-lfshook go-github-com-sirupsen-logrus
            go-golang-org-x-sys))
     (home-page "https://github.com/browserpass/browserpass-native")

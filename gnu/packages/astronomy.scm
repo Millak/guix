@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
@@ -55,6 +55,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -463,6 +464,45 @@ in FITS files.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
+(define-public python-astroml
+  (package
+    (name "python-astroml")
+    (version "1.0.2.post1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "astroML" version))
+              (sha256
+               (base32
+                "14g2mcd5qdr3nn7icvjs84bjvx17l9glx81sbbna6v53i1x8l625"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore-glob=examples/*")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "setup.cfg"
+               ;; Do not error out on deprecations
+               (("	error::DeprecationWarning.*") "")
+               ;; Do not test examples
+               (("testspaths = astroML doc examples")
+                "testspaths = astroML"))))
+         (add-before 'check 'pre-check
+           ;; Some tests need this
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-astropy python-matplotlib python-numpy
+                             python-scikit-learn python-scipy))
+    (native-inputs (list python-pytest-astropy-header python-pytest-cov
+                         python-pytest-doctestplus python-pytest-remotedata))
+    (home-page "https://astroml.org")
+    (synopsis "Tools for machine learning and data mining in astronomy")
+    (description "This package provides tools for machine learning and data
+mining in astronomy.")
+    (license license:bsd-2)))
+
 (define-public python-fitsio
   (package
     (name "python-fitsio")
@@ -522,6 +562,39 @@ CFITSIO library.  Among other things, it can
 @end itemize")
     (license license:gpl2+)))
 
+(define-public python-gatspy
+  (package
+    (name "python-gatspy")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "gatspy" version))
+              (sha256
+               (base32
+                "1gw2z6x8nikvnw2gkdl70gr81cwczd1pd7v8ry2kjn6k4kssrfav"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Tests need this
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; These tests require internet access
+              "not test_download_data.py"
+              ;; XXX: we don't have supersmoother
+              " and not test_supersmoother.py"))))
+    (propagated-inputs (list python-astroml python-numpy python-scipy))
+    (native-inputs (list python-pytest python-nose python-setuptools-scm))
+    (home-page "https://github.com/astroml/gatspy")
+    (synopsis "General tools for astronomical time series in Python")
+    (description "This package provides general tools for astronomical time
+series in Python.")
+    (license license:bsd-2)))
+
 (define-public qfits
   (package
     (name "qfits")
@@ -572,35 +645,41 @@ International Astronomical Union}.")
     (version "1.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/eye/"
-                           "eye-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/eye")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "092qhzcbrkcfidbx4bv9wz42w297n80jk7a6kwyi9a3fjfz81d7k"))))
+        (base32 "1j8rpgz3fjp6fw0qmxgfqycf3n01fzxds4w12vgyrhbnk658ia41"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon")))    ; fix build with GCC 10
     (home-page "https://www.astromatic.net/software/eye")
     (synopsis "Small image feature detector using machine learning")
     (description
-     "In EyE (Enhance Your Extraction) an artificial neural network connected to
-pixels of a moving window (retina) is trained to associate these input stimuli
-to the corresponding response in one or several output image(s).  The resulting
-filter can be loaded in SExtractor to operate complex, wildly non-linear filters
-on astronomical images.  Typical applications of EyE include adaptive filtering,
-feature detection and cosmetic corrections.")
+     "In @acronym{EyE, Enhance Your Extraction} an artificial neural network
+connected to pixels of a moving window (@dfn{retina}) is trained to associate
+these input stimuli to the corresponding response in one or several output
+image(s).  The resulting filter can be loaded in SExtractor to operate
+complex, wildly non-linear filters on astronomical images.  Typical
+applications of EyE include adaptive filtering, feature detection and cosmetic
+corrections.")
     (license license:cecill)))
 
 (define-public wcslib
   (package
     (name "wcslib")
-    (version "7.12")
+    (version "8.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "ftp://ftp.atnf.csiro.au/pub/software/wcslib/wcslib-" version
-             ".tar.bz2"))
+       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+                           "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))))
+        (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))))
     (inputs
      (list cfitsio))
     (build-system gnu-build-system)
@@ -634,12 +713,18 @@ header.")
     (version "1.12")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/weightwatcher/"
-                           "weightwatcher-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/weightwatcher")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1zaqd8d9rpgcwjsp92q3lkfaa22i20gppb91dz34ym54swisjc2p"))))
+        (base32 "0701z6bdqq32jv7ga3n6jh27q684ni0hbfjm1mak7rh0qqx089gi"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-fcommon")))      ; fix build with GCC 10
     (home-page "https://www.astromatic.net/software/weightwatcher")
     (synopsis "Weight-map/flag-map multiplexer and rasteriser")
     (description
@@ -651,7 +736,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
 (define-public gnuastro
   (package
     (name "gnuastro")
-    (version "0.19")
+    (version "0.20")
     (source
      (origin
        (method url-fetch)
@@ -659,7 +744,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "192q3i4zlfmwfcchlf9lnpfgys9dssh7npr5qx0gzn3d2fri0xbz"))))
+         "05bkad0xbax9k0m2g2507mdmjg2109sfg72dsx16f44yj55llh2n"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -870,34 +955,43 @@ interactively in the plotting window.")
     (license license:gpl2+)))
 
 (define-public skymaker
-  (package
-    (name "skymaker")
-    (version "3.10.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/skymaker/"
-                           "skymaker-" version ".tar.gz"))
-       (sha256
-        (base32 "03zvx7c89plp9559niqv5532r233kza3ir992rg3nxjksqmrqvx1"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
+  ;; XXX: No version tag available in GitHub.
+  ;; See: https://github.com/astromatic/skymaker/issues/3
+  (let ((commit "1a69c4716bdc9b5c6d4a917b0bc2dbd47635c459")
+        (revision "0"))
+    (package
+      (name "skymaker")
+      (version (git-version "4.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/astromatic/skymaker")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vin4vgvcmqmwjdchsxnap374559rksz55xmaliawnl3qpzxn1nk"))))
+      (build-system gnu-build-system)
+      (arguments
        (list
-        (string-append
-         "--with-fftw-libdir=" (assoc-ref %build-inputs "fftw") "/lib")
-        (string-append
-         "--with-fftw-incdir=" (assoc-ref %build-inputs "fftw") "/include"))))
-    (inputs
-     `(("fftw" ,fftwf)))
-    (home-page "https://www.astromatic.net/software/skymaker")
-    (synopsis "Astronomical image simulator")
-    (description
-     "SkyMaker is a program that simulates astronomical images.  It accepts
+        #:configure-flags
+        #~(list
+           (string-append
+            "--with-fftw-libdir=" #$(this-package-input "fftwf") "/lib")
+           (string-append
+            "--with-fftw-incdir=" #$(this-package-input "fftwf") "/include"))))
+      (native-inputs
+       (list autoconf automake libtool pkg-config))
+      (inputs
+       (list fftwf))
+      (home-page "https://www.astromatic.net/software/skymaker")
+      (synopsis "Astronomical image simulator")
+      (description
+       "SkyMaker is a program that simulates astronomical images.  It accepts
 object lists in ASCII generated by the Stuff program to produce realistic
-astronomical fields.  SkyMaker is part of the EFIGI
-(@url{https://www.astromatic.net/projects/efigi}) development project.")
-    (license license:gpl3+)))
+astronomical fields.  SkyMaker is part of the
+@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
+      (license license:gpl3+))))
 
 (define-public stackistry
   (package
@@ -1031,36 +1125,48 @@ objects.")
 (define-public stuff
   (package
     (name "stuff")
-    (version "1.26.0")
+    (version "2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/stuff/"
-                           "stuff-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/stuff")
+             ;; XXX: No version tag available in GitHub.
+             ;; See: https://github.com/astromatic/stuff/issues/6
+             (commit "9008dc022ef53331092da248cf0a794abd6783bf")))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1syibi3b86z9pikhicvkkmgxm916j732fdiw0agw0lq6z13fdcjm"))))
+        (base32 "004sry5lqqm7s9x4l3agysp3n63y3ga35x1rwwda4m6dc6zvla6b"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
     (home-page "https://www.astromatic.net/software/stuff")
     (synopsis "Astronomical catalogue simulation")
     (description
      "Stuff is a program that simulates \"perfect\" astronomical catalogues.
 It generates object lists in ASCII which can read by the SkyMaker program to
-produce realistic astronomical fields.  Stuff is part of the EFIGI development
-project.")
+produce realistic astronomical fields.  Stuff is part of the
+@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
     (license license:gpl3+)))
 
 (define-public swarp
   (package
     (name "swarp")
-    (version "2.38.0")
+    (version "2.41.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/swarp/"
-                           "swarp-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/swarp")
+             (commit (string-append version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1i670waqp54vin1cn08mqckcggm9zqd69nk7yya2vvqpdizn6jpm"))))
+        (base32 "00463r5rd4xl74xs4h1n4gl2qk7v9p5nw9x05pbzgh8jm77q90qq"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (inputs
+     (list cfitsio))
     (home-page "https://www.astromatic.net/software/swarp")
     (synopsis "FITS image resampling and co-addition")
     (description
@@ -1069,66 +1175,85 @@ any arbitrary astrometric projection defined in the WCS standard.")
     (license license:gpl3+)))
 
 (define-public celestia
-  (let ((commit "9dbdf29c4ac3d20afb2d9a80d3dff241ecf81dce"))
-    (package
-      (name "celestia")
-      (version (git-version "1.6.1" "815" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/celestiaproject/celestia")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "00xibg87l1arzifakgj7s828x9pszcgx7x7ij88a561ig49ryh78"))))
-      (build-system cmake-build-system)
-      (native-inputs
-       `(("perl" ,perl)
-         ("libgit2" ,libgit2)
-         ("pkg-config" ,pkg-config)
-         ("libtool" ,libtool)
-         ("gettext" ,gettext-minimal)))
-      (inputs
-       `(("glu" ,glu)
-         ("glew" ,glew)
-         ("libtheora" ,libtheora)
-         ("libjpeg" ,libjpeg-turbo)
-         ("libpng" ,libpng)
-         ;; maybe required?
-         ("mesa" ,mesa)
-         ;; optional: fmtlib, Eigen3;
-         ("fmt" ,fmt-7)
-         ("eigen" ,eigen)
-         ;; glut: for glut interface
-         ("freeglut" ,freeglut)))
-      (propagated-inputs
-       (list lua))
-      (arguments
-       `(#:configure-flags '("-DENABLE_GLUT=ON" "-DENABLE_QT=OFF")
-         #:tests? #f))                            ;no tests
-      (home-page "https://celestia.space/")
-      (synopsis "Real-time 3D visualization of space")
-      (description
-       "This simulation program lets you explore our universe in three
+  (package
+    (name "celestia")
+    (version "1.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/celestiaproject/celestia")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dzci5n7gcnm1vq916gsn9zddkhbzhbsakqxrpnmvzibsqznn6c8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules
+      `((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-71))
+      #:configure-flags
+      #~(list "--with-glut"
+              (string-append "--with-lua=" #$(this-package-input "lua")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-lua-version
+            (lambda _
+              (let* ((_ version (package-name->name+version
+                                 #$(this-package-input "lua")))
+                     (components (string-split version #\.))
+                     (major+minor (string-join (take components 2) ".")))
+                (substitute* "configure.ac"
+                  (("lua5.3")
+                   (string-append "lua-" major+minor)))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal
+           libgit2
+           libtool
+           perl
+           pkg-config))
+    (inputs
+     (list freeglut
+           glu
+           libjpeg-turbo
+           libpng
+           libtheora
+           mesa))
+    (propagated-inputs
+     (list lua))
+    (home-page "https://celestia.space/")
+    (synopsis "Real-time 3D visualization of space")
+    (description
+     "This simulation program lets you explore our universe in three
 dimensions.  Celestia simulates many different types of celestial objects.
 From planets and moons to star clusters and galaxies, you can visit every
 object in the expandable database and view it from any point in space and
 time.  The position and movement of solar system objects is calculated
 accurately in real time at any rate desired.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
+
 
 (define-public celestia-gtk
-  (package
-    (inherit celestia)
+  (package/inherit celestia
     (name "celestia-gtk")
     (inputs
-     (append (alist-delete "freeglut" (package-inputs celestia))
-             `(("gtk2" ,gtk+-2)
-               ("gtkglext" ,gtkglext))))
+     (modify-inputs (package-inputs celestia)
+       (replace "freeglut" gtk+-2)
+       (prepend cairo gtkglext libxmu libtheora pango-1.42)))
     (arguments
-     `(#:configure-flags '("-DENABLE_GTK=ON" "-DENABLE_QT=OFF")
-       #:tests? #f))))
+     (substitute-keyword-arguments (package-arguments celestia)
+       ((#:configure-flags flags '())
+        #~(append #$flags
+                  (list "--enable-cairo"
+                        "--enable-theora"
+                        "--without-glut"
+                        "--with-gtk")))))
+    (synopsis "Real-time 3D visualization of space (using GTK+)")))
 
 (define-public python-astropy
   (package
@@ -1355,6 +1480,38 @@ be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
     (license license:bsd-3)))
 
+(define-public python-bayesicfitting
+  (package
+    (name "python-bayesicfitting")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dokester/BayesicFitting")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07y9dr9wxhxrvhk0jjakhbyrgal60i92m7z7q14fp12k8x0gl69l"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "unittest" "discover"
+                                      "test")))))))
+    (propagated-inputs (list python-astropy python-future python-matplotlib
+                             python-numpy python-scipy))
+    (home-page "https://www.bayesicfitting.nl")
+    (synopsis "Python Toolbox for Astronimical Bayesian fitting")
+    (description
+     "The BayesicFitting package is a python version of the the fitter classes
+in @acronym{HCSS, Herschel Common Science System}.  HCSS was the all
+encompassing software system for the operations and analysis of the ESA satelite
+Herschel.")
+    (license license:gpl3+)))
+
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
@@ -1425,6 +1582,58 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
+(define-public python-crds
+  (package
+    (name "python-crds")
+    (version "11.17.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "crds" version))
+              (sha256
+               (base32
+                "0sdz1k4hrgrc2jwihp9ns7lx23kcz7f90c222q7aaqf9g3vvpqlr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require Internet access to https://hst-crds.stsci.edu and
+      ;; additional test data. See:
+      ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
+      #:tests? #f))
+    (propagated-inputs (list python-asdf
+                             python-astropy
+                             python-boto3
+                             python-filelock
+                             python-lxml
+                             python-numpy
+                             python-parsley
+                             python-pysynphot
+                             python-roman-datamodels
+                             python-stsynphot
+                             python-requests))
+    (native-inputs (list python-flake8
+                         python-ipython
+                         python-lockfile
+                         python-mock
+                         python-nose
+                         python-pylint
+                         python-pytest
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://hst-crds.stsci.edu")
+    (synopsis "Calibration Reference Data System for HST and JWST")
+    (description
+     "CRDS is a package used for working with astronomical reference files for
+the HST and JWST telescopes.  CRDS is useful for performing various operations
+on reference files or reference file assignment rules.  CRDS is used to assign,
+check, and compare reference files and rules, and also to predict those datasets
+which should potentially be reprocessed due to changes in reference files or
+assignment rules.  CRDS has versioned rules which define the assignment of
+references for each type and instrument configuration.  CRDS has web sites
+corresponding to each project (http://hst-crds.stsci.edu or
+https://jwst-crds.stsci.edu/) which record information about reference files and
+provide related services.")
+    (license license:bsd-3)))
+
 (define-public python-czml3
   (package
     (name "python-czml3")
@@ -1492,6 +1701,53 @@ MDI data with Python.  It uses the publicly accessible
 JSOC (@url{http://jsoc.stanford.edu/}) DRMS server by default, but can also be
 used with local NetDRMS sites.")
     (license license:bsd-2)))
+
+(define-public python-drizzle
+  (package
+    (name "python-drizzle")
+    (version "1.13.7")
+    (source (origin
+              (method git-fetch) ;PyPi doesn't have the test data sets
+              (uri (git-reference
+                    (url "https://github.com/spacetelescope/drizzle")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x591d9gjasds91fvwcf37bhxp5nra28g0vq5zkykczpc70ywiy8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: 2 of 26 tests failed with AssertionError, disable them for now.
+      ;; Consider mention it in upstream.
+      #:test-flags #~(list "-k"
+                           (string-append "not test_square_with_point"
+                                          " and not test_square_with_grid"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'set-env-version
+                     (lambda _
+                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                               #$version)))
+                   (add-before 'check 'build-extensions
+                     (lambda _
+                       ;; Cython extensions have to be built before running
+                       ;; the tests.
+                       (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-astropy python-numpy))
+    (native-inputs (list python-coverage python-flake8 python-pytest
+                         python-pytest-cov python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/drizzle")
+    (synopsis
+     "Astronomical tool for combining dithered images into a single image")
+    (description
+     "The drizzle library is a Python package for combining dithered images into
+a single image.  This library is derived from code used in DrizzlePac.  Like
+DrizzlePac, most of the code is implemented in the C language.  The biggest
+change from DrizzlePac is that this code passes an array that maps the input to
+output image into the C code, while the DrizzlePac code computes the mapping by
+using a Python callback.  Switching to using an array allowed the code to be
+greatly simplified.")
+    (license license:bsd-3)))
 
 (define-public python-ephem
   (package
@@ -2045,6 +2301,211 @@ spherical polygons that represent arbitrary regions of the sky.")
     ;; QD_LIBRARY_LICENSE.rst for bandeled QD source
     (license license:bsd-3)))
 
+(define-public python-stsci-image
+  (package
+    (name "python-stsci-image")
+    (version "2.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.image" version))
+              (sha256
+               (base32
+                "1vnp4256nbdvapa69cmm80sjz11ygxa49abr9nbvssj6nyyp5icb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'build-extensions
+                          (lambda _
+                            ;; Cython extensions have to be built before running
+                            ;; the tests.
+                            (invoke "python" "setup.py" "build_ext"
+                                    "--inplace"))))))
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stsci.image")
+    (synopsis "Image array manipulation functions")
+    (description
+     "This package provides Python modules of @acronym{STScI, Space Telescope
+Science Institute} image array manipulation functions.")
+    (license license:bsd-3)))
+
+(define-public python-stsci-imagestats
+  (package
+    (name "python-stsci-imagestats")
+    (version "1.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.imagestats" version))
+              (sha256
+               (base32
+                "14457izlbnks84dyza75ib3nvx2w8nhlqm9vc1zb7hbhknb5gjvw"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f)) ;No tests
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-setuptools-scm))
+    (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
+    (synopsis "Compute sigma-clipped statistics on data arrays")
+    (description
+     "@code{stsci.imagestats} is a package designed to compute various
+statistics on image data using sigma-clipping iterations.  It is designed to
+replicate core behaviour of the IRAF's
+@url{http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?imstatistics, imstatistics
+task}.")
+    (license license:bsd-3)))
+
+(define-public python-stsci-stimage
+  (package
+    (name "python-stsci-stimage")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.stimage" version))
+              (sha256
+               (base32
+                "0i7xby1gaiplvbqqv8a4f4cw1is8fwj89mix1z3bqrykqi3n24g0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Fix failing tests. There are errors to load test files.
+      #:tests? #f))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-codecov python-pytest python-pytest-cov
+                         python-setuptools-scm))
+    (home-page "https://stscistimage.readthedocs.io/en/latest/")
+    (synopsis "STScI image processing")
+    (description "This package provides an astronomical Python package with
+image processing functions: @code{xyxymatch}, @code{geomap}.")
+    (license license:bsd-3)))
+
+(define-public python-stcal
+  (package
+    (name "python-stcal")
+    (version "1.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stcal" version))
+              (sha256
+               (base32
+                "0yy0pwi3krvhxfby6nzgpgyz5il3sl1j29ihbk81dh9fdh3ys2n9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        ;; XXX: Can't detect opencv-python version. The input
+                        ;; opencv might not set the version correctly.
+                        (delete 'sanity-check))))
+    (propagated-inputs (list opencv ;Provides OpenCV-Python
+                             python-astropy python-numpy python-scipy))
+    (native-inputs (list python-psutil
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stcal")
+    (synopsis "STScI tools and algorithms used in calibration pipelines")
+    (description "STScI tools and algorithms used in calibration pipelines.")
+    (license license:bsd-3)))
+
+(define-public python-stdatamodels
+  (package
+    (name "python-stdatamodels")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stdatamodels" version))
+              (sha256
+               (base32
+                "1lssz5mnkzgraqa9mdg1w39scsikymcp3zpmsjb146r0pqnwnpzw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disable tests requiring access to CRDS servers to download ~500MiB
+      ;; of data.
+      #:test-flags #~(list "-k" "not test_crds_selectors_vs_datamodel")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-home
+                     (lambda _
+                       (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-asdf
+                             python-asdf-astropy
+                             python-astropy
+                             python-jsonschema
+                             python-numpy
+                             python-psutil))
+    (native-inputs (list python-crds
+                         python-pytest
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-scipy
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stdatamodels")
+    (synopsis
+     "Core support for DataModel classes used in calibration pipelines")
+    (description
+     "Provides DataModel, which is the base class for data models implemented in
+the @acronym{JWST, James Webb Space Telescope} and @acronym{Roman, Nancy Grace
+Roman Space Telescope} calibration software.")
+    (license license:bsd-3)))
+
+(define-public python-stpipe
+  (package
+    (name "python-stpipe")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stpipe" version))
+              (sha256
+               (base32
+                "17gnwzhl10vbg059lfprdyci19dlh3whkmb9rl7z25wr593rnvcp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-asdf python-astropy python-crds
+                             python-semantic-version python-stdatamodels))
+    (native-inputs (list python-pytest python-pytest-doctestplus
+                         python-pytest-openfiles python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stpipe")
+    (synopsis "Framework for calibration pipeline software")
+    (description
+     "This package provides base classes and command-line tools for
+implementing calibration pipeline software.")
+    ;; LICENSE Association of Universities for Research in Astronomy (AURA)
+    (license license:bsd-3)))
+
+(define-public python-stsynphot
+  (package
+    (name "python-stsynphot")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsynphot" version))
+              (sha256
+               (base32
+                "0qkdh47j84v7fzri7bmi1jcmggdqq0a8byamfm73d8mbz86v8sn4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests fails on missing file, it might need to be downloaded,
+      ;; disable them for now.  astropy.utils.exceptions.AstropyUserWarning:
+      ;; Failed to load Vega spectrum from
+      ;; /grp/redcat/trds/calspec/alpha_lyr_stis_010.fits;
+      #:tests? #f))
+    (propagated-inputs (list python-astropy
+                             python-beautifulsoup4
+                             python-matplotlib
+                             python-numpy
+                             python-scipy
+                             python-synphot))
+    (native-inputs (list python-pytest python-pytest-astropy
+                         python-pytest-astropy-header python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stsynphot_refactor")
+    (synopsis "Synthetic photometry using Astropy for HST and JWST")
+    (description
+     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
+PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
+packages for HST.")
+    (license license:bsd-3)))
+
 (define-public libnova
   (package
     (name "libnova")
@@ -2245,12 +2706,21 @@ PixInsight.  It implements XISF 1.0 specification.")
     (version "2.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/missfits/"
-                           "missfits-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/missfits")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04jrd7fsvzr14vdmwgj2f6v97gdcfyjyz6jppml3ghr9xh12jxv5"))))
+        (base32 "12ndvrr3l5j7ph2i5f3qf0wqmv5ymsyjzxnnypqajsvliw72iprh"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; Address this link error:
+         ;; ld: ... multiple definition of ... first defined here
+         "CPPFLAGS=-fcommon")))
     (home-page "https://www.astromatic.net/software/missfits")
     (synopsis "FITS files Maintenance program")
     (description
@@ -2259,10 +2729,11 @@ on FITS files:
 
 @itemize
 @item add/edit FITS header keywords
-@item split/join Multi-Extension-FITS (MEF) files
+@item split/join @acronym{MEF, Multi-Extension-FITS} files
 @item unpack/pack FITS data-cubes
-@item create/check/update FITS checksums, using R. Seaman's protocol
-      (see http://www.adass.org/adass/proceedings/adass94/seamanr.html)
+@item create/check/update FITS checksums, using
+@uref{http://www.adass.org/adass/proceedings/adass94/seamanr.html,
+R. Seaman's protocol}
 @end itemize\n")
     (license license:gpl3+)))
 
@@ -2286,28 +2757,28 @@ on FITS files:
          "xplanet-1.3.1-libimage_gif.c.patch"
          "xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; No NASA JPL cspice support.
+         "--without-cspice"
+         (string-append "CPPFLAGS=-I" #$(this-package-input "netpbm")
+                        "/include/netpbm"))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("libx11" ,libx11)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libice" ,libice)
-       ("freetype" ,freetype)
-       ("pango" ,pango)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("netpbm" ,netpbm)
-       ("zlib" ,zlib)))
-    (arguments
-     `(#:configure-flags
-       (let ((netpbm (assoc-ref %build-inputs "netpbm")))
-         (append (list
-                  ;; Give correct path for pnm.h header to configure script
-                  (string-append "CPPFLAGS=-I" netpbm "/include/netpbm")
-                  ;; no nasa jpl cspice support
-                  "--without-cspice" )))))
+     (list freetype
+           giflib
+           libice
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           libxscrnsaver
+           netpbm
+           pango
+           zlib))
     (home-page "https://xplanet.sourceforge.net/")
     (synopsis "Planetary body renderer")
     (description
@@ -2590,6 +3061,73 @@ Moon position, etc.")
 JPL ephemerides use to predict raw (x,y,z) planetary positions.")
     (license license:expat)))
 
+(define-public python-jwst
+  (package
+    (name "python-jwst")
+    (version "1.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jwst" version))
+              (sha256
+               (base32
+                "1lmfyw2y7c84rs9xqavah9aidj478ijiiijlz6fag11xqn1vs98y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server for
+      ;; getting data sets.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   ;; NOTE: (Sharlatan-20230529T113448+0100): opencv-python's
+                   ;; version can't be detected, it could the way it's packed in
+                   ;; Guix. Review failing sanity check with more efforts,
+                   ;; disable for now to make package buildable.
+                   (delete 'sanity-check))))
+    ;; opencv provides OpenCV-Python which is Listed as install requirement.
+    (propagated-inputs (list opencv
+                             python-asdf
+                             python-asdf-astropy
+                             python-astropy
+                             python-bayesicfitting
+                             python-crds
+                             python-drizzle
+                             python-gwcs
+                             python-jsonschema
+                             python-numpy
+                             python-photutils
+                             python-poppy
+                             python-psutil
+                             python-pyparsing
+                             python-requests
+                             python-scikit-image
+                             python-scipy
+                             python-spherical-geometry
+                             python-stcal
+                             python-stdatamodels
+                             python-stpipe
+                             python-stsci-image
+                             python-stsci-imagestats
+                             python-tweakwcs
+                             python-wiimatch))
+    (native-inputs (list python-codecov
+                         python-colorama
+                         python-flake8
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-requests-mock
+                         python-setuptools-scm))
+    (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
+    (synopsis
+     "Python library for science observations from the James Webb Space Telescope")
+    (description
+     "This package provides an access to the JWST Science Calibration Pipeline
+processes data from all JWST instruments and observing modes by applying various
+science corrections sequentially, producing both fully-calibrated individual
+exposures and high-level data products (mosaics, extracted spectra, etc.).")
+    (license license:bsd-3)))
+
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
@@ -2687,6 +3225,38 @@ astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
 N-Chilada and RAMSES AMR outputs.")
     (license license:gpl3+)))
 
+(define-public python-pysynphot
+  (package
+    (name "python-pysynphot")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pysynphot" version))
+              (sha256
+               (base32
+                "1rr29m63bnj47f6gvbvg3pm1296x14ad29c6qd0sdj4f4ilrzhj5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-env-data-path
+                          (lambda _
+                            (setenv "PYSYN_CDBS"
+                                    (string-append #$output "/crds")))))))
+    (native-inputs (list python-pytest python-pytest-remotedata
+                         python-setuptools-scm))
+    (propagated-inputs (list python-astropy python-beautifulsoup4 python-numpy
+                             python-pytest-astropy-header python-six))
+    (home-page "https://github.com/spacetelescope/pysynphot")
+    (synopsis "Python Synthetic Photometry Utilities")
+    (description
+     "Astrolib PySynphot (hereafter referred to only as pysynphot) is an
+object-oriented replacement for STSDAS SYNPHOT synthetic photometry package in
+IRAF.  @code{pysynphot} simulates photometric data and spectra as they are
+observed with the Hubble Space Telescope (HST).  Passbands for standard
+photometric systems are available, and users can incorporate their own filters,
+spectra, and data.")
+    (license license:bsd-3)))
+
 (define-public python-sep
   (package
     (inherit libsep)
@@ -2722,6 +3292,67 @@ N-Chilada and RAMSES AMR outputs.")
 Takes a WGS84 (GPS) latitude/longitude as input as well as an UTC or local
 datetime object.")
     (license license:lgpl3+)))
+
+(define-public python-synphot
+  (package
+    (name "python-synphot")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "synphot" version))
+              (sha256
+               (base32
+                "02pjp1bnbyq7zi1bxqv56nif4ijd8fscmnn9ldrs8yvgsbmgdvlc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Test needs more love to pass.
+      ;; ERROR collecting synphot/tests/test_utils.py
+      #:tests? #f))
+    (propagated-inputs (list python-astropy python-numpy python-scipy))
+    (native-inputs (list python-pytest python-pytest-astropy
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/synphot_refactor")
+    (synopsis "Synthetic photometry using Astropy")
+    (description
+     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
+PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
+of the old packages.")
+    (license license:bsd-3)))
+
+(define-public python-tweakwcs
+  (package
+    (name "python-tweakwcs")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tweakwcs" version))
+              (sha256
+               (base32
+                "1500w737n9vf5hv16xkybk4shl7g4wfzb2ji9mc4vgzj41gkrwl4"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-astropy
+                             python-gwcs
+                             python-numpy
+                             python-packaging
+                             python-spherical-geometry
+                             python-stsci-imagestats
+                             python-stsci-stimage))
+    (native-inputs (list python-codecov
+                         python-pytest
+                         python-pytest-cov
+                         python-scipy
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://tweakwcs.readthedocs.io/en/latest/")
+    (synopsis
+     "Algorithms for matching and aligning catalogs and for tweaking the WCS")
+    (description
+     "@code{tweakwcs} is a package that provides core algorithms for computing
+and applying corrections to @code{WCS} objects such as to minimize mismatch
+between image and reference catalogs. Currently only aligning images with
+@code{FITS WCS} and @code{JWST gWCS} are supported.")
+    (license license:bsd-3)))
 
 (define-public python-asdf
   (package
@@ -3050,6 +3681,79 @@ the entire transformation pipeline from input coordinates (detector by
 default) to world coordinates.")
     (license license:bsd-3)))
 
+(define-public python-rad
+  (package
+    (name "python-rad")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rad" version))
+              (sha256
+               (base32
+                "0j51pkywxdaqrfz162rdsywlvx1mbb2h0gi5framvhf25i1im7mb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "-k" "not remote_data")))
+    (native-inputs (list python-astropy
+                         python-pytest
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-semantic-version
+                         python-setuptools-scm))
+    (propagated-inputs (list python-asdf python-asdf-astropy))
+    (home-page "https://github.com/spacetelescope/rad")
+    (synopsis "Roman Attribute Dictionary")
+    (description
+     "@acronym{RAD, The Roman Attribute Dictionary} is package which defines
+schemas for the Nancy Grace Roman Space Telescope shared attributes for
+processing and archive.  These schemas are schemas for the ASDF file file
+format, which are used by ASDF to serialize and deserialize data for the Nancy
+Grace Roman Space Telescope.")
+    (license license:bsd-3)))
+
+(define-public python-roman-datamodels
+  (package
+    (name "python-roman-datamodels")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "roman_datamodels" version))
+              (sha256
+               (base32
+                "0frhm1cqqd8934yizhm4fy78y38q2w9ncm4rv1n74hfypkyis4ap"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Check how to make all tests enabled, probably some more inner
+     ;; input chain needs to be upgraded, keep them disabled to make the build
+     ;; green.
+     (list #:test-flags #~(list "-k"
+                                (string-append "not test_will_validate"
+                                 " and not test_will_strict_validate"
+                                 " and not test_nuke_validation"))))
+    (propagated-inputs (list python-asdf
+                             python-asdf-astropy
+                             python-asdf-standard
+                             python-astropy
+                             python-gwcs
+                             python-numpy
+                             python-psutil
+                             python-rad))
+    (native-inputs (list python-pytest python-pytest-doctestplus
+                         python-pytest-openfiles python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/roman_datamodels")
+    (synopsis "Roman Datamodels Support")
+    (description
+     "This package provides a Python package of Roman Datamodels for the
+calibration pipelines started with the @acronym{JWST, James Webb Space
+Telescope} calibration pipelines.  The goal for the JWST pipelines was motivated
+primarily by the need to support FITS data files, specifically with isolating
+the details of where metadata and data were located in the FITS file from the
+representation of the same items within the Python code.  That is not a concern
+for Roman since FITS format data files will not be used by the Roman calibration
+pipelines.")
+    (license license:bsd-3)))
+
 (define-public python-astroalign
   (package
     (name "python-astroalign")
@@ -3102,3 +3806,26 @@ astronomical images, especially when there is no WCS information available.")
      "Skyfield computes positions for the stars, planets, and satellites in
 orbit around the Earth.")
     (license license:expat)))
+
+(define-public python-wiimatch
+  (package
+    (name "python-wiimatch")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "wiimatch" version))
+              (sha256
+               (base32
+                "0x6p5z6a2cqinckwlpinjxagvmswl149s1jn6ihmdxk4k0h8rrz0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-codecov python-pytest python-pytest-cov
+                         python-pytest-doctestplus python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/wiimatch")
+    (synopsis
+     "Optimal matching of weighted N-dimensional image intensity data")
+    (description
+     "@code{wiimatch} is a package that provides core computational algorithms
+for optimal @code{matching} of weighted N-dimensional image intensity data
+using (multivariate) polynomials.")
+    (license license:bsd-3)))

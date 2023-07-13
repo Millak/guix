@@ -57,7 +57,7 @@
 ;;; Code:
 
 (define %hurd-default-operating-system-kernel
-  (if (hurd-system?)
+  (if (system-hurd?)
       gnumach
       ;; A cross-built GNUmach does not work
       (with-parameters ((%current-system "i686-linux")

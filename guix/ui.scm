@@ -722,6 +722,15 @@ evaluating the tests and bodies of CLAUSES."
                 (leave (G_ "~a:~a:~a: package `~a' has an invalid input: ~s~%")
                        file line column
                        (package-full-name package) input)))
+             ((package-cyclic-dependency-error? c)
+              (let ((package (package-error-package c)))
+                (leave (package-location package)
+                       (G_ "~a: dependency cycle detected:
+  ~a~{ -> ~a~}~%")
+                       (package-full-name package)
+                       (package-full-name package)
+                       (map package-full-name
+                            (package-error-dependency-cycle c)))))
              ((package-cross-build-system-error? c)
               (let* ((package (package-error-package c))
                      (loc     (package-location package))

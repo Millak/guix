@@ -201,7 +201,7 @@ traffic from the application you're using.")
 (define-public privoxy
   (package
     (name "privoxy")
-    (version "3.0.33")
+    (version "3.0.34")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://sourceforge/ijbswa/Sources/"
@@ -209,7 +209,7 @@ traffic from the application you're using.")
                                  version "-stable-src.tar.gz"))
              (sha256
               (base32
-               "1bhzi2ddv3g1z9h7lhxy7p0wibqg4m5nh46ikldmcqdc1pkh9c84"))))
+               "0b2x7hm34fbqaxb46afpx6bnc3x76d753y2p8rmn2kkgcnhvrk76"))))
     (build-system gnu-build-system)
     (arguments
      '(;; The default 'sysconfdir' is $out/etc; change that to

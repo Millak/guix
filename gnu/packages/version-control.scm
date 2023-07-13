@@ -227,15 +227,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.40.1")
+   (version "2.41.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1li1xwgiwccy88bkshsah2kzl1006jg29jp7n32gvjggiswvi4s8"))
-            (patches (search-patches "git-header-cmd.patch"))))
+              "0h40arw08xbpi2cbf7pvc947v963rjxz3inb2ar81zjc8byvlj77"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -255,7 +254,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "04yy5za8963q6xzrirflvxbi1216jzqj8ssvgd9nkld3ifa9q1gy"))))
+            "0xsqakgy0s60zpa13ilj6zj420kdh8pf4v3nrp1nziwj8ja4qymw"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook2x" ,docbook2x)
@@ -846,6 +845,12 @@ to GitHub contributions calendar.")
                    '()))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-arm32?)
+             ;; Some tests are flaky on armhf.
+             '((add-before 'check 'pre-check
+                 (lambda _
+                   (setenv "GITTEST_FLAKY_STAT" "true"))))
+             '())
          ;; Run checks more verbosely, unless we are cross-compiling.
          (replace 'check
            (lambda* (#:key (tests? #t) #:allow-other-keys)
@@ -2611,13 +2616,13 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.8.0")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "115ysciq15sxc8fd9hf7p0f4wnd5xapcfkmq8g33y1c8nbdxclbx"))))
+        (base32 "0qpa0ahw1d86mdgs09ykq5pd0lm8083ds6j0knalw757yh31akmn"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
@@ -3114,7 +3119,7 @@ file contents on a remote server.")
 (define-public lfs-s3
   (package
     (name "lfs-s3")
-    (version "0.1")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3123,7 +3128,7 @@ file contents on a remote server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nkxivb356f1zjlj34px601zy86w4398db9s2ivd178jp4v69raw"))))
+                "0ncfy3lgc7dik9k71xk9l5f2llsh2jk33aaqb8dkslschc1mx4g6"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3133,8 +3138,7 @@ file contents on a remote server.")
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
-           go-github-com-aws-aws-sdk-go-v2-service-s3
-           go-github-com-spf13-cobra))
+           go-github-com-aws-aws-sdk-go-v2-service-s3))
     (home-page "https://git.sr.ht/~ngraves/lfs-s3/")
     (synopsis "Git extension for versioning large files in S3")
     (description

@@ -28,7 +28,7 @@
 ;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
@@ -37,6 +37,7 @@
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -321,6 +322,62 @@ APNG patch provides APNG support to libpng.")
    (description "Pngcrush optimizes @acronym{PNG, Portable Network Graphics}
 images.  It can further losslessly compress them by as much as 40%.")
    (license license:zlib)))
+
+(define-public pngcheck
+  (package
+    (name "pngcheck")
+    (version "3.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://www.libpng.org/pub/png/src/pngcheck-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1rny14v57d2zvnqcqbh3m87mkya22qr2394fg7vm3xsacf8l8sn3"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ;no check target
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (invoke "make" "-f" "Makefile.unx")))
+                  (add-after 'build 'compress-man-pages
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (invoke "gzip" "pngcheck.1")
+                      (invoke "gzip" "gpl/pngsplit.1")
+                      (invoke "gzip" "gpl/png-fix-IDAT-windowsize.1")))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin/"))
+                             (man (string-append out "/share/man/man1/")))
+                        (install-file "pngcheck" bin)
+                        (install-file "pngcheck.1.gz" man)
+                        (install-file "pngsplit" bin)
+                        (install-file "gpl/pngsplit.1.gz" man)
+                        (install-file "png-fix-IDAT-windowsize" bin)
+                        (install-file "gpl/png-fix-IDAT-windowsize.1.gz" man)))))))
+    (inputs (list zlib))
+    (home-page "http://www.libpng.org/pub/png/apps/pngcheck.html")
+    (synopsis "Print info and check PNG, JNG and MNG files")
+    (description
+     "@code{pngcheck} verifies the integrity of PNG, JNG and MNG files (by
+checking the internal 32-bit CRCs, a.k.a. checksums, and decompressing the image
+data); it can optionally dump almost all of the chunk-level information in the image
+in human-readable form.  For example, it can be used to print the basic statistics
+about an image (dimensions, bit depth, etc.); to list the color and transparency info
+in its palette (assuming it has one); or to extract the embedded text annotations.
+This is a command-line program with batch capabilities (e.g. @code{pngcheck
+*.png}.)
+
+Also includes @code{pngsplit} which can split a PNG, MNG or JNG file into individual,
+numbered chunks, and @code{png-fix-IDAT-windowsize} that allow to reset first IDAT's
+zlib window-size bytes and fix up CRC to match.")
+    ;; "pngsplit" and "png-fix-IDAT-windowsize" are licensed under the terms of
+    ;; GNU GPL2+.  See "gpl/COPYING" in the repository."
+    (license (list license:x11 license:gpl2+))))
 
 (define-public pnglite
   (let ((commit "11695c56f7d7db806920bd9229b69f230e6ffb38")
@@ -2373,7 +2430,7 @@ Format) file format decoder and encoder.")
 (define-public libjxl
   (package
     (name "libjxl")
-    (version "0.7.0")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2383,23 +2440,24 @@ Format) file format decoder and encoder.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ysh7kd30wwnq0gc1l8c0j9b6wzd15k0kkvfaacjvjqcz11lnc7l"))
+        (base32 "1alhnnxkwy5bdwahfsdh87xk9rg1s2fm3r9y2w11ka8p3n1ccwr3"))
        (modules '((guix build utils)))
        (snippet
-        ;; Delete the bundles that will not be used. libjxl bundles LCMS,
-        ;; which is in Guix, but a newer version is required.
+        ;; Delete the bundles that will not be used.
         '(begin
            (for-each (lambda (directory)
                        (delete-file-recursively
                         (string-append "third_party/" directory)))
-                     '("brotli" "googletest" "highway"))))))
+                     '("brotli" "googletest" "highway" "lcms" "libpng"
+                       "zlib"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
              "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
-             ;; "-DJPEGXL_FORCE_SYSTEM_LCMS2=true" ; requires lcms@2.13
-             "-DJPEGXL_FORCE_SYSTEM_HWY=true")))
+             "-DJPEGXL_FORCE_SYSTEM_LCMS2=true"
+             "-DJPEGXL_FORCE_SYSTEM_HWY=true"
+             "-DJPEGXL_BUNDLE_LIBPNG=false")))
     (native-inputs
      (list asciidoc doxygen googletest pkg-config python))
     (inputs
@@ -2407,12 +2465,13 @@ Format) file format decoder and encoder.")
            gflags
            giflib
            imath
-           ;; lcms ; requires lcms@2.13
+           lcms
            libavif
            libjpeg-turbo
            libpng
            libwebp
-           openexr))
+           openexr
+           zlib))
     ;; These are in Requires.private of libjxl.pc.
     (propagated-inputs
      (list brotli google-highway))

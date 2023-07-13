@@ -50,7 +50,7 @@
 # Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 # Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 # Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-# Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+# Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 # Copyright © 2022 muradm <mail@muradm.net>
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
@@ -743,6 +743,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/system/images/pine64.scm			\
   %D%/system/images/pinebook-pro.scm		\
   %D%/system/images/rock64.scm			\
+  %D%/system/images/unmatched.scm		\
   %D%/system/images/wsl2.scm			\
 						\
   %D%/machine.scm				\
@@ -896,6 +897,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/akonadi-not-relocatable.patch		\
   %D%/packages/patches/akonadi-timestamps.patch		\
   %D%/packages/patches/allegro-mesa-18.2.5-and-later.patch	\
+  %D%/packages/patches/ibus-anthy-fix-tests.patch		\
   %D%/packages/patches/anki-mpv-args.patch			\
   %D%/packages/patches/antiword-CVE-2014-8123.patch			\
   %D%/packages/patches/antlr3-3_1-fix-java8-compilation.patch	\
@@ -1053,9 +1055,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/dee-vapi.patch			\
   %D%/packages/patches/desmume-gcc6-fixes.patch			\
   %D%/packages/patches/desmume-gcc7-fixes.patch			\
-  %D%/packages/patches/dezyne-add-missing-shebangs.patch	\
   %D%/packages/patches/dfu-programmer-fix-libusb.patch		\
   %D%/packages/patches/diffutils-fix-signal-processing.patch	\
+  %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
   %D%/packages/patches/docbook-xsl-nonrecursive-string-subst.patch	\
   %D%/packages/patches/docbook-xsl-support-old-url.patch	\
@@ -1070,6 +1072,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dune-istl-fix-solver-playground.patch	\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dynaconf-unvendor-deps.patch		\
+  %D%/packages/patches/dyninst-fix-glibc-compatibility.patch	\
   %D%/packages/patches/efivar-211.patch			\
   %D%/packages/patches/eigen-fix-strict-aliasing-bug.patch	\
   %D%/packages/patches/einstein-build.patch			\
@@ -1153,6 +1156,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/freeimage-unbundle.patch		\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
   %D%/packages/patches/fuse-overlapping-headers.patch		\
+  %D%/packages/patches/fuzzylite-relative-path-in-tests.patch	\
+  %D%/packages/patches/fuzzylite-use-catch2.patch		\
+  %D%/packages/patches/fuzzylite-soften-float-equality.patch	\
   %D%/packages/patches/fxdiv-system-libraries.patch		\
   %D%/packages/patches/gajim-honour-GAJIM_PLUGIN_PATH.patch	\
   %D%/packages/patches/ganeti-disable-version-symlinks.patch	\
@@ -1221,7 +1227,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/genimage-mke2fs-test.patch		\
   %D%/packages/patches/geoclue-config.patch			\
   %D%/packages/patches/gettext-libunicode-update.patch		\
-  %D%/packages/patches/git-header-cmd.patch			\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
   %D%/packages/patches/ghc-9.2-glibc-2.33-link-order.patch \
   %D%/packages/patches/ghc-9.2-grep-warnings.patch \
@@ -1237,6 +1242,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-networking-gnutls-binding.patch	\
   %D%/packages/patches/glib-skip-failing-test.patch		\
+  %D%/packages/patches/glibc-2.33-riscv64-miscompilation.patch	\
   %D%/packages/patches/glibc-CVE-2019-7309.patch		\
   %D%/packages/patches/glibc-CVE-2019-9169.patch		\
   %D%/packages/patches/glibc-CVE-2019-19126.patch		\
@@ -1316,6 +1322,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-fibers-epoll-instance-is-dead.patch \
   %D%/packages/patches/guile-fibers-fd-finalizer-leak.patch	\
   %D%/packages/patches/guile-fibers-wait-for-io-readiness.patch \
+  %D%/packages/patches/guile-fibers-libevent-32-bit.patch	\
   %D%/packages/patches/guile-fix-invalid-unicode-handling.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-git-adjust-for-libgit2-1.2.0.patch \
@@ -1368,6 +1375,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/id3lib-CVE-2007-4460.patch			\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/idris-test-ffi008.patch			\
+  %D%/packages/patches/igt-gpu-tools-Use-libproc2.patch		\
   %D%/packages/patches/ilmbase-fix-tests.patch			\
   %D%/packages/patches/imagemagick-CVE-2020-27829.patch		\
   %D%/packages/patches/imagemagick-ReadDCMImage-fix.patch	\
@@ -1403,6 +1411,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/java-xerces-bootclasspath.patch	\
   %D%/packages/patches/java-xerces-build_dont_unzip.patch	\
   %D%/packages/patches/java-xerces-xjavac_taskdef.patch	\
+  %D%/packages/patches/jbr-17-xcursor-no-dynamic.patch	\
   %D%/packages/patches/jfsutils-add-sysmacros.patch		\
   %D%/packages/patches/jfsutils-gcc-compat.patch		\
   %D%/packages/patches/jfsutils-include-systypes.patch		\
@@ -1416,8 +1425,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
   %D%/packages/patches/libziparchive-add-includes.patch		\
   %D%/packages/patches/lightdm-arguments-ordering.patch		\
-  %D%/packages/patches/lightdm-vncserver-check.patch		\
+  %D%/packages/patches/lightdm-vnc-ipv6.patch			\
   %D%/packages/patches/lightdm-vnc-color-depth.patch		\
+  %D%/packages/patches/lightdm-vncserver-check.patch		\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
   %D%/packages/patches/kcontacts-incorrect-country-name.patch	\
   %D%/packages/patches/kde-cli-tools-delay-mime-db.patch	\
@@ -1502,6 +1512,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libtommath-integer-overflow.patch	\
   %D%/packages/patches/libtool-grep-compat.patch		\
   %D%/packages/patches/libtool-skip-tests2.patch		\
+  %D%/packages/patches/libtree-fix-check-non-x86.patch		\
   %D%/packages/patches/libusb-0.1-disable-tests.patch		\
   %D%/packages/patches/libusb-for-axoloti.patch			\
   %D%/packages/patches/libutils-add-includes.patch		\
@@ -1535,8 +1546,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-9-fix-bitcast-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-lpad-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-scev-miscompilation.patch	\
-  %D%/packages/patches/llvm-roc-4.0.0-remove-isystem-usr-include.patch \
-  %D%/packages/patches/llvm-roc-5.0.0-linkdl.patch \
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
   %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
   %D%/packages/patches/lsof-fatal-test-failures.patch		\
@@ -1701,6 +1710,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-typeguard-python3.10.patch	\
   %D%/packages/patches/python-w3lib-fix-test-failure.patch	\
   %D%/packages/patches/python-wxwidgets-type-errors.patch	\
+  %D%/packages/patches/quodlibet-fix-invalid-glob.patch	\
+  %D%/packages/patches/quodlibet-fix-mtime-tests.patch		\
   %D%/packages/patches/scribus-1.5.8-poppler-22.03.0.patch	\
   %D%/packages/patches/scribus-1.5.8-poppler-22.04.0.patch	\
   %D%/packages/patches/scribus-1.5.8-poppler-22.09.0.patch	\
@@ -1793,7 +1804,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
   %D%/packages/patches/python-hiredis-fix-header.patch		\
   %D%/packages/patches/python-hiredis-use-system-hiredis.patch	\
-  %D%/packages/patches/python-keras-integration-test.patch	\
   %D%/packages/patches/python-pdoc3-tests.patch			\
   %D%/packages/patches/python-peachpy-determinism.patch	\
   %D%/packages/patches/python-pep8-stdlib-tokenize-compat.patch \
@@ -1824,6 +1834,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-typing-inspect-fix.patch		\
   %D%/packages/patches/python-unittest2-python3-compat.patch	\
   %D%/packages/patches/python-unittest2-remove-argparse.patch	\
+  %D%/packages/patches/python-vega-datasets-remove-la-riots-code.patch	\
   %D%/packages/patches/python-versioneer-guix-support.patch	\
   %D%/packages/patches/python-waitress-fix-tests.patch		\
   %D%/packages/patches/python-werkzeug-tests.patch		\
@@ -1866,9 +1877,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
+  %D%/packages/patches/rocclr-5.6.0-enable-gfx800.patch		\
+  %D%/packages/patches/rocm-bandwidth-test-5.5.0-fix-includes.patch	\
   %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch 	\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
-  %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch 	\
   %D%/packages/patches/rottlog-direntry.patch 			\
   %D%/packages/patches/ruby-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch	\
@@ -2040,6 +2052,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/vboot-utils-fix-format-load-address.patch	\
   %D%/packages/patches/vboot-utils-fix-tests-show-contents.patch	\
   %D%/packages/patches/vboot-utils-skip-test-workbuf.patch	\
+  %D%/packages/patches/vcmi-disable-privacy-breach.patch	\
   %D%/packages/patches/vinagre-newer-freerdp.patch             \
   %D%/packages/patches/vinagre-newer-rdp-parameters.patch      \
   %D%/packages/patches/virtuoso-ose-remove-pre-built-jar-files.patch	\
@@ -2061,6 +2074,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/wordnet-CVE-2008-2149.patch			\
   %D%/packages/patches/wordnet-CVE-2008-3908-pt1.patch			\
   %D%/packages/patches/wordnet-CVE-2008-3908-pt2.patch			\
+  %D%/packages/patches/wpa-supplicant-dbus-group-policy.patch		\
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
   %D%/packages/patches/xf86-video-ark-remove-mibstore.patch	\

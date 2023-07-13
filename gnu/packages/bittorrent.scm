@@ -40,6 +40,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix gexp)
@@ -451,7 +452,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.5.2")
+    (version "4.5.4")
     (source
      (origin
        (method git-fetch)
@@ -460,37 +461,20 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07s0ypkd1zzkw9qhfwxxx7s6zizjz0448al17xmc1b48phn46hjk"))))
-    (build-system gnu-build-system)
+        (base32 "1r4vqlwmvg7b0ibq53m7ascyykv3v66qxlwfi0zmmi1ig7rlkxkk"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost-libdir="
-                            (assoc-ref %build-inputs "boost")
-                            "/lib")
-             "--enable-debug"
-             "QMAKE_LRELEASE=lrelease")
-       #:modules ((guix build gnu-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                           (guix build qt-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "qbittorrent" #:output out #:inputs inputs))
-             #t)))))
+     (list #:configure-flags #~(list "-DTESTING=ON")
+           #:test-target "check"))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list qttools-5))
     (inputs
-     `(("boost" ,boost)
-       ("libtorrent-rasterbar" ,libtorrent-rasterbar)
-       ("openssl" ,openssl)
-       ("python" ,python-wrapper)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("zlib" ,zlib)))
+     (list boost
+           libtorrent-rasterbar
+           openssl
+           python-wrapper
+           qtsvg-5
+           zlib))
     (home-page "https://www.qbittorrent.org/")
     (synopsis "Graphical BitTorrent client")
     (description
@@ -510,14 +494,45 @@ features.")
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags configure-flags)
-          #~(append #$configure-flags
-                    (list "--disable-gui")))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (delete 'wrap-qt)))))
+          #~(cons "-DGUI=OFF" #$configure-flags))))
       (inputs
        (modify-inputs (package-inputs base)
          (delete "qtsvg-5"))))))
+
+(define-public qbittorrent-enhanced
+  (package
+    (inherit qbittorrent)
+    (name "qbittorrent-enhanced")
+    (version "4.5.2.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "18z4panaqbmhbw5i1yn17wpqzslhy6w08zcc5bx2hhlg8slp1r9j"))))
+    (home-page "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
+    (description
+     "qBittorrent Enhanced is a bittorrent client based on qBittorrent with
+the following features:
+
+@itemize
+@item Auto Ban Xunlei, QQ, Baidu, Xfplay, DLBT and Offline downloader
+@item Auto Ban Unknown Peer from China Option (Default: OFF)
+@item Auto Update Public Trackers List (Default: OFF)
+@item Auto Ban BitTorrent Media Player Peer Option (Default: OFF)
+@item Peer whitelist/blacklist
+@end itemize")))
+
+(define-public qbittorrent-enhanced-nox
+  (package
+    (inherit qbittorrent-enhanced)
+    (name "qbittorrent-enhanced-nox")
+    (arguments (package-arguments qbittorrent-nox))
+    (inputs (package-inputs qbittorrent-nox))))
 
 (define-public deluge
   (package

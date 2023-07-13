@@ -336,7 +336,7 @@ by the b43-open driver of Linux-libre.")
 (define-public eg25-manager
   (package
     (name "eg25-manager")
-    (version "0.4.2")
+    (version "0.4.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -345,11 +345,19 @@ by the b43-open driver of Linux-libre.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1czq2yi852aqkdnrxdifzcq669bdvlm7j40xivxq77jq04fggpmf"))))
+                "1a591dhr43mhwh09n2vlfpw6aajl6d1vkwniikjvwfjrmp01v6yq"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "udev/80-modem-eg25.rules"
+                 (("/bin/grep") (search-input-file inputs "/bin/grep"))))))))
     (native-inputs (list curl
                          `(,glib "bin") pkg-config))
-    (inputs (list libgpiod libgudev libusb))
+    (inputs (list grep libgpiod libgudev libusb))
     (synopsis "Manager daemon for the Quectel EG25 mobile broadband modem")
     (description
      "This package provides a manager daemon for the Quectel EG25 mobile
@@ -481,7 +489,7 @@ provide OpenFirmware functionality on top of an already running system.")
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
     (name name)
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -490,7 +498,7 @@ provide OpenFirmware functionality on top of an already running system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "opensbi" version))
        (sha256
-        (base32 "13k76ngmbs6xk8wm0vhc3fjs5w82g34wxs2zf4r27jd79m47xjb5"))))
+        (base32 "0shri9jlhi2g464l05vrkzr6v754m868rr4136kq2b86amypmg8f"))))
     (build-system gnu-build-system)
     (native-inputs
      (append
@@ -1101,3 +1109,93 @@ such as:
          ((#:make-flags flags ''())
           ;; Adding debug symbols causes the size to exceed limits.
           #~(delete "DEBUG=1" #$flags)))))))
+
+(define (make-crust-package platform)
+  (package
+    (name (string-append "crust-"
+                         (string-replace-substring platform "_" "-")))
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; There are only GitHub generated release snapshots.
+             (url "https://github.com/crust-firmware/crust")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "crust" version))
+       (sha256
+        (base32
+         "0xgbbhifg3miwd3yp6jq9kp7nqgz5gzy00w95vba45j8jk5vjvvz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      (let ((triplet-without-vendor
+             (and (%current-target-system)
+                  (match (string-split (nix-system->gnu-triplet
+                                        (%current-target-system)) #\-)
+                    ((arch vendor os ..1)
+                     (string-join `(,arch ,@os) "-"))))))
+        #~(list "CROSS_COMPILE=or1k-elf-"
+                "V=1"
+                #$@(if triplet-without-vendor
+                       ;; We are cross-compiling the tools, intended to be
+                       ;; executable for the target system.
+                       (list (string-append "HOSTAR=" triplet-without-vendor
+                                            "-ar")
+                             (string-append "HOSTCC=" triplet-without-vendor
+                                            "-gcc"))
+                       ;; Not cross-compiling.
+                       (list "HOSTAR=ar"
+                             "HOSTCC=gcc"))
+                "LEX=flex"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-build-tests
+            (lambda _
+              ;; Attempting to build the tools test binary on a non-aarch64
+              ;; architecture fails with: "No cache cleaning implementation
+              ;; available for this architecture".  Avoid building it (see:
+              ;; https://github.com/crust-firmware/crust/issues/182).
+              (substitute* "tools/Makefile"
+                (("tools-y \\+= test") ""))))
+          (delete 'configure)
+          (add-before 'build 'defconfig
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (let ((config-name (string-append #$platform "_defconfig")))
+                (apply invoke "make" (cons config-name make-flags)))))
+          (replace 'install
+            (lambda _
+              (for-each (lambda (file)
+                          (install-file file (string-append #$output
+                                                            "/libexec")))
+                        (find-files "." "(scp\\.bin|\\.config)$"))
+              (install-file "build/tools/load"
+                            (string-append #$output "/bin")))))))
+    ;; The firmware is cross-compiled using a "bare bones" compiler (no libc).
+    ;; Use our own tool chain for that.
+    (native-inputs
+     (list bison
+           (cross-gcc "or1k-elf")
+           (cross-binutils "or1k-elf")
+           flex))
+    (home-page "https://github.com/crust-firmware/crust")
+    (synopsis "System control processor firmware for Allwinner sunxi boards")
+    (description "Crust improves battery life and thermal performance by
+implementing a deep sleep state.  During deep sleep, the CPU cores, the DRAM
+controller, and most onboard peripherals are powered down, reducing power
+consumption by 80% or more compared to an idle device.  On boards without a
+PMIC, Crust is also responsible for orderly power-off and power-on of the
+device.  For this to work, Crust runs outside the main CPU and DRAM, on a
+dedicated always-on microprocessor called a System Control Processor (SCP).
+Crust is designed to run on a specific SCP implementation, Allwinner's
+AR100.")
+    ;; Most files are dual-licensed "BSD-3 OR GPL2", a few are GPL2 only.
+    (license (list license:bsd-3 license:gpl2))))
+
+(define-public crust-pinebook
+  (make-crust-package "pinebook"))
+
+(define-public crust-pine64-plus
+  (make-crust-package "pine64_plus"))

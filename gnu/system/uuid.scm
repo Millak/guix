@@ -209,7 +209,7 @@ ISO9660 UUID representation."
 
 (define (ntfs-uuid->string uuid)
   "Convert NTFS UUID, a 8-byte bytevector, to its string representation."
-  (format #f "~{~:@(~x~)~}" (reverse (bytevector->u8-list uuid))))
+  (format #f "~{~:@(~2,'0x~)~}" (reverse (bytevector->u8-list uuid))))
 
 (define %ntfs-uuid-rx
   (make-regexp "^([[:xdigit:]]{16})$"))

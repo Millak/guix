@@ -1613,7 +1613,7 @@ information on the configuration file syntax."
                                  '("conf=/etc/security/limits.conf")))))
                (if (member (pam-service-name pam)
                            '("login" "greetd" "su" "slim" "gdm-password"
-                             "sddm" "sudo" "sshd"))
+                             "sddm" "sudo" "sshd" "lightdm"))
                    (pam-service
                     (inherit pam)
                     (session (cons pam-limits
@@ -2799,6 +2799,12 @@ to CONFIG."
 
                        #$@(map (lambda (address)
                                  #~(begin
+                                     ;; Before going any further, wait for the
+                                     ;; device to show up.
+                                     (wait-for-link
+                                      #$(network-address-device address)
+                                      #:blocking? #f)
+
                                      (addr-add #$(network-address-device address)
                                                #$(network-address-value address)
                                                #:ipv6?

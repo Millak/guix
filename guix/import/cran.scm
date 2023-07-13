@@ -95,7 +95,8 @@
       ("AGPL (>= 3)" (prefix 'agpl3+))
       ("Artistic-2.0" (prefix 'artistic2.0))
       ((or "Apache License 2.0"
-           "Apache License (== 2.0)")
+           "Apache License (== 2.0)"
+           "Apache License (>= 2.0)")
        (prefix 'asl2.0))
       ("BSD_2_clause" (prefix 'bsd-2))
       ("BSD_2_clause + file LICENSE" (prefix 'bsd-2))
@@ -430,6 +431,7 @@ empty list when the FIELD cannot be found."
     ("whoami" "coreutils")
     ("x11" "libx11")
     ("xml2" "libxml2")
+    ("zlib-devel" "zlib")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))

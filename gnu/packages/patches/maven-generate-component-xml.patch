@@ -17,7 +17,8 @@ new file mode 100755
 index 0000000..c6748bd
 --- /dev/null
 +++ b/components.sh
-@@ -0,0 +1,148 @@
+@@ -0,0 +1,149 @@
++#!/bin/sh
 +## This script generates a rough plexus/components.xml file. It is meant to
 +## replace plexus-component-metadata as it eventually has a recursive dependency
 +## on itself.

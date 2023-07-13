@@ -210,14 +210,14 @@ beginners.")
 (define-public bitwise
   (package
     (name "bitwise")
-    (version "0.42")
+    (version "0.43")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mellowcandle/bitwise"
                                   "/releases/download/v" version
                                   "/bitwise-v" version ".tar.gz"))
               (sha256
-               (base32 "1lniw4bsb5qs5ybf018qllf95pzixb1q3lvybzl4k3xz8zpkrm6k"))))
+               (base32 "1yrgrbfgp6cavc6gyfp9b0zgjf9p1g7xhwzn9pydw44a32agf97m"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
@@ -1226,14 +1226,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.6")
+    (version "5.4.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "06bly8cpqjdf744jg7yrgba9rdcm3gl4zf63y3c69v80ha8jgz02"))))
+        (base32 "1kzmj4yyxvlxqzqbrw6sx6dnvhj1zzqnciyb8ryzy6mdrb3pj4lk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config texlive-tiny))
@@ -2388,16 +2388,7 @@ interfaces.")
                       (string-append builddir "/src/nomad ")))
                    (for-each
                     (lambda (f) (fix-exe-path dir f))
-                    '("param1.txt" "param2.txt" "param3.txt" "param10.txt")))))))
-
-         ;; The information in the .egg-info file is not kept up to date.
-         (add-after 'install 'delete-superfluous-egg-info
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (delete-file (string-append
-                           (site-packages inputs outputs)
-                           "/PyNomad-0.0.0-py"
-                           (python-version (assoc-ref inputs "python"))
-                           ".egg-info")))))))
+                    '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))))))))
     (home-page "https://www.gerad.ca/nomad/")
     (synopsis "Nonlinear optimization by mesh-adaptive direct search")
     (description
@@ -2999,7 +2990,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
 (define-public gmsh
   (package
     (name "gmsh")
-    (version "4.10.5")
+    (version "4.11.1")
     (source
      (origin
        (method git-fetch)
@@ -3010,7 +3001,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                              (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08p39yjgf3lbnjg90skpmsq9n1a9pmwppdmy5s94dc6sq2nfr7xl"))
+        (base32 "1d6n7qqj9xpfgh7v5jif565waiqjhahkh21pi5s1vr84y61wxyx8"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "contrib/metis"))))

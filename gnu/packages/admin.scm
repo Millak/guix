@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
@@ -31,7 +31,7 @@
 ;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -130,7 +130,6 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages inkscape)
@@ -378,7 +377,11 @@ interface and is based on GNU Guile.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))))
+                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))
+    (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
+                     (replace "guile-fibers" guile-fibers-1.3)))
+    (inputs (modify-inputs (package-inputs shepherd-0.9)
+              (replace "guile-fibers" guile-fibers-1.3)))))
 
 (define-public shepherd shepherd-0.9)
 
@@ -589,7 +592,7 @@ graphs and can export its output to different formats.")
 (define-public facter
   (package
     (name "facter")
-    (version "4.0.52")
+    (version "4.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -598,63 +601,61 @@ graphs and can export its output to different formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05j4q87sak1f1isj7ngzr59h3j3xskfwjjwfv0xd7lhwcaxg3a3c"))))
+                "080v0ml2svw2vbzfa659v8718pmhh2kav0l0q1jjvc6mm8sgnmmn"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-facter-ng-gemspec
-           (lambda _
-             ;; XXX: ruby-build-system incorrectly finds
-             ;; facter-ng.gemspec from this directory and tries to
-             ;; build that instead of the proper facter.gemspec.
-             ;; Just delete it as a workaround, as it appears to
-             ;; only exist for backwards-compatibility after the
-             ;; facter-ng->facter rename.
-             (delete-file "agent/facter-ng.gemspec")
-             #t))
-         (add-after 'unpack 'embed-absolute-references
-           ;; Refer to absolute executable file names to avoid propagation.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "lib/facter/resolvers" "\\.rb$")
-               (("execute\\('(which |)([^ ']+)" _ _ name)
-                (string-append "execute('" (or (which name)
-                                               name))))
-             #t))
-         (delete 'check)
-         (add-after 'wrap 'check
-           (lambda* (#:key tests? outputs #:allow-other-keys)
-             ;; XXX: The test suite wants to run Bundler and
-             ;; complains that the gemspec is invalid.  For now
-             ;; just make sure that we can run the wrapped
-             ;; executable directly.
-             (if tests?
-                 (invoke (string-append (assoc-ref outputs "out")
-                                        "/bin/facter")
-                         ;; Many facts depend on /sys, /etc/os-release,
-                         ;; etc, so we only run a small sample.
-                         "facterversion" "architecture"
-                         "kernel" "kernelversion")
-                 (format #t "tests disabled~%"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-facter-ng-gemspec
+            (lambda _
+              ;; XXX: ruby-build-system incorrectly finds
+              ;; facter-ng.gemspec from this directory and tries to
+              ;; build that instead of the proper facter.gemspec.
+              ;; Just delete it as a workaround, as it appears to
+              ;; only exist for backwards-compatibility after the
+              ;; facter-ng->facter rename.
+              (delete-file "agent/facter-ng.gemspec")))
+          (add-after 'unpack 'embed-absolute-references
+            ;; Refer to absolute executable file names to avoid propagation.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "lib/facter/resolvers" "\\.rb$")
+                (("execute\\('(which |)([^ ']+)" _ _ name)
+                 (string-append "execute('" (or (which name)
+                                                name))))))
+          (delete 'check)
+          (add-after 'wrap 'check
+            (lambda* (#:key tests? outputs #:allow-other-keys)
+              ;; XXX: The test suite wants to run Bundler and
+              ;; complains that the gemspec is invalid.  For now
+              ;; just make sure that we can run the wrapped
+              ;; executable directly.
+              (if tests?
+                  (invoke (string-append (assoc-ref outputs "out")
+                                         "/bin/facter")
+                          ;; Many facts depend on /sys, /etc/os-release,
+                          ;; etc, so we only run a small sample.
+                          "facterversion" "architecture"
+                          "kernel" "kernelversion")
+                  (format #t "tests disabled~%")))))))
     (inputs
-     `(("ruby-hocon" ,ruby-hocon)
-       ("ruby-sys-filesystem" ,ruby-sys-filesystem)
-       ("ruby-thor" ,ruby-thor)
+     (list ruby-hocon
+           ruby-sys-filesystem
+           ruby-thor
 
-       ;; For ‘embed-absolute-references’.
-       ("dmidecode" ,dmidecode)
-       ("inetutils" ,inetutils)         ; for ‘hostname’
-       ("iproute" ,iproute)
-       ("pciutils" ,pciutils)
-       ("util-linux" ,util-linux)))
+           ;; For ‘embed-absolute-references’.
+           dmidecode
+           inetutils                    ; for ‘hostname’
+           iproute
+           pciutils
+           util-linux))
     (synopsis "Collect and display system facts")
     (description
      "Facter is a tool that gathers basic facts about nodes (systems) such
 as hardware details, network settings, OS type and version, and more.  These
 facts can be collected on the command line with the @command{facter} command
 or via the @code{facter} Ruby library.")
-    (home-page "https://github.com/puppetlabs/facter-ng")
+    (home-page "https://github.com/puppetlabs/facter")
     (license license:expat)))
 
 (define-public ttyload
@@ -909,7 +910,7 @@ re-executing them as necessary.")
                            ,@(if (%current-target-system)
                                  '("--with-path-procnet-dev=/proc/net/dev")
                                  '())
-                           ,@(if (hurd-target?)
+                           ,@(if (target-hurd?)
                                  '("--disable-rcp"
                                    "--disable-rexec"
                                    "--disable-rexecd"
@@ -963,7 +964,7 @@ hostname.")
      `(;; Assume System V `setpgrp (void)', which is the default on GNU
        ;; variants (`AC_FUNC_SETPGRP' is not cross-compilation capable.)
        #:configure-flags
-       '(,@(if (hurd-target?)
+       '(,@(if (target-hurd?)
              '()
              '("--with-libpam"))
           "shadow_cv_logdir=/var/log"
@@ -1014,7 +1015,7 @@ hostname.")
                (delete-file (string-append bin "/groups"))
                (for-each delete-file (find-files man "^groups\\."))))))))
     (inputs
-     `(,@(if (hurd-target?)
+     `(,@(if (target-hurd?)
            '()
            `(("linux-pam" ,linux-pam)))
        ,@(if (%current-target-system)
@@ -1523,7 +1524,7 @@ connection alive.")
 
       (inputs `(("inetutils" ,inetutils)
                 ("bash" ,bash-minimal)
-                ,@(if (hurd-target?) '()
+                ,@(if (target-hurd?) '()
                       `(("net-tools" ,net-tools)
                         ("iproute" ,iproute)))
 
@@ -1658,14 +1659,14 @@ network statistics collection, security monitoring, network debugging, etc.")
 (define-public tcpdump
   (package
     (name "tcpdump")
-    (version "4.99.1")
+    (version "4.99.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.tcpdump.org/release/tcpdump-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1ghfs5gifzrk3813zf9zalfbjs70wg6llz6q31k180r7zf2nkcvr"))))
+                "1slzwjk5f8sygwxqci4vkbas0qqcgs5a0w3f8br6p7gjn8dj6ch2"))))
     (build-system gnu-build-system)
     (inputs (list libpcap openssl))
     (native-inputs (list perl))        ; for tests
@@ -2033,7 +2034,7 @@ system administrator.")
      (list groff))
     (inputs
      `(("coreutils" ,coreutils)
-       ,@(if (hurd-target?)
+       ,@(if (target-hurd?)
            '()
            `(("linux-pam" ,linux-pam)))
        ("zlib" ,zlib)))
@@ -2730,7 +2731,7 @@ various ways that may be running with too much privilege.")
 (define-public smartmontools
   (package
     (name "smartmontools")
-    (version "7.2")
+    (version "7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2738,7 +2739,7 @@ various ways that may be running with too much privilege.")
                     version "/smartmontools-" version ".tar.gz"))
               (sha256
                (base32
-                "1mlc25sd5rgj5xmzcllci47inmfdw7cp185fday6hc9rwqkqmnaw"))))
+                "0ax2wf5j8k2fbm85s0rbj9sajn5q3j2a2k22wyqcyn0cin0ghi55"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -3540,24 +3541,27 @@ a new command using the matched rule, and runs it.")
 (define-public di
   (package
     (name "di")
-    (version "4.51")
+    (version "4.52")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/diskinfo-di/di-" version ".tar.gz"))
+       (uri (string-append "mirror://sourceforge/diskinfo-di/"
+                           "di-" version ".tar.gz"))
        (sha256
-        (base32 "1fv12j9b9sw6p38lcbzcw87zl5qp1aa7a4a4jn3449zz9af15ckr"))))
+        (base32 "07vsnn1gxm3r7dchbrq63iazd64gza2ac7b2m1039708rf5flxdp"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; obscure test failures
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'setup-environment
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "CC" ,(cc-for-target))
-             (setenv "prefix" (assoc-ref outputs "out")))))
-       #:make-flags (list "--environment-overrides")))
+     (list
+      #:tests? #f                       ; obscure test failures
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'override-environment
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              (setenv "prefix" #$output))))
+      #:make-flags
+      #~(list "--environment-overrides")))
     (home-page "https://gentoo.com/di/")
     (synopsis "Advanced df like disk information utility")
     (description
@@ -3900,7 +3904,9 @@ buffers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d6jsj77qddccv0vfmqmbw3k2prvxzvmgc8zdi83gdi3wpp5i7zd"))))
+        (base32 "0d6jsj77qddccv0vfmqmbw3k2prvxzvmgc8zdi83gdi3wpp5i7zd"))
+       (patches
+        (search-patches "igt-gpu-tools-Use-libproc2.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f              ; many of the tests try to load kernel modules
@@ -5764,7 +5770,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.93.1")
+    (version "1.94.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5773,7 +5779,7 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18l0avbq1la1wsfwj13kq5prqz6mydhs3ihvf0f3s3vr2y9h71aq"))))
+                "0a221n0x7qrq0dbhhf1saya2g7jyy1798k3rhy9nzyvqzc4vnd0x"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"

@@ -56,7 +56,7 @@
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -85,7 +85,6 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dbm)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-build)
@@ -245,7 +244,7 @@
                                     "Lib/test/support/__init__.py"
                                     "Lib/test/test_subprocess.py"))
                (("/bin/sh") (which "sh")))))
-         ,@(if (hurd-system?)
+         ,@(if (system-hurd?)
                `((add-before 'build 'patch-regen-for-hurd
                    (lambda* (#:key inputs #:allow-other-keys)
                      (let ((libc (assoc-ref inputs "libc")))
@@ -458,7 +457,7 @@ data types.")
                 (format #f "TESTOPTS=-j~d" (parallel-job-count))
                 ;; test_mmap fails on low-memory systems
                 " --exclude test_mmap test_socket"
-                ,@(if (hurd-target?)
+                ,@(if (target-hurd?)
                       '(" test_posix"      ;multiple errors
                         " test_time"
                         " test_pty"
@@ -492,7 +491,7 @@ data types.")
                       '()))))
        ((#:phases phases)
         `(modify-phases ,phases
-           ,@(if (hurd-system?)
+           ,@(if (system-hurd?)
                  `((delete 'patch-regen-for-hurd)) ;regen was removed after 3.5.9
                  '())
            (add-after 'unpack 'remove-windows-binaries

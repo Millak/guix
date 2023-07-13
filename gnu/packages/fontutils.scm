@@ -15,6 +15,7 @@
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1934,3 +1935,29 @@ PostScript Type 1, Type 1 Multiple Master, OpenType, and TrueType fonts.
 These tools are cfftot1, mmafm, mmpfb, otfinfo, otftotfm, t1dotlessj, t1lint,
 t1rawfm, t1reencode, t1testpage and ttftotype42.")
     (license license:gpl2+)))
+
+(define-public bdf2sfd
+  (package
+    (name "bdf2sfd")
+    (version "1.1.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fcambus/bdf2sfd")
+                    (commit "1.1.8")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pa92gjiijp9xqnw9dcvz24s6qk11a4lp5q6s5psd6mpkhpd88zq"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/fcambus/bdf2sfd")
+    (synopsis "BDF to SFD converter, allowing to vectorize bitmap fonts")
+    (description
+     "bdf2sfd is a
+@uref{https://en.wikipedia.org/wiki/Glyph_Bitmap_Distribution_Format,
+BDF} to @uref{https://fontforge.org/docs/techref/sfdformat.html, SFD}
+converter, allowing to vectorize bitmap fonts.  It works by converting
+each pixel of a glyph to a polygon, which produces large and
+unoptimized SFD files that should be post-processed using
+@uref{https://fontforge.org, FontForge}.")
+    (license license:bsd-2)))

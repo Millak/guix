@@ -32,7 +32,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022, 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
@@ -6333,7 +6333,7 @@ expression and a list of abbreviations (built in and given).")
 (define-public perl-lingua-translit
   (package
     (name "perl-lingua-translit")
-    (version "0.28")
+    (version "0.29")
     (source
      (origin
        (method url-fetch)
@@ -6341,7 +6341,7 @@ expression and a list of abbreviations (built in and given).")
                            "Lingua-Translit-" version ".tar.gz"))
        (sha256
         (base32
-         "1qgap0j0ixmif309dvbqca7sy8xha9xgnj9s2lvh8qrczkc92gqi"))))
+         "0lkpb698p1a5b7r0m5mz23k95cgbr4vm9mfrnw4dgnkr02ygmlhs"))))
     (build-system perl-build-system)
     (arguments
      (list

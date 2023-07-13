@@ -477,7 +477,7 @@ significantly increases the risk of irreversible data loss!")
 (define-public gocryptfs
   (package
     (name "gocryptfs")
-    (version "2.3.1")
+    (version "2.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -486,7 +486,7 @@ significantly increases the risk of irreversible data loss!")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m0xk5imkx81i1l4wv1j1xh9ckp0gqssq4v46pkkcq2xlv2dvxlr"))))
+                "08pdfx6bs1dc2k7xv54x7i1qbych4a7dlf31qwcm9wlz7lr5lawm"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1364,7 +1364,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.11")
+    (version "2.1.12")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1373,7 +1373,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "1cnfv3adk7prl6b8r3nw62y6dbjy2q7ai68p9xc0g8nhaklf8kx5"))))
+           (base32 "0vbf9kfryprb2mbb65jllf6xpsy44xskshglyqqwj4iyxmma5nk4"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -1951,7 +1951,7 @@ in FUSE for rootless containers.")
 (define-public bees
   (package
     (name "bees")
-    (version "0.9.2")
+    (version "0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1970,7 +1970,7 @@ in FUSE for rootless containers.")
                      (("#include .crucible/city.h.") "#include <city.h>"))))
               (sha256
                (base32
-                "0xik1xg6ma5yglhvs60ny27242iapqwzikmqbgij1avjffs6776a"))))
+                "1j1v9bxijs8gvrb7rg0q1158xjvmfc8dlzwx768fxf3w8w2gfwvz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"

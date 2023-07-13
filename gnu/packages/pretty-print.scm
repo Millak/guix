@@ -56,14 +56,14 @@
 (define-public a2ps
   (package
     (name "a2ps")
-    (version "4.15.4")
+    (version "4.15.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/a2ps/a2ps-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1mvd41xvcy8vk91nndzifasq600kzlswl1379bhnpn49pa23y1ja"))
+                "0zys627j17dcqryzrbc473mxzwyshsbxq7j5cabn7hp70i0ipfw1"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove timestamp from the installed 'README' file.
@@ -167,17 +167,17 @@ It also includes the capability to perform syntax highlighting for several
 different programming languages.")
     (license gpl3+)))
 
-(define-public fmt
+(define-public fmt-10
   (package
     (name "fmt")
-    (version "9.1.0")
+    (version "10.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
                            version "/fmt-" version ".zip"))
        (sha256
-        (base32 "15n9yi6xzzs7g9rm87kg8y5yhl2zrqj3bjr845saa63f6swlrsyc"))))
+        (base32 "10f23avnpad8sakmq514w2bw6cw7xrb30kc3v8k7yn1zbwbcnhs9"))))
     (build-system cmake-build-system)
     (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (native-inputs (list unzip))
@@ -189,9 +189,21 @@ a fast alternative to @code{IOStreams}.")
     ;; The library is bsd-2, but documentation and tests include other licenses.
     (license (list bsd-2 bsd-3 psfl))))
 
+(define-public fmt-9
+  (package
+    (inherit fmt-10)
+    (version "9.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
+                           version "/fmt-" version ".zip"))
+       (sha256
+        (base32 "15n9yi6xzzs7g9rm87kg8y5yhl2zrqj3bjr845saa63f6swlrsyc"))))))
+
 (define-public fmt-8
   (package
-    (inherit fmt)
+    (inherit fmt-9)
     (version "8.1.1")
     (source
      (origin
@@ -203,7 +215,7 @@ a fast alternative to @code{IOStreams}.")
 
 (define-public fmt-8.0
   (package
-    (inherit fmt)
+    (inherit fmt-8)
     (version "8.0.1")
     (source
      (origin
@@ -215,7 +227,7 @@ a fast alternative to @code{IOStreams}.")
 
 (define-public fmt-7
   (package
-    (inherit fmt)
+    (inherit fmt-8)
     (version "7.1.3")
     (source
      (origin
@@ -227,7 +239,7 @@ a fast alternative to @code{IOStreams}.")
 
 (define-public fmt-6
   (package
-    (inherit fmt)
+    (inherit fmt-7)
     (version "6.1.2")
     (source
      (origin
@@ -268,6 +280,10 @@ a fast alternative to @code{IOStreams}.")
      `(("libcxx" ,libcxx+libcxxabi-6)
        ("libcxxabi" ,libcxxabi-6)
        ("clang" ,clang-6)))))
+
+;; Note: Updating fmt causes some 1000s of rebuilds, so let's have a pinned
+;; version.
+(define-public fmt fmt-9)
 
 (define-public source-highlight
   (package

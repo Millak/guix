@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2047,6 +2048,27 @@ Colours can be blended and composed.  Various colour spaces are
 supported.  A module of colour names (\"Data.Colour.Names\") is provided.")
     (license license:expat)))
 
+(define-public ghc-hscolour
+  (package
+    (name "ghc-hscolour")
+    (version "1.24.4")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hscolour" version))
+              (sha256
+               (base32
+                "079jwph4bwllfp03yfr26s5zc6m6kw3nhb1cggrifh99haq34cr4"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "hscolour")))
+    (home-page "http://code.haskell.org/~malcolm/hscolour/")
+    (synopsis "Colourise Haskell code")
+    (description
+     "hscolour is a small Haskell script to colourise Haskell code.  It currently has
+six output formats: ANSI terminal codes (optionally XTerm-256colour codes), HTML
+3.2 with <font> tags, HTML 4.01 with CSS, HTML 4.01 with CSS and mouseover
+annotations, XHTML 1.0 with inline CSS styling, LaTeX, and mIRC chat codes.")
+    (license license:lgpl2.1)))
+
 (define-public ghc-comonad
   (package
     (name "ghc-comonad")
@@ -2445,6 +2467,29 @@ the choice of SSL/TLS, and SOCKS.")
 They stopped crashing the compiler in GHC 7.6.  This package provides
 a vocabulary for working with them.")
     (license license:bsd-2)))
+
+(define-public ghc-constraints-extras
+  (package
+    (name "ghc-constraints-extras")
+    (version "0.4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "constraints-extras" version))
+              (sha256
+               (base32
+                "1irf4kd7a5h1glczbc73c3590m58azn4s68nfrjfg1h96i7mjfgn"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "constraints-extras")))
+    (inputs (list ghc-constraints ghc-aeson))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1fdabah3ilq9yf94916ml3c3rxgcgab1jhzl4mk1zgzsw78j53qf")))
+    (home-page "https://github.com/obsidiansystems/constraints-extras")
+    (synopsis "Utility package for constraints")
+    (description
+     "Convenience functions and TH for working with constraints.  See
+@file{README.md} for example usage.")
+    (license license:bsd-3)))
 
 (define-public ghc-contravariant
   (package
@@ -6315,6 +6360,77 @@ polymorphism.  @code{Lens.Family.Clone} allows for first-class support of
 lenses and traversals for those who require Haskell 98.")
     (license license:bsd-3)))
 
+(define-public ghc-generic-lens-core
+  (package
+    (name "ghc-generic-lens-core")
+    (version "2.2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "generic-lens-core" version))
+              (sha256
+               (base32
+                "08i4c9yb6z84iknrnl9f3f343121j7ilp0a679v81nsjm9xz3rlf"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "generic-lens-core")))
+    (inputs (list ghc-indexed-profunctors))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1dbjhd6k7ypqa9f4h9v2xndgb4mjhfli3n1vjm8r8ga0kfndbqfn")))
+    (home-page "https://github.com/kcsongor/generic-lens")
+    (synopsis "Generically derive traversals, lenses and prisms.")
+    (description
+     "This library uses GHC.Generics to derive efficient optics (traversals,
+lenses and prisms) for algebraic data types in a type-directed way, with a
+focus on good type inference and error messages when possible.  This package
+is the shared internal logic of the @code{generic-lens} and
+@code{generic-optics} libraries.")
+    (license license:bsd-3)))
+
+(define-public ghc-generic-lens
+  (package
+    (name "ghc-generic-lens")
+    (version "2.2.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "generic-lens" version))
+              (sha256
+               (base32
+                "0s4b51s11ssmndmx9m9zbwgv9rb27ajwihsrk10hn582rp4ck3c6"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "generic-lens")))
+    (inputs (list ghc-generic-lens-core ghc-profunctors))
+    (native-inputs (list ghc-lens ghc-inspection-testing ghc-hunit ghc-doctest))
+    (home-page "https://github.com/kcsongor/generic-lens")
+    (synopsis "Generically derive traversals, lenses and prisms.")
+    (description
+     "This library uses @code{GHC.Generics} to derive efficient
+optics (traversals, lenses and prisms) for algebraic data types in a
+type-directed way, with a focus on good type inference and error messages when
+possible.  The library exposes a van Laarhoven interface.  For an alternative
+interface, supporting an opaque optic type, see @code{generic-optics}.")
+    (license license:bsd-3)))
+
+(define-public ghc-these-lens
+  (package
+    (name "ghc-these-lens")
+    (version "1.0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "these-lens" version))
+              (sha256
+               (base32
+                "1v3kj7j4bkywbmdbblwqs5gsj5s23d59sb3s27jf3bwdzf9d21p6"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "these-lens")))
+    (inputs (list ghc-these ghc-lens))
+    (arguments
+     `(#:cabal-revision ("2"
+                         "1mncy6mcwqxy4fwibrsfc3jcx183wfjfvfvbj030y86pfihvbwg3")))
+    (home-page "https://github.com/haskellari/these")
+    (synopsis "Lenses for These")
+    (description "This package provides Prism and Traversals for @code{These}.")
+    (license license:bsd-3)))
+
 (define-public ghc-libffi
   (package
     (name "ghc-libffi")
@@ -9187,6 +9303,26 @@ API.")
     (description "This library provides profunctors for Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-indexed-profunctors
+  (package
+    (name "ghc-indexed-profunctors")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "indexed-profunctors" version))
+              (sha256
+               (base32
+                "1cbccbvrx73drr1jf3yyw0rp1mcfv3jc1rvdcby5xxx4ja543fjs"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "indexed-profunctors")))
+    (home-page "http://hackage.haskell.org/package/indexed-profunctors")
+    (synopsis "Utilities for indexed profunctors")
+    (description
+     "This package contains basic definitions related to indexed profunctors.  These
+are primarily intended as internal utilities to support the @code{optics} and
+@code{generic-lens} package families.")
+    (license license:bsd-3)))
+
 (define-public ghc-project-template
   (package
     (name "ghc-project-template")
@@ -9573,6 +9709,110 @@ propagating configurations that are available at run-time, allowing multiple
 configurations to coexist without resorting to mutable global variables or
 @code{System.IO.Unsafe.unsafePerformIO}.")
     (license license:bsd-3)))
+
+(define-public ghc-reflex
+  (package
+    (name "ghc-reflex")
+    (version "0.8.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "reflex" version))
+              (sha256
+               (base32
+                "1add5bcsyq2k02w2q0ifbyfcvcic1hmjdbgxg8ajd5riam0lhb16"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "reflex")))
+    (inputs (list ghc-memotrie
+                  ghc-bifunctors
+                  ghc-comonad
+                  ghc-commutative-semigroups
+                  ghc-constraints
+                  ghc-constraints-extras
+                  ghc-data-default
+                  ghc-dependent-map
+                  ghc-exception-transformers
+                  ghc-lens
+                  ghc-mmorph
+                  ghc-monad-control
+                  ghc-patch
+                  ghc-prim-uniq
+                  ghc-primitive
+                  ghc-profunctors
+                  ghc-random
+                  ghc-ref-tf
+                  ghc-reflection
+                  ghc-semigroupoids
+                  ghc-syb
+                  ghc-unbounded-delays
+                  ghc-witherable
+                  ghc-these
+                  ghc-semialign
+                  ghc-monoidal-containers
+                  ghc-dependent-sum
+                  ghc-haskell-src-exts
+                  ghc-haskell-src-meta))
+    (native-inputs (list hlint
+                         ghc-split
+                         ghc-filemanip
+                         ghc-these-lens
+                         ghc-hspec
+                         ghc-proctest))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'update-constraints
+           (lambda _
+             (substitute* "reflex.cabal"
+               (("\\bmmorph >= 1\\.0 && < 1\\.2,") "mmorph,")))))))
+    (home-page "https://reflex-frp.org")
+    (synopsis "Higher-order functional reactive programming")
+    (description
+     "This library lets you write interactive programs without callbacks or
+side-effects.  Functional Reactive Programming (FRP) uses composable events
+and time-varying values to describe interactive systems as pure functions.
+Just like other pure functional code, functional reactive code is easier to
+get right on the first try, maintain, and reuse.  Reflex is a
+fully-deterministic, higher-order FRP interface and an engine that efficiently
+implements that interface.")
+    (license license:bsd-3)))
+
+(define-public ghc-reflex-sdl2
+  (let ((commit "6dadf2c4f383b8a58fcd73616996b219c4f93972")
+        (revision "1"))
+    (package
+      (name "ghc-reflex-sdl2")
+      (version (git-version "0.3.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/schell/reflex-sdl2")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06lxfgp18l1car6wd07mbjn4yblnp89acf1i67nd815p2hx0ihbz"))))
+      (build-system haskell-build-system)
+      (properties '((upstream-name . "reflex-sdl2")))
+      (inputs (list ghc-async
+                    ghc-dependent-sum
+                    ghc-exception-transformers
+                    ghc-ref-tf
+                    ghc-primitive
+                    ghc-reflex
+                    ghc-sdl2))
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'update-constraints
+             (lambda _
+               (substitute* "reflex-sdl2.cabal"
+                 (("\\bref-tf +>= 0\\.4 +&& < 0\\.5\\b") "ref-tf")))))))
+      (home-page "https://github.com/schell/reflex-sdl2")
+      (synopsis "SDL2 and Reflex functional reactive programming")
+      (description
+       "This package provides a minimal host for SDL2-based Reflex
+applications.")
+      (license license:expat))))
 
 (define-public ghc-regex
   (package
@@ -10287,6 +10527,47 @@ programming.")
     (description "This package provides Haskell bindings to
 @code{SDL2_mixer}.")
     (license license:bsd-3)))
+
+(define-public ghc-sdl2-ttf
+  (package
+    (name "ghc-sdl2-ttf")
+    (version "2.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "sdl2-ttf" version))
+              (sha256
+               (base32
+                "0sm5lrdif5wmz3iah1658zlr7yr45d1hfihb2hdxdia4h7z1j0mn"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "sdl2-ttf")))
+    (inputs (list ghc-sdl2 ghc-th-abstraction sdl2-ttf))
+    (native-inputs (list pkg-config))
+    (home-page "http://hackage.haskell.org/package/sdl2-ttf")
+    (synopsis "Bindings to SDL2_ttf")
+    (description "This package provides Haskell bindings to SDL2_ttf C++
+library.")
+    (license license:bsd-3)))
+
+(define-public ghc-sdl2-gfx
+  (package
+    (name "ghc-sdl2-gfx")
+    (version "0.3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "sdl2-gfx" version))
+              (sha256
+               (base32
+                "0r9m54ffkp1dv2ffz9i9318qhvpinc76iih7vg1dwq3siwgpxaxw"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "sdl2-gfx")))
+    (inputs (list ghc-lifted-base ghc-monad-control ghc-sdl2 ghc-vector sdl2-gfx))
+    (native-inputs (list pkg-config))
+    (home-page "http://hackage.haskell.org/package/sdl2-gfx")
+    (synopsis "Haskell bindings to SDL2_gfx")
+    (description
+     "This package provides Haskell bindings to the SDL2_gfx graphics
+library.")
+    (license license:expat)))
 
 (define-public ghc-sdl-image
   (package
@@ -12457,6 +12738,28 @@ transformers 0.2 or 0.3 compatibility to run on old versions of the platform,
 but also need those types.")
     (license license:bsd-3)))
 
+(define-public ghc-exception-transformers
+  (package
+    (name "ghc-exception-transformers")
+    (version "0.4.0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "exception-transformers" version))
+              (sha256
+               (base32
+                "1zmd2s40m86c9mhv32l5bvvf5r52cgpxvb4v5phyc3pjwlr7m8g5"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "exception-transformers")))
+    (inputs (list ghc-fail ghc-transformers-compat))
+    (native-inputs (list ghc-hunit ghc-test-framework ghc-test-framework-hunit))
+    (home-page "http://hackage.haskell.org/package/exception-transformers")
+    (synopsis "Type classes and monads for unchecked extensible exceptions")
+    (description
+     "This package provides type classes, a monad and a monad transformer that support
+unchecked extensible exceptions as well as asynchronous exceptions.  It is
+compatible with the transformers package.")
+    (license license:bsd-3)))
+
 (define-public ghc-tree-diff
   (package
     (name "ghc-tree-diff")
@@ -12946,6 +13249,80 @@ and high speed.")
      `(("ghc-hashable" ,ghc-hashable-bootstrap)))
     (native-inputs '())
     (properties '((hidden? #t)))))
+
+(define-public ghc-commutative-semigroups
+  (package
+    (name "ghc-commutative-semigroups")
+    (version "0.1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "commutative-semigroups" version))
+              (sha256
+               (base32
+                "1bmafx363gfsd9wwrf3xyrw9mnw6anmc1zdfv0p8597y4lxxach7"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "commutative-semigroups")))
+    (home-page "http://hackage.haskell.org/package/commutative-semigroups")
+    (synopsis "Commutative semigroups")
+    (description
+     "This package provides a commutative semigroup is a semigroup where the order of
+arguments to mappend does not matter.")
+    (license license:bsd-3)))
+
+(define-public ghc-dependent-sum
+  (package
+    (name "ghc-dependent-sum")
+    (version "0.7.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "dependent-sum" version))
+              (sha256
+               (base32
+                "1frw5965v8i6xqdgs95gg8asgdqcqnmfahz0pmbwiaw5ybn62rc2"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "dependent-sum")))
+    (inputs (list ghc-constraints-extras ghc-some))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "0qybk8x6gyvg8pgf84mywlfajlcvg9pp4rs1wfn9fa7ns6sms88n")))
+    (home-page "https://github.com/obsidiansystems/dependent-sum")
+    (synopsis "Dependent sum type")
+    (description
+     "This package provides a dependent sum is a generalization of a
+particular way of thinking about the @code{Either} type.  @code{Either a b}
+can be thought of as a 2-tuple @code{(tag, value)}, where the value of the tag
+determines the type of the value.  In particular, either @code{tag = Left} and
+@code{value :: a} or @code{tag = Right} and @code{value :: b}.  This package
+allows you to define your own dependent sum types by using your own \"tag\"
+types.")
+    (license license:public-domain)))
+
+(define-public ghc-dependent-map
+  (package
+    (name "ghc-dependent-map")
+    (version "0.4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "dependent-map" version))
+              (sha256
+               (base32
+                "0b0zhyl3wkl4kkrxvq7vwjz3gn0ndxjjgyw9cky8a6xyv190pkjk"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "dependent-map")))
+    (inputs (list ghc-dependent-sum ghc-constraints-extras))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "160p9crvlx1sn60inkwxa6mv1h2d4fgqnpsb2km67zrkpdfyd2s2")))
+    (home-page "https://github.com/obsidiansystems/dependent-map")
+    (synopsis "Dependent finite maps (partial dependent products)")
+    (description
+     "This package provides a type called @@DMap@@ which generalizes @@Data.Map.Map@@,
+allowing keys to specify the type of value that can be associated with them.")
+
+    ;; XXX: The 'LICENSE' file lists several licenses, stating "I have no idea
+    ;; which, if any, of the following licenses apply […].  Any modifications
+    ;; by myself I release into the public domain […]"."
+    (license license:public-domain)))
 
 (define-public ghc-unsafe
   (package
@@ -16289,6 +16666,80 @@ same-and-increasingly-sized values.")
     (description
      "LeanCheck support for @code{test-framework}.  This package can be used
 to incorporate LeanCheck tests into test-framework test suites.")
+    (license license:bsd-3)))
+
+(define-public ghc-prim-uniq
+  (package
+    (name "ghc-prim-uniq")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "prim-uniq" version))
+              (sha256
+               (base32
+                "1l7jlv3pfasn89n2wpgff972npy423vqsidkkn5crxfyqjyzxbdv"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "prim-uniq")))
+    (inputs (list ghc-dependent-sum ghc-primitive))
+    (home-page "https://github.com/obsidiansystems/prim-uniq")
+    (synopsis "Opaque unique identifiers in primitive state monads")
+    (description
+     "This library provides opaque unique identifiers in primitive state
+monads and a GADT-like type using them as witnesses of type equality.")
+    (license license:public-domain)))
+
+(define-public ghc-patch
+  (package
+    (name "ghc-patch")
+    (version "0.0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "patch" version))
+              (sha256
+               (base32
+                "15r2sjlpvp22iwd7qa1lqdq7n8nvqv2klvzrlm3phqq3j5n5x5y5"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "patch")))
+    (inputs (list ghc-constraints-extras
+                  ghc-commutative-semigroups
+                  ghc-dependent-map
+                  ghc-dependent-sum
+                  ghc-lens
+                  ghc-indexed-traversable
+                  ghc-semigroupoids
+                  ghc-witherable
+                  ghc-these
+                  ghc-semialign
+                  ghc-monoidal-containers))
+    (native-inputs (list ghc-hedgehog ghc-hunit ghc-filemanip hlint))
+    (home-page "https://obsidian.systems")
+    (synopsis
+     "Data structures for describing changes to other data structures")
+    (description
+     "This library provides data structures for describing changes to other
+data structures.  In this library, a patch is something that can be applied,
+analogous to a function, and which distinguishes returning the argument it was
+provided from returning something else.")
+    (license license:bsd-3)))
+
+(define-public ghc-ref-tf
+  (package
+    (name "ghc-ref-tf")
+    (version "0.5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "ref-tf" version))
+              (sha256
+               (base32
+                "0isilgcbw12zyh8s2liaj5r9r5m3yg1xskyhag6f36qi60y29hx5"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "ref-tf")))
+    (home-page "http://hackage.haskell.org/package/ref-tf")
+    (synopsis "Type class for monads with references using type families")
+    (description
+     "This package contains a @code{MonadRef} type class that abstracts over
+the details of manipulating references, allowing one to write code that can
+operate in either the @code{ST} monad or the @code{IO} monad.")
     (license license:bsd-3)))
 
 ;;;

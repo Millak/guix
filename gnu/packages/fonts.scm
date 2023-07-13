@@ -55,6 +55,8 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -183,6 +185,28 @@ well as other mediums.")
     (synopsis "Monospace font")
     (description "A monospace font, designed for code listings and the like,
 in print.  With attention to detail for high resolution rendering.")
+    (license license:silofl1.1)))
+
+(define-public font-intel-one-mono
+  (package
+    (name "font-intel-one-mono")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/intel/intel-one-mono")
+                    (commit (string-append "V" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1md57997nzkz75ambsahawzy1x71qvkp6f87zcqibksm66yvcjdc"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/intel/intel-one-mono")
+    (synopsis "Expressive monospaced font family")
+    (description
+     "This package provides Intel One Mono, an expressive monospaced font
+family that's built with clarity, legibility, and the needs of developers in
+mind.")
     (license license:silofl1.1)))
 
 (define-public font-dejavu
@@ -2515,6 +2539,47 @@ orthography of Roman glyphs of Meera Inimai are also based on this
 characteristic so that they sit smoothly with the Tamil glyphs.")
     (license license:silofl1.1)))
 
+(define-public font-ipa
+  (package
+    (name "font-ipa")
+    (version "003.03")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://moji.or.jp/wp-content/ipafont/IPAfont/IPAfont"
+                    (string-join (string-split version #\.) "") ".zip"))
+              (sha256
+               (base32
+                "1rbgfq14ld0cwas6bx5h7pwyv2hkfa8ihnphsaz1brxqliwysmgp"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-read-only
+            (lambda _
+              ;; Otherwise the files have the executable bit set.
+              (for-each (lambda (file) (chmod file #o444))
+                        (find-files "." #:directories? #f))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((font+version
+                     #$(string-append "IPAfont"
+                                      (string-join (string-split version #\.)
+                                                   "")))
+                    (doc-dir (string-append #$output "/share/doc/" #$name)))
+                (with-directory-excursion font+version
+                  (mkdir-p doc-dir)
+                  (copy-file (string-append "Readme_" font+version ".txt")
+                             (string-append doc-dir "/README"))
+                  (copy-file "IPA_Font_License_Agreement_v1.0.txt"
+                             (string-append doc-dir "/LICENSE")))))))))
+    (home-page "https://moji.or.jp/ipafont/")
+    (synopsis "Japanese font from the Information-technology Promotion Agency")
+    (description "This package provides Japanese outline fonts by
+Information-technology Promotion Agency, Japan (IPA)")
+    (license license:ipa)))
+
 (define-public font-ipa-ex
   (package
     (name "font-ipa-ex")
@@ -3194,6 +3259,35 @@ Spleen also has support for Powerline symbols out of the box.")
 minor tweaks to improve readability (a matter of taste of course).
 Most characters are just 4px wide, which is brilliant for low dpi(90-120) displays.")
     (license license:silofl1.1)))
+
+(define-public font-velvetyne-jgs
+  ;; There are no releases nor tags.
+  (let ((revision "1")
+        (commit "b1fe344c6ab4cb97aa9ceb09ba3b6056f826b040"))
+    (package
+      (name "font-velvetyne-jgs")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/velvetyne/jgs")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1hwaylgih66cqwcf68i2xdccrn0p0rbvmlz5f3mlzvm51s5pzqb8"))))
+      (build-system font-build-system)
+      (home-page "http://www.velvetyne.org/fonts/jgs-font")
+      (synopsis "Font designed especially for ASCII art")
+      (description
+       "The jgs font family can be used to combine several
+characters to form contiguous lines.  It contains several fonts:
+@enumerate
+@item jgs5 for sizes multiple of 1o (10px, 20px, 30px)
+@item jgs7 for sizes multiple of 14 (14px, 28px, 42px)
+@item jgs9 for sizes multiples of 18 (18px, 36px, 54px)
+@end enumerate")
+      (license license:silofl1.1))))
 
 (define-public font-recursive
   (package

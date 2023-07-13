@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,6 +90,7 @@
             package-name->name+version
             target-linux?
             target-hurd?
+            system-hurd?
             target-mingw?
             target-x86-32?
             target-x86-64?
@@ -673,6 +675,10 @@ a character other than '@'."
   "Does TARGET represent the GNU(/Hurd) system?"
   (and (string-suffix? "-gnu" target)
        (not (string-contains target "linux"))))
+
+(define* (system-hurd?)
+  "Is the current system the GNU(/Hurd) system?"
+  (and=> (%current-system) target-hurd?))
 
 (define* (target-mingw? #:optional (target (%current-target-system)))
   "Is the operating system of TARGET Windows?"

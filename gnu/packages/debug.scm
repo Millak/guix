@@ -678,7 +678,7 @@ error reporting, better tracing, profiling, and a debugger.")
     (inputs
      (list gdb capnproto python python-pexpect zlib))
     (home-page "https://rr-project.org/")
-    (synopsis "Record and reply debugging framework")
+    (synopsis "Record and replay debugging framework")
     (description
      "rr is a lightweight tool for recording, replaying and debugging
 execution of applications (trees of processes and threads).  Debugging extends
@@ -716,7 +716,7 @@ program to produce symbolic backtraces.")
 (define-public libleak
   (package
     (name "libleak")
-    (version "0.3.5")
+    (version "0.3.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -725,7 +725,7 @@ program to produce symbolic backtraces.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p8mb0hcfp8hdv1klv6rrpkn2zlhjxgkxbbjsk8kszxv7ijln87d"))))
+                "1p6x20mm0dym2qn10d6cvwmh71m93xwcd319g94zkv88hj5q17n6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;no test suite

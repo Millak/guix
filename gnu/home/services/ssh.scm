@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,14 +40,23 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
+  #:autoload   (ice-9 regex) (string-match match:substring)
   #:export (home-openssh-configuration
             home-openssh-configuration-authorized-keys
             home-openssh-configuration-known-hosts
             home-openssh-configuration-hosts
+            home-openssh-configuration-add-keys-to-agent
+            home-openssh-configuration?
+
             home-ssh-agent-configuration
+            home-ssh-agent-openssh
+            home-ssh-agent-socket-directory
+            home-ssh-agent-extra-options
+            home-ssh-agent-configuration?
 
             openssh-host
             openssh-host-host-name
+            openssh-host-match-criteria
             openssh-host-identity-file
             openssh-host-name
             openssh-host-port
@@ -93,7 +104,11 @@
                      (cond ((= family AF_INET) "inet")
                            ((= family AF_INET6) "inet6")
                            ;; The 'else' branch is unreachable.
-                           (else (raise (condition (&error)))))
+                           (else
+                            (raise
+                             (formatted-message
+                              (G_ "~s: invalid address family value")
+                              family))))
                      "\n")
       ""))
 
@@ -103,6 +118,8 @@
 (define (serialize-natural-number field value)
   (string-append "  " (serialize-field-name field) " "
                  (number->string value) "\n"))
+
+(define-maybe boolean)
 
 (define (serialize-boolean field value)
   (string-append "  " (serialize-field-name field) " "
@@ -171,13 +188,40 @@
     (configuration-field-error (source-properties->location properties) 'proxy-command value))
   value))
 
+(define ssh-match-keywords
+  '(canonical final exec host originalhost user localuser))
+
+(define (match-criteria? str)
+  ;; Rule out the case of "all" keyword.
+  (if (member str '("all"
+                    "canonical all"
+                    "final all"))
+      #t
+      (let* ((first (string-take str (string-index str #\ )))
+             (keyword (string->symbol (if (string-prefix? "!" first)
+                                          (string-drop first 1)
+                                          first))))
+        (memq keyword ssh-match-keywords))))
+
+(define-maybe match-criteria)
+
 (define-configuration openssh-host
   (name
-   (string)
-   "Name of this host declaration.")
+   maybe-string
+   "Name of this host declaration.  A @code{openssh-host} must define only
+@code{name} or @code{match-criteria}.  Use host-name @code{\"*\"} for
+top-level options.")
   (host-name
    maybe-string
    "Host name---e.g., @code{\"foo.example.org\"} or @code{\"192.168.1.2\"}.")
+  (match-criteria ;TODO implement stricter match-criteria rules
+   maybe-match-criteria
+   "When specified, this string denotes the set of hosts to which the entry
+applies, superseding the @code{host-name} field.  Its first element must be
+all or one of @code{ssh-match-keywords}.  The rest of the elements are
+arguments for the keyword, or other criteria.  A @code{openssh-host} must
+define only @code{name} or @code{match-criteria}.  Other host configuration
+options will apply to all hosts matching @code{match-criteria}.")
   (address-family
    maybe-address-family
    "Address family to use when connecting to this host: one of
@@ -194,19 +238,19 @@ Additionally, the field can be left unset to allow any address family.")
    maybe-string
    "User name on the remote host.")
   (forward-x11?
-   (boolean #f)
+   maybe-boolean
    "Whether to forward remote client connections to the local X11 graphical
 display.")
   (forward-x11-trusted?
-   (boolean #f)
+   maybe-boolean
    "Whether remote X11 clients have full access to the original X11 graphical
 display.")
   (forward-agent?
-   (boolean #f)
+   maybe-boolean
    "Whether the authentication agent (if any) is forwarded to the remote
 machine.")
   (compression?
-   (boolean #f)
+   maybe-boolean
    "Whether to compress data in transit.")
   (proxy-command
    maybe-string
@@ -232,33 +276,73 @@ through before connecting to the server.")
 @file{~/.ssh/config}."))
 
 (define (serialize-openssh-host config)
-  (define (openssh-host-name-field? field)
-    (eq? (configuration-field-name field) 'name))
+  (define (openssh-host-name-or-match-field? field)
+    (or (eq? (configuration-field-name field) 'name)
+        (eq? (configuration-field-name field) 'match-criteria)))
 
   (string-append
-   "Host " (openssh-host-name config) "\n"
+   (if (maybe-value-set? (openssh-host-name config))
+       (if (maybe-value-set? (openssh-host-match-criteria config))
+           (raise
+            (formatted-message
+             (G_ "define either 'name' or 'match-criteria', not both")))
+           (string-append "Host " (openssh-host-name config) "\n"))
+       (if (maybe-value-set? (openssh-host-match-criteria config))
+           (string-append
+            "Match " (string-join (openssh-host-match-criteria config) " ") "\n")
+           (raise
+            (formatted-message
+             (G_ "define either 'name' or 'match-criteria' once")))))
    (string-concatenate
     (map (lambda (field)
            ((configuration-field-serializer field)
             (configuration-field-name field)
             ((configuration-field-getter field) config)))
-         (remove openssh-host-name-field?
+         (remove openssh-host-name-or-match-field?
                  openssh-host-fields)))))
 
 (define-record-type* <home-openssh-configuration>
   home-openssh-configuration make-home-openssh-configuration
   home-openssh-configuration?
-  (authorized-keys home-openssh-configuration-authorized-keys ;list of file-like
-                   (default #f))
-  (known-hosts     home-openssh-configuration-known-hosts ;unspec | list of file-like
-                   (default *unspecified*))
-  (hosts           home-openssh-configuration-hosts   ;list of <openssh-host>
-                   (default '())))
+  (authorized-keys   home-openssh-configuration-authorized-keys ;list of file-like
+                     (default #f))
+  (known-hosts       home-openssh-configuration-known-hosts ;unspec | list of file-like
+                     (default *unspecified*))
+  (hosts             home-openssh-configuration-hosts   ;list of <openssh-host>
+                     (default '()))
+  (add-keys-to-agent home-openssh-configuration-add-keys-to-agent ;string with limited values
+                     (default "no")))
+
+(define (serialize-add-keys-to-agent value)
+  (define (valid-time-string? str)
+    (and (> (string-length str) 0)
+         (equal?
+          str
+          (match:substring
+           (string-match "\
+[0-9]+|([0-9]+[Ww])?([0-9]+[Dd])?([0-9]+[Hh])?([0-9]+[Mm])?([0-9]+[Ss])?"
+                         str)))))
+
+  (string-append "AddKeysToAgent "
+                 (cond ((member value '("yes" "no" "confirm" "ask")) value)
+                       ((valid-time-string? value) value)
+                       ((and (string-prefix? "confirm" value)
+                             (valid-time-string?
+                              (cdr (string-split value #\ )))) value)
+                       ;; The 'else' branch is unreachable.
+                       (else
+                        (raise
+                         (formatted-message
+                          (G_ "~s: invalid 'add-keys-to-agent' value")
+                          value))))))
 
 (define (openssh-configuration->string config)
-  (string-join (map serialize-openssh-host
-                    (home-openssh-configuration-hosts config))
-               "\n"))
+  (string-join
+   (cons* (serialize-add-keys-to-agent
+           (home-openssh-configuration-add-keys-to-agent config))
+          (map serialize-openssh-host
+               (home-openssh-configuration-hosts config)))
+   "\n"))
 
 (define* (file-join name files #:optional (delimiter " "))
   "Return a file in the store called @var{name} that is the concatenation

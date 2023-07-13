@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021, 2022 Olivier Dion <olivier.dion@polymtl.ca>
+;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,6 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages instrumentation)
+  #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -24,6 +26,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -67,16 +70,14 @@
 (define-public babeltrace
   (package
     (name "babeltrace")
-    (version "2.0.4")
+    (version "2.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.efficios.com/files/babeltrace/babeltrace2-"
                                   version ".tar.bz2"))
               (sha256
-               (base32 "1jlv925pr7hykc48mdvbmqm4ipy1r11xwzapa6fdpdfshmk12kvp"))))
-
+               (base32 "1d7jxljbfb4y8jmxm7744ndhh9k9rw8qhmnljb19wz7flzr9x3vv"))))
     (build-system gnu-build-system)
-
     (arguments
      `(#:tests? #f  ; FIXME - When Python's bindings are enabled, tests do not
                     ; pass.
@@ -176,7 +177,9 @@ standard library headers.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1m04pg824rqx647wvk9xl33ri8i6mm0vmrz9924li25dxbr4zqd5"))))
+               (base32 "1m04pg824rqx647wvk9xl33ri8i6mm0vmrz9924li25dxbr4zqd5"))
+              (patches
+               (search-patches "dyninst-fix-glibc-compatibility.patch"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -314,14 +317,14 @@ coverage.")
 (define-public lttng-modules
   (package
     (name "lttng-modules")
-    (version "2.13.5")
+    (version "2.13.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-modules/"
                                   "lttng-modules-" version ".tar.bz2"))
               (sha256
                (base32
-                "0277yfp57psnvn5g40mk09zryp0r4saynns213qak18fv0l39szc"))))
+                "19xh8nm19vx6c2i1adqpa8q2xsvxn59qxa6z186iywbhr0dgpaqk"))))
     (build-system linux-module-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -498,6 +501,40 @@ analysis and instrumentation based on Linux perf_events (aka perf) and
 ftrace.")
     (license (list license:gpl2))))
 
+(define-public systemtap
+  (package
+    (name "systemtap")
+    (version "4.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://sourceware.org/ftp/systemtap/releases/" name "-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "161smpv4ajqfncmgylvs89bbix1id60nf0g7clmga2lxxax3646h"))))
+    (build-system gnu-build-system)
+    (native-inputs (list cpio python))
+    (inputs (list elfutils))
+
+    (home-page "https://sourceware.org/systemtap/")
+    (synopsis "GNU/Linux trace/probe tool")
+    (description
+     "SystemTap provides infrastructure to simplify the
+gathering of information about the running Linux system.  This assists
+diagnosis of a performance or functional problem.  SystemTap eliminates the
+need for the developer to go through the tedious and disruptive
+instrument, recompile, install, and reboot sequence that may be otherwise
+required to collect data.
+
+SystemTap provides a simple command line interface and scripting language for
+writing instrumentation for a live running kernel plus user-space applications.
+We are publishing samples, as well as enlarging the internal \"tapset\" script
+library to aid reuse and abstraction.  SystemTap is a tool for complex
+tasks that may require live analysis, programmable on-line response, and
+whole-system symbolic access, and can also handle simple tracing jobs.")
+    (license license:gpl2+)))
+
 (define-public uftrace
   (package
     (name "uftrace")
@@ -512,31 +549,35 @@ ftrace.")
                (base32 "0gk0hv3rnf5czvazz1prg21rf9qlniz42g5b389n8a29hqj4q6xr"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list
-        (string-append "CC=" ,(cc-for-target)))
-       ;; runtest hang at some point -- probably dues to
-       ;; failed socket connection -- but we want to keep the
-       ;; unit tests.  Change the target to "test" when fixed.
-       #:test-target "unittest"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs target #:allow-other-keys)
-             (let ((arch ,(platform-linux-architecture
-                           (lookup-platform-by-target-or-system
-                            (or (%current-target-system)
-                                (%current-system))))))
-               (setenv "ARCH"
-                       (cond
-                        ((string=? arch "arm64") "aarch64")
-                        (else arch)))
-               (when target
-                 (setenv "CROSS_COMPILE" (string-append target "-"))))
-             (setenv "SHELL" (which "sh"))
-             (invoke "./configure"
-                     (string-append "--prefix="
-                                    (assoc-ref outputs "out"))))))))
+     (list
+      #:modules
+      `((ice-9 match)
+        ,@%gnu-build-system-modules)
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target)))
+      ;; runtest hangs at some point -- probably due to
+      ;; failed socket connection -- but we want to keep the
+      ;; unit tests.  Change the target to "test" when fixed.
+      #:test-target "unittest"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs target #:allow-other-keys)
+              (let ((arch #$(platform-linux-architecture
+                             (lookup-platform-by-target-or-system
+                              (or (%current-target-system)
+                                  (%current-system))))))
+                (setenv "ARCH"
+                        (match arch
+                          ("arm64" "aarch64")
+                          (_ arch)))
+                (when target
+                  (setenv "CROSS_COMPILE" (string-append target "-"))))
+              (setenv "SHELL" (which "sh"))
+              (invoke "./configure"
+                      (string-append "--prefix="
+                                     #$output)))))))
     (inputs
      (list capstone
            elfutils

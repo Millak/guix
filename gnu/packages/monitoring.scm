@@ -591,7 +591,7 @@ devices.")
 (define-public fswatch
   (package
     (name "fswatch")
-    (version "1.16.0")
+    (version "1.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -600,7 +600,7 @@ devices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zsvc8arza2ypnnmv4m0qfpnldmy1zh10q6wss05ibmanslfj2ql"))))
+                "15bk2adv1ycqn3rxvpvapwrlzsxw8fvcahqiglfkibwb9ss7s8dh"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gettext-minimal libtool))
@@ -791,7 +791,7 @@ provides a simple Python client for the StatsD daemon.")
 (define-public batsignal
   (package
     (name "batsignal")
-    (version "1.6.0")
+    (version "1.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -800,7 +800,7 @@ provides a simple Python client for the StatsD daemon.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b1j6mljnqgxwr3id3r9shzhsjk5r0qdh9cxkvy1dm4kzbyc4dxq"))))
+                "0f8jabql70nxkslgxd8pcfllqy4bnbf1c19rcri0dp054aszk637"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

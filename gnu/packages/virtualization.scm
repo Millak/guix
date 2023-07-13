@@ -596,55 +596,54 @@ server and embedded PowerPC, and S390 guests.")
     (name "libx86emu")
     (version "3.5")
     (home-page "https://github.com/wfeldt/libx86emu")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url home-page)
-         (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11nj3y7maz9ch15b1c2b69gd8d7mpaha377zpdbvfsmg5w9zz93l"))
-       (modules
-        '((guix build utils)))
-       (snippet
-        `(begin
-           ;; Remove git2log program file.
-           (delete-file "git2log")
-           ;; Remove variables that depends on git2log.
-           (substitute* "Makefile"
-             (("GIT2LOG.*=.*$") "")
-             (("GITDEPS.*=.*$") "")
-             (("BRANCH.*=.*$") ""))))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "11nj3y7maz9ch15b1c2b69gd8d7mpaha377zpdbvfsmg5w9zz93l"))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          ;; Remove git2log program file.
+                          (delete-file "git2log")
+                          ;; Remove variables that depends on git2log.
+                          (substitute* "Makefile"
+                            (("GIT2LOG.*=.*$") "")
+                            (("GITDEPS.*=.*$") "")
+                            (("BRANCH.*=.*$") ""))))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (include (string-append out "/include"))
-                    (lib (string-append out "/lib")))
-               ;; Correct the values of version and install directories.
-               (substitute* "Makefile"
-                 (("VERSION.*=.*$")
-                  (string-append "VERSION := "
-                                 ,version "\n"))
-                 (("PREFIX.*=.*$")
-                  (string-append "PREFIX := " out "\n"))
-                 (("MAJOR_VERSION.*=.*$")
-                  (string-append "MAJOR_VERSION := "
-                                 ,(version-major version) "\n"))
-                 (("LIBDIR.*=.*$")
-                  (string-append "LIBDIR = " lib "\n"))
-                 (("/usr/include") include)))))
-         (delete 'configure))))         ; no configure script
-    (native-inputs
-     (list nasm perl))
+       ;; sys/io.h is not present from glibc on non-x86 systems.
+       #:tests? ,(and (target-x86?)
+                      (not (%current-target-system)))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (include (string-append out "/include"))
+                             (lib (string-append out "/lib")))
+                        ;; Correct the values of version and install directories.
+                        (substitute* "Makefile"
+                          (("VERSION.*=.*$")
+                           (string-append "VERSION := "
+                                          ,version "\n"))
+                          (("PREFIX.*=.*$")
+                           (string-append "PREFIX := " out "\n"))
+                          (("MAJOR_VERSION.*=.*$")
+                           (string-append "MAJOR_VERSION := "
+                                          ,(version-major version) "\n"))
+                          (("LIBDIR.*=.*$")
+                           (string-append "LIBDIR = " lib "\n"))
+                          (("/usr/include")
+                           include)))))
+                  (delete 'configure)))) ;no configure script
+    (native-inputs (list nasm perl))
     (synopsis "Library for x86 emulation")
-    (description "Libx86emu is a small library to emulate x86 instructions.  The
+    (description
+     "Libx86emu is a small library to emulate x86 instructions.  The
 focus here is not a complete emulation but to cover enough for typical
 firmware blobs.  You can
 @enumerate
@@ -2436,7 +2435,7 @@ which is a hypervisor.")
 (define-public osinfo-db-tools
   (package
     (name "osinfo-db-tools")
-    (version "1.9.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-tools-"
@@ -2444,7 +2443,7 @@ which is a hypervisor.")
 
               (sha256
                (base32
-                "1h23a8nzdxjyvw44dwh903563n3b1z5skx8g0b1p1v5cif3iqpr5"))))
+                "0s6ah44wbay7kb3l1ydr0r4ip335zgf6s12ghjjnww0nni9xsb40"))))
     (build-system meson-build-system)
     (inputs
      (list libsoup-minimal-2 libxml2 libxslt json-glib libarchive))
@@ -2466,14 +2465,14 @@ administrators and developers in managing the database.")
 (define-public osinfo-db
   (package
     (name "osinfo-db")
-    (version "20220516")
+    (version "20230518")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0vfsdk3c6n6y04c5rf92m31zvl969kaniyx2fqywbp69mzc6j3yn"))))
+                "0vfch55xgz1p16sv84ahb59apg8j7n8p4kxv0rq7rw7jwk65pv6a"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))

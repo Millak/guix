@@ -171,14 +171,14 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20230321")
+    (version "20230622")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "0ml2z9ij674bd4227566n0547pcpxpmimp4xw4hj52kl1265czgd"))))
+        (base32 "007ckj2381bmwpxy5zmy2m19p2hxaj7ld80b5lv7i798c2fwj15l"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal))
@@ -211,7 +211,7 @@ generate such a compilation database.")
          (string-append
           "--with-default-sys-path=" #$output "/share/mk"))
       #:make-flags
-      #~(list "INSTALL=install"))) ;; use coreutils install
+      #~(list "INSTALL=install")))      ; use coreutils' install
     (home-page "http://www.crufty.net/help/sjg/bmake.htm")
     (synopsis "BSD's make")
     (description
@@ -293,6 +293,7 @@ files and generates build instructions for the Ninja build system.")
 (define-public meson
   (package
     (name "meson")
+    (replacement meson/newer)
     (version "1.1.0")
     (source (origin
               (method url-fetch)
@@ -328,6 +329,19 @@ Autoconf/Automake/make combo.  Build specifications, also known as @dfn{Meson
 files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
+
+(define-public meson/newer
+  (package
+    (inherit meson)
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/mesonbuild/meson/"
+                                  "releases/download/" version  "/meson-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "073vf8059nzs6p5aaqr5wva4pgl81540szdb5yw9yhyajwgm8jyh"))))))
 
 (define-public meson-python
   (package
@@ -535,14 +549,14 @@ software.")
 (define-public tup
   (package
     (name "tup")
-    (version "0.7.9")
+    (version "0.7.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://gittup.org/tup/releases/tup-v"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0gnd2598xqgwihdkfkx7qn0q6p4n7npam1fy83mp7s04zwj99syc"))
+                "1157qfnhjakm3h07y7h38lrjw5650gkif34k30bnrsypmwl5xyzb"))
               (patches (search-patches "tup-unbundle-dependencies.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -591,7 +605,7 @@ software.")
                    (display "au BufNewFile,BufRead Tupfile,*.tup setf tup")))
                #t))))))
     (inputs
-     (list fuse pcre
+     (list fuse-3 pcre
            `(,pcre "bin") ; pcre-config
            sqlite))
     (native-inputs

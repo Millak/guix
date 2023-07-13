@@ -73,6 +73,7 @@
 ;;; Copyright © 2022, 2023 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -485,17 +486,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.3-version "6.3.6")
+(define-public linux-libre-6.3-version "6.3.12")
 (define-public linux-libre-6.3-gnu-revision "gnu")
 (define deblob-scripts-6.3
   (linux-libre-deblob-scripts
    linux-libre-6.3-version
    linux-libre-6.3-gnu-revision
    (base32 "01ivgzq18fwas87q84jx9jipcw58kwdnch7ylwg06d98ncga27px")
-   (base32 "0la20slh52jm4cg4v2liphhqqx4808gm6pfqcxiawj13a4ps9ygk")))
+   (base32 "1i6vyakvqgmr3lcmr0aj8n7lbcksrp4d0rm1sz7cz64hwbsr67pq")))
 (define-public linux-libre-6.3-pristine-source
   (let ((version linux-libre-6.3-version)
-        (hash (base32 "1vr418rf0zd16fq4vaxda1w2ccng2n9l0ysakmgz9xqbz86iysks")))
+        (hash (base32 "1mvcirkhqnf03cci3jiq077fs9b42a3xdk3zjkpyim3x43ydwzyb")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.3)))
@@ -503,67 +504,67 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.32")
+(define-public linux-libre-6.1-version "6.1.38")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
    (base32 "1b96867b46m36l88qnq2d4i9y43ghw97z9jajrh11cvb6kq4xi67")
-   (base32 "1yv15mb278wlrn8gb2yjm0mczirzixy668h221vcpbz416ibxx1m")))
+   (base32 "1qq3nsznblz5fkwahxwq26csmrmjbxh8xknm2z4zw6b6k9svzb1b")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0v0saai735jzaj3dbpgp6sbdi95n3lmv78pbg1xy9fd2kfhbg23w")))
+        (hash (base32 "0hrdh1w9z8bgy4cxqsxfkwa01yincfw1mq1bbwm36zczc0dzk97r")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.115")
+(define-public linux-libre-5.15-version "5.15.120")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
    (base32 "0w5wyw8zp124nwydjvpnih7q3lp7gadlgsw60syw45nqq0afvlz3")
-   (base32 "00n8c7ghfs36bvz0yjw6w9daf5zcgj94kxxn27bfyfm274rkddmz")))
+   (base32 "1zljgvzr8irs3acq436i2iyana9vgx4k1pm3id4rz0fbaqfma602")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "050j9z0wg5glgxwbmzfq4l8lv8y7g3nc2rz8342yjdcjfxh6h1qv")))
+        (hash (base32 "1xl3nrykbxdwv5a9rk0xnb7l61dsyjvkm1ryrdii09vbmsg0i6b4")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.182")
+(define-public linux-libre-5.10-version "5.10.186")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
    (base32 "0mw7qn77y9c6wrnw4rjvf75cpm1w6n1aqqhf8cnghcb97p2yxxrf")
-   (base32 "12jhak2bw1jy2jk70vrm66kjvh0cd6c8f2qiy2bk40rq7bf62mr6")))
+   (base32 "1739xvyzi3i7d12mvsvnqa7208pvwfss43kzin71l9svw0405vp5")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1xp9bxk2vyw29bq3z854ly4cj94z8i52yl5hq4a3l3j6564wb3ny")))
+        (hash (base32 "1qqv91r13akgik1q4jybf8czskxxizk6lpv4rsvjn9sx2dm2jq0y")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.245")
+(define-public linux-libre-5.4-version "5.4.249")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
    linux-libre-5.4-gnu-revision
    (base32 "1nlgk8ajb5wl3aa96h9a0pb9j5a5wmrbpk63varn557x1d00r7wj")
-   (base32 "070j069sj6spy2wkzfzm1d5jd7pffm0s1m917wblc8d3x8pbgvf8")))
+   (base32 "0ll19zlgx5sbr7gvi93lgavrnzlgv6dpj2yp2x63fj6vdba5iwgc")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "195ixy9l18mhwvzj7v63fkyifb9mysq950afxh6ixlpvg0c8h1wn")))
+        (hash (base32 "079mylc5j7hk5xn59q3z2xydyh88pq7yipn67x3y7nvf5i35hm6w")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.284")
+(define-public linux-libre-4.19-version "4.19.288")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -573,12 +574,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "05yqb59gj7mq5ha9xg045bz517sdg6janfa2yjq70qa6ahpc5fac")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0gnhgxcpx9s96wa3dqgxmdjb7x12i94yh0gmv7k9nbz5qwhfxfbz")))
+        (hash (base32 "1sz3jp6kx0axdwp0wsq903q1090rbav9d12m5128335m8p2d1srk")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.316")
+(define-public linux-libre-4.14-version "4.14.320")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -588,7 +589,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1ccggm19nl7pdcxmsm08fkqy8phz8rqfmww5ypizibdmnrmpn2v9")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0xlg93va7dbz2w428kiw7vr2sds3542fqq57rwyf51ykq7qii0xc")))
+        (hash (base32 "09bn18jvazkc55bqdjbxy8fbca7vjhi9xl2h02w0sq3f1jf6g0pd")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -1396,7 +1397,7 @@ and should be used with caution, especially on untested models.")
 (define-public corefreq
   (package
     (name "corefreq")
-    (version "1.95.2")
+    (version "1.96.5")
     (source
      (origin
        (method git-fetch)
@@ -1405,7 +1406,7 @@ and should be used with caution, especially on untested models.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "108fr056zmbipiv1nsrjccn3ky0jbcwan43big34nyq1c9dqjq1x"))))
+        (base32 "15wi9v7zcd62ab03zji43l33f1mc70lsdvqylv33kfpaf3k72lm4"))))
     (build-system linux-module-build-system)
     (outputs (list "out" "linux-module"))
     (arguments
@@ -2621,7 +2622,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
 (define-public strace
   (package
     (name "strace")
-    (version "6.2")
+    (version "6.4")
     (home-page "https://strace.io")
     (source (origin
              (method url-fetch)
@@ -2629,7 +2630,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
                                  "/strace-" version ".tar.xz"))
              (sha256
               (base32
-               "1s3pj6a6xx1p1w98ik03d8hc4xssl4ha4aa0039nhqj196j3hz8c"))
+               "0f4jxgsdr76mf51kv2kwhv39ap7kilrchkfvqrhd5pvzqnx7v617"))
              (patches (search-patches "strace-readlink-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -4555,100 +4556,95 @@ interface.")
 (define-public crda
   (package
     (name "crda")
-    (version "3.18")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kernel.org/software/network/crda/"
-                                  "crda-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1gydiqgb08d9gbx4l6gv98zg3pljc984m50hmn3ysxcbkxkvkz23"))
-              (patches (search-patches "crda-optional-gcrypt.patch"))))
+    (version "4.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/crda.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ajh8zx84p15y9wawh764zawniwn059iw9m32v56ajvkz9xbnkp2"))
+       (patches (search-patches "crda-optional-gcrypt.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'gzip-determinism
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("gzip") "gzip --no-name"))
-                      #t))
-                  ,@(if (%current-target-system)
-                        '((add-after
-                            'unpack 'fix-pkg-config
-                            (lambda* (#:key target #:allow-other-keys)
-                                     (substitute*
-                                       "Makefile"
-                                       (("pkg-config")
-                                        (string-append target "-pkg-config")))
-                                     #t)))
-                        '())
-                  (add-before
-                   'build 'no-werror-no-ldconfig
-                   (lambda _
-                     (substitute* "Makefile"
-                       (("-Werror")  "")
-                       (("ldconfig") "true"))
-                     #t))
-                  (add-before
-                   'build 'set-regulator-db-file-name
-                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     ;; Tell CRDA where to find our database.
-                     (let ((regdb (assoc-ref (or native-inputs inputs)
-                                             "wireless-regdb")))
-                       (substitute* "crda.c"
-                         (("\"/lib/crda/regulatory.bin\"")
-                          (string-append "\"" regdb
-                                         "/lib/crda/regulatory.bin\"")))
-                       #t))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'gzip-deterministically
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("gzip" command)
+                      (string-append command " --no-name")))))
+               #$@(if (%current-target-system)
+                     #~((add-after 'unpack 'fix-pkg-config
+                         (lambda* (#:key target #:allow-other-keys)
+                           (substitute* "Makefile"
+                             (("pkg-config" command)
+                              (string-append target "-" command))))))
+                     #~())
+               (add-before 'build 'patch-Makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("ldconfig") "true"))))
+               (add-before 'build 'set-regulatory-db-file-name
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   ;; Tell CRDA where to find our database.
+                   (let ((regdb (assoc-ref (or native-inputs inputs)
+                                           "wireless-regdb")))
+                     (substitute* "crda.c"
+                       (("\"/lib/crda/regulatory.bin\"")
+                        (string-append "\"" regdb
+                                       "/lib/crda/regulatory.bin\"")))))))
        #:test-target "verify"
-       #:make-flags (let ((out     (assoc-ref %outputs "out"))
-                          (regdb   (assoc-ref %build-inputs "wireless-regdb")))
-                      (list
-                       (string-append "CC=" ,(cc-for-target))
-                       "V=1"
+       #:make-flags
+       #~(list
+          (string-append "CC=" #$(cc-for-target))
+          "V=1"
 
-                       ;; Disable signature-checking on 'regulatory.bin'.
-                       ;; The reason is that this simplifies maintenance
-                       ;; on our side (no need to manage a distro key
-                       ;; pair), and we can guarantee integrity of
-                       ;; 'regulatory.bin' by other means anyway, such as
-                       ;; 'guix gc --verify'.  See
-                       ;; <https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb>
-                       ;; for a discssion.
-                       "USE_OPENSSL=0"
+          ;; Disable signature-checking on 'regulatory.bin'.
+          ;; The reason is that this simplifies maintenance
+          ;; on our side (no need to manage a distro key
+          ;; pair), and we can guarantee integrity of
+          ;; 'regulatory.bin' by other means anyway, such as
+          ;; 'guix gc --verify'.  See
+          ;; <https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb>
+          ;; for a discssion.
+          "USE_OPENSSL=0"
 
-                       (string-append "PREFIX=" out)
-                       (string-append "SBINDIR=" out "/sbin/")
-                       (string-append "UDEV_RULE_DIR="
-                                      out "/lib/udev/rules.d")
-                       (string-append "LDFLAGS=-Wl,-rpath="
-                                      out "/lib -L.")
-                       (string-append "REG_BIN=" regdb
-                                      "/lib/crda/regulatory.bin")
-                       "all_noverify"))))
+          (string-append "PREFIX=" #$output)
+          (string-append "SBINDIR=" #$output "/sbin/")
+          (string-append "UDEV_RULE_DIR="
+                         #$output "/lib/udev/rules.d")
+          (string-append "LDFLAGS=-Wl,-rpath="
+                         #$output "/lib -L.")
+          (string-append "REG_BIN="
+                         #$(this-package-native-input "wireless-regdb")
+                         "/lib/crda/regulatory.bin")
+          "all_noverify")))
     (native-inputs (list pkg-config wireless-regdb))
     (inputs (list libnl))
     (home-page
      "https://wireless.wiki.kernel.org/en/developers/Regulatory/CRDA")
-    (synopsis "Central regulatory domain agent (CRDA) for WiFi")
+    (synopsis "@acronym{CRDA, Central Regulatory Domain Agent} for WiFi")
     (description
-     "The Central Regulatory Domain Agent (CRDA) acts as the udev helper for
-communication between the kernel Linux and user space for regulatory
+     "The @acronym{CRDA, Central Regulatory Domain Agent} acts as the udev
+helper for communication between the kernel Linux and user space for regulatory
 compliance.")
     (license license:copyleft-next)))
 
 (define-public wireless-regdb
   (package
     (name "wireless-regdb")
-    (version "2023.02.13")
+    (version "2023.05.03")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://kernel.org/software/network/wireless-regdb/"
                     "wireless-regdb-" version ".tar.xz"))
               (sha256
-               (base32 "0wrf1c7mbsklwdn7jpwzlpjxwj0vgr61qyh88lx7bi2dd6lfi0gy"))
+               (base32 "04lc9jp8zxhyqxvkhrm637sswi2xm48jw8jnp3iflnknnf5d0m7j"))
 
               ;; We're building 'regulatory.bin' by ourselves.
               (snippet '(begin
@@ -4699,9 +4695,9 @@ compliance.")
      "https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb")
     (synopsis "Wireless regulatory database")
     (description
-     "This package contains the wireless regulatory database for the Central
-Regulatory Database Agent (CRDA).  The database contains information on
-country-specific regulations for the wireless spectrum.")
+     "This package contains the wireless regulatory database for the
+@acronym{CRDA, Central Regulatory Database Agent}.  The database contains
+information on country-specific regulations for the wireless spectrum.")
     (license license:isc)))
 
 (define-public lm-sensors
@@ -5879,7 +5875,7 @@ and copy/paste text in the console and in xterm.")
 (define-public btrfs-progs
   (package
     (name "btrfs-progs")
-    (version "6.3")
+    (version "6.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
@@ -5887,7 +5883,7 @@ and copy/paste text in the console and in xterm.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0zbampc47nq3h8as3rda2apns5sj93ywxnrkal74kjvyg3zvv820"))))
+                "093wy9dsvp22nwlsk203l91h3yzkccvzdw58n3sicy41sncn3wm9"))))
     (build-system gnu-build-system)
     (outputs '("out" "static")) ;static versions of the binaries in "out"
     (arguments
@@ -9175,7 +9171,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.3.63")
+    (version "0.3.70")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9184,18 +9180,20 @@ types and interfaces and translates so that the X server can use them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pkngynvhxc6iyv75gsyqjy18ky4si9dhvpavb9xwq5xj71nj0hr"))))
+                "1n74rrbwymm89ri4daa4v092f4b81wrak4vg685xfz2wl89p64n6"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
-              "-Dsystemd=disabled"
+              "-Dman=enabled"
+              "-Drlimits-install=false"
               "-Dsession-managers=[]"
               "-Dsysconfdir=/etc"
-              "-Dman=enabled")))
+              "-Dsystemd=disabled")))
     (native-inputs
-     (list pkg-config
+     (list `(,glib "bin")
+           pkg-config
            python-docutils))
     (inputs (list alsa-lib
                   avahi
@@ -9235,7 +9233,7 @@ of Linux application development.")
 (define-public wireplumber
   (package
     (name "wireplumber")
-    (version "0.4.13")
+    (version "0.4.14")
     (source
      (origin
        (method git-fetch)
@@ -9245,7 +9243,7 @@ of Linux application development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07psjb7rxsigwnwnzmw2y767vhyyha7cn8i8dgq80rzhwgl0sgv7"))))
+        (base32 "0jmnd6000j4wx68lxgz5b4g4hxkf243ivi9swaaf8rnx99cbx91w"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dsystemd=disabled"
@@ -9517,7 +9515,7 @@ modification of BPF objects on the system.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.16.0")
+    (version "0.18.0")
     (source
      (origin
        (method git-fetch)
@@ -9526,7 +9524,7 @@ modification of BPF objects on the system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v1376wfk4gy5rrjdsck6r3347nb0bgbj70998z1bkx9z95wm3ab"))
+        (base32 "0n0mm5vlaildilq5nmjymmq8ijif1lcyfin76wcmhzwfriq4n87r"))
        (patches (search-patches "bpftrace-disable-bfd-disasm.patch"))))
     (build-system cmake-build-system)
     (native-inputs
@@ -9734,6 +9732,41 @@ These trace events are logged in @file{/sys/kernel/debug/tracing} and reported
 through standard log mechanisms like syslog.")
     (license license:gpl2)))
 
+(define-public renameat2
+  ;; This is a Gist, with no release or tags.
+  (let ((revision "0")
+        (commit "5c5193f20142511a5fc7069a539f4e5aba0ea470"))
+    (package
+      (name "renameat2")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://gist.githubusercontent.com/"
+                                    "eatnumber1/f97ac7dad7b1f5a9721f/raw/"
+                                    commit "/renameat2.c"))
+                (sha256
+                 (base32
+                  "07b4hsxqjm610sdkm4nxhp0gnl2s7gzlh4zdnja5ay40v4x24bb9"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:phases #~(modify-phases %standard-phases
+                     (delete 'configure)
+                     (replace 'build
+                       (lambda _
+                         (invoke #$(cc-for-target) "renameat2.c"
+                                 "-o" "renameat2")))
+                     (replace 'install
+                       (lambda _
+                         (install-file "renameat2"
+                                       (string-append #$output "/bin")))))))
+      (home-page "https://gist.github.com/eatnumber1/f97ac7dad7b1f5a9721f")
+      (synopsis "Command to call the renameat2 Linux system call")
+      (description "This package provides a @command{renameat2} command that
+calls the Linux-specific @code{renameat2} system call.")
+      (license license:expat))))
+
 (define-public libgpiod
   (package
     (name "libgpiod")
@@ -9820,6 +9853,7 @@ formats.")
              (url "https://github.com/haampie/libtree")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "libtree-fix-check-non-x86.patch"))
        (sha256
         (base32 "1jbc60cslzcfxk9jwva51ncr1zl1nz0fkgfjdckgv81is11nswmb"))))
     (arguments

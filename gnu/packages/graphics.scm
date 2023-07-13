@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
@@ -189,13 +189,29 @@ framebuffer graphics, audio output and input event.")
            (lambda _
              (substitute* "src/core/core.c"
                (("..BUILDTIME..") ""))))
+         ;; TODO: Move patch to source.
+         ,@(if (target-arm32?)
+             `((add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (invoke "patch" "--force" "-p1" "-i"
+                           (assoc-ref inputs "patch-file")))))
+             '())
          (add-after 'unpack 'disable-configure-during-bootstrap
            (lambda _
              (substitute* "autogen.sh"
                (("^.*\\$srcdir/configure.*") ""))
              #t)))))
     (native-inputs
-     (list autoconf automake libtool perl pkg-config))
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("perl" ,perl)
+       ("pkg-config" ,pkg-config)
+       ,@(if (target-arm32?)
+         `(("patch" ,patch)
+           ("patch-file"
+            ,(search-patch "directfb-davinci-glibc-228-compat.patch")))
+         '())))
     (inputs
      (list alsa-lib
            ffmpeg
@@ -808,7 +824,8 @@ many more.")
      ;; precision), as was discussed and patched long ago:
      ;; <https://issues.guix.gnu.org/22049>.  It seems the relevant fixes
      ;; didn't make it upstream, so skip tests.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (target-x86-32?)
+                             (%current-target-system)))))
     (home-page "https://github.com/AcademySoftwareFoundation/Imath")
     (synopsis "Library of math operations for computer graphics")
     (description
@@ -1448,11 +1465,11 @@ in Julia).")
 (define-public openmw-openscenegraph
   ;; OpenMW prefers its own fork of openscenegraph:
   ;; https://wiki.openmw.org/index.php?title=Development_Environment_Setup#OpenSceneGraph.
-  (let ((commit "36a962845a2c87a6671fd822157e0729d164e940"))
+  (let ((commit "69cfecebfb6dc703b42e8de39eed750a84a87489"))
     (hidden-package
      (package
        (inherit openscenegraph)
-       (version (git-version "3.6" "1" commit))
+       (version (git-version "3.6" "2" commit))
        (outputs (list "out"))
        (source
         (origin
@@ -1463,7 +1480,7 @@ in Julia).")
           (file-name (git-file-name (package-name openscenegraph) version))
           (sha256
            (base32
-            "05yhgq3qm5q277y32n5sf36vx5nv5qd3zlhz4csgd3a6190jrnia"))))
+            "1qayk2gklm8zvss90dcjfxv6717rvcmwmgmgyy1qzkli67a0zbw2"))))
        (arguments
         (substitute-keyword-arguments (package-arguments openscenegraph)
           ((#:configure-flags flags)
@@ -1471,14 +1488,14 @@ in Julia).")
            #~(append
               '("-DBUILD_OSG_PLUGINS_BY_DEFAULT=0"
                 "-DBUILD_OSG_PLUGIN_OSG=1"
+                "-DBUILD_OSG_PLUGIN_DAE=1"
                 "-DBUILD_OSG_PLUGIN_DDS=1"
                 "-DBUILD_OSG_PLUGIN_TGA=1"
                 "-DBUILD_OSG_PLUGIN_BMP=1"
                 "-DBUILD_OSG_PLUGIN_JPEG=1"
                 "-DBUILD_OSG_PLUGIN_PNG=1"
-                "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0"
-                ;; The jpeg plugin requires conversion between integers and booleans
-                "-DCMAKE_CXX_FLAGS=-fpermissive")
+                "-DBUILD_OSG_PLUGIN_FREETYPE=1"
+                "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0")
               #$flags))
           ((#:phases phases)
            #~(modify-phases #$phases
@@ -2379,7 +2396,7 @@ generated discrete signed distance field using the cubic spline kernel.
 (define-public mmg
   (package
     (name "mmg")
-    (version "5.6.0")
+    (version "5.7.1")
     (source
      (origin
        (method git-fetch)
@@ -2388,7 +2405,7 @@ generated discrete signed distance field using the cubic spline kernel.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "173biz5skbwg27i5w6layg7mydjzv3rmi1ywhra4rx9rjf5c0cc5"))))
+        (base32 "0skb7yzsw6y44zp9gb729i5xks7qd97nvn3z6jhz4jksqksx7lz0"))))
     (build-system cmake-build-system)
     (outputs '("out" "lib" "doc"))
     (arguments
@@ -2398,11 +2415,14 @@ generated discrete signed distance field using the cubic spline kernel.
                    ;; The build doesn't honor -DCMAKE_INSTALL_BINDIR, hence
                    ;; the adjust-bindir phase.
                    ;;(string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
+                   (string-append "-DCMAKE_INSTALL_MANDIR=" #$output "/share/man")
                    "-DBUILD_SHARED_LIBS=ON"
+                   "-DBUILD_DOC=ON"
                    "-DBUILD_TESTING=ON"
                    ;; The longer tests are for continuous integration and
                    ;; depend on input data which must be downloaded.
                    "-DONLY_VERY_SHORT_TESTS=ON"
+                   "-DUSE_SCOTCH=ON"
                    ;; TODO: Add Elas (from
                    ;; https://github.com/ISCDtoolbox/LinearElasticity).
                    "-DUSE_ELAS=OFF"
@@ -2427,9 +2447,6 @@ generated discrete signed distance field using the cubic spline kernel.
                    (invoke "make" "doc")))
                (add-after 'install 'install-doc
                  (lambda _
-                   (copy-recursively
-                    "../source/doc/man" (string-append #$output
-                                                       "/share/man/man1"))
                    (copy-recursively
                     "doc" (string-append #$output:doc "/share/doc/"
                                          #$name "-" #$version))))
@@ -2479,6 +2496,33 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
 @code{mmg3d} libraries.
 @end itemize")
     (license license:lgpl3+)))
+
+(define-public nanosvg
+  ;; There are no proper versions or releases; use the latest commit.
+  (let ((commit "9da543e8329fdd81b64eb48742d8ccb09377aed1")
+        (revision "0"))
+    (package
+      (name "nanosvg")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/memononen/nanosvg")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1pkzv75kavkhrbdd2kvq755jyr0vamgrfr7lc33dq3ipkzmqvs2l"))))
+      (build-system cmake-build-system)
+      (arguments (list #:tests? #f    ;no test suite
+                       #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
+      (home-page "https://github.com/memononen/nanosvg")
+      (synopsis "Simple SVG parser")
+      (description "NanoSVG is a simple single-header SVG parser.  The output
+of the parser is a list of cubic bezier shapes.  The library suits well for
+anything from rendering scalable icons in an editor application to prototyping
+a game.")
+      (license license:zlib))))
 
 (define-public f3d
   (package
@@ -2596,4 +2640,3 @@ environment.  It supports drawing freehand as well as basic shapes and text.
 It features cut-and-paste for irregular regions or polygons.")
     (home-page "https://www.gnu.org/software/gpaint/")
     (license license:gpl3+)))
-

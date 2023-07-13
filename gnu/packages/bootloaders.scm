@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -665,7 +665,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
               (sha256
                (base32
                 "1y5x8vxdgsqdqlsvq01mn8lmw53fqairkhvhhjx83hjva0m4id2h"))))
-    (build-system  gnu-build-system)
+    (build-system gnu-build-system)
     (native-inputs
      (list bison
            dtc
@@ -1484,10 +1484,13 @@ grub-efi-netboot-removable-bootloader.")
                      "U_BOOT_DATE \"Jan 01 1969\"")
                     (("U_BOOT_TIME \"%T\"")
                      "U_BOOT_TIME \"00:00:00\""))))
-              (add-before 'build 'adjust-for-gcc10
+              (add-before 'build 'adjust-for-current-gcc
                 (lambda _
-                  (copy-file "include/linux/compiler-gcc6.h"
-                             "include/linux/compiler-gcc10.h")
+                  (let ((gcc-major-version #$(version-major
+                                              (package-version gcc))))
+                    (copy-file "include/linux/compiler-gcc6.h"
+                               (string-append "include/linux/compiler-gcc"
+                                              gcc-major-version ".h")))
                   (substitute* "arch/arm/Makefile"
                     (("march=armv5")
                      "march=armv5te"))))

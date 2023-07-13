@@ -1099,48 +1099,50 @@ trivial to build for local use.  Portability is emphasized over performance.")
     (license license:unlicense)))
 
 (define-public libsecp256k1
-  (let ((commit "dbd41db16a0e91b2566820898a3ab2d7dad4fe00"))
-    (package
-      (name "libsecp256k1")
-      (version (git-version "20200615" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/bitcoin-core/secp256k1")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1fcpnksq5cqwqzshn5f0lq94b73p3frwbp04hgmmbnrndpqg6mpy"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:configure-flags '("--enable-module-recovery"
-                             "--enable-experimental"
-                             "--enable-module-ecdh"
-                             "--enable-shared")))
-      (native-inputs
-       (list autoconf automake libtool))
-      ;; WARNING: This package might need additional configure flags to run properly.
-      ;; See https://github.com/archlinux/svntogit-community/blob/packages/libsecp256k1/trunk/PKGBUILD.
-      (synopsis "C library for EC operations on curve secp256k1")
-      (description
-       "Optimized C library for EC operations on curve secp256k1.
-
-This library is a work in progress and is being used to research best
-practices.  Use at your own risk.
+  (package
+    (name "libsecp256k1")
+    (version "0.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bitcoin-core/secp256k1")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12wksk7bi3yfzmk1zwh5b6846zcaycqz1w4w4p23apjc8da4jwpn"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--enable-module-recovery"
+                           "--enable-experimental"
+                           "--enable-module-ecdh"
+                           "--enable-module-schnorrsig"
+                           "--enable-shared"
+                           "--disable-static"
+                           "--disable-benchmark")))
+    (native-inputs
+     (list autoconf automake libtool))
+    (synopsis "C library for EC operations on curve secp256k1")
+    (description
+     "Optimized C library for EC operations on curve secp256k1.
 
 Features:
 
 @itemize
 @item secp256k1 ECDSA signing/verification and key generation.
-@item Adding/multiplying private/public keys.
+@item Additive and multiplicative tweaking of secret/public keys.
 @item Serialization/parsing of private keys, public keys, signatures.
-@item Constant time, constant memory access signing and pubkey generation.
-@item Derandomized DSA (via RFC6979 or with a caller provided function.)
+@item Constant time, constant memory access signing and public key generation.
+@item Derandomized ECDSA (via RFC6979 or with a caller provided function.)
 @item Very efficient implementation.
+@item Suitable for embedded systems.
+@item No runtime dependencies.
+@item Optional module for public key recovery.
+@item Optional module for ECDH key exchange.
+@item Optional module for Schnorr signatures according to BIP-340.
 @end itemize\n")
-      (home-page "https://github.com/bitcoin-core/secp256k1")
-      (license license:unlicense))))
+    (home-page "https://github.com/bitcoin-core/secp256k1")
+    (license license:expat)))
 
 (define-public libsecp256k1-bitcoin-cash
   (package

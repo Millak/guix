@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,13 +21,25 @@
   #:use-module (guix store)
   #:use-module (guix store roots)
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
+  #:use-module ((guix build utils) #:select (delete-file-recursively))
+  #:use-module ((guix config) #:select (%state-directory))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64))
 
-(define %store
-  (open-connection))
+(define %store #f)
 
 (test-begin "store-roots")
+
+(test-equal "gc-roots, initial"
+  (list (string-append %state-directory "/profiles"))
+  (begin
+    ;; 'gc-roots' should gracefully handle lack of that directory.
+    (delete-file-recursively (string-append %state-directory "/profiles"))
+    (gc-roots)))
+
+;; The 'open-connection' call below gets guix-daemon to create
+;; %STATE-DIRECTORY/profiles.
+(set! %store (open-connection))
 
 (test-assert "gc-roots, regular root"
   (let* ((item (add-text-to-store %store "something"

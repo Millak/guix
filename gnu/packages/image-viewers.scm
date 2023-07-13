@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -742,14 +742,14 @@ preloading.")
 (define-public chafa
   (package
     (name "chafa")
-    (version "1.12.4")
+    (version "1.12.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hpjansson.org/chafa/releases/chafa-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0gsp39xnra331lk0db5pfqpdmqfhf7ii3a7yywj33sknf0dbsx4p"))))
+                "1wjp75l0qbikbdbvj8nlhl1gsakhx3309k0mdww6n2jh5bar0m0g"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -799,7 +799,7 @@ displayed in a terminal.")
            libjpeg-turbo
            libinih
            libnsgif
-           librsvg
+           (librsvg-for-system)
            libtiff
            libxkbcommon
            pango

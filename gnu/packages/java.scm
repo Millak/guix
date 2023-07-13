@@ -1493,7 +1493,8 @@ blacklisted.certs.pem"
                 "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"
    (source (origin
              (inherit (package-source base))
-             (patches (search-patches "openjdk-10-setsignalhandler.patch"))))))
+             (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"
+                                      "openjdk-10-setsignalhandler.patch"))))))
 
 (define-public openjdk17
   (make-openjdk
@@ -1501,7 +1502,7 @@ blacklisted.certs.pem"
    "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
    (source (origin
              (inherit (package-source base))
-             (patches '())))
+             (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk16)
       ((#:phases phases)
@@ -1517,8 +1518,8 @@ blacklisted.certs.pem"
                 "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
 
 (define-public openjdk19
-  (make-openjdk openjdk18 "19.0.1"
-                "0kyalb391znw6idmfn3dsx6c2mal1hl63f0bwa4mlnsxfl380bi1"
+  (make-openjdk openjdk18 "19.0.2"
+                "08kvx7n8qhhfl25pig966881j5h4x7y0pf4brq16x0283fc0f4d4"
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk18)
       ((#:phases phases)
@@ -1535,6 +1536,33 @@ blacklisted.certs.pem"
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk19)
+
+
+(define-public jbr17
+  (package
+    (inherit openjdk17)
+    (name "jbr")
+    (version "17.0.7-b1020")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JetBrains/JetBrainsRuntime.git")
+                     (commit (string-append "jb" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
+              (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
+    (synopsis "JetBrains Java Runtime")
+    (description "This package provides a Java runtime environment for
+and Java development kit.  It supports enhanced class redefinition (DCEVM),
+features optional JCEF, a framework for embedding Chromium-based browsers,
+includes a number of improvements in font rendering, keyboards support,
+windowing/focus subsystems, HiDPI, accessibility, and performance,
+provides better desktop integration and bugfixes not yet present in
+OpenJDK.")
+    (home-page "https://www.jetbrains.com/")
+    (license license:gpl2+)))
 
 
 (define-public ant/java8
@@ -11240,7 +11268,7 @@ outputting XML data from Java code.")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "18q3i6jgm6rkw8aysfgihgywrdc5nvijrwnslmi3ww497jvri6ja"))))
+                "0zjqmsad4xk0iar23hdyvx19nxczybd2bh0i35xrafli5cmh720k"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "geronimo-xbean-reflect.jar"
@@ -11291,7 +11319,7 @@ and graphs of objects for dependency injection frameworks")
               (file-name (string-append name "-" version "-source"))
               (sha256
                (base32
-                "119yn795jvnjf52si84q192s8wag1k013iabg78b7wnadssnnh31"))))
+                "1mky4zyl2xsqlgrkairaj5971byvhwk2z9bq8snsgvlr11ydc0zf"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f

@@ -167,15 +167,15 @@ database {
            (provision '(dicod))
            (requirement '(user-processes))
            (documentation "Run the dicod daemon.")
-           (start #~(if (and (defined? 'make-inetd-constructor)
-                             #$(= 1 (length interfaces))) ;XXX
+           (start #~(if (defined? 'make-inetd-constructor)
                         (make-inetd-constructor
                          (list #$dicod "--inetd" "--foreground"
                                (string-append "--config=" #$dicod.conf))
-                         (list (endpoint
-                                (addrinfo:addr
-                                 (car (getaddrinfo #$(first interfaces)
-                                                   "dict")))))
+                         (map (lambda (interface)
+                                (endpoint
+                                 (addrinfo:addr
+                                  (car (getaddrinfo interface "dict")))))
+                              '#$interfaces)
                          #:requirements '#$requirement
                          #:user "dicod" #:group "dicod"
                          #:service-name-stem "dicod")
@@ -183,8 +183,7 @@ database {
                          (list #$dicod "--foreground"
                                (string-append "--config=" #$dicod.conf))
                          #:user "dicod" #:group "dicod")))
-           (stop #~(if (and (defined? 'make-inetd-destructor)
-                            #$(= 1 (length interfaces))) ;XXX
+           (stop #~(if (defined? 'make-inetd-destructor)
                        (make-inetd-destructor)
                        (make-kill-destructor)))
            (actions (list (shepherd-configuration-action dicod.conf)))))))

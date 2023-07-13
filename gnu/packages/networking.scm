@@ -1085,14 +1085,14 @@ residing in IPv4-only networks, even when they are behind a NAT device.")
 (define-public ndisc6
   (package
     (name "ndisc6")
-    (version "1.0.6")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.remlab.net/files/ndisc6/ndisc6-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1yrw8maj1646d498ax8xi0jmzk80idrc5x0913x5rwg1kc7224x7"))))
+                "02b6r4mwqj3kkia3nnqlr5nq8qqg1pg47lirb8d35mqh0pbk3i7d"))))
     (build-system gnu-build-system)
     (home-page "https://www.remlab.net/ndisc6/")
     (synopsis "IPv6 diagnostic tools")
@@ -1667,34 +1667,32 @@ and min/max network usage.")
 (define-public iodine
   (package
     (name "iodine")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://code.kryo.se/" name "/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0gh17kcxxi37k65zm4gqsvbk3aw7yphcs3c02pn1c4s2y6n40axd"))))
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://code.kryo.se/iodine/"
+                           "iodine-" version ".tar.gz"))
+       (sha256
+        (base32 "1ihlwxr5xi82gskcdl06qil9q67bcc80p18wm079gxqphv7r4vjl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (delete 'configure)
+         (delete 'configure)            ; no configure script
          (add-before 'build 'fix-ifconfig-path
            ;; This package works only with the net-tools version of ifconfig.
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/tun.c"
                (("PATH=[^ ]* ")
-                (string-append (assoc-ref inputs "net-tools") "/bin/")))
-             #t))
+                (string-append (assoc-ref inputs "net-tools") "/bin/")))))
          (add-before 'check 'delete-failing-tests
            ;; Avoid https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=802105.
            (lambda _
              (substitute* "tests/common.c"
                (("tcase_add_test\\(tc, \
 test_parse_format_ipv(4(|_listen_all|_mapped_ipv6)|6)\\);")
-                ""))
-             #t)))
+                "")))))
        #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "prefix=" (assoc-ref %outputs "out")))
        #:test-target "test"))
@@ -4369,14 +4367,15 @@ stamps.")
 (define-public nbd
   (package
     (name "nbd")
-    (version "3.24")
+    (version "3.25")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "mirror://sourceforge/nbd/nbd/" version
-                            "/nbd-" version ".tar.xz"))
+        (uri (string-append
+              "https://github.com/NetworkBlockDevice/nbd/releases/download/nbd-"
+              version "/nbd-" version ".tar.xz"))
         (sha256
-         (base32 "036ib2d5722sx9nn7jydqfpl5ici5if2z7g8xrskzcx74dniaxv8"))))
+         (base32 "02nxrgq3024g106x9wdyg23f0bj3avrmf3jdb4kckcaprc7zvj7m"))))
     (build-system gnu-build-system)
     (inputs
      (list glib))
@@ -4505,7 +4504,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public phantomsocks
   (package
     (name "phantomsocks")
-    (version "0.0.0-20230223180716-34d21f24a9eb")
+    (version "0.0.0-20230405135900-a54ae9f3611e")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4514,7 +4513,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zfkqiimqwg89njqm9qbwki3fgy0rqx8wr95hq813zk0rf3bj1ka"))))
+                "1qgv8dcrsyzjzppvdk0n5kkyaypcjm1hcn9lb29ahvbhm70cpm6a"))))
     (build-system go-build-system)
     (arguments
      (list #:install-source? #f

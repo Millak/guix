@@ -214,8 +214,7 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download-mirror.savannah.gnu.org"
-                           "/releases/gpsd/gpsd-" version ".tar.xz"))
+       (uri (string-append "mirror://savannah/gpsd/gpsd-" version ".tar.xz"))
        (sha256
         (base32 "1hd8b09is4gd73lpsdywxxdx11iijikmqgxd0y57pic3yxnlcb6a"))))
     (build-system scons-build-system)

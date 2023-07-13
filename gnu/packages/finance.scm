@@ -288,14 +288,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.6.3")
+    (version "5.6.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/sources/"
                                   "homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "0a1qhbnifqs0j59m1w5wfj1ix8iywmy1kc8185zvxndvckspb521"))))
+                "1a1cdldvs0xc30xkxkap72gafss90hmglakad5r8aykxz3y4sjdm"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -312,7 +312,7 @@ and dynamically with report tools based on filtering and graphical charts.")
 (define-public ledger
   (package
     (name "ledger")
-    (version "3.3.1")
+    (version "3.3.2")
     (source
      (origin
        (method git-fetch)
@@ -321,7 +321,7 @@ and dynamically with report tools based on filtering and graphical charts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13bbnfb08ymm54wg12dapqhalh7iialfs66qdbk2adl1aaq36wqa"))))
+        (base32 "0vchc97952w3fkkdn3v0nzjlgzg83cblwsi647jp3k9jq6rvhaak"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules (,@%cmake-build-system-modules
@@ -547,7 +547,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.3.2")
+    (version "4.4.5")
     (source
      (origin
        (method url-fetch)
@@ -555,13 +555,12 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1kbyinm9fnxpx9chkyd11yr9rxvcxvw3ml7kzvxcfa8v7jnl0dmx"))
+        (base32 "1gifnb927b51947psbj58c7kdsgncn3d9j7rpk5mls678yf1qd5d"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Delete the bundled dependencies.
-           (delete-file-recursively "packages")
-           #t))))
+           (delete-file-recursively "packages")))))
     (build-system python-build-system)
     (inputs
      (list libsecp256k1
@@ -585,31 +584,13 @@ do so.")
      `(#:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; setup.py installs to ~/.local/share if sys.prefix/share isn't
-               ;; writable.  sys.prefix points to Python's, not our, --prefix.
-               (mkdir-p (string-append out "/share"))
-               (substitute* "setup.py"
-                 (("sys\\.prefix")
-                  (format #f "\"~a\"" out)))
-               #t)))
-         (add-after 'unpack 'relax-dnspython-version-requirement
-           ;; The version requirement for dnspython>=2.0,<2.1 makes the
-           ;; sanity-check phase fail, but the application seems to be working
-           ;; fine with dnspython 2.1 (the version we have currently).
-           (lambda _
-             (substitute* "contrib/requirements/requirements.txt"
-               (("dnspython>=.*")
-                "dnspython"))))
          (add-after 'unpack 'use-libsecp256k1-input
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "electrum/ecc_fast.py"
-               (("library_paths = .* 'libsecp256k1.so.0'.")
-                (string-append "library_paths = ('"
+               (("library_paths = \\[\\]")
+                (string-append "library_paths = ['"
                                (assoc-ref inputs "libsecp256k1")
-                               "/lib/libsecp256k1.so.0'"))))))))
+                               "/lib/libsecp256k1.so']"))))))))
     (home-page "https://electrum.org/")
     (synopsis "Bitcoin wallet")
     (description
@@ -622,7 +603,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.14")
+    (version "4.3.1")
     (source
      (origin
        (method git-fetch)
@@ -631,7 +612,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "086rqqxxh1dmw1qiwmry6sraai3xg44sb85wdw8zkj30si9780kk"))))
+        (base32 "0slx7hmlw2gpcqg951vwvnyl7j52pfzqyaldphghhfxbfzjs7v64"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -2199,7 +2180,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.19.2")
+    (version "6.20.0")
     (source
      (origin
        (method git-fetch)
@@ -2207,7 +2188,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1hgcfq79d5060iryr34bpwf1dvgqmbmn9mm4ccfvp896r10j482h"))
+       (sha256 (base32 "02clipcixn0g4sm3b5r1cxx56ddhjkm8sqnq40jy1zm66ad5zhkj"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
@@ -2256,7 +2237,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "3.2")
+    (version "3.5")
     (source
      (origin
        (method git-fetch)
@@ -2265,7 +2246,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0jwddazvp9rv88dd2b67rn2y23grycnl539abl5ax6b8a89wm7i8"))
+       (sha256 (base32 "1brv3lksajnmpf7g01jbx76nax6vlx8231sxb0s33yf76yc481xb"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
@@ -2290,6 +2271,8 @@ mining.")
                      (chdir "tests")
                      (invoke "cmake" "../../source/tests")
                      (invoke "make" "-j" (number->string (parallel-job-count)))
+                     (invoke "gzip" "-d" "sidechain_dump.dat.gz")
+                     (invoke "gzip" "-d" "sidechain_dump_mini.dat.gz")
                      (invoke "./p2pool_tests")
                      (chdir ".."))))
                (replace 'install

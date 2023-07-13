@@ -14,7 +14,7 @@
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -65,7 +65,6 @@
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages guile)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
@@ -153,12 +152,12 @@ in intelligent transportation networks.")
     (build-system gnu-build-system)
     (native-inputs
      (append (list pkg-config)
-             (if (hurd-target?)
+             (if (target-hurd?)
                  (list autoconf automake gettext-minimal libtool)
                  '())))
     (inputs
      (append (list libffi libtasn1)
-             (if (hurd-target?)
+             (if (target-hurd?)
                  (list libbsd)
                  '())))
     (arguments
@@ -167,7 +166,7 @@ in intelligent transportation networks.")
            ;; find them.  See <https://issues.guix.gnu.org/49957>.
            #~'("--with-trust-paths=/etc/ssl/certs/ca-certificates.crt")
            #:phases #~(modify-phases %standard-phases
-                        #$@(if (hurd-target?)
+                        #$@(if (target-hurd?)
                                #~((add-after 'unpack 'apply-hurd-patch
                                     (lambda* (#:key inputs #:allow-other-keys)
                                       (define patch
@@ -216,9 +215,9 @@ living in the same process.")
     (build-system gnu-build-system)
     (arguments
      (list #:tests? (not (or (%current-target-system)
-                             (hurd-target?)))
+                             (target-hurd?)))
            ;; Ensure we don't keep a reference to the tools used for testing.
-           #:disallowed-references (if (hurd-target?)
+           #:disallowed-references (if (target-hurd?)
                                        '()
                                        (list net-tools iproute socat))
            #:configure-flags
@@ -276,7 +275,7 @@ living in the same process.")
     (native-inputs
      (append (list pkg-config texinfo which
                    util-linux)          ;one test needs 'setsid'
-             (if (hurd-target?)
+             (if (target-hurd?)
                  '()
                  (list net-tools
                        iproute          ;for 'ss'
@@ -1220,7 +1219,20 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
     (arguments
      '(#:test-target "run_minimal_tests"
        #:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON")))
+       '("-DBUILD_SHARED_LIBS=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? test-target parallel-tests? #:allow-other-keys)
+             (when tests?
+               ;; SSLTest.HostMatching fails due to an expired certificate.
+               ;; Fake the time to be that of the release.
+               (invoke "faketime" "2022-05-23"
+                       "make" test-target
+                       "-j" (if parallel-tests?
+                                (number->string (parallel-job-count))
+                                "1"))))))))
+    (native-inputs (list libfaketime))
     (synopsis "General purpose cryptographic library")
     (description "AWS libcrypto (aws-lc) contains portable C implementations
 of algorithms needed for TLS and common applications, and includes optimized

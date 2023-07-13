@@ -142,7 +142,7 @@
       (inputs
        (list guile-3.0-latest
              guile-avahi
-             guile-fibers-1.1
+             guile-fibers-1.3
              guile-gcrypt
              guile-json-4
              guile-simple-zmq

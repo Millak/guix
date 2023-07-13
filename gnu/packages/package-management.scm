@@ -12,7 +12,7 @@
 ;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -20,7 +20,8 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages cpio)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -171,8 +173,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "dc5430c9dc20ee53441995d9a89a90b0a86aeed3")
-        (revision 6))
+        (commit "44bbfc24e4bcc48d0e3343cd3d83452721af8c36")
+        (revision 7))
     (package
       (name "guix")
 
@@ -188,7 +190,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "192jxca7gdf8451kac58fq1f2rxn3624krmhz04bh7ln2sp5q0yd"))
+                  "08gq04pphapr3i0gzdilp8l87rpxlh2p768qrn1fw92fmw727xf7"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -216,7 +218,7 @@
                             ;; choose a fixed-width and short directory name
                             ;; for tests.
                             "ac_cv_guix_test_root=/tmp/guix-tests"
-                            ,@(if (hurd-target?) '("--with-courage") '()))
+                            ,@(if (target-hurd?) '("--with-courage") '()))
          #:parallel-tests? #f         ;work around <http://bugs.gnu.org/21097>
 
          #:modules ((guix build gnu-build-system)
@@ -416,7 +418,7 @@ $(prefix)/etc/openrc\n")))
                        ;; cross-compilation.
                        ("guile" ,guile-3.0-latest) ;for faster builds
                        ("guile-gnutls" ,guile-gnutls)
-                       ,@(if (hurd-target?)
+                       ,@(if (target-hurd?)
                              '()
                              `(("guile-avahi" ,guile-avahi)))
                        ("guile-gcrypt" ,guile-gcrypt)
@@ -476,7 +478,7 @@ $(prefix)/etc/openrc\n")))
       (propagated-inputs
        `(("guile-gnutls" ,guile-gnutls)
          ;; Avahi requires "glib" which doesn't cross-compile yet.
-         ,@(if (hurd-target?)
+         ,@(if (target-hurd?)
                '()
                `(("guile-avahi" ,guile-avahi)))
          ("guile-gcrypt" ,guile-gcrypt)
@@ -731,16 +733,16 @@ high-performance computing} clusters.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.5.1")
+    (version "2.16.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "http://github.com/NixOS/nix")
+             (url "https://github.com/NixOS/nix")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m8rmv8i6lg83pmalvjlq1fn8mcghn3ngjv3kw1kqsa45ymj5sqq"))
+        (base32 "1rca8ljd33dmvh9bqk6sy1zxk97aawcr6k1f7hlm4d1cd9mrcw7x"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -757,7 +759,19 @@ high-performance computing} clusters.")
                 (apply invoke "make" "install"
                        (string-append "sysconfdir=" etc)
                        (string-append "profiledir=" etc "/profile.d")
-                       make-flags)))))))
+                       make-flags))))
+          (replace 'check
+            (lambda args
+              ;; A few tests expect the environment variable NIX_STORE to be
+              ;; "/nix/store"
+              (let ((original-NIX_STORE (getenv "NIX_STORE")))
+                (dynamic-wind
+                  (lambda ()
+                    (setenv "NIX_STORE" "/nix/store"))
+                  (lambda ()
+                    (apply (assoc-ref %standard-phases 'check) args))
+                  (lambda ()
+                    (setenv "NIX_STORE" original-NIX_STORE)))))))))
     (native-inputs
      (list autoconf
            autoconf-archive
@@ -767,7 +781,8 @@ high-performance computing} clusters.")
            googletest
            jq
            libtool
-           pkg-config))
+           pkg-config
+           rapidcheck))
     (inputs
      (append (list boost
                    brotli
@@ -779,6 +794,7 @@ high-performance computing} clusters.")
                    libseccomp
                    libsodium
                    lowdown
+                   nlohmann-json
                    openssl
                    sqlite
                    xz
@@ -1442,9 +1458,9 @@ environments.")
                                          "guile-zlib"
                                          "guile-sqlite3"
                                          "guile-gnutls"
-                                         ,@(if (hurd-target?)
+                                         ,@(if (target-hurd?)
                                                '()
-                                               '("guile-fibers-next")))))
+                                               '("guile-fibers")))))
                       (wrap-program file
                         `("PATH" ":" prefix
                           (,bin
@@ -1485,7 +1501,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers-next
+             guile-fibers-1.3
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1503,7 +1519,7 @@ environments.")
              guile-sqlite3
              guix
              guile-gnutls
-             guile-fibers-next))
+             guile-fibers-1.3))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1686,7 +1702,7 @@ in an isolated environment, in separate namespaces.")
                                          "guile-prometheus"
                                          "guile-sqlite3"
                                          "guile-gnutls"
-                                         "guile-fibers-next")))
+                                         "guile-fibers")))
                       (wrap-program file
                         `("GUILE_LOAD_PATH" ":" prefix
                           (,scm ,(string-join
@@ -1719,7 +1735,7 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-next
+             guile-fibers-1.3
              guile-prometheus
              guile-lib
              guile-lzlib
@@ -1732,7 +1748,7 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-next
+             guile-fibers-1.3
              guile-prometheus
              guile-lib
              guile-lzlib

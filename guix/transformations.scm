@@ -2,6 +2,7 @@
 ;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,9 @@
   #:autoload   (guix upstream) (package-latest-release
                                 upstream-source-version
                                 upstream-source-signature-urls)
-  #:autoload   (guix cpu) (current-cpu cpu->gcc-architecture)
+  #:autoload   (guix cpu) (current-cpu
+                           cpu->gcc-architecture
+                           gcc-architecture->micro-architecture-level)
   #:use-module (guix utils)
   #:use-module (guix memoization)
   #:use-module (guix gexp)
@@ -516,7 +519,9 @@ system that builds code for MICRO-ARCHITECTURE; otherwise raise an error."
                                                  'compiler-cpu-architectures)
                                       p))
                                 (_ #f))
-                              (bag-build-inputs lowered))))
+                              (bag-build-inputs lowered)))
+           (psabi        (gcc-architecture->micro-architecture-level
+                           micro-architecture)))
       (unless compiler
         (raise (formatted-message
                 (G_ "failed to determine which compiler is used"))))
@@ -528,8 +533,11 @@ system that builds code for MICRO-ARCHITECTURE; otherwise raise an error."
                   (G_ "failed to determine whether ~a supports ~a")
                   (package-full-name compiler)
                   micro-architecture)))
-        (unless (member micro-architecture
-                        (or (assoc-ref lst architecture) '()))
+        (unless (or (member micro-architecture
+                            (or (assoc-ref lst architecture) '()))
+                    (and (string=? (package-name compiler) "go")
+                         (member psabi
+                                 (or (assoc-ref lst architecture) '()))))
           (raise
            (make-compound-condition
             (formatted-message
@@ -556,6 +564,27 @@ micro-architectures:
 
       (bag
         (inherit lowered)
+        (arguments
+          (substitute-keyword-arguments (bag-arguments lowered)
+          ;; We add the tuning parameter after the default GO flags are set.
+          ((#:phases phases '%standard-phases)
+             #~(modify-phases #$phases
+                 (add-after 'setup-go-environment 'set-microarchitecture
+                   (lambda _
+                     (cond
+                       ((string-prefix? "arm" #$psabi)
+                        (setenv "GOARM" (string-take-right #$psabi 1))
+                        (format #t "Setting GOARM to ~s."
+                                (getenv "GOARM")))
+                       ((string-prefix? "powerpc" #$psabi)
+                        (setenv "GOPPC64" #$psabi)
+                        (format #t "Setting GOPPC64 to ~s."
+                                (getenv "GOPPC64")))
+                       ((string-prefix? "x86_64" #$psabi)
+                        (setenv "GOAMD" (string-take-right #$psabi 2))
+                        (format #t "Setting GOAMD to ~s.\n"
+                                (getenv "GOAMD")))
+                       (else #t))))))))
         (build-inputs
          ;; Arrange so that the compiler wrapper comes first in $PATH.
          `(("tuning-compiler" ,(tuning-compiler micro-architecture))

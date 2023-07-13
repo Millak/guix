@@ -36,7 +36,7 @@
 (define-public fvwm
   (package
     (name "fvwm")
-    (version "2.6.9")
+    (version "2.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -44,7 +44,7 @@
                     version "/fvwm-" version ".tar.gz"))
               (sha256
                (base32
-                "1bliqcnap7vb3m2rn8wvxyfhbf35h9x34s41fl4301yhrkrlrihv"))))
+                "12s1wgkvrvl8m62gpb2918izfx9ysj7hgn9p00blfi3p1gb6v0k6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

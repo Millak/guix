@@ -436,7 +436,8 @@ TCP sessions from existing clients.")
            python-pygments
            python-pyinotify
            python-qrcode
-           python-slixmpp))
+           python-slixmpp
+           python-typing-extensions))
     (synopsis "Console Jabber/XMPP Client")
     (description "Poezio is a free console XMPP client (the protocol on which
 the Jabber IM network is built).
@@ -2807,6 +2808,7 @@ validating international phone numbers.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
+           itstool
            pkg-config
            protobuf
            xorg-server-for-tests))

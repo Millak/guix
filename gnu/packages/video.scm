@@ -65,6 +65,7 @@
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ott Joon <oj@vern.cc>
 ;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
+;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -179,6 +180,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -780,7 +782,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.24")
+    (version "0.25")
     (source
      (origin
        (method url-fetch)
@@ -788,7 +790,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/releases/download/v" version
                            "/celluloid-" version ".tar.xz"))
        (sha256
-        (base32 "0ns9xh582c8kajw4v2x5ap5jfiba3gxywqc2klc0v6fc3id1gqii"))))
+        (base32 "0an98lz90s4hhvrvqd1ja814mav9md9n843vhknjgcv4zmrwn0sg"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1035,7 +1037,7 @@ H.264 (MPEG-4 AVC) video streams.")
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
        ("qttools-5" ,qttools-5)
-       ("ruby" ,ruby)))
+       ("ruby" ,ruby-2.7)))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-boost="
@@ -2468,6 +2470,52 @@ To load this plugin, specify the following option when starting mpv:
 to download videos from Austria's national television broadcaster.")
       (license license:gpl2+))))
 
+(define-public yle-dl
+  (package
+    (name "yle-dl")
+    (version "20230611")
+    (source (origin
+              ;; PyPI release doesn't include tests.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aajanki/yle-dl")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04smlq6cswfp08sjif0cxnall0xbxl3bgly849nm5kg1m33ybmqk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-path
+            (lambda _
+              (wrap-program (string-append #$output "/bin/yle-dl")
+                `("PATH" = (,(string-append #$(this-package-input "ffmpeg")
+                                            "/bin")
+                            ,(string-append #$(this-package-input "wget")
+                                            "/bin"))))))
+          ;; Integration tests require internet access.
+          (add-before 'check 'remove-integration-tests
+            (lambda _
+              (delete-file-recursively "tests/integration"))))))
+    (native-inputs
+     (list python-flit-core python-pytest python-pytest-runner))
+    (inputs (list bash-minimal ffmpeg-5 wget))
+    (propagated-inputs
+     (list python-attrs
+           python-configargparse
+           python-lxml
+           python-requests
+           python-xattr))
+    (home-page "https://aajanki.github.io/yle-dl/")
+    (synopsis "Download videos from Yle servers")
+    (description
+     "Yle-dl is a command line program for downloading media files from the
+video streaming services of the Finnish national broadcasting company Yle.")
+    (license license:gpl3+)))
+
 (define-public youtube-dl
   (package
     (name "youtube-dl")
@@ -2554,7 +2602,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.03.04")
+    (version "2023.07.06")
     (source
      (origin
        (method git-fetch)
@@ -2563,7 +2611,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zb4blj7qrmwkryyqrkxl909f59hvbs8dwiwl7sw1fs2kdzb1rw4"))))
+        (base32 "14g3qc3j4px5jiv292yj5hh8vxlnnd5bzvsq7h37jvhmrn5r4bsw"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
@@ -2612,8 +2660,7 @@ YouTube.com and many more sites.")
     (native-inputs
      (append
        ;; To generate the manpage.
-       (if (member (%current-system)
-                   (package-transitive-supported-systems pandoc))
+       (if (supported-package? pandoc)
          (list pandoc)
          '())
        (list python-pytest zip)))
@@ -3476,40 +3523,8 @@ and JACK.")
     (license license:gpl2+)))
 
 (define-public obs-websocket
-  (package
-    (name "obs-websocket")
-    (version "4.9.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Palakis/obs-websocket")
-             (commit version)
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0giwhm0rbc578qng4invqqma935zzjlf05msz1gx986aqk654s7k"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f                      ;no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-permission-change
-           (lambda* _
-             (substitute* "CMakeLists.txt"
-               ;; Remove lines that set writeable permissions on outputs.
-               (("PERMISSIONS [^)]*") "")
-               (("set\\(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS") "")
-               ;; Ug^WClever hack to comment out the next line, which is ‘)’.
-               (("(OWNER|GROUP|WORLD)_READ .*") "#")))))))
-    (inputs
-     (list obs qtbase-5))
-    (home-page "https://github.com/Palakis/obs-websocket")
-    (synopsis "OBS plugin for remote control via WebSockets")
-    (description "This OBS plugin allows you to establish a WebSocket channel
-from within your running OBS instance so that you can control it remotely from
-programs on your current machine or on other machines.")
-    (license license:gpl2+)))
+  ;; Functionality was merged into OBS.
+  (deprecated-package "obs-websocket" obs))
 
 (define-public obs-wlrobs
   (package
@@ -3750,7 +3765,7 @@ Other features include a live preview and live streaming.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "18yfkr70lr1x1hc8snn2ldnbzdcc7b64xmkqrfk8w59gpg7sl1xn"))))
+                "1srzyjks9s0g4k7ms8vc0hjby2g6shndnr552hl63pn90sgmwxs9"))))
     (build-system gnu-build-system)
     (arguments
      ;; libsmpeg fails to build with -std=c++11, which is the default with
@@ -3786,7 +3801,7 @@ and MPEG system streams.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0jfi085rf3fa5xsn0vd3nqf32my8ph9c6a9445y7a8lrlz4dms64"))))
+                "1jy9xqykhwfg8in0fxjcqcvwazii1ckzs39wp749b926q7ny5bwy"))))
     (inputs
      (list sdl))))
 

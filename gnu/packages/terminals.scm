@@ -23,7 +23,7 @@
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright @ 2020 luhux <luhux@outlook.com>
+;;; Copyright © 2020 luhux <luhux@outlook.com>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2022 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
@@ -244,7 +244,7 @@ keybindings have different functions.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -253,7 +253,7 @@ keybindings have different functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pcrghfi9p1p40d0339lcmhcv24hm1vxqr4rsdln34v385vqv14a"))))
+        (base32 "0mqn12h51nqdmn1ya7hw1l2z2893937dqq4b1zh32y6bazd807fl"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -938,6 +938,41 @@ It's a terminal emulator with few dependencies, so you don't need a full GNOME
 desktop installed to have a decent terminal emulator.")
     (license license:gpl2)))
 
+(define-public xiate
+  (let ((commit "ae3cf30b345c64f097a747ac848e23ef5bae8b57")
+        (revision "0"))
+    (package
+      (name "xiate")
+      (version (git-version "22.12" revision commit))
+      (source (origin
+                (method git-fetch)
+                (file-name (git-file-name name version))
+                (uri (git-reference
+                      (url "https://www.uninformativ.de/git/xiate.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0bc205b1gs1jvp1a2cr814l32hmlm0sgv1drfw7ykbavslfpmg2d"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:make-flags #~(list (string-append "CC="
+                                                 #$(cc-for-target))
+                                  (string-append "prefix="
+                                                 #$output))
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure))))
+      (inputs (list gtk+ glib vte))
+      (native-inputs (list pkg-config))
+      (synopsis "Minimalist terminal emulator based on GTK+")
+      (description
+       "Xiate is a terminal emulator which tries to keep a balance
+between features and simplicity.  This is achieved by using VTE as a powerful
+backend, while UI, configuration, and code try to remain much more
+minimalistic.")
+      (home-page "https://www.uninformativ.de/git/xiate/file/README.html")
+      (license license:expat))))
+
 (define-public go-github.com-nsf-termbox-go
   (let ((commit "288510b9734e30e7966ec2f22b87c5f8e67345e3")
         (revision "1"))
@@ -957,7 +992,7 @@ desktop installed to have a decent terminal emulator.")
       (arguments
        '(#:import-path "github.com/nsf/termbox-go"))
       (propagated-inputs
-       (list go-github.com-mattn-go-runewidth))
+       (list go-github-com-mattn-go-runewidth))
       (synopsis "@code{termbox} provides a minimal API for text-based user
 interfaces")
       (description
@@ -969,7 +1004,7 @@ programmer to write text-based user interfaces.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.34.0")
+    (version "0.41.0")
     (source
      (origin
        (method git-fetch)
@@ -979,12 +1014,12 @@ programmer to write text-based user interfaces.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "023ksrmjg99svmkpnlh4k7gssv1sz2nl0v5b6bsr2iragvwrgkf4"))))
+         "1l9nsvziip3azyvg8wi4g3x606fh6w9vpfcbcgjdzdnp2ywqciim"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
     (inputs
-     (list go-github.com-mattn-go-runewidth
+     (list go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-shellwords
            go-github-com-mattn-go-isatty
            go-github-com-gdamore-tcell
@@ -1115,13 +1150,13 @@ than a terminal.")
 (define-public python-curtsies
   (package
     (name "python-curtsies")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curtsies" version))
        (sha256
-        (base32 "1zj284kacv0d10ab3amkkx37hcciylkqympsksi9bwzy6g7fyafb"))))
+        (base32 "1c122vgfsvksxkd41g2vij6hjsz97ikg59snclq4af2mkhs0zlb2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1406,7 +1441,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1417,7 +1452,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fz5nbx58058lzfhwgvlnrmhpc4bg8sv8fp48gdgp1l82ajbl3lg"))))
+        (base32 "17a7v32gxsy79cj1ap71ckrypxv7i9jv4lnibg0ymcpwk9zpwxjz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
@@ -1425,7 +1460,7 @@ basic input/output.")
        #:cargo-inputs
        (("rust-alacritty-config" ,rust-alacritty-config-0.1)
         ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
-        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.18)
+        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.19)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-clap" ,rust-clap-3)
         ("rust-cocoa" ,rust-cocoa-0.24)

@@ -63,8 +63,8 @@
   #:use-module (ice-9 match))
 
 (define-public brlaser
-  (let ((commit "9d7ddda8383bfc4d205b5e1b49de2b8bcd9137f1")
-        (revision "1"))
+  (let ((commit "2a49e3287c70c254e7e3ac9dabe9d6a07218c3fa")
+        (revision "2"))
     (package
       (name "brlaser")
       (version (git-version "6" revision commit))
@@ -76,16 +76,13 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1drh0nk7amn9a8wykki4l9maqa4vy7vwminypfy1712alwj31nd4"))))
+                  "033g461qzwrzi6x24pfasyx9g7fkn5iy5f8c3h8bczg2bvscxyym"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:configure-flags
-         (list (string-append "-DCUPS_DATA_DIR="
-                              (assoc-ref %outputs "out")
-                              "/share/cups")
-               (string-append "-DCUPS_SERVER_BIN="
-                              (assoc-ref %outputs "out")
-                              "/lib/cups"))))
+       (list
+        #:configure-flags
+        #~(list (string-append "-DCUPS_DATA_DIR=" #$output "/share/cups")
+                (string-append "-DCUPS_SERVER_BIN=" #$output "/lib/cups"))))
       (inputs
        (list ghostscript cups zlib))
       (home-page "https://github.com/pdewacht/brlaser")
@@ -249,6 +246,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
   (package
     (name "cups-minimal")
     (version "2.4.2")
+    (replacement cups-minimal/fixed)
     (source
      (origin
        (method git-fetch)
@@ -335,13 +333,28 @@ applications''.  These must be installed separately.")
     ;; CUPS is Apache 2.0 with exceptions, see the NOTICE file.
     (license license:asl2.0)))
 
+(define cups-minimal/fixed
+  (package
+    (inherit cups-minimal)
+    (version "2.4.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenPrinting/cups")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cups" version))
+       (sha256
+        (base32 "0z70rhfd96qmdx82gdhh2nqjiia0lnvfdwpngjkag2sidw4cm3c1"))))))
+
 (define-public cups
   (package/inherit cups-minimal
     (name "cups")
     (arguments
-     (substitute-keyword-arguments (package-arguments cups-minimal)
-       ((#:tests? _ #t)
-        #t)
+     (substitute-keyword-arguments
+       (strip-keyword-arguments
+         '(#:tests?)
+         (package-arguments cups-minimal))
        ((#:configure-flags flags #~'())
         #~(append #$flags
                   (list "--with-languages=all"))) ; no ‘=all’ means none(!)

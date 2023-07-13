@@ -3658,6 +3658,50 @@ and Jinja2 template engine.  It is called a micro framework because it does not
 presume or force a developer to use a particular tool or library.")
     (license license:bsd-3)))
 
+(define-public python-flask-compress
+  (package
+    (name "python-flask-compress")
+    (version "1.13")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Flask-Compress" version))
+              (sha256
+               (base32
+                "178jzz6jxlxllcjqamzh5q7ahfh90m5cl1il9vmjs3xhz65z35pf"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-brotli python-flask))
+    (native-inputs (list python-setuptools-scm))
+    (home-page "https://github.com/colour-science/flask-compress")
+    (synopsis "Compress responses in a Flask app")
+    (description
+     "This package lets you compress Flask application responses and static
+files with gzip, deflate or brotli.  Flask-Compress both adds the various
+headers required for a compressed response and compresses the response data.")
+    (license license:expat)))
+
+(define-public python-flask-seasurf
+  (package
+    (name "python-flask-seasurf")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Flask-SeaSurf" version))
+              (sha256
+               (base32
+                "1aaib4n27q0f2alp87mhv3f79vg7qckp71rphbd0mb39qw470lsl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
+    (propagated-inputs (list python-flask))
+    (home-page "https://github.com/maxcountryman/flask-seasurf/")
+    (synopsis "CSRF extension for Flask")
+    (description "SeaSurf is a Flask extension for preventing cross-site
+request forgery (CSRF).  CSRF attacks are problematic because the mechanism
+they use is relatively easy to exploit.  This extension attempts to aid you in
+securing your application from such attacks.  This extension is based on the
+Django middleware.")
+    (license license:bsd-3)))
+
 (define-public python-flask-wtf
   (package
     (name "python-flask-wtf")
@@ -4998,13 +5042,13 @@ for httplib2 transport.")
 (define-public whoogle-search
   (package
     (name "whoogle-search")
-    (version "0.8.1")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "whoogle-search" version))
               (sha256
                (base32
-                "1kqkb23wb9a4a8zdky2066887vgv7ywhivhxi5nipkx07mf8v01k"))))
+                "1r6ymainwc3b8aar90b74mpnx3rsfscgzh0llwvsb03fbhiypw5g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8101,7 +8145,7 @@ characters in a smarter, more visually pleasing style.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv" "test")))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-mock python-pytest))
     (propagated-inputs
      (list python-beautifulsoup4 python-html5lib python-requests))
     (home-page "https://github.com/microformats/mf2py")

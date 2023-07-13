@@ -2559,17 +2559,17 @@ Alacritty terminal emulator.")
      "This package provides a failure resistant deserialization derive.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-alacritty-terminal-0.18
+(define-public rust-alacritty-terminal-0.19
   (package
     (name "rust-alacritty-terminal")
-    (version "0.18.0")
+    (version "0.19.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "alacritty-terminal" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1dk6zp5646ss0l9ka48jf6ajdzaq0zxl2pndblfl7a0f9lmwkwfx"))))
+                "19gypy8xhkm3icmc4js2jhh0nnw0ciag3qkxb55bw2mg3j61l01m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs

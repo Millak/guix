@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021 Jorge Gomez <jgart@dismail.de>
+;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +20,7 @@
 
 (define-module (gnu packages spreadsheet)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -27,6 +28,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix licenses)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -37,12 +39,13 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages xml))
 
 (define-public sc-im
     (package
       (name "sc-im")
-      (version "0.8.2")
+      (version "0.8.3")
       (home-page "https://github.com/andmarti1424/sc-im")
       (source (origin
                 (method git-fetch)
@@ -53,20 +56,26 @@
                 (file-name (git-file-name name version))
                 (sha256
                   (base32
-                    "1nrjnw8sg75i0hkcbvjv7gydjddxjm27d5m1qczpg29fk9991q8z"))))
+                    "10x50smn0xl9k6m0bgfcvpwgvivmjkysawvc4zyibc8nxlqz2na2"))))
       (build-system gnu-build-system)
       (arguments
-        ;; There are no tests at the moment.
-        ;; https://github.com/andmarti1424/sc-im/issues/537
-        ;; https://github.com/andmarti1424/sc-im/pull/385
-        `(#:tests? #f
-          #:make-flags (list "-C" "src"
-                          (string-append "CC=" ,(cc-for-target))
-                          (string-append "prefix=" %output))
+        (list
+         #:make-flags
+           #~(list "-C" "src"
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output))
           #:phases
-            (modify-phases
-               %standard-phases
-                 (delete 'configure))))
+            #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (add-after 'unpack 'fix-bash-path-declaration-in-script
+                   (lambda _
+                     (substitute* "tests/run_all_tests.sh"
+                       (("/bin/bash") (string-append "#!" (which "bash"))))))
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (with-directory-excursion "tests"
+                       (when tests?
+                         (invoke "bash" "run_all_tests.sh"))))))))
       (inputs
         (list gnuplot
               libxls
@@ -75,7 +84,11 @@
               libzip
               ncurses))
       (native-inputs
-        (list pkg-config which bison))
+        (list bash-minimal
+              bison
+              pkg-config
+              valgrind
+              which))
       (synopsis "Spreadsheet program with vim-like keybindings")
       (description
  "@code{sc-im} is a highly configurable spreadsheet program

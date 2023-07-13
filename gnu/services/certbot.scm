@@ -173,20 +173,24 @@
   (match-lambda
     (($ <certbot-configuration> package webroot certificates email
                                 server rsa-key-size default-location)
-     (list
-      (nginx-server-configuration
-       (listen '("80" "[::]:80"))
-       (ssl-certificate #f)
-       (ssl-certificate-key #f)
-       (server-name
-        (apply append (map certificate-configuration-domains certificates)))
-       (locations
-        (filter identity
-                (list
-                 (nginx-location-configuration
-                  (uri "/.well-known")
-                  (body (list (list "root " webroot ";"))))
-                 default-location))))))))
+     (define (certificate->nginx-server certificate-configuration)
+       (match-record certificate-configuration <certificate-configuration> 
+         (domains challenge)
+         (nginx-server-configuration
+          (listen '("80" "[::]:80"))
+          (ssl-certificate #f)
+          (ssl-certificate-key #f)
+          (server-name domains)
+          (locations
+           (filter identity
+                   (append
+                    (if challenge
+                      '()
+                      (list (nginx-location-configuration
+                             (uri "/.well-known")
+                             (body (list (list "root " webroot ";"))))))
+                    (list default-location)))))))
+     (map certificate->nginx-server certificates))))
 
 (define certbot-service-type
   (service-type (name 'certbot)

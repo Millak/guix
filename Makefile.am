@@ -306,6 +306,7 @@ MODULES =					\
   guix/scripts/archive.scm			\
   guix/scripts/import.scm			\
   guix/scripts/package.scm			\
+  guix/scripts/locate.scm			\
   guix/scripts/install.scm			\
   guix/scripts/remove.scm			\
   guix/scripts/upgrade.scm			\
@@ -595,6 +596,7 @@ SH_TESTS =					\
   tests/guix-gc.sh				\
   tests/guix-git-authenticate.sh		\
   tests/guix-hash.sh				\
+  tests/guix-locate.sh				\
   tests/guix-pack.sh				\
   tests/guix-pack-localstatedir.sh		\
   tests/guix-pack-relocatable.sh		\

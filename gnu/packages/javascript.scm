@@ -48,7 +48,7 @@
 (define-public cjson
   (package
     (name "cjson")
-    (version "1.7.15")
+    (version "1.7.16")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -56,7 +56,7 @@
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0lmq7sx09rmsirimbyvaaia44i134ppkp10cw1d2rygr76k9qwq2"))))
+               (base32 "00599lzzb0vszk317n0gln7wizdpchy4warxgpj3khrir73pphbb"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DENABLE_CJSON_UTILS=On")))

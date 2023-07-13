@@ -35,7 +35,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system ruby))
 
-(define %ruby-rails-version "7.0.4.3")
+(define %ruby-rails-version "7.0.5.1")
 
 (define ruby-rails-monorepo
   (origin
@@ -46,7 +46,7 @@
     (file-name (git-file-name "ruby-rails" %ruby-rails-version))
     (sha256
      (base32
-      "0f5f8r8wdmdmbyl07b0z555arai4ys2j8dj3fy0mq63y9bfhcqqk"))))
+      "0s16i73rqzlrx5icn848mf2nmblmgxk06wj9576dkadsb8pspv0l"))))
 
 (define-public ruby-activesupport
   (package
@@ -109,10 +109,7 @@
     (propagated-inputs
      (list ruby-concurrent
            ruby-i18n
-           ;; This is sub-optimal, but apparently necessary (see:
-           ;; https://github.com/rails/rails/commit/
-           ;; 9766eb4a833c26c64012230b96dd1157ebb8e8a2).
-           ruby-minitest-5.15
+           ruby-minitest
            ruby-tzinfo
            ruby-tzinfo-data))
     (synopsis "Ruby on Rails utility library")
@@ -207,25 +204,28 @@ Rails.")
 (define-public ruby-debug-inspector
   (package
     (name "ruby-debug-inspector")
-    (version "0.0.3")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "debug_inspector" version))
        (sha256
         (base32
-         "0vxr0xa1mfbkfcrn71n7c4f2dj7la5hvphn904vh20j3x4j5lrx0"))))
+         "01l678ng12rby6660pmwagmyg8nccvjfgs3487xna7ay378a59ga"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "rake" "compile")
-             (invoke "ruby" "-Ilib" "-e"
-                     (string-append
-                      "require 'debug_inspector'; RubyVM::DebugInspector."
-                      "open{|dc| p dc.backtrace_locations}")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "rake" "compile")
+              (invoke "ruby" "-Ilib" "-e"
+                      (string-append
+                       "require 'debug_inspector'; RubyVM::DebugInspector."
+                       "open{|dc| p dc.backtrace_locations}")))))))
+    (native-inputs
+     (list ruby-rake-compiler))
     (synopsis "Ruby wrapper for the MRI 2.0 debug_inspector API")
     (description
      "This package provides a Ruby wrapper for the MRI 2.0 debug_inspector
@@ -341,7 +341,9 @@ serialization, internationalization, and testing.")
               ;; A few tests require to set the timezone.
               (setenv "TZDIR" (search-input-directory (or native-inputs inputs)
                                                       "share/zoneinfo")))))))
-    (native-inputs (list tzdata-for-tests))
+    (native-inputs
+     (list tzdata-for-tests
+           ruby-mini-portile-2))
     (propagated-inputs (list ruby-activemodel ruby-activesupport ruby-sqlite3))
     (synopsis "Ruby library to connect to relational databases")
     (description
@@ -880,7 +882,7 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
               (substitute* "bootsnap.gemspec"
                 (("`git ls-files -z ext lib`")
                  "`find ext lib -type f -print0 | sort -z`")))))))
-    (native-inputs (list ruby-mocha ruby-rake-compiler))
+    (native-inputs (list ruby-mocha-1 ruby-rake-compiler))
     (propagated-inputs (list ruby-msgpack))
     (synopsis "Accelerator for large Ruby/Rails application")
     (description "Bootsnap is a library that plugs into Ruby, with optional
@@ -927,6 +929,7 @@ already included in Rails.")
                  (lambda _
                    (delete-file "gemfiles/rails_7_propshaft.gemfile.lock")
                    (substitute* "gemfiles/rails_7_propshaft.gemfile"
+                     ((".*gem \"byebug\".*") "")
                      ;; Remove appraisal, and add tzinfo-data, which needs to
                      ;; be in the Gemfile to become available.
                      ((".*appraisal.*")
@@ -945,8 +948,7 @@ already included in Rails.")
                    (delete-file "test/npm_integration_test.rb")
                    (delete-file "test/packager_integration_test.rb"))))))
     (native-inputs
-     (list ruby-byebug
-           ruby-capybara
+     (list ruby-capybara
            ruby-propshaft
            ruby-rails
            ruby-rexml
@@ -975,18 +977,25 @@ already included in Rails.")
                 "1i1x24afmn09n48fj4yz2pdm6vlfnq14gism0cgxsyqmlrvsxajn"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:test-target "default"
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'disable-problematic-tests
-                          (lambda _
-                            (substitute* "test/mime_type_test.rb"
-                              ;; One test fails because of the newer rack
-                              ;; version used (see:
-                              ;; https://github.com/rails/marcel/issues/91).
-                              (("test \"gets content type.*" all)
-                               (string-append
-                                all "    skip('fails on guix')\n"))))))))
-    (native-inputs (list ruby-byebug ruby-nokogiri ruby-rack))
+     (list
+      #:test-target "default"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              ;; Remove byebug dependency
+              (substitute* "test/test_helper.rb"
+                (("require 'byebug'") ""))))
+          (add-before 'check 'disable-problematic-tests
+            (lambda _
+              (substitute* "test/mime_type_test.rb"
+                ;; One test fails because of the newer rack
+                ;; version used (see:
+                ;; https://github.com/rails/marcel/issues/91).
+                (("test \"gets content type.*" all)
+                 (string-append
+                  all "    skip('fails on guix')\n"))))))))
+    (native-inputs (list ruby-nokogiri ruby-rack))
     (propagated-inputs (list ruby-mimemagic))
     (synopsis "MIME type detection using magic numbers, filenames and extensions")
     (description
@@ -1223,7 +1232,13 @@ mountable_engine")
                               ;; valid, store".
                               "test_cache_works_with_etags"
                               ;; Likewise.
-                              "test_cache_works_with_last_modified")))))
+                              "test_cache_works_with_last_modified")
+                  (skip-tests "application/initializers/frameworks_test.rb"
+                              ;; These tests are either broken, or rely on
+                              ;; database availability
+                              "expire schema cache dump if the version can't be checked because the database is unhealthy"
+                              "does not expire schema cache dump if check_schema_cache_dump_version is false and the database unhealthy"
+                              "does not expire schema cache dump if check_schema_cache_dump_version is false")))))
           (add-before 'check 'set-paths
             (lambda _
               (setenv "PATH" (string-append (getenv "PATH") ":"
@@ -1423,7 +1438,7 @@ Stimulus can be used.")
                ;; needs to be in the Gemfile to become available.
                (("group :test do") "group :test do\n  gem 'tzinfo-data'")))))))
     (propagated-inputs
-     (list ruby-actionview ruby-activemodel ruby-arel ruby-bindex ruby-railties))
+     (list ruby-actionview ruby-activemodel ruby-arel ruby-skiptrace ruby-railties))
     (native-inputs
      (list bundler ruby-rails ruby-mocha ruby-simplecov))
     (synopsis "Debugging tool for your Ruby on Rails applications")

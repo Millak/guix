@@ -3303,7 +3303,7 @@ compiles to GTKBuilder XML.")
 (define-public cambalache
   (package
     (name "cambalache")
-    (version "0.10.3")
+    (version "0.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3311,7 +3311,7 @@ compiles to GTKBuilder XML.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1nq9bvly4dm1xnh90z3b4c5455qpdgm3jgz2155vg2ai23f22vsy"))))
+               (base32 "1da8d5msk4ivmk5inaq8w0m78dsp7crarr9jmybag1c8qmqsjq4h"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3321,6 +3321,7 @@ compiles to GTKBuilder XML.")
       #:modules '((guix build meson-build-system)
                   ((guix build python-build-system) #:prefix python:)
                   (guix build utils))
+      #:tests? #f                       ; XXX: tests spawn a socket...
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -3331,8 +3332,16 @@ compiles to GTKBuilder XML.")
                                   inputs (string-append "bin/" cmd)))))))
           (add-after 'unpack 'patch-build
             (lambda _
+              (substitute* "meson.build"
+                (("find_program\\('gtk-update-icon-cache'.*\\)") "")
+                (("find_program\\('update-desktop-database'.*\\)") ""))
               (substitute* "postinstall.py"
+                (("gtk-update-icon-cache") "true")
                 (("update-desktop-database") "true"))))
+          (add-after 'unpack 'fake-cc
+            (lambda _
+              (substitute* "tools/cmb_init_dev.py"
+                (("\"cc") (string-append "\"" #$(cc-for-target))))))
           (add-after 'wrap 'python-wrap (assoc-ref python:%standard-phases 'wrap))
           (delete 'check)
           (add-after 'install 'add-install-to-pythonpath
@@ -3372,23 +3381,31 @@ compiles to GTKBuilder XML.")
            adwaita-icon-theme hicolor-icon-theme
            gsettings-desktop-schemas
            gtk
+           gtksourceview-4
            `(,gtk+ "bin")               ; broadwayd
            `(,gtk "bin")
            libadwaita
            libhandy
            (librsvg-for-system)
            python
+           python-pycairo
            python-pygobject
            python-lxml
-           webkitgtk-with-libsoup2))
-    (native-inputs (list `(,glib "bin") gobject-introspection
-                         gettext-minimal pkg-config
-                         python-pytest xorg-server-for-tests))
+           webkitgtk
+           webkitgtk-next))
+    (native-inputs
+     (list `(,glib "bin")
+           gobject-introspection
+           gettext-minimal
+           pkg-config
+           python-pytest
+           weston
+           xorg-server-for-tests))
     (home-page "https://gitlab.gnome.org/jpu/cambalache")
     (synopsis "Rapid application development tool")
-    (description "Cambalache is a rapid application development (RAD) tool for
-Gtk 4 and 3 with a clear model-view-controller (MVC) design and
-data model first philosophy.")
+    (description "Cambalache is a @acronym{RAD, rapid application development}
+tool for Gtk 4 and 3 with a clear @acronym{MVC, model-view-controller} design
+and data model first philosophy.")
     (license (list license:lgpl2.1
                    license:gpl2)))) ; tools
 
@@ -4294,7 +4311,7 @@ Hints specification (EWMH).")
            gtk+
            goffice
            libgsf
-           librsvg
+           (librsvg-for-system)
            libxml2
            libxslt
            python
@@ -4938,8 +4955,10 @@ libxml to ease remote use of the RESTful API.")
                (base32
                 "1qy2291d2vprdbbxmf0sa98izk09nl3znzzv7lckwf6f1v0sarlj"))))
     (build-system meson-build-system)
-    (arguments (substitute-keyword-arguments (package-arguments rest)
-                 ((#:tests? _ #f) #t)
+    (arguments (substitute-keyword-arguments
+                 (strip-keyword-arguments
+                   '(#:tests?)
+                   (package-arguments rest))
                  ((#:configure-flags _)
                   ;; Do not build the optional 'librest-demo' program as it
                   ;; depends on gtksourceview and libadwaita and thus,
@@ -9607,6 +9626,12 @@ endpoint and it understands SPARQL.")
            tracker
            upower
            zlib))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TRACKER_CLI_SUBCOMMANDS_DIR")
+            (separator #f)              ; single entry
+            (files `(,(string-append "libexec/tracker"
+                                     (version-major version)))))))
     (synopsis "Metadata database, indexer and search tool")
     (home-page "https://wiki.gnome.org/Projects/Tracker")
     (description
@@ -10035,7 +10060,6 @@ world.")
           epiphany
           evince
           file-roller
-          gnome-boxes
           gnome-calculator
           gnome-calendar
           gnome-characters

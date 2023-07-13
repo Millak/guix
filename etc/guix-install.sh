@@ -363,7 +363,8 @@ sys_create_store()
 
     cd "$tmp_path"
     _msg "${INF}Installing /var/guix and /gnu..."
-    tar --extract --file "$pkg" -C /
+    # Strip (skip) the leading ‘.’ component, which fails on read-only ‘/’.
+    tar --extract --strip-components=1 --file "$pkg" -C /
 
     _msg "${INF}Linking the root user's profile"
     mkdir -p ~root/.config/guix

@@ -177,7 +177,7 @@ used as a drop-in substitute for @code{libfec}.")
 (define-public liquid-dsp
   (package
     (name "liquid-dsp")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -185,7 +185,7 @@ used as a drop-in substitute for @code{libfec}.")
                    (commit (string-append "v" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "0m0bhj80rs9yhfwnrlx960lii1cqijz1wr8q93i7m2z91h3v3w0j"))))
+              (base32 "1zw3h2d7kiyxz5zcg5wy4d6pkb07q1pqkc6zz4v9wq8s2v180hnx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
@@ -198,12 +198,8 @@ used as a drop-in substitute for @code{libfec}.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'delete-static-library
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((version #$(version-major+minor
-                                (package-version this-package))))
-                (delete-file (string-append #$output
-                                            "/lib/libliquid.a."
-                                            version))))))))
+            (lambda _
+              (delete-file (string-append #$output "/lib/libliquid.a")))))))
     (home-page "https://liquidsdr.org")
     (synopsis "Signal processing library for software-defined radios")
     (description

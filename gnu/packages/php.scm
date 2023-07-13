@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -133,7 +134,8 @@
                "--enable-intl"
                "--enable-mbstring"
                "--enable-pcntl"
-               "--enable-sockets"))
+               "--enable-sockets"
+               "--enable-sysvsem"))     ; Required for, e.g. Nextcloud
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'do-not-record-build-flags

@@ -249,7 +249,7 @@ encoding, supporting Unicode version 9.0.0.")
               (sha256
                (base32 "1g77s8g9443dd92f82pbkim7rk51s7xdwa3mxpzb1lcw8ryxvvg3"))))
           ;; For tests
-          ("ruby" ,ruby)))))))
+          ("ruby" ,ruby-2.7)))))))
 
 (define-public libconfuse
   (package
@@ -1007,34 +1007,6 @@ and Cython.")
      "txt2tags is a document generator.  It reads a text file with minimal
 markup and converts it to multiple formats.")
     (license license:gpl2)))
-
-(define-public go-github.com-mattn-go-runewidth
-  (let ((commit "703b5e6b11ae25aeb2af9ebb5d5fdf8fa2575211")
-        (version "0.0.4")
-        (revision "1"))
-    (package
-      (name "go-github.com-mattn-go-runewidth")
-      (version (git-version version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mattn/runewidth")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0znpyz71gajx3g0j2zp63nhjj2c07g16885vxv4ykwnrfmzbgk4w"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/mattn/go-runewidth"))
-      (synopsis "@code{runewidth} provides Go functions to work with string widths")
-      (description
-       "The @code{runewidth} library provides Go functions for padding,
-measuring and checking the width of strings, with support for East Asian
-text.")
-      (home-page "https://github.com/mattn/runewidth")
-      (license license:expat))))
 
 (define-public docx2txt
   (package

@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2018 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2017 David Thompson <davet@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018 Julian Graham <joolean@gmail.com>
@@ -2111,7 +2111,7 @@ that parenthetically inclined game developers need to make 2D (and eventually
 @item keyboard, mouse, controller input
 @item REPL-driven development model
 @end enumerate\n")
-    (license license:gpl3+)))
+    (license license:asl2.0)))
 
 (define-public bennu-game-development
   (package
@@ -2427,7 +2427,8 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
     (arguments
      (list
       ;; XXX: The sole test is failing on i686 due to a rounding error.
-      #:tests? (not (target-x86-32?))
+      #:tests? (not (or (target-x86-32?)
+                        (%current-target-system)))
       #:configure-flags #~(list "-DODE_WITH_LIBCCD_SYSTEM=ON")
       #:phases
       #~(modify-phases %standard-phases
@@ -2809,29 +2810,26 @@ much more.")
       (license license:zlib))))
 
 (define-public recastnavigation
-  ;; We follow master since there hasn't been a release since 1.5.1 in 2016.
-  (let ((commit "6d1f9711b3b71f28c2c1c0742d76e0ef8766cf91")
-        (revision "2"))
-    (package
-      (name "recastnavigation")
-      (version (git-version "1.5.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/recastnavigation/recastnavigation")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0cqp0sbm0ixqnxqz6gf2gybh5l4az91mdsd8b5bgxs1wpl2jmnga"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
-                                 "-DRECASTNAVIGATION_DEMO=OFF"
-                                 "-DRECASTNAVIGATION_TESTS=ON"
-                                 "-DRECASTNAVIGATION_EXAMPLES=OFF")))
-      (synopsis "Navigation system for games")
-      (description "Recast is state of the art navigation mesh
+  (package
+    (name "recastnavigation")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/recastnavigation/recastnavigation")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rdz3qmp4b961zjah2ax82h471j14w2rcf576gcyx7vldrg8dmj8"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
+                               "-DRECASTNAVIGATION_DEMO=OFF"
+                               "-DRECASTNAVIGATION_TESTS=ON"
+                               "-DRECASTNAVIGATION_EXAMPLES=OFF")))
+    (synopsis "Navigation system for games")
+    (description "Recast is state of the art navigation mesh
 construction toolset for games.
 
 @itemize
@@ -2854,8 +2852,8 @@ simple cases, as well as tiled navigation mesh which allows you to plug
 in and out pieces of the mesh.  The tiled mesh allows you to create
 systems where you stream new navigation data in and out as the player
 progresses the level, or you may regenerate tiles as the world changes.")
-      (home-page "https://github.com/recastnavigation/recastnavigation")
-      (license license:zlib))))
+    (home-page "https://github.com/recastnavigation/recastnavigation")
+    (license license:zlib)))
 
 (define-public raylib
   (package

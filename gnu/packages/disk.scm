@@ -25,6 +25,7 @@
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
 
 (define-module (gnu packages disk)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -76,6 +78,9 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -571,6 +576,42 @@ present in many Western Digital hard drives.  This timer is part of the
 the default timer setting is not well suited to Linux or other *nix systems,
 and can dramatically shorten the lifespan of the drive if left unchecked.")
     (license license:gpl3+)))
+
+(define-public greaseweazle-host-tools
+  (package
+    (name "greaseweazle-host-tools")
+    (version "1.12")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/keirf/greaseweazle")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lpvjlf2xg4ccwik8npiihi0lgw9dx5h12pp4ry343gkz4pwgk9x"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'setuptools-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "1.8")))
+          (add-after 'install 'install-udev-rules
+            (lambda _
+              (install-file "scripts/49-greaseweazle.rules"
+                            (string-append #$output "/lib/udev/rules.d/")))))))
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs
+     (list python-bitarray python-crcmod python-pyserial python-requests))
+    (synopsis "Tools for accessing a floppy drive at the raw flux level")
+    (description
+     "This package provides the host tools for controlling a Greaseweazle: an
+Open Source USB device capable of reading and writing raw data on nearly any
+type of floppy disk")
+    (home-page "https://github.com/keirf/greaseweazle")
+    (license license:public-domain)))
 
 (define-public gparted
   (package
@@ -1159,7 +1200,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
                 "1piym8za0iw2s8yryh39y072f90mzisv89ffvn1jzb71f71mbfqa"))))
     (build-system go-build-system)
     (native-inputs
-     (list go-github.com-mattn-go-runewidth go-golang-org-x-term
+     (list go-github-com-mattn-go-runewidth go-golang-org-x-term
            go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2-2.3))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
@@ -1501,6 +1542,46 @@ wrapper for disk usage querying and visualisation.")
 gone and to help you to clean it up.")
     (home-page "https://github.com/shundhammer/qdirstat")
     (license license:gpl2)))
+
+(define-public nwipe
+  (package
+    (name "nwipe")
+    (version "0.34")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/martijnvanbrummelen/nwipe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1frwjgz4mpzwr9sigr693crmxsjl08wcikh6ik7dm0x40l1kqqpd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-program (search-input-file outputs "bin/nwipe")
+                     (list "PATH" ":" 'prefix
+                           (map (lambda (p) (dirname (search-input-file inputs p)))
+                                '("sbin/dmidecode"
+                                  "sbin/hdparm"
+                                  "sbin/smartctl")))))))))
+    (inputs
+     (list bash-minimal dmidecode hdparm ncurses parted smartmontools))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (home-page "https://github.com/martijnvanbrummelen/nwipe")
+    (synopsis "Secure disk wiping utility")
+    (description
+     "@command{nwipe} securely erases disks using a variety of methods to
+ensure the data cannot be recovered.  It can wipe multiple drives in parallel
+and can be used noninteractively or with a text-based user interface.")
+    (license
+     (list license:gpl2
+           license:bsd-3 ; mt19937ar-cok
+           license:public-domain)))) ; {isaac_rand,PDFGen}
 
 (define-public wipe
   (package

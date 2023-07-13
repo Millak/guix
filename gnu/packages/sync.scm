@@ -76,7 +76,7 @@
 (define-public nextcloud-client
   (package
     (name "nextcloud-client")
-    (version "3.2.0")
+    (version "3.8.2")
     (source
      (origin
        (method git-fetch)
@@ -87,14 +87,14 @@
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "137h65sn4ixspbblvn0r2ngg8234yk582bppkkr87c3krfp21gx4"))
+        (base32 "0gmj217jmmx13wwb096prwzn3njv616njk1id97g6lrbn969fcnn"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
        (snippet
         '(begin
            ;; Not available in Guix.
-           (let* ((keep '("QProgressIndicator" "qtokenizer")))
+           (let* ((keep '("QProgressIndicator" "qtokenizer" "kirigami")))
              (with-directory-excursion "src/3rdparty"
                (for-each delete-file-recursively
                          (lset-difference string=?
@@ -103,11 +103,11 @@
            (with-directory-excursion "src/gui"
              (substitute* "CMakeLists.txt"
                ;; Remove references of deleted 3rdparties.
-               (("[ \t]*\\.\\./3rdparty/qtlockedfile/?.*\\.cpp")
+               (("[ \t]*\\.\\./3rdparty/qtlockedfile/?.*\\.(cpp|h)")
                 "")
-               (("[ \t]*\\.\\./3rdparty/qtsingleapplication/?.*\\.cpp")
+               (("[ \t]*\\.\\./3rdparty/qtsingleapplication/?.*\\.(cpp|h)")
                 "")
-               (("[ \t]*\\.\\./3rdparty/kmessagewidget/?.*\\.cpp")
+               (("[ \t]*\\.\\./3rdparty/kmessagewidget/?.*\\.(cpp|h)")
                 "")
                (("[ \t]*list\\(APPEND 3rdparty_SRC \\.\\./3rdparty/?.*\\)")
                 "")
@@ -121,8 +121,8 @@
                 "@kwidgetsaddons@")
                ;; Expand libraries, that used to be statically linked, but
                ;; no longer are post-vendoring.
-               (("\\$\\{synclib_NAME\\}")
-                (string-append "${synclib_NAME} "
+               (("KF5::Archive")
+                (string-append "KF5::Archive "
                                "QtSolutions_LockedFile "
                                "QtSolutions_SingleApplication "
                                "KF5WidgetsAddons")))
@@ -137,7 +137,7 @@
     (arguments
      `(#:configure-flags
        (list
-        "-DUNIT_TESTING=ON")
+        "-DUNIT_TESTING=ON" "-DBUILD_UPDATER=OFF")
        #:imported-modules
        ((guix build glib-or-gtk-build-system)
         ,@%qt-build-system-modules)
@@ -151,7 +151,7 @@
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Patch install directory for dbus service files.
              (substitute* "shell_integration/libcloudproviders/CMakeLists.txt"
-               (("PKGCONFIG_GETVAR\\(.+ _install_dir\\)")
+               (("pkg_get_variable\\(_install_dir dbus-1 .*\\)")
                 (string-append "set(_install_dir \"${CMAKE_INSTALL_PREFIX}"
                                "/share/dbus-1/services\")")))
              (substitute* "shell_integration/dolphin/CMakeLists.txt"
@@ -161,6 +161,11 @@
                (("@kwidgetsaddons@")
                 (search-input-directory inputs
                                         "/include/KF5/KWidgetsAddons/")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "QT_QPA_PLATFORM" "offscreen")
+               (invoke "ctest" "-E" "SyncXAttrTest"))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests write to $HOME.
@@ -176,6 +181,7 @@
        ("doxygen" ,doxygen)
        ("extra-cmake-modules" ,extra-cmake-modules)
        ("glib:bin" ,glib "bin")
+       ("librsvg" ,(librsvg-for-system))
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
@@ -183,8 +189,10 @@
        ("ruby" ,ruby)))
     (inputs
      (list appstream
+           dbus
            desktop-file-utils
            glib
+           karchive
            kconfig
            kcoreaddons
            kio
@@ -392,10 +400,6 @@ silently and reliably flow across to every other.")
        #~(list (string-append "CC=" #$(cc-for-target)))
        #:phases
        #~(modify-phases %standard-phases
-         (add-after 'unpack 'link-to-external-libraries
-           (lambda _
-             ;; Only link necessary libraries.
-             (setenv "DCFLAGS" "-L--as-needed")))
          (add-after 'configure 'adjust-makefile
            (lambda _
              (substitute* "Makefile"

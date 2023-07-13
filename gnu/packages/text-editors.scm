@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -432,7 +433,7 @@ compiled, requires few libraries, and starts up quickly.")
     (license license:gpl2+)))
 
 (define-public l3afpad
-  (let ((commit "5235c9e13bbf0d31a902c6776918c2d7cdbb61ff")
+  (let ((commit "16f22222116b78b7f6a6fd83289937cdaabed624")
         (revision "0"))
     (package
       (name "l3afpad")
@@ -445,8 +446,20 @@ compiled, requires few libraries, and starts up quickly.")
                        (commit commit)))
                 (sha256
                  (base32
-                  "1alyghm2wpakzdfag0g4g8gb1h9l4wdg7mnhq8bk0iq5ryqia16a"))))
+                  "0q55351lvvlw9bi35l49mxa43g4fv110pwprzkk9m5li77vb0bcp"))))
       (build-system glib-or-gtk-build-system)
+      (arguments
+        (list
+         #:phases
+         #~(modify-phases %standard-phases
+            (add-after 'install 'install-documentation
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (doc (string-append out "/share/doc/" #$name "-"
+                                           #$(package-version this-package)))
+                       (man (string-append out "/share/man/man1")))
+                  (install-file "l3afpad.1" man)
+                  (install-file "README" doc)))))))
       (native-inputs
        (list intltool autoconf automake pkg-config))
       (inputs
@@ -1006,8 +1019,8 @@ The basic features of Text Pieces are:
     (source
      (origin
        (method url-fetch)
-       (uri (let ((v (apply string-append (string-split version #\.))))
-              (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
+       (uri (string-append "https://www.scintilla.org/scintilla"
+                           (string-delete #\. version) ".tgz"))
        (sha256
         (base32 "0inbhzqdikisvnbdzn8153p1apbghxjzkkzji9i8zsdpyapb209z"))))
     (build-system gnu-build-system)
@@ -1029,11 +1042,9 @@ The basic features of Text Pieces are:
                 (for-each (lambda (f) (install-file f lib))
                           (find-files "bin/" "\\.so$"))
                 (for-each (lambda (f) (install-file f inc))
-                          (find-files "include/" "."))))))))
-    (native-inputs
-     (list pkg-config python-wrapper))
-    (inputs
-     (list gtk+))
+                          (find-files "include/" "\\.h$"))))))))
+    (native-inputs (list pkg-config python-wrapper))
+    (inputs (list gtk+))
     (home-page "https://www.scintilla.org/")
     (synopsis "Code editor for GTK+")
     (description "Scintilla is a source code editing component for
@@ -1044,6 +1055,66 @@ indicators, code completion and call tips.  Styling choices are more
 open than with many editors: Scintilla lets you use proportional
 fonts, bold and italics, multiple foreground and background colours,
 and multiple fonts.")
+    (license license:hpnd)))
+
+(define-public lexilla
+  (package
+    (name "lexilla")
+    (version "5.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.scintilla.org/lexilla"
+                           (string-delete #\. version) ".tgz"))
+       (sha256
+        (base32
+         "0sc3z6y82h1vq8aaydp119kymzvrv0p1xvy56r5j996jl6zxikk4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CXX=" #$(cxx-for-target))
+                           (string-append "SCINTILLA_INCLUDE="
+                                          #$(this-package-input "scintilla")
+                                          "/include"))
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda args
+              (with-directory-excursion "src"
+                (apply (assoc-ref %standard-phases 'build) args))))
+          (add-after 'build 'patch-more-shebangs
+            (lambda _
+              ;; Patch these bash shebangs to avoid them failing the tests.
+              (substitute* '("test/examples/bash/x.bsh.folded"
+                             "test/examples/bash/x.bsh.styled")
+                (("/usr/bin/env bash")
+                 (which "bash")))))
+          (replace 'check
+            (lambda args
+              (with-directory-excursion "test"
+                (apply (assoc-ref %standard-phases 'check) args))))
+          (add-after 'unpack 'fix-deps.mak
+            (lambda _
+              (substitute* "src/deps.mak"
+                (("../../scintilla")
+                 #$(this-package-input "scintilla")))))
+          (delete 'configure)           ;no configure script
+          (replace 'install
+            ;; Upstream provides no install script.
+            (lambda _
+              (let ((lib (string-append #$output "/lib"))
+                    (inc (string-append #$output "/include")))
+                (for-each (lambda (f) (install-file f lib))
+                          (find-files "bin/" "\\.so$"))
+                (for-each (lambda (f) (install-file f inc))
+                          (find-files "include/" "\\.h$"))))))))
+    (native-inputs (list python))
+    (inputs (list scintilla))
+    (home-page "https://www.scintilla.org/Lexilla.html")
+    (synopsis "Language lexers for Scintilla")
+    (description "Lexilla is a library of language lexers that can be
+used with the Scintilla editing component.")
     (license license:hpnd)))
 
 (define-public geany

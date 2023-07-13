@@ -1136,14 +1136,14 @@ interactive mode.")
 (define-public btrbk
   (package
     (name "btrbk")
-    (version "0.32.5")
+    (version "0.32.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://digint.ch/download/btrbk/releases/"
                                   "btrbk-" version ".tar.xz"))
               (sha256
                (base32
-                "1d4zqf5klad55gdzzldipsjrhpprixzjmn03g66df5h2d28l1zpi"))))
+                "0sxppfraakf56d1i4sbh4gyzg92panwpnq5y5hh6714igijarqh2"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1153,7 +1153,7 @@ interactive mode.")
                      (lambda _
                        (substitute* "Makefile"
                          (("= /etc")
-                          (string-append "= " #$output "/etc")))))
+                          (string-append "= $(PREFIX)/etc")))))
                    (delete 'check)
                    (add-after 'install 'wrap-scripts
                      (lambda* (#:key inputs outputs #:allow-other-keys)

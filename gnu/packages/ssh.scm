@@ -13,7 +13,7 @@
 ;;; Copyright © 2018 Manuel Graf <graf@init.at>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -49,7 +49,6 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
@@ -133,7 +132,7 @@ file names.
 (define-public libssh
   (package
     (name "libssh")
-    (version "0.10.4")
+    (version "0.10.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.libssh.org/files/"
@@ -141,7 +140,7 @@ file names.
                                   "/libssh-" version ".tar.xz"))
               (sha256
                (base32
-                "0zfr9fy4vg1bmz1k836hg9wi20mmaz2sgw61s6464iv1mda2qf87"))
+                "0d22gq77ga24ijlgr3d1wvhfvprx61iklkb3npifxfb7ygvjy3mn"))
               (modules '((guix build utils)))
               (snippet
                ;; 'PATH_MAX' is undefined on GNU/Hurd; work around it.
@@ -213,7 +212,7 @@ a server that supports the SSH-2 protocol.")
    (native-inputs (list groff pkg-config))
    (inputs `(("libedit" ,libedit)
              ("openssl" ,openssl)
-             ,@(if (hurd-target?)
+             ,@(if (target-hurd?)
                    '()
                    `(("pam" ,linux-pam)
                      ("libfido2" ,libfido2)))     ;fails to build on GNU/Hurd
@@ -239,7 +238,7 @@ a server that supports the SSH-2 protocol.")
                           "--with-libedit"
 
                           ;; Enable PAM support in sshd.
-                          ,,@(if (hurd-target?)
+                          ,,@(if (target-hurd?)
                                '()
                                '("--with-pam"
 

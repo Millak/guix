@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -20,6 +20,7 @@
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -239,7 +240,7 @@ classification.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "0qbq1rqp94l530f043qzp8aw5lj7dng9wq0miffd7spd1ff638wq"))))
+                  "07kdsngvr4n1qxpqzv1nlay7g41d6jzjppa8vzmrg220s8ing87z"))))
       (build-system gnu-build-system)
       (arguments
        `(#:imported-modules (,@%gnu-build-system-modules
@@ -1470,32 +1471,90 @@ with your favorite libraries.")
 (define-public python-threadpoolctl
   (package
     (name "python-threadpoolctl")
-    (version "2.1.0")
+    (version "3.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "threadpoolctl" version))
         (sha256
          (base32
-          "0szsxcm2fbxrn83iynn42bnvrdh7mfsmkhfn8pdn7swblfb7rifx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest"))
-             #t)))))
+          "100k76nmajf408lbn5ipis1gilklcs6sbqyqy3hhlh54zanbldd3"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-flit-core python-pytest))
     (home-page "https://github.com/joblib/threadpoolctl")
     (synopsis "Python helpers for common threading libraries")
     (description "Thread-pool Controls provides Python helpers to limit the
 number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
+
+(define-public python-tslearn
+  (package
+    (name "python-tslearn")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tslearn-team/tslearn")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fhs8c28hdqsyj8kdhzrmrxrh4w92x6nf3gm026xapp9divvljd6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; This one fails because of a difference in accuracy.
+              "not test_all_estimators[LearningShapelets-LearningShapelets]"
+              ;; XXX: It's embarrassing to disable these two, but the truth is
+              ;; that there's only so much we can do to force this package to
+              ;; work with Tensorflow 1.9.  It's still worth having this
+              ;; package, because it can be used without the Tensorflow
+              ;; backend.
+              ;; TypeError: cannot pickle '_thread.RLock' object
+              " and not test_shapelets"
+              ;; TypeError: Expected binary or unicode string, got 2
+              " and not test_serialize_shapelets"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "tslearn/tests/sklearn_patches.py"
+               (("_pairwise_estimator_convert_X")
+                "_enforce_estimator_tags_X")
+               (("pairwise_estimator_convert_X\\(([^,]+), ([^,\\)]+)" _ a b)
+                (string-append "pairwise_estimator_convert_X(" b ", " a)))
+             (substitute* "tslearn/tests/test_shapelets.py"
+               (("tf.optimizers.Adam")
+                "tf.keras.optimizers.Adam"))
+             (substitute* "tslearn/shapelets/shapelets.py"
+               (("tf.keras.utils.set_random_seed")
+                "tf.set_random_seed")
+               (("def __call__\\(self, shape, dtype=None\\):")
+                "def __call__(self, shape, dtype=None, partition_info=None):")
+               (("tf.math.is_finite")
+                "tf.is_finite")))))))
+    (propagated-inputs (list python-cesium
+                             python-h5py
+                             python-joblib
+                             python-numba
+                             python-numpy
+                             python-pandas
+                             python-scipy
+                             python-scikit-learn
+                             tensorflow
+                             python-wheel))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/tslearn-team/tslearn")
+    (synopsis "Machine learning toolkit for time series data")
+    (description "This is a Python library for time series data mining.
+It provides tools for time series classification, clustering
+and forecasting.")
+    (license license:bsd-2)))
 
 (define-public python-imbalanced-learn
   (package
@@ -2394,7 +2453,7 @@ Python.")
            ;; "ZIP does not support timestamps before 1980".  Luckily,
            ;; SOURCE_DATE_EPOCH is respected, which we set to some time in
            ;; 1980.
-           (lambda _ (setenv "SOURCE_DATE_EPOCH" "315532800") #t))
+           (lambda _ (setenv "SOURCE_DATE_EPOCH" "315532800")))
          (add-after 'unpack 'python3.10-compatibility
            (lambda _
              ;; See https://github.com/tensorflow/tensorflow/issues/20517#issuecomment-406373913
@@ -2435,6 +2494,8 @@ Python.")
              (substitute* "tensorflow/python/keras/callbacks.py"
                (("from collections import Iterable")
                 "from collections.abc import Iterable"))
+             (substitute* "tensorflow/python/ops/variable_scope.py"
+               (("collections_lib.Sequence") "collections_lib.abc.Sequence"))
 
              ;; XXX: it is not clear if this is a good idea, but the build
              ;; system tries to overwrite the __or__ and __ror__ methods of
@@ -2450,7 +2511,20 @@ Python.")
                (("void BinaryUFunc\\(char\\*\\* args, npy_intp\\* dimensions, npy_intp\\* steps,")
                 "void BinaryUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,")
                (("void CompareUFunc\\(char\\*\\* args, npy_intp\\* dimensions, npy_intp\\* steps,")
-                "void CompareUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,"))))
+                "void CompareUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,"))
+
+             ;; ...and for numpy >= 1.23
+             (substitute* "tensorflow/python/framework/tensor_util.py"
+               (("np.asscalar\\(x\\[0\\]\\)") "x[0].item()")
+               (("np.asscalar\\(x\\)") "x.item()")
+               (("np.asscalar\\(v\\)") "np.ndarray.item(v)")
+               (("return np.asscalar") "return np.ndarray.item"))
+             (substitute* "tensorflow/python/kernel_tests/cwise_ops_test.py"
+               (("np.asscalar\\(np.random.rand\\(1\\) \\* 100.\\)")
+                "(np.random.rand(1) * 100.).item()"))
+             (substitute* '("tensorflow/python/framework/fast_tensor_util.pyx"
+                            "tensorflow/python/estimator/canned/linear_testing_utils.py")
+               (("np.asscalar") "np.ndarray.item"))))
          (add-after 'python3.10-compatibility 'chdir
            (lambda _ (chdir "tensorflow/contrib/cmake")))
          (add-after 'chdir 'disable-downloads
@@ -2794,15 +2868,15 @@ DESTINATION include/tensorflow/c FILES_MATCHING PATTERN \"*.h\")\n" m)))))
        ("swig" ,swig)
        ("unzip" ,unzip)))
     (propagated-inputs
-     `(("python-absl-py" ,python-absl-py)
-       ("python-astor" ,python-astor)
-       ("python-gast" ,python-gast)
-       ("python-grpcio" ,python-grpcio)
-       ("python-numpy" ,python-numpy)
-       ("python-protobuf" ,python-protobuf-3.6)
-       ("python-six" ,python-six)
-       ("python-termcolo" ,python-termcolor)
-       ("python-wheel" ,python-wheel)))
+     (list python-absl-py
+           python-astor
+           python-gast
+           python-grpcio
+           python-numpy
+           python-protobuf-3.6
+           python-six
+           python-termcolor
+           python-wheel))
     (inputs
      `(("c-ares" ,c-ares)
        ("eigen" ,eigen-for-tensorflow)
@@ -3206,46 +3280,115 @@ with image data, text data, and sequence data.")
 (define-public python-keras
   (package
     (name "python-keras")
-    (version "2.2.4")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Keras" version))
-       (patches (search-patches "python-keras-integration-test.patch"))
        (sha256
         (base32
-         "1j8bsqzh49vjdxy6l1k4iwax5vpjzniynyd041xjavdzvfii1dlh"))))
+         "1k68xd8n2y9ldijggjc8nn4d6d1axw0p98gfb0fmm8h641vl679j"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* '("keras/callbacks/callbacks.py"
+                        "keras/engine/training_utils.py"
+                        "keras/engine/training.py"
+                        "keras/engine/training_generator.py"
+                        "keras/utils/generic_utils.py")
+           (("from collections import Iterable")
+            "from collections.abc import Iterable")
+           (("collections.Container")
+            "collections.abc.Container")
+           (("collections.Mapping")
+            "collections.abc.Mapping")
+           (("collections.Sequence")
+            "collections.abc.Sequence")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-tests-for-unavailable-features
+         (add-after 'unpack 'tf-compatibility
+           (lambda _
+             (substitute* "keras/backend/tensorflow_backend.py"
+               (("^get_graph = .*")
+                "get_graph = tf.get_default_graph")
+               (("tf.compat.v1.nn.fused_batch_norm")
+                "tf.nn.fused_batch_norm")
+               ;; categorical_crossentropy does not support axis
+               (("from_logits=from_logits, axis=axis")
+                "from_logits=from_logits")
+               ;; dropout accepts a level number, not a named rate argument.
+               (("dropout\\(x, rate=level,")
+                "dropout(x, level,")
+               (("return x.shape.rank")
+                "return len(x.shape)"))))
+         (add-after 'unpack 'hdf5-compatibility
+           (lambda _
+             ;; The truth value of an array with more than one element is ambiguous.
+             (substitute* "tests/keras/utils/io_utils_test.py"
+               ((" *assert .* == \\[b'(asd|efg).*") ""))
+             (substitute* "tests/test_model_saving.py"
+               (("h5py.File\\('does not matter',")
+                "h5py.File('does not matter', 'w',"))
+             (substitute* "keras/utils/io_utils.py"
+               (("h5py.File\\('in-memory-h5py', driver='core', backing_store=False\\)")
+                "h5py.File('in-memory-h5py', 'w', driver='core', backing_store=False)")
+               (("h5file.fid.get_file_image")
+                "h5file.id.get_file_image"))
+             (substitute* "keras/engine/saving.py"
+               (("\\.decode\\('utf-?8'\\)") ""))))
+         (add-after 'unpack 'delete-unavailable-backends
            (lambda _
              (delete-file "keras/backend/theano_backend.py")
-             (delete-file "keras/backend/cntk_backend.py")
-             (delete-file "tests/keras/backend/backend_test.py")
-             ;; FIXME: This doesn't work because Tensorflow is missing the
-             ;; coder ops library.
-             (delete-file "tests/keras/test_callbacks.py")))
+             (delete-file "keras/backend/cntk_backend.py")))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                ;; These tests attempt to download data files from the internet.
                (delete-file "tests/integration_tests/test_datasets.py")
                (delete-file "tests/integration_tests/imagenet_utils_test.py")
-               ;; Backport https://github.com/keras-team/keras/pull/12479.
-               (substitute* "tests/keras/engine/test_topology.py"
-                 (("np.ones\\(\\(3, 2\\)\\)")
-                  "1."))
                (invoke "python" "-m" "pytest" "tests"
                        "-p" "no:pep8"
                        ;; FIXME: python-build-system lacks PARALLEL-TESTS?
                        "-n" (number->string (parallel-job-count))
+                       ;; This one uses the theano backend that we don't have.
+                       "--ignore=tests/test_api.py"
+                       "--ignore=tests/keras/backend/backend_test.py"
+                       ;; Our Tensorflow version does not have the coder ops library.
+                       "--ignore=tests/keras/callbacks/callbacks_test.py"
+                       ;; ...nor do we have tensorboard
+                       "--ignore=tests/keras/callbacks/tensorboard_test.py"
                        "-k"
                        (string-append
+                        ;; See https://github.com/keras-team/keras/pull/7033
+                        "not test_TimeDistributed_learning_phase "
+                        ;; XXX fails because no closure is provided
+                        "and not test_func_dump_and_load_backwards_compat "
+                        ;; XXX real bug?  These are all tests that fail due to
+                        ;; shape mismatch, e.g. "got logits shape [12,3] and
+                        ;; labels shape [9]"
+                        "and not test_model_with_crossentropy_losses_channels_first "
+                        "and not test_masking_correctness_output_size_not_equal_to_first_state_size "
+                        "and not test_convolutional_recurrent "
+                        "and not test_axis "
+
+                        ;; XXX fails because of 3/15 values have unexpected differences.
+                        "and not test_masking_correctness_output_not_equal_to_first_state "
+                        ;; XXX fails because of a difference of about 0.1
+                        "and not test_sample_weighted "
+                        ;; XXX fails because of a difference of about 0.3
+                        "and not test_scalar_weighted "
+                        ;; XXX fails because of a difference of about 0.2
+                        "and not test_unweighted "
+
+                        ;; XXX I cannot reproduce this in an interactive
+                        ;; Python session, because l2_norm works just fine.
+                        "and not test_weighted " ;TestCosineSimilarity
+                        "and not test_config "   ;TestCosineSimilarity
+
                         ;; The following test fails only in the build
                         ;; container; skip it.
-                        "not test_selu "
+                        "and not test_selu "
                         ;; The following test was found flaky and removed in
                         ;; recent versions.
                         "and not test_stateful_metrics"))))))))
@@ -3261,12 +3404,15 @@ with image data, text data, and sequence data.")
            tensorflow
            graphviz))
     (native-inputs
-     (list python-pandas
+     (list python-flaky
+           python-markdown
+           python-pandas
            python-pytest
            python-pytest-cov
            python-pytest-pep8
            python-pytest-timeout
            python-pytest-xdist
+           python-pyux
            python-sphinx
            python-requests))
     (home-page "https://github.com/keras-team/keras")
@@ -3721,6 +3867,51 @@ AI services.")
     (description "This package provides common Python utilities and GitHub
 Actions for the Lightning suite of libraries.")
     (license license:asl2.0)))
+
+(define-public python-captum
+  (package
+    (name "python-captum")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/captum")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h4n91ivhjxm6wj0vgqpfss2dmq4sjcp0appd08cd5naisabjyb5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These two tests (out of more than 1000 tests) fail because of
+             ;; accuracy problems.
+             "not test_softmax_classification_batch_multi_target\
+ and not test_softmax_classification_batch_zero_baseline")))
+    (propagated-inputs (list python-matplotlib python-numpy python-pytorch))
+    (native-inputs (list jupyter
+                         python-annoy
+                         python-black
+                         python-flake8
+                         python-flask
+                         python-flask-compress
+                         python-ipython
+                         python-ipywidgets
+                         python-mypy
+                         python-parameterized
+                         python-pytest
+                         python-pytest-cov
+                         python-scikit-learn))
+    (home-page "https://captum.ai")
+    (synopsis "Model interpretability for PyTorch")
+    (description "Captum is a model interpretability and understanding library
+for PyTorch.  Captum contains general purpose implementations of integrated
+gradients, saliency maps, smoothgrad, vargrad and others for PyTorch models.
+It has quick integration for models built with domain-specific libraries such
+as torchvision, torchtext, and others.")
+    (license license:bsd-3)))
 
 (define-public python-readchar
   (package
@@ -4573,6 +4764,9 @@ Brian 2 simulator.")
        (sha256
         (base32 "1jgmb5kl0bf4a2zfn94zlb117672r9lvvkkmwl86ihlyr1mpr3d0"))))
     (build-system cmake-build-system)
+    (arguments (if (target-riscv64?)
+                   (list #:configure-flags #~'("-DDNNL_CPU_RUNTIME=SEQ"))
+                   '()))
     (home-page "https://github.com/oneapi-src/oneDNN")
     (synopsis "Deep Neural Network Library")
     (description
