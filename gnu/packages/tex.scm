@@ -5262,6 +5262,28 @@ PGFPlots to a given width or height without changing the text size.")
      "The package provides various emoticons, cooking symbols and trees.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikztosvg
+  (package
+    (name "texlive-tikztosvg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/tikztosvg.1"
+                   "doc/man/man1/tikztosvg.man1.pdf"
+                   "doc/support/tikztosvg/"
+                   "scripts/tikztosvg/")
+             (base32
+              "1h1g3vsljx3bz929krr21i65n20drwhwxi88gwcvrxrgsvi9xj08")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "tikztosvg")))
+    (home-page "https://ctan.org/pkg/tikztosvg")
+    (synopsis "Utility for rendering TikZ diagrams to SVG")
+    (description
+     "This package provides a shell script that calls XeTeX and
+@command{pdf2svg} to convert TikZ environments to SVG files.")
+    (license license:gpl3)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
