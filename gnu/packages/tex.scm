@@ -5641,6 +5641,24 @@ make drawing easier, especially when drawing repeatedly.  The macros were
 chosen and developed with an emphasis on drawing graphs in economics.")
     (license license:lppl1.3c)))
 
+(define-public texlive-utfsym
+  (package
+    (name "texlive-utfsym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/utfsym/" "tex/latex/utfsym/")
+             (base32
+              "0bbdhi9fy3bzm9qrjca8ghl04pv9iky380if17w1hxhp2jpd691b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/utfsym")
+    (synopsis "Provides various Unicode symbols")
+    (description
+     "This package provides various symbols from the Unicode in order to be
+able to use them originally in a school setting such as on worksheets.")
+    (license license:cc0)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
