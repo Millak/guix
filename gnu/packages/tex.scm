@@ -5739,6 +5739,31 @@ ordinary text, and as a picture element within a TikZ-picture.  The appearance
 of a flag (size, frame etc.)  can be adapted using optional parameters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xistercian
+  (package
+    (name "texlive-xistercian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xistercian/"
+                   "source/latex/xistercian/"
+                   "tex/latex/xistercian/")
+             (base32
+              "021iwd8w19dbj1iqm1fdf9s06lysbrackz0g897nmsf0fks6qf4r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xistercian")
+    (synopsis "Cistercian numerals in LaTeX")
+    (description
+     "@code{xistercian} allows you to use Cistercian numerals in LaTeX.
+The glyphs are created using PGF and to a certain degree configurable.  You
+can use Cistercian numerals as page numbers using
+@code{\\pagenumbering@{cistercian@}}.  The two main macros are:
+@code{\\cistercian@{<counter>@}}, which formats the LaTeX2e counter as
+a Cistercian numeral, and @code{\\cisterciannum@{<integer>@}}, formats the
+integer (given as a string) as a Cistercian numeral.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
