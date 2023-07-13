@@ -3417,6 +3417,27 @@ environment, including a wider range of vectors, and a lot more box frame
 styles.")
     (license license:gpl3+)))
 
+(define-public texlive-postage
+  (package
+    (name "texlive-postage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/postage/" "source/latex/postage/"
+                   "tex/latex/postage/")
+             (base32
+              "1sa9fm5hh57p0srnrd98jljj6200hnl17pmhw2v5q7jjgqj1n5gq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/postage")
+    (synopsis "Stamp letters with Deutsche Post's service Internetmarke")
+    (description
+     "The postage package is used for franking letters with Deutsche Post's
+online postage service Internetmarke.  Note that in order to print valid
+stamps you must point to a valid PDF of Deutsche Post's Ausdruck
+4-spaltig (DIN A4).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
