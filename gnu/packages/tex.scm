@@ -2642,6 +2642,30 @@ and maths (advance, multiply, and divide)---in short---it takes the pain out
 of PiCTeX.")
     (license license:lppl)))
 
+(define-public texlive-mercatormap
+  (package
+    (name "texlive-mercatormap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mercatormap/"
+                   "tex/latex/mercatormap/")
+             (base32
+              "11kcwzly8m8wqyppymanpvgabyjl1w33xzsy43sb5p4xv8fdaa5j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mercatormap")
+    (synopsis
+     "Spherical Mercator coordinate systems and Web Mercator tile integration")
+    (description
+     "This package extends TikZ with tools to create map graphics.  The
+provided coordinate system relies on the Web Mercator projection used on the
+Web by OpenStreetMap and others.  The package supports the seamless
+integration of graphics from public map tile servers by a Python script.
+Also, common map elements like markers, geodetic networks, bar scales, routes,
+orthodrome pieces, and more are part of the package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
