@@ -5222,6 +5222,27 @@ TikZ for generating posters.  Several formatting options are available, and
 spacing and layout of the poster is to a large extent automated.")
     (license license:lppl1.2+)))
 
+(define-public texlive-tikzscale
+  (package
+    (name "texlive-tikzscale")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzscale/"
+                   "source/latex/tikzscale/"
+                   "tex/latex/tikzscale/")
+             (base32
+              "1iq7f9jnw86rhp7b3sim3z56ygj005zygzfc0bdnpmx5s4ds1gpv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzscale")
+    (synopsis "Resize pictures while respecting text size")
+    (description
+     "The package extends the @code{\\includegraphics} command to support
+@code{tikzpicture} environments.  It allows scaling of TikZ images and
+PGFPlots to a given width or height without changing the text size.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
