@@ -4991,6 +4991,26 @@ images from files and from TikZ pictures.  Also, patterns of hexagons and of
 rhombi are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikzinclude
+  (package
+    (name "texlive-tikzinclude")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzinclude/"
+                   "source/latex/tikzinclude/"
+                   "tex/latex/tikzinclude/")
+             (base32
+              "0mcgzbfvj6pksr18813kpnknkdpzlyi0rncbn9g11ac0g0lyzgqq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzinclude")
+    (synopsis "Import TikZ images from colletions")
+    (description
+     "The package addresses the problem of importing only one TikZ-image from
+a file holding multiple images.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
