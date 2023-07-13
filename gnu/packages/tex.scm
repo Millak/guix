@@ -4339,6 +4339,28 @@ you personalize the look and feel of the graphs.")
 @code{picture} environments.")
     (license license:wtfpl2)))
 
+(define-public texlive-tikz-ext
+  (package
+    (name "texlive-tikz-ext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-ext/"
+                   "tex/generic/tikz-ext/"
+                   "tex/latex/tikz-ext/" "tex/plain/tikz-ext/")
+             (base32
+              "1sb7h2jrz82g10j5qq4h4qiyj5jdriyx7618rfgx05cz8rdv6mxs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-ext")
+    (synopsis "Collection of libraries for PGF/TikZ")
+    (description
+     "This is a collection of libraries for PGF/TikZ.  Currently these are
+@code{transformations.mirror}, @code{paths.arcto}, @code{paths.ortho},
+@code{paths.timer}, @code{patterns.images}, @code{topaths.arcthrough} and
+@code{misc}.")
+    (license (list license:fdl1.3+ license:lppl))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
