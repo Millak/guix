@@ -91,6 +91,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages tcl)
@@ -3437,6 +3438,55 @@ online postage service Internetmarke.  Note that in order to print valid
 stamps you must point to a valid PDF of Deutsche Post's Ausdruck
 4-spaltig (DIN A4).")
     (license license:lppl1.3c)))
+
+(define-public texlive-prerex
+  (package
+    (name "texlive-prerex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prerex/" "doc/man/man5/prerex.5"
+                   "doc/man/man5/prerex.man5.pdf"
+                   "tex/latex/prerex/")
+             (base32
+              "0cmkr8533p4lqnj9x7nlcqj0slin021y13mr4mx2hvd35ya0dd80")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:modules '((guix build texlive-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-prerex-source
+            (lambda _
+              (mkdir-p "build")
+              (with-directory-excursion "build"
+                (invoke "tar" "xvf"
+                        ;; Tarball includes a version number that we ignore.
+                        (first (find-files ".." "^prerex-.*\\.tar.gz"))
+                        "--strip-components=1"))))
+          (add-after 'unpack-prerex-source 'build-prerex
+            (lambda args
+              (with-directory-excursion "build"
+                (for-each (lambda (phase)
+                            (apply (assoc-ref gnu:%standard-phases phase) args))
+                          '(configure build check install))))))))
+    (native-inputs (list readline))
+    (home-page "https://ctan.org/pkg/prerex")
+    (synopsis "Interactive editor and macro support for prerequisite charts")
+    (description
+     "This package consists of @file{prerex.sty}, a LaTeX package for
+producing charts of course nodes linked by arrows representing pre- and
+co-requisites, and @command{prerex}, an interactive program for creating and
+editing chart descriptions.  The implementation of @file{prerex.sty} uses PGF,
+so that it may be used equally happily with LaTeX or PDFLaTeX; @code{prerex}
+itself is written in C.  The package includes source code for a previewer
+application, a lightweight Qt-4 and Poppler-based prerex-enabled PDF viewer.")
+    (license (list license:gpl2 license:lppl))))
 
 (define-public texlive-amiri
   (package
