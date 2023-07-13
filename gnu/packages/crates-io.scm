@@ -47977,7 +47977,7 @@ in your code.")
 (define-public rust-proc-macro2-1
   (package
     (name "rust-proc-macro2")
-    (version "1.0.56")
+    (version "1.0.64")
     (source
      (origin
        (method url-fetch)
@@ -47985,7 +47985,7 @@ in your code.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0ddlk2c7s9c0fhmf8cd0wikayicv9xrm9ck9vzgg9w86rnqbsqrb"))))
+         "1nm7qw54jn9n0g1ygkw4f63vj90m241yih6ph3g6zx7irdi3p03q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--lib")
