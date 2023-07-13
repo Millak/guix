@@ -3779,6 +3779,24 @@ package specifiying relative viewport for graphics inclusion: a window defined
 by the given fractions of the natural width and height of the image.")
     (license license:lppl)))
 
+(define-public texlive-sa-tikz
+  (package
+    (name "texlive-sa-tikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sa-tikz/" "tex/latex/sa-tikz/")
+             (base32
+              "0wdxdgc7jh0h7pql8wja9h4qjc7vr4gv03y4nk2mlxxycwsxiimn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sa-tikz")
+    (synopsis "TikZ library to draw switching architectures")
+    (description
+     "The package provides a library that offers an easy way to draw switching
+architectures and to customize their aspect.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
