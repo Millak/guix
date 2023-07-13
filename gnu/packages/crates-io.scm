@@ -51560,7 +51560,7 @@ initial value.")
 (define-public rust-ref-cast-impl-1
   (package
     (name "rust-ref-cast-impl")
-    (version "1.0.2")
+    (version "1.0.18")
     (source
      (origin
        (method url-fetch)
@@ -51569,13 +51569,14 @@ initial value.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0i1i3an8si070aqg2mvz6yqc6y2pl9zhd6dd2piz17l7mdsv88bx"))))
+         "05kjg9g9akzb0yns255a5zvdkbwk0wa9kp1cf8k6h25nv7d57gv8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-ref-cast" ,rust-ref-cast-1))))
     (home-page "https://github.com/dtolnay/ref-cast")
     (synopsis "Derive implementation for @code{ref_cast::RefCast}")
     (description
