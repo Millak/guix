@@ -10965,17 +10965,17 @@ that need to represent UTF-16 data as 8-bit characters.")
 winded @code{#[cfg()]} checks.")
     (license license:expat)))
 
-(define-public rust-cfg-expr-0.10
+(define-public rust-cfg-expr-0.15
   (package
     (name "rust-cfg-expr")
-    (version "0.10.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cfg-expr" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1nw50j1sl6q96067399r1c6ppwp483q6vvmqdsnv493cv7sarb0a"))))
+    (version "0.15.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cfg-expr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0744z7sky6kgchfk2ilchb16bjyz7nk8p8zfn3p953y2xir00p11"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -10989,6 +10989,25 @@ winded @code{#[cfg()]} checks.")
      "This package provides a parser and evaluator for Rust @code{cfg()}
 expressions.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-cfg-expr-0.10
+  (package
+    (inherit rust-cfg-expr-0.15)
+    (name "rust-cfg-expr")
+    (version "0.10.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cfg-expr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1nw50j1sl6q96067399r1c6ppwp483q6vvmqdsnv493cv7sarb0a"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-smallvec" ,rust-smallvec-1)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.12))
+       #:cargo-development-inputs
+       (("rust-similar-asserts" ,rust-similar-asserts-1))))))
 
 (define-public rust-cfg-expr-0.8
   (package
