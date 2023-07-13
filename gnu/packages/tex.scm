@@ -4734,6 +4734,26 @@ TikZ drawings or annotations.  Thereby, lattices can be connected to draw
 injection/extraction or even a complete accelerator facility.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-planets
+  (package
+    (name "texlive-tikz-planets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-planets/"
+                   "tex/latex/tikz-planets/")
+             (base32
+              "0sgdkcn0li4k48m0fvhdk6j1kjvh6kzgjbq2jjwnzrdxz97s7hig")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-planets")
+    (synopsis "Illustrate celestial mechanics and the solar system")
+    (description
+     "This TikZ-package makes it easy to illustrate celestial mechanics and
+the solar system.  You can use it to draw sketches of the eclipses, the phases
+of the Moon, etc.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
