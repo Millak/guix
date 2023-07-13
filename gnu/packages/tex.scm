@@ -2932,6 +2932,26 @@ geometric tools using TikZ, for example a pen, a compass, a rule, a square, or
 a protractor.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pb-diagram
+  (package
+    (name "texlive-pb-diagram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pb-diagram/"
+                   "tex/latex/pb-diagram/")
+             (base32
+              "1g790ykz0xq01d8zmy6llr33imh42dy51700c9z49xga4dvnyqlv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pb-diagram")
+    (synopsis "Commutative diagram package using LAMSTeX or Xy-pic fonts")
+    (description
+     "The package provides a @code{diagram} environment.  This allows the
+LaTeX user to easily create complex commutative diagrams, by placing formula
+nodes on a conceptual grid and attaching arrows to them.")
+    (license license:gpl2+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
