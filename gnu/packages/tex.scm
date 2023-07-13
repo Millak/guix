@@ -5328,6 +5328,25 @@ written separately to individual PDF files, or packaged into a single PDF
 file.")
     (license license:lppl1.2+)))
 
+(define-public texlive-timing-diagrams
+  (package
+    (name "texlive-timing-diagrams")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/timing-diagrams/"
+                   "tex/latex/timing-diagrams/")
+             (base32
+              "06hzcbbinrlvdsp9jxs82xi9b94x76f239z5b1x3y41ip3n51b1p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/timing-diagrams")
+    (synopsis "Draw timing diagrams")
+    (description
+     "The package provides commands to draw and annotate various kinds of
+timing diagrams, using TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
