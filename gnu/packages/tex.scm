@@ -4754,6 +4754,29 @@ the solar system.  You can use it to draw sketches of the eclipses, the phases
 of the Moon, etc.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-tikz-qtree
+  (package
+    (name "texlive-tikz-qtree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-qtree/"
+                   "tex/latex/tikz-qtree/")
+             (base32
+              "15w7mr0rhra80rvf4zci2gkd5cy13ijlh64ay0bay87iviwbkn83")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-qtree")
+    (synopsis "Use existing Qtree syntax for trees in TikZ")
+    (description
+     "The package provides a macro for drawing trees with TikZ using the easy
+syntax of Alexis Dimitriadis Qtree.  It improves on TikZ's standard
+tree-drawing facility by laying out tree nodes without collisions; it improves
+on Qtree by adding lots of features from TikZ (for example, edge labels,
+arrows between nodes); and it improves on @code{pst-qtree} in being usable
+with pdfTeX and XeTeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
