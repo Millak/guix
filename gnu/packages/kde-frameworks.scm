@@ -3630,7 +3630,7 @@ http://community.kde.org/Frameworks/Porting_Notes should help with this.")
 (define-public khtml
   (package
     (name "khtml")
-    (version "5.98.0")
+    (version "5.108.0")
     (source
      (origin
        (method url-fetch)
@@ -3639,7 +3639,7 @@ http://community.kde.org/Frameworks/Porting_Notes should help with this.")
              (version-major+minor version) "/portingAids/"
              name "-" version ".tar.xz"))
        (sha256
-        (base32 "0bflwrp6i2w6a3fq2m2df655495rpnsmqcm7w1f1dzfndc6yd9i5"))))
+        (base32 "0kasxgkxfibdj81a6iiv4ciqy5fd180lsk9sa1byd8y0bydd8kjv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules perl))
