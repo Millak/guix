@@ -2834,6 +2834,25 @@ file).")
 create molecular orbital diagrams using TikZ.")
     (license license:lppl1.3c)))
 
+(define-public texlive-neuralnetwork
+  (package
+    (name "texlive-neuralnetwork")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/neuralnetwork/examples/"
+                   "tex/latex/neuralnetwork/")
+             (base32
+              "11k0hwg1mx52mrp7csp93m4rvv22vq91l4ij1ylgbw9flh189p8x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/neuralnetwork")
+    (synopsis "Graph-drawing for neural networks")
+    (description
+     "The package provides facilities for graph-drawing, with facilities
+designed for neural network diagrams.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
