@@ -2952,6 +2952,29 @@ LaTeX user to easily create complex commutative diagrams, by placing formula
 nodes on a conceptual grid and attaching arrows to them.")
     (license license:gpl2+)))
 
+(define-public texlive-penrose
+  (package
+    (name "texlive-penrose")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/penrose/" "source/latex/penrose/"
+                   "tex/latex/penrose/")
+             (base32
+              "0vdbyvprb75if93lx138v2li2ijylbs8w8787dwk2pys5pp7s4ql")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/penrose")
+    (synopsis "TikZ library for producing Penrose tilings")
+    (description
+     "This package provides a TikZ library for drawing Penrose tiles.  It
+currently supports the kite/dart, rhombus, and pentagon tile sets.  There are
+two main methods for their placement: one that automatically generates
+a tiling, and one that allows for manual placement.  Furthermore, the tiles
+themselves can be deformed and will still (hopefully!) fit together in the
+correct fashion.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
