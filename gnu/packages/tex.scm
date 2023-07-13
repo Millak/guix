@@ -4601,6 +4601,55 @@ height of the object.  It calculates the position and height of the image, and
 also displays the notable rays.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikz-nef
+  (package
+    (name "texlive-tikz-nef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-nef/" "tex/latex/tikz-nef/")
+             (base32
+              "18b2452hfcndqhljq2hn437z6myc45hn62s4bnnjb0f3xnayq1qr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-nef")
+    (synopsis "Create diagrams for neural networks")
+    (description
+     "The @code{nef} TikZ library provides predefined styles and shapes to
+create diagrams for neural networks constructed with the methods of
+the Neural Engineering Framework (NEF).  The following styles are
+supported:
+@itemize
+@item @code{ea}: ensemble array,
+@item @code{ens}: ensemble,
+@item @code{ext}: external input or output,
+@item @code{inhibt}: inhibitory connection,
+@item @code{net}: network,
+@item @code{pnode}: pass-through node,
+@item @code{rect}: rectification ensemble,
+@item @code{recurrent}: recurrent connection.
+@end itemize")
+    (license license:expat)))
+
+(define-public texlive-tikz-network
+  (package
+    (name "texlive-tikz-network")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-network/"
+                   "tex/latex/tikz-network/")
+             (base32
+              "1bs08sxxps4kjvgv53lc07ihkcaz2v1ygdc16vn46yy5dp16w2sz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-network")
+    (synopsis "Draw networks with TikZ")
+    (description
+     "This package allows the creation of images of complex networks that are
+seamlessly integrated into the underlying LaTeX files.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
