@@ -7,7 +7,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
@@ -748,13 +748,12 @@ source files.")
                 "0vcc132z7lkxnw5clmiz6sp6ccmw35pyb69hczphrig5frfmqkva"))
               (modules '((guix build utils)))
               (snippet
-               `(begin
+               '(begin
                   ;; openssl.cnf is required for build.
                   (for-each delete-file-recursively
                             (find-files "deps/openssl"
                                         (lambda (file stat)
-                                          (if (string-contains file "nodejs-openssl.cnf")
-                                              #f #t))))
+                                          (not (string-contains file "nodejs-openssl.cnf")))))
                   ;; Remove bundled software, where possible
                   (for-each delete-file-recursively
                             '("deps/cares"
@@ -764,8 +763,7 @@ source files.")
                   (substitute* "Makefile"
                     ;; Remove references to bundled software.
                     (("deps/uv/uv.gyp") "")
-                    (("deps/zlib/zlib.gyp") ""))
-                  #t))))
+                    (("deps/zlib/zlib.gyp") ""))))))
     (arguments
      (substitute-keyword-arguments (package-arguments node)
        ((#:configure-flags configure-flags)
