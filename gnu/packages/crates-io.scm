@@ -5649,7 +5649,7 @@ bytes or encoder from file extension.")
 (define-public rust-automod-1
   (package
     (name "rust-automod")
-    (version "1.0.0")
+    (version "1.0.11")
     (source
      (origin
        (method url-fetch)
@@ -5658,15 +5658,13 @@ bytes or encoder from file extension.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1z8kdbvvz0k8mfs45mvs16lr9xj59cdcp0sm45fawfh93gai4mhg"))))
+         "057sa45859nb8arbshkqc6va8b8jf5a8vx6zr739viibqbj989md"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
-       ;; Tests not included in tar.
-       #:tests? #f))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/dtolnay/automod")
     (synopsis "Pull in every source file in a directory as a module")
     (description "Pull in every source file in a directory as a module.")
