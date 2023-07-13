@@ -3797,6 +3797,25 @@ by the given fractions of the natural width and height of the image.")
 architectures and to customize their aspect.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sacsymb
+  (package
+    (name "texlive-sacsymb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sacsymb/" "tex/latex/sacsymb/")
+             (base32
+              "0pwkb8z4bvgqbffcclfif04iqkpdp6lciwmwvwci3mi9bc6yh4vr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sacsymb")
+    (synopsis "Sacred symbols prepared with TikZ")
+    (description
+     "The @code{sacsymb} package contains symbols used in objective
+reduction (Orch OR) theory of consciousness as applied to the three brains
+model of psychological experience.  These symbols are prepared using TikZ.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
