@@ -46669,6 +46669,30 @@ network packet formats.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-platform-info-2
+  (package
+    (name "rust-platform-info")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "platform-info" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "03rhwsfhdr3sb6fxr0bmf7xav745m132y6vg05jzcfz5c149q9fn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/uutils/platform-info")
+    (synopsis "Cross-platform interface to get info about a system")
+    (description
+     "This package provides a simple cross-platform interface to get info about
+a system.")
+    (license license:expat)))
+
 (define-public rust-pledge-0.4
   (package
     (name "rust-pledge")
