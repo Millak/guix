@@ -3835,6 +3835,26 @@ model of psychological experience.  These symbols are prepared using TikZ.")
 using TikZ.")
     (license license:lppl)))
 
+(define-public texlive-scratch
+  (package
+    (name "texlive-scratch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scratch/" "tex/latex/scratch/")
+             (base32
+              "1np9mhfmn07clkzsg1glfxw1mkxihvv7yd10bnhc8lxxan9rymj1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scratch")
+    (synopsis "Draw programs like Scratch")
+    (description
+     "This package permits to draw program charts in the style of the
+@url{https://scratch.mit.edu, Scratch} project.  This package is obsolete.
+From now on, Scratch is now version 3 with a new design.  Use the
+@code{scratch3} package to draw blocks with the new design.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
