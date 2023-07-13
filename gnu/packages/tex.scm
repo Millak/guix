@@ -3633,6 +3633,28 @@ designed to help users generate circuits.")
 drawing quantum circuit diagrams.")
     (license license:cc-by4.0)))
 
+(define-public texlive-randbild
+  (package
+    (name "texlive-randbild")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/randbild/"
+                   "source/latex/randbild/"
+                   "tex/latex/randbild/")
+             (base32
+              "1y9qf73163ai738pf6qvaqxy5s2cymyg19qyyfs8dfx2gygcyny9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/randbild")
+    (synopsis "Marginal pictures")
+    (description
+     "This package provides environments @code{randbild} to draw small
+marginal plots (using the packages PSTricks and @code{pst-plot}), and
+@code{randbildbasis} (the same, only without the automatically drawn
+coordinate system).")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
