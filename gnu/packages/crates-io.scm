@@ -49243,17 +49243,17 @@ they were parsed from")
 @code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
     (license license:expat)))
 
-(define-public rust-pyo3-build-config-0.18
+(define-public rust-pyo3-build-config-0.19
   (package
     (name "rust-pyo3-build-config")
-    (version "0.18.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pyo3-build-config" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zb7sz2w59ba0ipmy7saigyyr9v6pkrzqb8r5gagmp87bncryhvm"))))
+    (version "0.19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-build-config" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1c4n6dvv79p5mb558nz1cb0ifgxbhw9gjs0j1ff0l61w1d7v4kam"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -49267,6 +49267,24 @@ they were parsed from")
      "This package contains build configuration helpers for the PyO3
 ecosystem.")
     (license license:asl2.0)))
+
+(define-public rust-pyo3-build-config-0.18
+  (package
+    (inherit rust-pyo3-build-config-0.19)
+    (name "rust-pyo3-build-config")
+    (version "0.18.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-build-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18vrn0hcf18bqjis9xq5nwijpgbfjc6r292906jn3fv1mksldfcw"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.12))))))
 
 (define-public rust-pyo3-build-config-0.16
   (package
