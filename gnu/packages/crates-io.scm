@@ -24945,7 +24945,7 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
 (define-public rust-futures-0.3
   (package
     (name "rust-futures")
-    (version "0.3.26")
+    (version "0.3.28")
     (source
      (origin
        (method url-fetch)
@@ -24954,10 +24954,10 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "115z5bqihd2jq75s8n7jxy4k83kpv67vhic4snch6d7h1wmpkqhk"))))
+         "0h7c1xvxk751c7xlnph6fh3rb77z4lig4qif7f8q79db2az2ld13"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
@@ -24965,7 +24965,13 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
         ("rust-futures-io" ,rust-futures-io-0.3)
         ("rust-futures-sink" ,rust-futures-sink-0.3)
         ("rust-futures-task" ,rust-futures-task-0.3)
-        ("rust-futures-util" ,rust-futures-util-0.3))))
+        ("rust-futures-util" ,rust-futures-util-0.3))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-pin-utils" ,rust-pin-utils-0.1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-tokio" ,rust-tokio-0.1))))
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis "Rust implementation of futures and streams")
     (description
