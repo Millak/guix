@@ -5405,7 +5405,7 @@ crate.")
 (define-public rust-async-trait-0.1
   (package
     (name "rust-async-trait")
-    (version "0.1.64")
+    (version "0.1.71")
     (source
      (origin
        (method url-fetch)
@@ -5413,18 +5413,18 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "18j7v85y2df62c1ylrzvgrs0afmzvnrdhwnf50hh8g4cpblzrmqw"))))
+         "1grf5p4m1bb79isbb3g4b8w7wpz51sw003a88x69ql2nvlhxar55"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
+        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
-       (("rust-rustversion" ,rust-rustversion-1)
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-rustversion" ,rust-rustversion-1)
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-attributes" ,rust-tracing-attributes-0.1)
-        ("rust-tracing-futures" ,rust-tracing-futures-0.2)
         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/async-trait")
     (synopsis "Type erasure for async trait methods")
