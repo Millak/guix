@@ -4801,6 +4801,30 @@ symbols are also included mainly to be used in presentations, particularly
 with the @code{beamer} package.")
     (license license:lppl1.0+)))
 
+(define-public texlive-tikz-sfc
+  (package
+    (name "texlive-tikz-sfc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-sfc/" "tex/latex/tikz-sfc/")
+             (base32
+              "0blgyqvmnbwafx85mz4gkyhk0g0zqfmsd98gm3h794a4jfs3zl31")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-sfc")
+    (synopsis
+     "Symbols collection for typesetting Sequential Function Chart (SFC)
+diagrams")
+    (description
+     "This package contains a collection of symbols for typesetting Sequential
+Function Chart (SFC) diagrams in agreement with the international standard
+IEC-61131-3/2013.  It includes steps (normal and initial), transitions,
+actions and actions qualifiers (with and without time duration).  It extends
+the circuit library of TikZ and allows you to draw an SFC diagram in same way
+you would draw any other circuit.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
