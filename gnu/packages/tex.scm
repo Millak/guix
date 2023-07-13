@@ -3122,6 +3122,25 @@ elements and their ions (from the NASA database and from NIST).  It also
 allows the user to draw spectra using their own data.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pgf-umlcd
+  (package
+    (name "texlive-pgf-umlcd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-umlcd/"
+                   "tex/latex/pgf-umlcd/")
+             (base32
+              "14zx2jms616qfzwqbgixz0pd3qzjzr2bxr6ahhy7mgj3i7rlbr8r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-latex texlive-pgf))
+    (home-page "https://ctan.org/pkg/pgf-umlcd")
+    (synopsis "Some LaTeX macros for UML class diagrams")
+    (description
+     "This package provides some LaTeX macros for UML class diagrams.")
+    (license (list license:gpl2 license:lppl1.3c))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
