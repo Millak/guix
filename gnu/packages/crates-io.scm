@@ -9104,6 +9104,25 @@ users can send along with a bug report.")
 constants from build.rs or a script.")
     (license license:expat)))
 
+(define-public rust-build-context-0.1
+  (package
+    (name "rust-build-context")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "build-context" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15jnnh6vk7ifc98j08rv8v9yapzaciz7awdk4q2lrna868dnzhjh"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/taiki-e/build-context")
+    (synopsis "Build environment/target information available in libraries")
+    (description
+     "Make build environment/target information available as constants in normal
+libraries and binaries.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-built-0.5
   (package
     (name "rust-built")
