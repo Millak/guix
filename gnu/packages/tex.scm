@@ -3816,6 +3816,25 @@ reduction (Orch OR) theory of consciousness as applied to the three brains
 model of psychological experience.  These symbols are prepared using TikZ.")
     (license license:lppl1.0+)))
 
+(define-public texlive-schemabloc
+  (package
+    (name "texlive-schemabloc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/schemabloc/"
+                   "tex/latex/schemabloc/")
+             (base32
+              "03kbriqlgxafxcy5l2215d3z874s4z1g5gg02w2ij0v8wjrgyn88")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schemabloc")
+    (synopsis "Draw block diagrams, using TikZ")
+    (description
+     "The package provides a set of macros for constructing block diagrams,
+using TikZ.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
