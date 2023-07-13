@@ -3246,6 +3246,40 @@ booklets.")
 PGF/TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pgfplots
+  (package
+    (name "texlive-pgfplots")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/context/third/pgfplots/"
+                   "doc/generic/pgfplots/"
+                   "doc/latex/pgfplots/"
+                   "doc/plain/pgfplots/"
+                   "scripts/pgfplots/"
+                   "source/context/third/pgfplots/"
+                   "source/latex/pgfplots/"
+                   "tex/context/third/pgfplots/"
+                   "tex/generic/pgfplots/"
+                   "tex/latex/pgfplots/"
+                   "tex/plain/pgfplots/")
+             (base32
+              "1c0gah7ia61s435zlyq4ay9snkrs2xcs627wky7c0sp8mgxyybwr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-pgf))
+    (home-page "https://ctan.org/pkg/pgfplots")
+    (synopsis "Create normal/logarithmic plots in two and three dimensions")
+    (description
+     "PGFPlots draws high-quality function plots in normal or logarithmic
+scaling with a user-friendly interface directly in TeX.  The user supplies
+axis labels, legend entries and the plot coordinates for one or more plots and
+PGFPlots applies axis scaling, computes any logarithms and axis ticks and
+draws the plots, supporting line plots, scatter plots, piecewise constant
+plots, bar plots, area plots, mesh-- and surface plots and some more.
+PGFPlots is based on PGF/TikZ (PGF); it runs equally for LaTeX/TeX/ConTeXt.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
