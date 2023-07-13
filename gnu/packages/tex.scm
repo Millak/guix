@@ -13253,6 +13253,42 @@ your Python code to be executed and the output to be integrated in your LaTeX
 file in a single compilation run.")
     (license (list license:expat license:lppl1.3c))))
 
+(define-public texlive-pythontex
+  (package
+    (name "texlive-pythontex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pythontex/" "scripts/pythontex/"
+                   "source/latex/pythontex/"
+                   "tex/latex/pythontex/")
+             (base32
+              "161kyk3sg7fnp9wxjmb1c9xbw0az0dxw2izipdyz0378ciqhqjfw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "depythontex.py" "pythontex.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/pythontex")
+    (synopsis "Run Python from within a document, typesetting the results")
+    (description
+     "The package allows you to enter Python code within a LaTeX document,
+execute the code, and access its output in the original document.  There is
+also support for Bash, JavaScript, Julia, Octave, Perl, R, Raku (Perl 6),
+Ruby, Rust, and SageMath.  Code is only executed when it has been modified, or
+when it meets user-specified criteria.  Code may be divided into user-defined
+sessions, which automatically run in parallel.  Errors and warnings are
+synchronized with the LaTeX document, so that they refer to the document's
+line numbers.  External dependencies can be tracked, so that code is
+re-executed when the data it depends on is modified.  PythonTeX also provides
+syntax highlighting for code in LaTeX documents via the Pygments syntax
+highlighter.
+
+The package also provides a @command{depythontex} utility.  This creates
+a copy of the document in which all Python code has been replaced by its
+output.  This is useful for journal submissions, sharing documents, and
+conversion to other formats.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-koma-script
   (package
     (name "texlive-koma-script")
