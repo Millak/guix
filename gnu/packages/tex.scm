@@ -4060,6 +4060,31 @@ possible what is going wrong.")
 partitions, permutations, braids, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-swimgraf
+  (package
+    (name "texlive-swimgraf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/swimgraf/" "tex/latex/swimgraf/")
+             (base32
+              "09s6wb3nzrxj20qrjyyr3r1fl2nbsgj1a4va101nwqb81pcmp4aq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/swimgraf")
+    (synopsis "Graphical/textual representations of swimming performances")
+    (description
+     "The package provides two macros that produce representations of
+a swimmer's performances.  The user records data in a text file and specifies
+as arguments of the macros the date range of interest.  The macros extract the
+relevant information from the file and process it: @code{\\swimgraph} produces
+a graph of the times in a single swimming event (specified as an argument),
+plotting long course and short course times in separate lines.  Records and
+qualifying times, stored in text files, may optionally be included on the
+graph. @code{\\swimtext} produces a written record of the times in all events.
+Files of current world and Canadian records are included.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
