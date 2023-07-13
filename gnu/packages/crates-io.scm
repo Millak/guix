@@ -3724,6 +3724,28 @@ coverage-guided, mutation-based fuzzers.")
 too long errors.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ariadne-0.1
+  (package
+    (name "rust-ariadne")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ariadne" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1dhxrhqgdwbl7v03m29zv4rb2fvjgw8a82lybp5xhzjp97khkm83"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-concolor" ,rust-concolor-0.0.11)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-yansi" ,rust-yansi-0.5))))
+    (home-page "https://github.com/zesterer/ariadne")
+    (synopsis "Fancy diagnostics & reporting crate")
+    (description "This package provides a fancy diagnostics & reporting crate.")
+    (license license:expat)))
+
 (define-public rust-arr-macro-impl-0.1
   (package
     (name "rust-arr-macro-impl")
