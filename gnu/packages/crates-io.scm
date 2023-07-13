@@ -50559,16 +50559,15 @@ transport protocol in Rust.")
 (define-public rust-quoted-printable-0.4
   (package
     (name "rust-quoted-printable")
-    (version "0.4.3")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "quoted_printable" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ig9b5nr2i2f72smsjkkx8pwpxp9vz2090dhi7n4jdlj15mjaf0j"))))
+        (base32 "0jcyi10gh2xzjvxls8r58gwc9yavw3iighkgnb1jwrjij8hncf2s"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/staktrace/quoted-printable")
     (synopsis "Simple encoder/decoder for quoted-printable data")
     (description
