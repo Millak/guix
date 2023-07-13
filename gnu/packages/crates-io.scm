@@ -36114,29 +36114,49 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
      "This package provides a simple library for maildir manipulation.")
     (license license:bsd-0)))
 
-(define-public rust-mailparse-0.13
+(define-public rust-mailparse-0.14
   (package
     (name "rust-mailparse")
-    (version "0.13.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "mailparse" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1qacyzfl3wsl745b92w9gj0mjg43rcwg99l96rmg8l1sq5pm4vy0"))))
+    (version "0.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mailparse" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1al0yb9wgy26ihd0gm4x1dk9rsv23wrmp2qw1lk4f04cbw7mfmkb"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Doc tests fail.
+       #:cargo-inputs
+       (("rust-charset" ,rust-charset-0.1)
+        ("rust-data-encoding" ,rust-data-encoding-2)
+        ("rust-quoted-printable" ,rust-quoted-printable-0.4))
+       #:cargo-development-inputs (("rust-ouroboros" ,rust-ouroboros-0.14))))
+    (home-page "https://github.com/staktrace/mailparse/blob/master/README.md")
+    (synopsis "Simple parser for MIME e-mail messages")
+    (description
+     "This package provides a simple parser for MIME e-mail messages.")
+    (license license:bsd-0)))
+
+(define-public rust-mailparse-0.13
+  (package
+    (inherit rust-mailparse-0.14)
+    (name "rust-mailparse")
+    (version "0.13.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mailparse" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qacyzfl3wsl745b92w9gj0mjg43rcwg99l96rmg8l1sq5pm4vy0"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.13)
         ("rust-charset" ,rust-charset-0.1)
-        ("rust-quoted-printable" ,rust-quoted-printable-0.4))))
-    (home-page "https://github.com/staktrace/mailparse")
-    (synopsis "Simple parser for MIME e-mail messages")
-    (description
-     "This package provides a simple parser for MIME e-mail messages.")
-    (license license:bsd-0)))
+        ("rust-quoted-printable" ,rust-quoted-printable-0.4))))))
 
 (define-public rust-malloc-buf-0.0
  (package
