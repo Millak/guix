@@ -9136,7 +9136,7 @@ constants from build.rs or a script.")
 (define-public rust-bumpalo-3
   (package
     (name "rust-bumpalo")
-    (version "3.7.0")
+    (version "3.13.0")
     (source
      (origin
        (method url-fetch)
@@ -9145,13 +9145,16 @@ constants from build.rs or a script.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0ccn025n0x1gc0ijjlabin2xs7dkx5yfagkskr93yw9c06pyfncw"))))
+         "1h9zmxb9d14m2sx34daz88fsjw1lx7d5mhaqbldwqgl8xzdc7qm3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f                      ;cargo_readme_up_to_date test fails
+     `(#:tests? #f                      ; Not all files included.
+       #:cargo-inputs
+       (("rust-allocator-api2" ,rust-allocator-api2-0.2))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.9))))
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/fitzgen/bumpalo")
     (synopsis "Fast bump allocation arena for Rust")
     (description
