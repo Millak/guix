@@ -3991,6 +3991,27 @@ mirrors for use in optical diagrams.")
 documents and for presentations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-spath3
+  (package
+    (name "texlive-spath3")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spath3/" "source/latex/spath3/"
+                   "tex/latex/spath3/")
+             (base32
+              "16hg6kbr0rzk1xsyrmhnkc0dr4vq8pamqdqncjx6n5jdpwr9kzkx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spath3")
+    (synopsis "Manipulate soft paths in PGF")
+    (description
+     "The @code{spath3} library provides methods for manipulating the soft
+paths of TikZ/PGF.  Packaged with it are two TikZ libraries that make use of
+the methods provided.  These are libraries for drawing calligraphic paths and
+for drawing knot diagrams.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
