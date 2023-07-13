@@ -3769,7 +3769,7 @@ KParts instead.")
 (define-public kross
   (package
     (name "kross")
-    (version "5.98.0")
+    (version "5.108.0")
     (source
      (origin
        (method url-fetch)
@@ -3778,7 +3778,7 @@ KParts instead.")
              (version-major+minor version) "/portingAids/"
              name "-" version ".tar.xz"))
        (sha256
-        (base32 "0yjn66r44jxlrm4vz1nf8s64kcw7lmarjpqz1mcgb1n4jc28hs60"))))
+        (base32 "0j459d9610aayvzb1d9m045c71dmkgqx5bsx3lv8x1wffk8064sd"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools-5))
