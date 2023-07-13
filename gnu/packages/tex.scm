@@ -3488,6 +3488,30 @@ itself is written in C.  The package includes source code for a previewer
 application, a lightweight Qt-4 and Poppler-based prerex-enabled PDF viewer.")
     (license (list license:gpl2 license:lppl))))
 
+(define-public texlive-productbox
+  (package
+    (name "texlive-productbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/productbox/"
+                   "source/latex/productbox/"
+                   "tex/latex/productbox/")
+             (base32
+              "12jj5am2h6lqmhc0dz9v8p2j9ci104s9xplki7ncn3fmhy5mm2fq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/productbox")
+    (synopsis "Typeset a three-dimensional product box")
+    (description
+     "The package enables typesetting of a three-dimensional product box.
+This product box can be rendered as it is standing on a surface and some light
+is shed onto it.  Alternatively it can be typeset as a wireframe to be cut out
+and glued together.  This will lead to a physical product box.")
+    (license
+     (list
+      (license:fsf-free "https://tug.ctan.org/macros/latex/contrib/gene/productbox/productbox.ins")))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
