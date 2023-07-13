@@ -3952,6 +3952,25 @@ are defined, loosely based on the nomenclature and color patterns of the
 popular Java script Bootstrap.")
     (license license:expat)))
 
+(define-public texlive-simpleoptics
+  (package
+    (name "texlive-simpleoptics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simpleoptics/"
+                   "tex/latex/simpleoptics/")
+             (base32
+              "0hna56av80k1gc3fm2nbw2dy31sfdw7v14v8yppad4f2d12skpzd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simpleoptics")
+    (synopsis "Drawing lenses and mirrors for optical diagrams")
+    (description
+     "This package provides some of macros for drawing simple lenses and
+mirrors for use in optical diagrams.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
