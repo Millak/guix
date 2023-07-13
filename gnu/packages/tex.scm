@@ -5366,6 +5366,24 @@ TikZ.  It also provides commands to draw the content of screens and of menu
 items.")
     (license license:lppl)))
 
+(define-public texlive-tkz-base
+  (package
+    (name "texlive-tkz-base")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-base/" "tex/latex/tkz-base/")
+             (base32
+              "0mi76p1ykifhmgzwmlkiwwq47s427n1flakiyad60dzyw953cg86")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-base")
+    (synopsis "Tools for drawing with a cartesian coordinate system")
+    (description
+     "The bundle is a set of packages, designed to give mathematics
+teachers (and students) easy access to programming of drawings with TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
