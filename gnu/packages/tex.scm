@@ -2815,6 +2815,25 @@ of the @code{mkpic} script, which is used if you run it without an input
 file).")
     (license license:gpl3+)))
 
+(define-public texlive-modiagram
+  (package
+    (name "texlive-modiagram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/modiagram/"
+                   "tex/latex/modiagram/")
+             (base32
+              "0817c3yj5q4srbl29kqw16cg3c6gwr9ahy33hyicqbqap034fnyd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/modiagram")
+    (synopsis "Drawing molecular orbital diagrams")
+    (description
+     "The package provides an environment MOdiagram and some commands, to
+create molecular orbital diagrams using TikZ.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
