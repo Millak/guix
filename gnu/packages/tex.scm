@@ -5538,6 +5538,27 @@ of circulation to give the author time to investigate some problems.")
 packages (like @code{tkz-euclide}).")
     (license license:lppl1.3+)))
 
+(define-public texlive-tonevalue
+  (package
+    (name "texlive-tonevalue")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tonevalue/"
+                   "tex/latex/tonevalue/")
+             (base32
+              "16a724k0c8s3i2pdjfsq5v2z4v5nqdpnxvh63j4ngj822w9llg1z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tonevalue")
+    (synopsis
+     "Tool for linguists and phoneticians to visualize tone value patterns")
+    (description
+     "This package provides a TikZ-based solution to typeset visualisations of
+tone values.  Currently, unt's model is implemented.  Support for more models
+is planned.")
+    (license license:asl2.0)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
