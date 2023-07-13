@@ -2567,6 +2567,27 @@ with LuaLaTeX.  This version uses less memory, and operates faster than the
 original; it also offers several enhancements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-maker
+  (package
+    (name "texlive-maker")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/maker/" "tex/latex/maker/")
+             (base32
+              "08shs5fah2yfdgsydk93jfb1sz42qckal2p031vs95vqd8rpq11g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/maker")
+    (synopsis "Include Arduino or Processing code in LaTeX documents")
+    (description
+     "The first version of the package allows to include Arduino or Processing
+code using three different forms: writing the code directly in the LaTeX
+document, writing Arduino or Processing commands in line with the text,
+calling to Arduino or Processing files.  All these options support the syntax
+highlighting of the official IDE.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mflogo
   (package
     (name "texlive-mflogo")
