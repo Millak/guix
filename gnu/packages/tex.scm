@@ -5679,6 +5679,24 @@ able to use them originally in a school setting such as on worksheets.")
 diagrams for lectures or assignment sheets.")
     (license license:lppl)))
 
+(define-public texlive-visualpstricks
+  (package
+    (name "texlive-visualpstricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/visualpstricks/")
+             (base32
+              "1wfri908smlw1ngqq1mjll2b80b29piicqmv67x0xs1v3kc2sz3s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/visualpstricks")
+    (synopsis "Visual help for PSTricks based on images with minimum text")
+    (description
+     "Visual help for PSTricks based on images with minimum text, one image
+per command or per parameter.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
