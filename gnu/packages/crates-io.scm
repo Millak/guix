@@ -56443,8 +56443,34 @@ endian-aware Read/Write traits for byte buffers.")
 endian-aware Read/Write traits for byte buffers.")
     (license license:expat)))
 
+(define-public rust-scroll-derive-0.11
+  (package
+    (name "rust-scroll-derive")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "scroll-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bi5ljnzksvqhic6j7i2a2ap41s78xr0gifkgjxdxlj63pw4kc8x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-scroll" ,rust-scroll-0.11))))
+    (home-page "https://github.com/m4b/scroll")
+    (synopsis "Pread and Pwrite traits from the scroll crate")
+    (description
+     "This package provides a macros 1.1 derive implementation for Pread and
+Pwrite traits from the scroll crate.")
+    (license license:expat)))
+
 (define-public rust-scroll-derive-0.10
   (package
+    (inherit rust-scroll-derive-0.11)
     (name "rust-scroll-derive")
     (version "0.10.1")
     (source
@@ -56456,19 +56482,12 @@ endian-aware Read/Write traits for byte buffers.")
         (sha256
          (base32
           "0a7f0xybi27p1njs4bqmxh9zyb2dqal4dbvgnhjjix4zkgm4wn7q"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-syn" ,rust-syn-1)
-        ("rust-quote" ,rust-quote-1))))
-    (home-page "https://github.com/m4b/scroll")
-    (synopsis "Pread and Pwrite traits from the scroll crate")
-    (description
-     "This package provides a macros 1.1 derive implementation for Pread and
-Pwrite traits from the scroll crate.")
-    (license license:expat)))
+        ("rust-quote" ,rust-quote-1))))))
 
 (define-public rust-scroll-derive-0.9
   (package
