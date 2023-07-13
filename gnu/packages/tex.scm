@@ -2769,6 +2769,29 @@ control measures, as well as support for custom non-standard symbols.  Control
 measures are planned to be included in a future release.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-miniplot
+  (package
+    (name "texlive-miniplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/miniplot/" "tex/latex/miniplot/")
+             (base32
+              "0k98mfd4bf43br74wyjqjlwb93yzi2b5r53jsrsr58p6lg59c200")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/miniplot")
+    (synopsis "Package for easy figure arrangement")
+    (description
+     "MiniPlot is a package to help the LaTeX user typeset EPS figures using
+an easy-to-use interface.  Figures can be arranged as one-figure-only or as
+a collection of figures in columns and rows which can itself contain
+sub-figures in columns and rows.  Wrapped figures are also supported.  This
+package provides commands to display a framebox instead of the figure as the
+graphics package does already but additionally it writes useful information
+such as the label and scaling factor into these boxes.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
