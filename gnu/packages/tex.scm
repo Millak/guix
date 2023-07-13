@@ -2999,6 +2999,26 @@ draw Petri-nets in PostScript documents; the second defines macros related to
 PBC, M-nets and B(PN) models; and a third that combines the other two.")
     (license license:gpl3+)))
 
+(define-public texlive-pgf-blur
+  (package
+    (name "texlive-pgf-blur")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-blur/"
+                   "source/latex/pgf-blur/"
+                   "tex/latex/pgf-blur/")
+             (base32
+              "1lsndflhx56gawqkcyjyh8pll986m7msraq5qr1asppybf4m0hij")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgf-blur")
+    (synopsis "PGF/TikZ package for blurred shadows")
+    (description
+     "The package adds blurred/faded/fuzzy shadows to PGF/TikZ pictures.
+It is configured as a TikZ/PGF library module.")
+    (license (list license:lppl license:public-domain))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
