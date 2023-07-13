@@ -1756,15 +1756,17 @@ from DocBook files.")
                 "0hhq8p6wpfbi33b604ls7q9309n6pm4aa4cgjwxrspn2q8yn6p7w"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; FIXME: Test can't find audio/x-speex mimeinfo
-               ;; (but it can find audio/x-speex+ogg).
-               (invoke "ctest" "-E"
-			   "(usermetadatawritertest|embeddedimagedatatest|taglibextractortest)")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; FIXME: Test can't find audio/x-speex mimeinfo
+                ;; (but it can find audio/x-speex+ogg).
+                (invoke "ctest" "-E"
+                        "(usermetadatawritertest|embeddedimagedatatest|\
+taglibextractortest)")))))))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs
      (list attr
