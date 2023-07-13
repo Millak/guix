@@ -3892,6 +3892,22 @@ From now on, Scratch is now version 3 with a new design.  Use the
 display many variants of snowman")
     (license license:bsd-2)))
 
+(define-public texlive-setdeck
+  (package
+    (name "texlive-setdeck")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/setdeck/" "tex/latex/setdeck/")
+             (base32
+              "11kk04nf37hmv7qw2azjl5r0cqf08khj41b1gp4nikrqvz2p1g49")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/setdeck")
+    (synopsis "Typeset cards for Set")
+    (description "The package will typeset cards for use in a game of Set.")
+    (license license:gpl3)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
