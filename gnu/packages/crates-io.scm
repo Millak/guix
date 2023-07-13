@@ -57695,18 +57695,18 @@ data.  This crate provides a wrapper that works with any existing Serde
 (define-public rust-serde-json-1
   (package
     (name "rust-serde-json")
-    (version "1.0.96")
+    (version "1.0.102")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde-json" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1waj3qwpa610vmksnzcmkll6vaw7nf7v3ckj4v0wlfs0a153jz85"))))
+        (base32 "1vfzj76zdn8yh5l08yzr6lf95whic3vrlkh6nq4266s8bncjl1mm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-indexmap" ,rust-indexmap-1)
+       (("rust-indexmap" ,rust-indexmap-2)
         ("rust-itoa" ,rust-itoa-1)
         ("rust-ryu" ,rust-ryu-1)
         ("rust-serde" ,rust-serde-1))
