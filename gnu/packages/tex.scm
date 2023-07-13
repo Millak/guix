@@ -4537,6 +4537,26 @@ of TikZ and allows you to draw a ladder diagram in the same way as you would
 draw any other circuit.")
     (license license:lppl1.0+)))
 
+(define-public texlive-tikz-lake-fig
+  (package
+    (name "texlive-tikz-lake-fig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-lake-fig/"
+                   "tex/latex/tikz-lake-fig/")
+             (base32
+              "1vyr3will7jivwc30aj13bm9gjj4nyl02754p42phn0y7gdf82kr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-lake-fig")
+    (synopsis "Schematic diagrams of lakes")
+    (description
+     "This package contains a collection of schematic diagrams of lakes for
+use in LaTeX documents.  Diagrams include representations of material budgets,
+fluxes, and connectivity arrangements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
