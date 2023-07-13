@@ -2338,22 +2338,24 @@ their settings.")
            qtdeclarative-5
            solid))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xorg-server
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The test suite requires a running X server, setting
-             ;; QT_QPA_PLATFORM=offscreen does not suffice.
-             (system "Xvfb :1 -screen 0 640x480x24 &")
-             (setenv "DISPLAY" ":1")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (setenv "XDG_RUNTIME_DIR" (getcwd))
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'start-xorg-server
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; The test suite requires a running X server, setting
+                   ;; QT_QPA_PLATFORM=offscreen does not suffice.
+                   (system "Xvfb :1 -screen 0 640x480x24 &")
+                   (setenv "DISPLAY" ":1")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME"
+                             (getcwd))
+                     (setenv "XDG_RUNTIME_DIR"
+                             (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     (setenv "DBUS_FATAL_WARNINGS" "0")
+                     (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Integration of QML and KDE work spaces")
     (description "KDeclarative provides integration of QML and KDE work spaces.
