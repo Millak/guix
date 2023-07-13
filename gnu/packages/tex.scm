@@ -4299,6 +4299,27 @@ package also includes an arrow tip library that match closely the arrows
 present in the Computer Modern typeface.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-dependency
+  (package
+    (name "texlive-tikz-dependency")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-dependency/"
+                   "tex/latex/tikz-dependency/")
+             (base32
+              "12a31jqrxlaj8jj5f7p9vgwp8yqinl5ab0c3nfv4b1c9a08p8q3s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-dependency")
+    (synopsis "Library for drawing dependency graphs")
+    (description
+     "The package provides a library that draws together existing TikZ
+facilities to make a comfortable environment for drawing dependency graphs.
+Basic facilities of the package include a lot of styling facilities, to let
+you personalize the look and feel of the graphs.")
+    (license (list license:lppl license:gpl2))))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
