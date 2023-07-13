@@ -3181,6 +3181,28 @@ a problem with the @code{pgfkeys} package.  The package also introduces
 handlers beyond those that @code{pgfkeys} can offer.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pgfmolbio
+  (package
+    (name "texlive-pgfmolbio")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/pgfmolbio/"
+                   "scripts/pgfmolbio/"
+                   "source/lualatex/pgfmolbio/"
+                   "tex/lualatex/pgfmolbio/")
+             (base32
+              "12kajg7jrhd612lk7m6gwadxb5y7v9znqjlg1n3n05zwrmfd54w1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgfmolbio")
+    (synopsis "Draw graphs typically found in molecular biology texts")
+    (description
+     "The package draws graphs typically found in molecular biology texts.
+Currently, the package contains modules for drawing DNA sequencing
+chromatograms and protein domain diagrams.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
