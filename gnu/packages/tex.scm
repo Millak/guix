@@ -4103,6 +4103,26 @@ Files of current world and Canadian records are included.")
 known as railroad diagrams.")
     (license license:lppl1.3+)))
 
+(define-public texlive-table-fct
+  (package
+    (name "texlive-table-fct")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/table-fct/"
+                   "tex/latex/table-fct/")
+             (base32
+              "1l21dvfp4ypbfn5jvyrb2kwg8s8xfvcwlwxgcyix2ghawv9gsp7m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/table-fct")
+    (synopsis
+     "Draw a variations table of functions and a convexity table of its graph")
+    (description
+     "This package offers two environnements, to draw variations table of
+a function and a convexity table of its graph.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
