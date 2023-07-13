@@ -25584,7 +25584,7 @@ timeouts and delays with futures.")
 (define-public rust-futures-util-0.3
   (package
     (name "rust-futures-util")
-    (version "0.3.26")
+    (version "0.3.28")
     (source
      (origin
        (method url-fetch)
@@ -25592,10 +25592,10 @@ timeouts and delays with futures.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lbvdf6hq62yczd87glm6ih8h5qkagsl7xdiwhmqvwzymkins7cw"))))
+        (base32 "0cwmls9369w6q6hwlbm10q0plr6hmg8w28fpqvv4rmbjnx01xc16"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f          ; Doc tests fail.
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.1)
         ("rust-futures-channel" ,rust-futures-channel-0.3)
@@ -25608,7 +25608,8 @@ timeouts and delays with futures.")
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-pin-utils" ,rust-pin-utils-0.1)
         ("rust-slab" ,rust-slab-0.4)
-        ("rust-tokio-io" ,rust-tokio-io-0.1))))
+        ("rust-tokio-io" ,rust-tokio-io-0.1))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-0.1))))
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis
      "Common utilities and extension traits for the @code{futures-rs} library")
