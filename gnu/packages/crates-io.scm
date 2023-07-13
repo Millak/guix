@@ -61578,7 +61578,7 @@ to the same address.")
 (define-public rust-stacker-0.1
   (package
     (name "rust-stacker")
-    (version "0.1.6")
+    (version "0.1.15")
     (source
       (origin
         (method url-fetch)
@@ -61586,16 +61586,15 @@ to the same address.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "12igajfgqz96c7vcwi91xdfsphawik6g36ndlglqih0a7bqw8vyr"))))
+          "1klz4mk1iqn3jixhnls6ia4ql4fpinnfjibxabpx6pqmh12bv1n8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+       (("rust-cc" ,rust-cc-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-psm" ,rust-psm-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs
-       (("rust-cc" ,rust-cc-1))))
+        ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/rust-lang/stacker")
     (synopsis "Manual segmented stacks for Rust")
     (description
