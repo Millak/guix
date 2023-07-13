@@ -3398,6 +3398,25 @@ using TikZ.")
 arts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pmgraph
+  (package
+    (name "texlive-pmgraph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pmgraph/" "tex/latex/pmgraph/")
+             (base32
+              "1a4nd6c9i9y6g34ipjz2ia0m4vizlvx0wcn0yql53pk8k8zrlgnn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pmgraph")
+    (synopsis "Poor man's graphics")
+    (description
+     "This package provides a set of extensions to LaTeX @code{picture}
+environment, including a wider range of vectors, and a lot more box frame
+styles.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
