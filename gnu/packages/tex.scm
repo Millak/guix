@@ -2748,6 +2748,27 @@ Taco Hoekwater.")
 processing the output of Metafont.")
     (license license:public-domain)))
 
+(define-public texlive-milsymb
+  (package
+    (name "texlive-milsymb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/milsymb/" "tex/latex/milsymb/")
+             (base32
+              "0bzrgnk934alp51j1qy4c73kkr4jv0bjq5fv50dm1bl22m9h3s17")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/milsymb")
+    (synopsis "TikZ-based drawing of military symbols")
+    (description
+     "The package offers commands to draw military symbols as per
+@url{https://www.awl.edu.pl/images/en/APP_6_C.pdf, NATO APP-6(C)}.  It has
+a set of commands for drawing all symbols found in the document up to the
+control measures, as well as support for custom non-standard symbols.  Control
+measures are planned to be included in a future release.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
