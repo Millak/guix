@@ -4557,6 +4557,29 @@ use in LaTeX documents.  Diagrams include representations of material budgets,
 fluxes, and connectivity arrangements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-layers
+  (package
+    (name "texlive-tikz-layers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-layers/"
+                   "tex/latex/tikz-layers/")
+             (base32
+              "1j5wbsybd10zmmiz3lfkb9gzjhxjnbhp7lmdq1fzngywxsb81iz6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-layers")
+    (synopsis
+     "Add graphical layers on TikZ: @code{behind}, @code{above} and @code{glass}")
+    (description
+     "TikZ-layers is a tiny package that provides, alongside
+@code{background}, typical graphical layers on TikZ: @code{behind},
+@code{above} and @code{glass}.  The layers may be selected with one of the
+styles @code{on behind layer}, @code{on above layer}, @code{on glass layer} as
+an option to a @code{scope} environment.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
