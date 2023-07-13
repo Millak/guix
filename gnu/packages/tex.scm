@@ -5180,6 +5180,27 @@ package defines macros to create all arrows using PGF/TikZ, so as to avoid the
 problem.")
     (license license:lppl)))
 
+(define-public texlive-tikzpingus
+  (package
+    (name "texlive-tikzpingus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzpingus/"
+                   "makeindex/tikzpingus/"
+                   "tex/latex/tikzpingus/")
+             (base32
+              "0cqswzdmp2154wdb9ljbqqinf9vh6vhpjn7b4adfj7sr8xji7ihj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzpingus")
+    (synopsis "Penguins with TikZ")
+    (description
+     "@code{tikzpingus} is a package similar to tikzducks but with penguins
+and a vast set of gadgets and extras (capable of changing the wing-positions,
+body-types, and more).")
+    (license license:gpl3)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
