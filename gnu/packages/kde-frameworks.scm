@@ -3314,7 +3314,7 @@ setUrl, setUserAgent and call.")
 (define-public plasma-framework
   (package
     (name "plasma-framework")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3323,7 +3323,7 @@ setUrl, setUserAgent and call.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1bmwvk0pj0bnb8qhcl0bz82r63nls6h7lzzmkfkdwcwmjifmiqg4"))))
+                "131zxamyim4bpk006nmfw2zmcay5qnmm7lmy8rvcxn96vflrs6bb"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kpackage kservice))
@@ -3373,6 +3373,7 @@ setUrl, setUserAgent and call.")
                (invoke "ctest" "-E" (string-append "(plasma-dialogstatetest"
                                                    "|plasma-iconitemtest"
                                                    "|plasma-themetest"
+                                                   "|iconitemhidpitest"
                                                    "|dialognativetest)"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Libraries, components and tools of Plasma workspaces")
