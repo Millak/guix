@@ -4895,6 +4895,26 @@ into sublibraries: @code{topology}, @code{trafficcontrol}, @code{vehicles},
 @code{measures}.")
     (license license:isc)))
 
+(define-public texlive-tikz-truchet
+  (package
+    (name "texlive-tikz-truchet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-truchet/"
+                   "source/latex/tikz-truchet/"
+                   "tex/latex/tikz-truchet/")
+             (base32
+              "1v959iw7swkkam73q759m09s5fcv932gx9d1vqj6n3b2yzxxc85b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-truchet")
+    (synopsis "Draw Truchet tiles")
+    (description
+     "This is a package for LaTeX that draws Truchet tiles, as used in Colin
+Beveridge's article Too good to be Truchet in issue 08 of Chalkdust.")
+    (license license:expat)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
