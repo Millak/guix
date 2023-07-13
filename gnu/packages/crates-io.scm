@@ -20045,7 +20045,7 @@ not support network, only raw protocol parser.")
 (define-public rust-doc-comment-0.3
   (package
     (name "rust-doc-comment")
-    (version "0.3.1")
+    (version "0.3.3")
     (source
       (origin
         (method url-fetch)
@@ -20053,9 +20053,8 @@ not support network, only raw protocol parser.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "15rsqxgarfpb1yim9sbp9yfgj7p2dq6v51c6bq1a62paii9ylgcj"))))
+          "043sprsf3wl926zmck1bm7gw0jq50mb76lkpk49vasfr6ax1p97y"))))
     (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
     (home-page "https://github.com/GuillaumeGomez/doc-comment")
     (synopsis "Macro to generate doc comments")
     (description "This package provides a way to generate doc comments
