@@ -4012,6 +4012,35 @@ the methods provided.  These are libraries for drawing calligraphic paths and
 for drawing knot diagrams.")
     (license license:lppl1.3c)))
 
+(define-public texlive-spectralsequences
+  (package
+    (name "texlive-spectralsequences")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spectralsequences/"
+                   "tex/latex/spectralsequences/")
+             (base32
+              "0fdgkvhhg8i0j7c4ibc9d2xjbhgbpqvqp1shpqaslg5mdahml58f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spectralsequences")
+    (synopsis "Print spectral sequence diagrams using PGF/TikZ")
+    (description
+     "The package is a specialized tool built on top of PGF/TikZ for drawing
+spectral sequences.  It provides a powerful, concise syntax for specifying the
+data of a spectral sequence, and then allows the user to print various pages
+of spectral sequences, automatically choosing which subset of the classes,
+differentials, and structure lines to display on each page.  It also handles
+most of the details of the layout.  At the same time, it is extremely
+flexible.  @code{spectralsequences} is closely integrated with TikZ to ensure
+that users can take advantage of as much as possible of its expressive power.
+It is possible to turn off most of the automated layout features and draw
+replacements using TikZ commands.  The package also provides a carefully
+designed error reporting system intended to ensure that it is as clear as
+possible what is going wrong.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
