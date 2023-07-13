@@ -4971,6 +4971,26 @@ graphic programming languages like Scratch, NEPO or PXT.")
      "The package is a LaTeX package for ducks to be used in TikZ pictures.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikzfill
+  (package
+    (name "texlive-tikzfill")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzfill/" "tex/latex/tikzfill/")
+             (base32
+              "0n2hnnw4ffafwd9yy6pzcv0pc580y28dvz93g4hbi25dz32sawmk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzfill")
+    (synopsis "TikZ libraries for filling with images and patterns")
+    (description
+     "This is a collection of TikZ libraries which add further options to fill
+TikZ paths with images and patterns.  The libraries comprise fillings with
+images from files and from TikZ pictures.  Also, patterns of hexagons and of
+rhombi are provided.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
