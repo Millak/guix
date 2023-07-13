@@ -2217,21 +2217,27 @@ using the XBEL format.")
     (native-inputs
      (list extra-cmake-modules))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "src/kpluginselector.cpp"
-               ;; make QDirIterator follow symlinks
-               (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
-                (string-append a " | QDirIterator::FollowSymlinks" b)))
-             (substitute* "src/kcmoduleloader.cpp"
-               ;; print plugin name when loading fails
-               (("^\\s*(qWarning\\(\\) << \"Error loading) (plugin:\")( << loader\\.errorString\\(\\);)" _ a b c)
-                (string-append a " KCM plugin\" << mod.service()->library() << \":\"" c)))))
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "src/kpluginselector.cpp"
+                ;; make QDirIterator follow symlinks
+                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)"
+                  _ a b)
+                 (string-append a
+                                " | QDirIterator::FollowSymlinks" b)))
+              (substitute* "src/kcmoduleloader.cpp"
+                ;; print plugin name when loading fails
+                (("^\\s*(qWarning\\(\\) << \"Error loading) (plugin:\")( << loader\\.errorString\\(\\);)"
+                  _ a b c)
+                 (string-append a
+                                " KCM plugin\" << mod.service()->library() << \":\""
+                                c)))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (inputs
      (list kauth
            kcodecs
