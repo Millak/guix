@@ -5717,6 +5717,28 @@ wheelcharts with TikZ.  It provides several options to customize the
 wheelcharts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-worldflags
+  (package
+    (name "texlive-worldflags")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/worldflags/"
+                   "tex/latex/worldflags/")
+             (base32
+              "08biibvfa6fbrq1zsan8yib0cds6azp1ldwqlg5gd9j5r5aaqj5i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/worldflags")
+    (synopsis "Drawing flags with TikZ")
+    (description
+     "This is a package for drawing flags using TikZ.  Currently the national
+flags of all independent nations are included, along with some other flags of
+various organizations.  A flag can be drawn as a single TikZ-picture within
+ordinary text, and as a picture element within a TikZ-picture.  The appearance
+of a flag (size, frame etc.)  can be adapted using optional parameters.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
