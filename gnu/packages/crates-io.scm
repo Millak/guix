@@ -52006,24 +52006,28 @@ memory to speed up reallocation.")
 (define-public rust-regex-1
   (package
     (name "rust-regex")
-    (version "1.7.1")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "regex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0czp6hxg02lm02hvlhp9xjkd65cjcagw119crnaznwd5idsabaj8"))))
+        (base32 "0xdmrvs8fy7yw2bdk76mjbhzqibms7g4ljg468jwzxr0qa7ydsmj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-aho-corasick" ,rust-aho-corasick-0.7)
+       (("rust-aho-corasick" ,rust-aho-corasick-1)
         ("rust-memchr" ,rust-memchr-2)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.6))
+        ("rust-regex-automata" ,rust-regex-automata-0.3)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.7))
        #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-rand" ,rust-rand-0.8))))
+        ("rust-regex-test" ,rust-regex-test-0.1))))
     (home-page "https://github.com/rust-lang/regex")
     (synopsis "Regular expressions for Rust")
     (description
