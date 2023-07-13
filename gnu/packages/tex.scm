@@ -3908,6 +3908,26 @@ display many variants of snowman")
     (description "The package will typeset cards for use in a game of Set.")
     (license license:gpl3)))
 
+(define-public texlive-signchart
+  (package
+    (name "texlive-signchart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/signchart/"
+                   "source/latex/signchart/"
+                   "tex/latex/signchart/")
+             (base32
+              "0vg7xkrc0chp0r9j05ra499n4zkwg1gh9ywfnb54yhwcas301izs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/signchart")
+    (synopsis "Create sign charts")
+    (description
+     "The package allows users to easily typeset sign charts directly into
+their (La)TeX document.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
