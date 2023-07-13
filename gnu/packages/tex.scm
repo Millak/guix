@@ -3712,6 +3712,45 @@ steps can be customized in various ways.")
      "The package defines macros and other utilities to design Reo Circuits.")
     (license license:lppl)))
 
+(define-public texlive-robotarm
+  (package
+    (name "texlive-robotarm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/robotarm/"
+                   "source/latex/robotarm/"
+                   "tex/latex/robotarm/")
+             (base32
+              "1lhvbwq979whvjwx9gyfhsxz20x6imhh57xm843zk6068lv0b3wj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "latex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-missing-ins-file
+            ;; TeX Live distribution is missing the appropriate ".ins" file to
+            ;; generate the package.  Create it, but ignore all documentation
+            ;; related files in there.
+            (lambda _
+              (with-output-to-file "source/latex/robotarm/robotarm.ins"
+                (lambda ()
+                  (display "\\input docstrip.tex
+\\generate{\\file{robotarm.sty}{\\from{robotarm.dtx}{robotarm-package}}}
+\\endbatchfile"))))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-hypdoc
+                  texlive-tools))))
+    (home-page "https://ctan.org/pkg/robotarm")
+    (synopsis "TikZ powered LaTeX package to draw parameterized 2D robot arms")
+    (description
+     "This LaTeX package uses TikZ to draw parameterized 2D robot arms, for
+example to be used in educational material.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
