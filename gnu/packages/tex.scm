@@ -3379,6 +3379,25 @@ automatic and consistent spacing relative to the object labelled.")
 using TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pixelarttikz
+  (package
+    (name "texlive-pixelarttikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pixelarttikz/"
+                   "tex/latex/pixelarttikz/")
+             (base32
+              "0ymjflng2rlb0bq375f28mbdpr2r7ihqphnpvrh2f0n4f3afv8hx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pixelarttikz")
+    (synopsis "Work with PixelArts, with TikZ")
+    (description
+     "The package defines commands and an environment for displaying pixel
+arts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
