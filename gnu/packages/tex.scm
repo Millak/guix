@@ -3695,6 +3695,23 @@ steps can be customized in various ways.")
      "This LaTeX package makes @code{\\hat} put real hats on symbols.")
     (license license:expat)))
 
+(define-public texlive-reotex
+  (package
+    (name "texlive-reotex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/reotex/" "tex/latex/reotex/")
+             (base32
+              "1hcjk3nms2gg1h99mxnivb5n3382yq92c578mw0pxbwi0f67z3iw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/reotex")
+    (synopsis "Draw Reo Channels and Circuits")
+    (description
+     "The package defines macros and other utilities to design Reo Circuits.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
