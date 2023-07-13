@@ -2072,7 +2072,7 @@ between feed formats.")
 (define-public baloo
   (package
     (name "baloo")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2081,7 +2081,7 @@ between feed formats.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0x515lnvrzlnsv5i924q17mzi88k00krj90myad17s0g7p5pi1rw"))))
+                "1n65nhr45vl0banbdjxhjf6wk5ypdx06qygqzqjbd9xbv7djj883"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kcoreaddons kfilemetadata))
@@ -2108,16 +2108,6 @@ between feed formats.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-test
-           (lambda _
-             ;; FIXME: kinotifytest broke in 5.70.0 with commit 73183acf00 and
-             ;; seems like an oversight.  Reverting the commit makes it pass,
-             ;; but causes other problems.  Since just the test file names are
-             ;; broken, disabling it should be safe.  Try enabling for > 5.70.0.
-             (substitute* "autotests/unit/file/CMakeLists.txt"
-               ;; The test only runs on GNU/Linux, piggy-back on the check.
-               (("CMAKE_SYSTEM_NAME MATCHES \"Linux\"" all)
-                (string-append all " AND NOT TRUE")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
