@@ -3170,7 +3170,7 @@ It supports rich text as well as plain text.")
 (define-public kwallet
   (package
     (name "kwallet")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3179,7 +3179,7 @@ It supports rich text as well as plain text.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kwxkxlk0xlxkjgpjpb40xfl2l9hnhpymb4lxw4zwlxjn81r6sab"))))
+                "1zx80h8mj3ijj1mm5m3396vwkfhpdm8qpb63rhg8szm9hwqhd5sq"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
