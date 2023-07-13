@@ -4234,6 +4234,26 @@ or Zhouyi using TikZ.  There is no need for extra special fonts for showing
 these symbols.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikz-bayesnet
+  (package
+    (name "texlive-tikz-bayesnet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-bayesnet/"
+                   "tex/latex/tikz-bayesnet/")
+             (base32
+              "0fmm93h0kl6q45sglfz1ssrnj20sqds9kvamf1dqzmfw2g77qwqr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-bayesnet")
+    (synopsis
+     "Draw Bayesian networks, graphical models and directed factor graphs")
+    (description
+     "The package provides a library supporting the display of Bayesian networks,
+graphical models and (directed) factor graphs in LaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
