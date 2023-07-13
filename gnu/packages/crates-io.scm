@@ -52352,8 +52352,28 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.5)))))) ; 0.4
 
+(define-public rust-regex-syntax-0.7
+  (package
+    (name "rust-regex-syntax")
+    (version "0.7.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "regex-syntax" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qjczlc2w92kamn9ipjdr5pjql0jnccahpi9l3r6wp0rnsjr5sp5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))
+    (home-page "https://github.com/rust-lang/regex/tree/master/regex-syntax")
+    (synopsis "Regular expression parser")
+    (description "This package provides a regular expression parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-regex-syntax-0.6
   (package
+    (inherit rust-regex-syntax-0.7)
     (name "rust-regex-syntax")
     (version "0.6.27")
     (source
@@ -52363,12 +52383,7 @@ uses finite automata and guarantees linear time matching on all inputs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0i32nnvyzzkvz1rqp2qyfxrp2170859z8ck37jd63c8irrrppy53"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/rust-lang/regex")
-    (synopsis "Regular expression parser")
-    (description
-     "This package provides a regular expression parser.")
-    (license (list license:expat license:asl2.0))))
+    (arguments '())))
 
 (define-public rust-regex-syntax-0.5
   (package
