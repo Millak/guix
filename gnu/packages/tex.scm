@@ -4170,6 +4170,31 @@ the help of TikZ.  It also provides commands to draw the content of screens
 and of menu items.")
     (license license:lppl)))
 
+(define-public texlive-tikz-3dplot
+  (package
+    (name "texlive-tikz-3dplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-3dplot/"
+                   "tex/latex/tikz-3dplot/")
+             (base32
+              "05hw2wxs4q477x16ffh6wcmypdf7mz7500dxnfywiqi0pgzmnh89")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-3dplot")
+    (synopsis "Coordinate transformation styles for 3d plotting in TikZ")
+    (description
+     "The package provides straightforward ways to define three-dimensional
+coordinate frames through which to plot in TikZ.  The user can specify the
+orientation of the main coordinate frame, and use standard TikZ commands and
+coordinates to render their @code{tikzfigure}.  A secondary coordinate frame
+is provided to allow rotations and translations with respect to the main
+coordinate frame.  In addition, the package can also handle plotting
+user-specified functions in spherical polar coordinates, where both the radius
+and fill color can be expressed as parametric functions of polar angles.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
