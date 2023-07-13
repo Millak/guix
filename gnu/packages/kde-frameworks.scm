@@ -2201,7 +2201,7 @@ using the XBEL format.")
 (define-public kcmutils
   (package
     (name "kcmutils")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2210,7 +2210,7 @@ using the XBEL format.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0jqkg4i16jnxricrhi1cbvv7gjjj7ry3z36mzh11h48ml7rl05qx"))))
+                "1zhs84wrd8fkgzxwf793c6yha5nsnid4id8vs4iy7gcyahyajchr"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfigwidgets kservice))
