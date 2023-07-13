@@ -5500,6 +5500,25 @@ using TikZ.")
 in TeX based on the PGF and TikZ picture environment.")
     (license (list license:gpl2 license:lppl1.3+))))
 
+(define-public texlive-tkz-tab
+  (package
+    (name "texlive-tkz-tab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-tab/" "tex/latex/tkz-tab/")
+             (base32
+              "0j50pf0lf9dbi0zfnqm62rlyazsgbmpcqwlajqsjccqqkirdv6pb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-tab")
+    (synopsis "Tables of signs and variations using PGF/TikZ")
+    (description
+     "The package provides comprehensive facilities for preparing lists of
+signs and variations, using PGF.  This package has been taken temporarily out
+of circulation to give the author time to investigate some problems.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
