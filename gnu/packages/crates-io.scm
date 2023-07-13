@@ -35129,6 +35129,25 @@ language representing fixed values).  Particularly useful for proc macros, but
 can also be used outside of a proc-macro context.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-llvm-bitcode-0.1
+  (package
+    (name "rust-llvm-bitcode")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "llvm-bitcode" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1fskb2nzddg8m038kh2lm91gb5yg0l4j3rcnv44kz7f37kcxz5cb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-enum" ,rust-num-enum-0.5))))
+    (home-page "https://github.com/messense/llvm-bitcode-rs.git")
+    (synopsis "LLVM Bitcode parser in Rust")
+    (description "This package provides an LLVM Bitcode parser in Rust.")
+    (license license:expat)))
+
 (define-public rust-locale-0.2
   (package
     (name "rust-locale")
