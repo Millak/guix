@@ -3596,6 +3596,25 @@ duck) showcasing the use of characters from the Mario video games by Nintendo
 in LaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-qcircuit
+  (package
+    (name "texlive-qcircuit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qcircuit/" "tex/latex/qcircuit/")
+             (base32
+              "0gyygba4zv6ncbwailjh9fvwn95d4ckrn2vj2ja089drr0sd8zkq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qcircuit")
+    (synopsis "Macros to generate quantum ciruits")
+    (description
+     "The package supports those within the quantum information community who
+typeset quantum circuits, using @code{xy-pic} package, offering macros
+designed to help users generate circuits.")
+    (license license:gpl2)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
