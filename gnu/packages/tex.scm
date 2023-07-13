@@ -4361,6 +4361,31 @@ you personalize the look and feel of the graphs.")
 @code{misc}.")
     (license (list license:fdl1.3+ license:lppl))))
 
+(define-public texlive-tikz-feynhand
+  (package
+    (name "texlive-tikz-feynhand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-feynhand/"
+                   "tex/latex/tikz-feynhand/")
+             (base32
+              "11cz44yqxm7dhx53h27r3n5q911dhllzfl53a401w1wnybymj84s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-feynhand")
+    (synopsis "Feynman diagrams with TikZ")
+    (description
+     "This package lets you draw Feynman diagrams using TikZ.  It is a low-end
+modification of the TikZ-Feynman package, one of whose principal advantages is
+the automatic generation of diagrams, for which it needs LuaTeX.
+TikZ-FeynHand only provides the manual mode and hence runs in LaTeX without
+any reference to LuaTeX.  In addition it provides some new styles for vertices
+and propagators, alternative shorter keywords in addition to TikZ-Feynman's
+longer ones, some shortcut commands for quickly customizing the diagrams look,
+and the new feature of putting one propagator on top of another.")
+    (license license:gpl3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
