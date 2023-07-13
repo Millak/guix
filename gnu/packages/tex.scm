@@ -5697,6 +5697,26 @@ diagrams for lectures or assignment sheets.")
 per command or per parameter.")
     (license license:gpl3+)))
 
+(define-public texlive-wheelchart
+  (package
+    (name "texlive-wheelchart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wheelchart/"
+                   "tex/latex/wheelchart/")
+             (base32
+              "0p1fw6xxrf7s0k5pvll8iy66wxbvy2bw5372l3lxkbdzjjfxa46j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wheelchart")
+    (synopsis "Draw wheelcharts with TikZ")
+    (description
+     "This package is based on the package TikZ and can be used to draw
+wheelcharts with TikZ.  It provides several options to customize the
+wheelcharts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
