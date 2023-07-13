@@ -5284,6 +5284,28 @@ PGFPlots to a given width or height without changing the text size.")
 @command{pdf2svg} to convert TikZ environments to SVG files.")
     (license license:gpl3)))
 
+(define-public texlive-tikzviolinplots
+  (package
+    (name "texlive-tikzviolinplots")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzviolinplots/"
+                   "tex/latex/tikzviolinplots/")
+             (base32
+              "1cm1pcv4x9qpsxghvxv1w212j8p37g5miqn73d5xwy0vaqhd0hhz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzviolinplots")
+    (synopsis "Draws violin plots from data")
+    (description
+     "This package enables the user to draw violin plots, calculating the
+kernel density estimation from the data and plotting the resulting curve
+inside a @code{tikzpicture} environment.  It supports different kernels, and
+allows the user to either set the bandwidth value for each plot or use
+a default value.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
