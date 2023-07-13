@@ -5559,6 +5559,27 @@ tone values.  Currently, unt's model is implemented.  Support for more models
 is planned.")
     (license license:asl2.0)))
 
+(define-public texlive-tqft
+  (package
+    (name "texlive-tqft")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tqft/" "source/latex/tqft/"
+                   "tex/latex/tqft/")
+             (base32
+              "08lykpnw0hifhmh96pb7s3dd8sbzmz3gqyrwy5ann9fqxxjczf2d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tqft")
+    (synopsis "Drawing TQFT diagrams with TikZ/PGF")
+    (description
+     "The package defines some node shapes useful for drawing TQFT diagrams
+with TikZ/PGF.  That is, it defines highly customisable shapes that look like
+cobordisms between circles, such as those used in TQFT and other mathematical
+diagrams.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
