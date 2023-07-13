@@ -4491,6 +4491,29 @@ of TikZ.  This may be used to label certain features in an image.")
 @file{.events} files.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-tikz-karnaugh
+  (package
+    (name "texlive-tikz-karnaugh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-karnaugh/"
+                   "tex/latex/tikz-karnaugh/")
+             (base32
+              "091s9gavh8f4jya01nkjhzgh3f5b80ijiiaj7simnxawn60mh1z1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-karnaugh")
+    (synopsis "Typeset Karnaugh maps using TikZ")
+    (description
+     "The @code{tikz-karnaugh} package is a LaTeX package used to draw
+Karnaugh maps.  It uses TikZ to produce high quality graph from 1 to 12
+variables, but this upper limit depends on the TeX memory usage and can be
+different for you.  You can control colour, styles and distances.  It can be
+considered as an upgrade and extension of Andreas W. Wieland's @code{karnaugh}
+package towards TikZ supporting.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
