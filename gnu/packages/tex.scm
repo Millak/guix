@@ -2872,6 +2872,25 @@ designed for neural network diagrams.")
 intervals on the number line.")
     (license license:lppl1.3c)))
 
+(define-public texlive-nndraw
+  (package
+    (name "texlive-nndraw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nndraw/" "source/latex/nndraw/"
+                   "tex/latex/nndraw/")
+             (base32
+              "08mhl61b2fzsnfz6ldrlz9m5s37w2c4wml8gpd2f4wc9rjag68l4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nndraw")
+    (synopsis "Draw neural networks")
+    (description
+     "With this package you can create fully connected neural networks in
+a simple and efficient way.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
