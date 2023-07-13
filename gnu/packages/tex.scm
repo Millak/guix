@@ -5659,6 +5659,26 @@ chosen and developed with an emphasis on drawing graphs in economics.")
 able to use them originally in a school setting such as on worksheets.")
     (license license:cc0)))
 
+(define-public texlive-venndiagram
+  (package
+    (name "texlive-venndiagram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/venndiagram/"
+                   "source/latex/venndiagram/"
+                   "tex/latex/venndiagram/")
+             (base32
+              "1n48jgb0kbbnyk5pjg99l8hb1b3f1h30z78cl9lza2pi11p8mbgj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/venndiagram")
+    (synopsis "Creating Venn diagrams with TikZ")
+    (description
+     "The package assists generation of simple two- and three-set Venn
+diagrams for lectures or assignment sheets.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
