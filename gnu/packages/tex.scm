@@ -3203,6 +3203,27 @@ Currently, the package contains modules for drawing DNA sequencing
 chromatograms and protein domain diagrams.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pgfmorepages
+  (package
+    (name "texlive-pgfmorepages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgfmorepages/"
+                   "tex/latex/pgfmorepages/")
+             (base32
+              "0k0njkw34ql0vlpmay155rr4v0sszizhh1pixy20npbk26dkzljw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgfmorepages")
+    (synopsis "Assemble multiple logical pages onto a physical page")
+    (description
+     "This package replaces and extends the @code{pgfpages} sub-package of the
+PGF system.  It provides the capability to arrange multiple logical pages on
+multiple physical pages, for example as for arranging pages to make
+booklets.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
