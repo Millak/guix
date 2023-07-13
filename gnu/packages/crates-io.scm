@@ -37035,17 +37035,17 @@ file IO.")
        (sha256
         (base32 "0nmymqy9q62x577ydja0ysfyir7h5qa0n5fwcnvchfhhlsi0rdyr"))))))
 
-(define-public rust-memoffset-0.8
+(define-public rust-memoffset-0.9
   (package
     (name "rust-memoffset")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "memoffset" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1qcdic88dhgw76pafgndpz04pig8il4advq978mxdxdwrydp276n"))))
+                "0v20ihhdzkfw1jx00a7zjpk2dcp5qjq6lz302nyqamd9c4f4nqss"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -37058,6 +37058,24 @@ file IO.")
      "This package provides C-like @code{offset_of} functionality
 for Rust structs.")
     (license license:expat)))
+
+(define-public rust-memoffset-0.8
+  (package
+    (inherit rust-memoffset-0.9)
+    (name "rust-memoffset")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "memoffset" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qcdic88dhgw76pafgndpz04pig8il4advq978mxdxdwrydp276n"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))))
 
 (define-public rust-memoffset-0.7
   (package
