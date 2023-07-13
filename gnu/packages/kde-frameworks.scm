@@ -2106,14 +2106,14 @@ between feed formats.")
            qtdeclarative-5
            solid))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (setenv "HOME" (getcwd))
-               (invoke "dbus-launch" "ctest")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "DBUS_FATAL_WARNINGS" "0")
+                              (setenv "HOME"
+                                      (getcwd))
+                              (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "File searching and indexing")
     (description "Baloo provides file searching and indexing.  It does so by
