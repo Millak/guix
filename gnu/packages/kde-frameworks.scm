@@ -2752,7 +2752,7 @@ KIO enabled infrastructure.")
 (define-public knewstuff
   (package
     (name "knewstuff")
-    (version "5.98.0")
+    (version "5.108.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2761,12 +2761,12 @@ KIO enabled infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "09mxzpv0l1i5ml963gdnji8rskmi8b2f0hp4rn6ibkcj00z48fgy"))))
+                "1hlzkacybf35lnl92vk8xkapkq5pygy8fqngskvj9f4692k6562s"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list attica kservice kxmlgui))
     (native-inputs
-     (list extra-cmake-modules))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list karchive
            kauth
