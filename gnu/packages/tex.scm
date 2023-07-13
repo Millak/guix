@@ -4149,6 +4149,27 @@ definition capability, new drawing commands can be constructed from drawing
 segments.")
     (license license:cc-by4.0)))
 
+(define-public texlive-ticollege
+  (package
+    (name "texlive-ticollege")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ticollege/"
+                   "tex/latex/ticollege/")
+             (base32
+              "1qbng6vq8w3ln2aw2kckbjih8hz3m2yr1b0bx8bx1a7bf5fhmd6i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ticollege")
+    (synopsis
+     "Graphical representation of keys on a standard scientific calculator")
+    (description
+     "This package provides commands to draw scientific calculator keys with
+the help of TikZ.  It also provides commands to draw the content of screens
+and of menu items.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
