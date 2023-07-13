@@ -49472,24 +49472,24 @@ ecosystem.")
         ("rust-syn" ,rust-syn-1))))
     (native-inputs (list python))))
 
-(define-public rust-pyo3-macros-0.16
+(define-public rust-pyo3-macros-0.19
   (package
     (name "rust-pyo3-macros")
-    (version "0.16.5")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pyo3-macros" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1xwh7sl4n73746q80n5m5afd261zg0kxcqfnlr89ik7vbd4c8kr8"))))
+    (version "0.19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18n57jpi3292jhzmg5bjr1343zl93gmvxz21m1j5jdfxl73awp4a"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.16)
-         ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))))
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.19)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/pyo3/pyo3")
     (synopsis "Proc macros for PyO3")
     (description
@@ -49512,6 +49512,25 @@ ecosystem.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-pyo3-macros-0.16
+  (package
+    (inherit rust-pyo3-macros-0.19)
+    (name "rust-pyo3-macros")
+    (version "0.16.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pyo3-macros" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1xwh7sl4n73746q80n5m5afd261zg0kxcqfnlr89ik7vbd4c8kr8"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.16)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
