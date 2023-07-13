@@ -5463,6 +5463,25 @@ students) easy access to programming graphs of functions with TikZ and
 Gnuplot.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tkz-graph
+  (package
+    (name "texlive-tkz-graph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tkz-graph/"
+                   "tex/latex/tkz-graph/")
+             (base32
+              "1mdfdi97d8q7jqy7l3pqqs7ai4ph5r1aci3ahfsg5zmpmkwr981r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tkz-graph")
+    (synopsis "Draw graph-theory graphs")
+    (description
+     "The package is designed to create graph diagrams as simply as possible,
+using TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
