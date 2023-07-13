@@ -3555,6 +3555,26 @@ games.  It supports large and small boards with arbitrary shape, hidden rows,
 current and next puyos, labels and move planning markers.")
     (license license:expat)))
 
+(define-public texlive-pxpgfmark
+  (package
+    (name "texlive-pxpgfmark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pxpgfmark/"
+                   "tex/latex/pxpgfmark/")
+             (base32
+              "0c026i1bda0fxfrjhpv4laaj75ra6j8l2v6bxsgplng7f11nx36l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxpgfmark")
+    (synopsis "e-pTeX driver for PGF inter-picture connections")
+    (description
+     "The distributed drivers do not support the PGF feature of inter-picture
+connections under e-pTeX and @code{dvipdfmx}.  The package uses existing
+features of @code{dvipdfmx} to fix this problem.")
+    (license license:expat)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
