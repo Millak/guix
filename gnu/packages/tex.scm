@@ -2891,6 +2891,27 @@ intervals on the number line.")
 a simple and efficient way.")
     (license license:lppl1.3+)))
 
+(define-public texlive-numericplots
+  (package
+    (name "texlive-numericplots")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin name version
+                            (list "doc/latex/numericplots/"
+                                  "tex/latex/numericplots/")
+                            (base32
+                             "187h4q35s2asfgv9zxw992316v37p5nnvphjylnxfvygxci36lwg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numericplots")
+    (synopsis "Plot numeric data (including Matlab export) using PSTricks")
+    (description
+     "Plotting numeric data is a task which has often to be done for
+scientific papers.  LaTeX itself provides no facilities for drawing more than
+the simplest plots from supplied data.  The package will process user input,
+and uses PSTricks to plot the results.  The package provides Matlab functions
+to transform Matlab results to plottable data.")
+    (license license:gpl3)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
