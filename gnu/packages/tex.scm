@@ -4085,6 +4085,24 @@ graph. @code{\\swimtext} produces a written record of the times in all events.
 Files of current world and Canadian records are included.")
     (license license:lppl)))
 
+(define-public texlive-syntaxdi
+  (package
+    (name "texlive-syntaxdi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/syntaxdi/" "tex/latex/syntaxdi/")
+             (base32
+              "0q6f45vr1dq5pildna9i6vxxqg76kylnlb2rfqs9f87r73dg0xak")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/syntaxdi")
+    (synopsis "Create railroad syntax diagrams")
+    (description
+     "This package provides TikZ styles for creating special syntax diagrams
+known as railroad diagrams.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
