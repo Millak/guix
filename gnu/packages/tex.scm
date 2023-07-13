@@ -3320,6 +3320,26 @@ to run out of space; packages @code{m-pictex} and @code{pictexwd} deal with
 the problems in different ways.")
     (license license:lppl1.0+)))
 
+(define-public texlive-pictex2
+  (package
+    (name "texlive-pictex2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/pictex2/")
+             (base32
+              "1qqf08yharknq6csk01jdff62mg011bryqlq5mbmjwqwh7wxs0wy")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pictex2")
+    (synopsis "Adds relative coordinates and improves the @code{\\plot} command")
+    (description
+     "This package adds two user commands to standard PiCTeX.  One command
+uses relative coordinates, thus eliminating the need to calculate the
+coordinate of every point manually as in standard PiCTeX.  The other command
+modifies @code{\\plot} to use a rule instead of dots if the line segment is
+horizontal or vertical.")
+    (license license:lppl)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
