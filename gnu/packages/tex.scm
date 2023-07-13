@@ -3512,6 +3512,29 @@ and glued together.  This will lead to a physical product box.")
      (list
       (license:fsf-free "https://tug.ctan.org/macros/latex/contrib/gene/productbox/productbox.ins")))))
 
+(define-public texlive-ptolemaicastronomy
+  (package
+    (name "texlive-ptolemaicastronomy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ptolemaicastronomy/"
+                   "source/latex/ptolemaicastronomy/"
+                   "tex/latex/ptolemaicastronomy/")
+             (base32
+              "05j082s8aj57lzbxlhddi7f6gscpl5j66zmmaj6kabpnv152r0l7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ptolemaicastronomy")
+    (synopsis "Diagrams of sphere models for variably strict conditionals")
+    (description
+     "David K. Lewis (Counterfactuals, Blackwell 1973) introduced a sphere
+semantics for counterfactual conditionals.  He jokingly referred to the
+diagrams depicting such sphere models as Ptolemaic astronomy, hence the name
+of this package.  The macros provided in this package aid in the construction
+of sphere model diagrams in the style of Lewis.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
