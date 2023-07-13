@@ -3100,6 +3100,28 @@ using PGF/TikZ.")
 soroban (Japanese abacus) using PGF/TikZ.")
     (license license:lppl)))
 
+(define-public texlive-pgf-spectra
+  (package
+    (name "texlive-pgf-spectra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgf-spectra/"
+                   "tex/latex/pgf-spectra/")
+             (base32
+              "03jci0jc5ryzkp6930hn1l4awjrw9y1xwc3f327igccj78w24pnb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgf-spectra")
+    (synopsis "Draw continuous or discrete spectra using PGF/TikZ")
+    (description
+     "The purpose of this package is to draw the spectra of elements in
+a simple way.  It relies on PGF/TikZ for drawing the desired spectrum,
+continuous or discrete.  There are data available for the spectra of 98
+elements and their ions (from the NASA database and from NIST).  It also
+allows the user to draw spectra using their own data.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
