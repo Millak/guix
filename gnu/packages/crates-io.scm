@@ -69890,7 +69890,7 @@ programs to collect structured, event-based diagnostic information.")
 (define-public rust-tracing-attributes-0.1
   (package
     (name "rust-tracing-attributes")
-    (version "0.1.22")
+    (version "0.1.26")
     (source
      (origin
        (method url-fetch)
@@ -69898,19 +69898,21 @@ programs to collect structured, event-based diagnostic information.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1qjf90dvc9jiw78bjzb3iqzrhaybypg8nm0n0zhwi6smmy9miiqi"))))
+         "1ax44ldpbcb7dsvpljiv2krnx6xp0hs85zcyv8385sarc7sk2ksz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
+        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
-        ("rust-tokio-test" ,rust-tokio-test-0.3)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4)
         ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-tracing-core" ,rust-tracing-core-0.1)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://tokio.rs")
     (synopsis "Automatically instrument functions")
     (description "This package provides procedural macro attributes for
