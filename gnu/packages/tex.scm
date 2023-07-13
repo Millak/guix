@@ -4214,6 +4214,26 @@ and fill color can be expressed as parametric functions of polar angles.")
 Some interesting uses alongside other packages are also supported.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikz-bagua
+  (package
+    (name "texlive-tikz-bagua")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-bagua/"
+                   "tex/latex/tikz-bagua/")
+             (base32
+              "1kn0ggpxz5ksnnxsfhbhavik7n8mpblm9x3qjxcsg2qhs286lwyh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-bagua")
+    (synopsis "Draw Bagua symbols in Yijing")
+    (description
+     "This package provides commands for drawing symbols in Yijing (I Ching)
+or Zhouyi using TikZ.  There is no need for extra special fonts for showing
+these symbols.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
