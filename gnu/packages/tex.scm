@@ -5055,6 +5055,26 @@ a page for later (or earlier) use, primarily (but not exclusively) with
 TikZ.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tikzmarmots
+  (package
+    (name "texlive-tikzmarmots")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikzmarmots/"
+                   "tex/latex/tikzmarmots/")
+             (base32
+              "0j1z78r43czg09inw76ksgs97l7klivi93w7hvcvafd47h9zcvsg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikzmarmots")
+    (synopsis "Drawing little marmots in TikZ")
+    (description
+     "This is a LaTeX package for marmots to be used in TikZ pictures.
+These little figures are constructed in such a way that they may even borrow
+some garments and other attributes from the TikZducks.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
