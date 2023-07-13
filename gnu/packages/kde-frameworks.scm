@@ -3418,8 +3418,8 @@ script engines.")
            qtbase-5
            qtdeclarative-5))
     (arguments
-     `(#:tests? #f  ;; seem to require network; don't find QTQuick components
-       #:configure-flags '("-DBUILD_TESTING=OFF"))) ; not run anyway
+     (list #:tests? #f ;; seem to require network; don't find QTQuick components
+           #:configure-flags #~'("-DBUILD_TESTING=OFF"))) ; not run anyway
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Offers available actions for a specific purpose")
     (description "This framework offers the possibility to create integrate
