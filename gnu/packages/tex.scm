@@ -3300,6 +3300,26 @@ Oostrum (in a published review of packages of this sort) does not recommend
 this package; Picins is recommended instead.")
     (license license:gpl3+)))
 
+(define-public texlive-pictex
+  (package
+    (name "texlive-pictex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pictex/" "tex/generic/pictex/")
+             (base32
+              "1wwlh9d7b3gsk3f29d6vk0ic7nnvc533jfg2z019vsf6pin9qvgv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pictex")
+    (synopsis "Picture drawing macros for TeX and LaTeX")
+    (description
+     "PicTeX is an early and very comprehensive drawing package that mostly
+draws by placing myriads of small dots to make up pictures.  It has a tendency
+to run out of space; packages @code{m-pictex} and @code{pictexwd} deal with
+the problems in different ways.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
