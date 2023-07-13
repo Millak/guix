@@ -45424,6 +45424,47 @@ implementation suitable for use with cryptographic private keys.")
 implementing PEP 440.")
     (license (list license:asl2.0 license:bsd-2))))
 
+;; Should be the same rust-pyo3 version as cargo-input rust-pep440-rs.
+(define-public rust-pep508-rs-0.2
+  (package
+    (name "rust-pep508-rs")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pep508-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qjkhh89xhjwhpjz2ppk5lp3mdm464gqx8sh9iyjpjk1p1xkswf0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pep440-rs" ,rust-pep440-rs-0.3)
+        ("rust-pyo3" ,rust-pyo3-0.18)
+        ("rust-pyo3-log" ,rust-pyo3-log-0.8)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-toml" ,rust-toml-0.7)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-indoc" ,rust-indoc-2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-testing-logger" ,rust-testing-logger-0.1))))
+    (home-page "https://github.com/konstin/pep508_rs")
+    (synopsis
+     "Library for python dependency specifiers, better known as PEP 508")
+    (description
+     "This package provides a library for python dependency specifiers, better
+known as PEP 508.")
+    (license (list license:asl2.0 license:bsd-2))))
+
 (define-public rust-percent-encoding-2
   (package
     (name "rust-percent-encoding")
