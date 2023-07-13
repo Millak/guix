@@ -1661,6 +1661,59 @@ deadlock, like the standard Barrier).")
 syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
     (license license:mpl2.0)))
 
+(define-public rust-adblock-0.5
+  (package
+    (inherit rust-adblock-0.7)
+    (name "rust-adblock")
+    (version "0.5.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "adblock" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qgjcrm7vqxq5ispdj95ql7payy5d5rj0zfwba4b076xxvw1q4yq"))))
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; Not all files included
+             "--skip=check_works_same_after_deserialization"
+             "--skip=check_matching_equivalent"
+             "--skip=check_matching_hostnames"
+             ;; Skip tests which require the network.
+             "--skip=check_live_from_filterlists"
+             "--skip=check_live_specific_urls"
+             "--skip=stable_serialization"
+             "--skip=stable_serialization_through_load")
+       #:cargo-inputs
+       (("rust-addr" ,rust-addr-0.14)
+        ("rust-base64" ,rust-base64-0.13)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cssparser" ,rust-cssparser-0.28)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-idna" ,rust-idna-0.2)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lifeguard" ,rust-lifeguard-0.6)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rmp-serde" ,rust-rmp-serde-0.13)
+        ("rust-rmp-serde" ,rust-rmp-serde-0.15)
+        ("rust-seahash" ,rust-seahash-3)
+        ("rust-selectors" ,rust-selectors-0.23)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-twoway" ,rust-twoway-0.2)
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-tokio" ,rust-tokio-1))))))
+
 (define-public rust-addr2line-0.19
   (package
     (name "rust-addr2line")
