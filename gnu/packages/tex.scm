@@ -4580,6 +4580,27 @@ styles @code{on behind layer}, @code{on above layer}, @code{on glass layer} as
 an option to a @code{scope} environment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tikz-mirror-lens
+  (package
+    (name "texlive-tikz-mirror-lens")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tikz-mirror-lens/"
+                   "tex/latex/tikz-mirror-lens/")
+             (base32
+              "0sddmlki3bdd9js9vs1m1haqcdk3g1ji086jp1h4nfw6dy1s6y56")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tikz-mirror-lens")
+    (synopsis "Spherical mirrors and lenses in TikZ")
+    (description
+     "This package allows the automatic drawing of the image of objects in
+spherical mirrors and lenses from the data of the focus, from the position and
+height of the object.  It calculates the position and height of the image, and
+also displays the notable rays.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
