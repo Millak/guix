@@ -3928,6 +3928,30 @@ display many variants of snowman")
 their (La)TeX document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-simplenodes
+  (package
+    (name "texlive-simplenodes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simplenodes/"
+                   "tex/latex/simplenodes/")
+             (base32
+              "0d3bqia3a7rnd57v8yld4i5d9nwrshkxxv6w2vglhpp447yv0nq7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simplenodes")
+    (synopsis "Simple nodes in four colors written in TikZ for LaTeX")
+    (description
+     "This is a LaTeX macro package for generating simple node-based flow
+graphs or diagrams built upon the TikZ package.  The package provides two
+basic commands, one to generate a node and one to create links between nodes.
+The positioning of the nodes is not handled by the package itself but is
+preferably done in a tabular environment.  In total, four simple node types
+are defined, loosely based on the nomenclature and color patterns of the
+popular Java script Bootstrap.")
+    (license license:expat)))
+
 (define-public texlive-amiri
   (package
     (name "texlive-amiri")
