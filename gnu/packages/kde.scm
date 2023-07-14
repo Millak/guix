@@ -829,7 +829,7 @@ multi-floor indoor maps.")
 (define-public kpmcore
   (package
     (name "kpmcore")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -837,7 +837,7 @@ multi-floor indoor maps.")
                     "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1y28dnmbnkkjar4kl033fkmcnazgczc3pgdac2q1ry2hjzkcbnpa"))))
+                "0cz0pz84sxa7lvkq8v25775z7x7g6pz9sq7c90pfv8h9qsz8q1l9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -851,8 +851,7 @@ multi-floor indoor maps.")
            qca
            `(,util-linux "lib")))
     (arguments
-     `(#:tests? #f ;; 4/6 tests fail do to no plugin instance
-	   #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-cmake-install-directories
            (lambda _
