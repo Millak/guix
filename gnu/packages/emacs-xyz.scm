@@ -17593,6 +17593,31 @@ DefaultEncrypt, please refer to the home page or read the comments in the
 source file, @file{jl-encrypt.el}.")
     (license license:gpl3+)))
 
+;; Package has no release.  Version is extracted from "Version:" keyword in
+;; main file.
+(define-public emacs-exotica-theme
+  (let ((commit "ff3ef4f6fa38c93b99becad977c7810c990a4d2f")
+        (revision "0"))
+    (package
+      (name "emacs-exotica-theme")
+      (version (git-version "1.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zenobht/exotica-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1kp6q55g3dcya4y79x877vqwxa4z2rkkvhs49pkwr3wljf4af2pd"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/zenobht/exotica-theme")
+      (synopsis "Dark theme for Emacs with vibrant colors")
+      (description
+       "A dark opinionated theme with vibrant colors for Emacs.  Inspired by
+@code{Molokai} and @code{Dracula} themes.")
+      (license license:gpl3+))))
+
 (define-public emacs-extend-smime
   (package
     (name "emacs-extend-smime")
