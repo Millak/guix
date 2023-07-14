@@ -49,6 +49,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -81,6 +82,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
@@ -682,7 +684,7 @@ your existing infrastructure.")
 (define-public python-fido2
   (package
     (name "python-fido2")
-    (version "0.9.3")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -691,31 +693,30 @@ your existing infrastructure.")
                 version "/fido2-" version ".tar.gz"))
               (sha256
                (base32
-                "1v366h449f8q74jkmy1291ffj2345nm7cdsipgqvgz4w22k8jpml"))
+                "1hwz0xagkmy6hhcyfl66dxf2vfa69lqqqjrv70vw7harik59bi2x"))
               (snippet
                ;; Remove bundled dependency.
                '(delete-file "fido2/public_suffix_list.dat"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(;; This attempts to access
-       ;; /System/Library/Frameworks/IOKit.framework/IOKit
-       ;; The recommendation is to use tox for testing.
-       #:tests? #false
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'install-public-suffix-list
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-file
-              (search-input-file inputs
-                                 (string-append
-                                  "/share/public-suffix-list-"
-                                  ,(package-version public-suffix-list)
-                                  "/public_suffix_list.dat"))
-              "fido2/public_suffix_list.dat"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-public-suffix-list
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-file
+               (search-input-file inputs
+                                  (string-append
+                                   "/share/public-suffix-list-"
+                                   #$(package-version public-suffix-list)
+                                   "/public_suffix_list.dat"))
+               "fido2/public_suffix_list.dat"))))))
     (propagated-inputs
-     (list python-cryptography python-six))
+     (list python-cryptography python-pyscard))
     (native-inputs
-     (list python-mock python-pyfakefs public-suffix-list))
+     (list python-poetry-core
+           python-pytest
+           public-suffix-list))
     (home-page "https://github.com/Yubico/python-fido2")
     (synopsis "Python library for communicating with FIDO devices over USB")
     (description
