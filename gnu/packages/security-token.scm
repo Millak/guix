@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
@@ -738,33 +738,31 @@ implementing a Relying Party.")
 (define-public python-yubikey-manager
   (package
     (name "python-yubikey-manager")
-    (version "4.0.7")
+    (version "5.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://developers.yubico.com/yubikey-manager/Releases"
-                    "/yubikey-manager-" version ".tar.gz"))
+                    "/yubikey_manager-" version ".tar.gz"))
               (sha256
                (base32
-                "0kzwal7i4kyywm4f5zh8b823mh0ih2nsh5c0c4dfn4vw3j5dnwlr"))))
-    (build-system python-build-system)
-    (arguments
-     '(;; This attempts to access
-       ;; /System/Library/Frameworks/IOKit.framework/IOKit
-       ;; The recommendation is to use tox for testing.
-       #:tests? #false))
+                "1kma08rxvpzn2gf8b9vxyyb2pvrakm7hhpdmbnb54nwbdnbxp1v4"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-six
-           python-pyscard
-           python-pyusb
-           python-click
+     (list python-click
            python-cryptography
+           python-fido2
+           python-keyring
            python-pyopenssl
-           python-fido2))
+           python-pyscard
+           python-pyusb))
     (inputs
      (list pcsc-lite))
     (native-inputs
-     (list swig python-mock))
+     (list python-makefun
+           python-poetry-core
+           python-pytest
+           swig))
     (home-page "https://developers.yubico.com/yubikey-manager/")
     (synopsis "Command line tool and library for configuring a YubiKey")
     (description
