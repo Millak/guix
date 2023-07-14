@@ -2826,9 +2826,9 @@ runnable=true
                 #:categories '("Game" "ArcadeGame")))
              #t)))))
     (native-inputs
-     `(("godot-headless" ,godot "headless")))
+     `(("godot-headless" ,godot-lts "headless")))
     (inputs
-     (list godot))
+     (list godot-lts))
     (home-page "https://notapixel.itch.io/superstarfighter")
     (synopsis "Fast-paced local multiplayer arcade game")
     (description "In SuperStarfighter, up to four local players compete in a
