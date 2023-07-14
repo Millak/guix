@@ -61,7 +61,7 @@
 ;;; Copyright © 2019, 2023 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019-2023, Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
@@ -5271,6 +5271,26 @@ recognition library with full Unicode support.  It has features like:
 @item Allows rules extension and custom normalizers.
 @end itemize")
     (license license:expat)))
+
+(define-public python-makefun
+  (package
+    (name "python-makefun")
+    (version "1.15.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "makefun" version))
+              (sha256
+               (base32
+                "19a8dga8rnmjn5gy1cy1wdi28swbkdkypwbqikbxil6ynqcg3c20"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/smarie/python-makefun")
+    (synopsis "Library to dynamically create python functions")
+    (description "@code{makefun} helps create functions dynamically with a
+given signature.  It was largely inspired by @code{python-decorator} and
+@code{functools}.")
+    (license license:bsd-3)))
 
 (define-public python-markdown-it-py
   (package
