@@ -7547,6 +7547,28 @@ Also included are keybindings for spec files and Dired buffers, as well as
 snippets for yasnippet.")
       (license license:gpl3+))))
 
+(define-public emacs-mode-line-bell
+  (package
+    (name "emacs-mode-line-bell")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/purcell/mode-line-bell")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13n3di05lgqfm4f8krn3p36yika5znhymp5vr2d747x54hqmgh7y"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/purcell/mode-line-bell")
+    (synopsis "Flash the mode-line instead of ringing the bell")
+    (description
+     "This Emacs package provides a global minor mode @code{mode-line-bell-mode}
+which sets @code{ring-bell-function} to a function that will briefly flash the
+mode-line when the bell is rung.")
+    (license license:gpl3+)))
+
 (define-public emacs-mode-line-idle
   ;; Package has no release.  Version is extracted from "Version:" keyword in
   ;; main file.
