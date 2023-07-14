@@ -851,13 +851,14 @@ multi-floor indoor maps.")
            qca
            `(,util-linux "lib")))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-cmake-install-directories
-           (lambda _
-             (substitute* "src/util/CMakeLists.txt"
-               (("DESTINATION \\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
-                "DESTINATION share/polkit-1/actions")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake-install-directories
+            (lambda _
+              (substitute* "src/util/CMakeLists.txt"
+                (("DESTINATION \\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
+                 "DESTINATION share/polkit-1/actions")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Library for managing partitions")
     (description "Library for managing partitions.")
