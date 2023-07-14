@@ -936,11 +936,11 @@ different notification systems.")
          "1gcmqqj752h3lmcpvc7cm6k6bpb158ha7i5ysp0kqvf8cmpi5ydz"))))
     (build-system qt-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_TESTING=ON"
-                           "-DKDE_INSTALL_LIBEXECDIR=libexec"
-                           ;; So kdeconnect.so isn't installed to lib/plugins
-                           "-DPLUGIN_INSTALL_DIR=lib/qt5/plugins")
-       #:tests? #f)) ; tests fail hard in our build environment
+     (list #:configure-flags #~'("-DBUILD_TESTING=ON"
+                                 "-DKDE_INSTALL_LIBEXECDIR=libexec"
+                                 ;; So kdeconnect.so isn't installed to lib/plugins
+                                 "-DPLUGIN_INSTALL_DIR=lib/qt5/plugins")
+           #:tests? #f)) ; tests fail hard in our build environment
     (native-inputs
      (list extra-cmake-modules
            kdoctools
