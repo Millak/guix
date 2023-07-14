@@ -1166,14 +1166,14 @@ Python, PHP, and Perl.")
 (define-public libkdegames
   (package
     (name "libkdegames")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/libkdegames-" version ".tar.xz"))
       (sha256
-       (base32 "1aihbha073fw2bxmdk4l768716kvrlyjd72x2nfx0vvr0ngc5wx9"))))
+       (base32 "1sicpfsrkxn5d0fdy71h7033rpkb94r5hjvv5ab7qbmzb1qa4awq"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
