@@ -1230,11 +1230,11 @@ Python, PHP, and Perl.")
     (arguments
      ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
      ;; corresponding configure flag to build tests.
-     `(#:tests? #f
-       #:configure-flags
-       (list "-DBUILD_MARBLE_TOOLS=YES" ; file conversion tools
-             "-DBUILD_TOUCH=YES"
-             "-DBUILD_MARBLE_TESTS=FALSE")))
+     (list #:tests? #f
+           #:configure-flags
+           #~(list "-DBUILD_MARBLE_TOOLS=YES" ; file conversion tools
+                   "-DBUILD_TOUCH=YES"
+                   "-DBUILD_MARBLE_TESTS=FALSE")))
     (native-inputs
      (list extra-cmake-modules kdoctools qttools-5))
     ;; One optional dependency missing: libwlocate.
