@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -462,7 +463,7 @@ retrieve a YubiKey's serial number, and so forth.")
 (define-public python-pyscard
   (package
     (name "python-pyscard")
-    (version "1.9.9")
+    (version "2.0.7")
     (source (origin
               (method url-fetch)
               ;; The maintainer publishes releases on various sites, but
@@ -472,7 +473,7 @@ retrieve a YubiKey's serial number, and so forth.")
                     version "/pyscard-" version ".tar.gz"))
               (sha256
                (base32
-                "082cjkbxadaz2jb4rbhr0mkrirzlqyqhcf3r823qb0q1k50ybgg6"))))
+                "1gy1hmzrhfa7bqs132v89pchm9q3rpnqf3a6225vwpx7bx959017"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -480,24 +481,21 @@ retrieve a YubiKey's serial number, and so forth.")
          ;; Tell pyscard where to find the PCSC include directory.
          (add-after 'unpack 'patch-platform-include-dirs
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pcsc-include-dir (string-append
-                                      (assoc-ref inputs "pcsc-lite")
-                                      "/include/PCSC")))
+             (let ((pcsc-include-dir (search-input-directory
+                                      inputs "/include/PCSC")))
                (substitute* "setup.py"
                  (("platform_include_dirs = \\[.*?\\]")
                   (string-append
-                   "platform_include_dirs = ['" pcsc-include-dir "']")))
-               #t)))
+                   "platform_include_dirs = ['" pcsc-include-dir "']"))))))
          ;; pyscard wants to dlopen libpcsclite, so tell it where it is.
          (add-after 'unpack 'patch-dlopen
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "smartcard/scard/winscarddll.c"
                (("lib = \"libpcsclite\\.so\\.1\";")
-                (simple-format #f
-                               "lib = \"~a\";"
-                               (search-input-file inputs
-                                                  "/lib/libpcsclite.so.1"))))
-             #t)))))
+                (simple-format
+                 #f
+                 "lib = \"~a\";"
+                 (search-input-file inputs "/lib/libpcsclite.so.1")))))))))
     (inputs
      (list pcsc-lite))
     (native-inputs
