@@ -779,13 +779,13 @@ cards.")
                 "14m4wl79b4qad42l1capz59pslfcrm25jshyhmcqzhqb0wzwkav9"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases '(modify-phases %standard-phases
-                       (replace 'check
-                         (lambda* (#:key tests? #:allow-other-keys)
-                           (when tests?
-                             (setenv "QT_QPA_PLATFORM" "offscreen")
-                             (invoke "ctest" "-E"
-                                     "(evaluatetest|iterationtest)")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "QT_QPA_PLATFORM" "offscreen")
+                              (invoke "ctest" "-E"
+                                      "(evaluatetest|iterationtest)")))))))
     (native-inputs (list bison extra-cmake-modules flex))
     (inputs (list boost
                   kholidays
