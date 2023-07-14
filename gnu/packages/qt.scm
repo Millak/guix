@@ -285,7 +285,7 @@ applications on Wayland.")
 (define-public grantlee
   (package
     (name "grantlee")
-    (version "5.2.0")
+    (version "5.3.1")
     (source
       (origin
         (method git-fetch)
@@ -294,7 +294,7 @@ applications on Wayland.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "02dyqxjyxiqxrlz5g7v9ly8f095vs3iha39l75q6s8axs36y01lq"))))
+         (base32 "1ipnkdi8wgv519mvwa5zxlz20wipbypyfixjv2qdfd9vl1pznwvs"))))
     (native-inputs
      ;; Optional: lcov and cccc, both are for code coverage
      (list doxygen))
