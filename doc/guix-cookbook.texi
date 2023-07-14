@@ -234,10 +234,11 @@ A list structure can be created with the @code{list} procedure:
 @end lisp
 
 @item
-The @dfn{quote} disables evaluation of a parenthesized expression: the
-first term is not called over the other terms (@pxref{Expression Syntax,
-quote,, guile, GNU Guile Reference Manual}).  Thus it effectively
-returns a list of terms.
+@cindex S-expression
+The @dfn{quote} disables evaluation of a parenthesized expression, also
+called an S-expression or ``s-exp'': the first term is not called over
+the other terms (@pxref{Expression Syntax, quote,, guile, GNU Guile
+Reference Manual}).  Thus it effectively returns a list of terms.
 
 @lisp
 '(display (string-append "Hello " "Guix" "\n"))
@@ -248,9 +249,10 @@ returns a list of terms.
 @end lisp
 
 @item
-The @dfn{quasiquote} disables evaluation of a parenthesized expression
-until @dfn{unquote} (a comma) re-enables it.  Thus it provides us with
-fine-grained control over what is evaluated and what is not.
+The @code{quasiquote} (@code{`}, a backquote) disables evaluation of a
+parenthesized expression until @code{unquote} (@code{,}, a comma)
+re-enables it.  Thus it provides us with fine-grained control over what
+is evaluated and what is not.
 
 @lisp
 `(2 a 5 7 (2 ,a 5 ,(+ a 4)))
@@ -259,6 +261,37 @@ fine-grained control over what is evaluated and what is not.
 
 Note that the above result is a list of mixed elements: numbers, symbols (here
 @code{a}) and the last element is a list itself.
+
+@item
+@cindex G-expressions, syntax
+@cindex gexps, syntax
+@findex #~
+@findex #$
+@findex gexp
+@findex ungexp
+Guix defines a variant of S-expressions on steroids called
+@dfn{G-expressions} or ``gexps'', which come with a variant of
+@code{quasiquote} and @code{unquote}: @code{#~} (or @code{gexp}) and
+@code{#$} (or @code{ungexp}).  They let you @emph{stage code for later
+execution}.
+
+For example, you'll encounter gexps in some package definitions where
+they provide code to be executed during the package build process.  They
+look like this:
+
+@lisp
+;; Below is a G-expression representing staged code.
+#~(begin
+    ;; Invoke 'ls' from the package defined by the 'coreutils'
+    ;; variable.
+    (system* #$(file-append coreutils "/bin/ls") "-l")
+
+    ;; Create this package's output directory.
+    (mkdir #$output))
+@end lisp
+
+@xref{G-Expressions,,, guix, GNU Guix Reference Manual}, for more on
+gexps.
 
 @item
 Multiple variables can be named locally with @code{let} (@pxref{Local
