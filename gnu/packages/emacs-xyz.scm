@@ -1261,6 +1261,32 @@ face properties and allows configuration of faces and colors.")
 some utility functions, and commands using that infrastructure.")
     (license license:gpl3+)))
 
+;; Package has no release.  Version is extracted from "Version:" keyword in
+;; main file.
+(define-public emacs-project-mode-line-tag
+  (let ((commit "a8809cc1a50cfdedaf7bed2810249ae262884716")
+        (revision "0"))
+    (package
+      (name "emacs-project-mode-line-tag")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/fritzgrabo/project-mode-line-tag")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0bmx9a1g199axj9ypqisvfyf1517czw23zg96x1wdzqrpw3cb7cx"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/fritzgrabo/project-mode-line-tag")
+      (synopsis "Display a buffer's project in its mode line")
+      (description
+       "Display information about a buffer's project (a \"project tag\") in
+its mode line.")
+      (license license:gpl3+))))
+
 (define-public git-modes
   (package
     (name "emacs-git-modes")
