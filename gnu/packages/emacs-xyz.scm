@@ -6579,6 +6579,31 @@ detecting specific uses of Ruby, e.g. when using rails, and using a
 appropriate console.")
     (license license:gpl3+)))
 
+;; Package has no release.  Version is extracted from "Version:" keyword in
+;; main file.
+(define-public emacs-zeno-theme
+  (let ((commit "70fa7b7442f24ea25eab538b5a22da690745fef5")
+        (revision "0"))
+    (package
+      (name "emacs-zeno-theme")
+      (version (git-version "1.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zenobht/zeno-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10v6yf9c5qdsxrp6rk1n1xkv4byyfkinsikskdb2apjg05cx2273"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/zenobht/zeno-theme")
+      (synopsis "Dark theme using different shades of blue for Emacs")
+      (description
+       "This package provides a dark theme using different shades of blue for
+Emacs, inspired by @code{Dracula} theme.")
+      (license license:gpl3+))))
+
 (define-public emacs-zig-mode
   (let ((commit "dbc648f5bca8f3b9ca2cc7827f326f5530115144")
         (revision "0"))
