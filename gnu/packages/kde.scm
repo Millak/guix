@@ -924,16 +924,16 @@ different notification systems.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://kde/stable/release-service/"
-                            version "/src/kdeconnect-kde-"
-                            version ".tar.xz"))
-        (sha256
-         (base32
-          "1yzx49gcm7x2wdk53iznyjz09y2a6mrrhh68xilbcsafyiw3l3zr"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/kdeconnect-kde-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "1gcmqqj752h3lmcpvc7cm6k6bpb158ha7i5ysp0kqvf8cmpi5ydz"))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_TESTING=ON"
@@ -946,7 +946,8 @@ different notification systems.")
            kdoctools
            libxtst
            pkg-config
-           python-wrapper))
+           python-wrapper
+           wayland-protocols))
     (inputs
      (list kcmutils
            kconfigwidgets
@@ -974,7 +975,9 @@ different notification systems.")
            qtquickcontrols2-5
            qtx11extras
            qtwayland-5
-           wayland))
+           wayland
+           modemmanager-qt
+           libxkbcommon))
     (home-page "https://community.kde.org/KDEConnect")
     (synopsis "Enable your devices to communicate with each other")
     (description "KDE Connect is a project that enables all your devices to
