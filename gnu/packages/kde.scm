@@ -391,7 +391,7 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
 (define-public kdevelop-pg-qt
   (package
     (name "kdevelop-pg-qt")
-    (version "2.2.1")
+    (version "2.2.2")
     (source
      (origin
        (method git-fetch)
@@ -400,7 +400,7 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "3kfab4p717acbdkcdi41d98vwch7v431gb2qi6s38hmclsf8bf8g"))))
+        (base32 "0kdi12phrl5afv41dy856g2vv3bp0a1b1vwp90h08wbqsfyy1zlm"))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
