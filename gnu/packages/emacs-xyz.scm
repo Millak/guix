@@ -34622,6 +34622,27 @@ one file per value.  This makes it easy to delete or remove unused
 variables.")
     (license license:gpl3+)))
 
+(define-public emacs-persistent-scratch
+  (package
+    (name "emacs-persistent-scratch")
+    (version "0.3.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Fanael/persistent-scratch")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "187cyl005csmmmh292km1v3ffl8x49h5qyn87i4adz9l5sqnpdgj"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/Fanael/persistent-scratch")
+    (synopsis "Preserve the scratch buffer across Emacs sessions")
+    (description
+     "Preserve the state of scratch buffers across Emacs sessions by saving the
+state to and restoring it from a file, with auto-saving and backups.")
+    (license license:bsd-2)))
+
 (define-public emacs-company-emoji
   (package
     (name "emacs-company-emoji")
