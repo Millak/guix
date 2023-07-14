@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,6 +124,16 @@ Type1, CID, CFF, Windows FON/FNT, X11 PCF, and others.  It supports high-speed
 anti-aliased glyph bitmap generation with 256 gray levels.")
     (license license:freetype)          ; some files have other licenses
     (home-page "https://freetype.org/")))
+
+;; TODO: Make this change directly in freetype in the next large rebuild cycle
+;; and remove this package.
+(define-public freetype-with-brotli
+  (package
+    (inherit freetype)
+    (name "freetype-with-brotli")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs freetype)
+       (prepend brotli)))))
 
 (define-public opentype-sanitizer
   (package
