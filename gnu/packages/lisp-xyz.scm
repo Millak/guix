@@ -25508,22 +25508,22 @@ JavaScript code.")
 (define-public sbcl-nhooks
   (package
     (name "sbcl-nhooks")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/atlas-engineer/nhooks")
              (commit version)))
-       (file-name (git-file-name "nhooks" version))
+       (file-name (git-file-name "cl-nhooks" version))
        (sha256
         (base32
-         "1cpd9ydxkrl4vxn2clfwljl4q5hdybxkc96qshq7dczq2jvg1nfs"))))
+         "10ym4ybda2l426flicqz0f4yg7fbw7yjk1k0wqpf4wfk24gm1b8g"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-serapeum))
     (native-inputs
-     (list sbcl-fiveam))
+     (list sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/nhooks")
     (synopsis "Hook facility for Common Lisp")
     (description "This package holds an enhanced implementation of
