@@ -1272,24 +1272,42 @@ creating routes by drag and drop and more.")
 (define-public okular
   (package
     (name "okular")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0f98kfsb6sirpym27j2wwz4qr4p5vl4pbnckxd3gmgyfpz8mszln"))))
+        (base32 "1vgcqkq6mzd270hzabmdqqv105iv6kr6ah2h18b15al2n9rmg0bi"))))
     (build-system qt-build-system)
-    ;; The tests fail because they can't find the proper mimetype plugins:
-    ;; "org.kde.okular.core: No plugin for mimetype '"image/jpeg"'."
-    ;; The built program seems to work okay, so we skip the tests for now.
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list "-DBUILD_TESTING=OFF")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)
+          ;; use installed data to check.
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest"
+                        "--output-on-failure"
+                        "--rerun-failed"
+                        "-E"
+                        "(mainshelltest|parttest|chmgeneratortest)"))))
+          (add-before 'check 'check-setup
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((share (string-append (assoc-ref outputs "out") "/share")))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (setenv "HOME" ".")
+                (setenv "XDG_DATA_DIRS"
+                        (string-append
+                         share ":" (getenv "XDG_DATA_DIRS")))
+                (invoke "update-desktop-database" "-v" share)))))))
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config))
+     (list extra-cmake-modules kdoctools pkg-config
+           ;; for test
+           desktop-file-utils))
     (inputs
      (list ebook-tools
            breeze-icons
@@ -1327,7 +1345,8 @@ creating routes by drag and drop and more.")
            qtwayland-5
            threadweaver
            kcrash
-           kjs))
+           kjs
+           qtx11extras))
     (home-page "https://apps.kde.org/okular/")
     (synopsis "Document viewer")
     (description
