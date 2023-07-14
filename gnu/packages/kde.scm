@@ -1072,14 +1072,14 @@ to perform data analysis.")
 (define-public kdf
   (package
     (name "kdf")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdf-" version ".tar.xz"))
               (sha256
                (base32
-                "0p7iqld2phc74pmhyb8bqqg9clnc7l2rh6hd0i6jcsp266cgg205"))))
+                "11ndcbfkq5fhb1lfij0mmm43fw49sh0z3nw644sll0smcwic76aa"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
