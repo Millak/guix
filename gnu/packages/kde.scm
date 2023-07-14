@@ -714,14 +714,14 @@ accessibility clients such as screen readers.")
 (define-public libkomparediff2
   (package
     (name "libkomparediff2")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/release-service/" version
                             "/src/libkomparediff2-" version ".tar.xz"))
         (sha256
-         (base32 "0hjxxhfv0ds05l821avq787sfdy0afr595xx266c20x8fxgm6kv9"))))
+         (base32 "1zkiyyrbfbr1i7zyhhayf53daaarzc8a2xz0iqjy9za7rawnmgbv"))))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
