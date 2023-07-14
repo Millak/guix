@@ -769,14 +769,14 @@ cards.")
 (define-public kopeninghours
   (package
     (name "kopeninghours")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03hslgx4zgg7gsnz2xhx4wnchvqfc5n8c6ihgwz3972fkxsjfdvq"))))
+                "14m4wl79b4qad42l1capz59pslfcrm25jshyhmcqzhqb0wzwkav9"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases '(modify-phases %standard-phases
