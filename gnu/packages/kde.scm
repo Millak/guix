@@ -516,7 +516,7 @@ the functionality of the KDE resource and network access abstractions.")
 (define-public kirigami-addons
   (package
     (name "kirigami-addons")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -525,7 +525,7 @@ the functionality of the KDE resource and network access abstractions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bi6sc1fpycxj1ydd08gkbw1x1pi2ab6p9bk4175hm0mb0rykdir"))))
+                "10h7aradnxiabhvqrcjvq4x20sfph7qm679l0n28nd5qbrl9pjln"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f)) ; failing test
