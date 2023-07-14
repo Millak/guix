@@ -1559,7 +1559,22 @@ organized in a hash table or B+ tree.")
            #~(list "--disable-static"
                    (string-append "--with-bash-headers="
                                   (search-input-directory %build-inputs
-                                                          "include/bash")))))
+                                                          "include/bash")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'symlink-bash-loadables
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion (string-append
+                                              (assoc-ref outputs "out")
+                                              "/lib")
+                     (mkdir "bash")
+                     (for-each
+                      (compose symlink
+                               (lambda (loadable)
+                                 (values
+                                  (string-append (getcwd) "/" loadable ".so")
+                                  (string-append "bash/" loadable))))
+                      '("readrec" "testrec"))))))))
     (native-inputs
      (list bc check-0.14 pkg-config))
     (inputs
@@ -4286,7 +4301,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "12.0.0")
+    (version "12.0.1")
     (source
      (origin
        (method git-fetch)
@@ -4296,7 +4311,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "057n3l9bpnfn8fqlqblkdz4w4rkmkr7zrh3adlgfw4nipwmm38zj"))))
+         "03flvb4xj6a7mfphx68ndrqr6g5jphmzb75m16fx7rnbzira2zpz"))))
     (build-system cmake-build-system)
     (arguments
      (list

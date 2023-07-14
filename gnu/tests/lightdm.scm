@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>.
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>.
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -142,10 +142,6 @@
             (test-assert "can connect to TCP port 5900 on IPv4"
               (wait-for-tcp-port 5900 marionette))
 
-            ;; The VNC server fails to listen to IPv6 due to "Error binding to
-            ;; address [::]:5900: Address already in use" (see:
-            ;; https://github.com/canonical/lightdm/issues/266).
-            (test-expect-fail 1)
             (test-assert "can connect to TCP port 5900 on IPv6"
               (wait-for-tcp-port 5900 marionette
                                  #:address

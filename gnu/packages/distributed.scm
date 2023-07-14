@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages distributed)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
@@ -45,7 +46,7 @@
 (define-public boinc-client
   (package
     (name "boinc-client")
-    (version "7.22.0")
+    (version "7.22.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -56,9 +57,12 @@
               (file-name (git-file-name "boinc" version))
               (sha256
                (base32
-                "0af7j6zg3saa5x7lfsg41p7j9r1d1dsdsz5b241p1f2yrhba0m81"))))
+                "06qlfrn9bxcdgs9b4j7l4mwikrkvfizccprip18rlzl3i34jys7l"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--disable-server")))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--disable-server")))
     (inputs (list openssl
                   curl
                   wxwidgets
@@ -84,11 +88,11 @@ resources).  It supports virtualized, parallel, and GPU-based applications.")
   ;; TODO: consolidate them?
   (package (inherit boinc-client)
     (name "boinc-server")
-    (arguments '(#:configure-flags '("--disable-client" "--disable-manager")
-                 #:parallel-build? #f))
-    (inputs `(("openssl" ,openssl)
-              ("curl" ,curl)
-              ("mariadb:dev" ,mariadb "dev")
-              ("zlib" ,zlib)))
-    (propagated-inputs `(("python" ,python-wrapper)
-                         ("perl" ,perl)))))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--disable-client"
+              "--disable-manager")
+      #:parallel-build? #f))
+    (inputs (list curl `(,mariadb "dev") openssl zlib))
+    (propagated-inputs (list perl python-wrapper))))

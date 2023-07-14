@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
@@ -48,6 +48,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
+  #:use-module (guix build-system r)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -71,6 +72,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
@@ -81,6 +83,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -92,6 +95,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages libusb)
@@ -119,15 +123,48 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public gmt
+  (package
+    (name "gmt")
+    (version "6.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/GenericMappingTools/gmt/"
+                           "releases/download/"
+                           version "/gmt-" version "-src.tar.xz"))
+       (sha256
+        (base32 "0wh694cwcw2dz5rsh6pdn9irx08d65iih0vbxz350vzrkkjzyvml"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #false)) ;tests need costline data and caches
+    (inputs
+     (list curl ffmpeg fftw gdal geos ghostscript netcdf openblas pcre2))
+    (native-inputs
+     (list graphicsmagick pkg-config))
+    (home-page "https://www.generic-mapping-tools.org/")
+    (synopsis "Generic mapping tools")
+    (description "GMT is a collection of about 100 command-line tools for
+manipulating geographic and Cartesian data sets (including filtering, trend
+fitting, gridding, projecting, etc.) and producing high-quality illustrations
+ranging from simple x-y plots via contour maps to artificially illuminated
+surfaces, 3D perspective views and animations.  The GMT supplements add
+another 50 more specialized and discipline-specific tools.  GMT supports over
+30 map projections and transformations and requires support data such as GSHHG
+coastlines, rivers, and political boundaries and optionally DCW country
+polygons.")
+    (license license:lgpl3+)))
 
 (define-public libaec
   (package
@@ -840,14 +877,14 @@ projections and coordinate transformations library.")
 (define-public python-fiona
   (package
     (name "python-fiona")
-    (version "1.8.20")
+    (version "1.9.4.post1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Fiona" version))
         (sha256
           (base32
-            "0fql7i7dg1xpbadmk8d26dwp91v7faixxc4wq14zg0kvhp9041d7"))))
+            "083120rqc4rrqzgmams0yjd8b1h4p5xm4n9fnxg064ymw3vx6yan"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -876,16 +913,13 @@ projections and coordinate transformations library.")
             python-click
             python-click-plugins
             python-cligj
-            python-munch
-            python-setuptools
-            python-six
-            python-pytz))
+            python-importlib-metadata
+            python-six))
     (native-inputs
       (list gdal ; for gdal-config
             python-boto3
             python-cython
-            python-pytest
-            python-pytest-cov))
+            python-pytest python-pytest-cov python-pytz))
     (home-page "https://github.com/Toblerity/Fiona")
     (synopsis
       "Fiona reads and writes spatial data files")
@@ -903,34 +937,27 @@ pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "0.10.2")
+    (version "0.13.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "1nvim2i47ap1zdwy6kxydskf1cir5g4ij8124wvmrqij0zklggzg"))))
-    (build-system python-build-system)
+            "0s59jjk02l1zajz95n1c7fr3fyj44wzxn569q2y7f34042f6vdg5"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"
-                       ; Disable tests that fail due to incompatibilities
-                       ; with our pandas version.
-                       "-k"
-                       (string-append
-                         "not test_getitem_invalid"
-                         " and not test_value_counts"
-                         " and not test_setitem_invalid"
-                         " and not test_insert_invalid")
-                       ; Disable tests that require internet access.
-                       "-m" "not web")))))))
+     (list
+       #:test-flags
+       '(list
+         ;; Test files are missing
+         "--ignore=geopandas/tests/test_overlay.py"
+         "--ignore=geopandas/io/tests/test_file.py"
+         ;; Disable tests that require internet access.
+         "-m" "not web")))
     (propagated-inputs
-      (list python-fiona python-pandas python-pyproj python-shapely))
+      (list python-fiona python-packaging python-pandas python-pyproj
+            python-shapely))
     (native-inputs
       (list python-pytest))
     (home-page "https://geopandas.org")
@@ -2119,6 +2146,34 @@ using the dataset of topographical information collected by
 @url{https://www.OpenStreetMap.org}.")
    (home-page "https://www.routino.org/")
    (license license:agpl3+)))
+
+(define-public r-rnaturalearthhires
+  (let ((commit "c3785a8c44738de6ae8f797080c0a337ebed929d")
+        (revision "1"))
+    (package
+      (name "r-rnaturalearthhires")
+      (version (git-version "0.2.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ropensci/rnaturalearthhires")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1fr0yb2fbr9zbk7gqr3rnzz2w4ijjpl6hlzdrh4n27lf0ip3h0cx"))))
+      (properties `((upstream-name . "rnaturalearthhires")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-sp))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/ropensci/rnaturalearthhires")
+      (synopsis
+       "High Resolution World Vector Map Data from Natural Earth used in rnaturalearth")
+      (description
+       "Facilitates mapping by making natural earth map data from http://
+www.naturalearthdata.com/ more easily available to R users.  Focuses on vector
+data.")
+      (license license:cc0))))
 
 (define-public qmapshack
   (package

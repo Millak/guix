@@ -21,16 +21,19 @@
 (define-module (gnu packages mastodon)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
@@ -44,29 +47,24 @@
 (define-public toot
   (package
     (name "toot")
-    (version "0.36.0")
+    (version "0.37.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "toot" version))
         (sha256
-         (base32 "1n79jwr3kpnc2xsr9isbgrj5as5i6zbkhxrdpdjfg87qbbjz7xca"))))
+         (base32 "0qx8hyb74r85dxf97k23w0f5rzkrs16mq7h3y37nwp6hl6gia0ci"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'adjust-test-suite
-           (lambda _
-             ;; This test contains integration tests meant to run against a test
-             ;; Mastodon instance.
-             (delete-file "tests/test_integration.py")))
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
                (add-installed-pythonpath inputs outputs)
                (invoke "py.test")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-psycopg2 python-pytest))
     (inputs
      (list python-beautifulsoup4 python-requests python-urwid
            python-wcwidth))
@@ -98,21 +96,33 @@ Features include:
         (base32 "1xhyz6wi17g4m76lr6qc75q4xnnw7c3dh3d04dg8m5gzk6j0y89x"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags (list "-Ddistro=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'glib-or-gtk-wrap 'symlink-package
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion
-               (string-append (assoc-ref outputs "out") "/bin")
-               (symlink "dev.geopjr.Tuba" "tuba")))))))
+      (list
+        #:glib-or-gtk? #t
+        #:configure-flags #~(list "-Ddistro=true")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'glib-or-gtk-wrap 'lib-vars-wrap
+              (lambda _
+                (let ((gstvar "GST_PLUGIN_SYSTEM_PATH")
+                      (pixvar "GDK_PIXBUF_MODULE_FILE"))
+                  (wrap-program (string-append #$output "/bin/dev.geopjr.Tuba")
+                    `(,gstvar ":" suffix (,(getenv gstvar)))
+                    `(,pixvar ":" = (,(getenv pixvar)))))))
+            (add-after 'lib-vars-wrap 'symlink-package
+              (lambda _
+                (with-directory-excursion (string-append #$output "/bin")
+                  (symlink "dev.geopjr.Tuba" "tuba")))))))
     (native-inputs
-     (list gettext-minimal
+     (list gdk-pixbuf ; so pixbuf loader cache (for webp) is generated
+           gettext-minimal
            `(,glib "bin") ; for glib-compile-resources
            pkg-config))
     (inputs
-     (list gtk
+     (list gst-plugins-bad
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
+           gtk
            gtksourceview
            json-glib
            libadwaita
@@ -121,7 +131,8 @@ Features include:
            libsecret
            libwebp
            libxml2
-           vala))
+           vala
+           webp-pixbuf-loader))
     (home-page "https://tuba.geopjr.dev/")
     (synopsis "GTK client for Mastodon")
     (description "Tuba is a GTK client for Mastodon.  It provides a clean,

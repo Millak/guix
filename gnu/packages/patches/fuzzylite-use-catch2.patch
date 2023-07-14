@@ -1,0 +1,184 @@
+Origin: https://salsa.debian.org/debian/fuzzylite/-/blob/debian/6.0+dfsg-6/debian/patches/fix-tests2.patch
+From: Ferdinand Thiessen <rpm@fthiessen.de>
+Date: Mon, 31 Jan 2022 16:06:19 GMT
+Subject: Replace Catch with Catch2 and require C++11 for tests
+Origin: vendor, https://github.com/fuzzylite/fuzzylite/issues/94
+Bug-Debian: http://bugs.debian.org/1017155
+
+--- a/fuzzylite/CMakeLists.txt
++++ b/fuzzylite/CMakeLists.txt
+@@ -194,7 +194,9 @@ if(FL_BUILD_BINARY)
+ endif(FL_BUILD_BINARY)
+ 
+ if(FL_BUILD_TESTS)
++    find_package(Catch2)
+     add_executable(fl-test ${fl-headers} ${fl-tests})
++    target_link_libraries(fl-test Catch2::Catch2)
+     set_target_properties(fl-test PROPERTIES OUTPUT_NAME fuzzylite-tests)
+     set_target_properties(fl-test PROPERTIES OUTPUT_NAME fuzzylite-tests IMPORT_PREFIX tmp-) #To prevent LNK1149 in Windows
+     set_target_properties(fl-test PROPERTIES DEBUG_POSTFIX -debug)
+--- a/fuzzylite/test/activation/ThresholdTest.cpp
++++ b/fuzzylite/test/activation/ThresholdTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/BenchmarkTest.cpp
++++ b/fuzzylite/test/BenchmarkTest.cpp
+@@ -16,7 +16,7 @@
+ 
+ #include "fl/Benchmark.h"
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ #include <vector>
+--- a/fuzzylite/test/hedge/HedgeFunctionTest.cpp
++++ b/fuzzylite/test/hedge/HedgeFunctionTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/imex/FldExporterTest.cpp
++++ b/fuzzylite/test/imex/FldExporterTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/imex/FllImporterTest.cpp
++++ b/fuzzylite/test/imex/FllImporterTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/imex/RScriptExporterTest.cpp
++++ b/fuzzylite/test/imex/RScriptExporterTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ #include <fstream>
+ 
+--- a/fuzzylite/test/MainTest.cpp
++++ b/fuzzylite/test/MainTest.cpp
+@@ -16,7 +16,7 @@
+  
+ #define CATCH_CONFIG_RUNNER
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ 
+ #include "fl/Headers.h"
+ 
+--- a/fuzzylite/test/norm/NormFunctionTest.cpp
++++ b/fuzzylite/test/norm/NormFunctionTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/QuickTest.cpp
++++ b/fuzzylite/test/QuickTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/term/AggregatedTest.cpp
++++ b/fuzzylite/test/term/AggregatedTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/term/DiscreteTest.cpp
++++ b/fuzzylite/test/term/DiscreteTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/term/FunctionTest.cpp
++++ b/fuzzylite/test/term/FunctionTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/term/TrapezoidTest.cpp
++++ b/fuzzylite/test/term/TrapezoidTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/term/TriangleTest.cpp
++++ b/fuzzylite/test/term/TriangleTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ namespace fl {
+--- a/fuzzylite/test/variable/VariableTest.cpp
++++ b/fuzzylite/test/variable/VariableTest.cpp
+@@ -14,7 +14,7 @@
+  fuzzylite is a registered trademark of FuzzyLite Limited.
+  */
+ 
+-#include "test/catch.hpp"
++#include "catch2/catch.hpp"
+ #include "fl/Headers.h"
+ 
+ #include <algorithm>    // std::random_shuffle

@@ -62,6 +62,7 @@
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
+;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,7 +112,6 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gawk)
-  #:use-module (gnu packages gettext)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -877,9 +877,9 @@ used on each workspace.  Xinerama is fully supported, allowing windows to be
 tiled on several screens.")
     (license license:bsd-3)))
 
-(define-public xmobar
+(define-public ghc-xmobar
   (package
-    (name "xmobar")
+    (name "ghc-xmobar")
     (version "0.46")
     (source (origin
               (method url-fetch)
@@ -896,17 +896,18 @@ tiled on several screens.")
            ghc-alsa-mixer
            ghc-dbus
            ghc-hinotify
-           ghc-http
+           ghc-http-client-tls
            ghc-http-conduit
            ghc-http-types
-           ghc-iwlib
            ghc-libmpd
            ghc-netlink
+           ghc-cereal
            ghc-old-locale
            ghc-parsec-numbers
            ghc-regex-compat
            ghc-temporary
            ghc-timezone-olson
+           ghc-timezone-series
            ghc-x11
            ghc-x11-xft
            ghc-cairo
@@ -914,18 +915,35 @@ tiled on several screens.")
            libxpm))
     (arguments
      `(#:configure-flags (list "--flags=all_extensions")
-       ;; Haddock documentation is for the library.
-       #:haddock? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'register 'remove-libraries
+         (add-after 'install 'remove-binaries
              (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib"))))
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/bin"))))
          (add-before 'build 'patch-test-shebang
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "test/Xmobar/Plugins/Monitors/AlsaSpec.hs"
                (("/bin/bash") (which "bash"))))))))
     (home-page "https://xmobar.org")
+    (synopsis "Haskell library for minimalistic text based status bars")
+    (description
+     "@code{ghc-xmobar} is the haskell library that @code{xmobar} is based on.
+It can be used to extend @code{xmobar} with other Haskell code.")
+    (license license:bsd-3)))
+
+(define-public xmobar
+  (package
+    (inherit ghc-xmobar)
+    (name "xmobar")
+    (inputs
+     (list ghc-xmobar
+           libxpm))
+    (arguments
+     `(#:configure-flags (list "--flags=all_extensions" "exe:xmobar")
+       ;; Haddock documentation is for the library.
+       #:haddock? #f
+       ;; Tests are for the library.
+       #:tests? #f))
     (synopsis "Minimalistic text based status bar")
     (description
      "@code{xmobar} is a lightweight, text-based, status bar written in
@@ -1687,6 +1705,29 @@ modules for building a Wayland compositor.")
     (description "Sway is a i3-compatible Wayland compositor.")
     (license license:expat)))
 
+(define-public swayfx
+  (package
+    (inherit sway)
+    (name "swayfx")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/WillPower3309/swayfx")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1550n9xnqbl1am4cwlnj8ip5cs7kgdzx96ga2hkcw29cpyian7rv"))))
+    (build-system meson-build-system)
+    (home-page "https://github.com/WillPower3309/swayfx")
+    (synopsis "Sway Fork with extra options and effects")
+    (description
+     "Fork of Sway, a Wayland compositor compatible with i3.  SwayFX
+adds extra options and effects to the original Sway, such as blur, rounded
+corners, shadows, inactive window dimming, etc.")
+    (license license:expat)))
+
 (define-public swayidle
   (package
     (name "swayidle")
@@ -1924,7 +1965,7 @@ core/thread.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.7.1")
+    (version "1.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1933,7 +1974,7 @@ core/thread.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
+                "05g1gp61qd9n9w4lq925i4wgryagvah6x489g17j7rnw59q4qhdi"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases

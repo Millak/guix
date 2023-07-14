@@ -29,7 +29,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
@@ -1344,7 +1344,7 @@ aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
     (name "aws-sdk-cpp")
     ; When updating also check for a tagged update to aws-crt-cpp from
     ; https://github.com/aws/aws-sdk-cpp/tree/main/crt
-    (version "1.9.236")
+    (version "1.9.306")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1353,7 +1353,7 @@ aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13qhxsbfn81r7lg382wb4d3xfc4a287ikww5i7whddk5yz0j8384"))))
+                "0k3f4xq4vvlwrwgpp0vka4pwzbnkylvrkbbkjksx6wq6g1a2gc2g"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests are run during the build phase.
@@ -2553,3 +2553,179 @@ Main features:
 @item No dependencies.
 @end itemize")
     (license license:expat)))
+
+(define-public mpark-variant
+  (package
+    (name "mpark-variant")
+    (version "1.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mpark/variant")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0gz8d5qprlfqb42cfyyc4nbwhgarhw027a9nr52h3gbdn560j0j4"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DMPARK_VARIANT_INCLUDE_TESTS=mpark")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-googletest
+            (lambda _
+              (substitute* "test/CMakeLists.txt"
+                (("add_subdirectory.*3rdparty/googletest.*\n")
+                 "find_package(GTest REQUIRED)\n")
+                ((".*3rdparty/googletest.*\n") "")
+                ((".*config_compiler_and_linker.*\n") "")
+                (("gtest_main") "gtest gtest_main")))))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/mpark/variant")
+    (synopsis "Implementation of std::variant for C++11/14/17")
+    (description
+     "MPark.Variant provides the C++17 std::variant for C++11/14/17.  It is
+based on the implementation of std::variant in libc++.")
+    (license license:boost1.0)))
+
+(define-public tsl-hopscotch-map
+  (package
+    (name "tsl-hopscotch-map")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Tessil/hopscotch-map")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "012pw37w000pdxdvps0wsqrw6597cm6i6kr5rpl303qmiwqicb2p"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (let ((file (open-file "CMakeLists.txt" "a")))
+                (display "\nenable_testing()\nadd_subdirectory(tests)" file)
+                (close-port file))
+              (substitute* "tests/CMakeLists.txt"
+                (("set\\(Boost_USE_STATIC_LIBS.*") "")
+                (("add_subdirectory\\(\\.\\..*")
+                 "add_test(tsl_hopscotch_map_tests tsl_hopscotch_map_tests)\n")))))))
+    (native-inputs (list boost))
+    (home-page "https://github.com/Tessil/hopscotch-map")
+    (synopsis "Hash maps and hash sets using hopscotch hashing")
+    (description "This package provides a C++ implementation of several hash
+map and a hash set variants using open addressing and hopscotch hashing to
+resolve collisions.  It is intended to be fast and provides additional
+features, such as heterogeneous lookups and different growth policies.")
+    (license license:expat)))
+
+(define-public tsl-sparse-map
+  (package
+    (name "tsl-sparse-map")
+    (version "0.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Tessil/sparse-map")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0rb7w0hzsj4qbm0dff1niaf75aag9lj0xqhgb3vg5h9hfic62ic2"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (let ((file (open-file "CMakeLists.txt" "a")))
+                (display "\nenable_testing()\nadd_subdirectory(tests)" file)
+                (close-port file))
+              (substitute* "tests/CMakeLists.txt"
+                (("set\\(Boost_USE_STATIC_LIBS.*") "")
+                (("add_subdirectory\\(\\.\\..*")
+                 "add_test(tsl_sparse_map_tests tsl_sparse_map_tests)\n")))))))
+    (native-inputs (list boost))
+    (home-page "https://github.com/Tessil/sparse-map")
+    (synopsis "Sparse hash map")
+    (description "This package provides a C++ implementation of a hash map and
+a hash set with open addressing and sparse quadratic probing.  It is intended
+to be memory efficient and provides additional features, such as heterogeneous
+lookups and different growth policies.")
+    (license license:expat)))
+
+(define-public tsl-ordered-map
+  (package
+    (name "tsl-ordered-map")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Tessil/ordered-map")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bz5zgabalb7z0j9scng4zmi95hy7iasry5gz15x6y6dsdz0qf3j"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (let ((file (open-file "CMakeLists.txt" "a")))
+                (display "\nenable_testing()\nadd_subdirectory(tests)" file)
+                (close-port file))
+              (substitute* "tests/CMakeLists.txt"
+                (("set\\(Boost_USE_STATIC_LIBS.*") "")
+                (("add_subdirectory\\(\\.\\..*")
+                 "add_test(tsl_ordered_map_tests tsl_ordered_map_tests)\n")))))))
+    (native-inputs (list boost))
+    (home-page "https://github.com/Tessil/ordered-map")
+    (synopsis "Order-preserving hash map and hash set")
+    (description "This package provides a C++ implementation of a hash map and
+a hash set which preserve the order of insertion.  It is intended for
+efficient ordered insertions and lookup, while sacrifing performance for
+ordered erase operations.")
+    (license license:expat)))
+
+(define-public tl-optional
+  (package
+    (name "tl-optional")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/TartanLlama/optional")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkjplmhilbi1iqxx3pz0grcx5355ymk6wwd4h4309mk156xgx2q"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-test
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("FetchContent_Declare.*") "")
+                ((".*http.*catchorg/Catch2.*") "")
+                (("FetchContent_MakeAvailable\\(Catch2\\)")
+                 "find_package(Catch2 REQUIRED)")))))))
+    (native-inputs (list catch2))
+    (home-page "https://github.com/TartanLlama/optional")
+    (synopsis "Implementation of std::optional with extensions for C++11/14/17")
+    (description "@code{tl::optional} provides a single-header implementation of
+the std::optional for C++11/14/17, with support for monadic operations added in
+C++23.")
+    (license license:cc0)))

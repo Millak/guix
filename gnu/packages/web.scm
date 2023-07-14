@@ -185,6 +185,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages skribilo)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -318,6 +319,60 @@ and its related documentation.")
                (sha256
                 (base32
                  "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1")))))))
+
+(define-public miniflux
+  (package
+    (name "miniflux")
+    (version "2.0.44")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/miniflux/v2")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18ggk71nk3zylgkwq32glggdcapgsj772qn2y4i9hbk374l6h61w"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:go go-1.19
+           #:install-source? #f
+           #:import-path "miniflux.app"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'rename-binary
+                 (lambda _
+                   (let ((bindir (string-append #$output "/bin/")))
+                     (rename-file (string-append bindir "miniflux.app")
+                                  (string-append bindir "miniflux"))))))))
+    (inputs
+     (list go-github-com-coreos-go-oidc
+           go-github-com-go-telegram-bot-api-telegram-bot-api
+           go-github-com-gorilla-mux
+           go-github-com-lib-pq
+           go-github-com-matrix-org-gomatrix
+           go-github-com-prometheus-client-golang
+           go-github-com-puerkitobio-goquery
+           go-github-com-rylans-getlang
+           go-github-com-tdewolff-minify-v2
+           go-github-com-yuin-goldmark
+           go-golang-org-x-term
+           go-mvdan-cc-xurls))
+    (home-page "https://miniflux.app/")
+    (synopsis "Minimalist and opinionated feed reader")
+    (description
+     "Miniflux is a minimalist and opinionated feed reader:
+
+@itemize
+@item Written in Go (Golang)
+@item Works only with Postgresql
+@item Doesn't use any ORM
+@item Doesn't use any complicated framework
+@item Use only modern vanilla Javascript (ES6 and Fetch API)
+@item Single binary compiled statically without dependency
+@item The number of features is voluntarily limited
+@end itemize\n")
+    (license license:asl2.0)))
 
 (define-public mod-wsgi
   (package
@@ -8794,6 +8849,139 @@ You can feed it URLs one at a time, or schedule regular imports.  It saves
 snapshots of the URLs you feed it in several formats.")
     (home-page "https://archivebox.io/")
     (license license:expat)))
+
+(define-public orcania
+  (package
+    (name "orcania")
+    (version "2.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/babelouest/orcania")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dhczbhwvf3f9mj38qm46j10rpr77yz1np68mabfw8zcfwhr0pn4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_ORCANIA_TESTING=ON"
+                                     "-DBUILD_ORCANIA_DOCUMENTATION=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'build 'build-doc
+                          (lambda _
+                            (invoke "make" "doc")))
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (let ((doc (string-append #$output
+                                                      "/share/doc/orcania")))
+                              (mkdir-p doc)
+                              (copy-recursively "../source/doc/html" doc)))))))
+    (native-inputs (list check doxygen subunit))
+    (home-page "https://babelouest.github.io/orcania/")
+    (synopsis "Collection of C functions for Ulfius")
+    (description
+     "Orcania is a library with functions that can be shared among C programs.
+It is intended to provide low-level functionalities for the Ulfius and Yder
+libraries.")
+    (license license:lgpl2.1)))
+
+(define-public yder
+  (package
+    (name "yder")
+    (version "1.4.19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/babelouest/yder")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02jgrqby39ykfdhc7z0bh3x5aqisqybz6lnvn7msh9wqbj5zvzi8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DWITH_JOURNALD=OFF"
+                                     "-DBUILD_YDER_TESTING=ON"
+                                     "-DBUILD_YDER_DOCUMENTATION=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'build 'build-doc
+                          (lambda _
+                            (invoke "make" "doc")))
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (let ((doc (string-append #$output
+                                                      "/share/doc/yder")))
+                              (mkdir-p doc)
+                              (copy-recursively "../source/doc/html" doc)))))))
+    (native-inputs (list check doxygen subunit))
+    (inputs (list orcania))
+    (home-page "https://babelouest.github.io/yder/")
+    (synopsis "Logging library for C applications")
+    (description
+     "Yder is a logging library written in C.  It can log messages to the
+console, a file, syslog, journald, or a callback function.")
+    (license license:lgpl2.1)))
+
+(define-public ulfius
+  (package
+    (name "ulfius")
+    (version "2.7.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/babelouest/ulfius")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dfwdpqmqki63dddi53bfv6jd0kzv8gh2w1lxsv6mzk3sxl6qakf"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_ULFIUS_TESTING=ON"
+                                     "-DBUILD_ULFIUS_DOCUMENTATION=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'build 'build-doc
+                          (lambda _
+                            (invoke "make" "doc")))
+                        (replace 'check
+                          (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                            (when tests?
+                              (let ((job-count (number->string
+                                                (or (and parallel-tests?
+                                                         (parallel-job-count))
+                                                    1))))
+                                ;; Skip failing tests that try to start a server.
+                                (invoke "ctest" "--output-on-failure"
+                                        "-j" job-count "-E"
+                                        "(core|framework|example_callbacks)")))))
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (let ((doc (string-append #$output
+                                                      "/share/doc/ulfius")))
+                              (mkdir-p doc)
+                              (copy-recursively "../source/doc/html" doc)))))))
+    (native-inputs (list check doxygen subunit))
+    (inputs (list zlib))
+    (propagated-inputs ;for libulfius.pc
+     (list curl
+           gnutls
+           jansson
+           libgcrypt
+           libmicrohttpd
+           orcania
+           yder))
+    (home-page "https://babelouest.github.io/ulfius/")
+    (synopsis "HTTP Framework for REST Applications in C")
+    (description
+     "Ulfius is a HTTP Framework library for REST Applications written in C.
+It is based on GNU libmicrohttpd for the backend web server, Jansson for the
+JSON manipulation library, and libcurl for the http/smtp client API.  It can
+be used to facilitate creation of web applications in C programs with a small
+memory footprint, as in embedded systems applications.  It can create
+webservices in HTTP or HTTPS mode, stream data, or implement server
+websockets.")
+    (license license:lgpl2.1)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

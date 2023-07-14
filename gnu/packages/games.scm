@@ -42,7 +42,7 @@
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019 Dan Frumin <dfrumin@cs.ru.nl>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2019 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
@@ -70,7 +70,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022, 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
-;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022, 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
@@ -155,6 +155,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
+  #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
@@ -202,6 +203,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages squirrel)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -223,6 +225,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
@@ -3642,6 +3645,37 @@ exec ~a/bin/freedink -refdir ~a/share/dink\n"
               ("data" ,freedink-data)
               ("bash" ,bash)))
     (native-inputs '())))
+
+(define-public fuzzylite
+  (package
+    (name "fuzzylite")
+    (version "6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fuzzylite/fuzzylite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yay0qc81x0irlvxqpy7jywjxpkmpjabdhq2hdh28r9z85wp2nwb"))
+              (patches (search-patches "fuzzylite-use-catch2.patch"
+                                       "fuzzylite-soften-float-equality.patch"
+                                       "fuzzylite-relative-path-in-tests.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'configure 'switch-to-fuzzylite-dir
+                    (lambda _
+                      (chdir "fuzzylite"))))))
+    (native-inputs (list catch2))
+    (home-page "https://www.fuzzylite.com/")
+    (synopsis "Fuzzy logic control binary")
+    (description
+     "This package provides fuzzylite, a fuzzy logic control library which
+allows one to easily create fuzzy logic controllers in a few steps utilizing
+object-oriented programming.")
+    (license license:gpl3)))
 
 (define-public xboard
   (package
@@ -10294,7 +10328,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
 (define-public q5go
   (package
    (name "q5go")
-   (version "1.0")
+   (version "2.1.3")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -10303,10 +10337,10 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1gdlfqcqkqv7vph3qwq78d0qz6dhmdsranxq9bmixiisbzkqby31"))))
+              "0x8x7mp61g3lwabx9z4vsyd743kfqibnqhym7xd0b7811flca3ri"))))
    (build-system gnu-build-system)
    (native-inputs
-    (list pkg-config))
+    (list autoconf automake pkg-config))
    (inputs
     (list qtbase-5 qtmultimedia-5 qtsvg-5))
    (arguments
@@ -10315,32 +10349,34 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
         (add-after 'unpack 'fix-configure-script
           (lambda _
             ;; Bypass the unavailable qtchooser program.
-            (substitute* "configure"
+            (for-each delete-file
+                      '("configure"
+                        "Makefile.in"
+                        "src/Makefile.in"
+                        "src/translations/Makefile.in"))
+            (substitute* "configure.ac"
+              (("AC_PATH_PROG\\(qtchooser, .*\\)")
+               "")
               (("test -z \"QTCHOOSER\"")
                "false")
-              (("qtchooser -run-tool=(.*) -qt=qt5" _ command)
-               command))
-            #t))
-        (add-after 'unpack 'fix-header
-          (lambda _
-            (substitute* "src/bitarray.h"
-              (("#include <cstring>" all)
-               (string-append all "\n#include <stdexcept>")))))
+              (("\\$\\(qtchooser -list-versions\\)")
+               "qt5")
+              (("qtchooser -run-tool=(.*) -qt=\\$QT5_NAME" _ command)
+               command))))
         (add-after 'unpack 'fix-paths
-          (lambda _
-            (substitute* '("src/pics/Makefile.in"
-                           "src/translations/Makefile.in")
-              (("\\$\\(datadir\\)/qGo/")
-               "$(datadir)/q5go/"))
-            #t))
+          (lambda* (#:key outputs #:allow-other-keys)
+            (substitute* '("src/setting.cpp")
+              (("/usr/share/\" PACKAGE \"/translations")
+               (string-append (assoc-ref outputs "out")
+                              "/share/qGo/translations")))))
         (add-after 'install 'install-desktop-file
           (lambda* (#:key outputs #:allow-other-keys)
             (let* ((out (assoc-ref outputs "out"))
                    (apps (string-append out "/share/applications"))
-                   (pics (string-append out "/share/q5go/pics")))
+                   (images (string-append out "/share/qGo/images")))
               (delete-file-recursively (string-append out "/share/applnk"))
               (delete-file-recursively (string-append out "/share/mimelnk"))
-              (install-file "../source/src/pics/Bowl.ico" pics)
+              (install-file "../source/src/images/Bowl.ico" images)
               (mkdir-p apps)
               (with-output-to-file (string-append apps "/q5go.desktop")
                 (lambda _
@@ -10360,8 +10396,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
                            Comment[zh]=围棋~@
                            Terminal=false~@
                            Type=Application~%"
-                          out pics))))
-             #t)))))
+                          out images)))))))))
    (synopsis "Qt GUI to play the game of Go")
    (description
     "This a tool for Go players which performs the following functions:
@@ -11273,6 +11308,54 @@ Magic II (aka HOMM2) game engine.  It requires assets and game resources to
 play; it will look for them at @file{~/.local/share/fheroes2} folder.")
     (license license:gpl2)))
 
+(define-public vcmi
+  (package
+    (name "vcmi")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vcmi/vcmi")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f3fk1fc2wb7f2j4pxz89dzr8zjnrdh435mijia483a3bq59w7pk"))
+              (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF")
+           ;; Test suites do not seem well supported upstream and are disabled by default.
+           ;; Pass -DENABLE_TEST to configure to enable.
+           #:tests? #f))
+    (native-inputs
+     (list boost
+           ffmpeg
+           fuzzylite
+           ;; googletest ; needed for tests, but tests are disabled
+           libxkbcommon
+           luajit
+           minizip
+           pkg-config
+           python
+           ;; XXX: Build currently fails with qtbase-6 and qttools-6
+           qtbase-5
+           qttools-5
+           sdl2
+           sdl2-mixer
+           sdl2-image
+           sdl2-ttf
+           tbb
+           vulkan-headers
+           zlib))
+    (home-page "https://vcmi.eu/")
+    (synopsis "Turn-based strategy game engine")
+    (description
+     "@code{vcmi} is an implementation of the Heroes of Might and
+Magic III game engine.  It requires assets and game resources to
+play; it will look for them at @file{~/.local/share/vcmi} folder.")
+    (license license:gpl2)))
+
 (define-public apricots
   (package
     (name "apricots")
@@ -11338,6 +11421,45 @@ liquid and you have to try and eat your opponents.  Rules are very simple yet
 original, they have been invented by Thomas Colcombet.")
     (home-page "https://www.gnu.org/software/liquidwar6/")
     (license license:gpl3+)))
+
+(define-public plunder
+  (let ((commit "026ded7083df5134bdf05b1ec7e5a0099ac9b9d2")
+        (revision "1"))
+    (package
+      (name "plunder")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jappeace/plunder")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0m0v8x6q9iq4zihwmysbxjwkq18nar6xhq4g18p2g8c6azj2mgd6"))))
+      (build-system haskell-build-system)
+      (inputs (list ghc-monadrandom
+                    ghc-quickcheck
+                    ghc-file-embed
+                    ghc-generic-lens
+                    ghc-lens
+                    ghc-random
+                    ghc-reflex
+                    ghc-reflex-sdl2
+                    ghc-sdl2
+                    ghc-sdl2-gfx
+                    ghc-sdl2-image
+                    ghc-sdl2-ttf
+                    ghc-vector
+                    ghc-witherable))
+      (native-inputs (list ghc-hspec ghc-hspec-core hspec-discover))
+      (home-page "https://github.com/jappeace/plunder")
+      (synopsis "Game about looting a hexagonal-tile world")
+      (description
+       "This package provides a work-in-progress game where you control a
+Viking and your objective is to loot all of the occupied hexagonal tiles in
+the map.")
+      (license license:expat))))
 
 (define-public freerct
   (package

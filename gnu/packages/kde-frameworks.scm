@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2023 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -2691,6 +2691,7 @@ consumption.")
                 (setenv "QT_QPA_PLATFORM" "offscreen")
                 (setenv "DBUS_FATAL_WARNINGS" "0")
                 (invoke "dbus-launch" "ctest"
+                        "--rerun-failed" "--output-on-failure"
                         "-E"
                         ;; The following tests fail or are flaky (see:
                         ;; https://bugs.kde.org/show_bug.cgi?id=440721).
@@ -2703,6 +2704,7 @@ consumption.")
                                        "|kiocore-krecentdocumenttest"
                                        "|kiocore-http_jobtest"
                                        "|kiogui-openurljobtest"
+                                       "|kioslave-httpheaderdispositiontest"
                                        "|applicationlauncherjob_forkingtest"
                                        "|applicationlauncherjob_scopetest"
                                        "|applicationlauncherjob_servicetest"

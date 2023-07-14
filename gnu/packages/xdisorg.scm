@@ -55,7 +55,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
-;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
@@ -129,6 +129,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -1271,64 +1272,40 @@ compact configuration syntax.")
 (define-public rxvt-unicode
   (package
     (name "rxvt-unicode")
-    (version "9.30")
+    (version "9.31")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dist.schmorp.de/rxvt-unicode/Attic/"
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0badnkjsn3zps24r5iggj8k5v4f00npc77wqg92pcn1q5z8r677y"))))
+                "1s3jcvac40zzp03fvmhjsdpsjx0gb1wk54qz74zhzzj9q75kz8da"))))
     (build-system gnu-build-system)
     (arguments
      ;; This sets the destination when installing the necessary terminal
      ;; capability data, which are not provided by 'ncurses'.  See
      ;; https://lists.gnu.org/archive/html/bug-ncurses/2009-10/msg00031.html
-     `(#:configure-flags (list "--enable-256-color")
-       #:make-flags (list (string-append "TERMINFO="
-                                         (assoc-ref %outputs "out")
-                                         "/share/terminfo"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-desktop-urxvt
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((output (assoc-ref outputs "out"))
-                    (desktop (string-append output "/share/applications")))
-               (mkdir-p desktop)
-               (with-output-to-file
-                   (string-append desktop "/urxvt.desktop")
+     (list #:configure-flags #~(list "--enable-256-color")
+           #:make-flags #~(list (string-append "TERMINFO=" #$output "/share/terminfo"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-desktop-entries
                  (lambda _
-                   (format #t
-                           "[Desktop Entry]~@
-                           Name=rxvt-unicode~@
-                           Comment=~@
-                           Exec=~a/bin/urxvt~@
-                           TryExec=~@*~a/bin/urxvt~@
-                           Icon=~@
-                           Type=Application~%"
-                           output))))))
-         (add-after 'install 'install-desktop-urxvtc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((output (assoc-ref outputs "out"))
-                    (desktop (string-append output "/share/applications")))
-               (mkdir-p desktop)
-               (with-output-to-file
-                   (string-append desktop "/urxvtc.desktop")
-                 (lambda _
-                   (format #t
-                           "[Desktop Entry]~@
-                           Name=rxvt-unicode (client)~@
-                           Comment=Rxvt clone with XFT and unicode support~@
-                           Exec=~a/bin/urxvtc~@
-                           TryExec=~@*~a/bin/urxvtc~@
-                           Icon=~@
-                           Type=Application~%"
-                           output)))))))))
+                   (for-each (lambda (exec name)
+                               (make-desktop-entry-file
+                                (string-append #$output "/share/applications/"
+                                               exec ".desktop")
+                                #:type "Application"
+                                #:name name
+                                #:comment '((#f #$(package-synopsis this-package)))
+                                #:exec exec
+                                #:try-exec exec
+                                #:icon "utilities-terminal"
+                                #:categories '("System" "TerminalEmulator")))
+                             '("urxvt" "urxvtc")
+                             '("rxvt-unicode" "rxvt-unicode (client)")))))))
     (inputs
-     `(("libptytty" ,libptytty)
-       ("libXft" ,libxft)
-       ("libX11" ,libx11)
-       ("libXt" ,libxt)))
+     (list libptytty libxft libx11 libxt libxext))
     (native-inputs
      (list ncurses ;trigger the installation of terminfo data
            perl pkg-config))
@@ -2993,6 +2970,7 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
               (uri (git-reference
                     (url (string-append "https://github.com/yory8/" name "/"))
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256 (base32
                         "0b9kvj0dif4221dy6c1npknhhjxvbc4kygzhwxjirpwjws0yv6v9"))))
     (build-system go-build-system)
@@ -3098,7 +3076,7 @@ using @command{dmenu}.")
 (define-public fuzzel
   (package
     (name "fuzzel")
-    (version "1.8.2")
+    (version "1.9.1")
     (home-page "https://codeberg.org/dnkl/fuzzel")
     (source (origin
               (method git-fetch)
@@ -3106,7 +3084,7 @@ using @command{dmenu}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d6xy4q5s8p5ckvd9wy3zzj9gh7nh9v1qhn3938b1wfhfzjdzrg6"))))
+                "0k65nl2yifxnb95nv6nnikqxdanng2baw7gl47ji1av3gsdx3bsm"))))
     (build-system meson-build-system)
     (arguments
      (list #:build-type "release"
@@ -3530,3 +3508,34 @@ on the screen and which then writes out the necessary C code for it.")
                          (append mesa)))
     (synopsis
      "GUI toolkit for X based on the X11 Xlib library, with OpenGL support")))
+
+(define-public show-me-the-key
+  (package
+    (name "show-me-the-key")
+    (version "1.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/AlynxZhou/showmethekey/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "1gvrri6kfywxk8hfchc66r6fpwlrcai2j227ib33w6503cx66rl9"))))
+    (build-system meson-build-system)
+    (inputs (list libevdev
+                  libinput
+                  gtk
+                  json-glib-minimal
+                  cairo
+                  pango
+                  libxkbcommon
+                  polkit))
+    (native-inputs (list `(,glib "bin") ; for glib-compile-resources
+                         `(,gtk  "bin") ; for gtk-update-icon-cache
+                         pkg-config))
+    (home-page "https://github.com/AlynxZhou/showmethekey")
+    (synopsis "Screencast tool to display pressed keys")
+    (description "Show Me the Key is a screencast tool to display your keys
+and works under both Xorg and Wayland (via @code{libinput}), inspired by
+@code{python-screenkey}.")
+    (license license:asl2.0)))

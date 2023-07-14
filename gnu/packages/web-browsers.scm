@@ -274,7 +274,7 @@ and the GTK+ toolkit.")
 (define-public lynx
   (package
     (name "lynx")
-    (version "2.9.0dev.9")
+    (version "2.9.0dev.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -282,7 +282,7 @@ and the GTK+ toolkit.")
                     "/lynx" version ".tar.bz2"))
               (sha256
                (base32
-                "06jhv8ibfw1xkf8d8zrnkc2aw4d462s77hlp6f6xa6k8awzxvmkg"))))
+                "1rg8dqafq8ray37s0w855mahq7ywfb4qa4h5q676sxq0klamnid6"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config perl))
     (inputs (list ncurses
@@ -294,41 +294,40 @@ and the GTK+ toolkit.")
                   gzip
                   bzip2))
     (arguments
-     `(#:configure-flags
-       (let ((openssl (assoc-ref %build-inputs "openssl")))
-         `("--with-pkg-config"
-           "--with-screen=ncurses"
-           "--with-zlib"
-           "--with-bzlib"
-           ,(string-append "--with-ssl=" openssl)
-           ;; "--with-socks5"    ; XXX TODO
-           "--enable-widec"
-           "--enable-ascii-ctypes"
-           "--enable-local-docs"
-           "--enable-htmlized-cfg"
-           "--enable-gzip-help"
-           "--enable-nls"
-           "--enable-ipv6"))
-       #:tests? #f  ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-makefile-shell
-           (lambda _ (substitute* "po/makefile.inn"
-                       (("/bin/sh") (which "sh")))
-                     #t))
-         (replace 'install
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "install-full" make-flags)
-             #t)))))
+     (list #:configure-flags
+           #~(let ((openssl #$(this-package-input "openssl")))
+               (list "--with-pkg-config"
+                     "--with-screen=ncurses"
+                     "--with-zlib"
+                     "--with-bzlib"
+                     (string-append "--with-ssl=" openssl)
+                     ;; "--with-socks5"    ; XXX TODO
+                     "--enable-widec"
+                     "--enable-ascii-ctypes"
+                     "--enable-local-docs"
+                     "--enable-htmlized-cfg"
+                     "--enable-gzip-help"
+                     "--enable-nls"
+                     "--enable-ipv6"))
+           #:tests? #f                  ; no check target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-makefile-shell
+                 (lambda _ (substitute* "po/makefile.inn"
+                        (("/bin/sh") (which "sh")))))
+               (replace 'install
+                 (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                   (apply invoke "make" "install-full" make-flags))))))
     (synopsis "Text Web Browser")
     (description
-     "Lynx is a fully-featured World Wide Web (WWW) client for users running
-cursor-addressable, character-cell display devices.  It will display Hypertext
-Markup Language (HTML) documents containing links to files on the local
-system, as well as files on remote systems running http, gopher, ftp, wais,
-nntp, finger, or cso/ph/qi servers.  Lynx can be used to access information on
-the WWW, or to build information systems intended primarily for local
-access.")
+     "Lynx is a fully-featured @acronym{WWW, World Wide Web} client for users
+of cursor-addressable, character-cell display devices.  It will display
+@acronym{HTML, Hypertext Markup Language} documents containing links to files
+on the local system, as well as files on remote systems running http, gopher,
+ftp, wais, nntp, finger, or cso/ph/qi servers.
+
+Lynx can be used to access information on the WWW, or to build information
+systems intended primarily for local access.")
     (home-page "https://lynx.invisible-island.net/")
     ;; This was fixed in 2.8.9dev.10.
     (properties `((lint-hidden-cve . ("CVE-2016-9179"))))
@@ -587,7 +586,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "3.2.0")
+    (version "3.4.0")
     (source
      (origin
        (method git-fetch)
@@ -596,7 +595,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "0igvj5v2k96kmbybx4lm3v26iylw114lvp0h5wx7kjfq03m50ffp"))
+         "0k1vk3qj9sc3wa0yhx1ih8xq9864dd34hfk622zdmyx2f8q81qd3"))
        (file-name (git-file-name "nyxt" version))
        (modules '((guix build utils)))
        (snippet

@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages xml)
@@ -160,3 +162,26 @@ desktop.")
 on Flathub or another third-party website providing a Flatpak app for
 download.")
     (license license:gpl3+)))
+
+(define-public pantheon-wallpapers
+  (package
+    (name "pantheon-wallpapers")
+    (version "7.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/elementary/wallpapers/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "0km3h52kapbm8ymwxdxasz80qbgzkfni7981pdyf740wjp7linwb"))))
+    (build-system meson-build-system)
+    (native-inputs (list gettext-minimal))  ; for msgfmt
+    (inputs (list libexif))
+    (synopsis "Wallpapers for the Pantheon desktop")
+    (description "This package provides wallpapers for the Pantheon desktop.")
+    (home-page "https://github.com/elementary/wallpapers")
+    (license (list license:cc-by-sa4.0
+                   license:cc0
+                   (license:non-copyleft "https://unsplash.com/license")
+                   (license:non-copyleft "https://www.pexels.com/license/")))))

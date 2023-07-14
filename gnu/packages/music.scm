@@ -207,50 +207,50 @@
 (define-public audacious
   (package
     (name "audacious")
-    (version "4.3")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://distfiles.audacious-media-player.org/"
                            "audacious-" version ".tar.bz2"))
        (sha256
-        (base32 "14chrsh1dacw5r2qpzw0rhg2lchpbya90y96r6w0vry78p44sn17"))))
+        (base32 "0hi0njnw3q7kngmjk837ynagighrbz8a4wpf8bim2nsh85lf5sc5"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
-             "--disable-gtk")
-       #:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'unpack-plugins
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((plugins (assoc-ref inputs "audacious-plugins")))
-               (invoke "tar" "xvf" plugins))))
-         (add-after 'unpack-plugins 'configure-plugins
-           (lambda* (#:key configure-flags outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion
-                   (string-append "audacious-plugins-" ,version)
-                 (substitute* "configure"
-                   (("/bin/sh") (which "sh")))
-                 (apply invoke "./configure"
-                        (append configure-flags
-                                ;; audacious-plugins requires audacious to build.
-                                (list (string-append "PKG_CONFIG_PATH="
-                                                     out "/lib/pkgconfig:"
-                                                     (getenv "PKG_CONFIG_PATH"))
-                                      (string-append "--prefix=" out))))))))
-         (add-after 'configure-plugins 'build-plugins
-           (lambda _
-             (with-directory-excursion
-                 (string-append "audacious-plugins-" ,version)
-               (invoke "make" "-j" (number->string (parallel-job-count))))))
-         (add-after 'build-plugins 'install-plugins
-           (lambda _
-             (with-directory-excursion
-                 (string-append "audacious-plugins-" ,version)
-               (invoke "make" "install")))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              "--disable-gtk")
+      #:tests? #f                       ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'unpack-plugins
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "tar" "xvf"
+                      #$(this-package-native-input "audacious-plugins"))))
+          (add-after 'unpack-plugins 'configure-plugins
+            (lambda* (#:key configure-flags outputs #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append "audacious-plugins-" #$version)
+                (substitute* "configure"
+                  (("/bin/sh") (which "sh")))
+                (apply invoke "./configure"
+                       (append configure-flags
+                               ;; audacious-plugins requires audacious to build.
+                               (list (string-append "PKG_CONFIG_PATH="
+                                                    #$output "/lib/pkgconfig:"
+                                                    (getenv "PKG_CONFIG_PATH"))
+                                     (string-append "--prefix=" #$output)))))))
+          (add-after 'configure-plugins 'build-plugins
+            (lambda _
+              (with-directory-excursion
+                  (string-append "audacious-plugins-" #$version)
+                (invoke "make" "-j" (number->string (parallel-job-count))))))
+          (add-after 'build-plugins 'install-plugins
+            (lambda _
+              (with-directory-excursion
+                  (string-append "audacious-plugins-" #$version)
+                (invoke "make" "install")))))))
     (native-inputs
      `(("audacious-plugins"
         ,(origin
@@ -258,7 +258,7 @@
            (uri (string-append "https://distfiles.audacious-media-player.org/"
                                "audacious-plugins-" version ".tar.bz2"))
            (sha256
-            (base32 "1ilzz2fv0mirlfhzhrcbccv996slj65z1ifibzrx0w5xqk4gcbk6"))))
+            (base32 "19n8zpayakszm00bakfzagbbqci95dxv4h7j9ml2sfjqmzijdsid"))))
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for gdbus-codegen
        ("pkg-config" ,pkg-config)))
@@ -7048,14 +7048,14 @@ midi devices to JACK midi devices.")
 (define-public opustags
   (package
     (name "opustags")
-    (version "1.6.0")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/fmang/opustags")
                     (commit version)))
               (sha256
-               (base32 "1wsfw713rhi2gg5xc04cx5i31hlw0l3wdflj3r1y8w45bdk6ag1z"))
+               (base32 "1f1bj0ng89plivdwpjc8qkfy8nn1kw5gqnbc74scigz7mw9z443i"))
               (file-name (git-file-name name version))))
     (arguments
      (list
@@ -7073,9 +7073,14 @@ midi devices to JACK midi devices.")
                     (perl-exporter-tiny-lib
                       (string-append #$(this-package-native-input "perl-exporter-tiny")
                                      "/lib/perl5/site_perl/"
+                                     #$(package-version perl)))
+                    (perl-test-deep-lib
+                      (string-append #$(this-package-native-input "perl-test-deep")
+                                     "/lib/perl5/site_perl/"
                                      #$(package-version perl))))
                (setenv "PERL5LIB" (string-append perl-list-moreutils-lib ":"
-                                                 perl-exporter-tiny-lib))))))))
+                                                 perl-exporter-tiny-lib ":"
+                                                 perl-test-deep-lib))))))))
     (build-system cmake-build-system)
     (inputs
       (list libogg))
@@ -7084,6 +7089,7 @@ midi devices to JACK midi devices.")
             ffmpeg
             perl-exporter-tiny
             perl-list-moreutils
+            perl-test-deep
             perl-test-harness))
     (synopsis "Ogg Opus tags editor")
     (description "@code{opustags} is an Ogg Opus tag editor.  It reads and edits
@@ -7323,6 +7329,82 @@ interconnected small sections called blocks which are connected into a network
 by similarity.  It processes a target sample, chopping it up into blocks in
 the same way, and tries to match each block with one in its brain to play in
 realtime.")
+    (license license:gpl2+)))
+
+(define-public le-biniou-data
+  (package
+    (name "le-biniou-data")
+    (version "3.66.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/lebiniou/lebiniou-data")
+                    (commit (string-append "version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1s8dax6ryfqz7aqq8rj5ipxddshp5mjdvj0mn9kk1zzr55hvkfb7"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (home-page "https://biniou.net/")
+    (synopsis "Data files for use with Le Biniou")
+    (description
+     "This package contains data files for use with Le Biniou.")
+    (license license:gpl2+)))
+
+(define-public le-biniou
+  (package
+    (name "le-biniou")
+    (version "3.66.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/lebiniou/lebiniou")
+                    (commit (string-append "version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fvf944i703yd17kkxgja2xyyznb30p006piclz1rmgkhijp0lcp"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list (string-append "LDFLAGS=-Wl,-rpath="
+                                                    #$output "/lib")
+                                     (string-append
+                                      "LEBINIOU_DATADIR="
+                                      #$(this-package-input "le-biniou-data")))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch
+                          (lambda _
+                            (substitute* "src/bulfius_vui.c"
+                              (("xdg-open")
+                               (string-append
+                                #$(this-package-input "xdg-utils")
+                                "/bin/xdg-open"))))))))
+    (native-inputs (list autoconf
+                         automake
+                         libtool
+                         perl ;for pod2man
+                         pkg-config))
+    (inputs (list alsa-lib
+                  curl
+                  ffmpeg
+                  fftw
+                  glib
+                  imagemagick
+                  jack-1
+                  jansson
+                  le-biniou-data
+                  libcaca
+                  libsndfile
+                  pulseaudio
+                  sdl2
+                  ulfius
+                  xdg-utils))
+    (home-page "https://biniou.net/")
+    (synopsis "Audio visualization and VJing tool")
+    (description
+     "Le Biniou is a music visualization & VJing tool.  It creates live
+visuals based on audio performances or existing tracks.")
     (license license:gpl2+)))
 
 ;;;

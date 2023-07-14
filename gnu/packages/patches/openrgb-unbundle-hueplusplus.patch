@@ -1,10 +1,10 @@
 Remove references to hueplusplus in order to unbundle and use the input package.
 
 diff --git a/OpenRGB.pro b/OpenRGB.pro
-index 61758892..8702d998 100644
+index 556be3bc..41e704aa 100644
 --- a/OpenRGB.pro
 +++ b/OpenRGB.pro
-@@ -493,35 +493,6 @@ SOURCES +=
+@@ -783,35 +783,6 @@ SOURCES +=
      dependencies/Swatches/swatches.cpp                                                          \
      dependencies/dmiinfo.cpp                                                                    \
      dependencies/ColorWheel/ColorWheel.cpp                                                      \
@@ -40,15 +40,15 @@ index 61758892..8702d998 100644
      dependencies/libe131/src/e131.c                                                             \
      dependencies/libcmmk/src/libcmmk.c                                                          \
      main.cpp                                                                                    \
-@@ -1188,6 +1159,7 @@ unix:!macx {
-     -lmbedx509                                                                                  \
+@@ -1789,6 +1760,7 @@ contains(QMAKE_PLATFORM, linux) {
      -lmbedtls                                                                                   \
      -lmbedcrypto                                                                                \
+     -ldl                                                                                        \
 +    -lhueplusplusshared                                                                         \
  
      COMPILER_VERSION = $$system($$QMAKE_CXX " -dumpversion")
      if (!versionAtLeast(COMPILER_VERSION, "9")) {
-@@ -1218,7 +1190,6 @@ unix:!macx {
+@@ -1821,7 +1793,6 @@ contains(QMAKE_PLATFORM, linux) {
      }
  
      SOURCES +=                                                                                  \

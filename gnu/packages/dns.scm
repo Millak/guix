@@ -510,41 +510,6 @@ the two.")
                    license:gpl2
                    license:gpl3))))
 
-(define-public libasr
-  (package
-    (name "libasr")
-    (version "1.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.opensmtpd.org/archives/"
-                           "libasr-" version ".tar.gz"))
-       (sha256
-        (base32 "1d6s8njqhvayx2gp47409sp1fn8m608ws26hr1srfp6i23nnpyqr"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "src/asr_run.3"
-                             (string-append out "/share/man/man3"))
-               #t))))))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (home-page "https://www.opensmtpd.org")
-    (synopsis "Asynchronous resolver library by the OpenBSD project")
-    (description
-     "libasr is a free, simple and portable asynchronous resolver library.
-It runs DNS queries and performs hostname resolution in a fully
-asynchronous fashion.")
-    (license (list license:isc
-                   license:bsd-2 ; last part of getrrsetbyname_async.c
-                   license:bsd-3
-                   (license:non-copyleft "file://LICENSE") ; includes.h
-                   license:openssl))))
-
 (define-public nsd
   (package
     (name "nsd")
@@ -875,7 +840,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.2.5")
+    (version "3.2.7")
     (source
      (origin
        (method git-fetch)
@@ -884,7 +849,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xhr6i5qq0yhxqj50hsm51lb1v5lj4vfkzdcsvh7lw8wg6j1d03b"))
+        (base32 "1zrx5ih8wy0l9dka7ql9v32z6z8bxcdsfs1zmjn052xrzb01qjkw"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1242,10 +1207,10 @@ local networks.")
   ;; so its contents will change over time.  If you update this commit, please
   ;; make sure that the new commit refers to a list which is identical to the
   ;; officially published list available from the URL above.
-  (let ((commit "9375b697baddb0827a5995c81bd3c75877a0b35d"))
+  (let ((commit "d2d3e2e36a8f2b68c4f09e8c87f4f1d685cbf5e7"))
     (package
       (name "public-suffix-list")
-      (version (git-version "0" "1" commit))
+      (version (git-version "0" "2" commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1254,26 +1219,17 @@ local networks.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1sm7pni01rnl4ldzi8z8nc4cbgq8nxda9gwc68v0s3ij7jd1jmik"))))
-      (build-system trivial-build-system)
+                  "1f6rydx4hdd6lja376f4sdp7iv64vqlmhmnlkg0rb17279dc9483"))))
+      (build-system copy-build-system)
       (arguments
-       `(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let* ((out (assoc-ref %outputs "out"))
-                  ;; Install to /share because that is where "read-only
-                  ;; architecture-independent data files" should go (see:
-                  ;; (standards) Directory Variables).  Include the version in
-                  ;; the directory name so that if multiple versions are ever
-                  ;; installed in the same profile, they will not conflict.
-                  (destination (string-append
-                                out "/share/public-suffix-list-" ,version))
-                  (source (assoc-ref %build-inputs "source")))
-             (with-directory-excursion source
-             (install-file "public_suffix_list.dat" destination)
-             (install-file "LICENSE" destination))
-             #t))))
+       (list #:install-plan
+             ;; Install to /share because that is where "read-only
+             ;; architecture-independent data files" should go (see: (standards)
+             ;; Directory Variables).  Include the version in the directory name
+             ;; so that if multiple versions are ever installed in the same
+             ;; profile, they will not conflict.
+             #~'(("public_suffix_list.dat"
+                  #$(string-append "/share/public-suffix-list-" version "/")))))
       (home-page "https://publicsuffix.org/")
       (synopsis "Database of current and historical DNS suffixes")
       (description "This is the Public Suffix List maintained by Mozilla.  A

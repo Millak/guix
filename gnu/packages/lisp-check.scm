@@ -868,29 +868,30 @@ tester module.")
   (sbcl-package->ecl-package sbcl-ptester))
 
 (define-public sbcl-rove
-  (package
-    (name "sbcl-rove")
-    (version "0.9.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fukamachi/rove")
-             (commit "f3695db08203bf26f3b861dc22ac0f4257d3ec21")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "07ala4l2fncxf540fzxj3h5mhi9i4wqllhj0rqk8m2ljl5zbz89q"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list sbcl-bordeaux-threads sbcl-dissect sbcl-trivial-gray-streams))
-    (home-page "https://github.com/fukamachi/rove")
-    (synopsis
-     "Yet another common lisp testing library")
-    (description
-     "Rove is a unit testing framework for Common Lisp applications.
+  (let ((commit "6a5dfcdced42879a4eff2a529e7e8ce492fadf41")
+        (revision "1"))
+    (package
+      (name "sbcl-rove")
+      (version (git-version "0.10.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/fukamachi/rove")
+                      (commit commit)))
+                (file-name (git-file-name "cl-rove" version))
+                (sha256
+                 (base32
+                  "1w99c0795ykhn14pfhyhvfzxzz0k1z1bb846xgz3iv19s0j2vykr"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-bordeaux-threads
+                    sbcl-dissect
+                    sbcl-trivial-gray-streams))
+      (home-page "https://github.com/fukamachi/rove")
+      (synopsis "Yet another common lisp testing library")
+      (description
+       "Rove is a unit testing framework for Common Lisp applications.
 This is intended to be a successor of Prove.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public cl-rove
   (sbcl-package->cl-source-package sbcl-rove))

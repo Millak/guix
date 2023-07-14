@@ -18,6 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages instrumentation)
+  #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -69,16 +70,14 @@
 (define-public babeltrace
   (package
     (name "babeltrace")
-    (version "2.0.4")
+    (version "2.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.efficios.com/files/babeltrace/babeltrace2-"
                                   version ".tar.bz2"))
               (sha256
-               (base32 "1jlv925pr7hykc48mdvbmqm4ipy1r11xwzapa6fdpdfshmk12kvp"))))
-
+               (base32 "1d7jxljbfb4y8jmxm7744ndhh9k9rw8qhmnljb19wz7flzr9x3vv"))))
     (build-system gnu-build-system)
-
     (arguments
      `(#:tests? #f  ; FIXME - When Python's bindings are enabled, tests do not
                     ; pass.
@@ -178,7 +177,9 @@ standard library headers.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1m04pg824rqx647wvk9xl33ri8i6mm0vmrz9924li25dxbr4zqd5"))))
+               (base32 "1m04pg824rqx647wvk9xl33ri8i6mm0vmrz9924li25dxbr4zqd5"))
+              (patches
+               (search-patches "dyninst-fix-glibc-compatibility.patch"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -548,31 +549,35 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
                (base32 "0gk0hv3rnf5czvazz1prg21rf9qlniz42g5b389n8a29hqj4q6xr"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list
-        (string-append "CC=" ,(cc-for-target)))
-       ;; runtest hang at some point -- probably dues to
-       ;; failed socket connection -- but we want to keep the
-       ;; unit tests.  Change the target to "test" when fixed.
-       #:test-target "unittest"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs target #:allow-other-keys)
-             (let ((arch ,(platform-linux-architecture
-                           (lookup-platform-by-target-or-system
-                            (or (%current-target-system)
-                                (%current-system))))))
-               (setenv "ARCH"
-                       (cond
-                        ((string=? arch "arm64") "aarch64")
-                        (else arch)))
-               (when target
-                 (setenv "CROSS_COMPILE" (string-append target "-"))))
-             (setenv "SHELL" (which "sh"))
-             (invoke "./configure"
-                     (string-append "--prefix="
-                                    (assoc-ref outputs "out"))))))))
+     (list
+      #:modules
+      `((ice-9 match)
+        ,@%gnu-build-system-modules)
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target)))
+      ;; runtest hangs at some point -- probably due to
+      ;; failed socket connection -- but we want to keep the
+      ;; unit tests.  Change the target to "test" when fixed.
+      #:test-target "unittest"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs target #:allow-other-keys)
+              (let ((arch #$(platform-linux-architecture
+                             (lookup-platform-by-target-or-system
+                              (or (%current-target-system)
+                                  (%current-system))))))
+                (setenv "ARCH"
+                        (match arch
+                          ("arm64" "aarch64")
+                          (_ arch)))
+                (when target
+                  (setenv "CROSS_COMPILE" (string-append target "-"))))
+              (setenv "SHELL" (which "sh"))
+              (invoke "./configure"
+                      (string-append "--prefix="
+                                     #$output)))))))
     (inputs
      (list capstone
            elfutils

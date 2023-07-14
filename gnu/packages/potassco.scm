@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
@@ -153,8 +155,7 @@ satisfiability checking (SAT).")
               (snippet
                #~(begin
                    (delete-file-recursively "clasp")
-                   ;; TODO: Unvendor other third-party stuff
-                   (delete-file-recursively "third_party/catch")))
+                   (delete-file-recursively "third_party")))
               (sha256
                (base32
                 "19s59ndcm2yj0kxlikfxnx2bmp6b7n31wq1zvwc7hyk37rqarwys"))))
@@ -173,12 +174,22 @@ satisfiability checking (SAT).")
             (lambda _
               (substitute* "CMakeLists.txt"
                 (("add_subdirectory\\(clasp\\)")
-                 "find_package(clasp REQUIRED)"))
+                 "find_package(clasp REQUIRED)")
+                (("add_subdirectory\\(third_party\\)")
+                 (string-append
+                  "find_package(tsl-hopscotch-map)\n"
+                  "find_package(tl-optional)\n"
+                  "find_package(mpark_variant)\n"
+                  "find_package(tsl-sparse-map)\n"
+                  "find_package(tsl-ordered-map)\n"
+                  "find_package(Catch2 3 REQUIRED)")))
               (substitute* "libclingo/CMakeLists.txt"
                 (("\"cmake/Clingo\"") "\"cmake/clingo\"")
                 (("ClingoConfig\\.cmake") "clingo-config.cmake")
                 (("ClingoConfigVersion\\.cmake")
                  "clingo-config-version.cmake"))
+              (substitute* "libgringo/CMakeLists.txt"
+                (("mpark::variant") "mpark_variant"))
               (substitute* "cmake/ClingoConfig.cmake.in"
                 (("find_package\\(Clasp") "find_package(clasp"))
               (rename-file "cmake/ClingoConfig.cmake.in"
@@ -198,8 +209,13 @@ satisfiability checking (SAT).")
                                 "unpool-ast-v2" "parse_term"
                                 "propagator" "propgator-sequence-mining"
                                 "symbol" "visitor"))))))))))
-    (inputs (list catch2-3.1 clasp libpotassco))
-    (native-inputs (list pkg-config))
+    (inputs (list catch2-3.3 clasp libpotassco))
+    (native-inputs (list mpark-variant
+                         pkg-config
+                         tl-optional
+                         tsl-hopscotch-map
+                         tsl-ordered-map
+                         tsl-sparse-map))
     (home-page "https://potassco.org/")
     (synopsis "Grounder and solver for logic programs")
     (description "Clingo computes answer sets for a given logic program.")
@@ -216,6 +232,7 @@ satisfiability checking (SAT).")
               (uri (git-reference
                     (url "https://github.com/santifa/pasp-mode")
                     (commit commit)))
+              (file-name (git-file-name name version))
               (patches
                (search-patches "emacs-pasp-mode-quote-file-names.patch"))
               (sha256

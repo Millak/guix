@@ -615,7 +615,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "10.3.2")
+    (version "10.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -624,14 +624,17 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04mpj0qikdg7nqp8rvwr83bx3544qy2ha0sjj4cnpjknka6p8xan"))))
+                "1n8z3rscrw7k097q5z1d59mrryy7b8m0zdfhi767a1qpa121m8if"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f)) ; no test target
-    (native-inputs (list jq perl))
+     (list
+      #:configure-flags
+      #~(list "-DMYMPD_STRIP_BINARY=OFF")  ; handled by 'strip phase
+      #:tests? #f)) ; no test target
+    (native-inputs (list jq perl pkg-config))
     (inputs (list flac libid3tag lua openssl pcre2))
     (home-page "https://jcorporation.github.io/")
     (synopsis "Web-based MPD client")
-    (description "MyMPD is a mobile-friendly web client for the MPD music
-player daemon.")
+    (description "MyMPD is a mobile-friendly web client for the Music Player
+Daemon (MPD).")
     (license license:gpl3+)))

@@ -54,6 +54,7 @@
               (uri (git-reference
                     (url "https://github.com/linuxmint/xapp/")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0n443lwmxzmfnw03n98cqnm2ah1iij6pwsnwbly8sncmzg5jyklg"))))

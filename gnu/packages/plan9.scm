@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 宋文武 <iyzsong@member.fsf.org>
+;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,8 +21,14 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages commencement)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages xorg))
 
 (define-public drawterm
@@ -63,3 +70,109 @@
 Plan 9 systems.  It behaves like a Plan 9 kernel and will attempt to
 reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
       (license license:expat))))
+
+(define-public plan9port
+  ;; no releases
+  (let ((commit "cc4571fec67407652b03d6603ada6580de2194dc")
+        (revision "0"))
+    (package
+      (name "plan9port")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/9fans/plan9port")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1g2kzlghcghs560na6xalfsjq5zwp015wv9wk8wxn26981zs759x"))
+                (modules '((guix build utils)))
+                (snippet #~(for-each delete-file-recursively
+                                     '("font/luc" ;nonfree
+                                       "font/lucm" "font/lucsans" "font/pelm")))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'setup
+                            (lambda _
+                              (delete-file "src/cmd/mk/mk.pdf")
+                              (substitute* "src/cmd/acme/acme.c"
+                                (("/lib/font/bit/lucsans/euro.8.font")
+                                 (string-append #$output
+                                  "/font/fixed/unicode.5x8.font"))
+                                (("/lib/font/bit/lucm/unicode.9.font")
+                                 (string-append #$output
+                                  "/font/fixed/unicode.6x9.font")))
+                              (substitute* (find-files "src")
+                                (("/lib/font/bit")
+                                 (string-append #$output "/font")))
+                              (substitute* "bin/9c"
+                                (("which")
+                                 (which "which")))
+                              (substitute* "src/cmd/fontsrv/freetyperules.sh"
+                                (("'\\$i'/freetype2")
+                                 (string-append "-I"
+                                                #$freetype
+                                                "/include/freetype2")))
+                              (with-output-to-file "LOCAL.config"
+                                (lambda _
+                                  (format #t "CC9=~a~%" #$(cc-for-target))
+                                  (format #t "FONTSRV=fontsrv~%")))
+                              (setenv "X11"
+                                      #$libx11)
+                              (setenv "PLAN9"
+                                      (getcwd))
+                              (setenv "PLAN9_TARGET"
+                                      #$output)))
+                          (delete 'configure) ;no configure
+                          (replace 'build
+                            (lambda _
+                              (invoke "./INSTALL" "-b")))
+                          (replace 'install
+                            (lambda _
+                              (for-each (lambda (x)
+                                          (let ((out (string-append #$output
+                                                                    "/" x)))
+                                            (mkdir-p out)
+                                            (copy-recursively x out)))
+                                        ;; TODO: use external sky and dict packages
+                                        '("bin" "face"
+                                          "font"
+                                          "include"
+                                          "lib"
+                                          "lp"
+                                          "mail"
+                                          "man"
+                                          "ndb"
+                                          "plumb"
+                                          "tmac"
+                                          "troff"
+                                          "postscript"))
+                              (install-file "rcmain" #$output)))
+                          (add-after 'install 'wrap-executables
+                            (lambda _
+                              (for-each (lambda (exe)
+                                          (wrap-program exe
+                                            `("PLAN9" ":" prefix
+                                              (,#$output))))
+                                        (find-files
+                                         (string-append #$output "/bin")))))
+                          ;; Plan9 doesn't compress man pages
+                          (delete 'compress-documentation))))
+      (native-inputs (list perl which))
+      (inputs (list bash-minimal                  ;for 'wrap-program'
+                    fontconfig libx11 libxext libxt))
+      ;; Propagate gcc-toolchain because some programs, like the 9c compiler,
+      ;; are just aliased scripts to gcc equivalents.
+      (propagated-inputs (list gcc-toolchain))
+      (home-page "https://9fans.github.io/plan9port/")
+      (synopsis "Port of many Plan 9 libraries and programs")
+      (description
+       "Plan 9 from User Space (aka plan9port) is a port of many Plan 9
+programs from their native Plan 9 environment to Unix-like operating
+systems.")
+      (license (list license:expat ;modifications
+                     license:lpl1.02 ;original Plan9 code
+                     license:zlib))))) ;src/cmd/bzip2

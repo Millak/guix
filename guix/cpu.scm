@@ -32,7 +32,8 @@
             cpu-model
             cpu-flags
 
-            cpu->gcc-architecture))
+            cpu->gcc-architecture
+            gcc-architecture->micro-architecture-level))
 
 ;;; Commentary:
 ;;;
@@ -114,19 +115,19 @@ corresponds to CPU, a record as returned by 'current-cpu'."
   (match (cpu-architecture cpu)
     ("x86_64"
      ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.cc.
-     (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
-              (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
-              (letrec-syntax ((if-flags (syntax-rules (=>)
-                                          ((_)
-                                           #f)
-                                          ((_ (flags ... => name) rest ...)
-                                           (if (every (lambda (flag)
-                                                        (set-contains? (cpu-flags cpu)
-                                                                       flag))
-                                                      '(flags ...))
-                                             name
-                                             (if-flags rest ...))))))
+     (letrec-syntax ((if-flags (syntax-rules (=>)
+                                 ((_)
+                                  #f)
+                                 ((_ (flags ... => name) rest ...)
+                                  (if (every (lambda (flag)
+                                               (set-contains? (cpu-flags cpu)
+                                                              flag))
+                                             '(flags ...))
+                                    name
+                                    (if-flags rest ...))))))
 
+       (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
+                (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
                 (if-flags ("avx" "raoint" => "grandridge")
                           ("avx" "amx_fp16" => "graniterapids")
                           ("avx" "avxvnniint8" => "sierraforest")
@@ -152,20 +153,9 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                           ("ssse3" "movbe" => "bonnell")
                           ("ssse3" => "core2")
                           ("longmode" => "x86-64")
-                          ("lm" => "x86-64"))))
+                          ("lm" => "x86-64")))
 
-         (and (equal? "AuthenticAMD" (cpu-vendor cpu))
-              (letrec-syntax ((if-flags (syntax-rules (=>)
-                                          ((_)
-                                           #f)
-                                          ((_ (flags ... => name) rest ...)
-                                           (if (every (lambda (flag)
-                                                        (set-contains? (cpu-flags cpu)
-                                                                       flag))
-                                                      '(flags ...))
-                                             name
-                                             (if-flags rest ...))))))
-
+           (and (equal? "AuthenticAMD" (cpu-vendor cpu))
                 (or (and (= 22 (cpu-family cpu))
                          (if-flags ("movbe" => "btver2")))
                     (and (= 6 (cpu-family cpu))
@@ -192,42 +182,18 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                               ("lm" => "k8")
                               ("mmx" "3dnow" => "k6-3")
                               ("mmx" => "k6")
-                              (_ => "pentium")))))
+                              (_ => "pentium"))))
 
-         ;; Fallback case for non-Intel processors or for Intel processors not
-         ;; recognized above.
-         (letrec-syntax ((if-flags (syntax-rules (=>)
-                                     ((_)
-                                      #f)
-                                     ((_ (flags ... => name) rest ...)
-                                      (if (every (lambda (flag)
-                                                   (set-contains? (cpu-flags cpu)
-                                                                  flag))
-                                                 '(flags ...))
-                                          name
-                                          (if-flags rest ...))))))
+           ;; Fallback case for non-Intel processors or for processors not
+           ;; recognized above.
            (if (and (= 7 (cpu-family cpu))
                     (= #x3b (cpu-model cpu)))
              "lujiazui"
-             (if-flags ("avx512" => "knl")
-                       ("adx" => "broadwell")
-                       ("avx2" => "haswell")
-                       ;; TODO: tigerlake, cooperlake, etc.
-                       ("avx" => "sandybridge")
-                       ("sse4_2" "gfni" => "tremont")
-                       ("sse4_2" "sgx" => "goldmont-plus")
-                       ("sse4_2" "xsave" => "goldmont")
-                       ("sse4_2" "movbe" => "silvermont")
-                       ("sse4_2" => "nehalem")
-                       ("ssse3" "movbe" => "bonnell")
-                       ("ssse3" "sse3" "longmode" => "nocona")
-                       ("ssse3" "sse3" "lm" => "nocona")
-                       ("ssse3" "sse3" => "prescott")
-                       ("ssse3" => "core2"))))
+             (cpu->micro-architecture-level cpu))
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
-         "x86_64"))
+         "x86_64")))
     ("aarch64"
      ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
      ;; What to do with big.LITTLE cores?
@@ -285,3 +251,57 @@ corresponds to CPU, a record as returned by 'current-cpu'."
     (architecture
      ;; TODO: More architectures
      architecture)))
+
+(define (cpu->micro-architecture-level cpu)
+  "Return a micro-architecture name, suitable for generalized optimizations that
+correspond roughly to CPU, a record as returned by 'current-cpu'."
+  (match (cpu-architecture cpu)
+    ("x86_64"
+     (or (letrec-syntax ((if-flags (syntax-rules (=>)
+                                     ((_)
+                                      #f)
+                                     ((_ (flags ... => name) rest ...)
+                                      (if (every (lambda (flag)
+                                                   (set-contains? (cpu-flags cpu)
+                                                                  flag))
+                                                 '(flags ...))
+                                        name
+                                        (if-flags rest ...))))))
+
+           (if-flags
+             ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
+             ;; v4: AVX512F, AVX512BW, AVX512CD, AVX512DQ, AVX512VL
+             ;; v3: AVX, AVX2, BMI1, BMI2, F16C, FMA, LZCNT, MOVBE, OSXSAVE
+             ;; v2: CMPXCHG16B, LAHF, SAHF, POPCNT, SSE3, SSE4.1, SSE4.2, SSSE3
+             ("avx512f" "avx512bw" "abx512cd" "abx512dq" "avx512vl"
+              "avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v4")
+             ("avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v3")
+             ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v2")
+             (_ => "x86_64-v1")))
+         "x86_64-v1"))
+    (architecture
+     ;; TODO: More architectures
+     architecture)))
+
+(define (gcc-architecture->micro-architecture-level gcc-architecture)
+  "Return a matching psABI micro-architecture, allowing optimizations for x86_64
+CPUs for compilers which don't allow for more focused optimizing."
+  ;; Matching gcc-architectures isn't an easy task, with the rule-of-thumb being
+  ;; 'Haswell and higher' qualify for x86_64-v3.
+  ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
+  (match gcc-architecture
+    ((or "grandridge" "graniterapids" "sierraforest" "tigerlake"
+         "sapphirerapids" "cooperlake" "icelake-server" "icelake-client"
+         "cannonlake" "knm" "knl" "skylake-avx512" "alderlake" "skylake"
+         "broadwell" "haswell"
+         "znver4" "znver3" "znver2" "znver1" "bdver4")
+     "x86_64-v3")
+    ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
+         "nehalem" "bonnell" "core2"
+         "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
+         "amdfam10"
+         "lujiazui" "x86-64")
+     "x86_64-v1")
+    (_ gcc-architecture)))

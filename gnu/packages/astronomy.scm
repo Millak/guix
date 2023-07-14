@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
@@ -55,6 +55,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -463,6 +464,45 @@ in FITS files.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
+(define-public python-astroml
+  (package
+    (name "python-astroml")
+    (version "1.0.2.post1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "astroML" version))
+              (sha256
+               (base32
+                "14g2mcd5qdr3nn7icvjs84bjvx17l9glx81sbbna6v53i1x8l625"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore-glob=examples/*")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "setup.cfg"
+               ;; Do not error out on deprecations
+               (("	error::DeprecationWarning.*") "")
+               ;; Do not test examples
+               (("testspaths = astroML doc examples")
+                "testspaths = astroML"))))
+         (add-before 'check 'pre-check
+           ;; Some tests need this
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-astropy python-matplotlib python-numpy
+                             python-scikit-learn python-scipy))
+    (native-inputs (list python-pytest-astropy-header python-pytest-cov
+                         python-pytest-doctestplus python-pytest-remotedata))
+    (home-page "https://astroml.org")
+    (synopsis "Tools for machine learning and data mining in astronomy")
+    (description "This package provides tools for machine learning and data
+mining in astronomy.")
+    (license license:bsd-2)))
+
 (define-public python-fitsio
   (package
     (name "python-fitsio")
@@ -522,6 +562,39 @@ CFITSIO library.  Among other things, it can
 @end itemize")
     (license license:gpl2+)))
 
+(define-public python-gatspy
+  (package
+    (name "python-gatspy")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "gatspy" version))
+              (sha256
+               (base32
+                "1gw2z6x8nikvnw2gkdl70gr81cwczd1pd7v8ry2kjn6k4kssrfav"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Tests need this
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; These tests require internet access
+              "not test_download_data.py"
+              ;; XXX: we don't have supersmoother
+              " and not test_supersmoother.py"))))
+    (propagated-inputs (list python-astroml python-numpy python-scipy))
+    (native-inputs (list python-pytest python-nose python-setuptools-scm))
+    (home-page "https://github.com/astroml/gatspy")
+    (synopsis "General tools for astronomical time series in Python")
+    (description "This package provides general tools for astronomical time
+series in Python.")
+    (license license:bsd-2)))
+
 (define-public qfits
   (package
     (name "qfits")
@@ -572,35 +645,41 @@ International Astronomical Union}.")
     (version "1.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/eye/"
-                           "eye-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/eye")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "092qhzcbrkcfidbx4bv9wz42w297n80jk7a6kwyi9a3fjfz81d7k"))))
+        (base32 "1j8rpgz3fjp6fw0qmxgfqycf3n01fzxds4w12vgyrhbnk658ia41"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon")))    ; fix build with GCC 10
     (home-page "https://www.astromatic.net/software/eye")
     (synopsis "Small image feature detector using machine learning")
     (description
-     "In EyE (Enhance Your Extraction) an artificial neural network connected to
-pixels of a moving window (retina) is trained to associate these input stimuli
-to the corresponding response in one or several output image(s).  The resulting
-filter can be loaded in SExtractor to operate complex, wildly non-linear filters
-on astronomical images.  Typical applications of EyE include adaptive filtering,
-feature detection and cosmetic corrections.")
+     "In @acronym{EyE, Enhance Your Extraction} an artificial neural network
+connected to pixels of a moving window (@dfn{retina}) is trained to associate
+these input stimuli to the corresponding response in one or several output
+image(s).  The resulting filter can be loaded in SExtractor to operate
+complex, wildly non-linear filters on astronomical images.  Typical
+applications of EyE include adaptive filtering, feature detection and cosmetic
+corrections.")
     (license license:cecill)))
 
 (define-public wcslib
   (package
     (name "wcslib")
-    (version "7.12")
+    (version "8.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "ftp://ftp.atnf.csiro.au/pub/software/wcslib/wcslib-" version
-             ".tar.bz2"))
+       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+                           "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))))
+        (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))))
     (inputs
      (list cfitsio))
     (build-system gnu-build-system)
@@ -634,12 +713,18 @@ header.")
     (version "1.12")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/weightwatcher/"
-                           "weightwatcher-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/weightwatcher")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1zaqd8d9rpgcwjsp92q3lkfaa22i20gppb91dz34ym54swisjc2p"))))
+        (base32 "0701z6bdqq32jv7ga3n6jh27q684ni0hbfjm1mak7rh0qqx089gi"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-fcommon")))      ; fix build with GCC 10
     (home-page "https://www.astromatic.net/software/weightwatcher")
     (synopsis "Weight-map/flag-map multiplexer and rasteriser")
     (description
@@ -870,34 +955,43 @@ interactively in the plotting window.")
     (license license:gpl2+)))
 
 (define-public skymaker
-  (package
-    (name "skymaker")
-    (version "3.10.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/skymaker/"
-                           "skymaker-" version ".tar.gz"))
-       (sha256
-        (base32 "03zvx7c89plp9559niqv5532r233kza3ir992rg3nxjksqmrqvx1"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
+  ;; XXX: No version tag available in GitHub.
+  ;; See: https://github.com/astromatic/skymaker/issues/3
+  (let ((commit "1a69c4716bdc9b5c6d4a917b0bc2dbd47635c459")
+        (revision "0"))
+    (package
+      (name "skymaker")
+      (version (git-version "4.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/astromatic/skymaker")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vin4vgvcmqmwjdchsxnap374559rksz55xmaliawnl3qpzxn1nk"))))
+      (build-system gnu-build-system)
+      (arguments
        (list
-        (string-append
-         "--with-fftw-libdir=" (assoc-ref %build-inputs "fftw") "/lib")
-        (string-append
-         "--with-fftw-incdir=" (assoc-ref %build-inputs "fftw") "/include"))))
-    (inputs
-     `(("fftw" ,fftwf)))
-    (home-page "https://www.astromatic.net/software/skymaker")
-    (synopsis "Astronomical image simulator")
-    (description
-     "SkyMaker is a program that simulates astronomical images.  It accepts
+        #:configure-flags
+        #~(list
+           (string-append
+            "--with-fftw-libdir=" #$(this-package-input "fftwf") "/lib")
+           (string-append
+            "--with-fftw-incdir=" #$(this-package-input "fftwf") "/include"))))
+      (native-inputs
+       (list autoconf automake libtool pkg-config))
+      (inputs
+       (list fftwf))
+      (home-page "https://www.astromatic.net/software/skymaker")
+      (synopsis "Astronomical image simulator")
+      (description
+       "SkyMaker is a program that simulates astronomical images.  It accepts
 object lists in ASCII generated by the Stuff program to produce realistic
-astronomical fields.  SkyMaker is part of the EFIGI
-(@url{https://www.astromatic.net/projects/efigi}) development project.")
-    (license license:gpl3+)))
+astronomical fields.  SkyMaker is part of the
+@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
+      (license license:gpl3+))))
 
 (define-public stackistry
   (package
@@ -1031,36 +1125,48 @@ objects.")
 (define-public stuff
   (package
     (name "stuff")
-    (version "1.26.0")
+    (version "2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/stuff/"
-                           "stuff-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/stuff")
+             ;; XXX: No version tag available in GitHub.
+             ;; See: https://github.com/astromatic/stuff/issues/6
+             (commit "9008dc022ef53331092da248cf0a794abd6783bf")))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1syibi3b86z9pikhicvkkmgxm916j732fdiw0agw0lq6z13fdcjm"))))
+        (base32 "004sry5lqqm7s9x4l3agysp3n63y3ga35x1rwwda4m6dc6zvla6b"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
     (home-page "https://www.astromatic.net/software/stuff")
     (synopsis "Astronomical catalogue simulation")
     (description
      "Stuff is a program that simulates \"perfect\" astronomical catalogues.
 It generates object lists in ASCII which can read by the SkyMaker program to
-produce realistic astronomical fields.  Stuff is part of the EFIGI development
-project.")
+produce realistic astronomical fields.  Stuff is part of the
+@uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
     (license license:gpl3+)))
 
 (define-public swarp
   (package
     (name "swarp")
-    (version "2.38.0")
+    (version "2.41.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/swarp/"
-                           "swarp-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/swarp")
+             (commit (string-append version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1i670waqp54vin1cn08mqckcggm9zqd69nk7yya2vvqpdizn6jpm"))))
+        (base32 "00463r5rd4xl74xs4h1n4gl2qk7v9p5nw9x05pbzgh8jm77q90qq"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (inputs
+     (list cfitsio))
     (home-page "https://www.astromatic.net/software/swarp")
     (synopsis "FITS image resampling and co-addition")
     (description
@@ -1069,66 +1175,85 @@ any arbitrary astrometric projection defined in the WCS standard.")
     (license license:gpl3+)))
 
 (define-public celestia
-  (let ((commit "9dbdf29c4ac3d20afb2d9a80d3dff241ecf81dce"))
-    (package
-      (name "celestia")
-      (version (git-version "1.6.1" "815" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/celestiaproject/celestia")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "00xibg87l1arzifakgj7s828x9pszcgx7x7ij88a561ig49ryh78"))))
-      (build-system cmake-build-system)
-      (native-inputs
-       `(("perl" ,perl)
-         ("libgit2" ,libgit2)
-         ("pkg-config" ,pkg-config)
-         ("libtool" ,libtool)
-         ("gettext" ,gettext-minimal)))
-      (inputs
-       `(("glu" ,glu)
-         ("glew" ,glew)
-         ("libtheora" ,libtheora)
-         ("libjpeg" ,libjpeg-turbo)
-         ("libpng" ,libpng)
-         ;; maybe required?
-         ("mesa" ,mesa)
-         ;; optional: fmtlib, Eigen3;
-         ("fmt" ,fmt-7)
-         ("eigen" ,eigen)
-         ;; glut: for glut interface
-         ("freeglut" ,freeglut)))
-      (propagated-inputs
-       (list lua))
-      (arguments
-       `(#:configure-flags '("-DENABLE_GLUT=ON" "-DENABLE_QT=OFF")
-         #:tests? #f))                            ;no tests
-      (home-page "https://celestia.space/")
-      (synopsis "Real-time 3D visualization of space")
-      (description
-       "This simulation program lets you explore our universe in three
+  (package
+    (name "celestia")
+    (version "1.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/celestiaproject/celestia")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dzci5n7gcnm1vq916gsn9zddkhbzhbsakqxrpnmvzibsqznn6c8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules
+      `((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-71))
+      #:configure-flags
+      #~(list "--with-glut"
+              (string-append "--with-lua=" #$(this-package-input "lua")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-lua-version
+            (lambda _
+              (let* ((_ version (package-name->name+version
+                                 #$(this-package-input "lua")))
+                     (components (string-split version #\.))
+                     (major+minor (string-join (take components 2) ".")))
+                (substitute* "configure.ac"
+                  (("lua5.3")
+                   (string-append "lua-" major+minor)))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal
+           libgit2
+           libtool
+           perl
+           pkg-config))
+    (inputs
+     (list freeglut
+           glu
+           libjpeg-turbo
+           libpng
+           libtheora
+           mesa))
+    (propagated-inputs
+     (list lua))
+    (home-page "https://celestia.space/")
+    (synopsis "Real-time 3D visualization of space")
+    (description
+     "This simulation program lets you explore our universe in three
 dimensions.  Celestia simulates many different types of celestial objects.
 From planets and moons to star clusters and galaxies, you can visit every
 object in the expandable database and view it from any point in space and
 time.  The position and movement of solar system objects is calculated
 accurately in real time at any rate desired.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
+
 
 (define-public celestia-gtk
-  (package
-    (inherit celestia)
+  (package/inherit celestia
     (name "celestia-gtk")
     (inputs
-     (append (alist-delete "freeglut" (package-inputs celestia))
-             `(("gtk2" ,gtk+-2)
-               ("gtkglext" ,gtkglext))))
+     (modify-inputs (package-inputs celestia)
+       (replace "freeglut" gtk+-2)
+       (prepend cairo gtkglext libxmu libtheora pango-1.42)))
     (arguments
-     `(#:configure-flags '("-DENABLE_GTK=ON" "-DENABLE_QT=OFF")
-       #:tests? #f))))
+     (substitute-keyword-arguments (package-arguments celestia)
+       ((#:configure-flags flags '())
+        #~(append #$flags
+                  (list "--enable-cairo"
+                        "--enable-theora"
+                        "--without-glut"
+                        "--with-gtk")))))
+    (synopsis "Real-time 3D visualization of space (using GTK+)")))
 
 (define-public python-astropy
   (package
@@ -2581,12 +2706,21 @@ PixInsight.  It implements XISF 1.0 specification.")
     (version "2.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/missfits/"
-                           "missfits-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/missfits")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04jrd7fsvzr14vdmwgj2f6v97gdcfyjyz6jppml3ghr9xh12jxv5"))))
+        (base32 "12ndvrr3l5j7ph2i5f3qf0wqmv5ymsyjzxnnypqajsvliw72iprh"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; Address this link error:
+         ;; ld: ... multiple definition of ... first defined here
+         "CPPFLAGS=-fcommon")))
     (home-page "https://www.astromatic.net/software/missfits")
     (synopsis "FITS files Maintenance program")
     (description
@@ -2595,10 +2729,11 @@ on FITS files:
 
 @itemize
 @item add/edit FITS header keywords
-@item split/join Multi-Extension-FITS (MEF) files
+@item split/join @acronym{MEF, Multi-Extension-FITS} files
 @item unpack/pack FITS data-cubes
-@item create/check/update FITS checksums, using R. Seaman's protocol
-      (see http://www.adass.org/adass/proceedings/adass94/seamanr.html)
+@item create/check/update FITS checksums, using
+@uref{http://www.adass.org/adass/proceedings/adass94/seamanr.html,
+R. Seaman's protocol}
 @end itemize\n")
     (license license:gpl3+)))
 
@@ -2622,28 +2757,28 @@ on FITS files:
          "xplanet-1.3.1-libimage_gif.c.patch"
          "xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; No NASA JPL cspice support.
+         "--without-cspice"
+         (string-append "CPPFLAGS=-I" #$(this-package-input "netpbm")
+                        "/include/netpbm"))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("libx11" ,libx11)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libice" ,libice)
-       ("freetype" ,freetype)
-       ("pango" ,pango)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("netpbm" ,netpbm)
-       ("zlib" ,zlib)))
-    (arguments
-     `(#:configure-flags
-       (let ((netpbm (assoc-ref %build-inputs "netpbm")))
-         (append (list
-                  ;; Give correct path for pnm.h header to configure script
-                  (string-append "CPPFLAGS=-I" netpbm "/include/netpbm")
-                  ;; no nasa jpl cspice support
-                  "--without-cspice" )))))
+     (list freetype
+           giflib
+           libice
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           libxscrnsaver
+           netpbm
+           pango
+           zlib))
     (home-page "https://xplanet.sourceforge.net/")
     (synopsis "Planetary body renderer")
     (description

@@ -44,6 +44,7 @@
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4447,38 +4448,40 @@ provide high-quality sample rate conversion.")
     (version "0.3.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "http://kokkinizita.linuxaudio.org"
-                    "/linuxaudio/downloads/zita-alsa-pcmi-"
-                    version ".tar.bz2"))
+              (uri (string-append "http://kokkinizita.linuxaudio.org"
+                                  "/linuxaudio/downloads/zita-alsa-pcmi-"
+                                  version ".tar.bz2"))
               (sha256
                (base32
                 "12d7vdg74yh21w69qi0wg57iz4876j94qbiq09bvscih6xz9y78s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "SUFFIX="))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-makefile-and-enter-directory
-           (lambda _
-             (substitute* "source/Makefile"
-               (("ldconfig") "true")
-               (("^LIBDIR =.*") "LIBDIR = lib\n"))
-             (chdir "source")
-             #t))
-         (add-after 'install 'install-symlink
-           (lambda _
-             (symlink "libzita-alsa-pcmi.so"
-                      (string-append (assoc-ref %outputs "out")
-                                     "/lib/libzita-alsa-pcmi.so.0"))
-             #t))
-          ;; no configure script
-          (delete 'configure))))
-    (inputs
-     (list alsa-lib fftw))
+     (list #:tests? #f ;no "check" target
+           #:make-flags #~(list (string-append "PREFIX="
+                                               (assoc-ref %outputs "out"))
+                                (string-append "SUFFIX=")
+                                (string-append "CXX="
+                                               #$(cxx-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-makefile-and-enter-directory
+                          (lambda _
+                            (substitute* "source/Makefile"
+                              (("ldconfig")
+                               "true")
+                              (("^LIBDIR =.*")
+                               "LIBDIR = lib\n")
+                              (("CXXFLAGS \\+= -march=native")
+                               ""))
+                            (chdir "source")))
+                        (add-after 'install 'install-symlink
+                          (lambda _
+                            (symlink "libzita-alsa-pcmi.so"
+                                     (string-append (assoc-ref %outputs "out")
+                                      "/lib/libzita-alsa-pcmi.so.0"))))
+                        ;; no configure script
+                        (delete 'configure))))
+    (inputs (list alsa-lib fftw))
+    (properties `((tunable? . #t)))
     (home-page "https://kokkinizita.linuxaudio.org")
     (synopsis "C++ wrapper around the ALSA API")
     (description
@@ -6233,7 +6236,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.4.2")
+    (version "0.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6242,7 +6245,7 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h5y8n9xm9ay1w53hb5mw6k5i1sm8spz1izmw6yya49gv2pwyhrj"))))
+                "05j98y8j3f0dybaal6qawq9nsrvr1hylsnig4yk6si16mhb32y7l"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib

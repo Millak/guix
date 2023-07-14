@@ -34,6 +34,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xml)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -159,14 +160,14 @@ homeserver and generally help bootstrap the ecosystem.")
 (define-public python-matrix-nio
   (package
     (name "python-matrix-nio")
-    (version "0.20.0")
+    (version "0.20.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "matrix-nio" version))
+       (uri (pypi-uri "matrix_nio" version))
        (sha256
-        (base32 "1ycrp48b15nm2d3w3qpzps21czl3gbikadl10sncbzr9wdwn44g4"))))
-    (build-system python-build-system)
+        (base32 "110wg1grhqqgwvlgr98r2k8wxcggpj7lbdwmgkgmi2l7qj1vw3dm"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -187,15 +188,13 @@ homeserver and generally help bootstrap the ecosystem.")
                         "and not test_connect_wrapper"))))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)
-       ("python-hyperframe" ,python-hyperframe)
+       ("python-poetry-core" ,python-poetry-core)
        ("python-hypothesis" ,python-hypothesis)
-       ("python-hpack" ,python-hpack)
        ("python-faker" ,python-faker)
        ("python-pytest-aiohttp" ,python-pytest-aiohttp)
        ("python-pytest-asyncio" ,python-pytest-asyncio)
        ("python-aioresponses" ,python-aioresponses)
        ("python-pytest-benchmark" ,python-pytest-benchmark)
-       ("python-toml" ,python-toml)
        ("tests"
         ;; The release on pypi comes without tests.  We can't build from this
         ;; checkout, though, because installation requires an invocation of
@@ -208,13 +207,14 @@ homeserver and generally help bootstrap the ecosystem.")
            (file-name (git-file-name name version))
            (sha256
             (base32
-             "10j8g3ns3v1ghdn262dxg50ayaczdp1hj97pj4ydw02bncqhddpd"))))))
+             "1rd90sk5yygxzvcs4qhzr80bch7d3xszyfjf99pn10xsj10mi752"))))))
     (propagated-inputs
      (list python-aiofiles
            python-aiohttp
            python-aiohttp-socks
            python-atomicwrites
            python-cachetools
+           python-dataclasses
            python-future
            python-h11
            python-h2

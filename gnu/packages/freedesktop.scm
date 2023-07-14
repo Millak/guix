@@ -2322,15 +2322,19 @@ to applications simultaneously competing for fingerprint readers.")
     (description
      "This package contains a few command line utilities for working with
 desktop entries:
+@table @command
+@item desktop-file-validate
+Validates a desktop file and prints warnings/errors about desktop entry
+specification violations.
 
-desktop-file-validate: validates a desktop file and prints warnings/errors
-                       about desktop entry specification violations.
+@item desktop-file-install
+Installs a desktop file to the applications directory, optionally munging it
+a bit in transit.
 
-desktop-file-install: installs a desktop file to the applications directory,
-                      optionally munging it a bit in transit.
-
-update-desktop-database: updates the database containing a cache of MIME types
-                         handled by desktop files.")
+@item update-desktop-database
+Updates the database containing a cache of MIME types handled by desktop
+files.
+@end table")
     (license license:gpl2+)))
 
 (define-public xdg-user-dirs

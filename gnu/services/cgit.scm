@@ -561,7 +561,8 @@ to it, that should loaded as Git repositories.  An empty list means that all
 subdirectories will be loaded.")
   (readme
    (file-object "")
-   "Text which will be used as default value for @code{cgit-repo-readme}.")
+   "Text which will be used as default @code{repository-cgit-configuration}
+@code{readme}.")
   (remove-suffix?
    (boolean #f)
    "If set to @code{#t} and @code{repository-directory} is enabled, if any
@@ -642,7 +643,7 @@ for cgit to allow access to that repository.")
    "URL which, if specified, will be used as root for all cgit links.")
   (repositories
    (repository-cgit-configuration-list '())
-   "A list of @dfn{cgit-repo} records to use with config.")
+   "A list of @code{repository-cgit-configuration} records.")
   (extra-options
    (list '())
    "Extra options will be appended to cgitrc file."))

@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2023 Denys Nykula <vegan@libre.net.ua>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
 (define-module (gnu installer services)
   #:use-module (guix records)
   #:use-module (guix read-print)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (system-service?
             system-service-name
@@ -159,6 +161,19 @@
          (base     (if desktop?
                        '%desktop-services
                        '%base-services))
+         (native-console-font (match (getenv "LANGUAGE")
+                                ((or "be" "bg" "el" "eo" "kk" "ky"
+                                     "mk" "mn" "ru" "sr" "tg" "uk")
+                                 "LatGrkCyr-8x16")
+                                (_ #f)))
+         (services (if native-console-font
+                       `(modify-services ,base
+                          (console-font-service-type
+                           config => (map (lambda (tty)
+                                            (cons (car tty)
+                                                  ,native-console-font))
+                                          config)))
+                       base))
          (service-heading (list (vertical-space 1)
                                 (comment (G_ "\
 ;; Below is the list of system services.  To search for available
@@ -177,7 +192,7 @@
                                     %base-packages))))
 
           ,@service-heading
-          (services ,base))
+          (services ,services))
         `(,@(if (null? packages)
                 '()
                 `(,@package-heading
@@ -199,4 +214,4 @@
                             ,(comment (G_ "\
 ;; This is the default list of services we
 ;; are appending to.\n"))
-                            ,base))))))
+                            ,services))))))

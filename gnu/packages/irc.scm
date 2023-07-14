@@ -198,14 +198,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "3.8")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0a5zfkqqdkya111rl2gpwlbfala0305qry9cdz2r1h7q0316bjzp"))))
+                "1ya0hacbyvhdy43hqrvphj3y7v6s312wbrsf2yns14ikbzhmxmsv"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -234,7 +234,8 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
        (list "-DENABLE_PHP=OFF"
              ,@(if (target-x86?)
                  '("-DENABLE_MAN=ON"
-                   "-DENABLE_DOC=ON")
+                   "-DENABLE_DOC=ON"
+                   "-DENABLE_DOC_INCOMPLETE=ON")
                 '()))
        #:phases
        (modify-phases %standard-phases

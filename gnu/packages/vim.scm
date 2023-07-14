@@ -79,7 +79,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.1384")
+    (version "9.0.1672")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -88,7 +88,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "07a59a0ibklwmks5f26f9a7c2klhppqbj0kdijcs4ayarh5q2qwf"))))
+               "1cl4a7rzks0ll0b8y0ffrbin622k0qww3l0nz9kb0mz2favw0b9q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -132,6 +132,9 @@
              ;; non-trivial due to the special format used, so skip the test.
              (substitute* "src/testdir/test_messages.vim"
                ((".*Test_echo_verbose_system.*" line)
+                (string-append line "return\n")))
+             (substitute* "src/testdir/test_normal.vim"
+               ((".*Test_mouse_shape_after_cancelling_gr.*" line)
                 (string-append line "return\n")))
              (substitute* "src/testdir/test_terminal.vim"
                ((".*Test_open_term_from_cmd.*" line)
@@ -221,13 +224,6 @@ with the editor vim.")))
              "--disable-selinux"
              "--enable-gui")
        ,@(substitute-keyword-arguments (package-arguments vim)
-           ;; This flag fixes the following error:
-           ;; .../libpython3.7m.a(pyexpat.o): undefined reference to symbol 'XML_FreeContentModel'
-           ;; .../libexpat.so.1: error adding symbols: DSO missing from command line
-           ((#:make-flags flags)
-            `(append
-              (list "LDFLAGS=-lexpat")
-              ,flags))
            ((#:phases phases)
             `(modify-phases ,phases
                (add-before 'check 'start-xserver
@@ -693,7 +689,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.9.0")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -702,7 +698,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xsvhm191cy5ivcw0c8dnpzbpcvvn5hsnkzkipr2aabgrsgqj628"))))
+                "18dsl9fjcqvcqffny6jmcxwx5a7d13aykn310hbgghny8l11rw3c"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules

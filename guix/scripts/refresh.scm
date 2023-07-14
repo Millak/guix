@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -589,16 +589,27 @@ all are dependent packages: ~{~a~^ ~}~%")
                               (or (assoc-ref opts 'keyring)
                                   (string-append (config-directory)
                                                  "/upstream/trustedkeys.kbx"))))
-                (for-each
-                 (lambda (update)
-                   (update-package store
-                                   (update-spec-package update)
-                                   (update-spec-version update)
-                                   updaters
-                                   #:key-server (%openpgp-key-server)
-                                   #:key-download key-download
-                                   #:warn? warn?))
-                 update-specs)
+                (let* ((spec-line
+                        (compose location->string
+                                 package-location
+                                 update-spec-package))
+                       ;; Sort the specs so that we update packages from the
+                       ;; bottom of the file to the top.  This way we can be
+                       ;; sure that the package locations are always correct
+                       ;; and never shifted due to previous edits.
+                       (sorted-update-specs
+                        (sort update-specs
+                              (lambda (a b) (string> (spec-line a) (spec-line b))))))
+                  (for-each
+                   (lambda (update)
+                     (update-package store
+                                     (update-spec-package update)
+                                     (update-spec-version update)
+                                     updaters
+                                     #:key-server (%openpgp-key-server)
+                                     #:key-download key-download
+                                     #:warn? warn?))
+                   sorted-update-specs))
                 (return #t)))
              (else
               (for-each (cut check-for-package-update <> updaters

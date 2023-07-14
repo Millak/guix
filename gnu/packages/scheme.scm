@@ -138,6 +138,12 @@
                (("\\./configure")
                 (string-append (which "sh") " configure")))
              #t))
+         ;; disable array-parameter warnings that become errors while
+         ;; compiling microcode target
+         (add-before 'configure 'set-flags
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CFLAGS" "-Wno-array-parameter")
+             (setenv "CPPFLAGS" "-Wno-array-parameter")))
          (replace 'build
            (lambda* (#:key system outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))

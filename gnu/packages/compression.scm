@@ -809,13 +809,13 @@ sfArk file format to the uncompressed sf2 format.")
   (package
     (name "libmspack")
     (home-page "https://cabextract.org.uk/libmspack/")
-    (version "0.10.1")
+    (version "0.11")
     (source
      (origin
       (method url-fetch)
       (uri (string-append home-page name "-" version "alpha.tar.gz"))
       (sha256
-       (base32 "13janaqsvm7aqc4agjgd4819pbgqv50j88bh5kci1z70wvg65j5s"))))
+       (base32 "06x2xq73lchw5lcq386sx9wk05v21s2f38bi3dwkdk5fy2r1zpbh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")))
@@ -1063,13 +1063,13 @@ tarballs.")
  (package
    (name "cabextract")
    (home-page "https://cabextract.org.uk/")
-   (version "1.9.1")
+   (version "1.11")
    (source (origin
               (method url-fetch)
               (uri (string-append home-page "cabextract-" version ".tar.gz"))
               (sha256
                (base32
-                "19qwhl2r8ip95q4vxzxg2kp4p125hjmc9762sns1dwwf7ikm7hmg"))
+                "1iis7a19n26dax3gsnrw9kb0vwq46rbpicnlyf7p2k2y2nqnsm5m"))
               (modules '((guix build utils)))
               (snippet
                '(begin

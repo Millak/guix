@@ -687,6 +687,59 @@ and utilities for PacBio C++ applications.")
 suite native in R.")
       (license license:expat))))
 
+(define-public r-bpcells
+  (let ((commit "32ce67312185d3ed1046b4218dd3aaf1b35dcfda")
+        (revision "1"))
+    (package
+      (name "r-bpcells")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bnprks/BPCells/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0im4sqvbii326acmd1hnimyzsllnbvnh9al3dp1nla6isgi7s6cg"))))
+      (properties `((upstream-name . "BPCells")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'do-not-tune
+             (lambda _
+               (substitute* "configure"
+                 (("\"-march=native\"") "\"\"")))))))
+      (inputs (list hdf5 zlib))
+      (propagated-inputs (list r-dplyr
+                               r-ggplot2
+                               r-ggrepel
+                               r-hexbin
+                               r-magrittr
+                               r-matrix
+                               r-patchwork
+                               r-rcolorbrewer
+                               r-rcpp
+                               r-rcppeigen
+                               r-rlang
+                               r-scales
+                               r-scattermore
+                               r-stringr
+                               r-tibble
+                               r-tidyr
+                               r-vctrs))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/bnprks/BPCells/")
+      (synopsis "Single cell counts matrices to PCA")
+      (description
+       "This is a package providing efficient operations for single cell
+ATAC-seq fragments and RNA counts matrices.  It is interoperable with standard
+file formats, and introduces efficient bit-packed formats that allow large
+storage savings and increased read speeds.")
+      (license license:gpl3))))
+
 (define-public r-btools
   (let ((commit "fa21d4ca01d37ea4d98b45582453f3bf95cbc2b5")
         (revision "1"))
@@ -821,6 +874,78 @@ table by a conditional quantile regression method.  The distributional
 attributes of microbiome data - zero-inflation and over-dispersion, are
 simultaneously considered.")
       (license license:gpl3))))
+
+(define-public r-numbat
+  (let ((commit "4ab7752e7d267a3f443756675728521a9b0a7295")
+        (revision "1"))
+    (package
+      (name "r-numbat")
+      (version (git-version "1.3.2-1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/kharchenkolab/numbat")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0wa2cz5iy570r2a57bd74jramxayvfhmxznb0vq4vyk1ia8l5jd1"))))
+      (properties `((upstream-name . "numbat")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-ape
+             r-catools
+             r-data-table
+             r-dendextend
+             r-dplyr
+             r-genomicranges
+             r-ggplot2
+             r-ggraph
+             r-ggtree
+             r-glue
+             r-igraph
+             r-iranges
+             r-logger
+             r-magrittr
+             r-matrix
+             r-optparse
+             r-paralleldist
+             r-patchwork
+             r-pryr
+             r-purrr
+             r-r-utils
+             r-rcpp
+             r-rcpparmadillo
+             r-rhpcblasctl
+             r-roptim
+             r-scales
+             r-scistreer
+             r-stringr
+             r-tibble
+             r-tidygraph
+             r-tidyr
+             r-vcfr
+             r-zoo))
+      (home-page "https://github.com/kharchenkolab/numbat")
+      (synopsis "Haplotype-Aware CNV Analysis from scRNA-Seq")
+      (description
+       "This package provides a computational method that infers copy number
+variations (CNVs) in cancer scRNA-seq data and reconstructs the tumor
+phylogeny.  numbat integrates signals from gene expression, allelic ratio, and
+population haplotype structures to accurately infer allele-specific CNVs in
+single cells and reconstruct their lineage relationship.  numbat can be used
+to:
+
+@enumerate
+@item detect allele-specific copy number variations from single-cells;
+@item differentiate tumor versus normal cells in the tumor microenvironment;
+@item infer the clonal architecture and evolutionary history of profiled
+tumors.
+@end enumerate
+
+numbat does not require tumor/normal-paired DNA or genotype data, but operates
+solely on the donor scRNA-data data (for example, 10x Cell Ranger output).")
+      (license license:expat))))
 
 (define-public r-p2data
   (let ((commit "7d4c0e17d7899f9d9b08ab2bf455abe150912f4c")
@@ -3859,17 +3984,21 @@ file formats including SAM/BAM, Wiggle/BigWig, BED, GFF/GTF, VCF.")
 (define-public python-dnaio
   (package
     (name "python-dnaio")
-    (version "0.6.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dnaio" version))
        (sha256
         (base32
-         "14v5yyasq2bz34j38wi3xfcp06jj7l35ppibjcn95l2n73hz3zwi"))))
-    (build-system python-build-system)
+         "064xc4j8plb4fpkm8mw55715mvpvi2sxsknpjx18c2zh904salfy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
     (native-inputs
-     (list python-cython python-pytest python-xopen))
+     (list python-cython python-pytest python-setuptools-scm))
+    (propagated-inputs
+     (list python-xopen))
     (home-page "https://github.com/marcelm/dnaio/")
     (synopsis "Read FASTA and FASTQ files efficiently")
     (description
@@ -3941,28 +4070,40 @@ annotations of the genome.")
 (define-public cutadapt
   (package
     (name "cutadapt")
-    (version "2.1")
+    (version "4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cutadapt" version))
               (sha256
                (base32
-                "1vqmsfkm6llxzmsz9wcfcvzx9a9f8iabvwik2rbyn7nc4wm25z89"))))
-    (build-system python-build-system)
+                "0xgsv88mrlw2b1radmd1104y7bg8hvv54ay7xfdpnjiw2jgkrha9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'always-cythonize
-           (lambda _
-             (delete-file "src/cutadapt/_align.c")
-             ;; If PKG-INFO exists, setup.py decides not to run Cython.
-             (substitute* "setup.py"
-               (("os.path.exists\\('PKG-INFO'\\):")
-                "os.path.exists('totally-does-not-exist'):")))))))
+     (list
+      #:test-flags
+      '(list "-k" "not test_no_read_only_comment_fasta_input")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test
+            (lambda _
+              (let ((site (string-append
+                           #$output "/lib/python"
+                           #$(version-major+minor
+                              (package-version python))
+                           "/site-packages")))
+                (substitute* "tests/test_command.py"
+                  (("env=\\{\"LC_CTYPE\": \"C\"\\},")
+                   (string-append "env={\"LC_CTYPE\": \"C\", \"GUIX_PYTHONPATH\": \""
+                                  (getenv "GUIX_PYTHONPATH") ":" site
+                                  "\"},")))))))))
     (inputs
      (list python-dnaio python-xopen))
     (native-inputs
-     (list python-cython python-pytest python-setuptools-scm))
+     (list python-cython
+           python-pytest
+           python-pytest-mock
+           python-pytest-timeout
+           python-setuptools-scm))
     (home-page "https://cutadapt.readthedocs.io/en/stable/")
     (synopsis "Remove adapter sequences from nucleotide sequencing reads")
     (description
@@ -9673,7 +9814,7 @@ differently labelled data.")
 (define-public r-pando
   (package
     (name "r-pando")
-    (version "1.0.1")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -9682,21 +9823,22 @@ differently labelled data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c83anzdrbvg47p9xns2bxpjlx5z328can3jmzilw6rygwp7hyii"))))
+        (base32 "04kr1b28p5j7h48g32cldkg87xcmxnmd4kspygkfs7a4amihpi66"))))
     (properties `((upstream-name . "Pando")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bayestestr
-           r-brms
            r-foreach
            r-genomicranges
            r-ggplot2
            r-ggpointdensity
            r-ggraph
            r-glmnetutils
+           r-grr
            r-iranges
            r-irlba
            r-matrix
+           r-matrixgenerics
            r-motifmatchr
            r-pals
            r-patchwork
@@ -9706,8 +9848,7 @@ differently labelled data.")
            r-tfbstools
            r-tidygraph
            r-tidyverse
-           r-uwot
-           r-xgboost))
+           r-uwot))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/quadbiolab/Pando")
     (synopsis "Infer regulomes from multi-modal single-cell genomics data")
@@ -12284,7 +12425,7 @@ Browser.")
 (define-public bismark
   (package
     (name "bismark")
-    (version "0.20.1")
+    (version "0.24.1")
     (source
      (origin
        (method git-fetch)
@@ -12294,69 +12435,90 @@ Browser.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xchm3rgilj6vfjnyzfzzymfd7djr64sbrmrvs3njbwi66jqbzw9"))))
+         "0j4dy33769f0jr2w1brb710zxwpg3zwjlnvlcpi5pr6mqc8dkg8n"))
+       (snippet '(delete-file "plotly/plot.ly"))))
     (build-system perl-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:modules ((guix build utils)
+     (list
+      #:tests? #f                       ; there are no tests
+      #:modules '((guix build utils)
                   (ice-9 popen)
                   (srfi srfi-26)
                   (guix build perl-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         ;; The bundled plotly.js is minified.
-         (add-after 'unpack 'replace-plotly.js
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((file (assoc-ref inputs "plotly.js"))
-                    (installed "plotly/plotly.js"))
-               (let ((minified (open-pipe* OPEN_READ "uglifyjs" file)))
-                 (call-with-output-file installed
-                   (cut dump-port minified <>))))
-             #t))
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (share   (string-append out "/share/bismark"))
-                    (docdir  (string-append out "/share/doc/bismark"))
-                    (docs    '("Docs/Bismark_User_Guide.html"))
-                    (scripts '("bismark"
-                               "bismark_genome_preparation"
-                               "bismark_methylation_extractor"
-                               "bismark2bedGraph"
-                               "bismark2report"
-                               "coverage2cytosine"
-                               "deduplicate_bismark"
-                               "filter_non_conversion"
-                               "bam2nuc"
-                               "bismark2summary"
-                               "NOMe_filtering")))
-               (substitute* "bismark2report"
-                 (("\\$RealBin/plotly")
-                  (string-append share "/plotly")))
-               (mkdir-p share)
-               (mkdir-p docdir)
-               (mkdir-p bin)
-               (for-each (lambda (file) (install-file file bin))
-                         scripts)
-               (for-each (lambda (file) (install-file file docdir))
-                         docs)
-               (copy-recursively "Docs/Images" (string-append docdir "/Images"))
-               (copy-recursively "plotly"
-                                 (string-append share "/plotly"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'replace-plotly.js
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((share (string-append #$output "/share/bismark"))
+                     (file (assoc-ref inputs "plotly.js"))
+                     (installed "plotly/plotly.js"))
+                ;; The bundled plotly.js is minified.
+                (let ((minified (open-pipe* OPEN_READ "uglifyjs" file)))
+                  (call-with-output-file installed
+                    (cut dump-port minified <>)))
+                (substitute* "bismark2report"
+                  (("plotly_template.tpl")
+                   (string-append share "/plotly/plotly_template.tpl"))
+                  (("my \\$plotly_code = read_report_template\\('plot.ly'\\);")
+                   (string-append "\
+my $plotly_code = read_report_template('" share "/plotly/plotly.js');
+$plotly_code = \"<script>\" . $plotly_code . \"</script>\";"))))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "bismark"
+                (("\\(\\!system \"which samtools >/dev/null 2>&1\"\\)")
+                 "(\"true\")")
+                (("\\$samtools_path = `which samtools`;")
+                 (string-append "$samtools_path = '"
+                                (search-input-file inputs "/bin/samtools")
+                                "';"))
+                (("\\$path_to_bowtie2 = 'bowtie2'")
+                 (string-append "$path_to_bowtie2 = '"
+                                (search-input-file inputs "/bin/bowtie2")
+                                "'"))
+                (("\\$path_to_hisat2 = 'hisat2'")
+                 (string-append "$path_to_hisat2 = '"
+                                (search-input-file inputs "/bin/hisat2")
+                                "'"))
+                (("\\$path_to_minimap2 = 'minimap2'")
+                 (string-append "$path_to_minimap2 = '"
+                                (search-input-file inputs "/bin/minimap2")
+                                "'")))))
+          (delete 'build)
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin"))
+                     (share   (string-append #$output "/share/bismark"))
+                     (docdir  (string-append #$output "/share/doc/bismark"))
+                     (scripts '("bismark"
+                                "bismark_genome_preparation"
+                                "bismark_methylation_extractor"
+                                "bismark2bedGraph"
+                                "bismark2report"
+                                "coverage2cytosine"
+                                "deduplicate_bismark"
+                                "filter_non_conversion"
+                                "bam2nuc"
+                                "bismark2summary"
+                                "NOMe_filtering")))
+                (mkdir-p share)
+                (mkdir-p docdir)
+                (mkdir-p bin)
+                (for-each (lambda (file) (install-file file bin))
+                          scripts)
+                (copy-recursively "docs" docdir)
+                (copy-recursively "plotly"
+                                  (string-append share "/plotly"))
 
-               ;; Fix references to gunzip
-               (substitute* (map (lambda (file)
-                                   (string-append bin "/" file))
-                                 scripts)
-                 (("\"gunzip -c")
-                  (string-append "\"" (assoc-ref inputs "gzip")
-                                 "/bin/gunzip -c")))
-               #t))))))
+                ;; Fix references to gunzip
+                (substitute* (map (lambda (file)
+                                    (string-append bin "/" file))
+                                  scripts)
+                  (("\"gunzip -c")
+                   (string-append "\"" (assoc-ref inputs "gzip")
+                                  "/bin/gunzip -c")))))))))
     (inputs
-     (list gzip perl-carp perl-getopt-long))
+     (list bowtie gzip hisat2 minimap2 perl-carp perl-getopt-long samtools))
     (native-inputs
      `(("plotly.js"
         ,(origin
@@ -14643,6 +14805,32 @@ including:
 visualize the results within R framework.  The disgenet2r package is designed
 to retrieve data from DisGeNET v6.0 (Jan, 2019).")
       (license license:expat))))
+
+(define-public r-dtmm
+  (let ((commit "3a553b1e17d27d90a496d2e23e98e5dfe4abc266")
+        (revision "1"))
+    (package
+      (name "r-dtmm")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/MaStatLab/DTMM")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19279wafqfs9gk9489f8zsp52qcdb0mkxgvqszq4i733ckr2mmkk"))))
+      (properties `((upstream-name . "DTMM")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ape r-rcpp r-rcpparmadillo))
+      (home-page "https://github.com/MaStatLab/DTMM")
+      (synopsis "Dirichlet-tree multinomial mixtures")
+      (description
+       "This package lets you perform unsupervised clustering of amplicon
+sequencing data in microbiome studies with the Dirichlet-tree Multinomial
+Mixtures.")
+      (license license:cc0))))
 
 (define-public r-dyngen
   (package
@@ -17252,6 +17440,30 @@ other data types e.g.: regulons (SCENIC), clusters from Seurat, trajectory
 information...  The package can also be used to extract data from @code{.loom}
 files.")
       (license license:expat))))
+
+(define-public rscape
+  (package
+    (name "rscape")
+    (version "2.0.0.q")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://eddylab.org/software/rscape/"
+                                  "rscape_v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1jabvm3fzh8iy4803ns12v1fsy28x6wdy8wx4ik8y0mfac4h787q"))))
+    (build-system gnu-build-system)
+    (propagated-inputs (list gsl openmpi))
+    (native-inputs (list automake autoconf))
+    (home-page "https://github.com/EddyRivasLab/R-scape")
+    (synopsis "RNA structural covariation above phylogenetic expectation")
+    (description
+     "R-scape discovers RNA secondary structure consensus elements.
+These elements include riboswitches and ribozymes.  It utilizes probabilistic
+modeling of sequence alignments, explicitly considering folding dependencies.
+The tool enables the de novo search for new structural elements and
+facilitates comparative analysis of known RNA families.")
+    (license license:bsd-3)))
 
 (define-public r-seurat-utils
   (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")

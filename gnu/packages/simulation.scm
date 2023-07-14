@@ -569,108 +569,111 @@ FFC is part of the FEniCS Project.")
                               "$ENV{CATCH_DIR}/include" back "\n")))))))
     (build-system cmake-build-system)
     (inputs
-     `(("blas" ,openblas)
-       ("boost" ,boost)
-       ("eigen" ,eigen)
-       ("hdf5" ,hdf5-parallel-openmpi)
-       ("lapack" ,lapack)
-       ("libxml2" ,libxml2)
-       ("openmpi" ,openmpi)
-       ("python" ,python-3)
-       ("scotch" ,pt-scotch32)
-       ("suitesparse" ,suitesparse)
-       ("sundials" ,sundials-openmpi)
-       ("zlib" ,zlib)))
+     (list openblas
+           boost
+           eigen
+           hdf5-parallel-openmpi
+           lapack
+           libxml2
+           openmpi
+           python-3
+           pt-scotch32
+           suitesparse
+           sundials-openmpi
+           zlib))
     (native-inputs
-     `(("catch" ,catch2-1)
-       ("pkg-config" ,pkg-config)))
+     (list catch-framework pkg-config))
     (propagated-inputs
-     `(("ffc" ,python-fenics-ffc)
-       ("petsc" ,petsc-openmpi)
-       ("slepc" ,slepc-openmpi)))
+     (list python-fenics-ffc petsc-openmpi slepc-openmpi))
     (arguments
-     `(#:configure-flags
-       `("-DDOLFIN_ENABLE_DOCS:BOOL=OFF"
-         "-DDOLFIN_ENABLE_HDF5:BOOL=ON"
-         "-DDOLFIN_ENABLE_MPI:BOOL=ON"
-         "-DDOLFIN_ENABLE_PARMETIS:BOOL=OFF"
-         "-DDOLFIN_ENABLE_SCOTCH:BOOL=ON"
-         "-DDOLFIN_ENABLE_SUNDIALS:BOOL=ON"
-         "-DDOLFIN_ENABLE_TRILINOS:BOOL=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-usr-bin-file 'mpi-setup
-           ,%openmpi-setup)
-         (add-after 'patch-source-shebangs 'set-paths
-           (lambda _
-             ;; Define paths to store locations.
-             (setenv "BLAS_DIR" (assoc-ref %build-inputs "blas"))
-             (setenv "CATCH_DIR" (assoc-ref %build-inputs "catch"))
-             (setenv "LAPACK_DIR" (assoc-ref %build-inputs "lapack"))
-             (setenv "PETSC_DIR" (assoc-ref %build-inputs "petsc"))
-             (setenv "SLEPC_DIR" (assoc-ref %build-inputs "slepc"))
-             (setenv "SCOTCH_DIR" (assoc-ref %build-inputs "scotch"))
-             (setenv "SUNDIALS_DIR" (assoc-ref %build-inputs "sundials"))
-             (setenv "UMFPACK_DIR" (assoc-ref %build-inputs "suitesparse"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; The Dolfin repository uses git-lfs, whereby web links are
-             ;; substituted for large files.  Guix does not currently support
-             ;; git-lfs, so only the links are downloaded.  The tests that
-             ;; require the absent meshes cannot run and are skipped.
-             ;;
-             ;; One serial test fails and is skipped.
-             ;; i) demo_multimesh-stokes_serial:
-             ;;   Warning: Found no facets matching domain for boundary
-             ;;   condition.
-             ;;
-             ;; One mpi test fails and is skipped.
-             ;; i) demo_stokes-iterative_mpi:
-             ;;   The MPI_Comm_rank() function was called before MPI_INIT was
-             ;;   invoked
-             (call-with-output-file "CTestCustom.cmake"
-               (lambda (port)
-                 (display
-                   (string-append
-                    "set(CTEST_CUSTOM_TESTS_IGNORE "
-                    "demo_bcs_serial "
-                    "demo_bcs_mpi "
-                    "demo_eigenvalue_serial "
-                    "demo_eigenvalue_mpi "
-                    "demo_navier-stokes_serial "
-                    "demo_navier-stokes_mpi "
-                    "demo_stokes-taylor-hood_serial "
-                    "demo_stokes-taylor-hood_mpi "
-                    "demo_subdomains_serial "
-                    "demo_advection-diffusion_serial "
-                    "demo_advection-diffusion_mpi "
-                    "demo_auto-adaptive-navier-stokes_serial "
-                    "demo_contact-vi-snes_serial "
-                    "demo_contact-vi-snes_mpi "
-                    "demo_contact-vi-tao_serial "
-                    "demo_contact-vi-tao_mpi "
-                    "demo_curl-curl_serial "
-                    "demo_curl-curl_mpi "
-                    "demo_dg-advection-diffusion_serial "
-                    "demo_dg-advection-diffusion_mpi "
-                    "demo_elasticity_serial "
-                    "demo_elasticity_mpi "
-                    "demo_elastodynamics_serial "
-                    "demo_elastodynamics_mpi "
-                    "demo_lift-drag_serial "
-                    "demo_lift-drag_mpi "
-                    "demo_mesh-quality_serial "
-                    "demo_mesh-quality_mpi "
-                    "demo_multimesh-stokes_serial "
-                    ")\n") port)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "make" "unittests")
-               (invoke "make" "demos")
-               (invoke "ctest" "-R" "unittests")
-               (invoke "ctest" "-R" "demo" "-R" "serial")
-               (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
+     (list #:configure-flags #~`("-DDOLFIN_ENABLE_DOCS:BOOL=OFF"
+                                 "-DDOLFIN_ENABLE_HDF5:BOOL=ON"
+                                 "-DDOLFIN_ENABLE_MPI:BOOL=ON"
+                                 "-DDOLFIN_ENABLE_PARMETIS:BOOL=OFF"
+                                 "-DDOLFIN_ENABLE_SCOTCH:BOOL=ON"
+                                 "-DDOLFIN_ENABLE_SUNDIALS:BOOL=ON"
+                                 "-DDOLFIN_ENABLE_TRILINOS:BOOL=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'patch-usr-bin-file 'mpi-setup
+                 #$%openmpi-setup)
+               (add-after 'patch-source-shebangs 'set-paths
+                 (lambda _
+                   ;; Define paths to store locations.
+                   (setenv "BLAS_DIR"
+                           #$(this-package-input "openblas"))
+                   (setenv "CATCH_DIR"
+                           #$(this-package-input "catch"))
+                   (setenv "LAPACK_DIR"
+                           #$(this-package-input "lapack"))
+                   (setenv "PETSC_DIR"
+                           #$(this-package-input "petsc"))
+                   (setenv "SLEPC_DIR"
+                           #$(this-package-input "slepc"))
+                   (setenv "SCOTCH_DIR"
+                           #$(this-package-input "scotch"))
+                   (setenv "SUNDIALS_DIR"
+                           #$(this-package-input "sundials"))
+                   (setenv "UMFPACK_DIR"
+                           #$(this-package-input "suitesparse"))))
+               (add-before 'check 'pre-check
+                 (lambda _
+                   ;; The Dolfin repository uses git-lfs, whereby web links are
+                   ;; substituted for large files.  Guix does not currently support
+                   ;; git-lfs, so only the links are downloaded.  The tests that
+                   ;; require the absent meshes cannot run and are skipped.
+                   ;;
+                   ;; One serial test fails and is skipped.
+                   ;; i) demo_multimesh-stokes_serial:
+                   ;;   Warning: Found no facets matching domain for boundary
+                   ;;   condition.
+                   ;;
+                   ;; One mpi test fails and is skipped.
+                   ;; i) demo_stokes-iterative_mpi:
+                   ;;   The MPI_Comm_rank() function was called before MPI_INIT was
+                   ;;   invoked
+                   (call-with-output-file "CTestCustom.cmake"
+                     (lambda (port)
+                       (display (string-append
+                                 "set(CTEST_CUSTOM_TESTS_IGNORE "
+                                 "demo_bcs_serial "
+                                 "demo_bcs_mpi "
+                                 "demo_eigenvalue_serial "
+                                 "demo_eigenvalue_mpi "
+                                 "demo_navier-stokes_serial "
+                                 "demo_navier-stokes_mpi "
+                                 "demo_stokes-taylor-hood_serial "
+                                 "demo_stokes-taylor-hood_mpi "
+                                 "demo_subdomains_serial "
+                                 "demo_advection-diffusion_serial "
+                                 "demo_advection-diffusion_mpi "
+                                 "demo_auto-adaptive-navier-stokes_serial "
+                                 "demo_contact-vi-snes_serial "
+                                 "demo_contact-vi-snes_mpi "
+                                 "demo_contact-vi-tao_serial "
+                                 "demo_contact-vi-tao_mpi "
+                                 "demo_curl-curl_serial "
+                                 "demo_curl-curl_mpi "
+                                 "demo_dg-advection-diffusion_serial "
+                                 "demo_dg-advection-diffusion_mpi "
+                                 "demo_elasticity_serial "
+                                 "demo_elasticity_mpi "
+                                 "demo_elastodynamics_serial "
+                                 "demo_elastodynamics_mpi "
+                                 "demo_lift-drag_serial "
+                                 "demo_lift-drag_mpi "
+                                 "demo_mesh-quality_serial "
+                                 "demo_mesh-quality_mpi "
+                                 "demo_multimesh-stokes_serial "
+                                 ")\n") port)))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "make" "unittests")
+                     (invoke "make" "demos")
+                     (invoke "ctest" "-R" "unittests")
+                     (invoke "ctest" "-R" "demo" "-R" "serial")
+                     (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
     (home-page "https://bitbucket.org/fenics-project/dolfin/")
     (synopsis "Problem solving environment for differential equations")
     (description
@@ -708,101 +711,114 @@ user interface to the FEniCS core components and external libraries.")
     (name "fenics")
     (build-system python-build-system)
     (inputs
-     `(("pybind11" ,pybind11)
-       ("python-matplotlib" ,python-matplotlib)
-       ,@(alist-delete "python" (package-inputs fenics-dolfin))))
+     (modify-inputs (package-inputs fenics-dolfin)
+       (delete "python")
+       (prepend pybind11 python-matplotlib)))
     (native-inputs
-     `(("cmake" ,cmake-minimal)
-       ("ply" ,python-ply)
-       ("pytest" ,python-pytest)
-       ("python-decorator" ,python-decorator)
-       ("python-pkgconfig" ,python-pkgconfig)
-       ,@(package-native-inputs fenics-dolfin)))
+     (modify-inputs (package-native-inputs fenics-dolfin)
+       (prepend cmake-minimal python-ply python-pytest python-decorator)))
     (propagated-inputs
-     `(("dolfin" ,fenics-dolfin)
-       ("petsc4py" ,python-petsc4py)
-       ("slepc4py" ,python-slepc4py)))
+     (list fenics-dolfin
+           python-petsc4py
+           python-slepc4py
+
+           ;; 'dolfin/jit/jit.py' parses 'dolfin.pc' at run time.
+           python-pkgconfig))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "python/setup.py"
-               (("pybind11==") "pybind11>="))))
-         (add-after 'patch-source-shebangs 'set-paths
-           (lambda _
-             ;; Define paths to store locations.
-             (setenv "PYBIND11_DIR" (assoc-ref %build-inputs "pybind11"))
-             ;; Move to python sub-directory.
-             (chdir "python")))
-         (add-after 'build 'mpi-setup
-           ,%openmpi-setup)
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Exclude three tests that generate
-             ;; 'NotImplementedError' in matplotlib version 3.1.2.
-             ;; See
-             ;; <https://github.com/matplotlib/matplotlib/issues/15382>.
-             ;; Also exclude tests that require meshes supplied by
-             ;; git-lfs.
-             (substitute* "demo/test.py"
-               (("(.*stem !.*)" line)
-                (string-append
-                 line "\n"
-                 "excludeList = [\n"
-                 "'built-in-meshes', \n"
-                 "'hyperelasticity', \n"
-                 "'elasticity', \n"
-                 "'multimesh-quadrature', \n"
-                 "'multimesh-marking', \n"
-                 "'mixed-poisson-sphere', \n"
-                 "'mesh-quality', \n"
-                 "'lift-drag', \n"
-                 "'elastodynamics', \n"
-                 "'dg-advection-diffusion', \n"
-                 "'curl-curl', \n"
-                 "'contact-vi-tao', \n"
-                 "'contact-vi-snes', \n"
-                 "'collision-detection', \n"
-                 "'buckling-tao', \n"
-                 "'auto-adaptive-navier-stokes', \n"
-                 "'advection-diffusion', \n"
-                 "'subdomains', \n"
-                 "'stokes-taylor-hood', \n"
-                 "'stokes-mini', \n"
-                 "'navier-stokes', \n"
-                 "'eigenvalue']\n"
-                 "demos = ["
-                 "d for d in demos if d[0].stem not in "
-                 "excludeList]\n")))
-             (setenv "HOME" (getcwd))
-             ;; Restrict OpenBLAS to MPI-only in preference to MPI+OpenMP.
-             (setenv "OPENBLAS_NUM_THREADS" "1")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "test"
-                 (invoke
-                  "pytest" "unit"
-                  ;; The test test_snes_set_from_options() in the file
-                  ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
-                  "--ignore" "unit/nls/test_PETScSNES_solver.py"
-                  ;; Fails with a segfault.
-                  "--ignore" "unit/io/test_XDMF.py")))))
-         (add-after 'install 'install-demo-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((demos (string-append
-                            (assoc-ref outputs "out")
-                            "/share/python-dolfin/demo")))
-               (mkdir-p demos)
-               (with-directory-excursion "demo"
-                 (for-each (lambda (file)
-                             (let* ((dir (dirname file))
-                                    (tgt-dir (string-append demos "/" dir)))
-                               (unless (equal? "." dir)
-                                 (mkdir-p tgt-dir)
-                                 (install-file file tgt-dir))))
-                           (find-files "." ".*\\.(py|gz|xdmf)$")))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "python/setup.py"
+                     (("pybind11==")
+                      "pybind11>="))))
+               (add-after 'unpack 'set-dolfin-pc-file-name
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Instead of cluttering the user's 'PKG_CONFIG_PATH' environment
+                   ;; variable, hard-code the 'dolfin.pc' absolute file name.
+                   (let ((pc-file (search-input-file inputs
+                                                     "/lib/pkgconfig/dolfin.pc")))
+                     (substitute* "python/dolfin/jit/jit.py"
+                       (("pkgconfig\\.parse\\(\"dolfin\"\\)")
+                        (string-append "pkgconfig.parse(\"" pc-file
+                                       "\")"))))))
+               (add-after 'patch-source-shebangs 'set-paths
+                 (lambda _
+                   ;; Define paths to store locations.
+                   (setenv "PYBIND11_DIR" #$(this-package-input "pybind11"))
+                   ;; Move to python sub-directory.
+                   (chdir "python")))
+               (add-after 'build 'mpi-setup
+                 #$%openmpi-setup)
+               (add-before 'check 'pre-check
+                 (lambda _
+                   ;; Exclude three tests that generate
+                   ;; 'NotImplementedError' in matplotlib version 3.1.2.
+                   ;; See
+                   ;; <https://github.com/matplotlib/matplotlib/issues/15382>.
+                   ;; Also exclude tests that require meshes supplied by
+                   ;; git-lfs.
+                   (substitute* "demo/test.py"
+                     (("(.*stem !.*)" line)
+                      (string-append line
+                                     "\n"
+                                     "excludeList = [\n"
+                                     "'built-in-meshes', \n"
+                                     "'hyperelasticity', \n"
+                                     "'elasticity', \n"
+                                     "'multimesh-quadrature', \n"
+                                     "'multimesh-marking', \n"
+                                     "'mixed-poisson-sphere', \n"
+                                     "'mesh-quality', \n"
+                                     "'lift-drag', \n"
+                                     "'elastodynamics', \n"
+                                     "'dg-advection-diffusion', \n"
+                                     "'curl-curl', \n"
+                                     "'contact-vi-tao', \n"
+                                     "'contact-vi-snes', \n"
+                                     "'collision-detection', \n"
+                                     "'buckling-tao', \n"
+                                     "'auto-adaptive-navier-stokes', \n"
+                                     "'advection-diffusion', \n"
+                                     "'subdomains', \n"
+                                     "'stokes-taylor-hood', \n"
+                                     "'stokes-mini', \n"
+                                     "'navier-stokes', \n"
+                                     "'eigenvalue']\n"
+                                     "demos = ["
+                                     "d for d in demos if d[0].stem not in "
+                                     "excludeList]\n")))
+                   (setenv "HOME"
+                           (getcwd))
+                   ;; Restrict OpenBLAS to MPI-only in preference to MPI+OpenMP.
+                   (setenv "OPENBLAS_NUM_THREADS" "1")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "test"
+                       (invoke "pytest"
+                               "unit"
+                               ;; The test test_snes_set_from_options() in the file
+                               ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
+                               "--ignore"
+                               "unit/nls/test_PETScSNES_solver.py"
+                               ;; Fails with a segfault.
+                               "--ignore"
+                               "unit/io/test_XDMF.py")))))
+               (add-after 'install 'install-demo-files
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((demos (string-append (assoc-ref outputs "out")
+                                                "/share/python-dolfin/demo")))
+                     (mkdir-p demos)
+                     (with-directory-excursion "demo"
+                       (for-each (lambda (file)
+                                   (let* ((dir (dirname file))
+                                          (tgt-dir (string-append
+                                                    demos "/" dir)))
+                                     (unless (equal? "." dir)
+                                       (mkdir-p tgt-dir)
+                                       (install-file file tgt-dir))))
+                                 (find-files "." ".*\\.(py|gz|xdmf)$")))))))))
     (home-page "https://fenicsproject.org/")
     (synopsis "High-level environment for solving differential equations")
     (description

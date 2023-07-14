@@ -614,7 +614,10 @@ Go.  It also includes runtime support libraries for these languages.")
   (append %gcc-10-x86_64-micro-architectures
           '("sapphirerapids" "alterlake" "rocketlake" ;Intel
 
-            "btver1" "btver2")))                  ;AMD
+            "btver1" "btver2"                     ;AMD
+
+            ;; psABI micro-architecture levels
+            "x86_64-v1" "x86_64-v2" "x86_64-v3" "x86_64-v4")))
 
 ;; Suitable '-march' values for GCC 12.
 (define %gcc-12-aarch64-micro-architectures

@@ -171,14 +171,14 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20230321")
+    (version "20230622")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "0ml2z9ij674bd4227566n0547pcpxpmimp4xw4hj52kl1265czgd"))))
+        (base32 "007ckj2381bmwpxy5zmy2m19p2hxaj7ld80b5lv7i798c2fwj15l"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal))
@@ -211,7 +211,7 @@ generate such a compilation database.")
          (string-append
           "--with-default-sys-path=" #$output "/share/mk"))
       #:make-flags
-      #~(list "INSTALL=install"))) ;; use coreutils install
+      #~(list "INSTALL=install")))      ; use coreutils' install
     (home-page "http://www.crufty.net/help/sjg/bmake.htm")
     (synopsis "BSD's make")
     (description

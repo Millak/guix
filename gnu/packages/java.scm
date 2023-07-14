@@ -1518,8 +1518,8 @@ blacklisted.certs.pem"
                 "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
 
 (define-public openjdk19
-  (make-openjdk openjdk18 "19.0.1"
-                "0kyalb391znw6idmfn3dsx6c2mal1hl63f0bwa4mlnsxfl380bi1"
+  (make-openjdk openjdk18 "19.0.2"
+                "08kvx7n8qhhfl25pig966881j5h4x7y0pf4brq16x0283fc0f4d4"
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk18)
       ((#:phases phases)
@@ -1536,6 +1536,33 @@ blacklisted.certs.pem"
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk19)
+
+
+(define-public jbr17
+  (package
+    (inherit openjdk17)
+    (name "jbr")
+    (version "17.0.7-b1020")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JetBrains/JetBrainsRuntime.git")
+                     (commit (string-append "jb" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
+              (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
+    (synopsis "JetBrains Java Runtime")
+    (description "This package provides a Java runtime environment for
+and Java development kit.  It supports enhanced class redefinition (DCEVM),
+features optional JCEF, a framework for embedding Chromium-based browsers,
+includes a number of improvements in font rendering, keyboards support,
+windowing/focus subsystems, HiDPI, accessibility, and performance,
+provides better desktop integration and bugfixes not yet present in
+OpenJDK.")
+    (home-page "https://www.jetbrains.com/")
+    (license license:gpl2+)))
 
 
 (define-public ant/java8

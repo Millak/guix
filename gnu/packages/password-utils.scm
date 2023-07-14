@@ -209,7 +209,7 @@ human.")
            readline
            yubikey-personalization      ; XC_YUBIKEY
            zlib))
-    (home-page "https://www.keepassxc.org")
+    (home-page "https://keepassxc.org")
     (synopsis "Password manager")
     (description "KeePassXC is a password manager or safe which helps you to
 manage your passwords in a secure way.  You can put all your passwords in one
@@ -531,6 +531,45 @@ them out, at the source.")
 random passwords that pass the checks.")
     (license license:gpl2+)))
 
+(define-public passwdqc
+  (package
+    (name "passwdqc")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.openwall.com/passwdqc/passwdqc"
+                                  "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1aq40v5094bhnj86v4i2nmqkybmzzp20q7jb92jgc860cibm07zz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests provided
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "DESTDIR=" #$output)
+              "BINDIR=/bin"
+              "DEVEL_LIBDIR=/lib"
+              "SHARED_LIBDIR_REL=."
+              "INCLUDEDIR=/include"
+              "MANDIR=/share/man"
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ;no configure script
+    (inputs (list linux-pam))
+    (home-page "https://www.openwall.com/passwdqc/")
+    (synopsis
+     "Password/passphrase strength checking and policy enforcement toolset")
+    (description
+     "Passwdqc is a password/passphrase strength checking and policy
+enforcement toolset, including an optional PAM module, @code{pam_passwdqc},
+command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
+@command{pwqgen}), and a library, @code{libpasswdqc}.")
+    (license (list license:bsd-3        ;manual pages
+                   license:bsd-1))))    ;code
+
 (define-public assword
   (package
     (name "assword")
@@ -618,6 +657,12 @@ any X11 window.")
                                  "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
                                  extension-dir
                                  "}\"\n"))))))
+         (add-before 'install 'patch-program-name
+           ;; Use pass not .pass-real in tmpdir and cmd_usage
+           (lambda _
+             (substitute* "src/password-store.sh"
+               (("^PROGRAM=.*$")
+                "PROGRAM=\"pass\"\n"))))
          (add-before 'install 'patch-passmenu-path
            ;; FIXME Wayland support requires ydotool and dmenu-wl packages
            ;; We are ignoring part of the script that gets executed if

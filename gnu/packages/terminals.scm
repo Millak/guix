@@ -23,7 +23,7 @@
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright @ 2020 luhux <luhux@outlook.com>
+;;; Copyright © 2020 luhux <luhux@outlook.com>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2022 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
@@ -244,7 +244,7 @@ keybindings have different functions.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -253,7 +253,7 @@ keybindings have different functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pcrghfi9p1p40d0339lcmhcv24hm1vxqr4rsdln34v385vqv14a"))))
+        (base32 "0mqn12h51nqdmn1ya7hw1l2z2893937dqq4b1zh32y6bazd807fl"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -1150,13 +1150,13 @@ than a terminal.")
 (define-public python-curtsies
   (package
     (name "python-curtsies")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curtsies" version))
        (sha256
-        (base32 "1zj284kacv0d10ab3amkkx37hcciylkqympsksi9bwzy6g7fyafb"))))
+        (base32 "1c122vgfsvksxkd41g2vij6hjsz97ikg59snclq4af2mkhs0zlb2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1441,7 +1441,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1452,7 +1452,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fz5nbx58058lzfhwgvlnrmhpc4bg8sv8fp48gdgp1l82ajbl3lg"))))
+        (base32 "17a7v32gxsy79cj1ap71ckrypxv7i9jv4lnibg0ymcpwk9zpwxjz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
@@ -1460,7 +1460,7 @@ basic input/output.")
        #:cargo-inputs
        (("rust-alacritty-config" ,rust-alacritty-config-0.1)
         ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
-        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.18)
+        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.19)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-clap" ,rust-clap-3)
         ("rust-cocoa" ,rust-cocoa-0.24)

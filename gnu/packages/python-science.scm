@@ -9,7 +9,7 @@
 ;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -324,13 +324,13 @@ implements several methods for sequential model-based optimization.
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "3.10.7")
+    (version "3.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trimesh" version))
        (sha256
-        (base32 "0bw55cwxlxds0j54naijh64sdb0rkscx4i1fy0ql94h96kw2p2ir"))))
+        (base32 "1ck4dkhz1x6sznd83c1hlvsv2m6d22fr82na0947j5jf47a4c1gl"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy))
@@ -346,7 +346,7 @@ implements several methods for sequential model-based optimization.
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-build
            (lambda _
-             (substitute* "trimesh/resources/templates/blender_boolean.py"
+             (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
                (("\\$MESH_PRE")
                 "'$MESH_PRE'")))))))
     (home-page "https://github.com/mikedh/trimesh")
@@ -669,27 +669,55 @@ provides an example implementation of the algorithm as well as scripts
 necessary for reproducing the experiments in the paper.")
     (license license:expat)))
 
+(define-public python-einops
+  (package
+    (name "python-einops")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch) ;PyPI misses .ipynb files required for tests
+              (uri (git-reference
+                    (url "https://github.com/arogozhnikov/einops")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h8p39kd7ylg99mh620xr20hg7v78x1jnj6vxwk31rlw2dmv2dpr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'set-backend
+                          (lambda _
+                            ;; Einops supports different backends, but we test
+                            ;; only NumPy for availability and simplicity.
+                            (setenv "EINOPS_TEST_BACKENDS" "numpy"))))))
+    (native-inputs (list jupyter
+                         python-hatchling
+                         python-nbconvert
+                         python-nbformat
+                         python-parameterized
+                         python-pytest))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://einops.rocks/")
+    (synopsis "Tensor operations for different backends")
+    (description "Einops provides a set of tensor operations for NumPy and
+multiple deep learning frameworks.")
+    (license license:expat)))
+
 (define-public python-xarray
   (package
     (name "python-xarray")
-    (version "0.15.1")
+    (version "2023.6.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "xarray" version))
               (sha256
                (base32
-                "1yx8j66b7rn10m2l6gmn8yr9cn38pi5cj0x0wwpy4hdnhy6i7qv4"))))
-    (build-system python-build-system)
+                "1339fz5gxkizq02h6vn19546x9p4c3nd9ipzpcg39h7gwhg26yi6"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools-scm python-pytest))
     (propagated-inputs
      (list python-numpy python-pandas))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest"))))))
     (home-page "https://github.com/pydata/xarray")
     (synopsis "N-D labeled arrays and datasets")
     (description "Xarray (formerly xray) makes working with labelled
@@ -701,6 +729,107 @@ concise, and less error-prone developer experience.  The package includes a
 large and growing library of domain-agnostic functions for advanced analytics
 and visualization with these data structures.")
     (license license:asl2.0)))
+
+(define-public python-xarray-einstats
+  (package
+    (name "python-xarray-einstats")
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch) ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/arviz-devs/xarray-einstats")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gg7p2lq7zxic64nbr6a8ynizs8rjzb29fnqib7hw3lmp13wsfm0"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-einops python-flit-core python-numba
+                         python-pytest))
+    (propagated-inputs (list python-numpy python-scipy python-xarray))
+    (home-page "https://einstats.python.arviz.org/en/latest/")
+    (synopsis "Stats, linear algebra and einops for xarray")
+    (description
+     "@code{xarray_einstats} provides wrappers around some NumPy and SciPy
+functions and around einops with an API and features adapted to xarray.")
+    (license license:asl2.0)))
+
+(define-public python-pytensor
+  (package
+    (name "python-pytensor")
+    (version "2.12.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pymc-devs/pytensor")
+                    (commit (string-append "rel-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1445fwbmzkdbndkq9hxiagdkfclgrnmpfzad40zqn6m5ry8192x8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Replace version manually because pytensor uses
+          ;; versioneer, which requires git metadata.
+          (add-after 'unpack 'versioneer
+            (lambda _
+              (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = pytensor/_version.py
+versionfile_build = pytensor/_version.py
+tag_prefix =
+parentdir_prefix = pytensor-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\"")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp") ; required for most tests
+                ;; Test discovery fails, have to call pytest by hand.
+                ;; test_tensor_basic.py file requires JAX.
+                (invoke "python" "-m" "pytest" "-vv"
+                        "--ignore" "tests/link/jax/test_tensor_basic.py"
+                        ;; Skip benchmark tests.
+                        "-k" (string-append
+                              "not test_elemwise_speed"
+                              " and not test_logsumexp_benchmark"
+                              " and not test_fused_elemwise_benchmark"
+                              " and not test_scan_multiple_output"
+                              " and not test_vector_taps_benchmark"
+                              " and not test_cython_performance")
+                        ;; Skip computationally intensive tests.
+                        "--ignore" "tests/scan/"
+                        "--ignore" "tests/tensor/"
+                        "--ignore" "tests/sandbox/"
+                        "--ignore" "tests/sparse/sandbox/")))))))
+    (native-inputs (list python-cython python-pytest python-versioneer))
+    (propagated-inputs (list python-cons
+                             python-etuples
+                             python-filelock
+                             python-logical-unification
+                             python-minikanren
+                             python-numba
+                             python-numpy
+                             python-scipy
+                             python-typing-extensions))
+    (home-page "https://pytensor.readthedocs.io/en/latest/")
+    (synopsis
+     "Library for mathematical expressions in multi-dimensional arrays")
+    (description
+     "PyTensor is a Python library that allows one to define, optimize, and
+efficiently evaluate mathematical expressions involving multi-dimensional
+arrays.  It is a fork of the Aesara library.")
+    (license license:bsd-3)))
 
 (define-public python-msgpack-numpy
   (package
@@ -891,18 +1020,18 @@ two-dimensional renderings such as scatter plots and histograms.
 (define-public python-pandas-flavor
   (package
     (name "python-pandas-flavor")
-    (version "0.2.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas_flavor" version))
        (sha256
         (base32
-         "12g4av8gpl6l83yza3h97j3f2jblqv69frlidrvdq8ny2rc6awbq"))))
+         "0473lkbdnsag3w5x65sxwjlyq0i7z938ssxqwn2cpcml282vksx1"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-pandas python-xarray))
-    (home-page "https://github.com/Zsailer/pandas_flavor")
+     (list python-lazy-loader python-packaging python-pandas python-xarray))
+    (home-page "https://github.com/pyjanitor-devs/pandas_flavor")
     (synopsis "Write your own flavor of Pandas")
     (description "Pandas 0.23 added a simple API for registering accessors
 with Pandas objects.  Pandas-flavor extends Pandas' extension API by
@@ -1153,6 +1282,9 @@ Mathematics (GLM) library to Python.")
               ;; appears to have changed.
               " and not test_exception_text"
               " and not test_worker_bad_args"
+
+              ;; These time out
+              " and not test_nanny_timeout"
 
               ;; These tests are rather flaky
               " and not test_quiet_quit_when_cluster_leaves"

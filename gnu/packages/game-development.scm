@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2018 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2017 David Thompson <davet@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018 Julian Graham <joolean@gmail.com>
@@ -2111,7 +2111,7 @@ that parenthetically inclined game developers need to make 2D (and eventually
 @item keyboard, mouse, controller input
 @item REPL-driven development model
 @end enumerate\n")
-    (license license:gpl3+)))
+    (license license:asl2.0)))
 
 (define-public bennu-game-development
   (package
@@ -2427,7 +2427,8 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
     (arguments
      (list
       ;; XXX: The sole test is failing on i686 due to a rounding error.
-      #:tests? (not (target-x86-32?))
+      #:tests? (not (or (target-x86-32?)
+                        (%current-target-system)))
       #:configure-flags #~(list "-DODE_WITH_LIBCCD_SYSTEM=ON")
       #:phases
       #~(modify-phases %standard-phases

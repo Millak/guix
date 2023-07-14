@@ -20,7 +20,7 @@
   #:use-module (gnu)
   #:use-module (gnu image)
   #:use-module (gnu tests)
-  #:autoload   (gnu system image) (system-image root-offset)
+  #:autoload   (gnu system image) (system-image root-offset image-with-os efi-disk-image)
   #:use-module (gnu system uuid)
   #:use-module (gnu system vm)
   #:use-module (gnu packages guile)
@@ -153,6 +153,10 @@
       (flags '(boot))
       (initializer dummy-initializer))))))
 
+;; A efi disk image with default partitions
+(define i6
+  (image-with-os efi-disk-image %simple-efi-os))
+
 (define (run-images-test)
   (define test
     (with-imported-modules '((srfi srfi-64)
@@ -202,10 +206,10 @@
               (disk-get-primary-partition-count (disk-new d2-device)))
 
             (test-equal "test"
-                (let* ((disk (disk-new d2-device))
-                       (partitions (disk-partitions disk))
-                       (boot-partition (find normal-partition? partitions)))
-                  (partition-get-name boot-partition)))
+              (let* ((disk (disk-new d2-device))
+                     (partitions (disk-partitions disk))
+                     (boot-partition (find normal-partition? partitions)))
+                (partition-get-name boot-partition)))
 
             ;; Image i3.
             (define i3-image
@@ -258,6 +262,15 @@
               (map (compose sector->byte partition-start)
                    (filter data-partition?
                            (disk-partitions (disk-new d5-device)))))
+
+            ;; Image i6.
+            (define i6-image
+              #$(system-image i6))
+            (define d6-device
+              (get-device i6-image))
+
+            (test-equal "gpt"
+              (disk-type-name (disk-probe d6-device)))
 
             (test-end)))))
 

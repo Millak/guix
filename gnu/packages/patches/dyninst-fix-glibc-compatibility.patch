@@ -1,0 +1,33 @@
+From f233c46ac7b415104d04e4bb74bd7a0fcf24a333 Mon Sep 17 00:00:00 2001
+From: Olivier Dion <odion@efficios.com>
+Date: Thu, 15 Jun 2023 12:02:08 -0400
+Subject: [PATCH] Fix compatibility with glibc 2.35
+
+Something has change with the visibility of the _r_debug structure in
+glibc 2.35.  See this issue
+<https://github.com/dyninst/dyninst/issues/1282>.
+
+This patch is essentially the upstream fix
+<https://github.com/dyninst/dyninst/commit/273803a4c643ed3506f9a69c6ec71d5ab337489c>
+backported.
+
+Signed-off-by: Olivier Dion <odion@efficios.com>
+---
+ dyninstAPI_RT/src/RTlinux.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/dyninstAPI_RT/src/RTlinux.c b/dyninstAPI_RT/src/RTlinux.c
+index fc231d0a4..2f17ff677 100644
+--- a/dyninstAPI_RT/src/RTlinux.c
++++ b/dyninstAPI_RT/src/RTlinux.c
+@@ -406,7 +406,6 @@ void dyninstTrapHandler(int sig, siginfo_t *sg, ucontext_t *context)
+ #if defined(cap_binary_rewriter)
+ 
+ extern struct r_debug _r_debug;
+-DLLEXPORT struct r_debug _r_debug __attribute__ ((weak));
+ 
+ /* Verify that the r_debug variable is visible */
+ void r_debugCheck() { assert(_r_debug.r_map); }
+-- 
+2.40.1
+

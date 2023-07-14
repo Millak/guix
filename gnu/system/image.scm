@@ -148,11 +148,13 @@ parent image record."
 (define efi-disk-image
   (image-without-os
    (format 'disk-image)
+   (partition-table-type 'gpt)
    (partitions (list esp-partition root-partition))))
 
 (define efi32-disk-image
   (image-without-os
    (format 'disk-image)
+   (partition-table-type 'gpt)
    (partitions (list esp32-partition root-partition))))
 
 (define iso9660-image
@@ -215,6 +217,7 @@ set to the given OS."
    (constructor (cut image-with-os
                  (image
                   (inherit efi-disk-image)
+                  (partition-table-type 'mbr)
                   (name 'image.qcow2)
                   (format 'compressed-qcow2))
                  <>))))

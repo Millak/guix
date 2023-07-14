@@ -1613,7 +1613,7 @@ information on the configuration file syntax."
                                  '("conf=/etc/security/limits.conf")))))
                (if (member (pam-service-name pam)
                            '("login" "greetd" "su" "slim" "gdm-password"
-                             "sddm" "sudo" "sshd"))
+                             "sddm" "sudo" "sshd" "lightdm"))
                    (pam-service
                     (inherit pam)
                     (session (cons pam-limits

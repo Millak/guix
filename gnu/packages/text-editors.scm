@@ -433,7 +433,7 @@ compiled, requires few libraries, and starts up quickly.")
     (license license:gpl2+)))
 
 (define-public l3afpad
-  (let ((commit "5235c9e13bbf0d31a902c6776918c2d7cdbb61ff")
+  (let ((commit "16f22222116b78b7f6a6fd83289937cdaabed624")
         (revision "0"))
     (package
       (name "l3afpad")
@@ -446,8 +446,20 @@ compiled, requires few libraries, and starts up quickly.")
                        (commit commit)))
                 (sha256
                  (base32
-                  "1alyghm2wpakzdfag0g4g8gb1h9l4wdg7mnhq8bk0iq5ryqia16a"))))
+                  "0q55351lvvlw9bi35l49mxa43g4fv110pwprzkk9m5li77vb0bcp"))))
       (build-system glib-or-gtk-build-system)
+      (arguments
+        (list
+         #:phases
+         #~(modify-phases %standard-phases
+            (add-after 'install 'install-documentation
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (doc (string-append out "/share/doc/" #$name "-"
+                                           #$(package-version this-package)))
+                       (man (string-append out "/share/man/man1")))
+                  (install-file "l3afpad.1" man)
+                  (install-file "README" doc)))))))
       (native-inputs
        (list intltool autoconf automake pkg-config))
       (inputs

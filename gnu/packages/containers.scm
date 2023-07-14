@@ -360,6 +360,8 @@ configure network interfaces in Linux containers.")
                  (string-append "CATATONIT_PATH=" (which "true"))))
               (substitute* "vendor/github.com/containers/common/pkg/config/config_linux.go"
                 (("/usr/local/libexec/podman")
+                 (string-append #$output "/libexec/podman"))
+                (("/usr/local/lib/podman")
                  (string-append #$output "/bin")))
               (substitute* "vendor/github.com/containers/common/pkg/config/default.go"
                 (("/usr/libexec/podman/conmon") (which "conmon"))

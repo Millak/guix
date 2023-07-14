@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2016-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Google LLC
@@ -160,6 +160,17 @@ containerized OS.  EXTRA-FILE-SYSTEMS is a list of file systems to add to OS."
                                            (nscd-configuration
                                             (inherit (service-value s))
                                             (caches %nscd-container-caches))))
+                                 ((eq? guix-service-type (service-kind s))
+                                  ;; Pass '--disable-chroot' so that
+                                  ;; guix-daemon can build thing even in
+                                  ;; Docker without '--privileged'.
+                                  (service guix-service-type
+                                           (guix-configuration
+                                            (inherit (service-value s))
+                                            (extra-options
+                                             (cons "--disable-chroot"
+                                                   (guix-configuration-extra-options
+                                                    (service-value s)))))))
                                  (else s)))
                          (operating-system-user-services os))))
     (file-systems (append (map mapping->fs

@@ -61,6 +61,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages high-availability)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -813,7 +814,7 @@ specific SMBIOS tables.")
 (define-public memtest86+
   (package
     (name "memtest86+")
-    (version "6.10")
+    (version "6.20")
     (source
      (origin
        (method git-fetch)
@@ -822,7 +823,7 @@ specific SMBIOS tables.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1igb648rsmbp0s95790qib6mhdsvbsrpigl91gk7yfkz32bip3bz"))
+        (base32 "1wsrdgpxi2nrcazihi1ghkn681iqkpwd8wnp533avcfg16n0jd17"))
        (patches
         (search-patches "memtest86+-build-reproducibly.patch"))))
     (build-system gnu-build-system)
@@ -1016,7 +1017,7 @@ technology, such as head mounted displays with built in head tracking.")
 (define-public openrgb
   (package
     (name "openrgb")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -1025,7 +1026,7 @@ technology, such as head mounted displays with built in head tracking.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yz7sdrjcxajm1zpa5djinmych5dvck0r1fvk0x5qmk87va4p9z3"))
+        (base32 "0rdh87w4j47dr0vakva94fhcbdc67d9aad0p3najg9zf8zhf64jw"))
        (patches
         (search-patches "openrgb-unbundle-hueplusplus.patch"))
        (modules '((guix build utils)))
@@ -1312,6 +1313,37 @@ of your CRT/LCD monitor.")
 libtss2-esys, libtss2-sys, libtss2-mu, libtss2-tcti-device, libtss2-tcti-swtpm
 and libtss2-tcti-mssim.")
     (license license:bsd-2)))
+
+(define-public tpm2-tools
+  (package
+    (name "tpm2-tools")
+    (version "5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/tpm2-software/tpm2-tools/"
+                           "releases/download/" version "/"
+                           "tpm2-tools-" version ".tar.gz"))
+       (sha256
+        (base32 "08y16q92dh7frsyw0zlm3q9gsfqyls0li248s2pgsysk633lknqz"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           curl
+           libtool
+           gnu-gettext
+           openssl
+           pandoc
+           pkg-config
+           tpm2-tss))
+    (home-page "https://github.com/tpm2-software/tpm2-tools")
+    (synopsis "Tools for the Trusted Platform Module (TPM 2.0)")
+    (description
+     "This package provides user tools for the Trusted Computing Group's (TCG)
+TPM2 Software Stack (TSS).  These programs help with common tasks such as key
+management, attestation, encryption, and signing.")
+    (license license:bsd-3)))
 
 (define-public libcpuid
   ;; We need to remove blobs from the source, first we have to isolate the blob

@@ -227,15 +227,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.40.1")
+   (version "2.41.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1li1xwgiwccy88bkshsah2kzl1006jg29jp7n32gvjggiswvi4s8"))
-            (patches (search-patches "git-header-cmd.patch"))))
+              "0h40arw08xbpi2cbf7pvc947v963rjxz3inb2ar81zjc8byvlj77"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -255,7 +254,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "04yy5za8963q6xzrirflvxbi1216jzqj8ssvgd9nkld3ifa9q1gy"))))
+            "0xsqakgy0s60zpa13ilj6zj420kdh8pf4v3nrp1nziwj8ja4qymw"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook2x" ,docbook2x)
@@ -2617,13 +2616,13 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.12.0")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "0qwi2f729mflrv8dazb3xbs23hzprbchjrhjcc8fjvpn7yvnrd7f"))))
+        (base32 "0qpa0ahw1d86mdgs09ykq5pd0lm8083ds6j0knalw757yh31akmn"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;no tests

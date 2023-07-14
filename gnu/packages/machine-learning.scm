@@ -20,6 +20,7 @@
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1470,32 +1471,90 @@ with your favorite libraries.")
 (define-public python-threadpoolctl
   (package
     (name "python-threadpoolctl")
-    (version "2.1.0")
+    (version "3.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "threadpoolctl" version))
         (sha256
          (base32
-          "0szsxcm2fbxrn83iynn42bnvrdh7mfsmkhfn8pdn7swblfb7rifx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest"))
-             #t)))))
+          "100k76nmajf408lbn5ipis1gilklcs6sbqyqy3hhlh54zanbldd3"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-flit-core python-pytest))
     (home-page "https://github.com/joblib/threadpoolctl")
     (synopsis "Python helpers for common threading libraries")
     (description "Thread-pool Controls provides Python helpers to limit the
 number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
+
+(define-public python-tslearn
+  (package
+    (name "python-tslearn")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tslearn-team/tslearn")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fhs8c28hdqsyj8kdhzrmrxrh4w92x6nf3gm026xapp9divvljd6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; This one fails because of a difference in accuracy.
+              "not test_all_estimators[LearningShapelets-LearningShapelets]"
+              ;; XXX: It's embarrassing to disable these two, but the truth is
+              ;; that there's only so much we can do to force this package to
+              ;; work with Tensorflow 1.9.  It's still worth having this
+              ;; package, because it can be used without the Tensorflow
+              ;; backend.
+              ;; TypeError: cannot pickle '_thread.RLock' object
+              " and not test_shapelets"
+              ;; TypeError: Expected binary or unicode string, got 2
+              " and not test_serialize_shapelets"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "tslearn/tests/sklearn_patches.py"
+               (("_pairwise_estimator_convert_X")
+                "_enforce_estimator_tags_X")
+               (("pairwise_estimator_convert_X\\(([^,]+), ([^,\\)]+)" _ a b)
+                (string-append "pairwise_estimator_convert_X(" b ", " a)))
+             (substitute* "tslearn/tests/test_shapelets.py"
+               (("tf.optimizers.Adam")
+                "tf.keras.optimizers.Adam"))
+             (substitute* "tslearn/shapelets/shapelets.py"
+               (("tf.keras.utils.set_random_seed")
+                "tf.set_random_seed")
+               (("def __call__\\(self, shape, dtype=None\\):")
+                "def __call__(self, shape, dtype=None, partition_info=None):")
+               (("tf.math.is_finite")
+                "tf.is_finite")))))))
+    (propagated-inputs (list python-cesium
+                             python-h5py
+                             python-joblib
+                             python-numba
+                             python-numpy
+                             python-pandas
+                             python-scipy
+                             python-scikit-learn
+                             tensorflow
+                             python-wheel))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/tslearn-team/tslearn")
+    (synopsis "Machine learning toolkit for time series data")
+    (description "This is a Python library for time series data mining.
+It provides tools for time series classification, clustering
+and forecasting.")
+    (license license:bsd-2)))
 
 (define-public python-imbalanced-learn
   (package
@@ -3809,6 +3868,51 @@ AI services.")
 Actions for the Lightning suite of libraries.")
     (license license:asl2.0)))
 
+(define-public python-captum
+  (package
+    (name "python-captum")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/captum")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h4n91ivhjxm6wj0vgqpfss2dmq4sjcp0appd08cd5naisabjyb5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These two tests (out of more than 1000 tests) fail because of
+             ;; accuracy problems.
+             "not test_softmax_classification_batch_multi_target\
+ and not test_softmax_classification_batch_zero_baseline")))
+    (propagated-inputs (list python-matplotlib python-numpy python-pytorch))
+    (native-inputs (list jupyter
+                         python-annoy
+                         python-black
+                         python-flake8
+                         python-flask
+                         python-flask-compress
+                         python-ipython
+                         python-ipywidgets
+                         python-mypy
+                         python-parameterized
+                         python-pytest
+                         python-pytest-cov
+                         python-scikit-learn))
+    (home-page "https://captum.ai")
+    (synopsis "Model interpretability for PyTorch")
+    (description "Captum is a model interpretability and understanding library
+for PyTorch.  Captum contains general purpose implementations of integrated
+gradients, saliency maps, smoothgrad, vargrad and others for PyTorch models.
+It has quick integration for models built with domain-specific libraries such
+as torchvision, torchtext, and others.")
+    (license license:bsd-3)))
+
 (define-public python-readchar
   (package
     (name "python-readchar")
@@ -4660,6 +4764,9 @@ Brian 2 simulator.")
        (sha256
         (base32 "1jgmb5kl0bf4a2zfn94zlb117672r9lvvkkmwl86ihlyr1mpr3d0"))))
     (build-system cmake-build-system)
+    (arguments (if (target-riscv64?)
+                   (list #:configure-flags #~'("-DDNNL_CPU_RUNTIME=SEQ"))
+                   '()))
     (home-page "https://github.com/oneapi-src/oneDNN")
     (synopsis "Deep Neural Network Library")
     (description

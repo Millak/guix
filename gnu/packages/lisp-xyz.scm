@@ -37,6 +37,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2022, 2023 Artyom Bologov <mail@aartaka.me>
+;;; Copyright © 2023 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6875,7 +6876,7 @@ generators: Indirection, Shift, Accumulate, Add, and Count.")
 
 (define-public sbcl-local-time
   (let ((commit "40169fe26d9639f3d9560ec0255789bf00b30036")
-        (revision "3"))
+        (revision "4"))
     (package
      (name "sbcl-local-time")
      (version (git-version "1.0.6" revision commit))
@@ -6889,6 +6890,14 @@ generators: Indirection, Shift, Accumulate, Add, and Count.")
        (sha256
         (base32 "1dbp33zmkqzzshmf5k76pxqgli285wvy0p0dhcz816fdikpwn2jg"))))
      (build-system asdf-build-system/sbcl)
+     (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           ;; Delete the extension provided by sbcl-cl-postgres+local-time
+           (add-after 'unpack 'delete-local-time
+             (lambda _
+               (delete-file "cl-postgres+local-time.asd")
+               (delete-file "src/integration/cl-postgres.lisp"))))))
      (native-inputs
       (list sbcl-hu.dwim.stefil))
      (home-page "https://common-lisp.net/project/local-time/")
@@ -6904,6 +6913,35 @@ Long Painful History of Time\".")
 
 (define-public ecl-local-time
   (sbcl-package->ecl-package sbcl-local-time))
+
+(define-public sbcl-cl-postgres+local-time
+  (package
+    (inherit sbcl-local-time)
+    (name "sbcl-cl-postgres+local-time")
+    (inputs (list sbcl-local-time sbcl-postmodern))
+    (arguments
+     `(#:asd-systems '("cl-postgres+local-time")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-local-time
+           (lambda _
+             (delete-file "local-time.asd")
+             (delete-file "src/package.lisp")
+             (delete-file "src/local-time.lisp")
+             (delete-file-recursively "doc")
+             (delete-file-recursively "test")
+             (delete-file-recursively "zoneinfo"))))))
+    (synopsis "Integration between cl-postgres and local-time")
+    (description
+     "This package provides the LOCAL-TIME extensions for the cl-postgres
+ASDF system of postmodern.")
+    (license license:expat)))
+
+(define-public cl-postgres+local-time
+  (sbcl-package->cl-source-package sbcl-cl-postgres+local-time))
+
+(define-public ecl-cl-postgres+local-time
+  (sbcl-package->ecl-package sbcl-cl-postgres+local-time))
 
 (define-public sbcl-chronicity
   (package
@@ -22720,10 +22758,10 @@ bound to whatever value was in the same place in the URL (as a string).")
 
 (define-public sbcl-spinneret
   ;; No release since 2019, no tags.
-  (let ((commit "52709ab953c46b24cbc2f0e3a50ae362916e730c"))
+  (let ((commit "d4398b5a344b5c59e497c9ee78fdbae7cc434f74"))
     (package
       (name "sbcl-spinneret")
-      (version (git-version "3.0" "5" commit))
+      (version (git-version "3.0" "6" commit))
       (source
        (origin
          (method git-fetch)
@@ -22732,7 +22770,7 @@ bound to whatever value was in the same place in the URL (as a string).")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1wzs0hzlwf0vzk4gb66psqz6gqcf3x7yfpi9gghbil97iz6fyc7z"))))
+          (base32 "1mdd92gfxfdsd81fcd8fgz8z7dwsb0kcv7zyzdgnw8lavkib5zly"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -27833,7 +27871,7 @@ implementation by Kent M. Pitman.")
 (define-public sbcl-ospm
   (package
     (name "sbcl-ospm")
-    (version "0.0.1")
+    (version "0.0.2")
     (source
      (origin
        (method git-fetch)
@@ -27842,7 +27880,7 @@ implementation by Kent M. Pitman.")
              (commit version)))
        (file-name (git-file-name "cl-ospm" version))
        (sha256
-        (base32 "1b64ar6x08bcig4brlsim445favjf1zhyj6qz018cildp3xs4miz"))))
+        (base32 "1z2wz2xg7rn7p1lladdhj789iz2f3wfjgpi2hjr08vkf1pkp15xf"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria

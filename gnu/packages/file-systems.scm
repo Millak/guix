@@ -1951,7 +1951,7 @@ in FUSE for rootless containers.")
 (define-public bees
   (package
     (name "bees")
-    (version "0.9.2")
+    (version "0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1970,7 +1970,7 @@ in FUSE for rootless containers.")
                      (("#include .crucible/city.h.") "#include <city.h>"))))
               (sha256
                (base32
-                "0xik1xg6ma5yglhvs60ny27242iapqwzikmqbgij1avjffs6776a"))))
+                "1j1v9bxijs8gvrb7rg0q1158xjvmfc8dlzwx768fxf3w8w2gfwvz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"

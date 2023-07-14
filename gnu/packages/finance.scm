@@ -288,14 +288,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.6.3")
+    (version "5.6.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/sources/"
                                   "homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "0a1qhbnifqs0j59m1w5wfj1ix8iywmy1kc8185zvxndvckspb521"))))
+                "1a1cdldvs0xc30xkxkap72gafss90hmglakad5r8aykxz3y4sjdm"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -312,7 +312,7 @@ and dynamically with report tools based on filtering and graphical charts.")
 (define-public ledger
   (package
     (name "ledger")
-    (version "3.3.1")
+    (version "3.3.2")
     (source
      (origin
        (method git-fetch)
@@ -321,7 +321,7 @@ and dynamically with report tools based on filtering and graphical charts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13bbnfb08ymm54wg12dapqhalh7iialfs66qdbk2adl1aaq36wqa"))))
+        (base32 "0vchc97952w3fkkdn3v0nzjlgzg83cblwsi647jp3k9jq6rvhaak"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules (,@%cmake-build-system-modules
@@ -547,7 +547,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.4.4")
+    (version "4.4.5")
     (source
      (origin
        (method url-fetch)
@@ -555,7 +555,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "05xzafv8ry5k5mzn3i4l71d42q42kjl81q154i97qmqiy3s2fhkb"))
+        (base32 "1gifnb927b51947psbj58c7kdsgncn3d9j7rpk5mls678yf1qd5d"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2180,7 +2180,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.19.2")
+    (version "6.20.0")
     (source
      (origin
        (method git-fetch)
@@ -2188,7 +2188,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1hgcfq79d5060iryr34bpwf1dvgqmbmn9mm4ccfvp896r10j482h"))
+       (sha256 (base32 "02clipcixn0g4sm3b5r1cxx56ddhjkm8sqnq40jy1zm66ad5zhkj"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
@@ -2237,7 +2237,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "3.4")
+    (version "3.5")
     (source
      (origin
        (method git-fetch)
@@ -2246,7 +2246,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "190dyyscmb71jnz0yb4l2ahsmz9wp7mcnn81yajv01bajgwnbl16"))
+       (sha256 (base32 "1brv3lksajnmpf7g01jbx76nax6vlx8231sxb0s33yf76yc481xb"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively

@@ -5771,18 +5771,99 @@ machines with limited resources.
 Let's say you have a bunch of custom package variants or personal packages
 that you think would make little sense to contribute to the Guix project, but
 would like to have these packages transparently available to you at the
-command line.  You would first write modules containing those package
-definitions (@pxref{Package Modules}), maintain them in a Git repository, and
-then you and anyone else can use it as an additional channel to get packages
-from.  Neat, no?
+command line.  By creating a @dfn{channel}, you can use and publish such
+a package collection.  This involves the following steps:
+
+@enumerate
+@item
+Channels live in a Git repository so the first step, when creating a
+channel, is to create its repository:
+
+@example
+mkdir my-channel
+cd my-channel
+git init
+@end example
+
+@item
+The next step is to create files containing package modules
+(@pxref{Package Modules}), each of which will contain one or more
+package definitions (@pxref{Defining Packages}).  A channel can provide
+things other than packages, such as build systems or services; we're
+using packages as most common use case.
+
+For example, Alice might want to provide a module called @code{(alice
+packages greetings)} that will provide her favorite ``hello world''
+implementations.  To do that Alice will create a directory corresponding
+to that module name.
+
+@example
+mkdir -p alice/packages
+$EDITOR alice/packages/greetings.scm
+git add alice/packages/greetings.scm
+@end example
+
+You can name your package modules however you like; the main constraint
+to keep in mind is to avoid name clashes with other package collections,
+which is why our hypothetical Alice wisely chose the @code{(alice
+packages @dots{})} name space.
+
+Note that you can also place modules in a sub-directory of the
+repository; @pxref{Package Modules in a Sub-directory}, for more info on
+that.
+
+@item
+With this first module in place, the next step is to test the packages
+it provides.  This can be done with @command{guix build}, which needs to
+be fold to look for modules in the Git checkout.  For example, assuming
+@code{(alice packages greetings)} provides a package called
+@code{hi-from-alice}, Alice will run this command from the Git checkout:
+
+@example
+guix build -L. hi-from-alice
+@end example
+
+@noindent
+... where @code{-L.} adds the current directory to Guile's load path
+(@pxref{Load Paths,,, guile, GNU Guile Reference Manual}).
+
+@item
+It might take Alice a few iterations to obtain satisfying package
+definitions.  Eventually Alice will commit this file:
+
+@example
+git commit
+@end example
+
+As a channel author, consider bundling authentication material with your
+channel so that users can authenticate it.  @xref{Channel
+Authentication}, and @ref{Specifying Channel Authorizations}, for info
+on how to do it.
+
+@item
+To use Alice's channel, anyone can now add it to their channel file
+(@pxref{Specifying Additional Channels}) and run @command{guix pull}
+(@pxref{Invoking guix pull}):
+
+@example
+$EDITOR ~/.config/guix/channels.scm
+guix pull
+@end example
+
+Guix will now behave as if the root directory of that channel's Git
+repository had been permanently added to the Guile load path.  In this
+example, @code{(alice packages greetings)} will automatically be found
+by the @command{guix} command.
+@end enumerate
+
+Voilà!  
 
 @c What follows stems from discussions at
 @c <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=22629#134> as well as
 @c earlier discussions on guix-devel@gnu.org.
 @quotation Warning
-Before you, dear user, shout---``woow this is @emph{soooo coool}!''---and
-publish your personal channel to the world, we would like to share a few words
-of caution:
+Before you publish your channel, we would like to share a few words of
+caution:
 
 @itemize
 @item
@@ -5793,13 +5874,11 @@ available to all Guix users and benefit from the project's quality assurance
 process.
 
 @item
-When you maintain package definitions outside Guix, we, Guix developers,
-consider that @emph{the compatibility burden is on you}.  Remember that
-package modules and package definitions are just Scheme code that uses various
-programming interfaces (APIs).  We want to remain free to change these APIs to
-keep improving Guix, possibly in ways that break your channel.  We never
-change APIs gratuitously, but we will @emph{not} commit to freezing APIs
-either.
+Package modules and package definitions are Scheme code that uses
+various programming interfaces (APIs).  We, Guix developers, never
+change APIs gratuitously, but we do @emph{not} commit to freezing APIs
+either.  When you maintain package definitions outside Guix, we consider
+that @emph{the compatibility burden is on you}.
 
 @item
 Corollary: if you're using an external channel and that channel breaks, please
@@ -5813,21 +5892,6 @@ share your improvements, which are basic tenets of
 email us at @email{guix-devel@@gnu.org} if you'd like to discuss this.
 @end quotation
 
-To create a channel, create a Git repository containing your own package
-modules and make it available.  The repository can contain anything, but a
-useful channel will contain Guile modules that export packages.  Once you
-start using a channel, Guix will behave as if the root directory of that
-channel's Git repository has been added to the Guile load path (@pxref{Load
-Paths,,, guile, GNU Guile Reference Manual}).  For example, if your channel
-contains a file at @file{my-packages/my-tools.scm} that defines a Guile
-module, then the module will be available under the name @code{(my-packages
-my-tools)}, and you will be able to use it like any other module
-(@pxref{Modules,,, guile, GNU Guile Reference Manual}).
-
-As a channel author, consider bundling authentication material with your
-channel so that users can authenticate it.  @xref{Channel
-Authentication}, and @ref{Specifying Channel Authorizations}, for info
-on how to do it.
 
 
 @node Package Modules in a Sub-directory
@@ -22708,7 +22772,7 @@ and setuid enabled.  One can thus disable setuid:
 (service screen-locker-service-type
          (screen-locker-configuration
            (name "swaylock")
-           (program (file-append xlockmore "/bin/xlock"))
+           (program (file-append swaylock "/bin/swaylock"))
            (using-pam? #t)
            (using-setuid? #f)))
 @end lisp
@@ -36840,7 +36904,8 @@ Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{cgit-configuration} parameter} file-object readme
-Text which will be used as default value for @code{cgit-repo-readme}.
+Text which will be used as default @code{repository-cgit-configuration}
+@code{readme}.
 
 Defaults to @samp{""}.
 
@@ -37005,7 +37070,7 @@ Defaults to @samp{"/"}.
 @end deftypevr
 
 @deftypevr {@code{cgit-configuration} parameter} repository-cgit-configuration-list repositories
-A list of @dfn{cgit-repo} records to use with config.
+A list of @code{repository-cgit-configuration} records.
 
 Defaults to @samp{'()}.
 
@@ -42925,6 +42990,135 @@ for example).
 
 @end table
 
+@end deftp
+
+@subsubheading Inputrc Profile Service
+@cindex inputrc
+@cindex readline
+
+The @uref{https://tiswww.cwru.edu/php/chet/readline/rltop.html, GNU
+Readline package} includes Emacs and vi editing modes, with the ability
+to customize the configuration with settings in the @file{~/.inputrc}
+file.  With the @code{gnu home services shells} module, you can setup
+your readline configuration in a predictable manner, as shown below.
+For more information about configuring an @file{~/.inputrc} file,
+@pxref{Readline Init File,,, readline, GNU Readline}.
+
+@defvar home-inputrc-service-type
+
+This is the service to setup various @file{.inputrc} configurations. The
+settings in @file{.inputrc} are read by all programs which are linked
+with GNU Readline.
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-inputrc-service-type
+         (home-inputrc-configuration
+           (key-bindings
+            `(("Control-l" . "clear-screen")))
+           (variables
+            `(("bell-style" . "visible")
+              ("colored-completion-prefix" . #t)
+              ("editing-mode" . "vi")
+              ("show-mode-in-prompt" . #t)))
+           (conditional-constructs
+            `(("$if mode=vi" .
+               ,(home-inputrc-configuration
+                  (variables
+                   `(("colored-stats" . #t)
+                     ("enable-bracketed-paste" . #t)))))
+              ("$else" .
+               ,(home-inputrc-configuration
+                  (variables
+                   `(("show-all-if-ambiguous" . #t)))))
+              ("endif" . #t)
+              ("$include" . "/etc/inputrc")
+              ("$include" . ,(file-append
+                               (specification->package "readline")
+                               "/etc/inputrc"))))))
+@end lisp
+
+The example above starts with a combination of @code{key-bindings} and
+@code{variables}.  The @code{conditional-constructs} show how it is
+possible to add conditionals and includes.  In the example above
+@code{colored-stats} is only enabled if the editing mode is @code{vi}
+style, and it also reads any additional configuration located in
+@file{/etc/inputrc} or in @file{/gnu/store/@dots{}-readline/etc/inputrc}.
+
+The value associated with a @code{home-inputrc-service-type} instance
+must be a @code{home-inputrc-configuration} record, as described below.
+
+@end defvar
+
+@anchor{home-inputrc-configuration}
+@deftp {Data Type} home-inputrc-configuration
+Available @code{home-inputrc-configuration} fields are:
+
+@table @asis
+@item @code{key-bindings} (default: @code{'()}) (type: alist)
+Association list of readline key bindings to be added to the
+@file{~/.inputrc} file.
+
+@lisp
+'((\"Control-l\" . \"clear-screen\"))
+@end lisp
+
+turns into
+
+@example
+Control-l: clear-screen
+@end example
+
+@item @code{variables} (default: @code{'()}) (type: alist)
+Association list of readline variables to set.
+
+@lisp
+'((\"bell-style\" . \"visible\")
+  (\"colored-completion-prefix\" . #t))
+@end lisp
+
+turns into
+
+@example
+set bell-style visible
+set colored-completion-prefix on
+@end example
+
+@item @code{conditional-constructs} (default: @code{'()}) (type: alist)
+Association list of conditionals to add to the initialization file.  This
+includes @command{$if}, @command{else}, @command{endif} and @command{include}
+and they receive a value of another @command{home-inputrc-configuration}.
+
+@lisp
+(conditional-constructs
+ `((\"$if mode=vi\" .
+     ,(home-inputrc-configuration
+        (variables
+         `((\"show-mode-in-prompt\" . #t)))))
+   (\"$else\" .
+     ,(home-inputrc-configuration
+        (key-bindings
+         `((\"Control-l\" . \"clear-screen\")))))
+   (\"$endif\" . #t)))
+@end lisp
+
+turns into
+
+@example
+$if mode=vi
+set show-mode-in-prompt on
+$else
+Control-l: clear-screen
+$endif
+@end example
+
+@item @code{extra-content} (default: @code{""}) (type: text-config)
+Extra content appended as-is to the configuration file.  Run @command{man
+readline} for more information about all the configuration options.
+
+@end table
 @end deftp
 
 @node Mcron Home Service

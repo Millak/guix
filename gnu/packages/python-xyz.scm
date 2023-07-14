@@ -29,7 +29,7 @@
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2018, 2021–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -106,7 +106,7 @@
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
-;;; Copyright © 2021 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2021, 2022, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
@@ -161,6 +161,7 @@
   #:use-module (gnu packages adns)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages astronomy)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
@@ -664,6 +665,26 @@ automatized by smart placing of the labels (difficult) or iterative adjustment
 of their positions to minimize overlaps (relatively easy).  This library
 implements the latter option to help with matplotlib graphs.")
     (license license:expat)))
+
+(define-public python-affine
+  (package
+    (name "python-affine")
+    (version "2.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "affine" version))
+              (sha256
+               (base32
+                "1shyvajayyzbkp9dihb4mz835jnkp0kqqbyjfqci6v43da6q2kd2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-coveralls python-flake8 python-pydocstyle
+                             python-pytest python-pytest-cov))
+    (native-inputs (list python-flit-core))
+    (home-page "https://github.com/rasterio/affine")
+    (synopsis "Matrices describing affine transformation of the plane")
+    (description "This is a package for matrices describing the affine
+transformation of the plane.")
+    (license license:bsd-3)))
 
 (define-public python-argopt
   (package
@@ -1746,6 +1767,51 @@ It can handle tasks such as scanning, tracerouting, probing, unit tests,
 attacks or network discovery.")
     (license license:gpl2)))
 
+(define-public python-rasterio
+  (package
+    (name "python-rasterio")
+    (version "1.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rasterio" version))
+              (sha256
+               (base32
+                "012341c1rlcdr9rkg97lbhxrwzn4sr2xah4zjfnqy2r1227wpzdb"))))
+    (properties
+     '((updater-ignored-native-inputs . ("gdal" "python-cython"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;test data not present
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-affine
+                             python-attrs
+                             python-certifi
+                             python-click
+                             python-click-plugins
+                             python-cligj
+                             python-numpy
+                             python-setuptools
+                             python-snuggs))
+    (native-inputs (list gdal
+                         python-boto3
+                         python-cython
+                         python-hypothesis
+                         python-packaging
+                         python-pytest
+                         python-pytest-cov
+                         python-shapely))
+    (home-page "https://github.com/rasterio/rasterio")
+    (synopsis "Fast and direct raster I/O for use with Numpy and SciPy")
+    (description "This package implements fast and direct raster I/O for use
+with Numpy and SciPy.")
+    (license license:bsd-3)))
+
 (define-public python-shapely
   (package
     (name "python-shapely")
@@ -2220,14 +2286,14 @@ Unicode-to-LaTeX conversion.")
 (define-public python-cftime
   (package
     (name "python-cftime")
-    (version "1.5.1.1")
+    (version "1.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cftime" version))
        (sha256
-        (base32 "0l1a22zlhdpgaisibvvm7dhij4vzfm661rnv00y2snpyqxpdgi3d"))))
-    (build-system python-build-system)
+        (base32 "1lp6jrjjgl18csn4bcnphn0l16ag4aynvn7x0kins155p07w0546"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numpy))
     (native-inputs
@@ -3069,6 +3135,32 @@ streams of the current process and subprocesses.  Output can be relayed
 to the terminal in real time but is also available to the Python program
 for additional processing.")
     (license license:expat)))
+
+(define-public python-fastprogress
+  (package
+    (name "python-fastprogress")
+    (version "1.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fastai/fastprogress")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01h8f786wgmmd3fj98wk1n5id67nsp19gs8bbgims04aciwhvj21"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f                  ;there are no tests
+           #:phases #~(modify-phases %standard-phases
+                        ;; XXX: Fails with: "In procedure utime: No such file
+                        ;; or directory".
+                        (delete 'ensure-no-mtimes-pre-1980))))
+    (home-page "https://github.com/fastai/fastprogress")
+    (synopsis "Progress bar for Jupyter Notebook and console")
+    (description
+     "Fastprogress is a progress bar for Jupyter Notebook and console.")
+    (license license:asl2.0)))
 
 (define-public python-case
   (package
@@ -4576,6 +4668,27 @@ connecting ClickHouse to Python, Pandas, and Superset.")
       "cligj is for Python developers who create command line interfaces
 for geospatial data.  cligj allows you to quickly build consistent,
 well-tested and interoperable CLIs for handling GeoJSON.")
+    (license license:bsd-3)))
+
+(define-public python-cloup
+  (package
+    (name "python-cloup")
+    (version "2.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cloup" version))
+              (sha256
+               (base32
+                "05c6cjpnf9s72gyn5dckxbmd8rf2kgdzfsl7pqzrnc1lcdl13zmv"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-click))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/janLuke/cloup")
+    (synopsis "Extension library for python-click")
+    (description
+     "Cloup enriches Click with several features that make it more expressive
+and configurable such as option groups, constraints, subcommand aliases,
+subcommands sections and a themeable HelpFormatter.")
     (license license:bsd-3)))
 
 (define-public python-vcversioner
@@ -8404,27 +8517,33 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
 (define-public python-pikepdf
   (package
     (name "python-pikepdf")
-    (version "2.16.1")
+    (version "7.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pikepdf" version))
        (sha256
-        (base32 "1phdpi9cm2pbvgcxqvwr8ck327sxhdw4dnxmzhrbf7hzydmgykg2"))))
+        (base32 "1vp3q85l2w7wpc8kqs26ijg3ivvvgj50z7g14p3pc0zdz8vbi0md"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #false))                ;require python-xmp-toolkit
     (native-inputs
      (list pybind11
-           python-setuptools
-           python-setuptools-scm
-           python-setuptools-scm-git-archive
-           python-toml
-           python-wheel))
+           python-attrs
+           python-coverage
+           python-hypothesis
+           python-psutil
+           python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-pytest-xdist
+           python-dateutil
+           ;; python-xmp-toolkit
+           python-tomli))
     (inputs
      (list qpdf))
     (propagated-inputs
-     (list python-lxml python-pillow))
+     (list python-deprecation python-lxml python-packaging python-pillow))
     (home-page "https://github.com/pikepdf/pikepdf")
     (synopsis "Read and write PDFs with Python")
     (description
@@ -11875,11 +11994,11 @@ applications.")
        (list (string-append "--zmq=" (assoc-ref %build-inputs "zeromq")))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-problematic-tests
+         (add-before 'build 'configure
            (lambda _
-             ;; FIXME: The test_draft.TestDraftSockets test fails with:
-             ;;   zmq.error.Again: Resource temporarily unavailable
-             (delete-file "zmq/tests/test_draft.py")))
+             ;; Our zeromq package is built with '--enable-drafts'; also
+             ;; enable draft support for pyzmq so the draft test passes.
+             (setenv "ZMQ_DRAFT_API" "1")))
          (add-before 'check 'build-extensions
            (lambda _
              ;; Cython extensions have to be built before running the tests.
@@ -13685,6 +13804,24 @@ running under.  It supports multiple async I/O packages, like Trio, and
 asyncio.")
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
+
+(define-public python-snuggs
+  (package
+    (name "python-snuggs")
+    (version "1.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "snuggs" version))
+              (sha256
+               (base32
+                "0yv1wayrw9g6k0c2f721kha7wsv0s1fdlxpf5x7f34iqzq9z272h"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-pyparsing))
+    (native-inputs (list python-hypothesis python-pytest))
+    (home-page "https://github.com/mapbox/snuggs")
+    (synopsis "Snuggs are S-expressions for Numpy")
+    (description "Snuggs are S-expressions for Numpy.")
+    (license license:expat)))
 
 (define-public python-pytest-black
   (package
@@ -17199,6 +17336,45 @@ Eventlet, or gevent.  Tasks can execute asynchronously (in the background) or
 synchronously (wait until ready).")
     (license license:bsd-3)))
 
+(define-public python-cesium
+  (package
+    (name "python-cesium")
+    (version "0.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cesium" version))
+              (sha256
+               (base32
+                "0jr0ycqz9ns6mcskm4sxx92k40fj3v0x9knjaw5ac9f3mpqxsfbv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The installed test files contain the /gnu/store location, not the
+          ;; location of the discovered test files from the build directory.
+          ;; The test framework doesn't like this.  The easiest way around
+          ;; this mismatch is to jump to the output directory.
+          (add-before 'check 'check-chdir
+            (lambda _ (chdir #$output))))))
+    (propagated-inputs
+     (list python-click ;XXX required by python-dask
+           python-cloudpickle
+           python-dask
+           python-gatspy
+           python-joblib
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-toolz))
+    (native-inputs (list python-cython python-pytest python-setuptools-scm))
+    (home-page "https://pypi.org/project/cesium/")
+    (synopsis "Library for time-series feature extraction and processing")
+    (description
+     "Cesium is a library for time-series feature extraction and processing.")
+    (license license:bsd-3)))
+
 (define-public python-translitcodec
   (package
     (name "python-translitcodec")
@@ -17442,13 +17618,13 @@ checking library.")
 (define-public python-codespell
   (package
     (name "python-codespell")
-    (version "2.2.4")
+    (version "2.2.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "codespell" version))
         (sha256
-          (base32 "0fp8ihlj8q23qdfryj5pq8srl85vn8k8p6gq3zg9qz957i3j0ihb"))))
+          (base32 "0mmynpblhwbja0vmzbmbb9cgpxdl7b0lxaf9h2zr5dpddvgsv7vd"))))
     (build-system pyproject-build-system)
     (inputs
       (list python-chardet))
@@ -19028,6 +19204,34 @@ feels like an AST.")
 inspection of types defined in the Python standard typing module.")
     (license license:expat)))
 
+(define-public python-lazy-loader
+  (package
+    (name "python-lazy-loader")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lazy_loader" version))
+              (sha256
+               (base32
+                "12piaj94m5wbx33cxb80xgnsvzgya6cp90zj12qsq064fm8pmp0f"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-pytest-cov))
+    (propagated-inputs
+     (list python-flit-core))
+    (home-page "https://scientific-python.org/specs/spec-0001/")
+    (synopsis "Load subpackages and functions on demand")
+    (description "@code{python-lazy-loader} makes it easy to load subpackages
+and functions on demand.  Its main features are:
+
+@itemize
+@item Allow subpackages to be made visible to users without incurring import
+costs.
+@item Allow external libraries to be imported only when used, improving import
+times.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-lazy-object-proxy
   (package
     (name "python-lazy-object-proxy")
@@ -20377,7 +20581,7 @@ OpenSSH Server for example.")
 (define-public python-pyelftools
   (package
     (name "python-pyelftools")
-    (version "0.28")
+    (version "0.29")
     (home-page "https://github.com/eliben/pyelftools")
     (source
      (origin
@@ -20386,7 +20590,7 @@ OpenSSH Server for example.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z4fx39c9rds0bd4d2fjjq7n05b1nfxl36pmy523x8knm38l4gpr"))
+        (base32 "1mi7i9zlhkkap4q50ciak57ia46mj2jzq0713m3dh0x8j05k9xml"))
        (snippet
         ;; Delete bundled readelf executable.
         '(delete-file "test/external_tools/readelf"))))
@@ -20592,24 +20796,26 @@ from the header, as well as section details and data available.")
 (define-public python-xopen
   (package
     (name "python-xopen")
-    (version "0.8.2")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xopen" version))
        (sha256
         (base32
-         "1xrlcnd6fri3w97zzzp6vyk4l21yq1lc8r4wksi06hgpkbh4jdq0"))))
-    (build-system python-build-system)
+         "17qda88irg77qdm2kkxq4zgdhwfgykcpdgd4cx3xfpp9k219q7wh"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-setuptools-scm))
+     (list pigz python-isal python-typing-extensions))
+    (native-inputs
+     (list python-pytest python-pytest-timeout python-setuptools-scm))
     (home-page "https://github.com/marcelm/xopen/")
     (synopsis "Open compressed files transparently")
-    (description "This module provides an @code{xopen} function that works like
-     Python's built-in @code{open} function, but can also deal with compressed files.
-     Supported compression formats are gzip, bzip2 and, xz, and are automatically
-     recognized by their file extensions.  The focus is on being as efficient as
-     possible on all supported Python versions.")
+    (description "This module provides an @code{xopen} function that works
+like Python's built-in @code{open} function, but can also deal with compressed
+files.  Supported compression formats are gzip, bzip2 and, xz, and are
+automatically recognized by their file extensions.  The focus is on being as
+efficient as possible on all supported Python versions.")
     (license license:expat)))
 
 (define-public python-cheetah
@@ -23729,13 +23935,13 @@ with PEP 484 argument (and return) type annotations.")
 (define-public bpython
   (package
     (name "bpython")
-    (version "0.23")
+    (version "0.24")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bpython" version))
        (sha256
-        (base32 "0ah5giynavyh70yc0jqgmjaajv3xg5j2y7k9i3q8mi47r2mph04z"))))
+        (base32 "1g9xzl49skghd9q2a8b71gg1n97lfnj9in2kzcmzsj4cgbynywwq"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -23760,7 +23966,6 @@ with PEP 484 argument (and return) type annotations.")
            python-requests
            python-curtsies
            python-greenlet
-           python-six
            python-cwcwidth
            python-pyxdg
            ;; optional dependencies
@@ -28569,7 +28774,7 @@ placement and scaling of SVG figures and adding markers, such as labels.")
      (list
       ;; Avoid python-pytest-coverage
       #:test-flags '(list "-c /dev/null")))
-    (propagated-inputs (list python-wcwidth))
+    (propagated-inputs (list python-six python-wcwidth))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/jquast/blessed")
     (synopsis "Wrapper around terminal capabilities")
@@ -29361,14 +29566,14 @@ process.")
 (define-public python-aiofiles
   (package
     (name "python-aiofiles")
-    (version "0.6.0")
+    (version "23.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "aiofiles" version))
         (sha256
           (base32
-            "14m01kjxm2j7zyljjj6xlhlgygcsriymbx730gc5jp9xglaina70"))))
+            "0d8n79slihf1lkbh2m6yw51rlq6n6vssljsdacbdpq0rkbglglpd"))))
     (build-system python-build-system)
     (home-page "https://github.com/Tinche/aiofiles")
     (synopsis "File support for @code{asyncio}")
@@ -30262,6 +30467,41 @@ result.")
      "This package provides a docutils-compatibility bridge to CommonMark that
 lets you write CommonMark inside of Docutils & Sphinx projects.")
     (license license:expat)))
+
+(define-public python-redo
+  ;; The latest release isn't tagged:
+  ;; https://github.com/mozilla-releng/redo/issues/76
+  (let ((commit "50cfe8e3656f253f9e51df3a998530351d2d9a8c")
+        (revision "0"))
+    (package
+      (name "python-redo")
+      (version (git-version "2.0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch) ; There are no tests in the PyPI release.
+         (uri (git-reference
+               (url "https://github.com/mozilla-releng/redo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xpylx97qr4ikdhsr208ri41007mpp57a4n8mmlmlqmdljmsdpdb"))))
+      (build-system python-build-system)
+      (native-inputs
+       (list python-mock
+             python-pytest))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       ;; The project uses tox to run the tests via pytest.
+                       (invoke "pytest")))))))
+      (home-page "https://github.com/mozilla-releng/redo")
+      (synopsis "Utilities to retry Python callables")
+      (description "Redo provides various means to add seamless ability to
+retry to any Python callable.")
+      (license license:mpl2.0))))
 
 (define-public python-pyhull
   (package

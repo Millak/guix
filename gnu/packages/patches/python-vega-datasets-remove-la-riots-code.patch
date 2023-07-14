@@ -1,0 +1,89 @@
+# This patch was imported from Debian:
+# https://sources.debian.org/src/python-vega-datasets/0.9%2Bdfsg-1/debian/patches/remove-la-riots-related-code.patch/
+# According to the Debian package, the license of this dataset is not clear and it is not available from Los Angeles Times for European users.
+Index: vega_datasets/vega_datasets/tests/test_local_datasets.py
+===================================================================
+--- vega_datasets.orig/vega_datasets/tests/test_local_datasets.py
++++ vega_datasets/vega_datasets/tests/test_local_datasets.py
+@@ -75,7 +75,6 @@ def test_cars_column_names():
+     [
+         ("cars", "Year"),
+         ("stocks", "date"),
+-        ("la-riots", "death_date"),
+         ("iowa-electricity", "year"),
+         ("seattle-weather", "date"),
+         ("seattle-temps", "date"),
+Index: vega_datasets/vega_datasets/core.py
+===================================================================
+--- vega_datasets.orig/vega_datasets/core.py
++++ vega_datasets/vega_datasets/core.py
+@@ -322,11 +322,6 @@ class IowaElectricity(Dataset):
+     _pd_read_kwds = {"parse_dates": ["year"]}
+
+
+-class LARiots(Dataset):
+-    name = "la-riots"
+-    _pd_read_kwds = {"parse_dates": ["death_date"]}
+-
+-
+ class Miserables(Dataset):
+     name = "miserables"
+     _return_type = tuple
+Index: vega_datasets/vega_datasets/datasets.json
+===================================================================
+--- vega_datasets.orig/vega_datasets/datasets.json
++++ vega_datasets/vega_datasets/datasets.json
+@@ -143,10 +143,6 @@
+     "filename": "jobs.json",
+     "format": "json"
+   },
+-  "la-riots": {
+-    "filename": "la-riots.csv",
+-    "format": "csv"
+-  },
+   "londonBoroughs": {
+     "filename": "londonBoroughs.json",
+     "format": "json"
+@@ -279,4 +275,4 @@
+     "filename": "zipcodes.csv",
+     "format": "csv"
+   }
+-}
+\ No newline at end of file
++}
+Index: vega_datasets/vega_datasets/local_datasets.json
+===================================================================
+--- vega_datasets.orig/vega_datasets/local_datasets.json
++++ vega_datasets/vega_datasets/local_datasets.json
+@@ -8,7 +8,6 @@
+   "driving": "_data/driving.json",
+   "iowa-electricity": "_data/iowa-electricity.csv",
+   "iris": "_data/iris.json",
+-  "la-riots": "_data/la-riots.csv",
+   "ohlc": "_data/ohlc.json",
+   "seattle-temps": "_data/seattle-temps.csv",
+   "seattle-weather": "_data/seattle-weather.csv",
+@@ -16,4 +15,4 @@
+   "stocks": "_data/stocks.csv",
+   "us-employment": "_data/us-employment.csv",
+   "wheat": "_data/wheat.json"
+-}
+\ No newline at end of file
++}
+Index: vega_datasets/vega_datasets/dataset_info.json
+===================================================================
+--- vega_datasets.orig/vega_datasets/dataset_info.json
++++ vega_datasets/vega_datasets/dataset_info.json
+@@ -49,12 +49,6 @@
+       "R. A. Fisher (1936). 'The use of multiple measurements in taxonomic problems'. Annals of Eugenics. 7 (2): 179-188."
+     ]
+   },
+-  "la-riots" : {
+-    "description" : "More than 60 people lost their lives amid the looting and fires that ravaged Los Angeles for five days starting on April 29, 1992. This dataset contains metadata about each person, including the geographic coordinates of their death. It was compiled and published by the Los Angeles Times Data Desk [1]_.",
+-    "references" : [
+-      "http://spreadsheets.latimes.com/la-riots-deaths/"
+-    ]
+-  },
+   "ohlc" : {
+     "description" : "This dataset contains the performance of the Chicago Board Options Exchange `Volatility Index <https://en.wikipedia.org/wiki/VIX>`_ in the summer of 2009."
+   },

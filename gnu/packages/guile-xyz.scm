@@ -43,7 +43,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
-;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
@@ -1086,8 +1086,8 @@ for calling methods on remote servers by exchanging JSON objects.")
       (license license:expat))))
 
 (define-public guile-squee
-  (let ((commit "fab9d9590792f3ededd4abd8cfa6be5e56659678")
-        (revision "4"))
+  (let ((commit "9f2609563fc53466e46d37c8d8d2fbcfce67b2ba")
+        (revision "5"))
     (package
       (name "guile-squee")
       (version (string-append "0-" revision "." (string-take commit 7)))
@@ -1099,19 +1099,20 @@ for calling methods on remote servers by exchanging JSON objects.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "03wdawx14sqs6xkw1vl06s58xyjicg2js2k4syn0z64bjbxxjvps"))))
+                  "0r322mfxx08siw656h7bm31rgzkchmp3yrgjpkc2d3qw286ilqi7"))))
       (build-system guile-build-system)
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "squee.scm"
-                 (("dynamic-link \"libpq\"")
-                  (string-append
-                   "dynamic-link \""
-                   (search-input-file inputs "/lib/libpq.so")
-                   "\""))))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "squee.scm"
+                  (("dynamic-link \"libpq\"")
+                   (string-append
+                    "dynamic-link \""
+                    (search-input-file inputs "/lib/libpq.so")
+                    "\""))))))))
       (inputs
        (list postgresql))
       (native-inputs
@@ -4251,7 +4252,7 @@ the style of the Node Package Manager (NPM).")
                       #t)))))
     (native-inputs
      (list guile-3.0))
-    (synopsis "Cryprographic hash functions implemented in Scheme")
+    (synopsis "Cryptographic hash functions implemented in Scheme")
     (description
      "The @code{(hashing @dots{})} modules implement cryptographic hash
 functions in pure R6RS Scheme: CRC, HMAC, MD5, SHA-1, and SHA-2 (SHA-256,
@@ -4670,33 +4671,31 @@ manipulating graphs and datasets.")
   (package
     (name "guile-jsonld")
     (version "1.0.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://framagit.org/tyreunom/guile-jsonld")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1ryyvh71899z2inivqglb8d78zzp1sd0wv9a56kvcmrxf1966z6r"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://framagit.org/tyreunom/guile-jsonld")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ryyvh71899z2inivqglb8d78zzp1sd0wv9a56kvcmrxf1966z6r"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f)); require network
+     (list #:tests? #f))                ; require network
     (propagated-inputs
-     `(("guile-gnutls" ,gnutls)
-       ("guile-json" ,guile-json-4)
-       ("guile-rdf" ,guile-rdf)))
+     (list guile-gnutls guile-json-4 guile-rdf))
     (inputs
      (list guile-3.0))
     (native-inputs
      (list automake autoconf pkg-config texinfo))
     (home-page "https://framagit.org/tyreunom/guile-jsonld")
     (synopsis "Guile implementation of the JsonLD API specification")
-    (description "Guile JsonLD is an implementation of the JsonLD (Json for
-Linked Data) API defined by the W3C for GNU Guile.  It allows you to express links
-between data, in a way that is very similar to WikiData or RDF for instance.
-An object can have relations (in the form of an IRI) that relates it to one or
+    (description
+     "Guile JsonLD is an implementation of the JsonLD (Json for Linked Data)
+API defined by the W3C for GNU Guile.  It allows you to express links between
+data, in a way that is very similar to WikiData or RDF for instance.  An
+object can have relations (in the form of an IRI) that relates it to one or
 more objects or strings, represented by a Json object or an IRI.")
     (license license:gpl3+)))
 
