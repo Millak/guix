@@ -3919,6 +3919,55 @@ produce bounding box values for Rawppm or Rawpbm format files.")
 documents generated that use Type 1 fonts.")
     (license license:isc)))
 
+(define-public texlive-psutils
+  (package
+    (name "texlive-psutils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/epsffit.1"
+                   "doc/man/man1/epsffit.man1.pdf"
+                   "doc/man/man1/extractres.1"
+                   "doc/man/man1/extractres.man1.pdf"
+                   "doc/man/man1/includeres.1"
+                   "doc/man/man1/includeres.man1.pdf"
+                   "doc/man/man1/psbook.1"
+                   "doc/man/man1/psbook.man1.pdf"
+                   "doc/man/man1/psjoin.1"
+                   "doc/man/man1/psjoin.man1.pdf"
+                   "doc/man/man1/psnup.1"
+                   "doc/man/man1/psnup.man1.pdf"
+                   "doc/man/man1/psresize.1"
+                   "doc/man/man1/psresize.man1.pdf"
+                   "doc/man/man1/psselect.1"
+                   "doc/man/man1/psselect.man1.pdf"
+                   "doc/man/man1/pstops.1"
+                   "doc/man/man1/pstops.man1.pdf"
+                   "doc/man/man1/psutils.1"
+                   "doc/man/man1/psutils.man1.pdf"
+                   "dvips/getafm/"
+                   "psutils/"
+                   "scripts/psutils/")
+             (base32
+              "0ba514lz3pc03ll0kb9apdx62mi2yiyd7bnargkp2bbf62dq79cc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "extractres.pl" "includeres.pl" "psjoin.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/psutils")
+    (synopsis "PostScript utilities")
+    (description
+     "This package provides a bundle of utilities for manipulating PostScript
+documents, including page selection and rearrangement, resizing the page,
+arrangement into signatures for booklet printing, and page merging for N-up
+printing.  Utilities include @command{psbook}, @command{psselect},
+@command{pstops}, @command{psnup}, @command{psresize}, @command{epsffit}.")
+    (license
+     (list license:lgpl2.1+
+           (license:fsf-free
+            "https://tug.org/svn/texlive/trunk/Build/source/texk/psutils/psutils-src/LICENSE?revision=57915&view=markup")))))
+
 (define-public texlive-ptolemaicastronomy
   (package
     (name "texlive-ptolemaicastronomy")
