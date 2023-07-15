@@ -2430,14 +2430,14 @@ hardware management, and a high degree of customizability.")
 (define-public polkit-kde-agent
   (package
     (name "polkit-kde-agent")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-1-" version ".tar.xz"))
               (sha256
                (base32
-                "1qb9nxlkgcv0c30l2vqgf9xs9d220q5pg7ikpb6zjzvj4wsvlvwd"))))
+                "0k7d9jz49fp4h7gxakqsmj16h5xdv8jw69068sz5mazzczi7lwyz"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list ki18n
@@ -2453,6 +2453,7 @@ hardware management, and a high degree of customizability.")
      "This package contains a daemon providing a Polkit authentication
 UI for Plasma")
     (home-page "https://invent.kde.org/plasma/polkit-kde-agent-1")
+    (properties '((upstream-name . "polkit-kde-agent-1")))
     (license license:gpl2+)))
 
 (define-public powerdevil
