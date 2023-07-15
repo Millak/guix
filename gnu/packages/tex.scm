@@ -1221,6 +1221,28 @@ package provides a Perl program that will extract any of the sections of such
 a file, in particular providing a text'-form EPS file for use with (La)TeX.")
     (license license:artistic2.0)))
 
+(define-public texlive-bibtex8
+  (package
+    (name "texlive-bibtex8")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/csf/base/" "bibtex/csf/polish-csf/"
+                   "doc/bibtex8/" "doc/man/man1/bibtex8.1"
+                   "doc/man/man1/bibtex8.man1.pdf")
+             (base32
+              "1ywv5rdk08dnrqr09pnjzff37x2c9m5i1wjzfsjnvm068is58c7s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibtex8")
+    (synopsis "BibTeX variant supporting 8-bit encodings")
+    (description
+     "BibTeX8 is an enhanced, portable C version of BibTeX.  It is enhanced by
+conversion to larger (32-bit) capacity, addition of run-time selectable
+capacity and 8-bit support extensions.  National character set and sorting
+order are controlled by an external configuration file.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
