@@ -19366,6 +19366,42 @@ PostScript fonts, Latin Modern, TeX Gyre, and T1 and other encoding support
 for Computer Modern, in outline form.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-fontutils
+  (package
+    (name "texlive-collection-fontutils")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-accfonts
+           texlive-afm2pl
+           texlive-albatross
+           texlive-collection-basic
+           texlive-dosepsbin
+           texlive-dvipsconfig
+           texlive-epstopdf
+           texlive-fontinst
+           texlive-fontools
+           texlive-fontware
+           texlive-lcdftypetools
+           texlive-luafindfont
+           texlive-metatype1
+           texlive-mf2pt1
+           texlive-ps2eps
+           texlive-ps2pk
+           texlive-psutils
+           texlive-t1utils
+           texlive-ttfutils))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Graphics and font utilities")
+    (description
+     "This collection of packages provides programs for conversion between
+font formats, testing fonts, virtual fonts, @file{.gf} and @file{.pk}
+manipulation, mft, fontinst, etc.  Manipulating OpenType, TrueType, Type 1,and
+for manipulation of PostScript and other image formats.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
