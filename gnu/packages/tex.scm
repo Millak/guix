@@ -3862,6 +3862,37 @@ and glued together.  This will lead to a physical product box.")
      (list
       (license:fsf-free "https://tug.ctan.org/macros/latex/contrib/gene/productbox/productbox.ins")))))
 
+(define-public texlive-ps2eps
+  (package
+    (name "texlive-ps2eps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/bbox.1"
+                   "doc/man/man1/bbox.man1.pdf"
+                   "doc/man/man1/ps2eps.1"
+                   "doc/man/man1/ps2eps.man1.pdf"
+                   "scripts/ps2eps/")
+             (base32
+              "1anrvgs0hd3790dwpxqal0c2drjmvh93vnyqap40rvp8axwi0a6n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ps2eps.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ps2eps")
+    (synopsis "Produce Encapsulated PostScript from PostScript")
+    (description
+     "@command{ps2eps} produces Encapsulated PostScript Files (EPS/EPSF) from
+a one-page PostScript document, or any PostScript document.  A correct
+bounding box is calculated for the EPS files and some PostScript command
+sequences that can produce errorneous results on printers are filtered.  The
+input is cropped to include just the image contained in the PostScript file.
+The EPS files can then be included into TeX documents.
+
+Included in the distribution is the @command{bbox} program, an application to
+produce bounding box values for Rawppm or Rawpbm format files.")
+    (license license:gpl3+)))
+
 (define-public texlive-ptolemaicastronomy
   (package
     (name "texlive-ptolemaicastronomy")
