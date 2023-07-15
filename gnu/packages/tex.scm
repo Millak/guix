@@ -9007,6 +9007,25 @@ German.")
 Magyar (Hungarian) with Babel.")
     (license license:lppl)))
 
+(define-public texlive-babel-italian
+  (package
+    (name "texlive-babel-italian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-italian/"
+                   "source/generic/babel-italian/"
+                   "tex/generic/babel-italian/")
+             (base32
+              "04bj2igc4m59nsax2563dzkzk3f4rvfc8aph35x663a8rf70bvjy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-italian")
+    (synopsis "Babel support for Italian text")
+    (description "The package provides language definitions for use in
+Babel.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-swedish
   (package
     (name "texlive-babel-swedish")
