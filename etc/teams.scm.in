@@ -128,6 +128,17 @@ the haskell-build-system."
               "guix/import/stackage.scm"
               "guix/scripts/import/hackage.scm")))
 
+(define-team qt
+  (team 'qt
+        #:name "Qt team"
+        #:description
+        "The Qt toolkit/library and the qt-build-system,
+as well as some packages using Qt."
+        #:scope (list "gnu/packages/qt.scm"
+                      "guix/build-system/qt.scm"
+                      "guix/build/qt-build-system.scm"
+                      "guix/build/qt-utils.scm")))
+
 (define-team r
   (team 'r
         #:name "R team"
@@ -601,7 +612,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Maxim Cournoyer"
                        "maxim.cournoyer@gmail.com")
-  gnome telephony)
+  gnome qt telephony)
 
 
 (define (find-team name)
