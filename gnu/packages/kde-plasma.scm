@@ -1141,14 +1141,14 @@ KDE Frameworks components.")
 (define-public kwin
   (package
     (name "kwin")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
-               (method url-fetch)
-               (uri (string-append "mirror://kde/stable/plasma/" version "/"
-                                   name "-" version ".tar.xz"))
-               (sha256
-                (base32
-                 "1dh7ydwxbb9r53p353d53gq7w9vmp7idvsr4s5ldxmah35436v2s"))))
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1v4r4h2zbandg43iyww5p66sgv2z90lrri1gijnwjlg9j5gbvmb2"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1179,9 +1179,14 @@ KDE Frameworks components.")
                   _ a Xwayland b)
                  (string-append a
                                 (which "Xwayland") b)))
+              ;; https://github.com/NixOS/nixpkgs/blob/6da4bc6cb07cba1b8e53d139cbf1d2fb8061d967/pkgs/desktops/plasma-5/kwin/0003-plugins-qpa-allow-using-nixos-wrapper.patch
+              (substitute* "src/plugins/qpa/main.cpp"
+                (("(\\(QLatin1String\\(\"kwin_wayland\"\\)\\))" _ start)
+                 (string-append start " && !QCoreApplication::applicationFilePath()\
+.endsWith(QLatin1String(\".kwin_wayland-real\"))" )))
               (substitute* '("cmake/modules/Findhwdata.cmake")
                 (("/usr/share")
-                 (string-append #$hwdata:pnp "/share")))))
+                 (string-append #$(this-package-input "hwdata") "/share")))))
           (add-after 'install 'add-symlinks
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((kst5 (string-append #$output
@@ -1205,20 +1210,19 @@ KDE Frameworks components.")
                 (setenv "DISPLAY" ":1")
                 (system "Xvfb :1 &")
                 (sleep 5)
-                (invoke "ctest" "-E"
+                (invoke "dbus-launch"
+                        "ctest"
+                        "-E"
                         (string-join
-                          (list "kwayland-testXdgDecoration"
-                                "kwin-testXkb"
-                                "kwin-testPointerInput"
-                                "kwin-testXdgShellWindow"
-                                "kwin-testXdgShellWindow-waylandonly"
-                                "kwin-testSceneOpenGLES"
-                                "kwin-testSceneOpenGLES-waylandonly"
-                                "kwin-testNightColor"
-                                "kwin-testNightColor-waylandonly"
-                                "kwin-testSceneQPainter"
-                                "kwin-testLibinputDevice")
-                          "|"))))))))
+                         (list "kwin-testXkb"
+                               "kwin-testPointerInput"
+                               "kwin-testXdgShellWindow"
+                               "kwin-testXdgShellWindow-waylandonly"
+                               "kwin-testSceneOpenGLES"
+                               "kwin-testSceneOpenGLES-waylandonly"
+                               "kwin-testNightColor"
+                               "kwin-testNightColor-waylandonly")
+                         "|"))))))))
     (native-inputs (list extra-cmake-modules
                          dbus
                          kdoctools
