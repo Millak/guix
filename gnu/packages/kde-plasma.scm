@@ -1884,7 +1884,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
 (define-public plasma-nm
   (package
     (name "plasma-nm")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1892,7 +1892,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "036bx0qjrjanfxy8aiy6ab7rmm2h8l7wlkvlwhzw2hgl1w03xjps"))))
+                "1jfrd3xi4hyivkwrif6s87f9jasrnsihd7c80sqhwd1k2kl9wr0a"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -1905,6 +1905,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
     (inputs (list kconfigwidgets
                   kcompletion
                   kcoreaddons
+                  kcmutils
                   kdeclarative
                   kdbusaddons
                   kio
