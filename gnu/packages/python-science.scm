@@ -1150,7 +1150,7 @@ Mathematics (GLM) library to Python.")
 (define-public python-distributed
   (package
     (name "python-distributed")
-    (version "2023.4.1")
+    (version "2023.7.0")
     (source
      (origin
        ;; The test files are not included in the archive on pypi
@@ -1161,7 +1161,7 @@ Mathematics (GLM) library to Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "164xp2dxac95nngmgdhlk0vwnnvbmajqliz994bdvw72xnv1ya18"))))
+         "0b93fpwz7kw31pkzfyihpkw8mzbqshzd6rw5vcwld7n3z2aaaxxb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
