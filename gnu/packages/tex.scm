@@ -1243,6 +1243,25 @@ capacity and 8-bit support extensions.  National character set and sorting
 order are controlled by an external configuration file.")
     (license license:gpl3+)))
 
+(define-public texlive-bibtexu
+  (package
+    (name "texlive-bibtexu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/bibtexu/" "doc/man/man1/bibtexu.1"
+                   "doc/man/man1/bibtexu.man1.pdf")
+             (base32
+              "19bp8wn0ssz7gczxp0imbpgi1zwz9x3ya67f072rjzg2zmfpphqg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibtexu")
+    (synopsis "BibTeX variant supporting Unicode (UTF-8), via ICU")
+    (description
+     "BibTeXu is an enhanced, portable C version of BibTeX.  Unicode is
+supported via the ICU library.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
