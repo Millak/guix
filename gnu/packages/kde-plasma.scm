@@ -651,7 +651,7 @@ the schedule and venue information.")
 (define-public kscreen
   (package
     (name "kscreen")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -659,7 +659,7 @@ the schedule and venue information.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "0361202n0366jiyv61w06jikh2i4s1fzr6x3chmdykx4fgvbqj7s"))))
+                "0m7jidcs9xf5xzlnhx2s9qnzn6z80fxhssrxz8i2zqk7xhg6bl6y"))))
     (build-system cmake-build-system)
     (arguments
      ;; TODO: All tests fail
@@ -675,6 +675,7 @@ the schedule and venue information.")
                   kcoreaddons
                   kcmutils
                   kxmlgui
+                  layer-shell-qt
                   libkscreen
                   libxi
                   plasma-wayland-protocols
