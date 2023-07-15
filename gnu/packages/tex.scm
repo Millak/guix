@@ -1937,6 +1937,33 @@ Latin Modern fonts, and the distribution includes an example development of
 Knuth's logo fonts.")
     (license license:public-domain)))
 
+(define-public texlive-mf2pt1
+  (package
+    (name "texlive-mf2pt1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/mf2pt1.info" "doc/support/mf2pt1/"
+                   "metapost/mf2pt1/" "scripts/mf2pt1/")
+             (base32
+              "17dq4csl10j89rrxgyqjp3fjqkd9q6djgz9yi33y72w5ymjgiaik")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "mf2pt1.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/mf2pt1")
+    (synopsis "Convert stylized Metafont to PostScript Type 1")
+    (description
+     "@command{mf2pt1} is a Perl script that facilitates producing PostScript
+Type 1 fonts from a Metafont source file.  It is not, as the name may imply,
+an automatic converter of arbitrary Metafont fonts to Type 1 format.
+@command{mf2pt1} imposes a number of restrictions on the Metafont input.  If
+these restrictions are met, it will produce valid Type 1 output with more
+accurate control points than can be reverse-engineered by TeXtrace,
+@command{mftrace}, and other programs which convert bitmaps to outline
+fonts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mfirstuc
   (package
     (name "texlive-mfirstuc")
