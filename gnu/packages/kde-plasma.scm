@@ -2173,14 +2173,14 @@ Desktop.")
 (define-public plasma-vault
   (package
     (name "plasma-vault")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15nf4myl6sry0930m8qiixpr1i8bh1g58cy2gf304h029vr2fn5j"))))
+                "0wxa80m2ppjp8l8nchwcvrmx20j0rgm9ydn93x4w4d4rmi6mypr4"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list kio
@@ -2197,7 +2197,7 @@ Desktop.")
     (home-page "https://invent.kde.org/plasma/plasma-vault")
     (synopsis "Plasma applet and services for creating encrypted vaults")
     (description "Provides Plasma applet and services for creating encrypted
-	vaults.")
+vaults.")
     (license (list license:gpl2 license:gpl3))))
 
 (define-public plasma-systemmonitor
