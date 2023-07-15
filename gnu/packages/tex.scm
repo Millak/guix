@@ -988,6 +988,30 @@ ones.")
 (define-deprecated/alias texlive-union texlive-updmap.cfg)
 (export texlive-union)
 
+(define-public texlive-accfonts
+  (package
+    (name "texlive-accfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/accfonts/" "scripts/accfonts/"
+                   "tex/latex/accfonts/")
+             (base32
+              "0kja24rh0ysljwgkyg9mf47h64ayi2kmb1jb3dmvb42ywvg0w9i7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "mkt1font" "vpl2ovp" "vpl2vpl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/accfonts")
+    (synopsis "Utilities to derive new fonts from existing ones")
+    (description
+     "The @code{accfonts} package contains three utilities to permit easy
+manipulation of fonts, in particular the creation of unusual accented
+characters. @command{mkt1font} works on Adobe Type 1 fonts, @command{vpl2vpl}
+works on TeX virtual fonts and @command{vpl2ovp} transforms a TeX font to an
+Omega one.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
