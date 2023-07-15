@@ -1344,6 +1344,26 @@ test file that is intended to be sent to the LaTeX bug database as part of
 a bug report.")
     (license license:lppl1.3c)))
 
+(define-public texlive-luafindfont
+  (package
+    (name "texlive-luafindfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/luafindfont.1"
+                   "doc/man/man1/luafindfont.man1.pdf"
+                   "doc/support/luafindfont/"
+                   "scripts/luafindfont/")
+             (base32
+              "1xyqlbwgsbb5al2ss9w40wsigsmlj97rf6ck3rih41s0js7yz4aj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "luafindfont.lua")))
+    (home-page "https://ctan.org/pkg/luafindfont")
+    (synopsis "Search fonts in the LuaTeX font database")
+    (description "This Lua script searches for fonts in the font database.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bidi
   (package
     (name "texlive-bidi")
