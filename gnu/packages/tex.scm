@@ -81,6 +81,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages multiprecision)
@@ -1154,6 +1155,40 @@ ligatures, but also offers additional control over them.")
     (description
      "This is a command line tool for finding fonts that contain
 a given (Unicode) glyph.  It relies on Fontconfig.")
+    (license license:bsd-3)))
+
+(define-public texlive-arara
+  (package
+    (name "texlive-arara")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/arara.1"
+                   "doc/man/man1/arara.man1.pdf"
+                   "doc/support/arara/" "scripts/arara/"
+                   "source/support/arara/")
+             (base32
+              "0sshjaxz1ar24mr7dny0lp9l0bggyfsb0868s4b1k00w6jyzh1i8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:link-scripts #~(list "arara.sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-java
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "scripts/arara/arara.sh"
+                (("java") (search-input-file inputs "/bin/java"))))))))
+    (inputs (list icedtea))
+    (home-page "https://ctan.org/pkg/arara")
+    (synopsis "Automation of LaTeX compilation")
+    (description
+     "Arara is comparable with other well-known compilation tools like
+@command{latexmk} and @command{rubber}.  The key difference is that Arara
+determines its actions from metadata in the source code, rather than relying
+on indirect resources, such as log file analysis.  Arara requires a Java
+virtual machine.")
     (license license:bsd-3)))
 
 (define-public texlive-dosepsbin
