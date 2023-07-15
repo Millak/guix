@@ -19668,10 +19668,10 @@ LaTeX which have widespread use.")
     (home-page "https://www.tug.org/texlive/")
     (synopsis "LuaTeX packages")
     (description
-     "Packages for LuaTeX, a TeX engine using Lua as an embedded scripting and
-extension language, with native support for Unicode, OpenType/TrueType fonts,
-and both PDF and DVI output.  The LuaTeX engine itself, and plain formats, are
-in @code{collection-basic}.")
+     "This is a collection of packages for LuaTeX, a TeX engine using Lua as
+an embedded scripting and extension language, with native support for Unicode,
+OpenType/TrueType fonts, and both PDF and DVI output.  The LuaTeX engine
+itself, and plain formats, are in @code{collection-basic}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 (define-public texlive-collection-metapost
