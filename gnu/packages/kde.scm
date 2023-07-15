@@ -48,6 +48,7 @@
   #:use-module (gnu packages apr)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
@@ -867,27 +868,35 @@ multi-floor indoor maps.")
 (define-public kpublictransport
   (package
     (name "kpublictransport")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/release-service/" version
-                    "/src/kpublictransport-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kpublictransport-" version
+                                  ".tar.xz"))
               (sha256
                (base32
-                "0z7zyyiq4815m74s6p841k1c4pxbrss7hnkag8kr5qa3q4264kg9"))))
+                "04fa9ismgkhskpmjf6b8gvra2z0jpsigz79b93m1snxm4046xihb"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases '(modify-phases %standard-phases
-                       (replace 'check
-                         (lambda* (#:key tests? #:allow-other-keys)
-                           (when tests?
-                             (setenv "QT_QPA_PLATFORM" "offscreen")
-                             (invoke "ctest" "-E"
-                              "(mergeutiltest|departuretest|journeytest|networkconfigtest|locationhistorymodeltest|navitiaparsertest|otpparsertest|ivvassparsertest|cachetest)")))))))
-    (native-inputs (list extra-cmake-modules pkg-config))
+                       (add-before 'check 'check-setup
+                         (lambda* (#:key inputs #:allow-other-keys)
+                           (setenv "QT_QPA_PLATFORM" "offscreen")
+                           (setenv "HOME" ".")
+                           (setenv "TZ" "Europe/Prague")
+                           (setenv "TZDIR"
+                                   (search-input-directory inputs
+                                                           "share/zoneinfo")))))))
+    (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     ;; TODO: clipper and osmctools are not detected
-    (inputs (list clipper osmctools protobuf qtdeclarative-5 zlib))
+    (inputs (list clipper
+                  osmctools
+                  protobuf
+                  qtdeclarative-5
+                  zlib
+                  networkmanager-qt
+                  ki18n))
     (home-page "https://api.kde.org/kdepim/kpublictransport/html/index.html")
     (synopsis "Library for accessing realtime public transport data")
     (description
