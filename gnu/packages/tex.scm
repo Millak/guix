@@ -8988,6 +8988,25 @@ German.")
 
 (define-deprecated-package texlive-generic-babel-german texlive-babel-german)
 
+(define-public texlive-babel-hungarian
+  (package
+    (name "texlive-babel-hungarian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-hungarian/"
+                   "tex/generic/babel-hungarian/")
+             (base32
+              "1x54clczgvkq9slq5331hvp1rzlv4jm4g9gnpflz8y72jbqmcm24")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-hungarian")
+    (synopsis "Babel support for Hungarian (Magyar)")
+    (description
+     "The package provides a language definition file that enables support of
+Magyar (Hungarian) with Babel.")
+    (license license:lppl)))
+
 (define-public texlive-babel-swedish
   (package
     (name "texlive-babel-swedish")
