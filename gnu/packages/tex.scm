@@ -917,6 +917,55 @@ Live infrastructure.  This scheme corresponds exactly to
 @code{collection-basic}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-scheme-small
+  (package
+    (name "texlive-scheme-small")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-babel-basque
+           texlive-babel-czech
+           texlive-babel-danish
+           texlive-babel-dutch
+           texlive-babel-english
+           texlive-babel-finnish
+           texlive-babel-french
+           texlive-babel-german
+           texlive-babel-hungarian
+           texlive-babel-italian
+           texlive-babel-norsk
+           texlive-babel-polish
+           texlive-babel-portuges
+           texlive-babel-spanish
+           texlive-babel-swedish
+           texlive-collection-basic
+           texlive-collection-latex
+           texlive-collection-latexrecommended
+           texlive-collection-metapost
+           texlive-collection-xetex
+           texlive-ec
+           texlive-eurosym
+           texlive-hyphen-complete
+           texlive-lm
+           texlive-lualibs
+           texlive-luaotfload
+           texlive-luatexbase
+           texlive-revtex
+           texlive-synctex
+           texlive-times
+           texlive-tipa
+           texlive-ulem
+           texlive-upquote
+           texlive-zapfding))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Small scheme (basic, XeTeX, Metapost, and a few languages)")
+    (description
+     "This is a small TeX Live scheme, corresponding to MacTeX's BasicTeX
+variant.  It adds XeTeX, MetaPost, and some recommended packages to
+@code{scheme-basic}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 ;; This package must be located before any package adding it to its native
 ;; inputs.
