@@ -1950,6 +1950,45 @@ forces you to type words correctly as fast as possible, otherwise
 you will die.  The game builds the list of words from the active buffer.")
       (license license:gpl2+))))
 
+(define-public emacs-speed-type
+  (package
+    (name "emacs-speed-type")
+    (version "1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dakra/speed-type")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nnvk3qnn61hg5rgwpiy1dqg6sqfh1m5256sbsk2pwrdmk54k85k"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command
+      #~(list "emacs" "-Q" "--batch" "-L" "."
+              "-l" "test-speed-type.el"
+              "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'skip-failing-test
+            ;; This test requires an internet connection.
+            (lambda _
+              (substitute* "test-speed-type.el"
+                (("\\(ert-deftest speed-type--retrieve-test .*" all)
+                 (string-append all " (skip-unless nil)"))))))))
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/dakra/speed-type")
+    (synopsis "Practice touch/speed typing in GNU Emacs.")
+    (description
+     "Speed Type allows you to practice your touch typing skills.  You can
+test yourself by typing snippets from online books or use any piece of text or
+code you have in Emacs.  Speed Type keeps track of your stats (WPM, CPM,
+accuracy) while you are typing.")
+    (license license:gpl3+)))
+
 (define-public emacs-graphql
   (let ((commit "b57b5ca5d2d0837e1fb4a4f30c051d5f3e643f0f")) ;version bump
     (package
