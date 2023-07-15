@@ -9026,6 +9026,27 @@ Magyar (Hungarian) with Babel.")
 Babel.")
     (license license:lppl1.3c)))
 
+(define-public texlive-babel-portuges
+  (package
+    (name "texlive-babel-portuges")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-portuges/"
+                   "source/generic/babel-portuges/"
+                   "tex/generic/babel-portuges/")
+             (base32
+              "0619ygyjz5vz3a6khx7yvsa059x59r54fgyxb0p8k196lss07lq2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-portuges")
+    (synopsis "Babel support for Portuges")
+    (description
+     "The package provides the language definition file for support of
+Portuguese and Brazilian Portuguese in Babel.  Some shortcuts are defined, as
+well as translations to Portuguese of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-swedish
   (package
     (name "texlive-babel-swedish")
