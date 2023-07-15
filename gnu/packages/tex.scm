@@ -1917,6 +1917,26 @@ build fonts using the Metafont system.")
 
 (define-deprecated-package texlive-metafont-base texlive-metafont)
 
+(define-public texlive-metatype1
+  (package
+    (name "texlive-metatype1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "source/metapost/metatype1/")
+             (base32
+              "1nhbsn33w6zbzbvi3a32ng6ib5dbh0vll9g2c5ssiv1ysxqrg6yq")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metatype1")
+    (synopsis "Generate Type 1 fonts from MetaPost")
+    (description
+     "The system employs scripts, common utility programs, and a set of
+MetaPost macros to provide a means of expressing the details outline fonts
+directly in the MetaPost language.  The system was employed to generate the
+Latin Modern fonts, and the distribution includes an example development of
+Knuth's logo fonts.")
+    (license license:public-domain)))
+
 (define-public texlive-mfirstuc
   (package
     (name "texlive-mfirstuc")
