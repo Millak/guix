@@ -1743,7 +1743,7 @@ activities effectively, without being distracting.")
 (define-public plasma-disks
   (package
     (name "plasma-disks")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1751,7 +1751,7 @@ activities effectively, without being distracting.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0vci2cf8vx2lclypys9rmvjb8haakv6ksrvqm5j28pazbq2kskvl"))))
+                "09v4hwx2q8sz0b4qak8xaxnyqj6ccjlgk28fijvmnv61nxb49h1w"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons
