@@ -1098,7 +1098,7 @@ wayland-server API.")
 (define-public kwayland-integration
   (package
     (name "kwayland-integration")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1106,7 +1106,7 @@ wayland-server API.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "10xl7yrj519b9s5vq0hqqfz3vvg1fdwggw96snzm44iwycqbgss8"))))
+                "10rc14ggbs86bq0sky4i3kdwarwk8mh2yx4g77if8vr7z96xpdqh"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
