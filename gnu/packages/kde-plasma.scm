@@ -1494,16 +1494,16 @@ is controllable via voice or TV remote.")
 (define-public plasmatube
   (package
     (name "plasmatube")
-    (version "22.09")
+    (version "23.01.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma-mobile/"
                                   version "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00w9p5fcpv4s406lmcdcbrxf19sgkvf9yy8pfjmf1asvvvi8bpnk"))))
+                "06hwa1m6gaacjmcyssa63vw43cgx096x9aj87rv1z9k9qsv2qgfj"))))
     (build-system cmake-build-system)
-    (native-inputs (list extra-cmake-modules))
+    (native-inputs (list extra-cmake-modules pkg-config))
     (inputs
      (list kconfig
            kirigami
@@ -1513,6 +1513,7 @@ is controllable via voice or TV remote.")
            qtmultimedia-5
            qtquickcontrols2-5
            qtsvg-5
+           mpv
            youtube-dl))
     (home-page "https://apps.kde.org/plasmatube/")
     (synopsis "Kirigami YouTube video player")
