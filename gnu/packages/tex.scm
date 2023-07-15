@@ -11352,6 +11352,28 @@ of which make use of the @code{stackengine} core.")
      "The package provides macros for drawing Chinese and Japanese abaci.")
     (license license:lppl)))
 
+(define-public texlive-synctex
+  (package
+    (name "texlive-synctex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/synctex.1"
+                   "doc/man/man1/synctex.man1.pdf"
+                   "doc/man/man5/synctex.5"
+                   "doc/man/man5/synctex.man5.pdf")
+             (base32
+              "1a2nlmbib8723jjhf6xxh5rpmnd5jv3cd69br4ihchbq5ipzircp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/synctex")
+    (synopsis "Engine-level feature synchronizing output and source")
+    (description
+     "SyncTeX allows navigating between the TeX source and (usually PDF)
+output, in both directions, given a SyncTeX-aware front end.  It is compiled
+into most engines and can be enabled with the @samp{--synctex=1} option.")
+    (license license:expat)))
+
 (define-public texlive-tetragonos
   (package
     (name "texlive-tetragonos")
