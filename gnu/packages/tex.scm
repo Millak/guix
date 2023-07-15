@@ -1406,6 +1406,31 @@ Finally, the LaTeX file will be run through the tangler to get the desired
 chunk of code.")
     (license license:gpl3+)))
 
+(define-public texlive-cluttex
+  (package
+    (name "texlive-cluttex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/cluttex/" "scripts/cluttex/")
+             (base32
+              "06i59jxanssx0hngnzkvmigg4gh0szm8n11095wlpdqrma1d162c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "cluttex.lua")))
+    (home-page "https://ctan.org/pkg/cluttex")
+    (synopsis "Automation tool for running LaTeX")
+    (description
+     "This is another tool for the automation of LaTeX document processing,
+like @command{latexmk} or @command{arara}.  The main feature of this tool is
+that it does not clutter your working directory with @file{.aux} or
+@file{.log} or other auxiliary files.  It has of course the usual features of
+automation tools.  It automatically re-runs (La)TeX for cross-references.
+MakeIndex, BibTeX, Biber, or @command{makeglossaries} will be executed if
+a corresponding option is set.  Furthermore, @command{cluttex} can watch input
+files for changes (using an external program).")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
