@@ -926,14 +926,14 @@ installed.")
 (define-public libkscreen
   (package
     (name "libkscreen")
-    (version "5.25.5")
+    (version "5.27.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "17f2pbbkpmw3a32nsqlwd0x5xb71l6dzrh7ldwcqv46nvb54yhfa"))))
+        (base32 "1ywyg1i9bg0nawndl4hzivd4yfsqk5snls8ak1vyr9xmm8zkgaf1"))))
     (build-system qt-build-system)
     (arguments
      '(#:phases
@@ -945,14 +945,19 @@ installed.")
                (setenv "QT_QPA_PLATFORM" "offscreen")
                (setenv "WAYLAND_DISPLAY" "libkscreen-test-wayland-backend-0")
                (invoke "ctest" "-E"
-                "(kscreen-testscreenconfig|kscreen-testqscreenbackend|kscreen-testkwaylandbackend|kscreen-testkwaylandconfig|kscreen-testkwaylanddpms)")))))))
+                       (string-append "(kscreen-testedid"
+                                      "|kscreen-testqscreenbackend"
+                                      "|kscreen-testkwaylandbackend"
+                                      "|kscreen-testkwaylandconfig"
+                                      "|kscreen-testkwaylanddpms)"))))))))
     (native-inputs
      (list extra-cmake-modules
            pkg-config
+           qttools-5
            ;; For testing.
            dbus))
     (inputs
-     (list kwayland libxrandr plasma-wayland-protocols
+     (list kconfig kwayland libxrandr plasma-wayland-protocols
            qtbase-5 qtwayland-5 wayland qtx11extras))
     (home-page "https://community.kde.org/Solid/Projects/ScreenManagement")
     (synopsis "KDE's screen management software")
