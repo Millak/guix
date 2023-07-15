@@ -1058,6 +1058,36 @@ ligatures, but also offers additional control over them.")
 a given (Unicode) glyph.  It relies on Fontconfig.")
     (license license:bsd-3)))
 
+(define-public texlive-dosepsbin
+  (package
+    (name "texlive-dosepsbin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dosepsbin.1"
+                   "doc/man/man1/dosepsbin.man1.pdf"
+                   "doc/support/dosepsbin/"
+                   "scripts/dosepsbin/"
+                   "source/support/dosepsbin/")
+             (base32
+              "117crwcdpirvvm9srrzjn40marg00q16rzyqipm3xxbmwv52i93c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "dosepsbin.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/dosepsbin")
+    (synopsis "Deal with DOS binary EPS files")
+    (description
+     "This package provides a Encapsulated PostScript (EPS) file may given in
+a special binary format to support the inclusion of a thumbnail.  This file
+format, commonly known as DOS EPS format, starts with a binary header that
+contains the positions of the possible sections: PostScript (PS); Windows
+Metafile Format (WMF); and Tag Image File Format (TIFF).  The PS section must
+be present and either the WMF file or the TIFF file should be given.  The
+package provides a Perl program that will extract any of the sections of such
+a file, in particular providing a text'-form EPS file for use with (La)TeX.")
+    (license license:artistic2.0)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
