@@ -34,10 +34,12 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages search)
   #:use-module (gnu packages vnc)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages xorg))
 
 (define-public dolphin
@@ -189,14 +191,14 @@ document meta data file.")
 (define-public konsole
   (package
     (name "konsole")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konsole-" version ".tar.xz"))
        (sha256
-        (base32 "19yrhjjbwq7kaip05ig8raqnh87k5dg57jck2zrsdrhq2f4nb3ql"))))
+        (base32 "1k68y1i3g3bsz1dz81jhkx1q2fb13rbm5ywh632bcyln0c6l0vz0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools zlib))
@@ -226,7 +228,9 @@ document meta data file.")
            kxmlgui
            breeze-icons ;; default icon set
            qtbase-5
-           qtscript))
+           qtscript
+           qtmultimedia-5
+           icu4c))
     (arguments
      `(#:tests? #f)) ;; TODO: 2/15 tests fail even with HOME, offscreen, SHELL, debus
     (home-page "https://www.kde.org/")
