@@ -25591,16 +25591,16 @@ decisions with any given backend.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2023.4.1")
+    (version "2023.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dask/dask/")
-             (commit "a69a808f75a961504a9ba18058bff5e458be97fb")))
+             (commit "8523b3bae2ec0183d9d92cc536a3405f15189b7e")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "089kz6hcgl4yxwx99br1124sg1gkdy554hf120z9a5cfbrf0ah9y"))))
+        (base32 "1x617m0jlc63v938kqga9mhflhac3aj1ylq5mkpf2g9pd9x2hcbz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
