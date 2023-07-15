@@ -26,6 +26,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
@@ -164,17 +165,17 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
            qtbase-5
            xapian))
     (arguments
-     `(#:tests? #f  ;; 1/1 test fails
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               ;; Since qt-wrap selectors do not wrap for /share/kf5
-               ;; directories, we need this so khelpcenter can find html4.css.
-               (wrap-program (string-append out "/bin/khelpcenter")
-                 `("XDG_DATA_DIRS" suffix
-                   (,(string-append (assoc-ref inputs "khtml") "/share"))))))))))
+     (list #:tests? #f ;;1/1 test fails
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'wrap-executable
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            ;; Since qt-wrap selectors do not wrap for /share/kf5
+                            ;; directories, we need this so khelpcenter can find html4.css.
+                            (wrap-program (string-append #$output
+                                                         "/bin/khelpcenter")
+                              `("XDG_DATA_DIRS" suffix
+                                (,(string-append (assoc-ref inputs "khtml")
+                                                 "/share")))))))))
     (home-page "https://apps.kde.org/khelpcenter/")
     (synopsis "KDE documentation viewer")
     (description "KHelpCenter uses meta data files which describe the
