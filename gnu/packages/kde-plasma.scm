@@ -959,7 +959,7 @@ basic needs and easy to configure for those who want special setups.")
 (define-public libksysguard
   (package
     (name "libksysguard")
-    (version "5.25.5")
+    (version "5.27.6")
     (source
      (origin
        (method url-fetch)
@@ -967,7 +967,7 @@ basic needs and easy to configure for those who want special setups.")
                            "/libksysguard-" version ".tar.xz"))
        (patches (search-patches "libksysguard-qdiriterator-follow-symlinks.patch"))
        (sha256
-        (base32 "1gqsjsdkp25abqqp4f6cv6ih199q9ad7q1a4lkhjgsh4h8jq1856"))))
+        (base32 "1nqv0gxq011acvmqc2rpqrw4l928mcmg4rq2g45qzfmnmas2rjwy"))))
     (native-inputs
      (list bash-minimal extra-cmake-modules pkg-config qttools-5))
     (inputs
