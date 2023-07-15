@@ -1150,6 +1150,35 @@ otc) into individual fonts.
 @end itemize")
     (license license:gpl2)))
 
+(define-public texlive-fontware
+  (package
+    (name "texlive-fontware")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pltotf.1"
+                   "doc/man/man1/pltotf.man1.pdf"
+                   "doc/man/man1/tftopl.1"
+                   "doc/man/man1/tftopl.man1.pdf"
+                   "doc/man/man1/vftovp.1"
+                   "doc/man/man1/vftovp.man1.pdf"
+                   "doc/man/man1/vptovf.1"
+                   "doc/man/man1/vptovf.man1.pdf")
+             (base32
+              "0ng27m6cz92aa52z99gnw5i8s8fbkxq4354mygwnchchgxndcba0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vfware")
+    (synopsis "Tools for virtual font metrics")
+    (description
+     "Virtual font metrics are usually created in a textual form, the Virtual
+Property List, but programs that use them need to use binary files (the
+Virtual Font and the TeX Font Metric).  The two programs provided in this
+package translate between the two forms: @command{vptovf} takes a VPL file and
+generates a VF file and a TFM file; @command{vftovp} takes a VF file and a TFM
+file and generates a VPL file.")
+    (license license:knuth)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
