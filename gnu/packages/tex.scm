@@ -1375,6 +1375,37 @@ labels and advises the user to use a starred version instead.")
 Filters are also provided for checking the LaTeX parts of CWEB documents.")
     (license license:gpl2+)))
 
+(define-public texlive-clojure-pamphlet
+  (package
+    (name "texlive-clojure-pamphlet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pamphletangler.1"
+                   "doc/man/man1/pamphletangler.man1.pdf"
+                   "doc/support/clojure-pamphlet/"
+                   "scripts/clojure-pamphlet/"
+                   "source/support/clojure-pamphlet/"
+                   "tex/latex/clojure-pamphlet/")
+             (base32
+              "0dadr9wg7fa2vb6qkzqghrwmnns8jf4la1gb837a59jz2lh8955h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pamphletangler")))
+    (home-page "https://ctan.org/pkg/clojure-pamphlet")
+    (synopsis "Literate programming tool based on Clojure's Pamphlet system")
+    (description
+     "The Clojure pamphlet system is a system based on the Clojure literate
+system.  In the Clojure's pamphlet system you have your main LaTeX file, which
+can be compiled regularly.  This file contains documentation and source
+code (just like in other forms of literate programming).  These code snippets
+are wrapped in the @code{chunk} environment, hence they can be recognized by
+the tangler in order to extract them.  Chunks can be included inside each
+other by the @code{getchunk} command (which will be typesetted accordingly).
+Finally, the LaTeX file will be run through the tangler to get the desired
+chunk of code.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
