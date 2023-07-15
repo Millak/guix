@@ -1322,6 +1322,31 @@ programming language, but it is designed to work well with languages and
 compilers in the ML family.")
     (license license:lppl1.2+)))
 
+(define-public texlive-chklref
+  (package
+    (name "texlive-chklref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/chklref.1"
+                   "doc/man/man1/chklref.man1.pdf"
+                   "doc/support/chklref/" "scripts/chklref/"
+                   "tex/latex/chklref/")
+             (base32
+              "1namyi035gqhvldplj0yzfkgxq91zrifqxhsf32jgxhjgcbbal6g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "chklref.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/chklref")
+    (synopsis "Check for problems with labels in LaTeX")
+    (description
+     "It is quite common that after modifying a TeX file, many unused labels
+remain in it.  The purpose of chklref is to automatically find these useless
+labels.  It also looks for non starred mathematical environments with no
+labels and advises the user to use a starred version instead.")
+    (license license:gpl3)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
