@@ -2008,7 +2008,7 @@ customizable platform for mobile devices.")
 (define-public plasma-pa
   (package
     (name "plasma-pa")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -2016,11 +2016,12 @@ customizable platform for mobile devices.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0g06pm1isnzx4hv6380rjpyr22s4j5iw9083s71vnl4npx28npvb"))))
+                "0kvfhpsiv0nkilirjwsplx67m5zdqc5w6zmp9gkgyym46ax0hxjf"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools pkg-config))
     (inputs (list glib
                   kcoreaddons
+                  kcmutils
                   kdeclarative
                   kglobalaccel
                   knotifications
