@@ -1110,6 +1110,46 @@ grid underneath the page material--very useful for measuring and eliminating
 paper feed errors!")
     (license license:gpl3+)))
 
+(define-public texlive-fontools
+  (package
+    (name "texlive-fontools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/afm2afm.1"
+                   "doc/man/man1/afm2afm.man1.pdf"
+                   "doc/man/man1/autoinst.1"
+                   "doc/man/man1/autoinst.man1.pdf"
+                   "doc/man/man1/ot2kpx.1"
+                   "doc/man/man1/ot2kpx.man1.pdf"
+                   "doc/support/fontools/"
+                   "fonts/enc/dvips/fontools/"
+                   "scripts/fontools/")
+             (base32
+              "0jfqwhj2i9x9bzq723ch5z3sydfkaha4xr0xlp2haav713ll5027")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "afm2afm" "autoinst" "ot2kpx")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/fontools")
+    (synopsis "Tools to simplify using fonts (especially TT/OTF ones)")
+    (description
+     "This package provides tools to simplify using OpenType fonts with LaTeX.
+By far the most important program in this bundle is @command{autoinst},
+a wrapper script around Eddie Kohler's LCDF TypeTools.  Autoinst aims to
+automate the installation of OpenType fonts in LaTeX by calling the LCDF
+TypeTools (with the correct options) for all fonts you wish to install, and
+generating the necessary @file{.fd} and @file{.sty} files.
+
+In addition, this bundle contains a few other, less important utilities:
+@itemize
+@item @command{afm2afm}: re-encodes @file{.afm} files,
+@item @command{ot2kpx}: extract kerning pairs from OpenType fonts,
+@item @command{splitttc}: split an OpenType Collection file (ttc or
+otc) into individual fonts.
+@end itemize")
+    (license license:gpl2)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
