@@ -879,15 +879,15 @@ multi-floor indoor maps.")
                 "04fa9ismgkhskpmjf6b8gvra2z0jpsigz79b93m1snxm4046xihb"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases '(modify-phases %standard-phases
-                       (add-before 'check 'check-setup
-                         (lambda* (#:key inputs #:allow-other-keys)
-                           (setenv "QT_QPA_PLATFORM" "offscreen")
-                           (setenv "HOME" ".")
-                           (setenv "TZ" "Europe/Prague")
-                           (setenv "TZDIR"
-                                   (search-input-directory inputs
-                                                           "share/zoneinfo")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'check-setup
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (setenv "QT_QPA_PLATFORM" "offscreen")
+                            (setenv "HOME" ".")
+                            (setenv "TZ" "Europe/Prague")
+                            (setenv "TZDIR"
+                                    (search-input-directory inputs
+                                                            "share/zoneinfo")))))))
     (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     ;; TODO: clipper and osmctools are not detected
     (inputs (list clipper
