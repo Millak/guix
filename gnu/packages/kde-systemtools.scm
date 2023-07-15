@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,14 +43,14 @@
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "07ian9aai9mjygn6bgxanv8h16i83wf69nkl8c9qynwbz4fkwmwf"))))
+        (base32 "0bys24i2a3a65ahq5p3q1zr2px8jqip1gjn5m7rngq4hcddb1ji8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
@@ -77,6 +78,7 @@
            breeze-icons ;; default icon set
            phonon
            qtbase-5
+           qtx11extras
            solid))
     (arguments
      `(#:tests? #f)) ;; TODO: 4/15 tests fail even with offscreen
