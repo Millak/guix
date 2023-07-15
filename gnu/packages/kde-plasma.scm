@@ -825,14 +825,14 @@ an elegant and intuitive experience for your tasks and plasmoids.")
 (define-public kscreenlocker
   (package
     (name "kscreenlocker")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kscreenlocker-" version ".tar.xz"))
               (sha256
                (base32
-                "0mivx0l266310iy52qi94b6wi8w2a8nl7cjn5750x66dz81jl3yj"))))
+                "0pgmy4dw41kim7syk4xb2n4g4iz3jjikhwnh3bjianl9h87rc12x"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f ;; TODO: make tests pass
@@ -863,6 +863,7 @@ an elegant and intuitive experience for your tasks and plasmoids.")
            kdeclarative
            kglobalaccel
            ki18n
+           kio
            kidletime
            knotifications
            ktextwidgets
@@ -870,6 +871,7 @@ an elegant and intuitive experience for your tasks and plasmoids.")
            kwindowsystem
            kxmlgui
            layer-shell-qt
+           libkscreen
            libseccomp ;for sandboxing the look'n'feel package
            libxcursor ;missing in CMakeList.txt
            libxi ;XInput, required for grabbing XInput2 devices
