@@ -1431,6 +1431,34 @@ a corresponding option is set.  Furthermore, @command{cluttex} can watch input
 files for changes (using an external program).")
     (license license:gpl3+)))
 
+(define-public texlive-ctan-o-mat
+  (package
+    (name "texlive-ctan-o-mat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin name version
+                            (list "doc/man/man1/ctan-o-mat.1"
+                                  "doc/man/man1/ctan-o-mat.man1.pdf"
+                                  "doc/support/ctan-o-mat/"
+                                  "scripts/ctan-o-mat/")
+                            (base32
+                             "1pm95xh3ji2sgdy243nbnzxsg2p4xpl3pymkm5yg2fn3nzgwgnaf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ctan-o-mat.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ctan-o-mat")
+    (synopsis "Upload or validate a package for CTAN")
+    (description
+     "This program can be used to automate the upload of a package to CTAN.
+The description of the package is contained in a configuration file.  The
+provided information is validated in any case.  If the validation succeeds and
+not only the validation is requested, then the provided archive file will be
+placed in the incoming area of the CTAN for further processing by the CTAN
+team.  In any case any finding during the validation is reported at the end of
+the processing.  Note that the validation is the default and an official
+submission has to be requested by an appropriate command line option.")
+    (license license:bsd-3)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
