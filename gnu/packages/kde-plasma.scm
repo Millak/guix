@@ -282,7 +282,7 @@ games, and tools.")
 (define-public drkonqi
   (package
     (name "drkonqi")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -290,7 +290,7 @@ games, and tools.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0vw4bfld2jdiwm4g3008x8s1lq1ydf87ckb0fvyzsp11hq9nnnk7"))))
+                "04yam1xjwxi6jbh4r2k0ci7vdjc5cwfg4nn36lb64f5gj2bicppr"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -314,7 +314,8 @@ games, and tools.")
                   kidletime
                   kwindowsystem
                   ksyntaxhighlighting
-                  qtdeclarative-5))
+                  qtdeclarative-5
+                  kuserfeedback))
     (synopsis "Crash handler for KDE software")
     (description "This package provides an automatic handler for crashed apps.")
     (home-page "https://invent.kde.org/plasma/drkonqi")
