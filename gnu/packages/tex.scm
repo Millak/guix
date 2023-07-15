@@ -1262,6 +1262,39 @@ order are controlled by an external configuration file.")
 supported via the ICU library.")
     (license license:gpl3+)))
 
+(define-public texlive-bundledoc
+  (package
+    (name "texlive-bundledoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/arlatex.1"
+                   "doc/man/man1/arlatex.man1.pdf"
+                   "doc/man/man1/bundledoc.1"
+                   "doc/man/man1/bundledoc.man1.pdf"
+                   "doc/support/bundledoc/"
+                   "scripts/bundledoc/"
+                   "tex/latex/bundledoc/")
+             (base32
+              "1drgwqgkhr6ba4c21kyykl5y92x7dp6971if2hfcxsqk6kqy3ip1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "arlatex" "bundledoc")))
+    (home-page "https://ctan.org/pkg/bundledoc")
+    (synopsis "Bundle together all the files needed to build a LaTeX document")
+    (description
+     "The @code{bundledoc} package is a post-processor for the snapshot
+package that bundles together all the classes, packages and files needed to
+build a given LaTeX document.  It reads the @file{.dep} file that snapshot
+produces, finds each of the files mentioned therein, and archives them into
+a single @file{.tar.gz} (or @file{.zip}, or whatever) file, suitable for
+moving across systems, transmitting to a colleague, etc.  A script,
+@command{arlatex}, provides an alternative archiving mechanism, creating
+a single LaTeX file that contains all of the ancillary files of a LaTeX
+document, together with the document itself, using the @code{filecontents*}
+environment.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
