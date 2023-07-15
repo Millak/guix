@@ -8899,6 +8899,24 @@ The OPmac macros can generate a bibliography without any external program.")
 right-aligned table and (multiple-)figure floats, with footnotes.")
     (license license:lppl)))
 
+(define-public texlive-babel-basque
+  (package
+    (name "texlive-babel-basque")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-basque/"
+                   "source/generic/babel-basque/"
+                   "tex/generic/babel-basque/")
+             (base32
+              "16bcy5wlkwh8cwvcff1sc3m4rq4a7fzzawpl158kscp7fmw7i7k4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-basque")
+    (synopsis "Babel contributed support for Basque")
+    (description "The package establishes Basque conventions in a document.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-english
   (package
     (name "texlive-babel-english")
