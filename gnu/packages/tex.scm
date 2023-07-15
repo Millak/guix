@@ -1347,6 +1347,34 @@ labels.  It also looks for non starred mathematical environments with no
 labels and advises the user to use a starred version instead.")
     (license license:gpl3)))
 
+(define-public texlive-chktex
+  (package
+    (name "texlive-chktex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "chktex/"
+                   "doc/chktex/"
+                   "doc/man/man1/chktex.1"
+                   "doc/man/man1/chktex.man1.pdf"
+                   "doc/man/man1/chkweb.1"
+                   "doc/man/man1/chkweb.man1.pdf"
+                   "doc/man/man1/deweb.1"
+                   "doc/man/man1/deweb.man1.pdf"
+                   "scripts/chktex/")
+             (base32
+              "0qyrllxvcymmr1a4sq9c88fw5zchcx0n6yac69s61fg6xypk18bq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "chkweb.sh" "deweb.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/chktex")
+    (synopsis "Check for errors in LaTeX documents")
+    (description
+     "The program reports typographic and other errors in LaTeX documents.
+Filters are also provided for checking the LaTeX parts of CWEB documents.")
+    (license license:gpl2+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
