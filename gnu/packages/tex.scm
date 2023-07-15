@@ -1459,6 +1459,26 @@ the processing.  Note that the validation is the default and an official
 submission has to be requested by an appropriate command line option.")
     (license license:bsd-3)))
 
+(define-public texlive-ctan-chk
+  (package
+    (name "texlive-ctan-chk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/ctan_chk/")
+             (base32
+              "09ngqgs08q8bld334jrzhnd558lv7fajfppmfrkp4kv9hc5iyz9a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ctan_chk")
+    (synopsis "CTAN guidelines verifier and corrector for uploading projects")
+    (description
+     "@code{ctan_chk} is a basic Gawk program that uses CTAN's published
+guidelines for authors to help eliminate sloppiness in uploaded
+files/projects.  It is completely open for users to program additional
+guidelines as well as CTAN's future adjustments.")
+    (license license:gpl3)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
