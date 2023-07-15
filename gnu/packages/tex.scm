@@ -4559,6 +4559,45 @@ Files of current world and Canadian records are included.")
 known as railroad diagrams.")
     (license license:lppl1.3+)))
 
+(define-public texlive-t1utils
+  (package
+    (name "texlive-t1utils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/t1ascii.1"
+                   "doc/man/man1/t1ascii.man1.pdf"
+                   "doc/man/man1/t1asm.1"
+                   "doc/man/man1/t1asm.man1.pdf"
+                   "doc/man/man1/t1binary.1"
+                   "doc/man/man1/t1binary.man1.pdf"
+                   "doc/man/man1/t1disasm.1"
+                   "doc/man/man1/t1disasm.man1.pdf"
+                   "doc/man/man1/t1mac.1"
+                   "doc/man/man1/t1mac.man1.pdf"
+                   "doc/man/man1/t1unmac.1"
+                   "doc/man/man1/t1unmac.man1.pdf")
+             (base32
+              "0hdk57179nn57wnmvr3jasjavkvmrn6ryph6jvjhsfqprn7bhf1y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/t1utils")
+    (synopsis "Simple Type 1 font manipulation programs")
+    (description
+     "This package provides a collection of simple programs for manipulating
+Adobe Type 1 fonts, comprising:
+
+@itemize
+@item @command{t1ascii}: convert PFB (binary) to PFA (ASCII) fonts;
+@item @command{t1binary}: convert PFA to PFB fonts;
+@item @command{t1disasm}: convert PFA or PFB fonts to human-readable
+and -editable format;
+@item @command{t1asm}: reassemble such editable formats to a font;
+@item @command{t1unmac}: extract font resources from a Macintosh font file;
+@item @command{t1mac}: generate a Macintosh font from a Type 1 font.
+@end itemize")
+    (license license:public-domain)))
+
 (define-public texlive-table-fct
   (package
     (name "texlive-table-fct")
