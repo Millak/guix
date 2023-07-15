@@ -1088,6 +1088,28 @@ package provides a Perl program that will extract any of the sections of such
 a file, in particular providing a text'-form EPS file for use with (La)TeX.")
     (license license:artistic2.0)))
 
+(define-public texlive-dvipsconfig
+  (package
+    (name "texlive-dvipsconfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/dvipsconfig/")
+             (base32
+              "02vgk91y80ch4pkj83vbiz1b2ccigf152hm83p607y4n4qn2xzsf")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvipsconfig")
+    (synopsis "Collection of dvips PostScript headers")
+    (description
+     "This is a collection of dvips PostScript header and dvips config files.
+They control certain features of the printer, including: A4, A3, usletter,
+simplex, duplex / long edge, duplex / short edge, screen frequencies of
+images, black/white invers, select transparency / paper for tektronix 550/560,
+manual feeder, envelope feeder, and tray 1, 2 and 3, and printing a PostScript
+grid underneath the page material--very useful for measuring and eliminating
+paper feed errors!")
+    (license license:gpl3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
