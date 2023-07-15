@@ -10981,6 +10981,26 @@ functions (curves, tangents, integrals, sequences) statistic diagrams plane
 geometry (polygons, circles), arrays and game boards.")
     (license license:lppl1.3c)))
 
+(define-public texlive-revtex
+  (package
+    (name "texlive-revtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/revtex/" "doc/latex/revtex/"
+                   "source/latex/revtex/" "tex/latex/revtex/")
+             (base32
+              "0w4vmrghnhs8bgpbdp2rzsh4b7hgvldyzkd870wa27k9wk2lk6a1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/revtex")
+    (synopsis "Styles for various Physics Journals")
+    (description
+     "This package includes styles for American Physical Society, American
+Institute of Physics, and Optical Society of America.  The distribution
+consists of the RevTeX class itself, and several support packages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-roex
   (package
     (name "texlive-roex")
