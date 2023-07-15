@@ -608,14 +608,14 @@ computer's hardware.")
 (define-public kongress
   (package
     (name "kongress")
-    (version "22.09")
+    (version "23.01.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma-mobile/" version
                                   "/kongress-" version ".tar.xz"))
               (sha256
                (base32
-                "0pjp2s774sgw2dklqib8alm1a9fkixy3s92i2v8v00znx08zf2jz"))))
+                "0yma1b44sjnvhsw31r5bndrpj2sjgwgchpzc8bf9380l6an9k4r5"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     ;; NOTE: Reporting bugs is linked to web browser, better not link it and let
