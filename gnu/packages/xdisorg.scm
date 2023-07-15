@@ -688,7 +688,7 @@ following the mouse.")
 (define-public pixman
   (package
     (name "pixman")
-    (version "0.40.0")
+    (version "0.42.2")
     (source
      (origin
        (method url-fetch)
@@ -697,7 +697,7 @@ following the mouse.")
          "https://www.cairographics.org/releases/pixman-"
          version ".tar.gz"))
        (sha256
-        (base32 "1z13n96m7x91j25qq9wlkxsbq04wfwjhw66ir17frna06zn0s83d"))
+        (base32 "0pk298iqxqr64vk3z6nhjwr6vjg1971zfrjkqy5r9zd2mppq057a"))
        (patches
         (search-patches
          "pixman-CVE-2016-5296.patch"))))
