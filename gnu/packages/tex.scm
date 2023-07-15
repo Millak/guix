@@ -1295,6 +1295,33 @@ document, together with the document itself, using the @code{filecontents*}
 environment.")
     (license license:lppl1.3c)))
 
+(define-public texlive-checklistings
+  (package
+    (name "texlive-checklistings")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/checklistings/"
+                   "scripts/checklistings/"
+                   "source/latex/checklistings/"
+                   "tex/latex/checklistings/")
+             (base32
+              "1ggq4i7nfx6ijqikgr48qgaaf7rd9h4a834gwsz8dv5f0zmgg1za")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "checklistings.sh")))
+    (home-page "https://ctan.org/pkg/checklistings")
+    (synopsis
+     "Pass verbatim contents through a compiler and reincorporate the resulting output")
+    (description
+     "This package augments the @code{fancyvrb} and @code{listings} packages
+to allow the source code they contain to be checked by an external tool (like
+a compiler).  The external tool's messages can be automatically reincorporated
+into the original document.  The package does not focus on a specific
+programming language, but it is designed to work well with languages and
+compilers in the ML family.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
