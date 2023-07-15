@@ -244,7 +244,15 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                (substitute* "src/scripts/R.sh.in"
                  (("uname") uname-bin))
                (substitute* "src/unix/sys-std.c"
-                 (("rm -Rf ") (string-append rm-bin " -Rf "))))))
+                 (("rm -Rf ") (string-append rm-bin " -Rf ")))
+               (substitute* "src/library/parallel/R/detectCores.R"
+                 (("'grep")
+                  (string-append "'"
+                                 (search-input-file inputs "/bin/grep")))
+                 (("\\| wc -l")
+                  (string-append "| "
+                                 (search-input-file inputs "/bin/wc")
+                                 " -l"))))))
          (add-after 'unpack 'patch-tests
            (lambda _
              ;; This is needed because R is run during the check phase and
@@ -401,6 +409,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
            curl
            openblas
            gfortran
+           grep
            icu4c
            libjpeg-turbo
            libpng
