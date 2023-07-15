@@ -4,7 +4,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
@@ -81,17 +81,18 @@
 (define-public bluedevil
   (package
     (name "bluedevil")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dsah7rcx2brcd1d5x7bvhrixx5nvwp1fwq9b8k2zc038xzpx6ys"))))
+                "0x6zfcdw03kggd4mhkhva2b2v2w2ajzs7svslm1p1p8f41vzivvw"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config qttools-5))
     (inputs (list kcoreaddons
+                  kcmutils
                   kwidgetsaddons
                   kdbusaddons
                   knotifications
