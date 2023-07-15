@@ -2022,6 +2022,29 @@ automatically enabled and disabled on hotplug.  Kanshi can be used with
 Wayland compositors supporting the wlr-output-management protocol.")
     (license license:expat))) ; MIT license
 
+(define-public wdisplays
+  (package
+    (name "wdisplays")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artizirk/wdisplays.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06ydcmfdics2qqjb14p767xs8khd86nancdd9z8j11h2gpvwznvn"))))
+    (build-system meson-build-system)
+    (inputs (list gtk+ libepoxy wayland))
+    (native-inputs (list `(,glib "bin") pkg-config))
+    (home-page "https://github.com/artizirk/wdisplays")
+    (synopsis "Configuring displays in Wayland compositors")
+    (description "@command{wdisplays} is a graphical application for
+configuring displays in Wayland compositors that implements the
+wlr-output-management-unstable-v1 protocol.")
+    (license license:gpl3+)))
+
 (define-public stumpwm
   (package
     (name "stumpwm")
