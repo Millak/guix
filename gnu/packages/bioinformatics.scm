@@ -9831,6 +9831,14 @@ differently labelled data.")
         (base32 "04kr1b28p5j7h48g32cldkg87xcmxnmd4kspygkfs7a4amihpi66"))))
     (properties `((upstream-name . "Pando")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'loosen-requirements
+           (lambda _
+             (substitute* "DESCRIPTION"
+               ((" \\(==.*,") ",")))))))
     (propagated-inputs
      (list r-bayestestr
            r-foreach
