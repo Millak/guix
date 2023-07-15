@@ -1035,6 +1035,29 @@ a @file{.tfm} (TeX Font Metric) file.  It normally preserves kerns and
 ligatures, but also offers additional control over them.")
     (license license:gpl2)))
 
+(define-public texlive-albatross
+  (package
+    (name "texlive-albatross")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/albatross.1"
+                   "doc/man/man1/albatross.man1.pdf"
+                   "doc/support/albatross/"
+                   "scripts/albatross/"
+                   "source/support/albatross/")
+             (base32
+              "147cdqiyapmhs6s5cp4f0vhc71d3w9kvxk8ylbrhsp5h97r8y6w9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "albatross.sh")))
+    (home-page "https://ctan.org/pkg/albatross")
+    (synopsis "Find fonts that contain a given glyph")
+    (description
+     "This is a command line tool for finding fonts that contain
+a given (Unicode) glyph.  It relies on Fontconfig.")
+    (license license:bsd-3)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
