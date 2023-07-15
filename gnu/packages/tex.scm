@@ -1087,6 +1087,29 @@ works on TeX virtual fonts and @command{vpl2ovp} transforms a TeX font to an
 Omega one.")
     (license license:gpl3+)))
 
+(define-public texlive-adhocfilelist
+  (package
+    (name "texlive-adhocfilelist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/adhocfilelist/"
+                   "scripts/adhocfilelist/"
+                   "source/support/adhocfilelist/"
+                   "tex/support/adhocfilelist/")
+             (base32
+              "097yy38571fa2hzp4s3p125xknqgjmkhv1vgi0q9vz83b6175hc4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "adhocfilelist.sh")))
+    (home-page "https://ctan.org/pkg/adhocfilelist")
+    (synopsis "@code{\\listfiles} entries from the command line")
+    (description
+     "The package provides a Unix shell script to display a list of LaTeX
+@code{\\Provides}...-command contexts on screen.  Provision is made for
+controlling the searches that the package does.")
+    (license license:lppl)))
+
 (define-public texlive-afm2pl
   (package
     (name "texlive-afm2pl")
