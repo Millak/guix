@@ -6070,6 +6070,36 @@ which produced lines at an arbitrary orientation.  The present package
 emulates the macro, using TikZ.")
     (license license:public-domain)))
 
+(define-public texlive-ttfutils
+  (package
+    (name "texlive-ttfutils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/ttf2afm.1"
+                   "doc/man/man1/ttf2afm.man1.pdf"
+                   "doc/man/man1/ttf2pk.1"
+                   "doc/man/man1/ttf2pk.man1.pdf"
+                   "doc/man/man1/ttf2tfm.1"
+                   "doc/man/man1/ttf2tfm.man1.pdf"
+                   "doc/man/man1/ttfdump.1"
+                   "doc/man/man1/ttfdump.man1.pdf"
+                   "doc/ttf2pk/"
+                   "fonts/enc/ttf2pk/base/"
+                   "fonts/sfd/ttf2pk/"
+                   "ttf2pk/")
+             (base32
+              "1yfr3yic0bx73imxhmxhnhjc1mpwy9f55sh3p430p2f2yvxwm0cs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ttfutils")
+    (synopsis "Convert TrueType to TFM and PK fonts")
+    (description
+     "This package provides utilities to convert TrueType to TFM and PK fonts:
+@command{ttf2afm}, @command{ttf2pk}, @command{ttf2tfm}, and
+@command{ttfdump}.")
+    (license license:gpl2+)))
+
 (define-public texlive-twemojis
   (package
     (name "texlive-twemojis")
