@@ -1012,6 +1012,29 @@ works on TeX virtual fonts and @command{vpl2ovp} transforms a TeX font to an
 Omega one.")
     (license license:gpl3+)))
 
+(define-public texlive-afm2pl
+  (package
+    (name "texlive-afm2pl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/afm2pl.1"
+                   "doc/man/man1/afm2pl.man1.pdf"
+                   "fonts/enc/dvips/afm2pl/"
+                   "fonts/lig/afm2pl/" "tex/fontinst/afm2pl/")
+             (base32
+              "19llzzr4kmmyf7l18ngx1rhaqaqvgm3md924m4dxcv7nmrvga2b2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/afm2pl")
+    (synopsis "Convert AFM to TeX property list (@file{.pl}) metrics")
+    (description
+     "@command{afm2pl} converts a @file{.afm} (Adobe Font Metric) file into
+a @file{.pl} (Property List) file, which in its turn can be converted to
+a @file{.tfm} (TeX Font Metric) file.  It normally preserves kerns and
+ligatures, but also offers additional control over them.")
+    (license license:gpl2)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
