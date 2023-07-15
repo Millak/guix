@@ -3893,6 +3893,32 @@ Included in the distribution is the @command{bbox} program, an application to
 produce bounding box values for Rawppm or Rawpbm format files.")
     (license license:gpl3+)))
 
+(define-public texlive-ps2pk
+  (package
+    (name "texlive-ps2pk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/mag.1"
+                   "doc/man/man1/mag.man1.pdf"
+                   "doc/man/man1/pfb2pfa.1"
+                   "doc/man/man1/pfb2pfa.man1.pdf"
+                   "doc/man/man1/pk2bm.1"
+                   "doc/man/man1/pk2bm.man1.pdf"
+                   "doc/man/man1/ps2pk.1"
+                   "doc/man/man1/ps2pk.man1.pdf")
+             (base32
+              "14xq9x5rf15ibzr41cm5rm4v3rpmj50rfsqp4zzvyhmpmyw4dsx3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ps2pk")
+    (synopsis "Generate a PK font from an Adobe Type 1 font")
+    (description
+     "This package provides tools to generate a PK file from an Adobe Type
+1 font.  PK fonts are (or used to be) valuable in enabling previewers to view
+documents generated that use Type 1 fonts.")
+    (license license:isc)))
+
 (define-public texlive-ptolemaicastronomy
   (package
     (name "texlive-ptolemaicastronomy")
