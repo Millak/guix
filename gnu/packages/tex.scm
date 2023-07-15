@@ -9047,6 +9047,27 @@ Portuguese and Brazilian Portuguese in Babel.  Some shortcuts are defined, as
 well as translations to Portuguese of standard LaTeX names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-spanish
+  (package
+    (name "texlive-babel-spanish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-spanish/"
+                   "source/generic/babel-spanish/"
+                   "tex/generic/babel-spanish/")
+             (base32
+              "0nzc4hs91a901cjy2vhpamdw3gyxp7k2lmag9ni8zmy180zncm5g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-spanish")
+    (synopsis "Babel support for Spanish")
+    (description
+     "This bundle provides the means to typeset Spanish text, with the support
+provided by the LaTeX standard package Babel.  Note that separate support is
+provided for those who wish to typeset Spanish as written in Mexico.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-swedish
   (package
     (name "texlive-babel-swedish")
