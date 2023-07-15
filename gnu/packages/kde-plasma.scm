@@ -835,54 +835,49 @@ an elegant and intuitive experience for your tasks and plasmoids.")
                 "0pgmy4dw41kim7syk4xb2n4g4iz3jjikhwnh3bjianl9h87rc12x"))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f ;; TODO: make tests pass
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (system "Xvfb :1 -screen 0 640x480x24 &")
-             (setenv "DISPLAY" ":1")
-             #t))
-         (delete 'check)
-         ;; Tests use the installed library and require a DBus session.
-         (add-after 'install 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (begin
-                   (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-                   (invoke "dbus-launch" "ctest")))
-             #t)))))
-    (native-inputs
-     (list extra-cmake-modules pkg-config
-           ;; For tests.
-           dbus xorg-server-for-tests))
-    (inputs
-     (list kcmutils
-           kconfig
-           kcrash
-           kdeclarative
-           kglobalaccel
-           ki18n
-           kio
-           kidletime
-           knotifications
-           ktextwidgets
-           kwayland
-           kwindowsystem
-           kxmlgui
-           layer-shell-qt
-           libkscreen
-           libseccomp ;for sandboxing the look'n'feel package
-           libxcursor ;missing in CMakeList.txt
-           libxi ;XInput, required for grabbing XInput2 devices
-           linux-pam
-           elogind ;optional loginctl support
-           qtbase-5
-           qtdeclarative-5
-           qtx11extras
-           solid
-           wayland
-           xcb-util-keysyms))
+     (list #:tests? #f ;TODO: make tests pass
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'check-setup
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (system "Xvfb :1 -screen 0 640x480x24 &")
+                            (setenv "DISPLAY" ":1")))
+                        (delete 'check)
+                        ;; Tests use the installed library and require a DBus session.
+                        (add-after 'install 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (if tests?
+                                (begin
+                                  (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+                                  (invoke "dbus-launch" "ctest"))))))))
+    (native-inputs (list extra-cmake-modules pkg-config
+                         ;; For tests.
+                         dbus xorg-server-for-tests))
+    (inputs (list kcmutils
+                  kconfig
+                  kcrash
+                  kdeclarative
+                  kglobalaccel
+                  ki18n
+                  kio
+                  kidletime
+                  knotifications
+                  ktextwidgets
+                  kwayland
+                  kwindowsystem
+                  kxmlgui
+                  layer-shell-qt
+                  libkscreen
+                  libseccomp ;for sandboxing the look'n'feel package
+                  libxcursor ;missing in CMakeList.txt
+                  libxi ;XInput, required for grabbing XInput2 devices
+                  linux-pam
+                  elogind ;optional loginctl support
+                  qtbase-5
+                  qtdeclarative-5
+                  qtx11extras
+                  solid
+                  wayland
+                  xcb-util-keysyms))
     (home-page "https://invent.kde.org/plasma/kscreenlocker")
     (synopsis "Screen locking library")
     (description
