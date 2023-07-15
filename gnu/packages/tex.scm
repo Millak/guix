@@ -1216,6 +1216,74 @@ Knuth's TeX book; this source is there to read, as an example of writing TeX ;
 it should not be processed without Knuth's direct permission.")
     (license license:knuth)))
 
+
+(define-public texlive-lcdftypetools
+  (package
+    (name "texlive-lcdftypetools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/cfftot1.1"
+                   "doc/man/man1/cfftot1.man1.pdf"
+                   "doc/man/man1/mmafm.1"
+                   "doc/man/man1/mmafm.man1.pdf"
+                   "doc/man/man1/mmpfb.1"
+                   "doc/man/man1/mmpfb.man1.pdf"
+                   "doc/man/man1/otfinfo.1"
+                   "doc/man/man1/otfinfo.man1.pdf"
+                   "doc/man/man1/otftotfm.1"
+                   "doc/man/man1/otftotfm.man1.pdf"
+                   "doc/man/man1/t1dotlessj.1"
+                   "doc/man/man1/t1dotlessj.man1.pdf"
+                   "doc/man/man1/t1lint.1"
+                   "doc/man/man1/t1lint.man1.pdf"
+                   "doc/man/man1/t1rawafm.1"
+                   "doc/man/man1/t1rawafm.man1.pdf"
+                   "doc/man/man1/t1reencode.1"
+                   "doc/man/man1/t1reencode.man1.pdf"
+                   "doc/man/man1/t1testpage.1"
+                   "doc/man/man1/t1testpage.man1.pdf"
+                   "doc/man/man1/ttftotype42.1"
+                   "doc/man/man1/ttftotype42.man1.pdf")
+             (base32
+              "0yjbc6rsf8c62qa1lyi9kjyjy2p0xlps19llnvly3xyhla08j76f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-glyphlist))
+    (home-page "https://ctan.org/pkg/lcdf-typetools")
+    (synopsis "Bundle of outline font manipulation tools")
+    (description
+     "This bundle of tools comprises:
+@itemize
+@item @command{cfftot1}, which translates a Compact Font Format
+(CFF) font, or a PostScript-flavored OpenType font, into PostScript
+Type 1 format.  It correctly handles subroutines and hints;
+
+@item @command{mmafm} and @command{mmpfb}, which create instances of
+multiple-master fonts;
+
+@item @command{otfinfo}, which reports information about OpenType
+fonts, such as the features they support and the contents of their
+size optical size features;
+
+@item @command{otftotfm}, which creates TeX font metrics and encodings
+that correspond to a PostScript-flavored OpenType font.  It will
+interpret glyph positionings, substitutions, and ligatures as far as
+it is able.  You can say which OpenType features should be activated;
+
+@item @command{t1dotlessj}, which creates a Type 1 font whose only
+character is a dotless j matching the input font's design;
+
+@item @command{t1lint}, which checks a Type 1 font for correctness;
+
+@item @command{t1reencode}, which replaces a font's internal encoding
+with one you specify;
+
+@item @command{t1testpage}, which creates a PostScript proof for
+a Type 1 font.
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public texlive-latex
   (package
     (name "texlive-latex")
