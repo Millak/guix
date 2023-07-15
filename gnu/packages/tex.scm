@@ -1037,6 +1037,32 @@ ones.")
 (define-deprecated/alias texlive-union texlive-updmap.cfg)
 (export texlive-union)
 
+(define-public texlive-a2ping
+  (package
+    (name "texlive-a2ping")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/a2ping.1"
+                   "doc/man/man1/a2ping.man1.pdf"
+                   "doc/support/a2ping/" "scripts/a2ping/")
+             (base32
+              "1lhmh1rnykmi6i5mklj7fwhndw1xxmwy2xsy8j1px8ishf5czhvq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "a2ping.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/a2ping")
+    (synopsis "Advanced PS, PDF, EPS converter")
+    (description
+     "@command{a2ping} is a Perl script command line utility written for Unix
+that converts many raster image and vector graphics formats to EPS or PDF and
+other page description formats.  Accepted input file formats are:
+PS (PostScript), EPS, PDF, PNG, JPEG, TIFF, PNM, BMP, GIF, LBM, XPM, PCX,
+TGA. Accepted output formats are: EPS, PCL5, PDF, PDF1, PBM, PGM, PPM, PS,
+markedEPS, markedPS, PNG, XWD, BMP, TIFF, JPEG, GIF, XPM.")
+    (license license:gpl3+)))
+
 (define-public texlive-accfonts
   (package
     (name "texlive-accfonts")
