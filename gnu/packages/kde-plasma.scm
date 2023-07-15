@@ -76,6 +76,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages web))
 
 (define-public bluedevil
@@ -424,23 +425,27 @@ KDE Frameworks 5 to better interact with the system.")
 (define-public kdeplasma-addons
   (package
     (name "kdeplasma-addons")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1a5cq0jz69hlcr22wxi2p5mzxv5xcp88220irxmq0dhpk85kywlx"))))
+                "11zhpb4gcz4yy2v0j8mfzihi9rj35f83i8bi7iirix0vm100sfrl"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
+                          (lambda* (#:key tests? inputs #:allow-other-keys)
+
                             (when tests?
+                              (setenv "TZDIR"
+                                      (search-input-directory
+                                       inputs "share/zoneinfo"))
                               (invoke "ctest" "-E"
-                               "(converterrunnertest|spellcheckrunnertest)")))))))
-    (native-inputs (list extra-cmake-modules))
+                                      "(converterrunnertest)")))))))
+    (native-inputs (list extra-cmake-modules tzdata-for-tests))
     (inputs (list karchive
                   kconfig
                   kcoreaddons
@@ -457,8 +462,8 @@ KDE Frameworks 5 to better interact with the system.")
                   plasma-framework
                   purpose
                   sonnet
+                  ;; qtwebengine-5 ; Optional for online dictionary
                   qtdeclarative-5))
-                 ;qtwebengine-5)) ;; Optional for online dictionary
     (synopsis "Add-ons to improve your Plasma experience")
     (description
      "This package provides multiple addons for the Plasma Desktop.")
