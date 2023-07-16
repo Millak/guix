@@ -1726,6 +1726,27 @@ binary format.  It supports advanced features such as adding a preprint number
 or watermarks.")
     (license license:gpl3+)))
 
+(define-public texlive-dvicopy
+  (package
+    (name "texlive-dvicopy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvicopy.1"
+                   "doc/man/man1/dvicopy.man1.pdf")
+             (base32
+              "010bs4iyaja7mq5wy9mz6fzxlxf9472c2zdm93x9i474dzgnh2vl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvicopy")
+    (synopsis "Copy DVI files, flattening VFs")
+    (description
+     "@command{dvicopy} is a utility program that allows one to take a DVI
+file that references composite fonts (VF) and convert it into a DVI file that
+does not contain such references.  It also serves as a basis for writing DVI
+drivers (much like DVItype).")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
