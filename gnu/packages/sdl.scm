@@ -543,7 +543,7 @@ directory.")
 (define-public sdl2-ttf
   (package (inherit sdl-ttf)
     (name "sdl2-ttf")
-    (version "2.20.1")
+    (version "2.20.2")
     (source (origin
              (method url-fetch)
              (uri
@@ -555,7 +555,7 @@ directory.")
               '(delete-file-recursively "external"))
              (sha256
               (base32
-               "0mqcgpcvzp927xv1gs51f2wqly9k9f8nxfxi69lxlfncyd8svkbq"))))
+               "0lr0l8c19fg6anq2cp6xppv65ys3pyk9qjicg881nll76kcixiwx"))))
     (arguments
      (list #:configure-flags #~'("--enable-freetype-builtin=no"
                                  "--enable-harfbuzz-builtin=no")))
