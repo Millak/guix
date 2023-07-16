@@ -1159,7 +1159,7 @@ with a single function call.")
 (define-public rxcpp
   (package
     (name "rxcpp")
-    (version "4.1.0")
+    (version "4.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1167,7 +1167,7 @@ with a single function call.")
              (url "https://github.com/ReactiveX/RxCpp")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1rdpa3jlc181jd08nk437aar085h28i45s6nzrv65apb3xyyz0ij"))
+        (base32 "1blyjjw6szd74pckdc15ham9i48xf0vwwz5nhl9vyjfq8z7w3piy"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
