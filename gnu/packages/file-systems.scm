@@ -1698,13 +1698,13 @@ compatible directories.")
 (define-public python-dropbox
   (package
     (name "python-dropbox")
-    (version "11.36.0")
+    (version "11.36.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dropbox" version))
         (sha256
-         (base32 "0iwbi1qdw9qr7isa37yys582am59k80dqrwvm6s0afdwv0ifa343"))
+         (base32 "00650gk8557x3f38nd8a1mdby7v1l8l4l72aq48qpiw6shb3v3fl"))
         (snippet
          '(begin
             (use-modules (guix build utils))
