@@ -8451,6 +8451,29 @@ a Cistercian numeral, and @code{\\cisterciannum@{<integer>@}}, formats the
 integer (given as a string) as a Cistercian numeral.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xpdfopen
+  (package
+    (name "texlive-xpdfopen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pdfclose.1"
+                   "doc/man/man1/pdfclose.man1.pdf"
+                   "doc/man/man1/pdfopen.1"
+                   "doc/man/man1/pdfopen.man1.pdf")
+             (base32
+              "130wvaypfrg9sav0pdcdy1g10fll8pqcsqsy70fxlzzr937glsh1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xpdfopen")
+    (synopsis "Commands to control PDF readers, under X11")
+    (description
+     "The command-line programs @command{pdfopen} and @command{pdfclose} allow
+you to control the X Window System version of Adobe's Acrobat Reader from the
+command line or from within a (shell) script.  The programs work with
+@command{xpdf} and @command{evince}.")
+    (license license:public-domain)))
+
 (define-public texlive-xpicture
   (package
     (name "texlive-xpicture")
