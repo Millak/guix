@@ -614,16 +614,18 @@ from a mounted file system.")
                  (add-after 'install 'promote-mount.bcachefs.sh
                    ;; XXX The (optional) ‘mount.bcachefs’ requires rust:cargo.
                    ;; This shell alternative does the job well enough for now.
-                   (lambda _
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (define (whence file)
+                       (dirname (search-input-file inputs file)))
                      (with-directory-excursion (string-append #$output "/sbin")
                        (rename-file "mount.bcachefs.sh" "mount.bcachefs")
                        ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
                        (wrap-program "mount.bcachefs"
                          `("PATH" ":" prefix
-                           ,(list (string-append #$output            "/sbin")
-                                  (string-append #$coreutils-minimal "/bin")
-                                  (string-append #$gawk              "/bin")
-                                  (string-append #$util-linux        "/bin"))))))))))
+                           ,(list (getcwd)
+                                  (whence "bin/tail")
+                                  (whence "bin/awk")
+                                  (whence "bin/mount"))))))))))
       (native-inputs
        (append
          (list pkg-config
