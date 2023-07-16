@@ -250,7 +250,7 @@ sets, and tools to deal with register databases.")
               ;; their references.
               ;; TODO: package edid-decode and add "bin/edid-decode" below:
               (define need-progs (list "sbin/dmidecode" "sbin/smartctl"
-                                       "sbin/lspci" "bin/lsusb"))
+                                       "bin/lspci" "bin/lsusb"))
               (wrap-script hw-probe
                 (list "PERL5LIB" 'prefix (list (getenv "PERL5LIB")))
                 (list "PATH" 'prefix
