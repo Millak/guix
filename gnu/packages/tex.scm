@@ -8093,6 +8093,26 @@ tone values.  Currently, unt's model is implemented.  Support for more models
 is planned.")
     (license license:asl2.0)))
 
+(define-public texlive-tpic2pdftex
+  (package
+    (name "texlive-tpic2pdftex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/tpic2pdftex.1"
+                   "doc/man/man1/tpic2pdftex.man1.pdf"
+                   "doc/tpic2pdftex/")
+             (base32
+              "02nf2fg4xzh8lbbddvm44qyvcvfn5b7kzcyg729a58l29gd88pbs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tpic2pdftex")
+    (synopsis "Use @code{tpic} commands in pdfTeX")
+    (description
+     "The Awk script converts Pic language, embedded inline (delimited by
+@code{.PS} and @code{.PE} markers), to @code{\\pdfliteral} commands.")
+    (license license:gpl3+)))
+
 (define-public texlive-tqft
   (package
     (name "texlive-tqft")
