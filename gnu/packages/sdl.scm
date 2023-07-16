@@ -484,7 +484,7 @@ directory.")
 (define-public sdl2-mixer
   (package (inherit sdl-mixer)
     (name "sdl2-mixer")
-    (version "2.6.2")
+    (version "2.6.3")
     (source
      (origin
        (method url-fetch)
@@ -494,10 +494,9 @@ directory.")
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Remove bundled libraries.
-                   (delete-file-recursively "external")
-                   #t))
+                   (delete-file-recursively "external")))
        (sha256
-        (base32 "0wd35a9fcj1bv534k9cr4jdk076dpiqq0ayk6cybmv3d6q8aiplc"))))
+        (base32 "13zadq6lmzdglvp0arl7x5y7zihv31vr4pisgrhwwj468xmahsvs"))))
     (arguments
      (list #:tests? #f                     ;no tests
            #:configure-flags
