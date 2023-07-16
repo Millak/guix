@@ -405,11 +405,13 @@ Supported architectures are:
                 "0bph41aglxl07rnggrir2dl1x97f52hm0bl51d0vklyqvfyvm6qv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f   ; TODO: custom test harness, not sure how it works
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))            ; no "configure" script
-       #:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))))
+     (list
+      #:tests? #f           ; TODO: custom test harness, not sure how it works
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))          ; no "configure" script
+      #:make-flags
+      #~(list (string-append "DESTDIR=" #$output)))) ; no $prefix support
     (native-inputs (list perl))
     (home-page "https://www.floodgap.com/retrotech/xa/")
     (synopsis "Two-pass portable cross-assembler")
