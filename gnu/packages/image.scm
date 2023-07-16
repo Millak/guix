@@ -2046,14 +2046,14 @@ stdout.")
 (define-public gifsicle
   (package
    (name "gifsicle")
-   (version "1.93")
+   (version "1.94")
    (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.lcdf.org/gifsicle/gifsicle-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0irljjm76anicsm5rfkpqxd6x105aa8f0sky13dc3x1bfdwp1xlj"))))
+        (base32 "16zq5wd6fyjgy0p0mak15k3mh1zpqb9rg6gqfpg215kqq02p1jab"))))
    (build-system gnu-build-system)
    (arguments
     '(#:phases
@@ -2066,8 +2066,7 @@ stdout.")
               (("/bin/sh")
                (which "sh"))
               (("/bin/rm")
-               (which "rm")))
-            #t)))))
+               (which "rm"))))))))
    (native-inputs (list perl))    ; only for tests
    (inputs (list libx11))
    (home-page "https://www.lcdf.org/gifsicle/")
