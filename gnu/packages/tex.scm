@@ -1842,6 +1842,32 @@ page-independence of DVI file using color specials or tpic specials, and
 transforms between a DVI file and a text file.")
     (license license:expat)))
 
+(define-public texlive-dvipng
+  (package
+    (name "texlive-dvipng")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/dvipng/"
+                   "doc/info/dvipng.info"
+                   "doc/man/man1/dvigif.1"
+                   "doc/man/man1/dvigif.man1.pdf"
+                   "doc/man/man1/dvipng.1"
+                   "doc/man/man1/dvipng.man1.pdf")
+             (base32
+              "0r001q4p5569dagayds1c56y10ls6f6v7mmywiw81l995q16apxi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvipng")
+    (synopsis "DVI to PNG/GIF converter")
+    (description
+     "This program makes PNG and/or GIF graphics from DVI files as obtained
+from TeX and its relatives.  It offers very fast rendering of DVI as bitmap
+files, which makes it suitable for generating large amounts of images
+on-the-fly, as needed in @code{preview-latex}, WeBWorK and others.  It does
+not read the postamble, so it can be started before TeX finishes.")
+    (license license:lgpl3)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
