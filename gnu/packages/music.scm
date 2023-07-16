@@ -2663,7 +2663,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-CC-variable
-           (lambda _ (setenv "CC" "gcc")))
+           (lambda _ (setenv "CC" ,(cc-for-target))))
          (delete 'configure))))
     (inputs
      (list jack-1
