@@ -9841,7 +9841,7 @@ older system-wide @file{/sys} interface.")
 (define-public libtraceevent
   (package
     (name "libtraceevent")
-    (version "1.7.1")
+    (version "1.7.3")
     (source
      (origin
        (method git-fetch)
@@ -9850,8 +9850,7 @@ older system-wide @file{/sys} interface.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kbl11lqh8cadi6r3qqxx68idr7597l6i50pr5p5mdgsf6k2i83c"))
+        (base32 "06mw2f0xnk6dy9w2z0n4dz7lnm02qfsmnmj2h24453qxlw57x0d6"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -9862,14 +9861,14 @@ older system-wide @file{/sys} interface.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f ;no test suite
+      #:tests? #f                       ; no test suite
       #:make-flags
       #~(list
          (string-append "pkgconfig_dir=" #$output "/lib/pkgconfig")
          (string-append "prefix=" #$output))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure))))
+          (delete 'configure))))        ; no configure script
     (home-page "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/")
     (synopsis "Linux kernel trace event library")
     (description "This package provides library to parse raw trace event
