@@ -134,14 +134,14 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                         "sntp/libevent/build-aux")))))
    (native-inputs (list which pkg-config))
    (inputs
-    `(("openssl" ,openssl-1.1)
-      ("libevent" ,libevent)
-      ;; Build with POSIX capabilities support on GNU/Linux.  This allows 'ntpd'
-      ;; to run as non-root (when invoked with '-u'.)
-      ,@(if (string-suffix? "-linux"
-                            (or (%current-target-system) (%current-system)))
-            `(("libcap" ,libcap))
-            '())))
+    (cons* openssl-1.1
+           libevent
+           ;; Build with POSIX capabilities support on GNU/Linux.  This allows
+           ;; 'ntpd' to run as non-root (when invoked with '-u'.)
+           (if (string-suffix? "-linux"
+                               (or (%current-target-system) (%current-system)))
+               (list libcap)
+               '())))
    (arguments
     `(;; Pass "--with-yielding-select=yes" so that 'configure' knows whether
       ;; 'select' yields when using pthreads in a cross-compilation context.
