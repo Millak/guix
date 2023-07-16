@@ -4777,7 +4777,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4786,7 +4786,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10s76x4hwm4ccxdy8cv1nks028hldjmx25yy42fnjc4vscy7yd8a"))
+                "1hx2y9lvca7fzmy3996z08bzy65z1b0ip9d4jnnwd0wamwv4c4bb"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
@@ -4794,8 +4794,7 @@ create smoother and stable videos.")
                             (("(SET\\(PYTHON_MODULE_PATH.*)\\)" _ set)
                              (string-append set " CACHE PATH "
                                             "\"Python bindings directory\")")))
-                          (delete-file-recursively "thirdparty")
-                          #t))))
+                          (delete-file-recursively "thirdparty")))))
     (build-system cmake-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
