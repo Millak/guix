@@ -2663,14 +2663,14 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
 (define-public ode
   (package
     (name "ode")
-    (version "0.16.3")
+    (version "0.16.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://bitbucket.org/odedevs/ode/downloads/"
                            "ode-" version ".tar.gz"))
        (sha256
-        (base32 "04y40czkh71m1p2r8ddfn5bajvlh7yyfa928jvi8qipwkgsdnhf7"))
+        (base32 "0rrl4pn4h3g0ay0i3n61pr6bwyk9vgar17vjal56pj66h617n0vi"))
        (modules '((guix build utils)))
        (snippet
         '(begin
