@@ -524,12 +524,12 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
        (sha256
         (base32 "16kk7x80jlargrvh643m23j277p0drs2yylqz54f9inf5ld5bxn5"))))
     (build-system copy-build-system)
-    (inputs
-     `(("python" ,python)))
     (arguments
      '(#:install-plan
        '(("src/wsdd.py" "bin/wsdd")
          ("man/wsdd.8" "share/man/man8/"))))
+    (inputs
+     (list python))
     (home-page "https://github.com/christgau/wsdd")
     (synopsis "Web Service Discovery host daemon")
     (description "This daemon allows (Samba) hosts to be found by Web
