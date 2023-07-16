@@ -8204,6 +8204,28 @@ open source emojis through LaTeX commands.  This relies on images, so no fancy
 Unicode font stuff is needed and it should work on every installation.")
     (license (list license:lppl1.3+ license:cc-by4.0))))
 
+(define-public texlive-typeoutfileinfo
+  (package
+    (name "texlive-typeoutfileinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/typeoutfileinfo/"
+                   "scripts/typeoutfileinfo/")
+             (base32
+              "19kz79xbr0ri3pbbxv9j2nxdk6vs99nr1ai4xdbjkw2nnx717nxy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "typeoutfileinfo.sh")))
+    (home-page "https://ctan.org/pkg/typeoutfileinfo")
+    (synopsis "Display class/package/file information")
+    (description
+     "The package provides a minimalist shell script, for Unix systems,
+that displays the information content in a @code{\\ProvidesFile},
+@code{\\ProvidesPackage} or @code{\\ProvidesClass} command in a LaTeX source
+file.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tzplot
   (package
     (name "texlive-tzplot")
