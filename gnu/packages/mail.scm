@@ -4541,7 +4541,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "3.4")
+    (version "3.5")
     (source
      (origin
        (method git-fetch)
@@ -4549,7 +4549,7 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "0jgmi8wqzsnwvfj6w4njzhxhcawbafsdxjkx1ym8r2jx8k4hwhi8"))
+        (base32 "1d45vhs66r6ig5mvmx52i7c2b638y2zc7wgv3lx0pq7dqgjxxsyz"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
