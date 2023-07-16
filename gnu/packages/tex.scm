@@ -1570,6 +1570,30 @@ team (2015-02-05): It seems that this script is currently not working.")
      "This is a version of @code{tie} converted for use with Cweb.")
     (license license:gpl3+)))
 
+(define-public texlive-de-macro
+  (package
+    (name "texlive-de-macro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/de-macro/" "scripts/de-macro/")
+             (base32
+              "1lrrgdmzr6k2v6brz8w1s9v77c7pm7vmcvwga3d0pfndb39bh49j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "de-macro")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/de-macro")
+    (synopsis "Expand private macros in a document")
+    (description
+     "De-macro is a Python script that helps authors who like to use private
+LaTeX macros (for example, as abbreviations).  A technical editor or
+a cooperating author may balk at such a manuscript; you can avoid manuscript
+rejection misery by running de-macro on it.  De-macro will expand macros
+defined in @code{\\(re)newcommand} or @code{\\(re)newenvironment} commands,
+within the document, or in the document's private package file.")
+    (license license:afl2.1)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
