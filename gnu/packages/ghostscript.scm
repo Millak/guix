@@ -118,17 +118,30 @@ paper size.")
                (base32
                 "1nmp0hb7c4a315vv1mqw2cbckvca8bzh1cv3gdvwwy24w9qba6p3"))))
     (build-system gnu-build-system)
-    (inputs (list perl))
+    (inputs (list perl perl-ipc-run3))
     (native-inputs
      (list libpaper))
     (arguments
-     (list #:tests? #f           ;FIXME: requires files not present in tarball
-           #:configure-flags
-           ;; Help the build system locate Perl when cross-compiling.
-           (if (%current-target-system)
-               #~(list (string-append "ac_cv_path_PERL="
-                                      (search-input-file %build-inputs "bin/perl")))
-               #~'())))
+     (list
+      #:tests? #f               ; FIXME: requires files not present in tarball
+      #:configure-flags
+      ;; Help the build system locate Perl when cross-compiling.
+      (if (%current-target-system)
+          #~(list (string-append "ac_cv_path_PERL="
+                                 (search-input-file %build-inputs "bin/perl")))
+          #~'())
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-scripts
+            (lambda _
+              (let ((perl5lib (getenv "PERL5LIB")))
+                (for-each
+                 (lambda (file)
+                   (wrap-program file
+                     `("PERL5LIB" ":" prefix
+                       (,(string-append perl5lib ":" #$output
+                                        "/lib/perl5/site_perl")))))
+                 (find-files (string-append #$output "/bin") "."))))))))
     (synopsis "Collection of utilities for manipulating PostScript documents")
     (description
      "PSUtils is a collection of utilities for manipulating PostScript
