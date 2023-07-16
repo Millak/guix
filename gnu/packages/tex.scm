@@ -6202,6 +6202,28 @@ TeX4ht to approach the robustness characteristic of restricted-syntax systems
 such as @code{gellmu}.")
     (license license:lppl)))
 
+(define-public texlive-tex4ebook
+  (package
+    (name "texlive-tex4ebook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/tex4ebook/"
+                   "scripts/tex4ebook/" "tex/latex/tex4ebook/")
+             (base32
+              "0907df4hb9y7nh5bz450qb1ljixk5li8hp6r9ajx8d0c47ac5a8v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "tex4ebook")))
+    (propagated-inputs (list texlive-make4ht texlive-tex4ht))
+    (home-page "https://ctan.org/pkg/tex4ebook")
+    (synopsis "Converter from LaTeX to EBook formats")
+    (description
+     "This is a bundle of Lua scripts and LaTeX packages for conversion of
+LaTeX files to EBook formats such as EPUB, MOBI and EPUB3.  TeX4ht is used as
+the conversion engine.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
