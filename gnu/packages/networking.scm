@@ -2985,30 +2985,28 @@ enabled due to license conflicts between the BSD advertising clause and the GPL.
                 "0rs5403bp48wyy2x0f3hk0f75ds1qn03sgyli2c7y7fi29ynim05"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags (let* ((out (assoc-ref %outputs "out"))
-                           (bindir (string-append out "/bin"))
-                           (man1dir (string-append out "/share/man/man1")))
-                      (list ,(string-append "CC=" (cc-for-target)) ; It tries to invoke `c99`.
-                            (string-append "BINDIR=" bindir)
-                            (string-append "MAN1DIR=" man1dir)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-command-invocations
-           (lambda _
-             (substitute* '("Makefile"
-                            "libcperciva/cpusupport/Build/cpusupport.sh"
-                            "libcperciva/POSIX/posix-cflags.sh"
-                            "libcperciva/POSIX/posix-l.sh")
-               (("command -p") ""))))
-         (delete 'configure) ; No ./configure script.
-         (add-after 'install 'install-more-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref %outputs "out"))
-                    (misc (string-append out "/share/doc/spiped")))
-               (install-file "DESIGN.md" misc)))))))
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "BINDIR=" #$output "/bin")
+              (string-append "MAN1DIR=" #$output "/share/man/man1"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-command-invocations
+            (lambda _
+              (substitute* '("Makefile"
+                             "libcperciva/cpusupport/Build/cpusupport.sh"
+                             "libcperciva/POSIX/posix-cflags.sh"
+                             "libcperciva/POSIX/posix-l.sh")
+                (("command -p") ""))))
+          (delete 'configure)           ; no ./configure script
+          (add-after 'install 'install-more-docs
+            (lambda _
+              (install-file "DESIGN.md"
+                            (string-append #$output "/share/doc/spiped")))))))
     (native-inputs
-     (list procps)) ; `ps` is used by the test suite.
+     (list procps))                     ; `ps` is used by the test suite
     (inputs
      (list openssl))
     (home-page "https://www.tarsnap.com/spiped.html")
