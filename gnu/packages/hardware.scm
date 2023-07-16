@@ -362,6 +362,10 @@ operability and find drivers.")
     (arguments
      (list
       #:tests? #f                       ; no test-suite available
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "LIBDIR=" #$output:lib "/lib")
+              (string-append "VERSION=" #$version))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -378,10 +382,6 @@ operability and find drivers.")
                    (string-append "OUTPUT_DIRECTORY = " doc "/libhd")))
                 ;; Correct values of the version and install directories.
                 (substitute* "Makefile"
-                  (("VERSION.*\\:=.*$")
-                   (string-append "VERSION := " #$version "\n"))
-                  (("LIBDIR.*\\?=.*$")
-                   (string-append "LIBDIR ?= " lib "\n"))
                   (("/usr/include") include)
                   (("/(usr|var)/(lib|lib64)") lib)
                   (("/usr/sbin") sbin)
@@ -400,9 +400,8 @@ operability and find drivers.")
           (delete 'configure)
           (replace 'build
             (lambda* (#:key make-flags #:allow-other-keys)
-              (setenv "CC" #$(cc-for-target))
-              (invoke "make" "shared")
-              (invoke "make" "doc")))
+              (apply invoke "make" "shared" make-flags)
+              (apply invoke "make" "doc" make-flags)))
           (add-after 'install 'install-man-pages
             (lambda _
               (for-each
