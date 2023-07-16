@@ -2520,6 +2520,29 @@ version history, as a LaTeX table.  That output will typically be redirected
 to a file; the author recommends typesetting in landscape orientation.")
     (license license:gpl3+)))
 
+(define-public texlive-latex-papersize
+  (package
+    (name "texlive-latex-papersize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/latex-papersize/"
+                   "scripts/latex-papersize/")
+             (base32
+              "19nich5n4prd3g4lqm9iwn9h27h54mnycd6p4g5p18jc0b56l3n8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "latex-papersize.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/latex-papersize")
+    (synopsis "Calculate LaTeX settings for any font and paper size")
+    (description
+     "The package is a Python script, whose typical use is when preparing
+printed material for users with low vision.  The most effective way of doing
+this is to print on (notional) small paper, and then to magnify the result;
+the script calculates the settings for various font and paper sizes.")
+    (license license:asl2.0)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
