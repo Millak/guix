@@ -6355,7 +6355,7 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests? (invoke "pytest" "-vv" "tests")))))))
     (propagated-inputs (list python-paramiko))
-    (native-inputs (list openssh python-pytest))
+    (native-inputs (list openssh python-pytest python-mock))
     (home-page "https://github.com/pahaz/sshtunnel")
     (synopsis "Python SSH tunnels library")
     (description "@code{sshtunnel} is a Python module for easily creating SSH
