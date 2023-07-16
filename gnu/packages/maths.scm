@@ -8182,7 +8182,7 @@ of C, Java, or Ada programs.")
              (setenv "CONFIG_SHELL"
                      (search-input-file inputs "/bin/sh")))))))
     (inputs
-     (list gmp))
+     (list gmp zlib))
     (propagated-inputs
      (list ocaml-biniou
            ocaml-easy-format
