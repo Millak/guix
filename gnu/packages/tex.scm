@@ -6379,6 +6379,35 @@ documentation in TeX Live: PDF, DVI, plain text files, and more.  Viewing and
 other configuration can be extensively customized.")
     (license license:gpl3+)))
 
+(define-public texlive-texdoctk
+  (package
+    (name "texlive-texdoctk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texdoctk.1"
+                   "doc/man/man1/texdoctk.man1.pdf"
+                   "scripts/texdoctk/" "texdoctk/")
+             (base32
+              "18xxivpgjdh8v6kg0b45zjv18sm9a4ljpwk6a4cghg5l5yggrjcx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texdoctk.pl")))
+    (inputs (list perl))
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/texdoctk")
+    (synopsis "Easy access to package documentation")
+    (description
+     "This package provides a Perl/Tk-based GUI for easy access to package
+documentation for TeX on Unix platforms; the databases it uses are based on
+the texmf/doc subtrees of teTeX, but database files for local configurations
+with modified/extended directories can be derived from them.  Note that
+@command{texdoctk} is not a viewer itself, but an interface for finding
+documentation files and opening them with the appropriate viewer; so it relies
+on appropriate programs to be installed on the system.  However, the choice of
+these programs can be configured by the sysadmin or user.")
+    (license license:gpl3+)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
