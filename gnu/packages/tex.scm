@@ -3062,6 +3062,26 @@ pages, reducing several source pages onto one output page, etc.")
 resolution before creating a PDF document with pdfLaTeX.")
     (license license:lppl)))
 
+(define-public texlive-pdftex-quiet
+  (package
+    (name "texlive-pdftex-quiet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/pdftex-quiet/"
+                   "scripts/pdftex-quiet/")
+             (base32
+              "0gpxwiiiq05m24ahx9mnhn7i6rldqkmx041p1bnnddswajs9wgm3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pdftex-quiet")))
+    (home-page "https://ctan.org/pkg/pdftex-quiet")
+    (synopsis "Bash wrapper for pdfTeX limiting its output to relevant errors")
+    (description
+     "This package provides a Bash script aiming at reducing pdfTeX's output
+to relevant errors, which are displayed in a red bold font.")
+    (license license:gpl3)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
