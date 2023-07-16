@@ -412,8 +412,7 @@ operability and find drivers.")
     (native-inputs
      (list doxygen flex perl pkg-config))
     (inputs
-     `(("libx86emu" ,libx86emu)
-       ("util-linux:lib" ,util-linux "lib")))
+     (list libx86emu `(,util-linux "lib")))
     (synopsis "Hardware information tool")
     (description "HwInfo is used to probe for the hardware present in the system.
 It can be used to generate a system overview log which can be later used for
