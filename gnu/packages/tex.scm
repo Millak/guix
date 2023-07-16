@@ -2455,6 +2455,29 @@ does pdfTeX.")
 PostScript.")
     (license license:lppl)))
 
+(define-public texlive-ketcindy
+  (package
+    (name "texlive-ketcindy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/ketcindy/" "scripts/ketcindy/"
+                   "tex/latex/ketcindy/")
+             (base32
+              "0jy8fzfqwbmnza43j70c22wr0nvx9km8g4n5vcgnjvc6js2nyxas")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ketcindy.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ketcindy")
+    (synopsis "Macros for graphic generation and Cinderella plugin")
+    (description
+     "KETpic is a macro package designed for computer algebra systems (CAS) to
+generate LaTeX source codes for high-quality mathematical artwork.  KETcindy
+is a plugin for Cinderella that allows to generate graphics using KETpic.  The
+generated code can be included in any LaTeX document.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
