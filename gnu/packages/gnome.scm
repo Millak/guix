@@ -5356,7 +5356,8 @@ floating in an ocean using only your brain and a little bit of luck.")
                (("meson.add_install_script" &) (string-append "# " &)))
              #t)))))
     (native-inputs
-     (list `(,glib "bin")
+     (list gettext-minimal
+           `(,glib "bin")
            pkg-config))
     (inputs
      (list gtk+
