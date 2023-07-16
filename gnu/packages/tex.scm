@@ -3101,6 +3101,29 @@ to relevant errors, which are displayed in a red bold font.")
 uncompresses a PDF stream given by object number.")
     (license license:gpl2+)))
 
+(define-public texlive-pdfxup
+  (package
+    (name "texlive-pdfxup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pdfxup.1"
+                   "doc/man/man1/pdfxup.man1.pdf"
+                   "doc/support/pdfxup/" "scripts/pdfxup/"
+                   "tex/latex/pdfxup/")
+             (base32
+              "1zk4nw1acqz77cy17l8mzi06f0aag16ikp8ymjsl110iw8p8my98")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pdfxup")))
+    (home-page "https://ctan.org/pkg/pdfxup")
+    (synopsis "Create N-up PDF pages with minimal margins")
+    (description
+     "@command{pdfxup} is a shell script that creates a PDF document where
+each page is obtained by combining several pages of a PDF file given as
+output.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
