@@ -28,14 +28,14 @@
 (define-public libbsd
   (package
     (name "libbsd")
-    (version "0.11.6")
+    (version "0.11.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://libbsd.freedesktop.org/releases/"
                                   "libbsd-" version ".tar.xz"))
               (sha256
                (base32
-                "1pxmk42brddk43bj8lp4a64f9iwhc5ii91y6w7k97xpaf8qqzcqr"))))
+                "0q82iaynmal3dn132jgjq21p27x3zn8zks88cg02bgzbb5h1ialv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--disable-static")
