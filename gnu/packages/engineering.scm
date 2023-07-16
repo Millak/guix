@@ -454,7 +454,7 @@ features.")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'cc-is-gcc
-            (lambda _ (setenv "CC" "gcc")))
+            (lambda _ (setenv "CC" #$(cc-for-target))))
           (replace 'configure
             ;; The configure script doesn't tolerate most of our configure flags.
             (lambda _
