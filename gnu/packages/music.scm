@@ -2635,7 +2635,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
 (define-public setbfree
   (package
     (name "setbfree")
-    (version "0.8.11")
+    (version "0.8.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2644,7 +2644,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s3ps3cjwlm63ml4izb7mizy8ci5pl9a19lvz62xf0br089h3afc"))))
+                "1lzrrpm57pilvwxpr1qhnx6273md2k96ygxjlhi5gqjdl0nl3z95"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no "check" target
@@ -2663,7 +2663,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-CC-variable
-           (lambda _ (setenv "CC" "gcc") #t))
+           (lambda _ (setenv "CC" "gcc")))
          (delete 'configure))))
     (inputs
      (list jack-1
