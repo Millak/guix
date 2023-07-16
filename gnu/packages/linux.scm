@@ -6373,10 +6373,10 @@ from userspace.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'refer-to-inputs
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "tpacpi-bat"
                (("cat ")
-                (format #f "~a " (which "cat")))
+                (string-append (search-input-file inputs "bin/cat") " "))
                ;; tpacpi-bat modprobes the acpi_call kernel module if it's not
                ;; loaded.  That's the administrator's prerogative; disable it.
                (("system \"(modprobe .*)\"" _ match)
@@ -6397,7 +6397,8 @@ from userspace.")
                              (copy-recursively file target)))
                          (list "battery_asl" "examples" "README.md"))))))))
     (inputs
-     (list perl))
+     (list coreutils-minimal
+           perl))
     (home-page "https://github.com/teleshoes/tpacpi-bat")
     (synopsis "ThinkPad battery charge controller")
     (description
