@@ -345,49 +345,49 @@ the style of similar games for the Commodore+4.")
          (modify-phases %standard-phases
            (add-after 'unpack 'unpack-inputs
              (lambda* (#:key inputs #:allow-other-keys)
-               (copy-recursively (assoc-ref inputs "adanaxis-data")
-                                 "data-adanaxis")
-               (copy-recursively (assoc-ref inputs "adanaxis-mushruby")
-                                 "data-adanaxis/mushruby")))
+               (copy-recursively
+                (dirname (search-input-directory inputs "pixelsrc"))
+                "data-adanaxis")
+               (copy-recursively
+                (dirname (search-input-file inputs "MushBase.rb"))
+                "data-adanaxis/mushruby")))
            (replace 'bootstrap
              (lambda _
                (invoke "perl" "autogen.pl" "adanaxis"
                        "--type=gpl" "--dist=debian"))))))
       (native-inputs
-       `(("adanaxis-data"
-          ,(origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/mushware/adanaxis-data")
-                   (commit commit)))
-             (file-name (git-file-name "adanaxis-data" version))
-             (sha256
-              (base32 "1xkn0ap5kfqd306ac072406ajihwwllaczc2v2hxiadlxd191dgx"))))
-         ("adanaxis-mushruby"
-          ,(origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/mushware/adanaxis-mushruby")
-                   (commit commit)))
-             (file-name (git-file-name "adanaxis-mushruby" version))
-             (sha256
-              (base32 "0pzcvchysjj37420rpvarky580gi5d6pfv93kwa91rg6m5r1zwks"))))
-         ("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("perl" ,perl)))
+       (list (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/mushware/adanaxis-data")
+                     (commit commit)))
+               (file-name (git-file-name "adanaxis-data" version))
+               (sha256
+                (base32 "1xkn0ap5kfqd306ac072406ajihwwllaczc2v2hxiadlxd191dgx")))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/mushware/adanaxis-mushruby")
+                     (commit commit)))
+               (file-name (git-file-name "adanaxis-mushruby" version))
+               (sha256
+                (base32 "0pzcvchysjj37420rpvarky580gi5d6pfv93kwa91rg6m5r1zwks")))
+             autoconf
+             automake
+             perl))
       (inputs
-       `(("expat" ,expat)
-         ("freeglut" ,freeglut)
-         ("glu" ,glu)
-         ("libjpeg" ,libjpeg-turbo)
-         ("libogg" ,libogg)
-         ("libtiff" ,libtiff)
-         ("libvorbis" ,libvorbis)
-         ("libx11" ,libx11)
-         ("libxext" ,libxext)
-         ("pcre" ,pcre)
-         ("sdl" ,sdl)
-         ("sdl-mixer" ,sdl-mixer)))
+       (list expat
+             freeglut
+             glu
+             libjpeg-turbo
+             libogg
+             libtiff
+             libvorbis
+             libx11
+             libxext
+             pcre
+             sdl
+             sdl-mixer))
       (home-page "https://www.mushware.com")
       (synopsis "Action game in four spatial dimensions")
       (description
