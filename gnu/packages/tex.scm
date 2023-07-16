@@ -3229,6 +3229,48 @@ graphics packages can parse Metapost-produced EPS directly.  Hence,
 stylized format that Metapost outputs.")
     (license license:lppl)))
 
+(define-public texlive-seetexk
+  (package
+    (name "texlive-seetexk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvibook.1"
+                   "doc/man/man1/dvibook.man1.pdf"
+                   "doc/man/man1/dviconcat.1"
+                   "doc/man/man1/dviconcat.man1.pdf"
+                   "doc/man/man1/dviselect.1"
+                   "doc/man/man1/dviselect.man1.pdf"
+                   "doc/man/man1/dvitodvi.1"
+                   "doc/man/man1/dvitodvi.man1.pdf")
+             (base32
+              "1bhv5xgv8jpam5apdybd0cggnvcizk2r6zs7lim1hmhzafpqqlcx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvibook")
+    (synopsis "Utilities for manipulating DVI files")
+    (description
+     "The package provides a collection of utilities for manipulating DVI
+files:
+
+@itemize
+
+@item @command{dvibook}, which will rearrange the pages of a DVI file into
+signatures as used when printing a book;
+
+@item @command{dviconcat}, for concatenating pages of DVI file(s);
+
+@item @command{dviselect}, which will select pages from one DVI file to create
+a new DVI file;
+
+@item @command{dvitodvi}, which will rearrange the pages of a DVI file to
+create a new file;
+
+@item @command{libtex}, a library for manipulating the files, from the old
+SeeTeX project.
+
+@end itemize")
+    (license license:expat)))
 
 (define-public texlive-tex-ini-files
   (package
