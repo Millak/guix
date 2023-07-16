@@ -2606,6 +2606,43 @@ Note that embossing will need LibreOffice and @code{odt2braille} as this
 project does not deal with embossers drivers.")
     (license license:gpl3)))
 
+(define-public texlive-latexdiff
+  (package
+    (name "texlive-latexdiff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/latexdiff-vc.1"
+                   "doc/man/man1/latexdiff-vc.man1.pdf"
+                   "doc/man/man1/latexdiff.1"
+                   "doc/man/man1/latexdiff.man1.pdf"
+                   "doc/man/man1/latexrevise.1"
+                   "doc/man/man1/latexrevise.man1.pdf"
+                   "doc/support/latexdiff/"
+                   "scripts/latexdiff/")
+             (base32
+              "03fnz7gilzwzgsqij10npfy8k2imhk5glfjijr52qgmg28r3xvi1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts
+           #~(list "latexdiff-vc.pl" "latexdiff.pl" "latexrevise.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/latexdiff")
+    (synopsis
+     "Determine and mark up significant differences between LaTeX files")
+    (description
+     "Latexdiff is a Perl script for visual mark up and revision of
+significant differences between two LaTeX files.  Various options are
+available for visual markup using standard LaTeX packages such as color.
+Changes not directly affecting visible text, for example in formatting
+commands, are still marked in the LaTeX source.  A rudimentary revision
+facilility is provided by another Perl script, @command{latexrevise}, which
+accepts or rejects all changes.  Manual editing of the difference file can be
+used to override this default behaviour and accept or reject selected changes
+only.")
+    (license license:gpl3)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
