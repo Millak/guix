@@ -2475,18 +2475,18 @@ administrators and developers in managing the database.")
         (base32 "0nl4wh8i9skcg1wx84p31x7rl1xv1267g5ycbn9kfwfnqxzwkl8k"))))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((out (assoc-ref %outputs "out"))
-                (osinfo-dir (string-append out "/share/osinfo"))
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((osinfo (string-append #$output "/share/osinfo"))
                 (source (assoc-ref %build-inputs "source"))
-                (osinfo-db-import
-                 (string-append (assoc-ref %build-inputs "osinfo-db-tools")
+                (import-osinfo-db
+                 (string-append #$(this-package-native-input "osinfo-db-tools")
                                 "/bin/osinfo-db-import")))
-           (mkdir-p osinfo-dir)
-           (invoke osinfo-db-import "--dir" osinfo-dir source)))))
+            (mkdir-p osinfo)
+            (invoke import-osinfo-db "--dir" osinfo source)))))
     (native-inputs
      (list intltool osinfo-db-tools))
     (home-page "https://gitlab.com/libosinfo/osinfo-db")
