@@ -1721,6 +1721,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-wxwidgets-type-errors.patch	\
   %D%/packages/patches/quodlibet-fix-invalid-glob.patch	\
   %D%/packages/patches/quodlibet-fix-mtime-tests.patch		\
+  %D%/packages/patches/qxlsx-fix-include-directory.patch	\
   %D%/packages/patches/scribus-1.5.8-poppler-22.03.0.patch	\
   %D%/packages/patches/scribus-1.5.8-poppler-22.04.0.patch	\
   %D%/packages/patches/scribus-1.5.8-poppler-22.09.0.patch	\

@@ -1129,7 +1129,8 @@ from within Qt 5.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xbpajvwkv09h2fang200nsanv5gl1alsdd725gh9cgq4szng6gj"))))
+        (base32 "0xbpajvwkv09h2fang200nsanv5gl1alsdd725gh9cgq4szng6gj"))
+       (patches (search-patches "qxlsx-fix-include-directory.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
