@@ -2920,6 +2920,32 @@ in this texmf tree.  The script may be used for archiving purposes or to speed
 up later TeX runs.")
     (license license:artistic2.0)))
 
+(define-public texlive-optexcount
+  (package
+    (name "texlive-optexcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/optexcount/"
+                   "scripts/optexcount/"
+                   "source/support/optexcount/")
+             (base32
+              "0rjyhyirkx11v04c8b0kjjz8745kdnj190vzkyyzafwnzfcbd754")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "optexcount")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/optexcount")
+    (synopsis "Python script for counting words in OpTeX documents")
+    (description
+     "OpTeXcount is a basic Python utility that analyzes OpTeX source code.
+It is inspired by already existing TeXcount for LaTeX. The functionality is
+really lightweight and basic.  It counts words and other elements of OpTeX
+document and sorts them out into individual categories.  Users can print the
+source code with highlighted words using several colors, so they see what is
+considered as word, header etc.")
+    (license license:expat)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
