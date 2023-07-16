@@ -162,6 +162,8 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
                  ((? (cut string-suffix? "-dev" <>)) #f)
                  ;; Guix does not use Asymptote from TeX Live.  Ignore it.
                  ("asymptote" #f)
+                 ;; TeXworks in TeX Live is only for Windows.  Don't bother.
+                 ((or "texworks" "collection-texworks") #f)
                  ;; Others.
                  (name name))
                depends)))
