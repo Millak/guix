@@ -1618,10 +1618,10 @@ generate bitmaps.")
     (arguments
      (substitute-keyword-arguments (package-arguments fontforge)
        ((#:configure-flags _)
-        ''())
+        #~'())
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'do-not-override-RPATH)))))
+        #~(modify-phases #$phases
+            (delete 'do-not-override-RPATH)))))
     (inputs
      (modify-inputs (package-inputs fontforge)
        (prepend libuninameslist)
