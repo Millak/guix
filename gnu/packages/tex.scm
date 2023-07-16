@@ -3015,6 +3015,31 @@ occurs.")
 whitespace border, or trim them of a fixed border.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pdfjam
+  (package
+    (name "texlive-pdfjam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pdfjam.1"
+                   "doc/man/man1/pdfjam.man1.pdf"
+                   "doc/support/pdfjam/" "scripts/pdfjam/")
+             (base32
+              "1wkxvbnri1lxyd4fbvsv0zzw6c8y3v33hzlv6y86jwil6r3p0338")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pdfjam")))
+    (home-page "https://ctan.org/pkg/pdfjam")
+    (synopsis "Shell scripts interfacing to @code{pdfpages}")
+    (description
+     "The package makes available the @command{pdfjam} shell script that
+provides a simple interface to much of the functionality of the excellent
+@code{pdfpages} package for LaTeX. The @command{pdfjam} script takes one or
+more PDF files (and/or JPG/PNG graphics files) as input, and produces one or
+more PDF files as output.  It is useful for joining files together, selecting
+pages, reducing several source pages onto one output page, etc.")
+    (license license:gpl2+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
