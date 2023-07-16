@@ -1772,14 +1772,14 @@ and the error handling is very rough.")
 (define-public gcab
   (package
     (name "gcab")
-    (version "1.4")
+    (version "1.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gcab/"
                                   version "/gcab-" version ".tar.xz"))
               (sha256
                (base32
-                "13q43iqld4l50yra45lhvkd376pn6qpk7rkx374zn8y9wsdzm9b7"))))
+                "02sngv40zwadajsiav1paahyfgkccbh9s7r5ks82chbwawarc31g"))))
     (build-system meson-build-system)
     (native-inputs
      `(("glib:bin" ,glib "bin")         ; for glib-mkenums
