@@ -6224,6 +6224,28 @@ LaTeX files to EBook formats such as EPUB, MOBI and EPUB3.  TeX4ht is used as
 the conversion engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-texaccents
+  (package
+    (name "texlive-texaccents")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texaccents.1"
+                   "doc/man/man1/texaccents.man1.pdf"
+                   "doc/support/texaccents/"
+                   "scripts/texaccents/"
+                   "source/support/texaccents/")
+             (base32
+              "1kh4cpvrxgcvnmzxgb3my4jawyqd4348cy6h195346pvdb5xsphh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texaccents")
+    (synopsis "Convert composite accented characters to Unicode")
+    (description
+     "This small utility, written in SNOBOL, converts the composition of
+special characters to Unicode.")
+    (license license:expat)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
