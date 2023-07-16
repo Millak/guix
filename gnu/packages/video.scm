@@ -2099,7 +2099,7 @@ streaming protocols.")
 (define-public mplayer
   (package
     (name "mplayer")
-    (version "1.4")
+    (version "1.5")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -2107,7 +2107,7 @@ streaming protocols.")
                    version ".tar.xz"))
              (sha256
               (base32
-               "0j5mflr0wnklxsvnpmxvk704hscyn2785hvvihj2i3a7b3anwnc2"))))
+               "11dzrdb74ayvivcid3giqncrfm98hi4aqvg3kjrwji6bnddxa335"))))
     (build-system gnu-build-system)
     ;; FIXME: Add additional inputs once available.
     (native-inputs
