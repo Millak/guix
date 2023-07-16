@@ -2892,6 +2892,34 @@ MFLua without any modification to produce exactly the same result.")
     ;; released under Public Domain terms.
     (license (list license:knuth license:public-domain))))
 
+(define-public texlive-mkjobtexmf
+  (package
+    (name "texlive-mkjobtexmf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/mkjobtexmf/"
+                   "doc/man/man1/mkjobtexmf.1"
+                   "doc/man/man1/mkjobtexmf.man1.pdf"
+                   "scripts/mkjobtexmf/"
+                   "source/generic/mkjobtexmf/")
+             (base32
+              "04wzq2260my5894kc8qhl954h6hri77vvg5kx8mf03kdlf3rvww6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "mkjobtexmf.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/mkjobtexmf")
+    (synopsis "Generate a texmf tree for a particular job")
+    (description
+     "The package provides a Perl script, which runs a program and tries to
+find the names of file used.  Two methods are available, option
+@samp{-recorder} of (Web2C) TeX and the program strace.  Then it generates
+a directory with a texmf tree.  It checks the found files and tries sort them
+in this texmf tree.  The script may be used for archiving purposes or to speed
+up later TeX runs.")
+    (license license:artistic2.0)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
