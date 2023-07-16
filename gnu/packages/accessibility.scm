@@ -93,14 +93,14 @@ terminals.")
 (define-public brltty
   (package
     (name "brltty")
-    (version "6.5")
+    (version "6.6")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "https://brltty.app/archive/brltty-" version ".tar.gz"))
        (sha256
-        (base32 "1h62xzd5k0aaq2k4v3w93rizxnb8psvkxrlx62wr08ybwpspgp7z"))))
+        (base32 "1z54rin4zhg3294pq47gamzjy2c56zfkl07rx2qy2khlpyczds0k"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:tests? #f                      ; No target
