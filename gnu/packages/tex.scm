@@ -2946,6 +2946,26 @@ source code with highlighted words using several colors, so they see what is
 considered as word, header etc.")
     (license license:expat)))
 
+(define-public texlive-patgen
+  (package
+    (name "texlive-patgen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/patgen.1"
+                   "doc/man/man1/patgen.man1.pdf")
+             (base32
+              "03y05mv0n04hyj0lcq54grx7w5wv95h61j6xlx2jc9v0ib9akq4y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/patgen")
+    (synopsis "Generate hyphenation patterns")
+    (description
+     "Patgen takes a list of hyphenated words and generates a set of patterns
+that can be used by the TeX 82 hyphenation algorithm.")
+    (license license:public-domain)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
