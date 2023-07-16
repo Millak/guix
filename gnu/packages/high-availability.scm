@@ -120,12 +120,12 @@ realistic with today's hardware.")
     (inputs (list libxml2))
     (home-page "https://clusterlabs.github.io/libqb/")
     (synopsis
-     "Library providing high performance logging, tracing, ipc, and poll")
+     "Library providing high-performance logging, tracing, IPC, and polling")
     (description
      "Libqb is a library with the primary purpose of providing
 high-performance, reusable features for client-server architecture, such as
-logging, tracing, inter-process communication (IPC), and polling.  Libqb is
-not intended to be an all-encompassing library, but instead provide focused
+logging, tracing, @acronym{IPC, inter-process communication} and polling.  Libqb
+is not intended to be an all-encompassing library, but instead provide focused
 APIs that are highly tuned for maximum performance for client-server
 applications.")
     (license license:lgpl2.1)))
