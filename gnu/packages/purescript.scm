@@ -26,6 +26,7 @@
   #:use-module (gnu packages haskell-web)
   #:use-module ((gnu packages python) #:select (python))
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix build-system haskell)
@@ -96,21 +97,23 @@
                          ghc-typed-process
                          ghc-happy))
     (arguments
-     `(;; Tests require npm
-       #:tests? #f
-       #:configure-flags '("--flags=release")
+     (list
+      ;; Tests require npm
+      #:tests? #f
+       #:configure-flags
+       #~(list "--flags=release")
        #:haddock? #f
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "purescript.cabal"
                (("\\b(language-javascript|process)\\s+[^,]+" all dep)
                 dep))))
          (add-after 'register 'remove-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              (delete-file-recursively
-               (string-append (assoc-ref outputs "out") "/lib")))))))
+               (string-append #$output "/lib")))))))
     (home-page "https://www.purescript.org/")
     (synopsis "Haskell inspired programming language compiling to JavaScript")
     (description
