@@ -2388,17 +2388,17 @@ does not deal with windowing system surfaces, drawing, scene graphs, or input.")
 (define-public spread-sheet-widget
   (package
     (name "spread-sheet-widget")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://alpha.gnu.org/gnu/ssw/"
                            "spread-sheet-widget-" version ".tar.gz"))
        (sha256
-        (base32 "09rzgp7gabnzab460x874a1ibgyjiibpwzsz5srn9zs6jv2jdxjb"))))
+        (base32 "0jwmx5i02jwmkp6gci2mapqglh2g3a0092wns185hfygiwlxi2c5"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list `(,glib "bin") ; for glib-genmarshal, etc.
+     (list `(,glib "bin")               ; for glib-genmarshal, etc.
            pkg-config))
     ;; In 'Requires' of spread-sheet-widget.pc.
     (propagated-inputs
