@@ -2995,6 +2995,26 @@ defined at the edges of the booklet and in the middle where the binding
 occurs.")
     (license license:gpl3)))
 
+(define-public texlive-pdfcrop
+  (package
+    (name "texlive-pdfcrop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/pdfcrop/" "scripts/pdfcrop/")
+             (base32
+              "0wb67hsfasxvl1b484hyxvghhm9nkxwgs6m8ygzshr0m874hsl01")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pdfcrop.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/pdfcrop")
+    (synopsis "Crop PDF graphics")
+    (description
+     "This package provides a Perl script that can either trim pages of any
+whitespace border, or trim them of a fixed border.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
