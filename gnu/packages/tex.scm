@@ -1638,6 +1638,29 @@ code navigation, and related functionality to any text editor that speaks the
 LSP protocol.")
     (license (list license:gpl3+ license:lppl1.3+ license:fdl1.3+))))
 
+(define-public texlive-dtl
+  (package
+    (name "texlive-dtl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dt2dv.1"
+                   "doc/man/man1/dt2dv.man1.pdf"
+                   "doc/man/man1/dv2dt.1"
+                   "doc/man/man1/dv2dt.man1.pdf")
+             (base32
+              "0kvnsr8nxrys99rp74wlxnisfripx6jpjjkqy38d3d4gw13cvb5g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dtl")
+    (synopsis "Tools to dis-assemble and re-assemble DVI files")
+    (description
+     "DTL (DVI Text Language) is a means of expressing the content of a DVI file,
+which is readily readable by humans.  The DTL bundle contains an assembler
+@command{dt2dv}, which produces DVI files from DTL files, and a disassembler
+@command{dv2dt}, which produces DTL files from DVI files.")
+    (license license:public-domain)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
