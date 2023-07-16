@@ -6501,6 +6501,33 @@ file.tex}.")
 the log file.")
     (license license:bsd-2)))
 
+(define-public texlive-texlogfilter
+  (package
+    (name "texlive-texlogfilter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texlogfilter.1"
+                   "doc/man/man1/texlogfilter.man1.pdf"
+                   "doc/support/texlogfilter/"
+                   "scripts/texlogfilter/")
+             (base32
+              "0w2cxkgzalx083hh4kyk10ampy1dx50iv44z9s2gks224p3rlyps")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texlogfilter")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/texlogfilter")
+    (synopsis "Filter LaTeX engines output or log file")
+    (description
+     "@command{texlogfilter} is a Perl script designed to filter LaTeX engines
+output or log file (LaTeX, pdfLaTeX, LuaLaTeX or XeLaTeX).  It reduces the
+LaTeX output or log to keep only warnings and errors.  The result is
+colorised.  Options allow to mask specific warnings, such as box or
+references/citations warnings.  It's also possible to add custom filter
+patterns.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
