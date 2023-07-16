@@ -2560,6 +2560,25 @@ used in @code{crypt} are also supplied separately.")
     ;; Files in the 'fcrypt' directory are covered by a BSD licence.
     (license (list license:perl-license license:bsd-3))))
 
+(define-public perl-cryptx
+  (package
+  (name "perl-cryptx")
+  (version "0.078")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (string-append "mirror://cpan/authors/id/M/MI/MIK/CryptX-"
+                         version ".tar.gz"))
+     (sha256
+      (base32 "1gdw33k8h7izjfb4zy9j1qfq4ffbqzpvhcf9ncy79mgp8890n5lk"))))
+  (build-system perl-build-system)
+  (home-page "https://metacpan.org/release/CryptX")
+  (synopsis "Self-contained cryptographic toolkit based on LibTomCrypt")
+  (description
+   "These self-contained Perl modules provide cryptography based on the
+LibTomCrypt library.")
+  (license license:perl-license)))
+
 (define-public perl-cwd-guard
   (package
     (name "perl-cwd-guard")
