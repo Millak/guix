@@ -3200,6 +3200,36 @@ making the file suitable for processing by @command{pkfix}.
 does require the user to verify and, if needed, correct its decisions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-purifyeps
+  (package
+    (name "texlive-purifyeps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/purifyeps.1"
+                   "doc/man/man1/purifyeps.man1.pdf"
+                   "doc/support/purifyeps/"
+                   "scripts/purifyeps/")
+             (base32
+              "0523kgilwd142a43fw1r406rn8ck67hp78aqhsws931glf7j9y8p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "purifyeps")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/purifyeps")
+    (synopsis "Make EPS work with both LaTeX/dvips and pdfLaTeX")
+    (description
+     "While pdfLaTeX has a number of nice features, its primary shortcoming
+relative to standard LaTeX+dvips is that it is unable to read ordinary
+Encapsulated PostScript (EPS) files, the most common graphics format in the
+LaTeX world.  Purifyeps converts EPS files into a purified form that can be
+read by both LaTeX+dvips and pdfLaTeX.  The trick is that the standard LaTeX2e
+graphics packages can parse Metapost-produced EPS directly.  Hence,
+@command{purifyeps} need only convert an arbitrary EPS file into the same
+stylized format that Metapost outputs.")
+    (license license:lppl)))
+
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
