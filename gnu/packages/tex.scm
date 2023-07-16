@@ -6528,6 +6528,29 @@ references/citations warnings.  It's also possible to add custom filter
 patterns.")
     (license license:lppl1.3+)))
 
+(define-public texlive-texlogsieve
+  (package
+    (name "texlive-texlogsieve")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texlogsieve.1"
+                   "doc/man/man1/texlogsieve.man1.pdf"
+                   "doc/support/texlogsieve/"
+                   "scripts/texlogsieve/")
+             (base32
+              "0pssh34f2263qfpirmv1np9ncjw9d9zyjqbxpin12px2hmvjvip6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texlogsieve")))
+    (home-page "https://ctan.org/pkg/texlogsieve")
+    (synopsis "Filter and summarize LaTeX log files")
+    (description
+     "@command{texlogsieve} reads a LaTeX log file (or the standard input if
+no file is specified), filters out less relevant messages, and displays
+a summary report.")
+    (license license:gpl3+)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
