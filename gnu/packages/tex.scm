@@ -1790,6 +1790,35 @@ exclusions.")
 file.  It also supports XeTeX XDV format.")
     (license license:expat)))
 
+(define-public texlive-dviljk
+  (package
+    (name "texlive-dviljk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvihp.1"
+                   "doc/man/man1/dvihp.man1.pdf"
+                   "doc/man/man1/dvilj.1"
+                   "doc/man/man1/dvilj.man1.pdf"
+                   "doc/man/man1/dvilj2p.1"
+                   "doc/man/man1/dvilj2p.man1.pdf"
+                   "doc/man/man1/dvilj4.1"
+                   "doc/man/man1/dvilj4.man1.pdf"
+                   "doc/man/man1/dvilj4l.1"
+                   "doc/man/man1/dvilj4l.man1.pdf"
+                   "doc/man/man1/dvilj6.1"
+                   "doc/man/man1/dvilj6.man1.pdf")
+             (base32
+              "03pi78c8ghy2gghzk1ffrvf5x7h8c1r0pv5pcspwxz365x2rsbjw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dviljk")
+    (synopsis "DVI to Laserjet output")
+    (description
+     "This package provides a DVI driver for the LaserJet printers, using
+@command{kpathsea} recursive file searching.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
