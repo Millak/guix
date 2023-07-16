@@ -3272,6 +3272,32 @@ SeeTeX project.
 @end itemize")
     (license license:expat)))
 
+(define-public texlive-spix
+  (package
+    (name "texlive-spix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/spix.1"
+                   "doc/man/man1/spix.man1.pdf"
+                   "doc/support/spix/" "scripts/spix/")
+             (base32
+              "0k1vkkrn14svqarbqpfccw3qqiz1slngngrwgs4fj5y0ilrym0bf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "spix.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/spix")
+    (synopsis "Yet another TeX compilation tool")
+    (description
+     "SpiX offers a way to store information about the compilation process for
+a TeX file inside the TeX file itself.  Just write the commands as comments in
+the TeX files, and SpiX will extract and run those commands.  Everything is
+stored in the TeX file (so that you are not missing some piece of information
+that is located somewhere else), in a human-readable format (no need to know
+SpiX to understand it).")
+    (license license:gpl3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
