@@ -1415,11 +1415,13 @@ confused with the @code{cpuid} command line utility from package @code{cpuid}.")
     (inputs
      (list avahi libtirpc libxml2))
     (home-page "https://lxi-tools.github.io/")
-    (synopsis "LAN eXtensions for Instrumentation library")
+    (synopsis "@acronym{LXI, LAN eXtensions for Instrumentation} library")
     (description
-     "This package provides library for LAN eXtensions for Instrumentation
-based on the LXI Consortium standard which defines the communication protocols
-for modern instrumentation and data acquision systems using Ethernet.")
+     "This library offers a simple API for communicating with instruments
+compatible with the @acronym{LXI, LAN eXtensions for Instrumentation} standard
+that defines communication protocols for instrumentation and data acquisition
+systems using Ethernet.  Applications can use liblxi to discover instruments on
+your network, send SCPI commands, and receive responses.")
     (license license:bsd-3)))
 
 (define-public lxi-tools
