@@ -6160,6 +6160,48 @@ and -editable format;
 a function and a convexity table of its graph.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tex4ht
+  (package
+    (name "texlive-tex4ht")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tex4ht/"
+                   "scripts/tex4ht/"
+                   "source/generic/tex4ht/"
+                   "tex/generic/tex4ht/"
+                   "tex4ht/")
+             (base32
+              "1svmivc272xj9fzy5p055lp7g9vcqs75jp4x54682yrq0qizv03c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts
+           #~(list "ht.sh"
+                   "htcontext.sh"
+                   "htlatex.sh"
+                   "htmex.sh"
+                   "httex.sh"
+                   "httexi.sh"
+                   "htxelatex.sh"
+                   "htxetex.sh"
+                   "mk4ht.pl"
+                   "xhlatex.sh")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/tex4ht")
+    (synopsis "Convert (La)TeX to HTML/XML")
+    (description
+     "This package provides a converter from TeX and LaTeX to SGML-based
+formats such as (X)HTML, MathML, OpenDocument, and Docbook, providing
+a configurable (La)TeX-based authoring system for hypertext.  TeX4ht does not
+independently parse (La)TeX source (so it avoids the difficulties encountered
+by many other converters, arising from the irregularity of (La)TeX syntax).
+Instead, TeX4ht uses (La)TeX itself (with myriad macro modifications) to
+produce a helper DVI file that it can then process.  This technique allows
+TeX4ht to approach the robustness characteristic of restricted-syntax systems
+such as @code{gellmu}.")
+    (license license:lppl)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
