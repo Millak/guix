@@ -6355,6 +6355,30 @@ component files, are then all put into a single directory (thus flattening the
 document's directory tree).")
     (license license:artistic2.0)))
 
+(define-public texlive-texdoc
+  (package
+    (name "texlive-texdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texdoc.1"
+                   "doc/man/man1/texdoc.man1.pdf"
+                   "doc/support/texdoc/" "scripts/texdoc/"
+                   "texdoc/")
+             (base32
+              "19mvh7pm2332f6c8nzgcbscm9vcz0apwfgm0m55ycibssc2fb3ww")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texdoc.tlu")))
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/texdoc")
+    (synopsis "Documentation access for TeX Live")
+    (description
+     "@command{texdoc} is a Lua script providing easy access to the
+documentation in TeX Live: PDF, DVI, plain text files, and more.  Viewing and
+other configuration can be extensively customized.")
+    (license license:gpl3+)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
