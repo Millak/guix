@@ -1747,6 +1747,29 @@ does not contain such references.  It also serves as a basis for writing DVI
 drivers (much like DVItype).")
     (license license:gpl3+)))
 
+(define-public texlive-dvidvi
+  (package
+    (name "texlive-dvidvi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvidvi.1"
+                   "doc/man/man1/dvidvi.man1.pdf")
+             (base32
+              "1w153rqm7nlmcf6162glxz282nbb6b6hjf5h0p7mbzr0j1357sxj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvidvi")
+    (synopsis "Convert one DVI file into another")
+    (description
+     "This @command{dvidvi} converts one DVI file into another.  The output
+DVI file's contents are specified by page selection commands; series of pages
+and page number ranges may be specified, as well as inclusions and
+exclusions.")
+    ;; Its author stated the program is to be used under the GPL.  See
+    ;; <https://metadata.ftp-master.debian.org/changelogs//main/d/dvidvi/dvidvi_1.0-8.2_copyright>.
+    (license license:gpl3)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
