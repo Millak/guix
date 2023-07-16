@@ -2706,6 +2706,37 @@ highlight the structure for the reader.")
 script does not deal with @code{\\includeonly} commands.")
     (license license:bsd-3)))
 
+(define-public texlive-light-latex-make
+  (package
+    (name "texlive-light-latex-make")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/llmk.1"
+                   "doc/man/man1/llmk.man1.pdf"
+                   "doc/support/light-latex-make/"
+                   "scripts/light-latex-make/")
+             (base32
+              "0g5xc2cna1fdgksw0w56idkmfw5rfqifimg8picm4478vlq2srp4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "llmk.lua")))
+    (home-page "https://ctan.org/pkg/light-latex-make")
+    (synopsis "Build tool for LaTeX documents")
+    (description
+     "Light LaTeX Make (llmk) is yet another build tool specific for LaTeX
+documents.  Its aim is to provide a simple way to specify a workflow of
+processing LaTeX documents and encourage people to always explicitly show the
+right workflow for each document.  You can describe the workflows either in an
+external file @file{llmk.toml} or in a LaTeX document source in the form of
+magic comments.  It provides a uniform way to describe the workflows available
+for nearly all TeX environments, and behaves exactly the same in any
+environment.  At this point, @command{llmk} intentionally does not provide any
+method for user configuration.  Therefore one can guarantee that for a LaTeX
+document with an llmk setup, the process of typesetting the document will be
+reproduced in any TeX environment with the program.")
+    (license license:expat)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
