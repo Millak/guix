@@ -8407,6 +8407,25 @@ ordinary text, and as a picture element within a TikZ-picture.  The appearance
 of a flag (size, frame etc.)  can be adapted using optional parameters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xindex
+  (package
+    (name "texlive-xindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/xindex/" "scripts/xindex/"
+                   "tex/latex/xindex/" "tex/lualatex/xindex/")
+             (base32
+              "1zcfr6vxh49cwpqa594ibmjxs775z08l5pqz36w3013dzh6m3yh1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "xindex.lua")))
+    (home-page "https://ctan.org/pkg/xindex")
+    (synopsis "Unicode compatible index generation")
+    (description
+     "This package provides a Unicode compatible index programm for LaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-xistercian
   (package
     (name "texlive-xistercian")
