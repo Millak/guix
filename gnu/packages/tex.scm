@@ -6246,6 +6246,27 @@ the conversion engine.")
 special characters to Unicode.")
     (license license:expat)))
 
+(define-public texlive-texcount
+  (package
+    (name "texlive-texcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/texcount/" "scripts/texcount/")
+             (base32
+              "0ab1kp0zh2r65x1v42sc5bwxmlifa8splrakq589fgd0aap0l8n1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texcount.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/texcount")
+    (synopsis "Count words in a LaTeX document")
+    (description
+     "TeXcount is a Perl script that counts words in the text of LaTeX files.
+It has rules for handling most of the common macros, and can provide
+colour-coded output showing which parts of the text have been counted.")
+    (license license:lppl)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
