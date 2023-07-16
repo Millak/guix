@@ -9788,6 +9788,28 @@ files, by @code{\\includegraphics}.  In effect, then package adds support for
 the @file{.tex} extension.")
     (license license:lppl1.3+)))
 
+(define-public texlive-git-latexdiff
+  (package
+    (name "texlive-git-latexdiff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/git-latexdiff.1"
+                   "doc/man/man1/git-latexdiff.man1.pdf"
+                   "doc/support/git-latexdiff/"
+                   "scripts/git-latexdiff/")
+             (base32
+              "1hblgnjad5qm27ijpynz0x1rxgi07y5apgnv5r2wk3ngxj016pvn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "git-latexdiff")))
+    (home-page "https://ctan.org/pkg/git-latexdiff")
+    (synopsis "Call @command{latexdiff} on two Git revisions of a file")
+    (description
+     "@command{git-latexdiff} is a tool to graphically visualize differences
+between different versions of a LaTeX file.")
+    (license license:bsd-2)))
+
 (define-public texlive-glyphlist
   (package
     (name "texlive-glyphlist")
