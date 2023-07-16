@@ -1501,6 +1501,33 @@ bibliographic information in BibLaTeX format for packages hosted on CTAN.  The
 @command{ctanbib} script depends only on LuaXML.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ctanify
+  (package
+    (name "texlive-ctanify")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ctanify/"
+                   "doc/man/man1/ctanify.1"
+                   "doc/man/man1/ctanify.man1.pdf"
+                   "scripts/ctanify/")
+             (base32
+              "1m6gldzm0sm4j7v2kkrpqikx004sqdq0f2gw13gc8ccqzl745cjw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ctanify")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ctanify")
+    (synopsis "Prepare a package for upload to CTAN")
+    (description
+     "Given a list of filenames, @command{ctanify} creates a tarball (a
+@file{.tar.gz} file) with the files laid out in CTAN's preferred structure.
+By default this tarball additionally contains a ZIP file with copies of all
+files laid out in the standard TeX Directory Structure (TDS), which may be
+used by those intending to install the package, or by those who need to
+incorporate it in a distribution.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
