@@ -4210,23 +4210,25 @@ network.  This must be enabled on the target host, usually in the BIOS.")
         (base32 "07svkglyizxirgcmv6d4ih59f3ds8pnyprvkrqcf5d3p567jcz2h"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no test suite
-       #:make-flags
-       (list (string-append "LIBRARY_PATH="
-                            (assoc-ref %build-inputs "libc") "/lib")
-             (string-append "CFLAGS=-I"
-                            (assoc-ref %build-inputs "kernel-headers")
-                            "/include")
-             "LDFLAGS=-lm -L../libsupp"
-             (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-make
-           (lambda _
-             (substitute* "default.rules"
-               ((" \\$\\(LIBDEPS\\)") "$(filter-out -l%,$(LIBDEPS))"))))
-         (delete 'bootstrap)            ;no configure.ac file
-         (delete 'configure))))         ;no configure script
+     (list
+      #:tests? #f                       ; no test suite
+      #:make-flags
+      #~(list (string-append "LIBRARY_PATH="
+                             (assoc-ref %build-inputs "libc") "/lib")
+              (string-append "CFLAGS=-I"
+                             (assoc-ref %build-inputs "kernel-headers")
+                             "/include")
+              "LDFLAGS=-lm -L../libsupp"
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-make
+            (lambda _
+              (substitute* "default.rules"
+                ((" \\$\\(LIBDEPS\\)")
+                 "$(filter-out -l%,$(LIBDEPS))"))))
+          (delete 'bootstrap)           ; no configure.ac file
+          (delete 'configure))))        ; no configure script
     (home-page "https://traceroute.sourceforge.net/")
     (synopsis "Tracks the route taken by packets over an IP network")
     (description "This package provides a modern, but Linux-specific
