@@ -447,7 +447,7 @@ convert SSH @code{ed25519} keys to @code{age} keys.")
     (arguments
      `(#:configure-flags
        (list (string-append "--docdir=" (assoc-ref %outputs "out")
-                            "/share/doc",name "-" ,version))))
+                            "/share/doc/" ,name "-" ,version))))
     (inputs
      (list argon2 ncurses openssl))
     (native-inputs
