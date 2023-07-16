@@ -5132,14 +5132,14 @@ Translation (@dfn{SAT}) are also supported.")
 (define-public libnvme
   (package
     (name "libnvme")
-    (version "1.3")
+    (version "1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/linux-nvme/libnvme.git")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1fngj5acp2sl4162xalq5simfasnika6gy0xrbi41x09wikvhn7y"))
+               (base32 "1wq8bw60l090z2kb717wyzk5wz1jrcn31ykdaa7k9pz9w79v0v67"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
