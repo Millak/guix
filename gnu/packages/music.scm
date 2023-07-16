@@ -2647,24 +2647,25 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
                 "1lzrrpm57pilvwxpr1qhnx6273md2k96ygxjlhi5gqjdl0nl3z95"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "FONTFILE="
-                            (assoc-ref %build-inputs "font-bitstream-vera")
-                            "/share/fonts/truetype/VeraBd.ttf")
-             ;; Disable unsupported optimization flags on non-x86
-             ,@(let ((system (or (%current-target-system)
-                                 (%current-system))))
-                 (if (or (string-prefix? "x86_64" system)
-                         (string-prefix? "i686" system))
-                     '()
-                     '("OPTIMIZATIONS=-ffast-math -fomit-frame-pointer -O3"))))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-CC-variable
-           (lambda _ (setenv "CC" ,(cc-for-target))))
-         (delete 'configure))))
+     (list
+      #:tests? #f                       ; no "check" target
+      #:make-flags
+      #~(cons* (string-append "PREFIX=" #$output)
+               (string-append "FONTFILE="
+                              #$(this-package-input "font-bitstream-vera")
+                              "/share/fonts/truetype/VeraBd.ttf")
+               ;; Disable unsupported optimization flags on non-x86
+               (let ((system #$(or (%current-target-system)
+                                   (%current-system))))
+                   (if (or (string-prefix? "x86_64" system)
+                           (string-prefix? "i686" system))
+                       '()
+                       '("OPTIMIZATIONS=-ffast-math -fomit-frame-pointer -O3"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-CC-variable
+            (lambda _ (setenv "CC" #$(cc-for-target))))
+          (delete 'configure))))
     (inputs
      (list jack-1
            lv2
