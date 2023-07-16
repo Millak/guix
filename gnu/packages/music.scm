@@ -553,7 +553,7 @@ you create custom user interfaces for your MIDI hardware.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.17")
+    (version "1.0.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -562,7 +562,7 @@ you create custom user interfaces for your MIDI hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xcf9jighb759kdh4p32wib2pipgcx3qdf5x7da6cjhxjbzgfrk7"))
+                "1knijckphq2jxrz8nmv4cb64zl1rz3bjyq5ipac09hnj2gvv5rmw"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
