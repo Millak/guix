@@ -1169,17 +1169,16 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "2.0.2")
+    (version "2.0.9")
     (source
      (origin
-       (method git-fetch)               ;no tests in PyPI archive
+       (method git-fetch)               ; no tests in PyPI archive
        (uri (git-reference
              (url "https://github.com/conan-io/conan")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1y4qmqnw3s8xv64lgp388qpj9vqharyfqi5s8dxvgsns6cafv7lf"))))
+        (base32 "1ykfj7c3i0b57s7ql3p2lawxdzd2cn36f3k8p64lyzla8rwv4xdx"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1299,7 +1298,7 @@ tools_locations = {
            python-pluginbase
            python-pygments
            python-pyjwt
-           python-pyyaml-5
+           python-pyyaml
            python-requests
            python-six
            python-tqdm
