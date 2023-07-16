@@ -359,16 +359,17 @@ package for the Game Boy and Game Boy Color.  It consists of:
     (build-system cmake-build-system)
     (native-inputs (list python-sphinx)) ; to generate man pages
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'copy-tests-to-build-directory
-           (lambda _
-             (copy-recursively "../source/tests" "tests")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (let ((sh (which "sh")))
-               (when tests?
-                 (invoke sh "../source/run_tests.sh"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'copy-tests-to-build-directory
+            (lambda _
+              (copy-recursively "../source/tests" "tests")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (let ((sh (which "sh")))
+                (when tests?
+                  (invoke sh "../source/run_tests.sh"))))))))
     (home-page "https://github.com/vhelin/wla-dx")
     (synopsis "Assemblers for various processors")
     (description "WLA DX is a set of tools to assemble assembly files to
