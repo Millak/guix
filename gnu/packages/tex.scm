@@ -2867,6 +2867,31 @@ a left margin to your text, which will normally be almost empty, but will
 clearly show any mismatches.")
     (license license:gpl3+)))
 
+(define-public texlive-mflua
+  (package
+    (name "texlive-mflua")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "metafont/mflua/" "scripts/mflua/")
+             (base32
+              "0ngbhdh8hgpjfqnrjlnp27x3qziks3yf2zp1qq7r4bjfa5jx9gr6")))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:link-scripts #~(list "mflua.lua")
+      #:create-formats #~(list "mflua")))
+    (propagated-inputs (list texlive-luatex texlive-metafont))
+    (home-page "https://ctan.org/pkg/mflua")
+    (synopsis "Configuration and base files for MFLua")
+    (description
+     "MFLua is an extension of Metafont which embeds a Lua interpreter.  It
+doesn’t introduce any new primitives, so a Metafont file can be used with
+MFLua without any modification to produce exactly the same result.")
+    ;; The license is the same as Metafont's, with a couple of files
+    ;; released under Public Domain terms.
+    (license (list license:knuth license:public-domain))))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
