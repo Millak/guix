@@ -2112,40 +2112,42 @@ streaming protocols.")
     (arguments
      (list
       #:tests? #f                       ; no test target
+      #:configure-flags
+      #~(list (string-append "--prefix=" #$output)
+              "--disable-ffmpeg_a"      ; disables bundled ffmpeg
+              "--disable-iwmmxt"
+              (string-append "--extra-cflags=-I"
+                             #$(this-package-input "libx11")
+                             "/include") ; to detect libx11
+
+              ;; Enable runtime cpu detection where supported,
+              ;; and choose a suitable target.
+              #$@(match (or (%current-target-system)
+                            (%current-system))
+                   ("x86_64-linux"
+                    '("--enable-runtime-cpudetection"
+                      "--target=x86_64-linux"))
+                   ("i686-linux"
+                    '("--enable-runtime-cpudetection"
+                      "--target=i686-linux"))
+                   ("mips64el-linux"
+                    '("--target=mips3-linux"))
+                   (_ (list (string-append
+                             "--target="
+                             (or (%current-target-system)
+                                 (nix-system->gnu-triplet
+                                  (%current-system))))))))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
             ;; configure does not work followed by "SHELL=..." and
             ;; "CONFIG_SHELL=..."; set environment variables instead
-            (lambda* (#:key inputs outputs #:allow-other-keys)
+            (lambda* (#:key (configure-flags '()) #:allow-other-keys)
               (substitute* "configure"
                 (("#! /bin/sh") (string-append "#!" (which "sh"))))
               (setenv "SHELL" (which "bash"))
               (setenv "CONFIG_SHELL" (which "bash"))
-              (invoke "./configure"
-                      (string-append "--extra-cflags=-I"
-                                     #$(this-package-input "libx11")
-                                     "/include") ; to detect libx11
-                      "--disable-ffmpeg_a"       ; disables bundled ffmpeg
-                      (string-append "--prefix=" #$output)
-                      ;; Enable runtime cpu detection where supported,
-                      ;; and choose a suitable target.
-                      #$@(match (or (%current-target-system)
-                                    (%current-system))
-                           ("x86_64-linux"
-                            '("--enable-runtime-cpudetection"
-                              "--target=x86_64-linux"))
-                           ("i686-linux"
-                            '("--enable-runtime-cpudetection"
-                              "--target=i686-linux"))
-                           ("mips64el-linux"
-                            '("--target=mips3-linux"))
-                           (_ (list (string-append
-                                     "--target="
-                                     (or (%current-target-system)
-                                         (nix-system->gnu-triplet
-                                          (%current-system)))))))
-                      "--disable-iwmmxt"))))))
+              (apply invoke "./configure" configure-flags))))))
     ;; FIXME: Add additional inputs once available.
     (native-inputs
      (list pkg-config yasm))
