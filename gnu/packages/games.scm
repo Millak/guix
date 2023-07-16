@@ -354,16 +354,28 @@ the style of similar games for the Commodore+4.")
            (replace 'bootstrap
              (lambda _
                (invoke "perl" "autogen.pl" "adanaxis"
-                       "--type=gpl" "--dist=debian"))))))
+                       "--type=gpl" "--dist=debian")))
+           (add-after 'install 'install-data
+             ;; XXX This was copied from the original (pre-Git) adanaxisgpl
+             ;; package.  While the game appears to play fine without it,
+             ;; I cannot prove that it's not missing *something*, so keep it.
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((share (string-append (assoc-ref outputs "out")
+                                           "/share/" ,name "-" ,version)))
+                 (copy-recursively (search-input-directory inputs "mush")
+                                   (string-append share "/mush"))))))))
       (native-inputs
        (list (origin
                (method git-fetch)
                (uri (git-reference
                      (url "https://github.com/mushware/adanaxis-data")
-                     (commit commit)))
+                     ;; XXX There is a tag matching COMMIT, but it does not
+                     ;; contain the .mush files installed by 'install-data.
+                     ;; Use this later commit as long as we install them.
+                     (commit "6a5b5ad8ee82c10e67bc4c12b16404944fd5754d")))
                (file-name (git-file-name "adanaxis-data" version))
                (sha256
-                (base32 "1xkn0ap5kfqd306ac072406ajihwwllaczc2v2hxiadlxd191dgx")))
+                (base32 "15am9ziq1i53sz0r7sjh2z329b52fkzj6fz7ms1nqqzdfmp11r3d")))
              (origin
                (method git-fetch)
                (uri (git-reference
