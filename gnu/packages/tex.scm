@@ -2663,6 +2663,27 @@ only.")
 style file.")
     (license license:lppl)))
 
+(define-public texlive-latexindent
+  (package
+    (name "texlive-latexindent")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/latexindent/"
+                   "scripts/latexindent/")
+             (base32
+              "1k2d09z2my38nhxhzdq53jg4alzg5jzirdsb1qa7szm3dya46xgm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "latexindent.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/latexindent")
+    (synopsis "Indent a LaTeX document, highlighting the programming structure")
+    (description
+     "The Perl script processes a LaTeX file, indenting parts so as to
+highlight the structure for the reader.")
+    (license license:gpl3)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
