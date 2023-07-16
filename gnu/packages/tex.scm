@@ -2029,6 +2029,28 @@ generates a VF file and a TFM file; @command{vftovp} takes a VF file and a TFM
 file and generates a VPL file.")
     (license license:knuth)))
 
+(define-public texlive-fragmaster
+  (package
+    (name "texlive-fragmaster")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/fragmaster/"
+                   "scripts/fragmaster/")
+             (base32
+              "1vwbkbg96dql73gayb06gs2fdxynljibjkmhliglc9ddggyx4v2m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "fragmaster.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/fragmaster")
+    (synopsis "Using @command{psfrag} with pdfLaTeX")
+    (description
+     "Fragmaster enables you to use @command{psfrag} with pdfLaTeX.  It takes
+EPS files and @command{psfrag} substitution definition files, and produces PDF
+and EPS files with the substitutions included.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
