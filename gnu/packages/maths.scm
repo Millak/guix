@@ -5942,18 +5942,19 @@ supports compressed MAT files, as well as newer (version 7.3) MAT files.")
         (base32 "0zq37r8yisd4dwlb024l10wk2yq9kisa4xm79ia1ggrz7w2s13lq"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       '("-DBUILD_TESTING=ON"
-         ;; By default, Vc will optimize for the CPU of the build machine.
-         ;; Setting this to "none" makes it create portable binaries.  See
-         ;; "cmake/OptimizeForArchitecture.cmake".
-         "-DTARGET_ARCHITECTURE=none")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'copy-testdata
-                    (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                      (let ((testdata (assoc-ref (or native-inputs inputs)
-                                                 "testdata")))
-                        (copy-recursively testdata "tests/testdata")))))))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_TESTING=ON"
+              ;; By default, Vc will optimize for the CPU of the build machine.
+              ;; Setting this to "none" makes it create portable binaries.  See
+              ;; "cmake/OptimizeForArchitecture.cmake".
+              "-DTARGET_ARCHITECTURE=none")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-testdata
+            (lambda _
+              (copy-recursively #$(this-package-native-input "testdata")
+                                "tests/testdata"))))))
     (native-inputs
      `(("virtest" ,virtest)
 
