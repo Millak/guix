@@ -1661,6 +1661,26 @@ which is readily readable by humans.  The DTL bundle contains an assembler
 @command{dv2dt}, which produces DTL files from DVI files.")
     (license license:public-domain)))
 
+(define-public texlive-dtxgen
+  (package
+    (name "texlive-dtxgen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/dtxgen/" "scripts/dtxgen/")
+             (base32
+              "1j1j136p4ddjlmwmhwlpmsxqpx2ixhhssfsl8l49lds80ad4y98m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "dtxgen")))
+    (home-page "https://ctan.org/pkg/dtxgen")
+    (synopsis "Creates a template for a self-extracting @file{.dtx} file")
+    (description
+     "The Bash script dtxgen creates a template for a self-extracting
+@file{.dtx} file.  It is useful for those who plan to create a new documented
+LaTeX source (.dtx) file.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
