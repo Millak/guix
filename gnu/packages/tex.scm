@@ -1479,6 +1479,28 @@ files/projects.  It is completely open for users to program additional
 guidelines as well as CTAN's future adjustments.")
     (license license:gpl3)))
 
+(define-public texlive-ctanbib
+  (package
+    (name "texlive-ctanbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/ctanbib.1"
+                   "doc/man/man1/ctanbib.man1.pdf"
+                   "doc/support/ctanbib/" "scripts/ctanbib/")
+             (base32
+              "0vlx37g8mp8rqb744bngykzh8yszscw2vlv7n78c8ymagx2c1xpf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ctanbib")))
+    (home-page "https://ctan.org/pkg/ctanbib")
+    (synopsis "Export CTAN entries to bib format")
+    (description
+     "This package provides a Lua script which can be used for retrieving
+bibliographic information in BibLaTeX format for packages hosted on CTAN.  The
+@command{ctanbib} script depends only on LuaXML.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
