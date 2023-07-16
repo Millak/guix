@@ -514,7 +514,7 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
 (define-public wsdd
   (package
     (name "wsdd")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -522,14 +522,14 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04an2w6hamnai668ag4vq8x0i09fsg2jrayb4a7ar0x6bn837k7m"))))
+        (base32 "16kk7x80jlargrvh643m23j277p0drs2yylqz54f9inf5ld5bxn5"))))
     (build-system copy-build-system)
     (inputs
      `(("python" ,python)))
     (arguments
      '(#:install-plan
        '(("src/wsdd.py" "bin/wsdd")
-         ("man/wsdd.1" "share/man/man1/"))))
+         ("man/wsdd.8" "share/man/man8/"))))
     (home-page "https://github.com/christgau/wsdd")
     (synopsis "Web Service Discovery host daemon")
     (description "This daemon allows (Samba) hosts to be found by Web
