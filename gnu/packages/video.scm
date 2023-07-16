@@ -2113,37 +2113,37 @@ streaming protocols.")
     (native-inputs
      (list pkg-config yasm))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("cdparanoia" ,cdparanoia)
-       ("ffmpeg" ,ffmpeg-4)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("lame" ,lame)
-       ("libass" ,libass)
-       ("libdvdcss" ,libdvdcss)
-       ("libdvdnav" ,libdvdnav)         ; ignored without libdvdread
-       ("libdvdread" ,libdvdread)       ; ignored without libdvdnav
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmpeg2" ,libmpeg2)
-       ("libmpg123" ,mpg123)            ; audio codec for MP3
-       ("libpng" ,libpng)
-       ("libtheora" ,libtheora)
-       ("libvdpau" ,libvdpau)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libx264" ,libx264)
-       ("libxinerama" ,libxinerama)
-       ("libxv" ,libxv)
-       ("libxxf86dga" ,libxxf86dga)
-       ("mesa" ,mesa)
-       ("opus" ,opus)
-       ("perl" ,perl)
-       ("pulseaudio" ,pulseaudio)
-       ("python" ,python-wrapper)
-       ("sdl" ,sdl)
-       ("speex" ,speex)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           cdparanoia
+           ffmpeg-4
+           fontconfig
+           freetype
+           giflib
+           lame
+           libass
+           libdvdcss
+           libdvdnav                    ; ignored without libdvdread
+           libdvdread                   ; ignored without libdvdnav
+           libjpeg-turbo
+           libmpeg2
+           mpg123                       ; audio codec for MP3
+           libpng
+           libtheora
+           libvdpau
+           libvorbis
+           libx11
+           libx264
+           libxinerama
+           libxv
+           libxxf86dga
+           mesa
+           opus
+           perl
+           pulseaudio
+           python-wrapper
+           sdl
+           speex
+           zlib))
     (arguments
      `(#:tests? #f                      ; no test target
        #:phases
