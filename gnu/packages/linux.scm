@@ -6357,7 +6357,7 @@ from userspace.")
 (define-public tpacpi-bat
   (package
     (name "tpacpi-bat")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method git-fetch)
@@ -6366,7 +6366,7 @@ from userspace.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wbaz34z99gqx721alh5vmpxpj2yxg3x9m8jqyivfi1wfpwc2nd5"))))
+        (base32 "0nd8s2bqbhl0sjpflphb4l9ix71p7kvnbvkq4dg9a1v0sxafyygm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test target
@@ -6380,8 +6380,7 @@ from userspace.")
                ;; tpacpi-bat modprobes the acpi_call kernel module if it's not
                ;; loaded.  That's the administrator's prerogative; disable it.
                (("system \"(modprobe .*)\"" _ match)
-                (format #f "die \"Please run ‘~a’ first.\\n\"" match)))
-             #t))
+                (format #f "die \"Please run ‘~a’ first.\\n\"" match)))))
          (delete 'configure)            ; nothing to configure
          (delete 'build)                ; nothing to build
          (replace 'install
@@ -6396,8 +6395,7 @@ from userspace.")
                            (let ((target (string-append doc "/" file)))
                              (mkdir-p (dirname target))
                              (copy-recursively file target)))
-                         (list "battery_asl" "examples" "README.md"))
-               #t))))))
+                         (list "battery_asl" "examples" "README.md"))))))))
     (inputs
      (list perl))
     (home-page "https://github.com/teleshoes/tpacpi-bat")
