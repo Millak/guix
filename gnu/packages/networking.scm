@@ -2975,14 +2975,14 @@ enabled due to license conflicts between the BSD advertising clause and the GPL.
 (define-public spiped
   (package
     (name "spiped")
-    (version "1.6.1")
+    (version "1.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.tarsnap.com/spiped/spiped-"
                                   version ".tgz"))
               (sha256
                (base32
-                "04rpnc53whfky7pp2m9h35gwzwn6788pnl6c1qd576mpknbqjw4d"))))
+                "0rs5403bp48wyy2x0f3hk0f75ds1qn03sgyli2c7y7fi29ynim05"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -3000,15 +3000,13 @@ enabled due to license conflicts between the BSD advertising clause and the GPL.
                             "libcperciva/cpusupport/Build/cpusupport.sh"
                             "libcperciva/POSIX/posix-cflags.sh"
                             "libcperciva/POSIX/posix-l.sh")
-               (("command -p") ""))
-             #t))
+               (("command -p") ""))))
          (delete 'configure) ; No ./configure script.
          (add-after 'install 'install-more-docs
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref %outputs "out"))
                     (misc (string-append out "/share/doc/spiped")))
-               (install-file "DESIGN.md" misc)
-               #t))))))
+               (install-file "DESIGN.md" misc)))))))
     (native-inputs
      (list procps)) ; `ps` is used by the test suite.
     (inputs
