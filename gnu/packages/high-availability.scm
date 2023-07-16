@@ -116,7 +116,7 @@ realistic with today's hardware.")
                (base32
                 "071k916vz9ppyb69rpk792fzjs3nf3chakn10i496scgiqh49rzi"))))
     (build-system gnu-build-system)
-    (native-inputs (list autoconf automake libtool libxml2 pkg-config))
+    (native-inputs (list libxml2 pkg-config))
     (home-page "https://clusterlabs.github.io/libqb/")
     (synopsis
      "Library providing high performance logging, tracing, ipc, and poll")
