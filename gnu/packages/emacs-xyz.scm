@@ -18066,7 +18066,7 @@ Pippel also uses Tabulated List mode, it provides a similar package menu like
 (define-public emacs-pos-tip
   (package
     (name "emacs-pos-tip")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -18075,7 +18075,7 @@ Pippel also uses Tabulated List mode, it provides a similar package menu like
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w8bnspnk871qndp18hs0wk4x9x31xr9rwbvf5dc8mcbnj29ch33"))))
+        (base32 "1k6r59jhbyiknhsl7df0zafyc4d9r3vk953x6sdxgz92kx6hxpfy"))))
     (build-system emacs-build-system)
     ;; The following functions and variables needed by emacs-pos-tip are
     ;; not included in emacs-minimal:
