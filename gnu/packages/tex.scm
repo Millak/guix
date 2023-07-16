@@ -3323,6 +3323,38 @@ the versions intended for different audiences and to incorporate the changes
 made in any of these versions into the master document.")
     (license license:gpl2)))
 
+(define-public texlive-sty2dtx
+  (package
+    (name "texlive-sty2dtx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/sty2dtx.1"
+                   "doc/man/man1/sty2dtx.man1.pdf"
+                   "doc/support/sty2dtx/" "scripts/sty2dtx/")
+             (base32
+              "06930x3c52f3x9rqcmsif7y6rw11g1myya3wp77p20vfi7whxhsv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "sty2dtx.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/sty2dtx")
+    (synopsis "Create a @file{.dtx} file from a @file{.sty} file")
+    (description
+     "The package provides a Perl script that converts a @file{.sty}
+file (LaTeX package) to @file{.dtx} format (documented LaTeX source), by
+surrounding macro definitions with macro and macrocode environments.  The
+macro name is automatically inserted as an argument to the macro environment.
+Code lines outside macro definitions are wrapped only in macrocode
+environments.  Empty lines are removed.  The script should not be thought to
+be fool proof and 100% accurate but rather as a good start to the business of
+making a @file{.dtx} file from an undocumented style file.  Full @file{.dtx}
+files are generated.  A template based on the skeleton file from @code{dtxtut}
+is used.  User level macros are added automatically to the Usage section of
+the @file{.dtx} file.  A corresponding @file{.ins} file can be generated as
+well.")
+    (license license:gpl3)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
