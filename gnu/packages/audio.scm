@@ -147,8 +147,8 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system waf)
   #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -5230,11 +5230,12 @@ bluetooth profile.")
            libxinerama
            libxcursor))
     (arguments
-     `(#:tests? #f                      ;there are no tests
-       #:configure-flags
-       (list (string-append "-DCMAKE_CXX_FLAGS=-I"
-                            (assoc-ref %build-inputs "freetype")
-                            "/include/freetype2"))))
+     (list
+      #:tests? #f                       ; there are no tests
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
+                           #$(this-package-input "freetype")
+                           "/include/freetype2"))))
     (home-page "https://openshot.org")
     (synopsis "Audio editing and playback for OpenShot")
     (description "OpenShot Audio Library (libopenshot-audio) allows
