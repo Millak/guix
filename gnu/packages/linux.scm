@@ -9854,10 +9854,8 @@ older system-wide @file{/sys} interface.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            (substitute* "Makefile"
-              (("/bin/pwd") "pwd"))
-            (substitute* "scripts/utils.mk"
-              (("/bin/pwd") "pwd"))))))
+            (substitute* (list "Makefile" "scripts/utils.mk")
+              (("/bin/(pwd)" _ command) command))))))
     (build-system gnu-build-system)
     (arguments
      (list
