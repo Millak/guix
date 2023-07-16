@@ -523,11 +523,25 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "16kk7x80jlargrvh643m23j277p0drs2yylqz54f9inf5ld5bxn5"))))
-    (build-system copy-build-system)
+    (build-system gnu-build-system)
     (arguments
-     '(#:install-plan
-       '(("src/wsdd.py" "bin/wsdd")
-         ("man/wsdd.8" "share/man/man8/"))))
+     (list
+      #:tests? #f                       ; no test suite, only examples
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (delete 'build)               ; nothing to build
+          (replace 'install
+            (lambda _
+              (with-directory-excursion "src"
+                (rename-file "wsdd.py" "wsdd")
+                (install-file "wsdd" (string-append #$output "/bin")))
+              (for-each
+               (lambda (file)
+                 (install-file file
+                               (string-append #$output "/share/man/man"
+                                              (string-take-right file 1))))
+               (find-files "man" "\\.[0-9]$")))))))
     (inputs
      (list python))
     (home-page "https://github.com/christgau/wsdd")
