@@ -1443,7 +1443,7 @@ group them into chains.")
 (define-public hydra
   (package
     (name "hydra")
-    (version "9.4")
+    (version "9.5")
     (home-page "https://github.com/vanhauser-thc/thc-hydra")
     (source (origin
               (method git-fetch)
@@ -1453,7 +1453,7 @@ group them into chains.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dbx7yaqf4nl63pi8wmr19cxnp5v4w7fsd369krdy8hlc8k0qjgr"))))
+                "0pg4alaznygngdzn4k6p540g059w7mpiakchsp0526f1b9s33lw1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ;no test suite
