@@ -8341,6 +8341,30 @@ diagrams for lectures or assignment sheets.")
 per command or per parameter.")
     (license license:gpl3+)))
 
+(define-public texlive-web
+  (package
+    (name "texlive-web")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/tangle.1"
+                   "doc/man/man1/tangle.man1.pdf"
+                   "doc/man/man1/weave.1"
+                   "doc/man/man1/weave.man1.pdf")
+             (base32
+              "0iiyzzrgwakw7ipdnwmjwcrqayzq4yn4786zlr9zirmmj34hpamz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/web")
+    (synopsis "Original literate programming system")
+    (description
+     "The system processes web files in two ways: firstly to rearrange them to
+produce compilable code (using the program @command{tangle}), and secondly to
+produce a TeX source (using the program @command{weave}) that may be typeset
+for comfortable reading.")
+    (license license:knuth)))
+
 (define-public texlive-wheelchart
   (package
     (name "texlive-wheelchart")
