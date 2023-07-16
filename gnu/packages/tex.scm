@@ -3124,6 +3124,30 @@ each page is obtained by combining several pages of a PDF file given as
 output.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pfarrei
+  (package
+    (name "texlive-pfarrei")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pfarrei/" "scripts/pfarrei/"
+                   "source/latex/pfarrei/" "tex/latex/pfarrei/")
+             (base32
+              "1clfaxfk7js8yl6cy6dwihmgi51n3rmk0zfmxacmpsbhawj1wrw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "a5toa4.tlu" "pfarrei.tlu")))
+    (home-page "https://ctan.org/pkg/pfarrei")
+    (synopsis "LaTeX support of pastors' and priests' work")
+    (description
+     "In @emph{Die TeXnische Komodie} (issue 1/2013) Christian Justen
+described his use of LaTeX in his work as priest (similar requirements may be
+encountered in the work of pastors and other ministers of religion).  One
+point was to arrange A5 pages onto A4 landscape paper, either side-by-side or
+as a booklet.  Justen made two Bash scripts for this job; the package provides
+one Texlua script for both requirements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
