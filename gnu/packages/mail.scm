@@ -2738,8 +2738,8 @@ Authentication-Results header seen in the wild.")
            perl-yaml-libyaml))
     (home-page "https://metacpan.org/release/Mail-DKIM")
     (synopsis "Signs/verifies Internet mail with DKIM/DomainKey signatures")
-    (description "Mail::DKIM is a Perl module that implements the new Domain
-Keys Identified Mail (DKIM) standard, and the older Yahoo! DomainKeys standard,
+    (description "Mail::DKIM is a Perl module that implements the @acronym{DKIM,
+Domain Keys Identified Mail} standard, and the older Yahoo! DomainKeys standard,
 both of which sign and verify emails using digital signatures and DNS records.
 Mail-DKIM can be used by any Perl program that wants to provide support for
 DKIM and/or DomainKeys.")
