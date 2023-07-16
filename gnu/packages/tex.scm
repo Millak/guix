@@ -2643,6 +2643,26 @@ used to override this default behaviour and accept or reject selected changes
 only.")
     (license license:gpl3)))
 
+(define-public texlive-latexfileversion
+  (package
+    (name "texlive-latexfileversion")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/latexfileversion/"
+                   "scripts/latexfileversion/")
+             (base32
+              "12kw9s415dnlaadx6yn2jddvflvbs754rkz30xhr3di2ldpvp2jj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "latexfileversion")))
+    (home-page "https://ctan.org/pkg/latexfileversion")
+    (synopsis "Prints the version and date of a LaTeX class or style file")
+    (description
+     "This simple shell script prints the version and date of a LaTeX class or
+style file.")
+    (license license:lppl)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
