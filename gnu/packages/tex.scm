@@ -6551,6 +6551,55 @@ no file is specified), filters out less relevant messages, and displays
 a summary report.")
     (license license:gpl3+)))
 
+(define-public texlive-texosquery
+  (package
+    (name "texlive-texosquery")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/texosquery/"
+                   "scripts/texosquery/"
+                   "source/support/texosquery/"
+                   "tex/latex/texosquery/")
+             (base32
+              "17s947p011qar5aaz11ysby3nqqrnk0qv4m26hsl5y6divqb2dan")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts
+           #~(list "texosquery-jre5.sh" "texosquery-jre8.sh" "texosquery.sh")))
+    (home-page "https://ctan.org/pkg/texosquery")
+    (synopsis "Java application to query OS information")
+    (description
+     "This package provides a Java application to query OS information
+designed for use in TeX's shell escape mechanism.  The application can query
+the following:
+
+@itemize
+@item locale and codeset,
+@item current working directory,
+@item user home directory
+@item temporary directory,
+@item OS name, arch and version,
+@item current date and time in PDF format (for TeX formats that don't provide
+@code{\\pdfcreationdate}),
+@item date-time stamp of a file in PDF format (for TeX formats that don't
+provide @code{\\pdffilemoddate}),
+@item size of a file in bytes (for TeX formats that don't provide
+@code{\\pdffilesize}),
+@item contents of a directory (captured as a list),
+@item directory contents filtered by regular expression (captured as a list),
+@item URI or canonical path of a file.  All paths use a forward slash as
+directory divider so results can be used, for example, in commands like
+@code{\\includegraphics}.
+@end itemize
+
+There are files provided for easy access in TeX documents.
+@file{texosquery.tex} provides generic TeX code, whereas @file{texosquery.sty}
+is a LaTeX package, which provides commands to run @command{texosquery} using
+TeX's shell escape mechanism and capture the result in a control sequence.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
