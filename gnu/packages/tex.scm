@@ -1594,6 +1594,29 @@ defined in @code{\\(re)newcommand} or @code{\\(re)newenvironment} commands,
 within the document, or in the document's private package file.")
     (license license:afl2.1)))
 
+(define-public texlive-detex
+  (package
+    (name "texlive-detex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/detex.1"
+                   "doc/man/man1/detex.man1.pdf")
+             (base32
+              "08d017wn7a67pmp9b5yhnfg1x2q6f48qaa5ma4bplz9a782icwjy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/detex")
+    (synopsis "Strip TeX from a source file")
+    (description
+     "Detex is a program to remove TeX constructs from a text file.  It
+recognizes the @code{\\input} command.  The program assumes it is dealing with
+LaTeX input if it sees the string @code{\\begin@{document@}} in the text.  In
+this case, it also recognizes the @code{\\include} and @code{\\includeonly}
+commands.  The author now considers this program to be obsolete and Piotr
+Kubowicz's OpenDetex as its successor.")
+    (license license:bsd-3)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
