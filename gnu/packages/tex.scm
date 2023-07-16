@@ -1528,6 +1528,29 @@ used by those intending to install the package, or by those who need to
 incorporate it in a distribution.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ctanupload
+  (package
+    (name "texlive-ctanupload")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/ctanupload/"
+                   "scripts/ctanupload/")
+             (base32
+              "0w4k9sslhnpn5l90wbr7cr7pv8fhiiabasbi6l6gw3w3nrfmarh4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ctanupload.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ctanupload")
+    (synopsis "Support for users uploading to CTAN")
+    (description
+     "The package provides a Perl script that allows the uploads of
+a contribution to CTAN from the command line.  The aim is to simplify the
+release process for LaTeX package authors.  Note by the CTAN
+team (2015-02-05): It seems that this script is currently not working.")
+    (license license:gpl3)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
