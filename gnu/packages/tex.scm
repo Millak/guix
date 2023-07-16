@@ -1702,6 +1702,30 @@ LaTeX source (.dtx) file.")
 the document.")
     (license license:gpl2)))
 
+(define-public texlive-dviasm
+  (package
+    (name "texlive-dviasm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dviasm/" "doc/man/man1/dviasm.1"
+                   "doc/man/man1/dviasm.man1.pdf"
+                   "scripts/dviasm/")
+             (base32
+              "1hx4j0pmh4h3194xxcvjnh5nr069sysbqxvg4zzmci6gjr7mjg7f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "dviasm.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/dviasm")
+    (synopsis "Utility for editing DVI files")
+    (description
+     "This package provides a Python script to support changing or creating
+DVI files via disassembling into text, editing, and then reassembling into
+binary format.  It supports advanced features such as adding a preprint number
+or watermarks.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
