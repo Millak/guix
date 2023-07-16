@@ -3298,6 +3298,31 @@ that is located somewhere else), in a human-readable format (no need to know
 SpiX to understand it).")
     (license license:gpl3+)))
 
+(define-public texlive-srcredact
+  (package
+    (name "texlive-srcredact")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/srcredact.1"
+                   "doc/man/man1/srcredact.man1.pdf"
+                   "doc/support/srcredact/"
+                   "scripts/srcredact/")
+             (base32
+              "1a0mmr3ggxxv69zfwlrlagbczy83ngy2kxzw437n0iksz6bgrvpx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "srcredact.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/srcredact")
+    (synopsis "Tool for redacting sources")
+    (description
+     "This package provides a tool to keep a master source, consisting of
+different chunks intended for different audiences.  The tool allows to extract
+the versions intended for different audiences and to incorporate the changes
+made in any of these versions into the master document.")
+    (license license:gpl2)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
