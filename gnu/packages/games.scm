@@ -6283,8 +6283,8 @@ for Un*x systems with X11.")
     (origin
      (method url-fetch)
      (uri (list (string-append
-                  "http://files.freeciv.org/stable/freeciv-"
-                  version ".tar.bz2")
+                  "https://files.freeciv.org/stable/freeciv-"
+                  version ".tar.xz")
                 (string-append
                   "mirror://sourceforge/freeciv/Freeciv%20"
                   (version-major+minor version) "/" version
