@@ -435,14 +435,14 @@ convert SSH @code{ed25519} keys to @code{age} keys.")
 (define-public yapet
   (package
     (name "yapet")
-    (version "2.5")
+    (version "2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://yapet.guengel.ch/downloads/yapet-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0hpibsdry259cmvps35isr6jn9cd9fsk3r1h0ppjx9zxfrpqwldg"))))
+        (base32 "00k38n5vlxl73m11pp1v50fqf702lv86hzwgj0qca6qxqz4i3jjl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
