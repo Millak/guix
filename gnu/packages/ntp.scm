@@ -37,6 +37,7 @@
   #:use-module (gnu packages tls)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix packages)
@@ -143,15 +144,17 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                (list libcap)
                '())))
    (arguments
-    `(;; Pass "--with-yielding-select=yes" so that 'configure' knows whether
-      ;; 'select' yields when using pthreads in a cross-compilation context.
-      #:configure-flags (list "--with-yielding-select=yes")
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'disable-network-test
-                   (lambda _
-                     (substitute* "tests/libntp/Makefile.in"
-                       (("test-decodenetnum\\$\\(EXEEXT\\) ") "")))))))
+    (list
+     ;; Pass "--with-yielding-select=yes" so that 'configure' knows whether
+     ;; 'select' yields when using pthreads in a cross-compilation context.
+     #:configure-flags
+     #~(list "--with-yielding-select=yes")
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'disable-network-test
+           (lambda _
+             (substitute* "tests/libntp/Makefile.in"
+               (("test-decodenetnum\\$\\(EXEEXT\\) ") "")))))))
    (build-system gnu-build-system)
    (synopsis "Real time clock synchronization system")
    (description "NTP is a system designed to synchronize the clocks of
