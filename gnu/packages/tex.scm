@@ -2764,6 +2764,27 @@ a shell script to make a steering file that is used by the package when LaTeX
 is being run.")
     (license license:lppl1.2+)))
 
+(define-public texlive-ltxfileinfo
+  (package
+    (name "texlive-ltxfileinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/ltxfileinfo/"
+                   "scripts/ltxfileinfo/")
+             (base32
+              "1nbcplq48cw768pjyg832ymqmjr9rlrcpl6jmkq8mrvvydgy8nai")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ltxfileinfo")))
+    (home-page "https://ctan.org/pkg/ltxfileinfo")
+    (synopsis "Print version information for a LaTeX file")
+    (description
+     "@command{ltxfileinfo} displays version information for LaTeX files.
+If no path information is given, the file is searched using
+@command{kpsewhich}.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
