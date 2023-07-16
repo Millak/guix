@@ -574,8 +574,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "46a6b9210c927ab46fd1227cb6f641be0b4a7505")
-        (revision "16"))
+  (let ((commit "c8bec83e307f28751c433ba1d3f648429fb5a34c")
+        (revision "17"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -587,7 +587,7 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0jblpwz8mxrx0pa2gc5bwj60qjj2c0zmd8r06f2bhgzs75avpkj3"))))
+          (base32 "0b1avy5mw3r3ppfs3n9cq4zb74yl45nd5l69r6hi27z9q5bc3nv8"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
@@ -596,47 +596,39 @@ from a mounted file system.")
                      "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
                      (string-append "CC=" #$(cc-for-target))
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                     (string-append "PYTEST_CMD="
-                                    #$(this-package-native-input "python-pytest")
-                                    "/bin/pytest")
-                     (string-append "PYTEST_ARGS=-k '"
-                                    ;; These fail (‘invalid argument’) on
-                                    ;; kernels with a previous bcachefs version.
-                                    "not test_format and "
-                                    "not test_fsck and "
-                                    "not test_list and "
-                                    "not test_list_inodes and "
-                                    "not test_list_dirent"
-                                    "'"))
+                     ;; ‘This will be less of an option in the future, as more
+                     ;; code gets rewritten in Rust.’
+                     "NO_RUST=better")
              #:phases
              #~(modify-phases %standard-phases
                  (delete 'configure)    ; no configure script
-                 (add-after 'install 'promote-mount.bcachefs.sh
-                   ;; XXX The (optional) ‘mount.bcachefs’ requires rust:cargo.
-                   ;; This shell alternative does the job well enough for now.
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (define (whence file)
-                       (dirname (search-input-file inputs file)))
-                     (with-directory-excursion (string-append #$output "/sbin")
-                       (rename-file "mount.bcachefs.sh" "mount.bcachefs")
-                       ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
-                       (wrap-program "mount.bcachefs"
-                         `("PATH" ":" prefix
-                           ,(list (getcwd)
-                                  (whence "bin/tail")
-                                  (whence "bin/awk")
-                                  (whence "bin/mount"))))))))))
+                 (replace 'check
+                   ;; The test suite is moribund upstream (‘never been useful’),
+                   ;; but let's keep running it as a sanity check until then.
+                   (lambda* (#:key tests? make-flags #:allow-other-keys)
+                     (when tests?
+                       ;; We must manually build the test_helper first.
+                       (apply invoke "make" "tests" make-flags)
+                       (invoke (string-append
+                                #$(this-package-native-input "python-pytest")
+                                "/bin/pytest") "-k"
+                                ;; These fail (‘invalid argument’) on kernels
+                                ;; with a previous bcachefs version.
+                                (string-append "not test_format and "
+                                               "not test_fsck and "
+                                               "not test_list and "
+                                               "not test_list_inodes and "
+                                               "not test_list_dirent"))))))))
       (native-inputs
-       (append
-         (list pkg-config
-               ;; For tests.
-               python-pytest)
-         (if (member (%current-system) (package-supported-systems valgrind))
-           (list valgrind)
-           '())
-         ;; For generating documentation with rst2man.
-         (list python
-               python-docutils)))
+       (cons* pkg-config
+              ;; For generating documentation with rst2man.
+              python
+              python-docutils
+              ;; For tests.
+              python-pytest
+              (if (member (%current-system) (package-supported-systems valgrind))
+                  (list valgrind)
+                  '())))
       (inputs
        (list eudev
              keyutils
