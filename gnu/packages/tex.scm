@@ -6480,6 +6480,27 @@ replace your (LaTeX) compilation command with @samp{texliveonfly.py
 file.tex}.")
     (license license:gpl3)))
 
+(define-public texlive-texloganalyser
+  (package
+    (name "texlive-texloganalyser")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/texloganalyser/"
+                   "scripts/texloganalyser/")
+             (base32
+              "0qlrpqwfyakhh163ckznw5z8jwm5frp3krpi7fxnf9pz03c7shhr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texloganalyser")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/texloganalyser")
+    (synopsis "Analyse TeX logs")
+    (description
+     "This Perl script allows the user to extract (and display) elements of
+the log file.")
+    (license license:bsd-2)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
