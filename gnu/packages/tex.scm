@@ -6457,6 +6457,29 @@ from a TeX run, attempting to show only those messages which probably deserve
 some change in the source.  The TeX invocation itself need not change.")
     (license license:public-domain)))
 
+(define-public texlive-texliveonfly
+  (package
+    (name "texlive-texliveonfly")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/texliveonfly/"
+                   "scripts/texliveonfly/")
+             (base32
+              "15nrgkh9wkaccbyd8jgcyw5xjjhqj3jyy3spbfd679fywq14l8c2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texliveonfly.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/texliveonfly")
+    (synopsis "On-the-fly download of missing TeX live packages")
+    (description
+     "The package provides a script that performs on the fly downloads of
+missing packages, while a document is being compiled.  To use the script,
+replace your (LaTeX) compilation command with @samp{texliveonfly.py
+file.tex}.")
+    (license license:gpl3)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
