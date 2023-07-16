@@ -2179,6 +2179,7 @@ receiver.")
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
+           qtquickcontrols-5
            qtquickcontrols2-5
            soapysdr))
     (arguments
