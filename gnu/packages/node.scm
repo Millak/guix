@@ -941,4 +941,5 @@ source files.")
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (delete 'install-npmrc)
-           (delete 'patch-nested-shebangs)))))))
+           (delete 'patch-nested-shebangs)
+           (delete 'ignore-number-of-hardlinks)))))))
