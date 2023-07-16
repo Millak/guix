@@ -9917,6 +9917,28 @@ documents.  It comprises the packages @code{color}, @code{graphics},
 definition files for Greek text font encodings for use with @code{fontenc}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gsftopk
+  (package
+    (name "texlive-gsftopk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/gsftopk.1"
+                   "doc/man/man1/gsftopk.man1.pdf"
+                   "dvips/gsftopk/")
+             (base32
+              "1qlac704qbm7kq762z0b887wfncprpcm8zj2lb4nag0wzdrrjdq5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gsftopk")
+    (synopsis "Convert Ghostscript fonts to PK files")
+    (description
+     "Designed for use with @command{xdvi} and @command{dvips}, this utility
+converts Adobe Type 1 fonts to PK bitmap format.  It should not ordinarily be
+much used nowadays, since both its target applications are now capable of
+dealing with Type 1 fonts, direct.")
+    (license license:gpl3+)))
+
 (define-public texlive-hycolor
   (package
     (name "texlive-hycolor")
