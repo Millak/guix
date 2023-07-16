@@ -1710,7 +1710,7 @@ and up to 1 Mbit/s downstream.")
 (define-public whois
   (package
     (name "whois")
-    (version "5.5.11")
+    (version "5.5.17")
     (source
      (origin
        (method git-fetch)
@@ -1719,20 +1719,21 @@ and up to 1 Mbit/s downstream.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wys0aixzq6mzvg7p6jb0d5rkkg23pjcgcsx86p7hjidxdvnbwzr"))))
+        (base32 "1mqgc8saz4l0hr4p8r9cgndwx3r9aal7ak9irgrrkxyjd65xpa9n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PKG_CONFIG=" ,(pkg-config-for-target))
-                          (string-append "prefix=" (assoc-ref %outputs "out")))
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "PKG_CONFIG=" ,(pkg-config-for-target))
+             (string-append "prefix=" (assoc-ref %outputs "out"))
+             "BASHCOMPDIR=$(prefix)/share/bash-completion/completions")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
          (add-before 'build 'setenv
            (lambda _
-             (setenv "HAVE_ICONV" "1")
-             #t)))))
+             (setenv "HAVE_ICONV" "1"))))))
     (inputs
      (list libidn2))
     (native-inputs
