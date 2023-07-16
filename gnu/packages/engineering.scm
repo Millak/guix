@@ -439,14 +439,14 @@ features.")))
 (define-public librnd
   (package
     (name "librnd")
-    (version "4.0.0")
+    (version "4.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.repo.hu/projects/librnd/releases/"
                                   "librnd-" version ".tar.bz2"))
               (sha256
                (base32
-                "1fqh7gf9imhghlfajrsgzjx61mynfmdasciwpcajk7pn85d4ymql"))))
+                "0z578x3sd8yjfbhivy1hz4hlgiy43qq6x7mnby872plpm08vgqxz"))))
     (build-system gnu-build-system)
     (arguments
      (list
