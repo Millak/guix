@@ -581,7 +581,8 @@ sys_create_shell_completion()
 
 sys_customize_bashrc()
 {
-    prompt_yes_no "Customize users Bash shell prompt for Guix?" || return
+    prompt_yes_no "Customize users Bash shell prompt for Guix?" || return 0
+
     for bashrc in /home/*/.bashrc /root/.bashrc; do
         test -f "$bashrc" || continue
         grep -Fq '$GUIX_ENVIRONMENT' "$bashrc" && continue
@@ -615,7 +616,7 @@ sys_maybe_setup_selinux()
     done
 
     prompt_yes_no "Install SELinux policy that might be required to run guix-daemon?" \
-	|| return
+	|| return 0
 
     local var_guix=/var/guix/profiles/per-user/root/current-guix
     semodule -i "${var_guix}/share/selinux/guix-daemon.cil"
