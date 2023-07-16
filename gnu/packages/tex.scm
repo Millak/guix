@@ -1936,6 +1936,30 @@ optionally be replaced with graphics paths so that applications that do not
 support SVG fonts are enabled to render the graphics properly.")
     (license license:gpl3+)))
 
+(define-public texlive-findhyph
+  (package
+    (name "texlive-findhyph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/findhyph.1"
+                   "doc/man/man1/findhyph.man1.pdf"
+                   "doc/support/findhyph/" "scripts/findhyph/")
+             (base32
+              "1bxj0li1a9qsvwmp0kmfsal4vsgsqal1lgmp4423z9nvwrwvvlrr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "findhyph")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/findhyph")
+    (synopsis "Find hyphenated words in a document")
+    (description
+     "Findhyph is a Perl script that will analyse the log file from running
+your document with @code{\\tracingparagraphs=1} set.  The output contains
+enough context to enable you to find the hyphenated word that's being
+referenced.")
+    (license license:gpl2)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
