@@ -8247,6 +8247,44 @@ make drawing easier, especially when drawing repeatedly.  The macros were
 chosen and developed with an emphasis on drawing graphs in economics.")
     (license license:lppl1.3c)))
 
+(define-public texlive-upmendex
+  (package
+    (name "texlive-upmendex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/upmendex.1"
+                   "doc/man/man1/upmendex.man1.pdf"
+                   "doc/support/upmendex/")
+             (base32
+              "0mj8nmqr3z7b802kvjmnkckq89l694an7s639yghf3b9b5v7xihx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/upmendex")
+    (synopsis "Multilingual index processor")
+    (description
+     "The package is a multilingual index processor with the following
+features:
+@itemize
+
+@item mostly compatible with @command{makeindex} and upper compatible with
+@command{mendex};
+
+@item supports UTF-8 and works with upLaTeX, XeLaTeX and LuaLaTeX;
+
+@item supports Latin (including non-English), Greek, Cyrillic, Korean Hangul
+and Chinese Han (Hanzi ideographs) scripts, as well as Japanese Kana.
+
+@item supports Devanagari, Thai, Arabic and Hebrew scripts (experimental).
+
+@item supports four kinds of sort orders (Pinyin, Radical-Stroke, Stroke and
+Zhuyin) for Chinese Han scripts (Hanzi ideographs).
+
+@item applies International Components for Unicode (ICU) for sorting process.
+
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public texlive-utfsym
   (package
     (name "texlive-utfsym")
