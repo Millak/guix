@@ -2573,6 +2573,39 @@ writing the man page and a Perl script, @command{latex2man} that does the
 actual translation.")
     (license license:lppl1.0+)))
 
+(define-public texlive-latex2nemeth
+  (package
+    (name "texlive-latex2nemeth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/latex2nemeth/"
+                   "scripts/latex2nemeth/")
+             (base32
+              "04l3pnzwnh86ixlj7pjy6wgkzqm5i3ka332yfkl5f6cw48dw6xw5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:link-scripts #~(list "latex2nemeth")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-java
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "scripts/latex2nemeth/latex2nemeth"
+                (("java") (search-input-file inputs "/bin/java"))))))))
+    (inputs (list icedtea))
+    (home-page "https://ctan.org/pkg/latex2nemeth")
+    (synopsis "Convert LaTeX source to Braille with math in Nemeth")
+    (description
+     "This package provides a program that converts LaTeX source to
+Braille/Nemeth.  It supports the Greek language, which is only Braille level
+1, but also English at level 1.  Simple pictures in PSTricks are also
+supported in order to produce tactile graphics with specialized equipment.
+Note that embossing will need LibreOffice and @code{odt2braille} as this
+project does not deal with embossers drivers.")
+    (license license:gpl3)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
