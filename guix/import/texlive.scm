@@ -298,8 +298,8 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
 (define (linked-scripts name package-database)
   "Return a list of script names to symlink from \"bin/\" directory for
 package NAME according to PACKAGE-DATABASE.  Consider as scripts files with
-\".lua\", \".pl\", \".py\", \".sh\", \".tcl\", \".tlu\" extensions, and files
-without extension."
+\".lua\", \".pl\", \".py\", \".sh\", \".tcl\", \".texlua\", \".tlu\"
+extensions, and files without extension."
   (and-let* ((data (assoc-ref package-database name))
              ;; Check if binaries are associated to the package.
              (depend (assoc-ref data 'depend))
@@ -317,7 +317,7 @@ without extension."
     (filter-map (lambda (script)
                   (and (any (lambda (ext)
                               (member (basename script ext) binaries))
-                            '(".lua" ".pl" ".py" ".sh" ".tcl" ".tlu"))
+                            '(".lua" ".pl" ".py" ".sh" ".tcl" ".texlua" ".tlu"))
                        (basename script)))
                 ;; Get the right (alphabetic) order.
                 (reverse scripts))))
