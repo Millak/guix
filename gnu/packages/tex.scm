@@ -6625,6 +6625,31 @@ application is powerful enough to generate any text-based structure, given
 that a corresponding template exists.")
     (license license:bsd-3)))
 
+(define-public texlive-texware
+  (package
+    (name "texlive-texware")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvitype.1"
+                   "doc/man/man1/dvitype.man1.pdf"
+                   "doc/man/man1/pooltype.1"
+                   "doc/man/man1/pooltype.man1.pdf")
+             (base32
+              "122r0aq02vwx6irsnapnfbvhgy5d09x90rc8zc7a0bi7b25bxnd1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texware")
+    (synopsis "Utility programs for use with TeX")
+    (description
+     "This package provides basic utility programs, comprising:
+@command{dvitype}, which converts a TeX output (DVI) file to a plain text
+file; @command{pooltype}, which converts a TeX-suite program's pool (string)
+file into human-readable form; @command{tftopl} and @command{pltotf}, which
+convert TeX Font Metric (TFM) file to human readable Property List (PL) files
+and vice versa.")
+    (license license:public-domain)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
