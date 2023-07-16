@@ -1737,9 +1737,9 @@ and up to 1 Mbit/s downstream.")
     (inputs
      (list libidn2))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           perl
+           pkg-config))
     (synopsis "Intelligent client for the WHOIS directory service")
     (description
       "whois searches for an object in a @dfn{WHOIS} (RFC 3912) database.
