@@ -1770,6 +1770,26 @@ exclusions.")
     ;; <https://metadata.ftp-master.debian.org/changelogs//main/d/dvidvi/dvidvi_1.0-8.2_copyright>.
     (license license:gpl3)))
 
+(define-public texlive-dviinfox
+  (package
+    (name "texlive-dviinfox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dviinfox/" "scripts/dviinfox/")
+             (base32
+              "1rc662dllanawrlz2r0pnisl6zzc7c3bivsqy72iq87a92cq8kml")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "dviinfox.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/dviinfox")
+    (synopsis "Perl script to print DVI meta information")
+    (description
+     "The package provides a Perl script which prints information about a DVI
+file.  It also supports XeTeX XDV format.")
+    (license license:expat)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
