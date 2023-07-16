@@ -416,7 +416,7 @@ scene to produce an image that looks much like a tone-mapped image.")
 (define-public lensfun
   (package
     (name "lensfun")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method git-fetch)
@@ -425,7 +425,7 @@ scene to produce an image that looks much like a tone-mapped image.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pv2y9yqzkw70p501425mf9cqv6yy8ppw5ilkpbd9bw9nss1js76"))))
+        (base32 "1lwf3cwldvh9qfmh3w7nqqildfmxx2i5f5bn0vr8y6qc5kh7a1s9"))))
     (build-system cmake-build-system)
     (arguments
      `(,@(if (any (cute string-prefix? <> (or (%current-system)
