@@ -24,7 +24,7 @@
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
 ;;; Copyright © 2017, 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -303,79 +303,102 @@ platform-jumping, key-collecting, ancient pyramid exploring game, vaguely in
 the style of similar games for the Commodore+4.")
     (license license:gpl2+)))
 
-;; Data package for adanaxisgpl.
-(define adanaxis-mush
-  (let ((version "1.1.0"))
-    (origin
-      (method url-fetch)
-      (uri (string-append "http://www.mushware.com/files/adanaxis-mush-"
-                          version ".tar.gz"))
-      (sha256
-       (base32 "0mk9ibis5nkdcalcg1lkgnsdxxbw4g5w2i3icjzy667hqirsng03")))))
-
 (define-public adanaxisgpl
-  (package
-    (name "adanaxisgpl")
-    (version "1.2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://www.mushware.com/files/adanaxisgpl-"
-                           version ".tar.gz"))
-       (sha256
-        (base32 "0jkn637jaabvlhd6hpvzb57vvjph94l6fbf7qxbjlw9zpr19dw1f"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Necessary for building with gcc >=4.7.
-           (substitute* "src/Mushcore/MushcoreSingleton.h"
-             (("SingletonPtrSet\\(new SingletonType\\);")
-              "MushcoreSingleton::SingletonPtrSet(new SingletonType);"))
-           ;; Avoid an "invalid conversion from const char* to char*" error.
-           (substitute* "src/Platform/X11/PlatformMiscUtils.cpp"
-             (("char \\*end, \\*result;")
-              (string-append "const char *end;"
-                             "\n"
-                             "char *result;")))
-           #t))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-data
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((data (assoc-ref inputs "adanaxis-mush"))
-                   (share (string-append (assoc-ref outputs "out")
-                                         "/share/" ,name "-" ,version)))
-               (mkdir-p share)
-               (invoke "tar" "xvf" data "-C" share)))))))
-    (native-inputs
-     `(("adanaxis-mush" ,adanaxis-mush))) ; game data
-    (inputs
-     `(("expat" ,expat)
-       ("freeglut" ,freeglut)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libogg" ,libogg)
-       ("libtiff" ,libtiff)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("pcre" ,pcre)
-       ("sdl" ,sdl)
-       ("sdl-mixer" ,sdl-mixer)))
-    (home-page "https://www.mushware.com")
-    (synopsis "Action game in four spatial dimensions")
-    (description
-     "Adanaxis is a fast-moving first person shooter set in deep space, where
+  (let* ((version "1.2.5")
+         (commit (string-append "ADANAXIS_"
+                                (string-join (string-split version #\.) "_")
+                                "_RELEASE_X11")))
+    (package
+      (name "adanaxisgpl")
+      (version version)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mushware/adanaxis")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vbg17lzbm0xl9yy9qymd1vgpz6f7fbr2hffl2ap0nm4zg0mnafm"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; Necessary for building with gcc >=4.7.
+             (substitute* "src/Mushcore/MushcoreSingleton.h"
+               (("SingletonPtrSet\\(new SingletonType\\);")
+                "MushcoreSingleton::SingletonPtrSet(new SingletonType);"))
+             ;; Avoid an "invalid conversion from const char* to char*" error.
+             (substitute* "src/Platform/X11/PlatformMiscUtils.cpp"
+               (("char \\*end, \\*result;")
+                (string-append "const char *end;\n"
+                               "char *result;")))
+             ;; autogen.pl will throw misleading errors if these don't exist.
+             (for-each mkdir-p '("src/MushSecret" "data-adanaxis"))
+             ;; Create these missing files at the right later moment.
+             (substitute* "autogen.pl"
+               (("automake")
+                "automake --add-missing"))))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ; no check target
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'unpack-inputs
+             (lambda* (#:key inputs #:allow-other-keys)
+               (copy-recursively (assoc-ref inputs "adanaxis-data")
+                                 "data-adanaxis")
+               (copy-recursively (assoc-ref inputs "adanaxis-mushruby")
+                                 "data-adanaxis/mushruby")))
+           (replace 'bootstrap
+             (lambda _
+               (invoke "perl" "autogen.pl" "adanaxis"
+                       "--type=gpl" "--dist=debian"))))))
+      (native-inputs
+       `(("adanaxis-data"
+          ,(origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/mushware/adanaxis-data")
+                   (commit commit)))
+             (file-name (git-file-name "adanaxis-data" version))
+             (sha256
+              (base32 "1xkn0ap5kfqd306ac072406ajihwwllaczc2v2hxiadlxd191dgx"))))
+         ("adanaxis-mushruby"
+          ,(origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/mushware/adanaxis-mushruby")
+                   (commit commit)))
+             (file-name (git-file-name "adanaxis-mushruby" version))
+             (sha256
+              (base32 "0pzcvchysjj37420rpvarky580gi5d6pfv93kwa91rg6m5r1zwks"))))
+         ("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("perl" ,perl)))
+      (inputs
+       `(("expat" ,expat)
+         ("freeglut" ,freeglut)
+         ("glu" ,glu)
+         ("libjpeg" ,libjpeg-turbo)
+         ("libogg" ,libogg)
+         ("libtiff" ,libtiff)
+         ("libvorbis" ,libvorbis)
+         ("libx11" ,libx11)
+         ("libxext" ,libxext)
+         ("pcre" ,pcre)
+         ("sdl" ,sdl)
+         ("sdl-mixer" ,sdl-mixer)))
+      (home-page "https://www.mushware.com")
+      (synopsis "Action game in four spatial dimensions")
+      (description
+       "Adanaxis is a fast-moving first person shooter set in deep space, where
 the fundamentals of space itself are changed.  By adding another dimension to
 space this game provides an environment with movement in four directions and
 six planes of rotation.  Initially the game explains the 4D control system via
 a graphical sequence, before moving on to 30 levels of gameplay with numerous
 enemy, ally, weapon and mission types.  Features include simulated 4D texturing,
 mouse and joystick control, and original music.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public alex4
   (package
