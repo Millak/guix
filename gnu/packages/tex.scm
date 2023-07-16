@@ -6671,6 +6671,29 @@ the help of TikZ.  It also provides commands to draw the content of screens
 and of menu items.")
     (license license:lppl)))
 
+(define-public texlive-tie
+  (package
+    (name "texlive-tie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/tie.1"
+                   "doc/man/man1/tie.man1.pdf")
+             (base32
+              "17z5ik7bbf0v5ylq2v1rda6z64iz386vp56z7yrr6h1dl488kr93")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/tie")
+    (synopsis "Allow multiple web change files")
+    (description
+     "Tie was originally developed to allow web programmers to apply more than
+one change file to their source.  The program may also be used to create a new
+version of a @file{.web} file that incorporates existing changes.")
+    ;; The license, provided as the "tie.w" source file, is morally equivalent
+    ;; to CC BY-SA.
+    (license (license:fsf-free "file://tie.w"))))
+
 (define-public texlive-tikz-3dplot
   (package
     (name "texlive-tikz-3dplot")
