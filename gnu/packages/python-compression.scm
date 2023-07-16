@@ -562,18 +562,16 @@ provided.")
 (define-public python-pyzstd
   (package
     (name "python-pyzstd")
-    (version "0.15.3")
+    (version "0.15.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyzstd" version))
        (sha256
-        (base32
-         "0wkli2i4my79l43b996bdga0fac8s8nfd1zjyzl46lwmsfsxlkmc"))))
+        (base32 "1iycfmif15v1jhv0gsza1hyd1hn3sz0vn9s1y79abzv8axndxzfb"))))
     (build-system python-build-system)
     (home-page "https://github.com/animalize/pyzstd")
     (synopsis "Zstandard bindings for Python")
-    (description "This package provides Python bindings to the
-Zstandard (zstd)
+    (description "This package provides Python bindings to the Zstandard (zstd)
 compression library.  The API is similar to Python's bz2/lzma/zlib module.")
     (license license:bsd-3)))
