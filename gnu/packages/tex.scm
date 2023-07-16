@@ -1868,6 +1868,27 @@ on-the-fly, as needed in @code{preview-latex}, WeBWorK and others.  It does
 not read the postamble, so it can be started before TeX finishes.")
     (license license:lgpl3)))
 
+(define-public texlive-dvipos
+  (package
+    (name "texlive-dvipos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvipos.1"
+                   "doc/man/man1/dvipos.man1.pdf")
+             (base32
+              "0dmaas4m9y4px53vlg0jr73xviki338fm2n176l8ldwqj0vvq1b8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support DVI @samp{pos:} specials used by ConTeXt DVI output")
+    (description
+     "@command{dvipos} parses a DVI file looking for @samp{pos:} specials.
+It then outputs the information from those specials along with information
+that only a DVI postprocessor could determine, such as the current @samp{x}
+and @samp{y} location.")
+    (license license:gpl2+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
