@@ -575,7 +575,7 @@ executing in M-mode.")
 (define-public seabios
   (package
     (name "seabios")
-    (version "1.16.1")
+    (version "1.16.2")
     (source
      (origin
        (method git-fetch)
@@ -584,7 +584,7 @@ executing in M-mode.")
              (commit (string-append "rel-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gph1hf70jjpx55qc0lzx2yghkipg9dnsin07i4jajk0p1jpd2d0"))
+        (base32 "1mal2zqn4ppxdjxddrxcphm6z9n8n4rw97xl2hldd7spw57nwq97"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
