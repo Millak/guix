@@ -331,7 +331,7 @@ operability and find drivers.")
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "23.1")
+    (version "23.2")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -342,7 +342,7 @@ operability and find drivers.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sdkkwbl1psqnh6135bmsa3ijrckk1nfz95xqckmd8awmx074ikz"))
+        (base32 "0d9nhhi64d3i9x1bh3ksj0h5z2p4pwa0z88bc0jra9s39nf6q230"))
        (modules
         '((guix build utils)))
        (snippet
