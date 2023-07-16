@@ -2397,6 +2397,9 @@ does not deal with windowing system surfaces, drawing, scene graphs, or input.")
        (sha256
         (base32 "0jwmx5i02jwmkp6gci2mapqglh2g3a0092wns185hfygiwlxi2c5"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (native-inputs
      (list `(,glib "bin")               ; for glib-genmarshal, etc.
            pkg-config))
