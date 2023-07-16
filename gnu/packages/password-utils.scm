@@ -534,21 +534,21 @@ random passwords that pass the checks.")
 (define-public passwdqc
   (package
     (name "passwdqc")
-    (version "2.0.2")
+    (version "2.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.openwall.com/passwdqc/passwdqc"
                                   "-" version ".tar.gz"))
               (sha256
                (base32
-                "1aq40v5094bhnj86v4i2nmqkybmzzp20q7jb92jgc860cibm07zz"))))
+                "1x4c92b3i5wmxh2111lynyndalpkryvan4wybqchd7rn96yg9c2k"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no tests provided
+      #:tests? #f                       ; no tests provided
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "DESTDIR=" #$output)
+              (string-append "DESTDIR=" #$output) ; no $prefix support
               "BINDIR=/bin"
               "DEVEL_LIBDIR=/lib"
               "SHARED_LIBDIR_REL=."
