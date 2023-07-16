@@ -2478,6 +2478,24 @@ is a plugin for Cinderella that allows to generate graphics using KETpic.  The
 generated code can be included in any LaTeX document.")
     (license license:gpl3+)))
 
+(define-public texlive-lacheck
+  (package
+    (name "texlive-lacheck")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/lacheck.1"
+                   "doc/man/man1/lacheck.man1.pdf")
+             (base32
+              "1hhx65yd800bl3y2sq20lix60wd2b2j3k7n9s788mlsn8b0p7yq3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lacheck")
+    (synopsis "LaTeX checker")
+    (description
+     "Lacheck is a tool for finding common mistakes in LaTeX documents.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
