@@ -1551,6 +1551,25 @@ release process for LaTeX package authors.  Note by the CTAN
 team (2015-02-05): It seems that this script is currently not working.")
     (license license:gpl3)))
 
+(define-public texlive-ctie
+  (package
+    (name "texlive-ctie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/ctie.1"
+                   "doc/man/man1/ctie.man1.pdf")
+             (base32
+              "1avhvyv70jds5xzwp7p1km6d8yha84ckqdw1r1vkgfb959wd3yi1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/ctie")
+    (synopsis "C version of @code{tie} (merging Web change files)")
+    (description
+     "This is a version of @code{tie} converted for use with Cweb.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
