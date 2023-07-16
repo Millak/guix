@@ -2715,7 +2715,7 @@ Authentication-Results header seen in the wild.")
 (define-public perl-mail-dkim
   (package
     (name "perl-mail-dkim")
-    (version "1.20220520")
+    (version "1.20230630")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2724,13 +2724,17 @@ Authentication-Results header seen in the wild.")
                      ".tar.gz"))
               (sha256
                (base32
-                "0iiny8s1a60pksxzlpkk9b6x6z907m4pdxjbsaih1bdz9g4bii4a"))))
+                "1m6ka1smkcmv682pgqh7npg4fzdfcn1654bs068sqhqgl29rm80g"))))
     (build-system perl-build-system)
     (propagated-inputs
-     (list perl-crypt-openssl-rsa perl-mail-authenticationresults
-           perl-mailtools perl-net-dns))
+     (list perl-crypt-openssl-rsa
+           perl-cryptx
+           perl-mail-authenticationresults
+           perl-mailtools
+           perl-net-dns))
     (native-inputs
-     (list perl-net-dns-resolver-mock perl-test-requiresinternet
+     (list perl-net-dns-resolver-mock
+           perl-test-requiresinternet
            perl-yaml-libyaml))
     (home-page "https://metacpan.org/release/Mail-DKIM")
     (synopsis "Signs/verifies Internet mail with DKIM/DomainKey signatures")
