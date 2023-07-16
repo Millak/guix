@@ -3482,14 +3482,14 @@ from the command line.")
 (define-public qtractor
   (package
     (name "qtractor")
-    (version "0.9.29")
+    (version "0.9.31")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.sourceforge.net/qtractor/"
                                   "qtractor-" version ".tar.gz"))
               (sha256
                (base32
-                "05g0zj5iy8knqccwglgql1flabgvpy4yqms4z1zqrkl9ws9bwc1x"))))
+                "0kyb1ylnwlc4vzhar669n6n9w0pbs9ixqnfanlzfwdbw1sn3gzyy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" target
