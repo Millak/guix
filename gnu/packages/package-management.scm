@@ -1782,10 +1782,10 @@ and the error handling is very rough.")
                 "02sngv40zwadajsiav1paahyfgkccbh9s7r5ks82chbwawarc31g"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("glib:bin" ,glib "bin")         ; for glib-mkenums
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list `(,glib "bin")               ; for glib-mkenums
+           intltool
+           pkg-config
+           vala))
     (inputs
      (list glib zlib))
     (arguments
