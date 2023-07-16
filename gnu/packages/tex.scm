@@ -2543,6 +2543,36 @@ this is to print on (notional) small paper, and then to magnify the result;
 the script calculates the settings for various font and paper sizes.")
     (license license:asl2.0)))
 
+(define-public texlive-latex2man
+  (package
+    (name "texlive-latex2man")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/latex2man.info"
+                   "doc/man/man1/latex2man.1"
+                   "doc/man/man1/latex2man.man1.pdf"
+                   "doc/support/latex2man/"
+                   "scripts/latex2man/"
+                   "tex/latex/latex2man/")
+             (base32
+              "0c5pfnhw80fh132k2dmj3qdjgvl9dm6xzv55f54g2wlswpzlinis")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "latex2man")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/latex2man")
+    (synopsis "Translate LaTeX-based manual pages into Unix man format")
+    (description
+     "Latex2man is a tool to translate UNIX manual pages written with LaTeX
+into the troff format understood by the UNIX man(1) command.  Alternatively
+HTML, TexInfo, or LaTeX code can be produced too.  Output of parts of the text
+may be supressed using the conditional text feature (for this, LaTeX
+generation may be used).  There is a LaTeX package (@file{latex2man.sty}) for
+writing the man page and a Perl script, @command{latex2man} that does the
+actual translation.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
