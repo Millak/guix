@@ -1911,6 +1911,31 @@ grid underneath the page material--very useful for measuring and eliminating
 paper feed errors!")
     (license license:gpl3+)))
 
+(define-public texlive-dvisvgm
+  (package
+    (name "texlive-dvisvgm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvisvgm.1"
+                   "doc/man/man1/dvisvgm.man1.pdf")
+             (base32
+              "1fz3sa7p9wk2g1v0bpy87vz7nxwrh5bsfl4m734n6lhsh1bkj6fb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvisvgm")
+    (synopsis
+     "Convert DVI, EPS, and PDF files to Scalable Vector Graphics format (SVG)")
+    (description
+     "Dvisvgm is a command line utility that converts TeX DVI as well as EPS
+and PDF files to the XML-based Scalable Vector Graphics (SVG) format.  It
+provides full font support including virtual fonts, font maps, and sub-fonts.
+If necessary, @command{dvisvgm} vectorizes Metafont's bitmap output in order
+to always create lossless scalable output.  The embedded SVG fonts can
+optionally be replaced with graphics paths so that applications that do not
+support SVG fonts are enabled to render the graphics properly.")
+    (license license:gpl3+)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
