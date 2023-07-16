@@ -2737,6 +2737,33 @@ document with an llmk setup, the process of typesetting the document will be
 reproduced in any TeX environment with the program.")
     (license license:expat)))
 
+(define-public texlive-listings-ext
+  (package
+    (name "texlive-listings-ext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/listings-ext/"
+                   "scripts/listings-ext/"
+                   "source/latex/listings-ext/"
+                   "tex/latex/listings-ext/")
+             (base32
+              "044d93vdlw1amkpm8nv50390a5ba7x7d2w1y3mfg5bfvfb5cci6r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "listings-ext.sh")))
+    (home-page "https://ctan.org/pkg/listings-ext")
+    (synopsis "Automated input of source")
+    (description
+     "The package provides a means of marking a source, so that samples of it
+may be included in a document (by means of the @code{listings} package) in
+a stable fashion, regardless of any change to the source.  The markup in the
+source text defines tags for blocks of source.  These tags are processed by
+a shell script to make a steering file that is used by the package when LaTeX
+is being run.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
