@@ -2684,6 +2684,28 @@ style file.")
 highlight the structure for the reader.")
     (license license:gpl3)))
 
+(define-public texlive-latexpand
+  (package
+    (name "texlive-latexpand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/latexpand/"
+                   "scripts/latexpand/")
+             (base32
+              "0v0yn4n6v0kgxwh00ryfkrx7a4sxhkm0pbgnylvi8jfg24gz89ls")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "latexpand")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/latexpand")
+    (synopsis "Expand @code{\\input} and @code{\\include} in a LaTeX document")
+    (description
+     "Latexpand is a Perl script that simply replaces @code{\\input} and
+@code{\\include} commands with the content of the input or included file.  The
+script does not deal with @code{\\includeonly} commands.")
+    (license license:bsd-3)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
