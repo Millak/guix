@@ -1722,18 +1722,19 @@ and up to 1 Mbit/s downstream.")
         (base32 "1mqgc8saz4l0hr4p8r9cgndwx3r9aal7ak9irgrrkxyjd65xpa9n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PKG_CONFIG=" ,(pkg-config-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out"))
-             "BASHCOMPDIR=$(prefix)/share/bash-completion/completions")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'setenv
-           (lambda _
-             (setenv "HAVE_ICONV" "1"))))))
+     (list
+      #:tests? #f                       ; no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+              (string-append "prefix=" #$output)
+              "BASHCOMPDIR=$(prefix)/share/bash-completion/completions")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'setenv
+            (lambda _
+              (setenv "HAVE_ICONV" "1"))))))
     (inputs
      (list libidn2))
     (native-inputs
