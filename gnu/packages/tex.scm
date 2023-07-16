@@ -8038,6 +8038,40 @@ of circulation to give the author time to investigate some problems.")
 packages (like @code{tkz-euclide}).")
     (license license:lppl1.3+)))
 
+(define-public texlive-tlcockpit
+  (package
+    (name "texlive-tlcockpit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/tlcockpit.1"
+                   "doc/man/man1/tlcockpit.man1.pdf"
+                   "doc/support/tlcockpit/"
+                   "scripts/tlcockpit/"
+                   "source/support/tlcockpit/")
+             (base32
+              "1nv0wx21x022isw8rycvqdqwiz4ay6ws36bbcpqfqkjmvz5qr76w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:link-scripts #~(list "tlcockpit.sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-java
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((java (search-input-file inputs "/bin/java")))
+                (substitute* "scripts/tlcockpit/tlcockpit.sh"
+                  (("java -") (string-append java " -")))))))))
+    ;; FIXME: missing EventTarget.class.
+    (inputs (list icedtea))
+    (home-page "https://ctan.org/pkg/tlcockpit")
+    (synopsis "GUI frontend to TeX Live Manager")
+    (description
+     "This package aims at being a GUI for @command{tlmgr}, the TeX Live
+Manager, with a modern look and feel.")
+    (license license:gpl3+)))
+
 (define-public texlive-tonevalue
   (package
     (name "texlive-tonevalue")
