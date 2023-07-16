@@ -346,7 +346,7 @@ package for the Game Boy and Game Boy Color.  It consists of:
 (define-public wla-dx
   (package
     (name "wla-dx")
-    (version "10.1")
+    (version "10.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -355,7 +355,7 @@ package for the Game Boy and Game Boy Color.  It consists of:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nh2k2xn5fj389gq68f3fxgrxakgn8c6dw2ffqay86s3706hac9w"))))
+                "1h6apmhaks4772s2cja34ck488p8yhb3nscbxjw5061ml2046zqq"))))
     (build-system cmake-build-system)
     (native-inputs (list python-sphinx)) ; to generate man pages
     (arguments
