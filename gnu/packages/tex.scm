@@ -2785,6 +2785,32 @@ If no path information is given, the file is searched using
 @command{kpsewhich}.")
     (license license:gpl3+)))
 
+(define-public texlive-ltximg
+  (package
+    (name "texlive-ltximg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/ltximg.1"
+                   "doc/man/man1/ltximg.man1.pdf"
+                   "doc/support/ltximg/" "scripts/ltximg/")
+             (base32
+              "1pxyh0w7jkdapzfjgp6fmvfq1hs6mz6qbpykd33r4c5ghyks4cwb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ltximg.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ltximg")
+    (synopsis "Extract LaTeX environments into separate image files")
+    (description
+     "@command{ltximg} is a Perl script that automates the process of
+extracting and converting environments provided by TikZ, PStricks and other
+packages from input file to image formats and standalone files using
+Ghostscript and @code{poppler-utils}.  It generates a file with only extracted
+environments and another with all extracted environments converted to
+@code{\\includegraphics}.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
