@@ -2811,6 +2811,37 @@ environments and another with all extracted environments converted to
 @code{\\includegraphics}.")
     (license license:gpl3+)))
 
+(define-public texlive-luajittex
+  (package
+    (name "texlive-luajittex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/luajithbtex.1"
+                   "doc/man/man1/luajithbtex.man1.pdf"
+                   "doc/man/man1/luajittex.1"
+                   "doc/man/man1/luajittex.man1.pdf")
+             (base32
+              "1qfbg0r6gsncgymh00yc83kcayd4m7bvryap8f63sm9s9bzfl6yv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "luajithbtex" "luajittex")))
+    (propagated-inputs
+     (list texlive-cm
+           texlive-etex
+           texlive-hyphen-complete
+           texlive-knuth-lib
+           texlive-luatex
+           texlive-plain
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/luajittex")
+    (synopsis "LuaTeX with JIT compiler, with and without HarfBuzz")
+    (description
+     "This package provides LuaTeX with just-in-time (JIT) compiler, with and
+without HarfBuzz.")
+    (license license:gpl2)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
