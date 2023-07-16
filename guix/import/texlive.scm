@@ -160,6 +160,8 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
                  ;; And also development packages, which should inherit from
                  ;; the current package anyway.
                  ((? (cut string-suffix? "-dev" <>)) #f)
+                 ;; Guix does not use Asymptote from TeX Live.  Ignore it.
+                 ("asymptote" #f)
                  ;; Others.
                  (name name))
                depends)))
