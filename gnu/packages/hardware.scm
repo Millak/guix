@@ -1399,7 +1399,7 @@ confused with the @code{cpuid} command line utility from package @code{cpuid}.")
 (define-public liblxi
   (package
     (name "liblxi")
-    (version "1.18")
+    (version "1.20")
     (source
      (origin
        (method git-fetch)
@@ -1408,8 +1408,7 @@ confused with the @code{cpuid} command line utility from package @code{cpuid}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0cbnnd5qmchlr586349j5y4qv5w3bw9nmpbd3k6sq9vwvqh5dmns"))))
+        (base32 "1cc95ggs64jqq9lk5c8fm4nk6fdnv1x7lr3k4znamj0vv6w22bcd"))))
     (build-system meson-build-system)
     (native-inputs
      (list cmake pkg-config))
