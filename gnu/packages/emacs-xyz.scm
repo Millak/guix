@@ -26437,6 +26437,33 @@ displayed in chronological order) or as an Org document where the node tree
 maps the thread tree.")
       (license license:gpl3+))))
 
+;; Package has no releases or tags.  Version is extracted from "Version:"
+;; keyword in main file.
+(define-public emacs-mu4e-dashboard
+  (let ((commit "16ffbb2a36817647e345f60acdfaac66dda28c0f")
+        (revision "0"))
+    (package
+      (name "emacs-mu4e-dashboard")
+      (version (git-version "0.1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rougier/mu4e-dashboard")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1fp2f9rvh20r3advbzcgm5vv2dzcyvy1618hfykbm6ac4wjscdll"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list mu))
+      (home-page "https://github.com/rougier/mu4e-dashboard")
+      (synopsis "Build your own dashboard for mu4e using org-mode")
+      (description
+       "This package provides an @code{org-mode} link type that allows
+execution of various @code{mu4e} queries when clicked.  Such links can be
+organized into a dashboard, by simply writing an org file.")
+      (license license:gpl3+))))
+
 (define-public emacs-pinentry
   (let ((commit "dcc9ba03252ee5d39e03bba31b420e0708c3ba0c")
         (revision "1"))
