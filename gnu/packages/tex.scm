@@ -1617,6 +1617,27 @@ commands.  The author now considers this program to be obsolete and Piotr
 Kubowicz's OpenDetex as its successor.")
     (license license:bsd-3)))
 
+(define-public texlive-digestif
+  (package
+    (name "texlive-digestif")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/digestif/" "scripts/digestif/")
+             (base32
+              "1s7nmbjxpa6klmh0cc6g4s6vd9wmlv4dxp51xb4b872hrj510zbi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "digestif.texlua")))
+    (home-page "https://ctan.org/pkg/digestif")
+    (synopsis "Editor plugin for LaTeX, ConTeXt etc.")
+    (description
+     "Digestif is a code analyzer, and a language server, for LaTeX, plain TeX,
+ConTeXt and Texinfo.  It provides context-sensitive completion, documentation,
+code navigation, and related functionality to any text editor that speaks the
+LSP protocol.")
+    (license (list license:gpl3+ license:lppl1.3+ license:fdl1.3+))))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
