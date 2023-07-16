@@ -1713,7 +1713,7 @@ robust and compatible with many systems and operating systems.")
 (define-public mygui
   (package
     (name "mygui")
-    (version "3.4.1")
+    (version "3.4.2")
     (source
      (origin
        (method git-fetch)
@@ -1722,8 +1722,7 @@ robust and compatible with many systems and operating systems.")
              (commit (string-append "MyGUI" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1gyd4bzm6qqpqw6is065qs5c729gl6rp989bnkygha6q4s371vz6"))))
+        (base32 "0gkfahz118gpqa2906cjb3d4w8g13rv8v3ma7s0ml9l5cci785f8"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; No test target
@@ -1770,7 +1769,10 @@ of use.")
     (inputs
      (modify-inputs (package-inputs mygui)
        (delete "ogre")
-       (prepend mesa glu)))
+       (prepend glu
+                libglvnd                ; for find_package(… GLX)
+                mesa                    ; for find_package(… OpenGL …)
+                (sdl-union (list sdl2 sdl2-image)))))
     (synopsis "Fast, flexible and simple GUI (OpenGL backend)")))
 
 (define-public openmw
