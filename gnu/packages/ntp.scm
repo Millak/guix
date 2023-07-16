@@ -106,7 +106,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
 (define-public ntp
   (package
    (name "ntp")
-   (version "4.2.8p15")
+   (version "4.2.8p17")
    (source
      (origin
        (method url-fetch)
@@ -119,27 +119,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                    (version-major+minor version)
                    "/ntp-" version ".tar.gz")))
        (sha256
-        (base32 "06cwhimm71safmwvp6nhxp6hvxsg62whnbgbgiflsqb8mgg40n7n"))
-       ;; Add an upstream patch to fix build with GCC 10.  Taken from
-       ;; <https://bugs.ntp.org/show_bug.cgi?id=3688>.
-       (patches (list (origin
-                        (method url-fetch)
-                        (uri "https://bugs.ntp.org/attachment.cgi?id=1760\
-&action=diff&context=patch&collapsed=&headers=1&format=raw")
-                        (file-name "ntp-gcc-compat.patch")
-                        (sha256
-                         (base32
-                          "13d28sg45rflc7kqiv30asrhna8n69wlpwx16l65rravgpvp90h2")))
-                      ;; And another one that fixes the build with glibc 2.34:
-                      ;; <https://bugs.ntp.org/show_bug.cgi?id=3741>.
-                      (origin
-                        (method url-fetch)
-                        (uri "https://bugs.ntp.org/attachment.cgi?id=1814\
-&action=diff&collapsed=&headers=1&format=raw")
-                        (file-name "ntp-glibc-compat.patch")
-                        (sha256
-                         (base32
-                          "0z8ndaw3l086mbm42v9gfgxild1yvg0anxf3724lsalvgqlndcj4")))))
+        (base32 "0rm8sf4qwcip49wgpgcp2dpwspsm0ad5xkkxy26mnv56wrrd4g8h"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -151,8 +131,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
            (delete-file-recursively "sntp/libevent")
            (mkdir "sntp/libevent")
            (rename-file "sntp/libevent:build-aux"
-                        "sntp/libevent/build-aux")
-           #t))))
+                        "sntp/libevent/build-aux")))))
    (native-inputs (list which pkg-config))
    (inputs
     `(("openssl" ,openssl-1.1)
@@ -172,8 +151,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
         (add-after 'unpack 'disable-network-test
                    (lambda _
                      (substitute* "tests/libntp/Makefile.in"
-                       (("test-decodenetnum\\$\\(EXEEXT\\) ") ""))
-                     #t)))))
+                       (("test-decodenetnum\\$\\(EXEEXT\\) ") "")))))))
    (build-system gnu-build-system)
    (synopsis "Real time clock synchronization system")
    (description "NTP is a system designed to synchronize the clocks of
