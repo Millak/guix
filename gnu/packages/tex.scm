@@ -2920,6 +2920,28 @@ in this texmf tree.  The script may be used for archiving purposes or to speed
 up later TeX runs.")
     (license license:artistic2.0)))
 
+(define-public texlive-make4ht
+  (package
+    (name "texlive-make4ht")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/make4ht/" "scripts/make4ht/")
+             (base32
+              "0ayqs8i1za14krrgqyncv8ahs70pg5pnfs2m0aqcavfnd79qx2cj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "make4ht")))
+    (propagated-inputs (list texlive-tex4ht))
+    (home-page "https://ctan.org/pkg/make4ht")
+    (synopsis "Build system for TeX4ht")
+    (description
+     "@code{make4ht} is a simple build system for TeX4ht, a TeX to XML
+converter.  It provides a command line tool that drives the conversion
+process.  It also provides a library which can be used to create customized
+conversion tools.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-optexcount
   (package
     (name "texlive-optexcount")
