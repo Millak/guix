@@ -6331,6 +6331,30 @@ with red with a strike-through line.  Furthermore, passages with changes are
 marked at the margin with grey bars by the LaTeX @code{changebar} package.")
     (license license:artistic2.0)))
 
+(define-public texlive-texdirflatten
+  (package
+    (name "texlive-texdirflatten")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texdirflatten.1"
+                   "doc/man/man1/texdirflatten.man1.pdf"
+                   "doc/support/texdirflatten/"
+                   "scripts/texdirflatten/")
+             (base32
+              "0f2h9qlqfml9p83znxh81i7cmwfbsr0zrladrf3486v4aja859kx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texdirflatten")))
+    (home-page "https://ctan.org/pkg/texdirflatten")
+    (synopsis "Collect files related to a LaTeX job in a single directory")
+    (description
+     "The Perl script parses a LaTeX file recursively, scanning all child
+files, and collects details of any included and other data files.  These
+component files, are then all put into a single directory (thus flattening the
+document's directory tree).")
+    (license license:artistic2.0)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
