@@ -1819,6 +1819,29 @@ file.  It also supports XeTeX XDV format.")
 @command{kpathsea} recursive file searching.")
     (license license:gpl3+)))
 
+(define-public texlive-dviout-util
+  (package
+    (name "texlive-dviout-util")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/chkdvifont.1"
+                   "doc/man/man1/chkdvifont.man1.pdf"
+                   "doc/man/man1/dvispc.1"
+                   "doc/man/man1/dvispc.man1.pdf")
+             (base32
+              "098pksgf2iamq96rmzg5fw7i9dlpvdksficsz1bf8k8z4djnbk8n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Utilities from the @code{dviout} package")
+    (description
+     "This package provides two utilities: @command{chkdvifont}, which check
+fonts in DVI/TFM/JFM/FONT files, and @command{dvispc}, which corrects the
+page-independence of DVI file using color specials or tpic specials, and
+transforms between a DVI file and a text file.")
+    (license license:expat)))
+
 (define-public texlive-dvipsconfig
   (package
     (name "texlive-dvipsconfig")
