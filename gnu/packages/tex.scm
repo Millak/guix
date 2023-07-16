@@ -2355,6 +2355,32 @@ support for indexing.  For example, it supports multiple indexes in a single
 document and provides a more robust @code{\\index} command.")
     (license license:lppl1.2+)))        ;from "index.dtx"
 
+(define-public texlive-installfont
+  (package
+    (name "texlive-installfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/installfont/"
+                   "scripts/installfont/")
+             (base32
+              "0wgksqg88hdzfvrywrv91al9skpj2vly09ly7qmzahqsyvdgmb9p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "installfont-tl")))
+    (home-page "https://ctan.org/pkg/installfont")
+    (synopsis "Bash script for installing a LaTeX font family")
+    (description
+     "With this script you can install a LaTeX font family (PostScript Type 1,
+TrueType and OpenType formats are supported).  Font series from light to ultra
+bold, and (faked) small caps and (faked) slanted shapes are supported, but not
+expert fonts.  The script will rename the fonts automatically (optional) or
+will otherwise expect the @file{.afm} files and the font files (in PostScript
+Type1 format) named in the Karl Berry scheme (e.g., @file{5bbr8a.pfb}).  After
+running the script, you should have a working font installation in your local
+TeX tree.")
+    (license license:lppl)))
+
 (define-public texlive-dvipdfmx
   (package
     (name "texlive-dvipdfmx")
