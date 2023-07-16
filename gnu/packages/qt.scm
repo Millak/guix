@@ -1120,7 +1120,7 @@ from within Qt 5.")))
 (define-public qxlsx
   (package
     (name "qxlsx")
-    (version "1.4.5")
+    (version "1.4.6")
     (source
      (origin
        (method git-fetch)
@@ -1129,7 +1129,7 @@ from within Qt 5.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h95h96vz47cnfp62j7bx6ih725gbv005hm0cfqanfvqd5xd9qsg"))))
+        (base32 "0xbpajvwkv09h2fang200nsanv5gl1alsdd725gh9cgq4szng6gj"))))
     (build-system cmake-build-system)
     (arguments
      (list
