@@ -2403,7 +2403,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.27")
+    (version "0.9.31")
     (source (origin
               (method url-fetch)
               (uri
@@ -2411,7 +2411,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0j96z5bqh1mnldsda6dyp0jqp01mf7p55yr956rzkzg6jivj8fs3"))))
+                "0cw0lqxd4igkb25vlivbi0hamn33d26nl96mzm59cda158r0jayl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
