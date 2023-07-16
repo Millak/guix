@@ -2842,6 +2842,31 @@ environments and another with all extracted environments converted to
 without HarfBuzz.")
     (license license:gpl2)))
 
+(define-public texlive-match-parens
+  (package
+    (name "texlive-match-parens")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/match_parens/"
+                   "scripts/match_parens/")
+             (base32
+              "0qqxbh3h1xkggs5p2gnis4z8h3s0mwknszyjzs2fslnq16yyqi27")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "match_parens")))
+    (inputs (list ruby))
+    (home-page "https://ctan.org/pkg/match_parens")
+    (synopsis
+     "Find mismatches of parentheses, braces, (angle) brackets, in texts")
+    (description
+     "Mismatches of parentheses, braces, (angle) brackets, especially in TeX
+sources which may be rich in those, may be difficult to trace.  This little
+Ruby script helps you by writing your text to standard output, after adding
+a left margin to your text, which will normally be almost empty, but will
+clearly show any mismatches.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
