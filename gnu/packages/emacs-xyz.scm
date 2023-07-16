@@ -27132,6 +27132,26 @@ text-tree applications inside GNU Emacs.  It consists of 2 subprojects:
 @command{ztree-diff}).")
       (license license:gpl3))))
 
+(define-public emacs-heaven-and-hell
+  (package
+    (name "emacs-heaven-and-hell")
+    (version "0.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/valignatev/heaven-and-hell")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bgs638nsn9hyvc9wbc2jpqm5i3hblld1mhmf0h9z0j6fjr0aapx"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/valignatev/heaven-and-hell")
+    (synopsis "Easily toggle light/dark themes in Emacs")
+    (description "This package makes the process of switching between
+light and dark themes as easy as hitting a single keystroke.")
+    (license license:expat)))
+
 (define-public emacs-helm-org-contacts
   (let ((commit "741eca6239684950219c9a12802386a132491b8c")
         (revision "2"))
