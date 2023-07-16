@@ -3040,6 +3040,28 @@ more PDF files as output.  It is useful for joining files together, selecting
 pages, reducing several source pages onto one output page, etc.")
     (license license:gpl2+)))
 
+(define-public texlive-pdflatexpicscale
+  (package
+    (name "texlive-pdflatexpicscale")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/pdflatexpicscale/"
+                   "scripts/pdflatexpicscale/")
+             (base32
+              "089n7r17c9kj1hhgm0hkfjhrqp2bhwjrj1czb3qllz7rm2x230h1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pdflatexpicscale.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/pdflatexpicscale")
+    (synopsis
+     "Support software for downscaling graphics to be included by pdfLaTeX")
+    (description
+     "The package provides a script to scale pictures down to a target
+resolution before creating a PDF document with pdfLaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
