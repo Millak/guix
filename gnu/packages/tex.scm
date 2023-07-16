@@ -6600,6 +6600,31 @@ is a LaTeX package, which provides commands to run @command{texosquery} using
 TeX's shell escape mechanism and capture the result in a control sequence.")
     (license license:lppl1.3+)))
 
+(define-public texlive-texplate
+  (package
+    (name "texlive-texplate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/texplate/" "scripts/texplate/"
+                   "source/support/texplate/")
+             (base32
+              "027vfbqm95ysp7sqlcz3p5b2107mcjg540x73nsf2d1g83k4ps4r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texplate.sh")))
+    (home-page "https://ctan.org/pkg/texplate")
+    (synopsis "Tool for creating document structures based on templates")
+    (description
+     "TeXplate is a tool for creating document structures based on templates.
+The application name is a word play on TeX and template, so the purpose seems
+quite obvious: we want to provide an easy and straightforward framework for
+reducing the typical code boilerplate when writing TeX documents.  Also note
+that one can easily extrapolate the use beyond articles and theses: the
+application is powerful enough to generate any text-based structure, given
+that a corresponding template exists.")
+    (license license:bsd-3)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
