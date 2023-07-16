@@ -289,7 +289,7 @@ solution (server-side)")))
 (define-public zabbix-cli
   (package
     (name "zabbix-cli")
-    (version "2.3.0")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -298,7 +298,7 @@ solution (server-side)")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p8xkq3mxg476srwrgqax76vjzji0rjx32njmgnpa409vaqrbj5p"))))
+                "1al3gwbnh0wbal5gq2apq27kh61q8dz355k4w8kx073b4y4nz1wb"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
