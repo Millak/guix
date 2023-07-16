@@ -2966,6 +2966,35 @@ considered as word, header etc.")
 that can be used by the TeX 82 hyphenation algorithm.")
     (license license:public-domain)))
 
+(define-public texlive-pdfbook2
+  (package
+    (name "texlive-pdfbook2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pdfbook2.1"
+                   "doc/man/man1/pdfbook2.man1.pdf"
+                   "doc/support/pdfbook2/" "scripts/pdfbook2/")
+             (base32
+              "1cw0xw2dmcgmkms8d94pchbbg17lfvvbnzbagaqpy2fzxi2kb4w8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pdfbook2")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/pdfbook2")
+    (synopsis "Create booklets from PDF files")
+    (description
+     "This Python program creates print-ready PDF files from some input PDF
+files for booklet printing.  The resulting files need to be printed in
+landscape/long edge double sided printing.  The default paper format depends
+on the locale and is chosen by @code{pdfjam}.  It can be chosen using the
+@code{--paper} option.  Before the PDF is composed, the input file is cropped
+to the relevant area in order to discard unnecessary white spaces.  In this
+process, all pages are cropped to the same dimensions.  Extra margins can be
+defined at the edges of the booklet and in the middle where the binding
+occurs.")
+    (license license:gpl3)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
