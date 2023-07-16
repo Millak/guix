@@ -2840,19 +2840,14 @@ available, as well as a single-player mode with AI-controlled ships.")
 (define-public tetzle
   (package
     (name "tetzle")
-    (version "2.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gottcode.org/"
-                                  name
-                                  "/"
-                                  name
-                                  "-"
-                                  version
-                                  "-src.tar.bz2"))
-              (sha256
-               (base32
-                "1m4j4lzqp8fnwmvyglmzcn3vh14ix4hhh52ycmcsjgrsgj1w4p6a"))))
+    (version "2.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://gottcode.org/tetzle/"
+                           "tetzle-" version ".tar.bz2"))
+       (sha256
+        (base32 "0sybryg65j8gz5s7zbsfqky8wlkjwpppkrhksijj6xc7692lfii8"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ; no tests
