@@ -2220,6 +2220,50 @@ bookmark-enabled, so that every logo becomes available in bookmarks without
 further work.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hook-pre-commit-pkg
+  (package
+    (name "texlive-hook-pre-commit-pkg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/hook-pre-commit-pkg/")
+             (base32
+              "0mikg4p9wxb28vgwh1acgdhwa2fqnc8rw3jg355d6s137m40awc6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hook-pre-commit-pkg")
+    (synopsis "Pre-commit git hook for LaTeX package developpers")
+    (description
+     "This package provides a pre-commit git hook to check basic LaTeX
+syntax for the use of package developers.  It is installed by copying
+it into the @file{.git/.hooks} file.  It then checks the following
+file types: @file{.sty}, @file{.dtx}, @file{.bbx}, @file{.cbx}, and
+@file{.lbx}.  It performs the following checks:
+
+@itemize
+
+@item each line must be terminated by @samp{%}, without a space before it;
+
+@item empty lines are allowed, but not lines with nothing but spaces in them;
+
+@item @code{\\begin@{macro@}} and @code{\\end@{macro@}} must be paired;
+
+@item @code{\\begin@{macrocode@}} and @code{\\end@{macrocode@}} must be
+paired;
+
+@item @code{\\begin@{macro@}} must have a second argument;
+
+@item one space must be printed between @samp{%} and @code{\\begin@{macro@}}
+or @code{\\end@{macro@}}. @samp{%} must be the first character in the line;
+
+@item four spaces must be printed between @samp{%} and
+@code{\\begin@{macrocode@}} or @code{\\end@{macrocode@}};
+
+@item @code{\\cs} argument must not start with a backslash.
+
+@end itemize")
+    (license license:gpl3)))
+
 (define-public texlive-hopatch
   (package
     (name "texlive-hopatch")
