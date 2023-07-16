@@ -198,7 +198,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "9.3p1")
+   (version "9.3p2")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
@@ -207,7 +207,7 @@ a server that supports the SSH-2 protocol.")
                                       "openssh-trust-guix-store-directory.patch"))
              (sha256
               (base32
-               "1a7qia3c255igny5kf00m5zxkp69lf1w6qjsv3rm2sm705vvmfp9"))))
+               "1s3nqv57r3l7avsdkzwd575dvxra8h19xpqczl0z3cvcgwabw3i0"))))
    (build-system gnu-build-system)
    (native-inputs (list groff pkg-config))
    (inputs `(("libedit" ,libedit)
