@@ -2109,6 +2109,43 @@ streaming protocols.")
               (base32
                "11dzrdb74ayvivcid3giqncrfm98hi4aqvg3kjrwji6bnddxa335"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; configure does not work followed by "SHELL=..." and
+            ;; "CONFIG_SHELL=..."; set environment variables instead
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "configure"
+                (("#! /bin/sh") (string-append "#!" (which "sh"))))
+              (setenv "SHELL" (which "bash"))
+              (setenv "CONFIG_SHELL" (which "bash"))
+              (invoke "./configure"
+                      (string-append "--extra-cflags=-I"
+                                     #$(this-package-input "libx11")
+                                     "/include") ; to detect libx11
+                      "--disable-ffmpeg_a"       ; disables bundled ffmpeg
+                      (string-append "--prefix=" #$output)
+                      ;; Enable runtime cpu detection where supported,
+                      ;; and choose a suitable target.
+                      #$@(match (or (%current-target-system)
+                                    (%current-system))
+                           ("x86_64-linux"
+                            '("--enable-runtime-cpudetection"
+                              "--target=x86_64-linux"))
+                           ("i686-linux"
+                            '("--enable-runtime-cpudetection"
+                              "--target=i686-linux"))
+                           ("mips64el-linux"
+                            '("--target=mips3-linux"))
+                           (_ (list (string-append
+                                     "--target="
+                                     (or (%current-target-system)
+                                         (nix-system->gnu-triplet
+                                          (%current-system)))))))
+                      "--disable-iwmmxt"))))))
     ;; FIXME: Add additional inputs once available.
     (native-inputs
      (list pkg-config yasm))
@@ -2144,43 +2181,6 @@ streaming protocols.")
            sdl
            speex
            zlib))
-    (arguments
-     `(#:tests? #f                      ; no test target
-       #:phases
-       (modify-phases %standard-phases
-        (replace 'configure
-          ;; configure does not work followed by "SHELL=..." and
-          ;; "CONFIG_SHELL=..."; set environment variables instead
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out"))
-                  (libx11 (assoc-ref inputs "libx11")))
-              (substitute* "configure"
-                (("#! /bin/sh") (string-append "#!" (which "sh"))))
-              (setenv "SHELL" (which "bash"))
-              (setenv "CONFIG_SHELL" (which "bash"))
-              (invoke "./configure"
-                      (string-append "--extra-cflags=-I"
-                                     libx11 "/include") ; to detect libx11
-                      "--disable-ffmpeg_a" ; disables bundled ffmpeg
-                      (string-append "--prefix=" out)
-                      ;; Enable runtime cpu detection where supported,
-                      ;; and choose a suitable target.
-                      ,@(match (or (%current-target-system)
-                                   (%current-system))
-                          ("x86_64-linux"
-                           '("--enable-runtime-cpudetection"
-                             "--target=x86_64-linux"))
-                          ("i686-linux"
-                           '("--enable-runtime-cpudetection"
-                             "--target=i686-linux"))
-                          ("mips64el-linux"
-                           '("--target=mips3-linux"))
-                          (_ (list (string-append
-                                    "--target="
-                                    (or (%current-target-system)
-                                        (nix-system->gnu-triplet
-                                         (%current-system)))))))
-                      "--disable-iwmmxt")))))))
     (home-page "https://www.mplayerhq.hu")
     (synopsis "Audio and video player")
     (description "MPlayer is a movie player.  It plays most MPEG/VOB, AVI,
