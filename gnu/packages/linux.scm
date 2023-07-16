@@ -5175,10 +5175,11 @@ and manage nvme devices on a Linux system.")
                (base32 "1jv1xir6gm86yyk5846qqkcjhc1bq103zyxf794fznyinh4nhlbg"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
+    (outputs (list "out" "doc"))        ; docs make up ~70% of total size
     (arguments
      (list
       #:configure-flags #~(list (format #f "-Dhtmldir=~a/share/doc/~a/html"
-                                        #$output #$name)
+                                        #$output:doc #$name)
                                 "-Ddocs=all")))
     (native-inputs (list pkg-config))
     (inputs (list libnvme json-c zlib))
