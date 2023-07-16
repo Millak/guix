@@ -405,15 +405,11 @@ operability and find drivers.")
               (invoke "make" "doc")))
           (add-after 'install 'install-man-pages
             (lambda _
-              (let* ((man (string-append #$output "/share/man"))
-                     (man1 (string-append man "/man1"))
-                     (man8 (string-append man "/man8")))
-                (for-each
-                 (lambda (x) (install-file x man1))
-                 (find-files "doc" "\\.1$"))
-                (for-each
-                 (lambda (y) (install-file y man8))
-                 (find-files "doc" "\\.8$"))))))))
+              (for-each
+               (lambda (file)
+                 (install-file file (string-append #$output "/share/man/man"
+                                                   (string-take-right file 1))))
+               (find-files "doc" "\\.[0-9]$")))))))
     (native-inputs
      (list doxygen flex perl pkg-config))
     (inputs
