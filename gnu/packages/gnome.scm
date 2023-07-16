@@ -2611,12 +2611,14 @@ forgotten when the session ends.")
   (package
     (name "evince")
     (version "44.1")
-    (source (origin
-              (method url-fetch)
-              (uri "mirror://gnome/sources/evince/44/evince-44.1.tar.xz")
-              (sha256
-               (base32
-                "0523lzk7xpfr6gir8nx80fmp1lhajm837hilmgn8zczz2nxx7bqm"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/evince/"
+                           (version-major version) "/"
+                           "evince-" version ".tar.xz"))
+       (sha256
+        (base32 "0523lzk7xpfr6gir8nx80fmp1lhajm837hilmgn8zczz2nxx7bqm"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
