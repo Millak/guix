@@ -7249,15 +7249,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
                            version ".tar.bz2"))
        (sha256
         (base32 "197jmd99l3w3sig32pvdlq9fcgdjjx7g9csy08kz174cyhrlyly3"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* '("src/music.h" "src/tSDL.h")
-             (("#elif defined(__FreeBSD__)" line)
-              (string-append
-               line " || defined(__GNUC__)")))
-           (substitute* '("src/tgl.h")
-             (("#include <GL/glext.h>") ""))))))
+       (modules '((guix build utils)))))
     (build-system gnu-build-system)
     (native-inputs
      (list unzip))
