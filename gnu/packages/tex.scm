@@ -6308,6 +6308,29 @@ flavour can be selected using a command line option, or via the script name:
 @command{latexdef} will use LaTeX as default, etc.")
     (license license:gpl3)))
 
+(define-public texlive-texdiff
+  (package
+    (name "texlive-texdiff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texdiff.1"
+                   "doc/man/man1/texdiff.man1.pdf"
+                   "doc/support/texdiff/" "scripts/texdiff/")
+             (base32
+              "1cp2k217ziwdgh5c7lg22p58ajv7j410ncag620lkdwajc5jqx1d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texdiff")))
+    (home-page "https://ctan.org/pkg/texdiff")
+    (synopsis "Compare documents and produce tagged merge")
+    (description
+     "Two files are compared and a new TeX file is output.  When the output
+file is processed with (La)TeX it marks new changes with blue and old text
+with red with a strike-through line.  Furthermore, passages with changes are
+marked at the margin with grey bars by the LaTeX @code{changebar} package.")
+    (license license:artistic2.0)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
