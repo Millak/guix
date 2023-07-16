@@ -1056,7 +1056,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dbus-c++-gcc-compat.patch		\
   %D%/packages/patches/dbus-c++-threading-mutex.patch		\
   %D%/packages/patches/dbxfs-remove-sentry-sdk.patch		\
-  %D%/packages/patches/ddclient-skip-test.patch			\
   %D%/packages/patches/debops-constants-for-external-program-names.patch \
   %D%/packages/patches/debops-debops-defaults-fall-back-to-less.patch \
   %D%/packages/patches/dee-vapi.patch			\
