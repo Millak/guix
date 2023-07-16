@@ -3082,6 +3082,25 @@ resolution before creating a PDF document with pdfLaTeX.")
 to relevant errors, which are displayed in a red bold font.")
     (license license:gpl3)))
 
+(define-public texlive-pdftosrc
+  (package
+    (name "texlive-pdftosrc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pdftosrc.1"
+                   "doc/man/man1/pdftosrc.man1.pdf")
+             (base32
+              "0mnz5id6fywhlay6r38nvii0a2ks5gdb15i7s7wkq1ay9k5k6fq3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdftosrc")
+    (synopsis "Extract source file or stream from PDF file")
+    (description
+     "@command{pdftosrc} extracts an embedded source file, or extracts and
+uncompresses a PDF stream given by object number.")
+    (license license:gpl2+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
