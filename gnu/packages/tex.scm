@@ -6434,6 +6434,29 @@ definition capability, new drawing commands can be constructed from drawing
 segments.")
     (license license:cc-by4.0)))
 
+(define-public texlive-texfot
+  (package
+    (name "texlive-texfot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/texfot.1"
+                   "doc/man/man1/texfot.man1.pdf"
+                   "doc/support/texfot/" "scripts/texfot/")
+             (base32
+              "0cy1fz265ch13cn0jwfg7rlspqlxv8swnv6ljjvqqg8hbl390npd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "texfot.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/texfot")
+    (synopsis "Filter clutter from the output of a TeX run")
+    (description
+     "The package provides a small Perl script to filter the online output
+from a TeX run, attempting to show only those messages which probably deserve
+some change in the source.  The TeX invocation itself need not change.")
+    (license license:public-domain)))
+
 (define-public texlive-ticollege
   (package
     (name "texlive-ticollege")
