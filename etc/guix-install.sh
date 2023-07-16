@@ -600,15 +600,26 @@ fi
 
 sys_maybe_setup_selinux()
 {
-    if [ -f /sys/fs/selinux/policy ]
+    if ! [ -f /sys/fs/selinux/policy ]
     then
-	prompt_yes_no "Install SELinux policy required to run guix-daemon?" \
-	    || return
-
-	local var_guix=/var/guix/profiles/per-user/root/current-guix
-	semodule -i "${var_guix}/share/selinux/guix-daemon.cil"
-	restorecon -R /gnu /var/guix
+	return
     fi
+
+    local c
+    for c in semodule restorecon
+    do
+        if ! command -v "$c" &>/dev/null
+	then
+	    return
+	fi
+    done
+
+    prompt_yes_no "Install SELinux policy that might be required to run guix-daemon?" \
+	|| return
+
+    local var_guix=/var/guix/profiles/per-user/root/current-guix
+    semodule -i "${var_guix}/share/selinux/guix-daemon.cil"
+    restorecon -R /gnu /var/guix
 }
 
 welcome()
