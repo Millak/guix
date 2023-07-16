@@ -6267,6 +6267,47 @@ It has rules for handling most of the common macros, and can provide
 colour-coded output showing which parts of the text have been counted.")
     (license license:lppl)))
 
+(define-public texlive-texdef
+  (package
+    (name "texlive-texdef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/texdef/" "scripts/texdef/"
+                   "source/support/texdef/")
+             (base32
+              "0jkc6c4nvzp228d7dcmp0gv2q5qassjq1p40fz4pmbxiyias7zw3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:link-scripts #~(list "texdef.pl")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-scripts 'add-symlink
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (symlink "texdef" "latexdef")))))))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/texdef")
+    (synopsis "Display the definitions of TeX commands")
+    (description
+     "This (Perl) script displays the definitions of (La)TeX command
+sequences/macros.  Various options allow the selection of the used class as
+well as package files and other factors that may influence the
+definition (before/after the preamble, inside an environment, ...).  The
+script creates a temporary TeX file which is then compiled using (La)TeX to
+find the @code{\\meaning} of the command sequence.  The result is formatted
+and presented to the user.  Length or number command sequences (dimensions,
+@code{\\char}..., count registers, ...)  are recognized and the contained
+value is also shown (using @code{\\the}).  Special definitions like protected
+macros are also recognized and the underlying macros are shown as well.  The
+script will show plain TeX definitions by default.  LaTeX and ConTeXt are
+supported, including flavours (pdf(La)TeX, Lua(La)TeX, Xe(La)TeX, ...).  The
+flavour can be selected using a command line option, or via the script name:
+@command{latexdef} will use LaTeX as default, etc.")
+    (license license:gpl3)))
+
 (define-public texlive-texdraw
   (package
     (name "texlive-texdraw")
