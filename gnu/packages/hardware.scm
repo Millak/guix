@@ -346,78 +346,74 @@ operability and find drivers.")
        (modules
         '((guix build utils)))
        (snippet
-        `(begin
-           ;; Remove git2log program file.
-           (delete-file "git2log")
-           ;; Remove variables that depend on git2log.
-           (substitute* "Makefile"
-             (("GIT2LOG.*\\:=.*$") "")
-             (("GITDEPS.*\\:=.*$") "")
-             (("BRANCH.*\\:=.*$") ""))
-           ;; Create version file.
-           (call-with-output-file "VERSION"
-             (lambda (port)
-               (format port ,version)))))))
+        #~(begin
+            ;; Remove git2log program file.
+            (delete-file "git2log")
+            ;; Remove variables that depend on git2log.
+            (substitute* "Makefile"
+              (("GIT2LOG.*\\:=.*$") "")
+              (("GITDEPS.*\\:=.*$") "")
+              (("BRANCH.*\\:=.*$") ""))
+            ;; Create version file.
+            (call-with-output-file "VERSION"
+              (lambda (port) (format port #$version)))))))
     (build-system gnu-build-system)
     (outputs '("out" "lib" "doc"))
     (arguments
-     `(#:tests? #f                      ; no test-suite available
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (assoc-ref outputs "lib"))
-                    (doc (assoc-ref outputs "doc"))
-                    (incl-dir (string-append lib "/include"))
-                    (lib-dir (string-append lib "/lib"))
-                    (sbin-dir (string-append out "/sbin"))
-                    (share-dir (string-append out "/share"))
-                    (doc-dir (string-append doc "/share/doc")))
-               ;; Generate HTML documentation in the output "doc".
-               (mkdir-p doc-dir)
-               (substitute* "doc/libhd.doxy"
-                 (("OUTPUT_DIRECTORY.*=.*libhd")
-                  (string-append "OUTPUT_DIRECTORY = " doc-dir "/libhd")))
-               ;; Correct values of the version and install directories.
-               (substitute* "Makefile"
-                 (("VERSION.*\\:=.*$")
-                  (string-append "VERSION := " ,version "\n"))
-                 (("LIBDIR.*\\?=.*$")
-                  (string-append "LIBDIR ?= " lib-dir "\n"))
-                 (("/usr/include") incl-dir)
-                 (("/(usr|var)/(lib|lib64)") lib-dir)
-                 (("/usr/sbin") sbin-dir)
-                 (("/usr/share") share-dir)
-                 (("\\$\\(DESTDIR\\)/sbin ") ""))
-               ;; Add the "lib" output to the run-path.
-               (substitute* "Makefile.common"
-                 (("-Lsrc")
-                  (string-append "-Lsrc " "-Wl,-rpath=" lib-dir)))
-               ;; Correct program name of the lexical analyzer.
-               (substitute* "src/isdn/cdb/Makefile"
-                 (("lex isdn_cdb.lex") "flex isdn_cdb.lex"))
-               ;; Patch pkg-config file to point to the "lib" output.
-               (substitute* "hwinfo.pc.in"
-                 (("/usr") lib)))))
-         (delete 'configure)
-         (replace 'build
-           (lambda _
-             (setenv "CC" ,(cc-for-target))
-             (invoke "make" "shared")
-             (invoke "make" "doc")))
-         (add-after 'install 'install-manpages
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man-dir (string-append out "/share/man"))
-                    (man1-dir (string-append man-dir "/man1"))
-                    (man8-dir (string-append man-dir "/man8")))
-               (for-each
-                (lambda (x) (install-file x man1-dir))
-                (find-files "doc" "\\.1$"))
-               (for-each
-                (lambda (y) (install-file y man8-dir))
-                (find-files "doc" "\\.8$"))))))))
+     (list
+      #:tests? #f                       ; no test-suite available
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (let ((include (string-append #$output:lib "/include"))
+                    (lib (string-append #$output:lib "/lib"))
+                    (sbin (string-append #$output "/sbin"))
+                    (share (string-append #$output "/share"))
+                    (doc (string-append #$output:doc "/share/doc")))
+                ;; Generate HTML documentation in the "doc" output.
+                (mkdir-p doc)
+                (substitute* "doc/libhd.doxy"
+                  (("OUTPUT_DIRECTORY.*=.*libhd")
+                   (string-append "OUTPUT_DIRECTORY = " doc "/libhd")))
+                ;; Correct values of the version and install directories.
+                (substitute* "Makefile"
+                  (("VERSION.*\\:=.*$")
+                   (string-append "VERSION := " #$version "\n"))
+                  (("LIBDIR.*\\?=.*$")
+                   (string-append "LIBDIR ?= " lib "\n"))
+                  (("/usr/include") include)
+                  (("/(usr|var)/(lib|lib64)") lib)
+                  (("/usr/sbin") sbin)
+                  (("/usr/share") share)
+                  (("\\$\\(DESTDIR\\)/sbin ") ""))
+                ;; Add the "lib" output to the run-path.
+                (substitute* "Makefile.common"
+                  (("-Lsrc")
+                   (string-append "-Lsrc " "-Wl,-rpath=" lib)))
+                ;; Correct program name of the lexical analyzer.
+                (substitute* "src/isdn/cdb/Makefile"
+                  (("lex isdn_cdb.lex") "flex isdn_cdb.lex"))
+                ;; Patch pkg-config file to point to the "lib" output.
+                (substitute* "hwinfo.pc.in"
+                  (("/usr") #$output:lib)))))
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (setenv "CC" #$(cc-for-target))
+              (invoke "make" "shared")
+              (invoke "make" "doc")))
+          (add-after 'install 'install-man-pages
+            (lambda _
+              (let* ((man (string-append #$output "/share/man"))
+                     (man1 (string-append man "/man1"))
+                     (man8 (string-append man "/man8")))
+                (for-each
+                 (lambda (x) (install-file x man1))
+                 (find-files "doc" "\\.1$"))
+                (for-each
+                 (lambda (y) (install-file y man8))
+                 (find-files "doc" "\\.8$"))))))))
     (native-inputs
      (list doxygen flex perl pkg-config))
     (inputs
