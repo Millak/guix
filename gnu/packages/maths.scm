@@ -8171,6 +8171,8 @@ of C, Java, or Ada programs.")
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; no test target in Makefile
+       #:configure-flags
+       (list "--enable-verbosemake")    ; to aid debugging
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'export-shell
