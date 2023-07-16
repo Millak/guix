@@ -5932,14 +5932,14 @@ supports compressed MAT files, as well as newer (version 7.3) MAT files.")
 (define-public vc
   (package
     (name "vc")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
-      (origin (method url-fetch)
-              (uri (string-append "https://github.com/VcDevel/Vc/releases/"
-                                  "download/" version "/Vc-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0lirdqzcxys9walz04bllsphydynk7973aimd5k1h1qbwi8z3lsh"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/VcDevel/Vc/releases/"
+                           "download/" version "/Vc-" version ".tar.gz"))
+       (sha256
+        (base32 "0zq37r8yisd4dwlb024l10wk2yq9kisa4xm79ia1ggrz7w2s13lq"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -5953,24 +5953,23 @@ supports compressed MAT files, as well as newer (version 7.3) MAT files.")
                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
                       (let ((testdata (assoc-ref (or native-inputs inputs)
                                                  "testdata")))
-                        (copy-recursively testdata "tests/testdata")
-                        #t))))))
+                        (copy-recursively testdata "tests/testdata")))))))
     (native-inputs
      `(("virtest" ,virtest)
 
        ;; This is a submodule in the git project, but not part of the
        ;; released sources.  See the git branch for the commit to take.
-       ("testdata" ,(let ((commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3"))
-                      (origin
-                        (method git-fetch)
-                        (uri (git-reference
-                              (url "https://github.com/VcDevel/vc-testdata")
-                              (commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3")))
-                        (file-name (git-file-name "vc-testdata"
-                                                  (string-take commit 7)))
-                        (sha256
-                         (base32
-                          "1hkhqib03qlcq412ym2dciynfxcdr2ygqhnplz4l1vissr1wnqn2")))))))
+       ("testdata"
+        ,(let ((commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/VcDevel/vc-testdata")
+                   (commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3")))
+             (file-name (git-file-name "vc-testdata" (string-take commit 7)))
+             (sha256
+              (base32
+               "1hkhqib03qlcq412ym2dciynfxcdr2ygqhnplz4l1vissr1wnqn2")))))))
     (synopsis "SIMD vector classes for C++")
     (description "Vc provides portable, zero-overhead C++ types for explicitly
 data-parallel programming.  It is a library designed to ease explicit
