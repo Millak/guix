@@ -2496,6 +2496,30 @@ generated code can be included in any LaTeX document.")
      "Lacheck is a tool for finding common mistakes in LaTeX documents.")
     (license license:gpl3+)))
 
+(define-public texlive-latex-git-log
+  (package
+    (name "texlive-latex-git-log")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/latex-git-log.1"
+                   "doc/man/man1/latex-git-log.man1.pdf"
+                   "doc/support/latex-git-log/"
+                   "scripts/latex-git-log/")
+             (base32
+              "01v6frspg1zrs976bwsdz6qczg0h5z6by90hmlyy4z6l5shscpix")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "latex-git-log")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/latex-git-log")
+    (synopsis "Typeset @samp{git log} information")
+    (description
+     "The program is run within a Git repository, and outputs the entire
+version history, as a LaTeX table.  That output will typically be redirected
+to a file; the author recommends typesetting in landscape orientation.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex-ini-files
   (package
     (name "texlive-tex-ini-files")
