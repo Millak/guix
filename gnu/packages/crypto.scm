@@ -1479,7 +1479,7 @@ non-encrypted files.")
 (define-public cryfs
   (package
     (name "cryfs")
-    (version "0.11.3")
+    (version "0.11.4")
     (source
      (origin
        (method url-fetch)
@@ -1487,7 +1487,7 @@ non-encrypted files.")
              "https://github.com/cryfs/cryfs/releases/download/"
              version "/cryfs-" version ".tar.xz"))
        (sha256
-        (base32 "1h41dhdfk2nll0vx5i66mgrdalv6kccwq5yx99gridywxw6qxxhq"))))
+        (base32 "0a48qijfrd02ianp19x3kz24w1pgigmlxdr5nks0gag7z5b2s7m7"))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((guix build cmake-build-system)
@@ -1514,14 +1514,7 @@ non-encrypted files.")
              (when tests?
                (substitute* "CMakeLists.txt"
                  (("option.BUILD_TESTING .build test cases. OFF.")
-                  "option(BUILD_TESTING \"build test cases\" ON)")))
-             ;; work around a missing import fixed upstream in boost 1.78
-             ;; See https://github.com/boostorg/process/issues/213
-             (substitute* (find-files "." "subprocess.cpp$")
-               (("#include <boost/process.hpp>.*" line)
-                (string-append
-                 "#include <algorithm>\n"
-                 line)))))
+                  "option(BUILD_TESTING \"build test cases\" ON)")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
