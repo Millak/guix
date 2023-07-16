@@ -7994,7 +7994,7 @@ original.")
 (define-public xonotic
   (package
     (name "xonotic")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
@@ -8002,7 +8002,7 @@ original.")
                            version "-source.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "0pgahai0gk8bjmvkwx948bl50l9f9dhmjzwffl4vyldibajipa51"))))
+        (base32 "1a0j825rb86i34xc5k6spsma41gcgp6yl8qs2affhjpz3iwar4lb"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
