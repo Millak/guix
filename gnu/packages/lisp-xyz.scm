@@ -10365,11 +10365,11 @@ macro.  This library provides a set of simple utilities to help with that.")
   (sbcl-package->ecl-package sbcl-form-fiddle))
 
 (define-public sbcl-array-utils
-  (let ((commit "40cea8fc895add87d1dba9232da817750222b528")
-        (revision "1"))
+  (let ((commit "29da8fccf6093fe8f8c7b2daef7de1a428ef1834")
+        (revision "0"))
     (package
       (name "sbcl-array-utils")
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -10379,7 +10379,7 @@ macro.  This library provides a set of simple utilities to help with that.")
            (commit commit)))
          (file-name (git-file-name "cl-array-utils" version))
          (sha256
-          (base32 "0d7nddak8h2aa82z11vdbd97srk5bdgq41pzmibsz3ymspnndicd"))))
+          (base32 "1d66s2inb9hpw27hdb20x27dychmpn1mn35v0mlsib848qdz87az"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
