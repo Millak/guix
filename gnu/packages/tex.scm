@@ -22442,40 +22442,51 @@ handle complex tests.")
 
 (define-public texlive-xindy
   (package
+    ;; Texmf tree in TeX Live is incomplete, as it doesn't include
+    ;; "xindy.mem", so it is not possible to use `texlive-origin'.  This file
+    ;; isn't build by default by `texlive-bin' either.  Build it specially
+    ;; from `texlive-bin' source instead.
+    (inherit texlive-libkpathsea)
     (name "texlive-xindy")
     (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/man/man1/tex2xindy.1"
-                   "doc/man/man1/tex2xindy.man1.pdf"
-                   "doc/man/man1/texindy.1"
-                   "doc/man/man1/texindy.man1.pdf"
-                   "doc/man/man1/xindy.1"
-                   "doc/man/man1/xindy.man1.pdf"
-                   "doc/xindy/"
-                   "scripts/xindy/"
-                   "xindy/")
-             (base32
-              "12j2bi0wwp1hyxr1427hhigqmhsd1fyg90bvghxkm1qck85r24vf")))
     (outputs '("out" "doc"))
-    (build-system texlive-build-system)
+    (build-system gnu-build-system)
     (arguments
-     (list
-      #:link-scripts #~(list "texindy.pl" "xindy.pl")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-inputs
-            (lambda* (#:key inputs #:allow-other-keys)
-              (with-directory-excursion "scripts/xindy/"
+     (substitute-keyword-arguments (package-arguments texlive-libkpathsea)
+       ((#:out-of-source? _ #t) #t)
+       ((#:configure-flags flags)
+        #~(cons "--enable-xindy" (delete "--enable-kpathsea" #$flags)))
+       ((#:phases _)
+        #~(modify-phases %standard-phases
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "utils/xindy/"
+                  (invoke "make")
+                  (mkdir-p (string-append #$output "/bin"))
+                  (invoke "make" "install")
+                  (let ((out (string-append #$output "/share"))
+                        (doc (string-append #$output:doc "/share/texmf-dist")))
+                    (mkdir-p doc)
+                    (with-directory-excursion doc
+                      (rename-file (string-append out "/texmf-dist/doc") "doc")
+                      (rename-file (string-append out "/man") "doc/man"))))))
+            (add-after 'install 'patch-clisp-location
+              (lambda* (#:key inputs #:allow-other-keys)
                 ;; The scripts are encoded in ISO-8859-1 (or iso-latin-1).
                 (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                  (substitute* (list "texindy.pl" "xindy.pl")
+                  (substitute* (find-files #$output "xindy\\.pl$")
                     (("our \\$clisp = .*")
                      (format #f "our $clisp = ~s;~%"
-                             (search-input-file inputs "/bin/clisp")))
-                    (("/usr/bin/env perl")
-                     (search-input-file inputs "/bin/perl"))))))))))
+                             (search-input-file inputs "/bin/clisp")))))))))))
+    (native-inputs
+     (list clisp
+           (texlive-updmap.cfg
+            (list texlive-cbfonts-fd
+                  texlive-cyrillic
+                  texlive-greek-fontenc
+                  texlive-lh))))
     (inputs (list clisp perl))
+    (native-search-paths '())
     (home-page "https://ctan.org/pkg/xindy")
     (synopsis "General-purpose index processor")
     (description
