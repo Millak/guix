@@ -6182,9 +6182,10 @@ throughout GNOME for API documentation).")
     (license license:gpl2+)))
 
 (define-public devhelp-with-libsoup2
-  (package/inherit devhelp
-    (inputs (modify-inputs (package-inputs devhelp)
-              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
+  (hidden-package
+   (package/inherit devhelp
+     (inputs (modify-inputs (package-inputs devhelp)
+               (replace "webkitgtk" webkitgtk-with-libsoup2))))))
 
 (define-public cogl
   (package
