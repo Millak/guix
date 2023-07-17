@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Frank Pursel <frank.pursel@gmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -837,7 +838,8 @@ roots, or wrestle with obscure build systems.")
     (arguments
      `(#:make-flags
        (list "prefix="
-             (string-append "DESTDIR=" %output))
+             (string-append "DESTDIR=" %output)
+             ,@(if (target-riscv64?) '("LDFLAGS=-latomic") '()))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
