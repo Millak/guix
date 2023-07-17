@@ -3126,7 +3126,6 @@ linux/libcurl_wrapper.h"
     (inputs
      (modify-inputs (package-inputs qtwebengine-5)
        (replace "qtmultimedia" qtmultimedia)
-       (replace "harfbuzz" harfbuzz-5)
        (append libxkbfile xkeyboard-config)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs qtwebengine-5)

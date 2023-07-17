@@ -1117,7 +1117,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            graphite2
            gst-plugins-base
            gtk+
-           harfbuzz-5
+           harfbuzz
            hunspell
            hyphen
            libabw
