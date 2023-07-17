@@ -5904,14 +5904,14 @@ metrics for evaluating models.")
 (define-public r-matrixmodels
   (package
     (name "r-matrixmodels")
-    (version "0.5-1")
+    (version "0.5-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MatrixModels" version))
        (sha256
         (base32
-         "1a9ywhv1yklfcp0jgirkih3ib5scs61hkscmyddwfh5blpgmpi9z"))))
+         "0ap3mfzb2psjwlksfjzs2ycl5598bllwzx5hfmf9db4yjsydn1hw"))))
     (properties `((upstream-name . "MatrixModels")))
     (build-system r-build-system)
     (propagated-inputs
