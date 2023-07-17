@@ -591,7 +591,8 @@ all are dependent packages: ~{~a~^ ~}~%")
                                   (string-append (config-directory)
                                                  "/upstream/trustedkeys.kbx"))))
                 (let* ((spec-line
-                        (compose location->string
+                        (compose (cut string-trim-right <> char-set:digit)
+                                 location->string
                                  package-location
                                  update-spec-package))
                        ;; Sort the specs so that we update packages from the
