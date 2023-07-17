@@ -370,14 +370,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.10
   (package
     (inherit shepherd-0.9)
-    (version "0.10.1")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))
+                "0v9ld9gbqdp5ya380fbkdsxa0iqr90gi6yk004ccz3n792nq6wlj"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
                      (replace "guile-fibers" guile-fibers-1.3)))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
