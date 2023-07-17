@@ -2679,14 +2679,17 @@ collation, and NAMESPACE files.")
 (define-public r-openssl
   (package
     (name "r-openssl")
-    (version "2.0.6")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openssl" version))
        (sha256
         (base32
-         "1wxkq613054ic0w58a41fyr7bp7f939vhsgj6hbhs3r72qm07wvp"))))
+         "0fg5avcrjjn7sv6rzbp19y6jwjjr77xpldxg4xssp5s1p832wnk2"))))
+    (properties
+     `((upstream-name . "openssl")
+       (updater-extra-inputs . ("openssl"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -2698,7 +2701,7 @@ collation, and NAMESPACE files.")
                (("PKG_LIBS=\"\\$\\{PKG_LIBS_VERSIONED\\}\"")
                 "PKG_LIBS=\"${PKG_LIBS}\"")))))))
     (inputs
-     (list openssl))
+     (list openssl zlib))
     (native-inputs
      (list pkg-config r-knitr))
     (propagated-inputs
