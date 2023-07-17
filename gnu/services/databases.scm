@@ -180,17 +180,30 @@ host	all	all	::1/128 	md5"))
   (data-directory     postgresql-configuration-data-directory
                       (default "/var/lib/postgresql/data"))
   (extension-packages postgresql-configuration-extension-packages
-                      (default '())))
+                      (default '()))
+  (create-account?    postgresql-configuration-create-account?
+                      (default #t))
+  (uid                postgresql-configuration-uid
+                      (default #f))
+  (gid                postgresql-configuration-gid
+                      (default #f)))
 
-(define %postgresql-accounts
-  (list (user-group (name "postgres") (system? #t))
-        (user-account
-         (name "postgres")
-         (group "postgres")
-         (system? #t)
-         (comment "PostgreSQL server user")
-         (home-directory "/var/empty")
-         (shell (file-append shadow "/sbin/nologin")))))
+(define (create-postgresql-account config)
+  (match-record config <postgresql-configuration>
+    (create-account? uid gid)
+    (if (not create-account?) '()
+        (list (user-group
+               (name "postgres")
+               (id gid)
+               (system? #t))
+              (user-account
+               (name "postgres")
+               (group "postgres")
+               (system? #t)
+               (uid uid)
+               (comment "PostgreSQL server user")
+               (home-directory "/var/empty")
+               (shell (file-append shadow "/sbin/nologin")))))))
 
 (define (final-postgresql postgresql extension-packages)
   (if (null? extension-packages)
@@ -327,7 +340,7 @@ host	all	all	::1/128 	md5"))
           (service-extension activation-service-type
                              postgresql-activation)
           (service-extension account-service-type
-                             (const %postgresql-accounts))
+                             create-postgresql-account)
           (service-extension
            profile-service-type
            (compose list postgresql-configuration-postgresql))))

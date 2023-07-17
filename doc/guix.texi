@@ -25179,6 +25179,20 @@ There is no need to add this field for contrib extensions such as hstore or
 dblink as they are already loadable by postgresql.  This field is only
 required to add extensions provided by other packages.
 
+@item @code{create-account?} (default: @code{#t})
+Whether or not the @code{postgres} user and group should be created.
+
+@item @code{uid} (default: @code{#f})
+Explicitly specify the UID of the @code{postgres} daemon account.
+You normally do not need to specify this, in which case a free UID will
+be automatically assigned.
+
+One situation where this option might be useful is if the @var{data-directory}
+is located on a mounted network share.
+
+@item @code{gid} (default: @code{#f})
+Explicitly specify the GID of the @code{postgres} group.
+
 @end table
 @end deftp
 
