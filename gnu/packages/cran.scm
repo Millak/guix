@@ -19381,13 +19381,13 @@ handling in messages and custom formatting.")
 (define-public r-longdat
   (package
     (name "r-longdat")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "LongDat" version))
               (sha256
                (base32
-                "1k8rl6jv4xzsm620wf373ds6l8fbb5ff07rgbp0bgqrymvwdf1jc"))))
+                "1rzkb7byd32jqvhf75zyvy0dlkq79aicz8j0x7lk821qiq4dfv6l"))))
     (properties `((upstream-name . "LongDat")))
     (build-system r-build-system)
     (propagated-inputs (list r-bestnormalize
