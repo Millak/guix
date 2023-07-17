@@ -1411,11 +1411,12 @@ Format (GFF) with Biopython integration.")
     (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
 
 (define-public python-bcbio-gff/biopython-1.73
-  (package
-    (inherit python-bcbio-gff)
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-bcbio-gff)
-       (replace "python-biopython" python-biopython-1.73)))))
+  (hidden-package
+   (package
+     (inherit python-bcbio-gff)
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-bcbio-gff)
+        (replace "python-biopython" python-biopython-1.73))))))
 
 ;; Note: the name on PyPi is "biofluff".
 (define-public python-biofluff
