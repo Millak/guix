@@ -843,8 +843,9 @@ roots, or wrestle with obscure build systems.")
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
                         (replace 'check
-                          (lambda _
-                            (invoke "make" "microbench"))))))
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "make" "microbench")))))))
     (home-page "https://bellard.org/quickjs/")
     (synopsis "Small embeddable Javascript engine")
     (description "QuickJS supports the ES2020 specification including modules,
