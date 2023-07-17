@@ -5776,7 +5776,7 @@ a package collection.  This involves the following steps:
 
 @enumerate
 @item
-Channels live in a Git repository so the first step, when creating a
+A channel lives in a Git repository so the first step, when creating a
 channel, is to create its repository:
 
 @example
@@ -5790,7 +5790,7 @@ The next step is to create files containing package modules
 (@pxref{Package Modules}), each of which will contain one or more
 package definitions (@pxref{Defining Packages}).  A channel can provide
 things other than packages, such as build systems or services; we're
-using packages as most common use case.
+using packages as it's the most common use case.
 
 For example, Alice might want to provide a module called @code{(alice
 packages greetings)} that will provide her favorite ``hello world''
@@ -5815,7 +5815,7 @@ that.
 @item
 With this first module in place, the next step is to test the packages
 it provides.  This can be done with @command{guix build}, which needs to
-be fold to look for modules in the Git checkout.  For example, assuming
+be told to look for modules in the Git checkout.  For example, assuming
 @code{(alice packages greetings)} provides a package called
 @code{hi-from-alice}, Alice will run this command from the Git checkout:
 
@@ -5856,7 +5856,7 @@ example, @code{(alice packages greetings)} will automatically be found
 by the @command{guix} command.
 @end enumerate
 
-Voilà!  
+Voilà!
 
 @c What follows stems from discussions at
 @c <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=22629#134> as well as
