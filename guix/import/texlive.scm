@@ -66,7 +66,7 @@
 
 (define string->license
   (match-lambda
-    ("artistic2" 'gpl3+)
+    ("artistic2" 'artistic2.0)
     ("apache2" 'asl2.0)
     ("gpl" 'gpl3+)
     ("gpl1" 'gpl1)
