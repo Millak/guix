@@ -1296,8 +1296,7 @@ libraries designed for computer vision research and implementation.")
          (add-after 'unpack 'do-not-tune
            (lambda _
              (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
-               (("-mute=native") ""))
-             #t)))))
+               (("-mtune=native") "")))))))
     (inputs
      `(("eigen" ,eigen)
        ("expat" ,expat)
