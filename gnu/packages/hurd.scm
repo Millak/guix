@@ -91,10 +91,10 @@
 (define-public mig
   (package
     (name "mig")
-    (version "1.8+git20220827")
+    (version "1.8+git20230520")
     (source (origin
               (method url-fetch)
-              ;; XXX: Version 2.35 of glibc can only be built with an
+              ;; XXX: Versions 2.35 and 2.37 of glibc can only be built with an
               ;; unreleased version of MiG:
               ;; <https://lists.gnu.org/archive/html/bug-hurd/2023-03/msg00025.html>.
               ;; It cannot be fetched from Git though, as the extra dependency
@@ -103,8 +103,7 @@
                                   version ".tar.gz"))
               (sha256
                (base32
-                "163d37s9lscd6zxyfng421m9nl857464mgjj90xsrcl5ykbng5p2"))
-              (patches (search-patches "mig-cpu.h-generation.patch"))))
+                "1ap31jd9jkvvz3vb88hg19cyqmqzmra724yl1xhcrv7gcgnan7d9"))))
     (build-system gnu-build-system)
     ;; Flex is needed both at build and run time.
     (inputs (list gnumach-headers flex))
