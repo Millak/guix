@@ -17889,7 +17889,7 @@ This package contains the complete TeX Live distribution.")
      "Biber is a BibTeX replacement for users of BibLaTeX.  It supports full
 UTF-8, can (re)-encode input and output, supports highly configurable sorting,
 dynamic bibliography sets and many other features.")
-    (license license:gpl3+)))
+    (license license:artistic2.0)))
 
 (define-deprecated-package biber texlive-biber)
 
