@@ -1288,7 +1288,8 @@ libraries designed for computer vision research and implementation.")
          ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
          ;; variable in the installed CMake files.  This is necessary as other
          ;; packages using insight-toolkit could not be configured otherwise.
-         "-DGTEST_ROOT=gtest")
+         "-DGTEST_ROOT=gtest"
+         "-DCMAKE_CXX_STANDARD=17")
 
        #:phases
        (modify-phases %standard-phases
