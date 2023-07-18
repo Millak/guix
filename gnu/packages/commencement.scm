@@ -57,7 +57,10 @@
   #:use-module (gnu packages xml)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module ((guix store) #:select (%store-monad))
+  #:use-module (guix monads)
   #:use-module (guix download)
+  #:use-module ((guix git-download) #:select (git-reference git-file-name))
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
@@ -89,6 +92,38 @@
 ;;; that are in fact not going to be used.
 ;;;
 ;;; Code:
+
+(define* (git-fetch-from-tarball tarball)
+  "Return an <origin> method equivalent to 'git-fetch', except that it fetches
+the checkout from TARBALL, a tarball containing said checkout.
+
+  The purpose of this procedure is to work around bootstrapping issues:
+'git-fetch' depends on Git, which is much higher in the dependency graph."
+  (lambda* (url hash-algo hash
+                #:optional name
+                #:key (system (%current-system))
+                (guile %bootstrap-guile))
+    (mlet %store-monad ((guile (package->derivation guile system)))
+      (gexp->derivation
+       (or name "git-checkout")
+       (with-imported-modules '((guix build utils))
+         #~(begin
+             (use-modules (guix build utils)
+                          (ice-9 ftw)
+                          (ice-9 match))
+             (setenv "PATH"
+                     #+(file-append %bootstrap-coreutils&co "/bin"))
+             (invoke "tar" "xf" #$tarball)
+             (match (scandir ".")
+               (("." ".." directory)
+                (copy-recursively directory #$output)))))
+       #:recursive? #t
+       #:hash-algo hash-algo
+       #:hash hash
+       #:system system
+       #:guile-for-build guile
+       #:graft? #f
+       #:local-build? #t))))
 
 (define bootar
   (package
