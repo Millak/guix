@@ -5325,7 +5325,7 @@ Lisp (from GBBopen project).")
 (define-public sbcl-usocket
   (package
     (name "sbcl-usocket")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method git-fetch)
@@ -5334,7 +5334,7 @@ Lisp (from GBBopen project).")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-usocket" version))
        (sha256
-        (base32 "1pn5mf4d9g3b7h0vfx0mh7rlrydfbk8q35pg4ip6prf4zyg70wba"))))
+        (base32 "0by8hhg6gijdbq5vjykd374rmvqyikp4synpyk0wjcl7rk3r0vgn"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rt))
