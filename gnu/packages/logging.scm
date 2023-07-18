@@ -37,6 +37,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -212,7 +213,7 @@ output in multiple windows in a terminal.")
 (define-public spdlog
   (package
     (name "spdlog")
-    (version "1.11.0")
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
@@ -222,7 +223,7 @@ output in multiple windows in a terminal.")
        (file-name (git-file-name name version))
        (patches (search-patches "spdlog-fix-tests.patch"))
        (sha256
-        (base32 "0i3a1cqrg1sz0w50g7zz9x73rf838igqri12q8ijh4rzpq0qq3ch"))))
+        (base32 "0yyncv6wjs5rqm76rkqyxpfbsingk1dq5zfcqhy1a7fpw8xdl53k"))))
     (build-system cmake-build-system)
     ;; TODO run benchmark. Currently not possible, as adding
     ;; (gnu packages benchmark) forms a dependency cycle
@@ -231,6 +232,7 @@ output in multiple windows in a terminal.")
        (list "-DSPDLOG_BUILD_BENCH=OFF"
              "-DSPDLOG_BUILD_SHARED=ON"
              "-DSPDLOG_BUILD_TESTS=ON")))
+    (native-inputs (list catch2-3.3))
     (home-page "https://github.com/gabime/spdlog")
     (synopsis "Fast C++ logging library")
     (description "Spdlog is a very fast header-only/compiled C++ logging
