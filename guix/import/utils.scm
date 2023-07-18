@@ -179,6 +179,7 @@ thrown."
     ("AGPL-3.0"                   . license:agpl3)
     ("AGPL-3.0-only"              . license:agpl3)
     ("AGPL-3.0-or-later"          . license:agpl3+)
+    ("Arphic-1999"                . license:arphic-1999)
     ("Apache-1.1"                 . license:asl1.1)
     ("Apache-2.0"                 . license:asl2.0)
     ("APSL-2.0"                   . license:apsl2)
