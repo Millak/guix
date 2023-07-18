@@ -1313,6 +1313,12 @@ libraries designed for computer vision research and implementation.")
            zlib))
     (native-inputs
      (list googletest pkg-config))
+
+    ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
+    ;; '-mtune=native -march=corei7', suggesting there's something to be
+    ;; gained from CPU-specific optimizations.
+    (properties '((tunable? . #t)))
+
     (home-page "https://github.com/InsightSoftwareConsortium/ITK/")
     (synopsis "Scientific image processing, segmentation and registration")
     (description "The Insight Toolkit (ITK) is a toolkit for N-dimensional
