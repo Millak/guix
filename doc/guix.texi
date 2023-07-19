@@ -5070,6 +5070,23 @@ opens the door to security vulnerabilities.  @xref{Invoking guix pull,
 @option{--allow-downgrades}}.
 @end quotation
 
+Due to @command{guix time-machine} relying on the ``inferiors''
+mechanism (@pxref{Inferiors}), the oldest commit it can travel to is
+commit @samp{6298c3ff} (``v1.0.0''), dated May 1@sup{st}, 2019, which is
+the first release that included the inferiors mechanism.  An error is
+returned when attempting to navigate to older commits.
+
+@quotation Note
+Although it should technically be possible to travel to such an old
+commit, the ease to do so will largely depend on the availability of
+binary substitutes.  When traveling to a distant past, some packages may
+not easily build from source anymore.  One such example are old versions
+of Python 2 which had time bombs in its test suite, in the form of
+expiring SSL certificates.  This particular problem can be worked around
+by setting the hardware clock to a value in the past before attempting
+the build.
+@end quotation
+
 The general syntax is:
 
 @example

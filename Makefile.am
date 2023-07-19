@@ -615,6 +615,7 @@ SH_TESTS =					\
   tests/guix-refresh.sh				\
   tests/guix-shell.sh				\
   tests/guix-shell-export-manifest.sh		\
+  tests/guix-time-machine.sh			\
   tests/guix-graph.sh				\
   tests/guix-describe.sh			\
   tests/guix-repl.sh     			\
