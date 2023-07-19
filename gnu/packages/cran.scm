@@ -11268,6 +11268,28 @@ package covers Models, Completions, Chat, Edits, Images, Embeddings, Audio,
 Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
     (license license:expat)))
 
+(define-public r-operator-tools
+  (package
+    (name "r-operator-tools")
+    (version "1.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "operator.tools" version))
+              (sha256
+               (base32
+                "1v4dg7xhz24dnp0zxn815x1405ig64ibii6y40la1gvmzcc41dz5"))))
+    (properties `((upstream-name . "operator.tools")))
+    (build-system r-build-system)
+    (home-page "https://github.com/decisionpatterns/operator.tools")
+    (synopsis "Utilities for working with R's operators")
+    (description
+     "This package provides a collection of utilities that allow programming
+with R's operators.  Routines allow classifying operators, translating to and
+from an operator and its underlying function, and inverting some
+operators (e.g. comparison operators), etc.  All methods can be extended to
+custom infix operators.")
+    (license license:gpl2)))
+
 (define-public r-openxlsx
   (package
     (name "r-openxlsx")
