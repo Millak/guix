@@ -8539,6 +8539,35 @@ starlette.")
      (modify-inputs (package-propagated-inputs python-fastapi)
        (replace "python-starlette" python-starlette-for-fastapi-0.88)))))
 
+(define-public python-fastapi-csrf-protect
+  (package
+    (name "python-fastapi-csrf-protect")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aekasitt/fastapi-csrf-protect")
+                    ;; This commit corresponds to version 0.3.1
+                    (commit "536acd651d0d3f9862a0b753ba64dd2d187f8655")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zlwa0fplmcihylyvakskwkbkl2cq291fmys5x6wrpfdbjrqbgbj"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-fastapi python-itsdangerous
+           python-pydantic))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/aekasitt/fastapi-csrf-protect")
+    (synopsis "Cross-Site Request Forgery (XSRF) protection")
+    (description
+     "This package provides a stateless implementation of @dfn{Cross-Site
+Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
+pattern.")
+    (license license:expat)))
+
 (define-public python-pyactiveresource
   (package
     (name "python-pyactiveresource")
