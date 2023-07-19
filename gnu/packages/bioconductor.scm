@@ -1436,51 +1436,6 @@ curated cell type labels, for use in procedures like automated annotation of
 single-cell data or deconvolution of bulk RNA-seq.")
     (license license:gpl3)))
 
-(define-public r-cellid
-  (package
-    (name "r-cellid")
-    (version "1.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "CelliD" version))
-              (sha256
-               (base32
-                "0vigvqjrlqbi5kviaj8qvyq3v8afgbc5pjrz7zmx2ckf4hdp0g03"))))
-    (properties `((upstream-name . "CelliD")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-data-table
-           r-biocparallel
-           r-fastmatch
-	   r-fgsea
-           r-ggplot2
-           r-glue
-           r-irlba
-           r-matrix
-           r-matrixstats
-           r-pbapply
-           r-rcpp
-           r-rcpparmadillo
-           r-reticulate
-           r-rtsne
-           r-seurat
-           r-stringr
-           r-tictoc
-	   r-singlecellexperiment
-           r-summarizedexperiment
-           r-umap))
-    (native-inputs (list r-knitr r-scater))
-    (home-page "https://bioconductor.org/packages/CelliD")
-    (synopsis
-     "Single cell gene signature extraction using multiple correspondence analysis")
-    (description
-     "CelliD is a clustering-free method for extracting per-cell gene
-signatures from scRNA-seq.  CelliD allows unbiased cell identity recognition
-across different donors, tissues-of-origin, model organisms and single-cell
-omics protocols.  The package can also be used to explore functional pathways
-enrichment in single cell data.")
-    (license license:gpl3)))
-
 (define-public r-champdata
   (package
     (name "r-champdata")
@@ -4218,6 +4173,51 @@ methods can flexibly integrate information from imperfect clonal trees
 inferred based on bulk exome-seq data, and sparse variant alleles expressed in
 scRNA-seq data.  A flexible beta-binomial error model that accounts for
 stochastic dropout events as well as systematic allelic imbalance is used.")
+    (license license:gpl3)))
+
+(define-public r-cellid
+  (package
+    (name "r-cellid")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "CelliD" version))
+              (sha256
+               (base32
+                "0vigvqjrlqbi5kviaj8qvyq3v8afgbc5pjrz7zmx2ckf4hdp0g03"))))
+    (properties `((upstream-name . "CelliD")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-data-table
+           r-biocparallel
+           r-fastmatch
+	   r-fgsea
+           r-ggplot2
+           r-glue
+           r-irlba
+           r-matrix
+           r-matrixstats
+           r-pbapply
+           r-rcpp
+           r-rcpparmadillo
+           r-reticulate
+           r-rtsne
+           r-seurat
+           r-stringr
+           r-tictoc
+	   r-singlecellexperiment
+           r-summarizedexperiment
+           r-umap))
+    (native-inputs (list r-knitr r-scater))
+    (home-page "https://bioconductor.org/packages/CelliD")
+    (synopsis
+     "Single cell gene signature extraction using multiple correspondence analysis")
+    (description
+     "CelliD is a clustering-free method for extracting per-cell gene
+signatures from scRNA-seq.  CelliD allows unbiased cell identity recognition
+across different donors, tissues-of-origin, model organisms and single-cell
+omics protocols.  The package can also be used to explore functional pathways
+enrichment in single cell data.")
     (license license:gpl3)))
 
 (define-public r-coverageview
