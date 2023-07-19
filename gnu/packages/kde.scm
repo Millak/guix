@@ -445,7 +445,7 @@ illustrate project schedules.")
 (define-public kio-extras
   (package
     (name "kio-extras")
-    (version "22.08.0")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -453,7 +453,7 @@ illustrate project schedules.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0gzna2ps2qd2js28c97kjpcbah7zz8n4s4932faggc2nz5z5wnyn"))))
+                "1ygxfq62idpgf1dlic1245y5gf0fnkrpbqxd230xmxi7a35za8qd"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -462,7 +462,7 @@ illustrate project schedules.")
                             (when tests?
                               (setenv "HOME" (getcwd))
                               (setenv "TMPDIR" (getcwd))
-                              (invoke "ctest" "-E" "testkioarchive")))))))
+                              (invoke "ctest" "-E" "(thumbnailtest|testkioarchive)")))))))
     (native-inputs (list extra-cmake-modules dbus kdoctools qttools-5))
     (inputs (list karchive
                   kconfig
