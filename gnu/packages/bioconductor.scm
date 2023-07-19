@@ -19426,6 +19426,38 @@ operations on sparse matrices.  Currently, the optimizations are limited to
 data in the column sparse format.")
     (license license:expat)))
 
+(define-public r-spatialexperiment
+  (package
+    (name "r-spatialexperiment")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "SpatialExperiment" version))
+              (sha256
+               (base32
+                "18fcfyjvp9nzadlicsnz62wva8ik0z6jqg1b906avm2vk6rbxw70"))))
+    (properties `((upstream-name . "SpatialExperiment")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocfilecache
+                             r-biocgenerics
+                             r-dropletutils
+                             r-magick
+                             r-rjson
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/drighelli/SpatialExperiment")
+    (synopsis "S4 class for spatially resolved -omics data")
+    (description
+     "This package defines an S4 class for storing data from spatial -omics
+experiments.  The class extends SingleCellExperiment to support storage and
+retrieval of additional information from spot-based and molecule-based
+platforms, including spatial coordinates, images, and image metadata.  A
+specialized constructor function is included for data from the 10x Genomics
+Visium platform.")
+    (license license:gpl3)))
+
 (define-public r-delayedmatrixstats
   (package
     (name "r-delayedmatrixstats")
