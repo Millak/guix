@@ -1731,56 +1731,6 @@ in Nature Genetics, January 2018.")
 methylation arrays.")
     (license license:artistic2.0)))
 
-(define-public r-missmethyl
-  (package
-    (name "r-missmethyl")
-    (version "1.34.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "missMethyl" version))
-              (sha256
-               (base32
-                "1jvrdr57mv93pcbyazcg1bcx1zd0kp72hi1if839gw54hk3igs3h"))))
-    (properties `((upstream-name . "missMethyl")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-annotationdbi
-           r-biasedurn
-           r-biobase
-           r-biocgenerics
-           r-genomicranges
-           r-go-db
-           r-illuminahumanmethylation450kanno-ilmn12-hg19
-           r-illuminahumanmethylation450kmanifest
-           r-illuminahumanmethylationepicanno-ilm10b4-hg19
-           r-illuminahumanmethylationepicmanifest
-           r-iranges
-           r-limma
-           r-methylumi
-           r-minfi
-           r-org-hs-eg-db
-           r-ruv
-           r-s4vectors
-           r-statmod
-           r-stringr
-           r-summarizedexperiment))
-    (native-inputs (list r-knitr))
-    (home-page "https://bioconductor.org/packages/missMethyl")
-    (synopsis "Analyzing Illumina HumanMethylation BeadChip data")
-    (description
-     "This is a package for normalization, testing for differential
-variability and differential methylation and gene set testing for data from
-Illumina's Infinium HumanMethylation arrays.  The normalization procedure is
-subset-quantile within-array normalization (SWAN), which allows Infinium I and
-II type probes on a single array to be normalized together.  The test for
-differential variability is based on an empirical Bayes version of Levene's
-test.  Differential methylation testing is performed using RUV, which can
-adjust for systematic errors of unknown origin in high-dimensional data by
-using negative control probes.  Gene ontology analysis is performed by taking
-into account the number of probes per gene on the array, as well as taking
-into account multi-gene associated probes.")
-    (license license:gpl2)))
-
 (define-public r-msdata
   (package
     (name "r-msdata")
@@ -12849,6 +12799,56 @@ model.")
      "This package provides tools to analyze and visualize Illumina Infinium
 methylation arrays.")
     (license license:artistic2.0)))
+
+(define-public r-missmethyl
+  (package
+    (name "r-missmethyl")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "missMethyl" version))
+              (sha256
+               (base32
+                "1jvrdr57mv93pcbyazcg1bcx1zd0kp72hi1if839gw54hk3igs3h"))))
+    (properties `((upstream-name . "missMethyl")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-biasedurn
+           r-biobase
+           r-biocgenerics
+           r-genomicranges
+           r-go-db
+           r-illuminahumanmethylation450kanno-ilmn12-hg19
+           r-illuminahumanmethylation450kmanifest
+           r-illuminahumanmethylationepicanno-ilm10b4-hg19
+           r-illuminahumanmethylationepicmanifest
+           r-iranges
+           r-limma
+           r-methylumi
+           r-minfi
+           r-org-hs-eg-db
+           r-ruv
+           r-s4vectors
+           r-statmod
+           r-stringr
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/missMethyl")
+    (synopsis "Analyzing Illumina HumanMethylation BeadChip data")
+    (description
+     "This is a package for normalization, testing for differential
+variability and differential methylation and gene set testing for data from
+Illumina's Infinium HumanMethylation arrays.  The normalization procedure is
+subset-quantile within-array normalization (SWAN), which allows Infinium I and
+II type probes on a single array to be normalized together.  The test for
+differential variability is based on an empirical Bayes version of Levene's
+test.  Differential methylation testing is performed using RUV, which can
+adjust for systematic errors of unknown origin in high-dimensional data by
+using negative control probes.  Gene ontology analysis is performed by taking
+into account the number of probes per gene on the array, as well as taking
+into account multi-gene associated probes.")
+    (license license:gpl2)))
 
 (define-public r-methylumi
   (package
