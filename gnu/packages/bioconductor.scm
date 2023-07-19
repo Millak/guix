@@ -5008,6 +5008,25 @@ Beta-Binomial distributions.")
     ;; Any version of the GPL
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-dyndoc
+  (package
+    (name "r-dyndoc")
+    (version "1.78.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DynDoc" version))
+              (sha256
+               (base32
+                "16cb4pby6ja0xy8ygbgr6zfbyp4agyhlds5sayc5ryq50vafykah"))))
+    (properties `((upstream-name . "DynDoc")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/DynDoc")
+    (synopsis "Dynamic document tools")
+    (description
+     "This package provides a set of functions to create and interact with
+dynamic documents and vignettes.")
+    (license license:artistic2.0)))
+
 (define-public r-bluster
   (package
    (name "r-bluster")
