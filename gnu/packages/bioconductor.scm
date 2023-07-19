@@ -7157,6 +7157,38 @@ profiles and assignment of a status (gain, normal or loss) to each chromosomal
 regions identified.")
     (license license:gpl2)))
 
+(define-public r-globalancova
+  (package
+    (name "r-globalancova")
+    (version "4.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GlobalAncova" version))
+              (sha256
+               (base32
+                "1fld18rmi6rqm2nr549a4740w1iq3mf5df67v9ba6h42r4abs1ar"))))
+    (properties `((upstream-name . "GlobalAncova")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotate
+                             r-annotationdbi
+                             r-biobase
+                             r-corpcor
+                             r-dendextend
+                             r-globaltest
+                             r-gseabase
+                             r-vgam))
+    (home-page "https://bioconductor.org/packages/GlobalAncova")
+    (synopsis "Global test for groups of variables via model comparisons")
+    (description
+     "This package supports the computation of an F-test for the association
+between expression values and clinical entities.  In many cases a two way
+layout with gene and a dichotomous group as factors will be considered.
+However, adjustment for other covariates and the analysis of arbitrary
+clinical variables, interactions, gene co-expression, time series data and so
+on is also possible.  The test is carried out by comparison of corresponding
+linear models via the extra sum of squares principle.")
+    (license license:gpl2+)))
+
 (define-public r-globaltest
   (package
     (name "r-globaltest")
