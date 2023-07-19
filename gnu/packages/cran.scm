@@ -926,6 +926,27 @@ differential abundance analysis of zero-inflated high-dimensional
 compositional data.")
     (license license:gpl3)))
 
+(define-public r-gwasexacthw
+  (package
+    (name "r-gwasexacthw")
+    (version "1.01")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "GWASExactHW" version))
+              (sha256
+               (base32
+                "19qmk8h7kxmn9kzw0x4xns5p3qqz27xkqq4q6zmh4jzizd0fsl78"))))
+    (properties `((upstream-name . "GWASExactHW")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=GWASExactHW")
+    (synopsis
+     "Exact Hardy-Weinburg testing for Genome Wide Association Studies")
+    (description
+     "This package contains a function to do exact Hardy-Weinburg
+testing (using Fisher's test) for SNP genotypes as typically obtained in a
+@dfn{Genome Wide Association Study} (GWAS).")
+    (license license:gpl3)))
+
 (define-public r-gwidgets2
   (package
     (name "r-gwidgets2")
