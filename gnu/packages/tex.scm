@@ -26700,6 +26700,25 @@ that contain various elements (titles, bars, milestones, groups and links).
 Several keys customize the appearance of the chart elements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pdfcol
+  (package
+    (name "texlive-pdfcol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfcol/" "source/latex/pdfcol/"
+                   "tex/latex/pdfcol/")
+             (base32
+              "0mr09kyan59xlnxl4a97w2avp1p09w5yyv6v3p498xpjbq3dbwih")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfcol")
+    (synopsis "Macros for maintaining colour stacks under pdfTeX")
+    (description
+     "This package is intended for package writers.  It defines macros for
+setting and maintaining new colour stacks.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pdfcolfoot
   (package
     (name "texlive-pdfcolfoot")
