@@ -9182,6 +9182,36 @@ facilitate unsupervised analysis of any high-dimensional data such as
 single-cell RNA-seq.")
     (license license:artistic2.0)))
 
+(define-public r-seqarray
+  (package
+    (name "r-seqarray")
+    (version "1.40.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "SeqArray" version))
+              (sha256
+               (base32
+                "1771vk23psjavvi1nf2z8i2xawygdh4amawlijnskci8y9w4x5dm"))))
+    (properties `((upstream-name . "SeqArray")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings
+                             r-gdsfmt
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-iranges
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zhengxwen/SeqArray")
+    (synopsis
+     "Data management of large-scale whole-genome sequence variant calls")
+    (description
+     "This package supports data management of large-scale whole-genome
+sequencing variant calls with thousands of individuals: genotypic data (e.g.,
+SNVs, indels and structural variation calls) and annotations in SeqArray GDS
+files are stored in an array-oriented and compressed manner, with efficient
+data access using the R programming language.")
+    (license license:gpl3)))
+
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
