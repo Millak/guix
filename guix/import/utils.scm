@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
@@ -342,7 +342,8 @@ LENGTH characters."
                             (char-set #\space #\newline))))
          (new-words
           (match words
-            (((and (or "A" "Functions" "Methods") first) . rest)
+            (((and (or "A" "Classes" "Functions" "Methods" "Tools")
+                   first) . rest)
              (cons* "This" "package" "provides"
                     (string-downcase first) rest))
             (((and (or "Contains"
