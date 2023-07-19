@@ -959,7 +959,7 @@ using password-store through rofi interface:
 (define-public tessen
   (package
     (name "tessen")
-    (version "2.1.2")
+    (version "2.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -968,7 +968,7 @@ using password-store through rofi interface:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01jaxakq847k3v2wid8fzhcmq8mraxz0q1j87s1jv75l1gy4qiij"))))
+                "0v0mkdwwxpy23fm5dqspp9c77b5ifcj7fsi8xhjrkrv1vqwmh67j"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests?
@@ -985,15 +985,15 @@ using password-store through rofi interface:
                      (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
                (delete 'configure)) ;no configure script
            #:make-flags
-           #~(list (string-append "PREFIX="
-                                  #$output))))
+           #~(list (string-append "DESTDIR=" #$output)
+                   "PREFIX=''")))
     (native-inputs (list scdoc))
     (inputs (list libnotify wl-clipboard wtype xdg-utils))
     (home-page "https://github.com/ayushnix/tessen")
     (synopsis "Frontend for password-store and gopass")
     (description "Tessen is a bash script that can autotype and copy data
 from password-store and gopass files.")
-    (license license:gpl2+)))
+    (license license:gpl2)))
 
 (define-public browserpass-native
   (package
