@@ -29625,6 +29625,30 @@ to improve the readability of data presented in tabular form rendered in web
 pages.")
     (license license:expat)))
 
+(define-public r-formula-tools
+  (package
+    (name "r-formula-tools")
+    (version "1.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "formula.tools" version))
+              (sha256
+               (base32
+                "15d3ikfmsh9zszfgfkrxb3jkipl41inm7n6bhs73kwlnklnygq2g"))))
+    (properties `((upstream-name . "formula.tools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-operator-tools))
+    (home-page "https://github.com/decisionpatterns/formula.tools")
+    (synopsis
+     "Utilities for manipulating formulas, calls, assignments and other R objects")
+    (description
+     "These utilities facilitate the programmatic manipulations of formulas,
+expressions, calls, assignments and other R language objects.  These objects
+all share the same structure: a left-hand side, operator and right-hand side.
+This packages provides methods for accessing and modifying this structures as
+well as extracting and replacing names and symbols from these objects.")
+    (license license:gpl2)))
+
 (define-public r-xmisc
   (package
     (name "r-xmisc")
