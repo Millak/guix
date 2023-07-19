@@ -7363,6 +7363,39 @@ matrix to solve the memory problem.")
 the Human Protein Atlas project.")
     (license license:artistic2.0)))
 
+(define-public r-raggedexperiment
+  (package
+    (name "r-raggedexperiment")
+    (version "1.24.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "RaggedExperiment" version))
+              (sha256
+               (base32
+                "1xs7dz5mkh9zs078g2a0izij8vxrwhzh7gyjglp057gicsca0hal"))))
+    (properties `((upstream-name . "RaggedExperiment")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-iranges
+                             r-matrix
+                             r-matrixgenerics
+                             r-s4vectors
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/RaggedExperiment")
+    (synopsis "Representation of sparse experiments and assays across samples")
+    (description
+     "This package provides a flexible representation of copy number,
+mutation, and other data that fit into the ragged array schema for genomic
+location data.  The basic representation of such data provides a rectangular
+flat table interface to the user with range information in the rows and
+samples/specimen in the columns.  The @code{RaggedExperiment} class derives
+from a @code{GRangesList} representation and provides a semblance of a
+rectangular dataset.")
+    (license license:artistic2.0)))
+
 (define-public r-rhtslib
   (package
     (name "r-rhtslib")
