@@ -9306,6 +9306,25 @@ this package.  It also provides functionalities for visualizing, summarizing
 and comparing the clusterings.")
     (license license:expat)))
 
+(define-public r-tkwidgets
+  (package
+    (name "r-tkwidgets")
+    (version "1.78.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "tkWidgets" version))
+              (sha256
+               (base32
+                "1xp0gdfrhhfzfww4ig3y90f7334y24rhzrmlxmm4wav8slvcran2"))))
+    (properties `((upstream-name . "tkWidgets")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dyndoc r-widgettools))
+    (home-page "https://bioconductor.org/packages/tkWidgets")
+    (synopsis "R based tk widgets")
+    (description
+     "This package implements widgets to provide user interfaces.")
+    (license license:artistic2.0)))
+
 (define-public r-transcriptr
   (package
     (name "r-transcriptr")
