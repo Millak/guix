@@ -9714,6 +9714,37 @@ into features.  These features can be processed with any number of statistical
 tools either included in speaq or available elsewhere on CRAN.")
     (license license:asl2.0)))
 
+(define-public r-spectra
+  (package
+    (name "r-spectra")
+    (version "1.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Spectra" version))
+              (sha256
+               (base32
+                "0vq5ha5m1vny7nrhgfmmkjd30zv0xaignp1a1m0xj08lnhkkmd69"))))
+    (properties `((upstream-name . "Spectra")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-biocparallel
+                             r-fs
+                             r-iranges
+                             r-mscoreutils
+                             r-protgenerics
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RforMassSpectrometry/Spectra")
+    (synopsis "Spectra infrastructure for mass spectrometry data")
+    (description
+     "The Spectra package defines an efficient infrastructure for storing and
+handling mass spectrometry spectra and functionality to subset, process,
+visualize and compare spectra data.  It provides different
+implementations (backends) to store mass spectrometry data.  These comprise
+backends tuned for fast data access and processing and backends for very large
+data sets ensuring a small memory footprint.")
+    (license license:artistic2.0)))
+
 (define-public r-stager
   (package
     (name "r-stager")
