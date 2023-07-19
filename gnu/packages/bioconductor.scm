@@ -8909,6 +8909,46 @@ tab-delimited (tabix) files.")
      "This package models a RESTful service as if it were a nested R list.")
     (license license:artistic2.0)))
 
+(define-public r-rtcgatoolbox
+  (package
+    (name "r-rtcgatoolbox")
+    (version "2.30.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "RTCGAToolbox" version))
+              (sha256
+               (base32
+                "03p5rgjzc1265q60jkvk92vhcib5wdnv6bz997r70q9c39y03wm5"))))
+    (properties `((upstream-name . "RTCGAToolbox")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-data-table
+                             r-delayedarray
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-httr
+                             r-raggedexperiment
+                             r-rcircos
+                             r-rcurl
+                             r-rjsonio
+                             r-rvest
+                             r-s4vectors
+                             r-stringr
+                             r-summarizedexperiment
+                             r-tcgautils))
+    (native-inputs (list r-knitr))
+    (home-page "http://mksamur.github.io/RTCGAToolbox/")
+    (synopsis "Export TCGA Firehose data")
+    (description
+     "Managing data from large scale projects such as The Cancer Genome
+Atlas (TCGA) for further analysis is an important and time consuming step for
+research projects.  Several efforts, such as Firehose project, make TCGA
+pre-processed data publicly available via web services and data portals but it
+requires managing, downloading and preparing the data for following steps.
+This package provides an extensible R based data client for Firehose
+pre-processed data.")
+    (license license:gpl2)))
+
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
