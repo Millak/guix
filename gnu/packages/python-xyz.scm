@@ -15184,39 +15184,38 @@ time.")
            texlive-adjustbox
            texlive-booktabs
            texlive-caption
+           texlive-collection-basic
            texlive-enumitem
-           texlive-fontspec
-           texlive-iftex
-           texlive-grffile
-           texlive-hyperref
+           texlive-environ
+           texlive-eurosym
            texlive-fancyvrb
            texlive-float
+           texlive-fontspec
            texlive-geometry
+           texlive-grffile
+           texlive-hyperref
            texlive-jknapltx
+           texlive-jknapltx
+           texlive-lm
+           texlive-lm-math
+           texlive-mathpazo
            texlive-ms
            texlive-parskip
-           texlive-trimspaces
-           texlive-upquote
+           texlive-pdfcol
+           texlive-pgf
+           texlive-rsfs
            texlive-stringenc
            texlive-tcolorbox
            texlive-titling
            texlive-tools
+           texlive-trimspaces
+           texlive-ucs
            texlive-ulem
            texlive-unicode-math
+           texlive-upquote
            texlive-xcolor
-           (texlive-updmap.cfg
-            (list texlive-eurosym
-                  texlive-environ
-                  texlive-jknapltx
-                  texlive-lm
-                  texlive-lm-math
-                  texlive-mathpazo
-                  texlive-pdfcol
-                  texlive-pgf
-                  texlive-rsfs
-                  texlive-ucs
-                  texlive-xetex
-                  texlive-zapfding))))
+           texlive-xetex
+           texlive-zapfding))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")
     (description "The @code{nbconvert} tool, @code{jupyter nbconvert}, converts
