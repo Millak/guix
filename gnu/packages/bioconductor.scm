@@ -6996,6 +6996,37 @@ junction detection, and working with the nucleotide content of the
 alignments.")
     (license license:artistic2.0)))
 
+(define-public r-genomicdatacommons
+  (package
+    (name "r-genomicdatacommons")
+    (version "1.24.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GenomicDataCommons" version))
+              (sha256
+               (base32
+                "0dgvhi6nbc1qvrdwww2r39gxd2xmbadvy03lxh5nny9pyhhdlz3l"))))
+    (properties `((upstream-name . "GenomicDataCommons")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-genomicranges
+                             r-httr
+                             r-iranges
+                             r-jsonlite
+                             r-magrittr
+                             r-rappdirs
+                             r-readr
+                             r-rlang
+                             r-tibble
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/GenomicDataCommons")
+    (synopsis "NIH/NCI genomic data commons access")
+    (description
+     "This package lets you programmatically access the NIH/NCI Genomic Data
+Commons RESTful service.")
+    (license license:artistic2.0)))
+
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
