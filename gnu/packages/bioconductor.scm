@@ -11263,6 +11263,40 @@ PLGEM has been shown to improve the detection of differentially expressed
 genes or proteins in these datasets.")
     (license license:gpl2)))
 
+(define-public r-plyranges
+  (package
+    (name "r-plyranges")
+    (version "1.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "plyranges" version))
+              (sha256
+               (base32
+                "1qv8snpcxpg16v5ji7sq3bnmgrgghz9h4mh246mcnnxfhi44b6nv"))))
+    (properties `((upstream-name . "plyranges")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-dplyr
+                             r-genomeinfodb
+                             r-genomicalignments
+                             r-genomicranges
+                             r-iranges
+                             r-magrittr
+                             r-rlang
+                             r-rsamtools
+                             r-rtracklayer
+                             r-s4vectors
+                             r-tidyselect))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/plyranges")
+    (synopsis "Fluent interface for manipulating GenomicRanges")
+    (description
+     "This package provides a dplyr-like interface for interacting with the
+common Bioconductor classes @code{Ranges} and @code{GenomicRanges}.  By
+providing a grammatical and consistent way of manipulating these classes their
+accessiblity for new Bioconductor users is hopefully increased.")
+    (license license:artistic2.0)))
+
 (define-public r-inspect
   (package
     (name "r-inspect")
