@@ -204,6 +204,7 @@
      (base32 "120djvscm2x1nv46is0kzwahd22rcc8gc0ssf12jnj7w290dpmra"))
     (file-name (git-file-name "racket" %racket-version))
     (patches (search-patches "racket-chez-scheme-bin-sh.patch"
+                             "racket-rktboot-riscv64-support.patch"
                              "racket-rktio-bin-sh.patch"
                              "racket-zuo-bin-sh.patch"))
     (modules '((guix build utils)))
