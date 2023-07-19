@@ -5335,6 +5335,37 @@ pre-calculated probe set quality scores that were used to define the
 mapping.")
     (license license:artistic2.0)))
 
+(define-public r-nebulosa
+  (package
+    (name "r-nebulosa")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Nebulosa" version))
+              (sha256
+               (base32
+                "0lqm9mfmaxdhhs9di2kjg2rixng78lrrikyp7blmpyqk4c41j3nh"))))
+    (properties `((upstream-name . "Nebulosa")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2
+                             r-ks
+                             r-matrix
+                             r-patchwork
+                             r-seurat
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/powellgenomicslab/Nebulosa")
+    (synopsis
+     "Single-cell data visualisation using kernel gene-weighted density estimation")
+    (description
+     "This package provides a enhanced visualization of single-cell data based
+on gene-weighted density estimation.  Nebulosa recovers the signal from
+dropped-out features and allows the inspection of the joint expression from
+multiple features (e.g. genes).  @code{Seurat} and @code{SingleCellExperiment}
+objects can be used within Nebulosa.")
+    (license license:gpl3)))
+
 ;; This is a CRAN package, but it depends on Bioconductor packages.
 (define-public r-nmf
   (package
