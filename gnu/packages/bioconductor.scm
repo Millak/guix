@@ -9671,6 +9671,33 @@ typically represent genomic ranges of interest and the columns represent
 samples.")
     (license license:artistic2.0)))
 
+(define-public r-survcomp
+  (package
+    (name "r-survcomp")
+    (version "1.50.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "survcomp" version))
+              (sha256
+               (base32
+                "1va0ijx3qk3rjhzaflygfwlzn5a670y833qly8in8p5r3al9bdj6"))))
+    (properties `((upstream-name . "survcomp")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bootstrap
+                             r-ipred
+                             r-kernsmooth
+                             r-prodlim
+                             r-rmeta
+                             r-suppdists
+                             r-survival
+                             r-survivalroc))
+    (home-page "https://www.pmgenomics.ca/bhklab/")
+    (synopsis "Performance assessment and comparison for survival analysis")
+    (description
+     "This is a package for the assessment and comparison of the performance
+of risk prediction (survival) models.")
+    (license license:artistic2.0)))
+
 (define-public r-sva
   (package
     (name "r-sva")
