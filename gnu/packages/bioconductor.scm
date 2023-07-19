@@ -7810,6 +7810,26 @@ resolution 5hmC data from experimental protocols such as oxBS-Seq and
 TAB-Seq.")
     (license license:artistic2.0)))
 
+(define-public r-mfuzz
+  (package
+    (name "r-mfuzz")
+    (version "2.60.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Mfuzz" version))
+              (sha256
+               (base32
+                "0rfna5ycwkx4xb2gv1wpfn7f7nz6f79w5nlkb7719l5730d81wnz"))))
+    (properties `((upstream-name . "Mfuzz")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-e1071 r-tkwidgets))
+    (home-page "http://mfuzz.sysbiolab.eu/")
+    (synopsis "Soft clustering of time series gene expression data")
+    (description
+     "This is a package for noise-robust soft clustering of gene expression
+time-series data (including a graphical user interface).")
+    (license license:gpl2)))
+
 (define-public r-mmuphin
   (package
     (name "r-mmuphin")
