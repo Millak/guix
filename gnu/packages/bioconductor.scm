@@ -17291,6 +17291,37 @@ non-parametric testing for statistical significance in Ct values between
 features (e.g.  genes, microRNAs).")
     (license license:artistic2.0)))
 
+(define-public r-ucell
+  (package
+    (name "r-ucell")
+    (version "2.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "UCell" version))
+              (sha256
+               (base32
+                "01qcwmiqri4xvwr3j4k1g062rfj6bbc0bvh0ifq1jq2xrm1azw9y"))))
+    (properties `((upstream-name . "UCell")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocneighbors
+                             r-biocparallel
+                             r-data-table
+                             r-matrix
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/carmonalab/UCell")
+    (synopsis "Rank-based signature enrichment analysis for single-cell data")
+    (description
+     "UCell is a package for evaluating gene signatures in single-cell datasets.
+UCell signature scores, based on the Mann-Whitney U statistic, are robust to
+dataset size and heterogeneity, and their calculation demands less computing
+time and memory than other available methods, enabling the processing of large
+datasets in a few minutes even on machines with limited computing power.
+UCell can be applied to any single-cell data matrix, and includes functions to
+directly interact with SingleCellExperiment and Seurat objects.")
+    (license license:gpl3)))
+
 (define-public r-unifiedwmwqpcr
   (package
     (name "r-unifiedwmwqpcr")
