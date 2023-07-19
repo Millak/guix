@@ -19443,6 +19443,37 @@ hierarchic loggers, multiple handlers per logger, level based filtering, space
 handling in messages and custom formatting.")
     (license license:gpl3)))
 
+(define-public r-logistf
+  (package
+    (name "r-logistf")
+    (version "1.25.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "logistf" version))
+              (sha256
+               (base32
+                "0w78jsynw5jh3l9r3ssjs8rza6givgrxzwnb5jwazcm8637d6gix"))))
+    (properties `((upstream-name . "logistf")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-formula-tools r-matrix r-mgcv r-mice))
+    (home-page
+     "https://cemsiis.meduniwien.ac.at/en/kb/science-research\
+/software/statistical-software/firth-correction/")
+    (synopsis "Firth's bias-reduced logistic regression")
+    (description
+     "Fit a logistic regression model using Firth's bias reduction method,
+equivalent to penalization of the log-likelihood by the Jeffreys prior.
+Confidence intervals for regression coefficients can be computed by penalized
+profile likelihood.  Firth's method was proposed as ideal solution to the
+problem of separation in logistic regression, see Heinze and Schemper (2002)
+<doi:10.1002/sim.1047>.  If needed, the bias reduction can be turned off such
+that ordinary maximum likelihood logistic regression is obtained.  Two new
+modifications of Firth's method, FLIC and FLAC, lead to unbiased predictions
+and are now available in the package as well, see Puhr et al (2017)
+<doi:10.1002/sim.7273>.")
+    ;; Any version of the GPL
+    (license license:gpl3+)))
+
 (define-public r-longdat
   (package
     (name "r-longdat")
