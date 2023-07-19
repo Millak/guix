@@ -9306,6 +9306,44 @@ this package.  It also provides functionalities for visualizing, summarizing
 and comparing the clusterings.")
     (license license:expat)))
 
+(define-public r-singscore
+  (package
+    (name "r-singscore")
+    (version "1.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "singscore" version))
+              (sha256
+               (base32
+                "1s1kyvkbfgwskf0hi4b44c2yx256rjp1yk9ijpld9qlm7z7pi67q"))))
+    (properties `((upstream-name . "singscore")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase
+                             r-biocparallel
+                             r-edger
+                             r-ggplot2
+                             r-ggrepel
+                             r-gseabase
+                             r-magrittr
+                             r-matrixstats
+                             r-plotly
+                             r-plyr
+                             r-rcolorbrewer
+                             r-reshape
+                             r-reshape2
+                             r-s4vectors
+                             r-summarizedexperiment
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://davislaboratory.github.io/singscore/")
+    (synopsis "Rank-based single-sample gene set scoring method")
+    (description
+     "This package provides a simple single-sample gene signature scoring
+method that uses rank-based statistics to analyze the sample's gene expression
+profile.  It scores the expression activities of gene sets at a single-sample
+level.")
+    (license license:gpl3)))
+
 (define-public r-tkwidgets
   (package
     (name "r-tkwidgets")
