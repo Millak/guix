@@ -21286,6 +21286,28 @@ The bedr package's API enhances access to these tools as well as offers
 additional utilities for genomic regions processing.")
     (license license:gpl2)))
 
+(define-public r-setrng
+  (package
+    (name "r-setrng")
+    (version "2022.4-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "setRNG" version))
+              (sha256
+               (base32
+                "09089vr5x8snwxh38kdhgpjl3jl7zrk056f6f9a2jg5lsrmnxh31"))))
+    (properties `((upstream-name . "setRNG")))
+    (build-system r-build-system)
+    (home-page "https://distr.r-forge.r-project.org/")
+    (synopsis "Set (normal) random number generator and seed")
+    (description
+     "This package provides utilities to help set and record the setting of
+the seed and the uniform and normal generators used when a random experiment
+is run.  The utilities can be used in other functions that do random
+experiments to simplify recording and/or setting all the necessary information
+for reproducibility.  See the vignette and reference manual for examples.")
+    (license license:gpl2)))
+
 (define-public r-sets
   (package
     (name "r-sets")
