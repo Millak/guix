@@ -8009,6 +8009,28 @@ can be computed between character vectors while taking proper care of encoding
 or between integer vectors representing generic sequences.")
     (license license:gpl3+)))
 
+(define-public r-uchardet
+  (package
+    (name "r-uchardet")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "uchardet" version))
+              (sha256
+               (base32
+                "0m3xy807smqdxhkhd9cwrcf3ljlyvfmnkd7831qzpgcadam2jcdj"))))
+    (properties `((upstream-name . "uchardet")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://artemklevtsov.gitlab.io/uchardet")
+    (synopsis "Universal character encoding detector")
+    (description
+     "This package provides R bindings to the uchardet encoding detector
+library from Mozilla.  It takes a sequence of bytes in an unknown character
+encoding without any additional information, and attempts to get the encoding
+of the text.  All return names of the encodings are iconv-compatible.")
+    (license license:gpl2)))
+
 (define-public r-ucminf
   (package
     (name "r-ucminf")
