@@ -298,7 +298,8 @@ also known as DXTn or DXTC) for Mesa.")
            libxvmc
            llvm-for-mesa
            wayland
-           wayland-protocols))
+           wayland-protocols
+           `(,zstd "lib")))
     (native-inputs
      (list bison
            flex
@@ -361,6 +362,9 @@ svga,swrast,virgl")))
          ;; Enable the codecs that were built by default as part of the
          ;; 21.3.x releases to avoid functionality regressions.
          "-Dvideo-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc"
+
+         ;; Enable ZSTD compression for shader cache.
+         "-Dzstd=enabled"
 
          ;; Also enable the tests.
          "-Dbuild-tests=true"
