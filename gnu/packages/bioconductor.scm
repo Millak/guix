@@ -6677,6 +6677,34 @@ other types of genomic data that produce counts, including ChIP-seq, SAGE and
 CAGE.")
     (license license:gpl2+)))
 
+(define-public r-enhancedvolcano
+  (package
+    (name "r-enhancedvolcano")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "EnhancedVolcano" version))
+              (sha256
+               (base32
+                "1mcyhgdvfmkkh0rlhf51an7j1zi96lqdhifki2aqmlx0lqvg4qxq"))))
+    (properties `((upstream-name . "EnhancedVolcano")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-ggrepel))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/kevinblighe/EnhancedVolcano")
+    (synopsis
+     "Publication-ready volcano plots with enhanced coloring and labeling")
+    (description
+     "Volcano plots represent a useful way to visualise the results of
+differential expression analyses.  This package provides a highly-configurable
+function that produces publication-ready volcano plots.  EnhancedVolcano will
+attempt to fit as many point labels in the plot window as possible, thus
+avoiding clogging up the plot with labels that could not otherwise have been
+read.  Other functionality allows the user to identify up to 4 different types
+of attributes in the same plot space via color, shape, size, and shade
+parameter configurations.")
+    (license license:gpl3)))
+
 (define-public r-enmix
   (package
     (name "r-enmix")
