@@ -1251,6 +1251,31 @@ quickly isolate key differences makes understanding test failures much
 easier.")
     (license license:expat)))
 
+(define-public r-wheatmap
+  (package
+    (name "r-wheatmap")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "wheatmap" version))
+              (sha256
+               (base32
+                "064idlrnb85xxav39gp3n854fic6514khvazrf5d0x48crpzyvdp"))))
+    (properties `((upstream-name . "wheatmap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-colorspace r-rcolorbrewer))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zwdzwd/wheatmap")
+    (synopsis "Incrementally build complex plots using natural semantics")
+    (description
+     "This package lets you build complex plots, heatmaps in particular, using
+natural semantics.  Bigger plots can be assembled using directives such as
+@code{LeftOf}, @code{RightOf}, @code{TopOf}, and @code{Beneath} and more.
+Other features include clustering, dendrograms and integration with ggplot2
+generated grid objects.  This package is particularly designed for
+bioinformaticians to assemble complex plots for publication.")
+    (license license:gpl3)))
+
 (define-public r-rticles
   (package
     (name "r-rticles")
