@@ -19283,6 +19283,26 @@ matrices.")
 performs copy number calculations and reports.")
     (license license:gpl2)))
 
+(define-public r-beaddatapackr
+  (package
+    (name "r-beaddatapackr")
+    (version "1.52.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BeadDataPackR" version))
+              (sha256
+               (base32
+                "0hm4brxg2rxazdcnhjiz6f4di2q8wssrrp35m79vm93sac9w42y3"))))
+    (properties `((upstream-name . "BeadDataPackR")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/BeadDataPackR")
+    (synopsis "Compression of Illumina BeadArray data")
+    (description
+     "This package provides functionality for the compression and
+decompression of raw bead-level data from the Illumina BeadArray platform.")
+    (license license:gpl2)))
+
 ;; This package includes files that have been taken from kentutils.  Some
 ;; parts of kentutils are not released under a free license, but this package
 ;; only uses files that are also found in the free parts of kentutils.
