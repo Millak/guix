@@ -10619,6 +10619,36 @@ expressed genes in DNA microarray experiments.")
 fitting of some classes of graphical Markov models.")
     (license license:gpl2+)))
 
+(define-public r-ggtreeextra
+  (package
+    (name "r-ggtreeextra")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ggtreeExtra" version))
+              (sha256
+               (base32
+                "19xikly6ksh03kgpz35wj2d2gdbpikhrk71ahj9ghhkmlwdyjbcr"))))
+    (properties `((upstream-name . "ggtreeExtra")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-ggnewscale
+                             r-ggplot2
+                             r-ggtree
+                             r-magrittr
+                             r-rlang
+                             r-tidytree))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/YuLab-SMU/ggtreeExtra/")
+    (synopsis
+     "Add geometric layers On circular or other layout tree of ggtree")
+    (description
+     "ggtreeExtra extends the method for mapping and visualizing associated
+data on phylogenetic tree using ggtree.  These associated data can be
+presented on the external panels to circular layout, fan layout, or other
+rectangular layout tree built by ggtree with the grammar of ggplot2.")
+    (license license:gpl3+)))
+
 ;; This is a CRAN package, but it depends on a bunch of Bioconductor packages.
 (define-public r-ggpicrust2
   (package
