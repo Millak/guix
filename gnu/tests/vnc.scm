@@ -113,7 +113,6 @@
                               (guix build utils)))
       #~(begin
           (use-modules (gnu build marionette)
-                       (guix build utils)
                        (srfi srfi-26)
                        (srfi srfi-64))
 
@@ -144,11 +143,12 @@
               ;; check it here.
               (marionette-eval
                '(begin
+                  (use-modules (guix build utils))
                   ;; Check that DCONF_PROFILE is set...
                   (invoke "/bin/sh" "-lc" "\
 pgrep gdm | head -n1 | xargs -I{} grep -Fq DCONF_PROFILE /proc/{}/environ")
 
-                  ;; ... and that
+                  ;; ... and that 'sleep-inactive-ac-type' is unset.
                   (invoke "/bin/sh" "-lc" "\
 sudo -E -u gdm env DCONF_PROFILE=/etc/dconf/profile/gdm dbus-run-session \
 gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type \
