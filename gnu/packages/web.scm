@@ -62,6 +62,7 @@
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8563,6 +8564,34 @@ virtualhosts, CGI, default language choice, redirections and MIME-type
 detection.  It delegates TLS support to an external daemon, for example
 @command{stunnel} on @command{inetd}.")
     (license license:bsd-2)))
+
+(define-public kineto
+  (package
+    (name "kineto")
+    (version "0.0.0-20211105093215-857f8c97ebc5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~sircmpwn/kineto")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r17c904i76yy5ilvhjczmhnq5g7r4nkjwmsjcfxcqzly0ia7m2k"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "git.sr.ht/~sircmpwn/kineto/"))
+    (propagated-inputs
+     (list go-git-sr-ht-sircmpwn-getopt go-git-sr-ht-adnano-go-gemini))
+    (home-page "https://git.sr.ht/~sircmpwn/kineto/")
+    (synopsis "HTTP proxy for Gemini")
+    (description
+     "This is an @acronym{HTTP} to
+@url{https://gemini.circumlunar.space/,Gemini} proxy designed to provide
+service for a single domain, i.e.  to make your Gemini site available over
+HTTP.  It can proxy to any domain in order to facilitate linking to the rest
+of Geminispace, but it defaults to a specific domain.")
+    (license license:gpl3+)))
 
 (define-public libzim
   (package
