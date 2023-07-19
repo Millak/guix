@@ -10416,6 +10416,41 @@ arrays (expression/SNP/tiling/exon) at probe-level.  It currently supports
 Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
     (license license:lgpl2.0+)))
 
+(define-public r-qfeatures
+  (package
+    (name "r-qfeatures")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "QFeatures" version))
+              (sha256
+               (base32
+                "1xnmd14nf4cqbfxkjsl6af312k7l27ars5g8qdnljylkn8kq276z"))))
+    (properties `((upstream-name . "QFeatures")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationfilter
+                             r-biobase
+                             r-biocgenerics
+                             r-igraph
+                             r-iranges
+                             r-lazyeval
+                             r-mscoreutils
+                             r-multiassayexperiment
+                             r-plotly
+                             r-protgenerics
+                             r-s4vectors
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RforMassSpectrometry/QFeatures")
+    (synopsis "Quantitative features for mass spectrometry data")
+    (description
+     "The QFeatures infrastructure enables the management and processing of
+quantitative features for high-throughput mass spectrometry assays.  It
+provides a familiar Bioconductor user experience to manages quantitative data
+across different assay levels (such as peptide spectrum matches, peptides and
+proteins) in a coherent and tractable format.")
+    (license license:artistic2.0)))
+
 (define-public r-quantsmooth
   (package
     (name "r-quantsmooth")
