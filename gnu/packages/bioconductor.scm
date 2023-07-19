@@ -9440,6 +9440,44 @@ profile.  It scores the expression activities of gene sets at a single-sample
 level.")
     (license license:gpl3)))
 
+(define-public r-tcgautils
+  (package
+    (name "r-tcgautils")
+    (version "1.20.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "TCGAutils" version))
+              (sha256
+               (base32
+                "0nnfrd5x3mii9adizvz79jinlxn2lhg4civ9v0wwygmdhk7rrm1n"))))
+    (properties `((upstream-name . "TCGAutils")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-biocgenerics
+                             r-genomeinfodb
+                             r-genomicdatacommons
+                             r-genomicfeatures
+                             r-genomicranges
+                             r-iranges
+                             r-multiassayexperiment
+                             r-raggedexperiment
+                             r-rvest
+                             r-s4vectors
+                             r-stringr
+                             r-summarizedexperiment
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/TCGAutils")
+    (synopsis "TCGA utility functions for data management")
+    (description
+     "This package provides a suite of helper functions for checking and
+manipulating TCGA data including data obtained from the @code{curatedTCGAData}
+experiment package.  These functions aim to simplify and make working with
+TCGA data more manageable.  Exported functions include those that import data
+from flat files into Bioconductor objects, convert row annotations, and
+identifier translation via the GDC API.")
+    (license license:artistic2.0)))
+
 (define-public r-tkwidgets
   (package
     (name "r-tkwidgets")
