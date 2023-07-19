@@ -1832,6 +1832,36 @@ is Python’s.")
 service.")
     (license license:expat)))
 
+(define-public python-openai
+  (package
+    (name "python-openai")
+    (version "0.27.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "openai" version))
+              (sha256
+               (base32
+                "0dlmxnib71fih9xzmd3v41alwv4qb8qrxixsrrsf5vmigmf0k0r4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These require internet access and an openai API key.
+      '(list "--ignore=openai/tests/asyncio/test_endpoints.py"
+             "--ignore=openai/tests/test_endpoints.py"
+             "-k" "not test_requestor_cycle_sessions\
+ and not test_requestor_sets_request_id\
+ and not test_file_cli")))
+    (propagated-inputs (list python-aiohttp python-requests python-tqdm
+                             python-typing-extensions))
+    (native-inputs (list python-black python-pytest python-pytest-asyncio
+                         python-pytest-mock))
+    (home-page "https://github.com/openai/openai-python")
+    (synopsis "Python client library for the OpenAI API")
+    (description "This package provides a Python client library for the
+OpenAI API.")
+    (license license:expat)))
+
 (define-public python-openapi-schema-validator
   (package
     (name "python-openapi-schema-validator")
