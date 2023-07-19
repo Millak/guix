@@ -77,6 +77,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages gps)
   #:use-module (gnu packages web))
 
 (define-public bluedevil
@@ -2280,17 +2281,18 @@ sensors, process information and other system resources.")
 (define-public plasma-workspace
   (package
     (name "plasma-workspace")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0pxwg3i07sipfchn4qkmlr6kcgqbhj2s10xq69wi32x1fc13jx5x"))))
+                "10w8ix9c29gvykr9970aax7jcz2fi99cafr1kknvj2drgc7zgrhw"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg-5
-                         qttools-5))
+                         qttools-5
+                         xorg-server-for-tests))
     (inputs (list appmenu-gtk-module
                   appstream-qt
                   baloo
@@ -2368,13 +2370,18 @@ sensors, process information and other system resources.")
                   xrdb
                   xmessage
                   xsetroot
+                  polkit-qt
+
+                  libxcursor
+                  libkexiv2
+                  gpsd
                   zlib))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-wallpaper
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "sddm-theme/theme.conf.cmake"
+                   (substitute* "lookandfeel/sddm-theme/theme.conf.cmake"
                      (("background=..KDE_INSTALL_FULL_WALLPAPERDIR.")
                       (string-append "background="
                                      #$(this-package-input "breeze")
@@ -2405,6 +2412,8 @@ sensors, process information and other system resources.")
                (add-after 'install 'check-after-install
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
+                     (setenv "DISPLAY" ":1")
+                     (system "Xvfb +extension GLX :1 &")
                      (setenv "HOME" (getcwd))
                      (setenv "XDG_RUNTIME_DIR" (getcwd))
                      (setenv "XDG_CACHE_HOME" (getcwd))
@@ -2413,8 +2422,17 @@ sensors, process information and other system resources.")
                              (string-append #$output
                                             "/lib/qt5/plugins:"
                                             (getenv "QT_PLUGIN_PATH")))
-                     (invoke "ctest" "-E"
-                             "(appstreamtest|lookandfeel-kcmTest|tst_triangleFilter|systemtraymodeltest|testdesktop| screenpooltest)")))))))
+                     (setenv "QML2_IMPORT_PATH"
+                             (string-append #$output
+                                            "/lib/qt5/qml:"
+                                            (getenv "QML2_IMPORT_PATH")))
+                     (invoke "dbus-launch" "ctest"
+                             "--output-on-failure"
+                             "--rerun-failed"
+                             "-E"
+                             "(appstreamtest|tasksmodeltest|shelltest|\
+testimagefinder|systemtraymodeltest|testimagelistmodel|\
+testpackageimagelistmodel|testimageproxymodel|testslidemodel|testdesktop)")))))))
     (home-page "https://invent.kde.org/plasma/plasma-workspace")
     (synopsis "Plasma workspace components")
     (description
