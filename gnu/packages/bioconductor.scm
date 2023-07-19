@@ -7183,6 +7183,46 @@ testing and other simple calculations.")
 Enrichment Analysis} (GSEA).")
     (license license:artistic2.0)))
 
+(define-public r-gsva
+  (package
+    (name "r-gsva")
+    (version "1.48.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GSVA" version))
+              (sha256
+               (base32
+                "1y0dz9ayyrz4ylppa8f4m4b20yajzdl1sz4wpz8kcsfhh71ii64y"))))
+    (properties `((upstream-name . "GSVA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase
+                             r-biocparallel
+                             r-biocsingular
+                             r-delayedarray
+                             r-delayedmatrixstats
+                             r-gseabase
+                             r-hdf5array
+                             r-iranges
+                             r-matrix
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-sparsematrixstats
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/rcastelo/GSVA")
+    (synopsis "Gene Set Variation Analysis for microarray and RNA-seq data")
+    (description
+     "Gene Set Variation Analysis (GSVA) is a non-parametric, unsupervised
+method for estimating variation of gene set enrichment through the samples of
+a expression data set.  GSVA performs a change in coordinate systems,
+transforming the data from a gene by sample matrix to a gene-set by sample
+matrix, thereby allowing the evaluation of pathway enrichment for each sample.
+This new matrix of GSVA enrichment scores facilitates applying standard
+analytical methods like functional enrichment, survival analysis, clustering,
+CNV-pathway analysis or cross-tissue pathway analysis, in a pathway-centric
+manner.")
+    (license license:gpl2+)))
+
 (define-public r-harshlight
   (package
     (name "r-harshlight")
