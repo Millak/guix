@@ -20317,6 +20317,37 @@ with your data.")
 EMBL-EBI GWAS catalog.")
     (license license:artistic2.0)))
 
+(define-public r-gwastools
+  (package
+    (name "r-gwastools")
+    (version "1.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GWASTools" version))
+              (sha256
+               (base32
+                "1g86xg2d9wi6xijhc89zxhbw190aviw9nkwvbwgz85jf71wf34hv"))))
+    (properties `((upstream-name . "GWASTools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase
+                             r-data-table
+                             r-dbi
+                             r-dnacopy
+                             r-gdsfmt
+                             r-gwasexacthw
+                             r-lmtest
+                             r-logistf
+                             r-quantsmooth
+                             r-rsqlite
+                             r-sandwich
+                             r-survival))
+    (home-page "https://github.com/smgogarten/GWASTools")
+    (synopsis "Tools for Genome Wide Association Studies")
+    (description
+     "This package provides classes for storing very large GWAS data sets and
+annotation, and functions for GWAS data cleaning and analysis.")
+    (license license:artistic2.0)))
+
 (define-public r-kegggraph
   (package
     (name "r-kegggraph")
