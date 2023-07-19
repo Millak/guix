@@ -19263,6 +19263,39 @@ variety of commonly used matrix types, including sparse and HDF5-backed
 matrices.")
     (license license:gpl3)))
 
+(define-public r-beadarray
+  (package
+    (name "r-beadarray")
+    (version "2.50.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "beadarray" version))
+              (sha256
+               (base32
+                "0rd41193rq6v4a97ibp0l2bz140nsv91plhn7iim8d8n9hgxqhjp"))))
+    (properties `((upstream-name . "beadarray")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-beaddatapackr
+                             r-biobase
+                             r-biocgenerics
+                             r-genomicranges
+                             r-ggplot2
+                             r-hexbin
+                             r-illuminaio
+                             r-iranges
+                             r-limma
+                             r-reshape2))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/beadarray")
+    (synopsis
+     "Quality assessment and low-level analysis for Illumina BeadArray data")
+    (description
+     "The package is able to read bead-level data (raw TIFFs and text files)
+output by BeadScan as well as bead-summary data from BeadStudio.  Methods for
+quality assessment and low-level analysis are provided.")
+    (license license:expat)))
+
 (define-public r-beadarraysnp
   (package
     (name "r-beadarraysnp")
