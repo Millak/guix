@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -52,6 +52,14 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
 (test-equal "beautify-description: escape @"
   "This @@ is not Texinfo syntax.  Neither is this %@@>%."
   (beautify-description "This @ is not Texinfo syntax.  Neither is this %@>%."))
+
+(test-equal "beautify-description: wrap PascalCase words in @code"
+  "The term @code{DelayedMatrix} refers to a class."
+  (beautify-description "The term DelayedMatrix refers to a class."))
+
+(test-equal "beautify-description: do not wrap acronyms in @code"
+  "The term API is not code, but @code{myAPI} might be."
+  (beautify-description "The term API is not code, but myAPI might be."))
 
 (test-equal "license->symbol"
   'license:lgpl2.0
