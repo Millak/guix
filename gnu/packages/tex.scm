@@ -3596,6 +3596,25 @@ with different data for each pupil.")
     (description "This package provides a set of macros for resumes.")
     (license license:public-domain)))
 
+(define-public texlive-ruler
+  (package
+    (name "texlive-ruler")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/ruler/")
+             (base32
+              "1ikap9dkdw9lzpda0f2krizqbfkyjxvyddils7clim9nhg77aq71")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ruler")
+    (synopsis "Typographic ruler for TeX")
+    (description
+     "The file processes to produce (real) rulers; the author suggests
+printing them on transparent plastic and trimming for use as a real ruler.
+The rule widths are 0.05mm, which can be challenging for (old) laser
+printers.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
