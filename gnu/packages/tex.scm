@@ -3294,6 +3294,26 @@ prevents TeX from optimising away maths penalties and the like, that are
 needed when the material is @code{\\unhbox}'ed.")
     (license license:gpl3+)))
 
+(define-public texlive-path
+  (package
+    (name "texlive-path")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/path/" "tex/generic/path/")
+             (base32
+              "09m1f9si97hrfqsyj0mzbi9djgk0w4vq13yd3v0af9v3240h1ps2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/path")
+    (synopsis "Typeset paths, making them breakable")
+    (description
+     "This package defines a macro @code{\\path|...|}, similar to the LaTeX
+@code{\\verb|...|}, that sets the text in typewriter font and allows
+hyphen-less breaks at punctuation characters.  The set of characters to be
+regarded as punctuation may be changed from the package's default.")
+    (license license:knuth)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
