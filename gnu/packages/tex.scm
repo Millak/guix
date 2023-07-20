@@ -1517,6 +1517,28 @@ german.  They draw up bibliographies in accordance with the german DIN 1505,
 parts 2 and 3.")
     (license license:public-domain)))
 
+(define-public texlive-dirtree
+  (package
+    (name "texlive-dirtree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/dirtree/"
+                   "source/generic/dirtree/"
+                   "tex/generic/dirtree/")
+             (base32
+              "1righlip75ry0yc6kbpijq423k4m625byzgb55d32s7c0imvj41v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dirtree")
+    (synopsis "Display trees in the style of Windows Explorer")
+    (description
+     "This package is designed to emulate the way Windows Explorer displays
+directory and file trees, with the root at top left, and each level of subtree
+displaying one step in to the right.  The macros work equally well with Plain
+TeX and with LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
