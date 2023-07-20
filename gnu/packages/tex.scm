@@ -3145,6 +3145,29 @@ a division operation without destroying the values of the counters containing
 the dividend and divisor.")
     (license license:lppl1.3c)))
 
+(define-public texlive-namedef
+  (package
+    (name "texlive-namedef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/namedef/"
+                   "source/generic/namedef/"
+                   "tex/generic/namedef/")
+             (base32
+              "1rc97c8zn1gb1cfqf70q5iphnbkgay4xmw1a2h55kc9wj4ql2j5d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-l3kernel))
+    (home-page "https://ctan.org/pkg/namedef")
+    (synopsis "TeX definitions with named parameters")
+    (description
+     "This package provides a prefix @code{\\named} to be used in TeX
+definitions so that parameters can be identified by their name rather than by
+number, giving parameters a semantic rather than syntactic meaning, making it
+easy to understand long definitions.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
