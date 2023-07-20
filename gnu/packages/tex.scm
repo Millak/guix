@@ -3437,6 +3437,29 @@ documents.  The paragraphs generated contain many f-groups (@samp{ff},
 use.")
     (license license:lppl)))
 
+(define-public texlive-plnfss
+  (package
+    (name "texlive-plnfss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/plnfss/" "tex/plain/plnfss/")
+             (base32
+              "1cgnp8y9m0ziq1pfvjx83vi0r0k5xpckk0kiijy0g80wd3s4zbsd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plnfss")
+    (synopsis "Font selection for Plain TeX")
+    (description
+     "Plnfss is a set of macros to provide easy font access (somewhat similar
+to NFSS but with some limitations) with Plain TeX.  Plnfss can automatically
+make use of PSNFSS @code{fd} files, i.e., when an Adobe Type 1 is used the
+relevant @code{fd} file will be loaded automatically.  For @code{cmr}-like
+fonts (@code{ec}, @code{vnr}, @code{csr} or @code{plr} fonts), a special
+format called @code{pfd} (plain @code{fd}) is required and must be loaded
+manually.")
+    (license license:lppl)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
