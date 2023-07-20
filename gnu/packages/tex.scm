@@ -3191,6 +3191,25 @@ information and PDF viewer's display (not in ConTeXt); and commands to create
 and use raw PDF objects.")
     (license license:lppl)))
 
+(define-public texlive-newsletr
+  (package
+    (name "texlive-newsletr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/newsletr/" "tex/plain/newsletr/")
+             (base32
+              "0c7ggyx1jnw05vn589awxxbpfqkwf7kq4qn9pm61ycb6p9n3nn0h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newsletr")
+    (synopsis "Macros for making newsletters with Plain TeX")
+    (description
+     "This package provides macros for making newsletters with Plain TeX.")
+    ;; License is almost Knuth's, but requires marking modifications
+    ;; explicitly instead of simply renaming the file.
+    (license (license:fsf-free "file://doc/plain/newsletr/read.me"))))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
