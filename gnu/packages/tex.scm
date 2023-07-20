@@ -3698,6 +3698,27 @@ effect of a rule that swells in its centre.")
     ;; not result from using this package. Use at your own risk".
     (license (license:fsf-free "file://tex/generic/swrule/swrule.sty"))))
 
+(define-public texlive-systeme
+  (package
+    (name "texlive-systeme")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/systeme/"
+                   "tex/generic/systeme/")
+             (base32
+              "02n8bchq9crv21cqvji4kkrjsyp34wny5i047jyp1j2yz8i99m5y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/systeme")
+    (synopsis "Format systems of equations")
+    (description
+     "The package allows you to enter systems of equations or inequalities in
+an intuitive way, and produces typeset output where the terms and signs are
+aligned vertically.  The package works with plain TeX or LaTeX, but e-TeX is
+required.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
