@@ -1447,6 +1447,41 @@ argument is less than, equal to, or greater than the second argument.  Sorting
 is alphabetic, using ASCII collating order.")
     (license license:public-domain)))
 
+(define-public texlive-crossrefenum
+  (package
+    (name "texlive-crossrefenum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/crossrefenum/"
+                   "tex/generic/crossrefenum/")
+             (base32
+              "07h7d47fxjj70h4bxd5sqz8abjnvgvkrnsy13a26imbarzg14db4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crossrefenum")
+    (synopsis
+     "Smart typesetting of enumerated cross-references for various TeX formats")
+    (description
+     "@code{crossrefenum} lets TeX manage the formatting of bunches of
+cross-references for you.  It features:
+
+@itemize
+@item automatic collapsing of references;
+@item support for references by various criteria, including page and note
+number, line number in ConTeXt, and @code{edpage} and @code{edline} when used
+in conjunction with @code{reledmac};
+@item handling of references combining two criteria (e.g., by page and note
+number);
+@item extension mechanisms to add support to other types of references without
+modifying the internal macros.  Note that sorting is not supported.
+@end itemize
+
+It is written in Plain TeX as much as possible in order to make it compatible
+with a wide array of formats.  For the moment, it works out of the box with
+ConTeXt and LaTeX.")
+    (license (list license:gpl3+ license:fdl1.3+))))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
