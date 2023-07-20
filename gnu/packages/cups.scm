@@ -199,9 +199,11 @@ driver is known to work with these printers:
                       (wrap-program file
                         `("PATH" ":" prefix
                           (,(string-append
+                             #$(this-package-input "coreutils") "/bin:"
                              #$(this-package-input "ghostscript-with-cups")
                              "/bin:"
-                             #$(this-package-input "grep") "/bin")))))
+                             #$(this-package-input "grep") "/bin:"
+                             #$(this-package-input "sed") "/bin")))))
                     (find-files (string-append #$output
                                                "/lib/cups/filter"))))))))
     (native-inputs
@@ -212,6 +214,7 @@ driver is known to work with these printers:
                    pkg-config)))
     (inputs
      (list avahi
+           coreutils
            fontconfig
            freetype
            font-dejavu                  ; also needed by test suite
@@ -226,6 +229,7 @@ driver is known to work with these printers:
            glib
            qpdf
            poppler
+           sed
            cups-minimal))
     (home-page "https://wiki.linuxfoundation.org/openprinting/cups-filters")
     (synopsis "OpenPrinting CUPS filters and backends")
