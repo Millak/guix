@@ -1535,10 +1535,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/idris-test-ffi008.patch			\
   %D%/packages/patches/igraph-fix-varargs-integer-size.patch	\
   %D%/packages/patches/ilmbase-fix-tests.patch			\
-  %D%/packages/patches/imagemagick-CVE-2020-27829.patch		\
-  %D%/packages/patches/imagemagick-ReadDCMImage-fix.patch	\
-  %D%/packages/patches/imagemagick-ReadDCMPixels-fix.patch	\
-  %D%/packages/patches/imagemagick-WriteTHUMBNAILImage-fix.patch	\
+  %D%/packages/patches/imagemagick-fix-tests.patch		\
   %D%/packages/patches/inkscape-poppler-compat.patch		\
   %D%/packages/patches/instead-use-games-path.patch		\
   %D%/packages/patches/intltool-perl-compatibility.patch	\

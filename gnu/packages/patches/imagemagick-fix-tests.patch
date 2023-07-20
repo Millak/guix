@@ -1,0 +1,23 @@
+From 696d8735e05688d0162b769f37b0d75205ab2a97 Mon Sep 17 00:00:00 2001
+From: Saku Laesvuori <saku@laesvuori.fi>
+Date: Thu, 20 Jul 2023 19:14:43 +0300
+Subject: [PATCH] Fix tests
+
+---
+ Magick++/demo/demo.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Magick++/demo/demo.cpp b/Magick++/demo/demo.cpp
+index 14721dbcd..12cc3b10c 100644
+--- a/Magick++/demo/demo.cpp
++++ b/Magick++/demo/demo.cpp
+@@ -477,7 +477,7 @@ int main( int /*argc*/, char ** argv)
+       montageOpts.compose( OverCompositeOp );
+       montageOpts.backgroundColor( "#ffffff" );
+       montageOpts.pointSize( 18 );
++      montageOpts.font(MAGICK_FONT);
+       montageOpts.fillColor( "#600" );
+       montageOpts.strokeColor( Color() );
+       montageOpts.compose(OverCompositeOp);
+--
+2.41.0
