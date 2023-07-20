@@ -2604,6 +2604,29 @@ the package in a file and to use the commands there.  A few additional
 commands supporting this last purpose are also made available.")
     (license license:public-domain)))
 
+(define-public texlive-font-change
+  (package
+    (name "texlive-font-change")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/font-change/"
+                   "tex/plain/font-change/")
+             (base32
+              "1b2i3gwrwfa2ab95m2ksmypiwc5dmfyirymhm18g1h0zpj86ccza")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/font-change")
+    (synopsis "Macros to change text and mathematics fonts in plain TeX")
+    (description
+     "This package provides macros to change text and mathematics fonts in
+TeX.  The macros are written for plain TeX and may be used with other packages
+like AmSTeX, eplain, etc.  They also work with XeTeX. The macros allow users
+to change the fonts (for both text and mathematics) in their TeX document with
+only one statement.  The fonts may be used readily at various predefined
+sizes.")
+    (license license:cc-by-sa3.0)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
