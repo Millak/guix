@@ -3556,6 +3556,29 @@ random integers in a given range, or random dimensions, which can be used to
 provide random real numbers.")
     (license license:public-domain)))
 
+(define-public texlive-randomlist
+  (package
+    (name "texlive-randomlist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/randomlist/"
+                   "source/generic/randomlist/"
+                   "tex/generic/randomlist/")
+             (base32
+              "04pbbxxnynyc3l94560vvnad3rx7l2ic6p078az15v5qic7rki84")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/randomlist")
+    (synopsis
+     "Deal with database, loop, and random in order to build personalized
+exercises")
+    (description
+     "The main aim of this package is to work on lists, especially with random
+operations.  The hidden aim is to build a personnal collection of exercises
+with different data for each pupil.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
