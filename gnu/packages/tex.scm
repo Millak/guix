@@ -1346,6 +1346,25 @@ south-east, etc.); 12 types and 32 directions are available.")
     ;; files in this package without limitation."
     (license (license:fsf-free "file://doc/generic/borceux/README"))))
 
+(define-public texlive-c-pascal
+  (package
+    (name "texlive-c-pascal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/c-pascal/"
+                   "tex/generic/c-pascal/")
+             (base32
+              "0kmxki1yclk7lzlidcvsdry7mzm58zzwq3rxgvmpawq2hs8hpcra")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/c-pascal")
+    (synopsis "Typeset Python, C and Pascal programs")
+    (description
+     "This package provides a TeX macro package for easy typesetting programs
+in Python, C and Pascal.  Program source files may also be input.")
+    (license license:public-domain)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
