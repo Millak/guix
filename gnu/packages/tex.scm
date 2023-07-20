@@ -3737,6 +3737,28 @@ required.")
 position is already further along, @code{\\tabto} starts a new line.")
     (license license:public-domain)))
 
+(define-public texlive-termmenu
+  (package
+    (name "texlive-termmenu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/termmenu/"
+                   "source/generic/termmenu/"
+                   "tex/generic/termmenu/")
+             (base32
+              "0d1pdz5izr43ndji7g28932dnnf8d6nxvh8bay2yk7647yh47aj4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/termmenu")
+    (synopsis "Support for terminal-based menus")
+    (description
+     "When writing programs, it's often required to present the user with
+a list of options or actions.  The user is then expected to select one of
+these options for the program to process.  @code{termmenu} provides this
+mechanism for TeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
