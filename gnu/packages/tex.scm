@@ -3842,6 +3842,25 @@ yearly) automatically, and can be easily localized for non-English
 languages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-texdimens
+  (package
+    (name "texlive-texdimens")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/texdimens/"
+                   "tex/generic/texdimens/")
+             (base32
+              "0l6raryqpxydis9kq6sd4pvz7d2rzrrsnx7k9n3d3921pp208lv4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texdimens")
+    (synopsis "Conversion of TeX dimensions to decimals")
+    (description
+     "This package provides utilities and documentation related to TeX
+dimensional units, usable both with Plain TeX and with LaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
