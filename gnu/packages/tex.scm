@@ -2929,6 +2929,25 @@ before it's read by TeX.")
 primitive.  This is a TeX package.")
     (license license:public-domain)))
 
+(define-public texlive-js-misc
+  (package
+    (name "texlive-js-misc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/js-misc/" "tex/plain/js-misc/")
+             (base32
+              "03cixw6rbg787ma8v43py07vrmhijf9cfg965ndahbzyhi6vkc96")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/js-misc")
+    (synopsis "Miscellaneous macros from Joachim Schrod")
+    (description
+     "This package provides a bunch of packages, including: @file{idverb.tex},
+for short verbatim; @file{xfig.tex}, for including xfig/transfig output in
+a TeX document; and @file{cassette.tex} for setting cassette labels.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
