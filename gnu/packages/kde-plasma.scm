@@ -1605,14 +1605,14 @@ the KDE Plasma 5 desktop.")
 (define-public plasma-desktop
   (package
     (name "plasma-desktop")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05s1pkwr4xmkghp8jrwcyrvjm83n68ngmk2694055xcfgi0pxicg"))))
+                "10x68lqg6zxb8fajd277lm0qfrdg2jz7m58l3wna4nv9bni5wj72"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules
                          dbus
@@ -1620,7 +1620,9 @@ the KDE Plasma 5 desktop.")
                          intltool
                          pkg-config
                          qtsvg-5
-                         qttools-5))
+                         qttools-5
+                         ;; require QtWaylandScanner
+                         qtwayland-5))
     (inputs (list packagekit-qt5
                   signon-plugin-oauth2
                   signond
@@ -1724,17 +1726,6 @@ the KDE Plasma 5 desktop.")
                       (string-append "\"" (search-input-directory
                                            inputs "/share/xml/iso-codes")
                                      "\"")))))
-               (add-after 'unpack 'patch-qml-import-path
-                 (lambda _
-                   (substitute*
-                       '("applets/pager/package/contents/ui/main.qml"
-                         "containments/desktop/package/contents/ui/FolderView.qml"
-                         "containments/desktop/package/contents/ui/main.qml"
-                         "containments/panel/contents/ui/main.qml")
-                     (("^import \"(utils|FolderTools|LayoutManager).js\" as "
-                       line mod)
-                      (string-append "import \"../code/" mod
-                                     ".js\" as ")))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
