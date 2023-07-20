@@ -3637,6 +3637,27 @@ of concepts and categories in Scholastic thought from late medieval and early
 modern periods.")
     (license license:lppl1.3+)))
 
+(define-public texlive-shade
+  (package
+    (name "texlive-shade")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/shade/"
+                   "fonts/source/public/shade/"
+                   "tex/generic/shade/")
+             (base32
+              "1b7m11d374cx5rcrvgd2jld1wzixvky3mqdg54hnsg9x14p2dxpg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shade")
+    (synopsis "Shade pieces of text")
+    (description
+     "The package provides a shaded backdrop to a box of text.  It uses
+a Metafont font (provided) which generates to appropriate shading dependent on
+the resolution used in the Metafont printer parameters.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
