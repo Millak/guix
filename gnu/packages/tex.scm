@@ -3944,6 +3944,24 @@ usable elsewhere, and demonstrates the macros.  The code uses the classical
 analytical expansion of sin and cos.")
     (license license:knuth)))
 
+(define-public texlive-upca
+  (package
+    (name "texlive-upca")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/upca/" "tex/generic/upca/")
+             (base32
+              "0miqn29dln9c2nlvcivsq7ciyb70ffk16v7dmzfn976xnvfsjbiw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/upca")
+    (synopsis "Print UPC-A barcodes")
+    (description
+     "The package defines a single macro @code{\\upca}, to print UPC-A
+barcodes.")
+    (license license:lppl)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
