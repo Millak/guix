@@ -2605,7 +2605,20 @@ of a Plasma shell.")
                   knotifications
                   krunner
                   plasma-workspace
-                  qtdeclarative-5))
+                  qtdeclarative-5
+                  ;; qml's indirect dependency
+                  ;; XXX: make them propagated dependency runtime qml module
+                  qtquickcontrols-5
+                  qtquickcontrols2-5
+                  kirigami-addons
+                  qtgraphicaleffects
+                  kdeclarative
+                  kuserfeedback
+                  knewstuff
+                  plasma-pa
+                  bluez-qt
+                  kwin
+                  bluedevil))
     (synopsis "Control center to configure Plasma Desktop")
     (description "This package provides configuration UI for Plasma Desktop.")
     (home-page "https://invent.kde.org/plasma/systemsettings")
