@@ -4043,6 +4043,26 @@ evaluation result is stored in automatically labeled variables.  A file is
 automatically created storing inputs and outputs.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xlop
+  (package
+    (name "texlive-xlop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/xlop/" "tex/generic/xlop/")
+             (base32
+              "1yqks7jvb5ikg2xx038rsxbkhagms1zqjmipnv49rqliavcq03gj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xlop")
+    (synopsis "Calculate and display arithmetic operations")
+    (description
+     "Xlop (eXtra Large OPeration) will typeset arithmetic problems either
+in-line or as in school (using French school conventions).  Many other
+features allow to deal with numbers (tests, display, some high level
+operations, etc.)")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
