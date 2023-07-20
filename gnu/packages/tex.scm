@@ -2968,6 +2968,29 @@ macros shown in Appendix D of the TeXbook: all the manipulations take place in
 what Knuth is pleased to call ``TeX's mouth''.")
     (license license:lppl)))
 
+(define-public texlive-langcode
+  (package
+    (name "texlive-langcode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/langcode/"
+                   "source/generic/langcode/"
+                   "tex/generic/langcode/")
+             (base32
+              "0ygshcc0iszaldzc8ygz4bgvz05c3kv81v3m7i4q46l57x2kfx6x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/langcode")
+    (synopsis "Simple language-dependent settings based on language codes")
+    (description
+     "The package provides a command @code{\\uselangcode@{<code>@}} to adjust
+language-dependent settings such as key words, typographical conventions and
+language codes (ISO 639-1).  The package provides a means of selecting macros
+according to the specified code, for preparing a document that is to be
+separately typeset in different languages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
