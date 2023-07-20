@@ -3375,6 +3375,25 @@ documentation (for example, that of the @code{texapi} and @code{yax}
 packages).")
     (license license:lppl)))
 
+(define-public texlive-placeins-plain
+  (package
+    (name "texlive-placeins-plain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/plain/placeins-plain/")
+             (base32
+              "1lhc72zdm2cjynx6lf6kafmf00nw17z3mnfhagh41h76cnm338g9")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/placeins-plain")
+    (synopsis "Insertions that keep their place")
+    (description
+     "This TeX file provides various mechanisms (for plain TeX and close
+relatives) to let insertions (footnotes, topins, pageins, etc.) float within
+their appropriate section, but to prevent them from intruding into the
+following section, even when sections do not normally begin a new page.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
