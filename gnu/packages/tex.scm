@@ -3962,6 +3962,25 @@ analytical expansion of sin and cos.")
 barcodes.")
     (license license:lppl)))
 
+(define-public texlive-varisize
+  (package
+    (name "texlive-varisize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/varisize/" "tex/plain/varisize/")
+             (base32
+              "0nd89zhwyg5z9wcy1lixg3hzcfw83lsilkjhhy9kir0fi9whdbv4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/varisize")
+    (synopsis "Change font size in Plain TeX")
+    (description
+     "This package provides a series of files, each of which defines
+a size-change macro.  Note that @file{10point.tex} is by convention called by
+one of the other files, so that there's always a way back.")
+    (license license:public-domain)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
