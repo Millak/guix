@@ -2760,6 +2760,27 @@ from a dictionary, which includes options which themselves have arguments.
 The package was designed for use with Plain TeX.")
     (license license:cecill-b)))
 
+(define-public texlive-gfnotation
+  (package
+    (name "texlive-gfnotation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/gfnotation/"
+                   "tex/plain/gfnotation/")
+             (base32
+              "18yl6qhwd3fk6fyi6plj0bcb6iwzr4yx9aqmhs77rs5k4j2rgxsf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfnotation")
+    (synopsis "Typeset Gottlob Frege's notation in plain TeX")
+    (description
+     "The package implements macros for plain TeX to typeset the notation
+invented by Gottlob Frege in 1879 for his books @emph{Begriffsschrift} and
+@emph{Grundgesetze der Arithmetik} (two volumes).  The output styles of both
+books are supported.")
+    (license license:gpl3)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
