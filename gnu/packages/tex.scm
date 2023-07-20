@@ -2407,6 +2407,28 @@ an @file{.eps} file has anything except the origin for the lower-left of its
 bounding box.")
     (license license:public-domain)))
 
+(define-public texlive-expex-acro
+  (package
+    (name "texlive-expex-acro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/expex-acro/"
+                   "source/generic/expex-acro/"
+                   "tex/generic/expex-acro/")
+             (base32
+              "04ckyr574bs10xd2a0fg6x30325a4dbbbjl1axzlhaq1kn07r7kh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/expex-acro")
+    (synopsis "Wrapper for the expex package")
+    (description
+     "This is a small wrapper for the @code{expex} package, adding ways to
+define, use, and summarize glossing abbreviations.  It also provides commands
+to refer to examples, as well as some inline formatting commands commonly used
+in linguistics.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
