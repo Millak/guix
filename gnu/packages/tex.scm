@@ -2581,6 +2581,29 @@ to apply to page dimensions.")
 subtraction, multiplication, division and rounding).")
     (license license:lppl1.2+)))
 
+(define-public texlive-fntproof
+  (package
+    (name "texlive-fntproof")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/fntproof/"
+                   "tex/generic/fntproof/")
+             (base32
+              "0pw0nw0dalnxqxpfgpw4pglngz3iff8sxxfdn89ygz46sv6427n5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fntproof")
+    (synopsis "Programmable font test pattern generator")
+    (description
+     "The package implements all the font testing commands of Knuth's
+@file{testfont.tex}, but arranges that information necessary for each command
+is supplied as arguments to that command, rather than prompted for.  This
+makes it possible to type all the tests in one command line, and easy to input
+the package in a file and to use the commands there.  A few additional
+commands supporting this last purpose are also made available.")
+    (license license:public-domain)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
