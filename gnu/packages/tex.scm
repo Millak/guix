@@ -1204,6 +1204,26 @@ ligatures, but also offers additional control over them.")
 a given (Unicode) glyph.  It relies on Fontconfig.")
     (license license:bsd-3)))
 
+(define-public texlive-apnum
+  (package
+    (name "texlive-apnum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/apnum/" "tex/generic/apnum/")
+             (base32
+              "0s6nklimzbqc1z1vhgffzp76d1kl2shz1xkf119bck482rvn3x61")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apnum")
+    (synopsis "Arbitrary precision numbers implemented by TeX macros")
+    (description
+     "The basic operations (addition, subtraction, multiplication,
+division, power to an integer) are implemented by TeX macros in this package.
+Operands may be numbers with arbitrary numbers of digits; scientific notation
+is allowed.  The expression scanner is also provided.")
+    (license license:public-domain)))
+
 (define-public texlive-arara
   (package
     (name "texlive-arara")
