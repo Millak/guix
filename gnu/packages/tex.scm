@@ -2741,6 +2741,25 @@ EPS files and @command{psfrag} substitution definition files, and produces PDF
 and EPS files with the substitutions included.")
     (license license:gpl3+)))
 
+(define-public texlive-getoptk
+  (package
+    (name "texlive-getoptk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/getoptk/" "tex/plain/getoptk/")
+             (base32
+              "19ndqi977wk6f9ikcvbllcbxmmfzdanjfznzx6pkq41caf4mj91y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/getoptk")
+    (synopsis "Define macros with sophisticated options")
+    (description
+     "The package provides a means of defining macros whose options are taken
+from a dictionary, which includes options which themselves have arguments.
+The package was designed for use with Plain TeX.")
+    (license license:cecill-b)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
