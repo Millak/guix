@@ -3478,6 +3478,26 @@ manually.")
 Mary's Road fonts, in a Plain TeX environment.")
     (license license:public-domain)))
 
+(define-public texlive-poormanlog
+  (package
+    (name "texlive-poormanlog")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/poormanlog/"
+                   "tex/generic/poormanlog/")
+             (base32
+              "1wbpjxjn3bvi4bmcq62ydafc8a72wq2vhzfx2gcn20sn3x4qc0hg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/poormanlog")
+    (synopsis "Logarithms and powers with (almost) 9 digits")
+    (description
+     "This small package (usable with Plain e-TeX, LaTeX, or others) with no
+dependencies provides two fast expandable macros computing logarithms in base
+10 and fractional powers of 10.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-present
   (package
     (name "texlive-present")
