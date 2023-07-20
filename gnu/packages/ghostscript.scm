@@ -93,7 +93,8 @@ Consortium standard (ICC), approved as ISO 15076-1.")
                                  ;; Tests require a relocatable build.
                                  "--enable-relocatable")
            ;; --enable-relocate is broken on the Hurd
-           #:tests? (not (target-hurd?))))
+           #:tests? (not (or (target-hurd?)
+                             (%current-target-system)))))
     (outputs '("out" "debug"))
     (home-page "https://github.com/rrthomas/libpaper")
     (synopsis "Library for handling paper sizes")
