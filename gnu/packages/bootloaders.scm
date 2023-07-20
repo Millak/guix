@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -1051,22 +1051,22 @@ removed so that it fits within common partitioning schemes.")))
                   (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
       (native-inputs
        (modify-inputs (package-native-inputs base)
-         (append scp-firmware)))
+         (append (force scp-firmware))))
       (inputs
        (modify-inputs (package-inputs base)
          (append arm-trusted-firmware-sun50i-a64))))))
 
 (define-public u-boot-pine64-plus
   (make-u-boot-sunxi64-package "pine64_plus" "aarch64-linux-gnu"
-                               crust-pine64-plus))
+                               (delay crust-pine64-plus)))
 
 (define-public u-boot-pine64-lts
   (make-u-boot-sunxi64-package "pine64-lts" "aarch64-linux-gnu"
-                               crust-pine64-plus))
+                               (delay crust-pine64-plus)))
 
 (define-public u-boot-pinebook
   (make-u-boot-sunxi64-package
-   "pinebook" "aarch64-linux-gnu" crust-pinebook
+   "pinebook" "aarch64-linux-gnu" (delay crust-pinebook)
    ;; Fix regression with LCD video output introduced in 2020.01
    ;; https://patchwork.ozlabs.org/patch/1225130/
    #:configs '("CONFIG_VIDEO_BPP32=y")))
