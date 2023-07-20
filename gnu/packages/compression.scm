@@ -1661,7 +1661,8 @@ or junctions, and always follows hard links.")
              ;; Not currently detected, but be explicit & avoid surprises later.
              "HAVE_LZ4=0"
              "HAVE_ZLIB=0")
-       #:tests? ,(not (target-hurd?))))
+       #:tests? ,(not (or (target-hurd?)
+                          (%current-target-system)))))
     (home-page "https://facebook.github.io/zstd/")
     (synopsis "Zstandard real-time compression algorithm")
     (description "Zstandard (@command{zstd}) is a lossless compression algorithm
