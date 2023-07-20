@@ -3658,6 +3658,24 @@ a Metafont font (provided) which generates to appropriate shading dependent on
 the resolution used in the Metafont printer parameters.")
     (license license:lppl1.0+)))
 
+(define-public texlive-simplekv
+  (package
+    (name "texlive-simplekv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/simplekv/"
+                   "tex/generic/simplekv/")
+             (base32
+              "0ghyb0m7hyqa10pwcza9z2wyb7010n3snpj1rdp79z8jfq5c288m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simplekv")
+    (synopsis "Simple key/value system for TeX and LaTeX")
+    (description
+     "The package provides a simple key/value system for TeX and LaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
