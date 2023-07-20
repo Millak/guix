@@ -1498,6 +1498,25 @@ ConTeXt and LaTeX.")
      "This package contains parts of CWEB that are no longer useful.")
     (license license:knuth)))
 
+(define-public texlive-dinat
+  (package
+    (name "texlive-dinat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/dinat/" "doc/bibtex/dinat/")
+             (base32
+              "05ab7aq8h08a8pcl3si2lki569sf201bygf3ra95dpqhs1ijxaag")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dinat")
+    (synopsis "Bibliography style for German texts")
+    (description
+     "This package provides bibliography style files intended for texts in
+german.  They draw up bibliographies in accordance with the german DIN 1505,
+parts 2 and 3.")
+    (license license:public-domain)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
