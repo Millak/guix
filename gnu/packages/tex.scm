@@ -1089,6 +1089,26 @@ works on TeX virtual fonts and @command{vpl2ovp} transforms a TeX font to an
 Omega one.")
     (license license:gpl3+)))
 
+(define-public texlive-abbr
+  (package
+    (name "texlive-abbr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/abbr/" "tex/generic/abbr/")
+             (base32
+              "0zi5qkgr2nnb3jp5adv42d84w7yav1dw0lgg2vdxfsz03j1bmlsb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abbr")
+    (synopsis "Simple macros supporting abreviations for Plain and LaTeX")
+    (description
+     "The package provides some simple macros to support abbreviations in
+Plain TeX or LaTeX.  It allows writing, e.g., @samp{\\<TEX>} instead of
+@samp{\\TeX}, hence frees users from having to escape space after
+parameterless macros.")
+    (license license:public-domain)))
+
 (define-public texlive-adhocfilelist
   (package
     (name "texlive-adhocfilelist")
