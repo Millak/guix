@@ -3501,6 +3501,42 @@ not overly complex, so that users should find it easy to adapt the macros to
 their specific needs.")
     (license license:lppl)))
 
+(define-public texlive-pwebmac
+  (package
+    (name "texlive-pwebmac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/pwebmac/" "tex/plain/pwebmac/")
+             (base32
+              "18mc66iv5jszxwnrwvlx2c040521mray480my9pdcl7aw5w2z4a2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pwebmac")
+    (synopsis "Consolidated WEB macros for DVI and PDF output")
+    (description
+     "The original WEB system by Donald Knuth has the macros webmac.tex that
+produce DVI output only; for historic reasons, it will never be
+modified (apart from catastrophic errors).  Han The Thanh has modified these
+macros in his @file{pdfwebmac.tex} for PDF output (only) with pdfTeX.
+Jonathan Kew's XeTeX has similar macros @file{xewebmac.tex} by Khaled Hosny
+that modify @file{webmac.tex} for PDF output; these macros can only be used
+with a specific TeX engine each.  The present @code{pwebmac} package
+integrates these three WEB macro files similar to @file{cwebmac.tex} in Silvio
+Levy's and Don Knuth's CWEB system, so @file{pwebmac.tex} can be used with
+Plain TeX, pdfTeX, and XeTeX alike.
+
+Its initial application is the production of PDF and HINT files for all major
+WEB programs for TeX and friends.  For this purpose, the shell script
+@command{makeall} was whipped together; it provides various command line
+options and works around several quirks in the WEB sources.
+
+WEB programmers who want to use @file{pwebmac.tex} instead of the default
+@file{webmac.tex} in their programs have to change the first line in the TeX
+file created by @code{weave}.  From there, all depends on the TeX engine you
+use.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
