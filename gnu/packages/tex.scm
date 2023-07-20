@@ -3417,6 +3417,26 @@ functionality, and handling of arbitrary (multiple) private letters (analagous
 LaTeX packages use of @samp{@@@@}) in nested package files.")
     (license license:lppl1.3+)))
 
+(define-public texlive-plipsum
+  (package
+    (name "texlive-plipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/plipsum/" "tex/plain/plipsum/")
+             (base32
+              "0q8qnv212q9mgc00w9akdvpky1gbmirqrkdmi9v1wbf7c0ws2qda")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plipsum")
+    (synopsis "@emph{Lorem ipsum} for Plain TeX developers")
+    (description
+     "The package provides a paragraph generator designed for use in Plain TeX
+documents.  The paragraphs generated contain many f-groups (@samp{ff},
+@samp{fl} etc.) so the text can act as a test of the ligatures of the font in
+use.")
+    (license license:lppl)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
