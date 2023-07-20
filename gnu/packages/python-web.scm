@@ -8820,3 +8820,28 @@ Grid5000 resources interactively using the embedded shell.")
 scientific testbeds.  It lets you deploy networks of machines on actual
 hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
     (license license:gpl3+)))
+
+(define-public python-pynetbox
+  (package
+    (name "python-pynetbox")
+    (version "7.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pynetbox" version))
+              (sha256
+               (base32
+                "16ps9zgcjzyzn95lry277741i8php4ci3plsyd2vqxd57havba7b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-failing-tests
+                          (lambda _
+                            ;; Integration tests depend on docker.
+                            (delete-file-recursively "tests/integration"))))))
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-pytest python-pyyaml python-setuptools-scm))
+    (home-page "https://github.com/netbox-community/pynetbox")
+    (synopsis "NetBox API client library")
+    (description "Python module to query and edit data stored in a
+@url{https://netbox.dev,NetBox} instance.")
+    (license license:asl2.0)))
