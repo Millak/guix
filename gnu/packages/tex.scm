@@ -2561,6 +2561,26 @@ referenced.")
 to apply to page dimensions.")
     (license license:public-domain)))
 
+(define-public texlive-fltpoint
+  (package
+    (name "texlive-fltpoint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/fltpoint/"
+                   "source/generic/fltpoint/"
+                   "tex/generic/fltpoint/")
+             (base32
+              "0k85cyh39rxr3jrgyxcj1lrya5zss5da62pj7q8412naaklkhd7n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fltpoint")
+    (synopsis "Simple floating point arithmetic")
+    (description
+     "The package provides simple floating point operations (addition,
+subtraction, multiplication, division and rounding).")
+    (license license:lppl1.2+)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
