@@ -1412,6 +1412,22 @@ mechanism.
 Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-colorsep
+  (package
+    (name "texlive-colorsep")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/colorsep/")
+             (base32
+              "0nf72pf2bjn8pcps45sn5dcjf1dkrww9wlpp1xbzl1h9i68p3h3h")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colorsep")
+    (synopsis "Color separation")
+    (description
+     "This package provides support for colour separation when using Dvips.")
+    (license license:public-domain)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
