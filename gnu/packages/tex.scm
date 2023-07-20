@@ -3049,6 +3049,27 @@ to make the text fit the box.  Note that letterspacing is not ordinarily
 considered acceptable in modern typesetting of English.")
     (license license:knuth)))
 
+(define-public texlive-localloc
+  (package
+    (name "texlive-localloc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/localloc/"
+                   "source/generic/localloc/"
+                   "tex/generic/localloc/")
+             (base32
+              "0vcfdxh800ksr4wrrvykdm27qvlhqkylbik4j93pr59g13h9g90f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/localloc")
+    (synopsis "Macros for localizing TeX register allocations")
+    (description
+     "This package approaches the problem of the shortage of registers, by
+providing a mechanism for local allocation.  The package works with Plain TeX
+and LaTeX.")
+    (license license:knuth)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
