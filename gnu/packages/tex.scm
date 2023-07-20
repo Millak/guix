@@ -1428,6 +1428,25 @@ Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
      "This package provides support for colour separation when using Dvips.")
     (license license:public-domain)))
 
+(define-public texlive-compare
+  (package
+    (name "texlive-compare")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/compare/")
+             (base32
+              "0isr7gmskv55cr4f1fa7s478v6fh65q9ijxkmbpxj0448g9817w4")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/compare")
+    (synopsis "Compare two strings")
+    (description
+     "The file defines a macro @code{\\compare}, which takes two arguments;
+the macro expands to @samp{-1}, @samp{0}, @samp{1}, according as the first
+argument is less than, equal to, or greater than the second argument.  Sorting
+is alphabetic, using ASCII collating order.")
+    (license license:public-domain)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
