@@ -3122,6 +3122,29 @@ of TeX and one of Metafont are needed.")
     ;; when modified.
     (license (license:fsf-free "file://tex/generic/midnight/border.tex"))))
 
+(define-public texlive-modulus
+  (package
+    (name "texlive-modulus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/modulus/"
+                   "source/generic/modulus/"
+                   "tex/generic/modulus/")
+             (base32
+              "07sa8bnbgclfz4p3sb00cl1b3i51nvhhlmb4p6hcyaca1n1xsn8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/modulus")
+    (synopsis "Non-destructive modulus and integer quotient operator for TeX")
+    (description
+     "The package provides an easy way to take the remainder of a division
+operation without destroying the values of the counters containing the
+dividend and divisor.  It also provides a way to take the integer quotient of
+a division operation without destroying the values of the counters containing
+the dividend and divisor.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
