@@ -3168,6 +3168,29 @@ number, giving parameters a semantic rather than syntactic meaning, making it
 easy to understand long definitions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-navigator
+  (package
+    (name "texlive-navigator")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/navigator/"
+                   "tex/generic/navigator/")
+             (base32
+              "17rs718rvp9f6dakdl99abgq5rcflsw6kyxjknhjya019l2y23m3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/navigator")
+    (synopsis "PDF features across formats and engines")
+    (description
+     "Navigator implements PDF features for all formats (with some limitations
+in ConTeXt) with pdfTeX, LuaTeX and XeTeX.  Its features include: customizable
+outlines (i.e.  bookmarks); anchors; links and actions (e.g., JavaScript or
+user-defined PDF actions); file embedding (not in ConTeXt); document
+information and PDF viewer's display (not in ConTeXt); and commands to create
+and use raw PDF objects.")
+    (license license:lppl)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
