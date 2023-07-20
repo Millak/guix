@@ -3092,6 +3092,36 @@ Metafont.  Only standard features of TeX and Metafont are used, but two runs
 of TeX and one of Metafont are needed.")
     (license license:gpl3+)))
 
+(define-public texlive-midnight
+  (package
+    (name "texlive-midnight")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/midnight/"
+                   "tex/generic/midnight/")
+             (base32
+              "024g170k8cfcddch2c0qvq1als0ncp9v2zqv77yzay5jqx4iv1d7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/midnight")
+    (synopsis "Set of useful macro tools")
+    (description
+     "This package provides macro tools:
+@itemize
+@item @code{quire}: making booklets, etc.;
+@item @code{gloss}: vertically align words in consecutive sentences;
+@item @code{loop}: a looping construct;
+@item @code{dolines}: meta'-macros to separate arguments by newlines;
+@item @code{labels}: address labels and bulk mail letters;
+@item @code{styledef}: selectively input part of a file;
+@item @code{border}: borders around boxes.
+@end itemize")
+    ;; All files share the same license, which is Knuth's with additional
+    ;; requirements about documentation and references to the original source
+    ;; when modified.
+    (license (license:fsf-free "file://tex/generic/midnight/border.tex"))))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
