@@ -2532,14 +2532,14 @@ of a Plasma shell.")
 (define-public system-settings
   (package
     (name "system-settings")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/systemsettings-" version ".tar.xz"))
               (sha256
                (base32
-                "0n7mf6ygi8fgn1m6pk2fadnqj1h58mxqni3h19xbi373wfypq5fl"))))
+                "17bqdsaih11wpcmv7qzk701l67431pf2nm8nnrix1s8k3qglfb5w"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kauth
@@ -2568,4 +2568,5 @@ of a Plasma shell.")
     (synopsis "Control center to configure Plasma Desktop")
     (description "This package provides configuration UI for Plasma Desktop.")
     (home-page "https://invent.kde.org/plasma/systemsettings")
+    (properties '((upstream-name . "systemsettings")))
     (license license:gpl2+)))
