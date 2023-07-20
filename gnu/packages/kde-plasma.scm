@@ -1443,7 +1443,7 @@ on top of Baloo.")
 (define-public plasma
   (package
     (name "plasma")
-    (version "5.25.5")
+    (version "5.27.6")
     (source #f)
     (build-system trivial-build-system)
     (arguments
