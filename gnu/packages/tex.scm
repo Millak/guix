@@ -3999,6 +3999,24 @@ one of the other files, so that there's always a way back.")
 to produce a (perhaps) surprising typeset document.")
     (license license:lppl)))
 
+(define-public texlive-xii-lat
+  (package
+    (name "texlive-xii-lat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/xii-lat/")
+             (base32
+              "1nn54xv71kcmn9jbkcslz6a64cvjcay9x96rrxnakdj9qcqd27r5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xii-lat")
+    (synopsis "Christmas silliness (Latin)")
+    (description
+     "This is the plain TeX file @file{xii-lat.tex}.  Call @samp{pdftex
+xii-lat.tex} to produce a (perhaps) surprising typeset document.")
+    (license license:lppl)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
