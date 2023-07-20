@@ -3210,6 +3210,33 @@ and use raw PDF objects.")
     ;; explicitly instead of simply renaming the file.
     (license (license:fsf-free "file://doc/plain/newsletr/read.me"))))
 
+(define-public texlive-ofs
+  (package
+    (name "texlive-ofs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/ofs/" "tex/generic/ofs/")
+             (base32
+              "0dcsa9xlcdvwd4qd6n6yli8arcy3s6896svgk5nbmgplan2nz1cw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ofs")
+    (synopsis "Macros for managing large font collections")
+    (description
+     "OFS (Olsak's Font System) is a set of Plain TeX and LaTeX macros for
+managing large font collections.  Its main features include:
+
+@itemize
+@item mapping from long names of fonts to the metric file name.  The user can
+specify only exact long names in documents;
+@item support for many font encodings;
+@item printing of catalogues of fonts and test samples of font families; the
+interactive macro @code{\\showfonts} shows all font families you have
+installed via OFS.
+@end itemize")
+    (license license:knuth)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
