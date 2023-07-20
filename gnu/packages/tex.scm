@@ -1539,6 +1539,27 @@ displaying one step in to the right.  The macros work equally well with Plain
 TeX and with LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-docbytex
+  (package
+    (name "texlive-docbytex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/docbytex/"
+                   "tex/generic/docbytex/")
+             (base32
+              "09x4xpyq89jjjsp4yzrifcazz0p2f5w7785g8pvss8v0wwsb0lav")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/docbytex")
+    (synopsis "Creating documentation from source code")
+    (description
+     "The package creates documentation from C source code, or other
+programming languages.")
+    ;; README states: "You can do anything with the files from DocBy.TeX
+    ;; package without any limit".
+    (license (license:fsf-free "file://doc/generic/docbytex/README"))))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
