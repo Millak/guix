@@ -2948,6 +2948,26 @@ for short verbatim; @file{xfig.tex}, for including xfig/transfig output in
 a TeX document; and @file{cassette.tex} for setting cassette labels.")
     (license license:public-domain)))
 
+(define-public texlive-lambda-lists
+  (package
+    (name "texlive-lambda-lists")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/lambda-lists/"
+                   "tex/plain/lambda-lists/")
+             (base32
+              "1dlm6yr0z7d2j4wn1i1khf47sf79y4h2aahymm3y11ljr5pg012r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lambda-lists")
+    (synopsis "Lists in ``TeX's mouth''")
+    (description
+     "These list-processing macros avoid the reassignments employed in the
+macros shown in Appendix D of the TeXbook: all the manipulations take place in
+what Knuth is pleased to call ``TeX's mouth''.")
+    (license license:lppl)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
