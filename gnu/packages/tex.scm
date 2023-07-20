@@ -2781,6 +2781,36 @@ invented by Gottlob Frege in 1879 for his books @emph{Begriffsschrift} and
 books are supported.")
     (license license:gpl3)))
 
+(define-public texlive-gobble
+  (package
+    (name "texlive-gobble")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/gobble/"
+                   "source/generic/gobble/"
+                   "tex/generic/gobble/")
+             (base32
+              "02g40fx99xn80af6bqv7zn16l8dnqihqd42vn5hbphfx85b3p49q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ydoc))
+    (home-page "https://ctan.org/pkg/gobble")
+    (synopsis "More gobble macros for PlainTeX and LaTeX")
+    (description
+     "The LaTeX package @code{gobble} includes several gobble macros not
+included in the LaTeX kernel.  These macros remove a number of arguments after
+them, a feature regulary used inside other macros.  This includes gobble
+macros for optional arguments.
+
+The LaTeX package @code{gobble-user} provides these macros at the user level,
+i.e.  using names without @samp{@@@@} so that these can be used without
+@code{\\makeatletter} and @code{\\makeatother}.  The same macros are provided
+inside @file{.tex} files for use with plain-TeX or other TeX formats.
+However, the gobble macros for optional macros require @code{\\@@@@ifnextchar}
+to be defined.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
