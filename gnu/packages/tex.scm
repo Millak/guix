@@ -3237,6 +3237,44 @@ installed via OFS.
 @end itemize")
     (license license:knuth)))
 
+(define-public texlive-olsak-misc
+  (package
+    (name "texlive-olsak-misc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/olsak-misc/"
+                   "tex/generic/olsak-misc/")
+             (base32
+              "0kl83yvj299w7v69a20i5yi91h46n0k080rg6z1jjwdxm0g893a0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/olsak-misc")
+    (synopsis "Collection of plain TeX macros written by Petr Olsak")
+    (description
+     "This is a collection of various single-file plain TeX macros written
+by Petr Olsak:
+
+@itemize
+@item @file{booklet.tex}: re-orders PDF pages and collects them for booklet
+printing;
+@item @file{cnv.tex}: conversion of texts;
+@item @file{cnv-pu.tex}: example of usage of @file{cnv.tex} --- pdf outlines
+in Unicode;
+@item @file{cnv-word.tex}: example of usage of @file{cnv.tex} --- word to word
+conversion;
+@item @file{eparam.tex}: full expansion during parameter scanning;
+@item @file{fun-coffee.tex}: generates splotches in the document;
+@item @file{openclose.tex}: repairs balanced text between @code{\\Open} and
+@code{\\Close} pair;
+@item @file{qrcode.tex}: QR code generated at TeX level;
+@item @file{scanbase.tex}: parser of text-style MySQL outputs;
+@item @file{scancsv.tex}: parser of CSV format;
+@item @file{seplist.tex}: macros with alternative separators of a parameter;
+@item @file{xmlparser.tex}: parser of XML language.
+@end itemize")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
