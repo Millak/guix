@@ -2273,19 +2273,18 @@ sensors, process information and other system resources.")
     (license (list license:gpl2 license:gpl3))))
 
 (define-public plasma-welcome
-(let ((commit "dac7569078782a96f122782c15d34e51737d2b89") ; no tags
-      (revision "1"))
   (package
     (name "plasma-welcome")
-    (version (git-version "0.1-pre" revision commit))
-    (home-page "https://invent.kde.org/plasma/plasma-welcome")
+    (version  "5.27.6")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit commit)))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/plasma-welcome"
+                                  "-"
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "1x7ra699r5a9kpa3isdnx6af4j6778kw2pmprnx4s8f1rwk2idhh"))))
+                "0lvvxllhshawj7pjx3d9l53clcnr73x519khgf27fpblil1x0hm8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -2298,18 +2297,23 @@ sensors, process information and other system resources.")
            kirigami
            knotifications
            kservice
+           knewstuff
+           kaccounts-integration
+           signond
+           kuserfeedback
+           libaccounts-qt
            kwindowsystem
            networkmanager-qt
            plasma-framework
            qtdeclarative-5
            qtgraphicaleffects
            qtsvg-5
-           qtquickcontrols2-5
-           system-settings))
+           qtquickcontrols2-5))
     (synopsis "Plasma welcome screen")
     (description
      "This package provides a wizard for Plasma to configure settings.")
-    (license (list license:gpl2 license:gpl3)))))
+    (home-page "https://invent.kde.org/plasma/plasma-welcome")
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public plasma-workspace
   (package
