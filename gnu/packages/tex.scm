@@ -2833,6 +2833,27 @@ those packages provided by @code{miniltx}.  The bundle also contains a file
 provides the LaTeX picture mode to Plain TeX users.")
     (license license:lppl1.0+)))
 
+(define-public texlive-gtl
+  (package
+    (name "texlive-gtl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/gtl/" "source/generic/gtl/"
+                   "tex/generic/gtl/")
+             (base32
+              "066g0zmndj7dda1by6jsxqccfkglmf2xq2sn0xk5f8x900h2wbbz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gtl")
+    (synopsis "Manipulating generalized token lists")
+    (description
+     "The package provides tools for simple operations on lists of tokens
+which are not necessarily balanced.  It is in particular used a lot in the
+@code{unravel} package, to go through tokens one at a time rather than having
+to work with entire braced groups at a time.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
