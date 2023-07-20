@@ -752,14 +752,14 @@ Its features include:
 (define-public libkcddb
   (package
     (name "libkcddb")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcddb-" version ".tar.xz"))
        (sha256
-        (base32 "1js5r8hxqabnygmavfjvjbfy5c7978bmwm2rqlgsfyn17fkmf2y8"))))
+        (base32 "1s10g6m6c3h14gzxvp2s0v51jxzsrh23xfn7gl51a0r50srbbz52"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -768,6 +768,7 @@ Its features include:
            kconfig
            ki18n
            kio
+           kcmutils
            kwidgetsaddons
            libmusicbrainz
            qtbase-5))
