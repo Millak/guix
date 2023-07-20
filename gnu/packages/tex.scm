@@ -1258,6 +1258,25 @@ on indirect resources, such as log file analysis.  Arara requires a Java
 virtual machine.")
     (license license:bsd-3)))
 
+(define-public texlive-autoaligne
+  (package
+    (name "texlive-autoaligne")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/autoaligne/"
+                   "tex/generic/autoaligne/")
+             (base32
+              "138d030zgzpdwqxx55gjw35y0c3v794fpa3c6znc9kv1vj8cs9d3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/autoaligne")
+    (synopsis "Align terms and members in math expressions")
+    (description
+     "This package allows to align terms and members between lines containing
+math expressions.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
