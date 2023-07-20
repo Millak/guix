@@ -3356,6 +3356,25 @@ obscure symbols which cannot be as easily found in other TeX or LaTeX
 packages.")
     (license license:expat)))
 
+(define-public texlive-pitex
+  (package
+    (name "texlive-pitex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/pitex/" "tex/plain/pitex/")
+             (base32
+              "1rqawfqmh9sh7rfpfrhbmysmn1rlzmbs26nla8fj0xr45vx60219")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pitex")
+    (synopsis "Documentation macros")
+    (description
+     "The bundle provides macros that the author uses when writing
+documentation (for example, that of the @code{texapi} and @code{yax}
+packages).")
+    (license license:lppl)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
