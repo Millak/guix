@@ -4017,6 +4017,32 @@ to produce a (perhaps) surprising typeset document.")
 xii-lat.tex} to produce a (perhaps) surprising typeset document.")
     (license license:lppl)))
 
+(define-public texlive-xintsession
+  (package
+    (name "texlive-xintsession")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/xintsession/"
+                   "tex/plain/xintsession/")
+             (base32
+              "0rd2jmq62ariq73qwch1hz1jmzdw6sn48ngh64pgm6qkqbpddxkv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xintsession")
+    (synopsis
+     "Interactive computing sessions (fractions, floating points, polynomials)")
+    (description
+     "This package provides support for interactive computing sessions with
+e-TeX (or pdfTeX) executed on the command line.  Once @code{xintsession} is
+loaded, e-TeX becomes an interactive computing software capable of executing
+arbitrary precision calculations, or exact calculations with arbitrarily big
+fractions.  It can also manipulate polynomials as algebraic entities.
+Numerical variables and functions can be defined during the session, and each
+evaluation result is stored in automatically labeled variables.  A file is
+automatically created storing inputs and outputs.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
