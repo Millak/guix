@@ -3719,6 +3719,24 @@ aligned vertically.  The package works with plain TeX or LaTeX, but e-TeX is
 required.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tabto-generic
+  (package
+    (name "texlive-tabto-generic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/tabto-generic/")
+             (base32
+              "0i65jflbnhqpqf1w7pkagicic1s39gcl319z7g9zr1g80f9532dv")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabto-generic")
+    (synopsis "Tab to a measured position in the line")
+    (description
+     "@code{\\tabto@{<length>@}} moves the typesetting position to
+@code{<length>} from the left margin of the paragraph.  If the typesetting
+position is already further along, @code{\\tabto} starts a new line.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
