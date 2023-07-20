@@ -3275,6 +3275,25 @@ conversion;
 @end itemize")
     (license license:public-domain)))
 
+(define-public texlive-outerhbox
+  (package
+    (name "texlive-outerhbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/outerhbox/")
+             (base32
+              "1867xhxlbskiysifmwlr10lay8khragzi36fm552cwc4vjz2ybcz")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/outerhbox")
+    (synopsis "Collect horizontal material for contributing to a paragraph")
+    (description
+     "The package provides the @code{\\outerhbox} command, which is similar to
+@code{\\hbox}, except that material is set in outer horizontal mode.  This
+prevents TeX from optimising away maths penalties and the like, that are
+needed when the material is @code{\\unhbox}'ed.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
