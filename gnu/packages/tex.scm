@@ -1590,6 +1590,28 @@ package provides a Perl program that will extract any of the sections of such
 a file, in particular providing a text'-form EPS file for use with (La)TeX.")
     (license license:artistic2.0)))
 
+(define-public texlive-dowith
+  (package
+    (name "texlive-dowith")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/dowith/"
+                   "source/generic/dowith/"
+                   "tex/generic/dowith/")
+             (base32
+              "1qlrcjac1qszgrap5v4g0d27g9k5ajqgyy493hmc9yh5wa9wmkmp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dowith")
+    (synopsis "Apply a command to a list of items")
+    (description
+     "The package provides macros for applying a command to all elements of
+a list without separators, and also for extending and reducing macros storing
+such lists.  Applications in mind belonged to LaTeX, but the package should
+work with other formats as well.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
