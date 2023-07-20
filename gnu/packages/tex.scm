@@ -2991,6 +2991,44 @@ according to the specified code, for preparing a document that is to be
 separately typeset in different languages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lecturer
+  (package
+    (name "texlive-lecturer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/lecturer/"
+                   "tex/generic/lecturer/")
+             (base32
+              "0ry4r1zcq71kk672dnnpzah0aw2axj7frajbv6xwy6hf2hzzs0ln")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lecturer")
+    (synopsis "On-screen presentations for (almost) all formats")
+    (description
+     "The package creates slides for on-screen presentations based on PDF
+features without manipulating TeX's typesetting process.  The presentation
+flow relies on PDF's abilities to display content step by step.  Features
+include:
+
+@itemize
+@item Free positioning of anything anywhere in painted areas on the slide, as
+well as in the main text block;
+@item Numerous attributes to control the layout and the presentation flow,
+from TeX's primitive dimensions to the visibility of steps;
+@item Feature inheritance from global to local settings, with intermediate
+types; Basic drawing facilities to produce symbols, e.g., for list items or
+buttons;
+@item Colours, transparency, shades, and pictures;
+@item Navigation with links, pop-up menus, and customizable bookmarks;
+@item Easy switch between presentation and handout; and PDF transitions.
+@end itemize
+
+Besides the traditional documentation, the distribution includes visual
+documentation and six demo presentations ranging from geometric abstraction to
+classic style to silly video game.")
+    (license license:lppl)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
