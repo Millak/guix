@@ -3478,6 +3478,29 @@ manually.")
 Mary's Road fonts, in a Plain TeX environment.")
     (license license:public-domain)))
 
+(define-public texlive-present
+  (package
+    (name "texlive-present")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/present/" "tex/plain/present/")
+             (base32
+              "1dc7h14z7xw232mgqjayl1a4ab5pj9bz2d9wgmznh4bjylgw4lwp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/present")
+    (synopsis "Presentations with Plain TeX")
+    (description
+     "The package offers a collection of simple macros for preparing
+presentations in Plain TeX.  Slide colour and text colour may be set, links
+between parts of the presentation, to other files, and to web addresses may be
+inserted.  Images may be included easily, and code is available to provide
+transition effects between slides or frames.  The structure of the macros is
+not overly complex, so that users should find it easy to adapt the macros to
+their specific needs.")
+    (license license:lppl)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
