@@ -3924,6 +3924,26 @@ used directly.  For details see the manual.")
      "This package provides macros to draw trees, within TeX or LaTeX.")
     (license license:public-domain)))
 
+(define-public texlive-trigonometry
+  (package
+    (name "texlive-trigonometry")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/trigonometry/"
+                   "tex/generic/trigonometry/")
+             (base32
+              "165n813kj0znfrnqkqv0gja3nyr2lznnhbmsay6l8a5nj59h7cxl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/trigonometry")
+    (synopsis "Demonstration code for cos and sin in TeX macros")
+    (description
+     "This package provides a document that both provides macros that are
+usable elsewhere, and demonstrates the macros.  The code uses the classical
+analytical expansion of sin and cos.")
+    (license license:knuth)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
