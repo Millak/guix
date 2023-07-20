@@ -1320,6 +1320,32 @@ out in a single macro call.  A variant of the operation is provided, that
 retains outer braces.")
     (license license:lppl1.3+)))
 
+(define-public texlive-borceux
+  (package
+    (name "texlive-borceux")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/borceux/"
+                   "tex/generic/borceux/")
+             (base32
+              "1fil90jsiqg7b0if3yq0jxv4rh7vanj2yj9pv8pnfkhvqii4p821")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/borceux")
+    (synopsis "Diagram macros by Francois Borceux")
+    (description
+     "The macros support the construction of diagrams, such as those that
+appear in category theory texts.  The user gives the list of vertices and
+arrows to be included, just as when composing a matrix, and the program takes
+care of computing the dimensions of the arrows and realizing the page setting.
+All the user has to do about the arrows is to specify their
+type (monomorphism, pair of adjoint arrows, etc.) and their direction (north,
+south-east, etc.); 12 types and 32 directions are available.")
+    ;; "You may freely use, modify, and/or distribute each of the
+    ;; files in this package without limitation."
+    (license (license:fsf-free "file://doc/generic/borceux/README"))))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
