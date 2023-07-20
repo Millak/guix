@@ -3817,6 +3817,31 @@ transformations of EPS files, prepress preparation, color separation, mirror,
 etc.")
     (license license:public-domain)))
 
+(define-public texlive-texdate
+  (package
+    (name "texlive-texdate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/texdate/"
+                   "source/generic/texdate/"
+                   "tex/generic/texdate/")
+             (base32
+              "0knssay50rm8pbksph20hhfbpwwby3a9pswvxyq63imn5qppz2dp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texdate")
+    (synopsis "Date printing, formatting, and manipulation in TeX")
+    (description
+     "TeX and LaTeX provide few facilities for dates by default, though many
+packages have filled this gap.  This package fills it, as well, with a pure
+TeX-primitive implementation.  It can print dates, advance them by numbers of
+days, weeks, or months, determine the weekday automatically, and print them
+in (mostly) arbitrary format.  It can also print calendars (monthly and
+yearly) automatically, and can be easily localized for non-English
+languages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
