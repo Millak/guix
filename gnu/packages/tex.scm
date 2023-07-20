@@ -2911,6 +2911,24 @@ typesetting.")
 before it's read by TeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-insbox
+  (package
+    (name "texlive-insbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/insbox/" "tex/generic/insbox/")
+             (base32
+              "0br6xpn9y11nw2pdjxck6mijbw2q6g2v31p64hwn65bwnx1fnc25")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/insbox")
+    (synopsis "Insert pictures/boxes into paragraphs")
+    (description
+     "The package provides convenient bundling of the @code{\\parshape}
+primitive.  This is a TeX package.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
