@@ -3070,6 +3070,28 @@ providing a mechanism for local allocation.  The package works with Plain TeX
 and LaTeX.")
     (license license:knuth)))
 
+(define-public texlive-metatex
+  (package
+    (name "texlive-metatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/metatex/" "tex/plain/metatex/")
+             (base32
+              "0pdgx59ckp9qdfidl37y8mv3dyvza9lxmhgbqk69ckywm3kbb2n9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metatex")
+    (synopsis "Incorporate Metafont pictures in TeX source")
+    (description
+     "METATeX is a set of plain TeX and Metafont macros that you can use to
+define both the text and the figures in a single source file.  Because METATeX
+sets up two way communication, from TeX to Metafont and back from Metafont to
+TeX, drawing dimensions can be controlled by TeX and labels can be located by
+Metafont.  Only standard features of TeX and Metafont are used, but two runs
+of TeX and one of Metafont are needed.")
+    (license license:gpl3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
