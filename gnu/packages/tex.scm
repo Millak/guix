@@ -1109,6 +1109,32 @@ Plain TeX or LaTeX.  It allows writing, e.g., @samp{\\<TEX>} instead of
 parameterless macros.")
     (license license:public-domain)))
 
+(define-public texlive-abstyles
+  (package
+    (name "texlive-abstyles")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/abstyles/"
+                   "bibtex/bst/abstyles/"
+                   "doc/bibtex/abstyles/"
+                   "tex/generic/abstyles/")
+             (base32
+              "1ij4cp3pydfs4lch0f93gi2q7msafxyqfvv44whw1ppczidicnn2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abstyles-orig")
+    (synopsis "Adaptable BibTeX styles")
+    (description
+     "This package provides a family of modifications of the standard BibTeX
+styles whose behaviour may be changed by changing the user document, without
+change to the styles themselves.  The package is largely used nowadays in its
+adaptation for working with Babel.")
+    (license
+     (list license:isc                  ;apreamble
+           license:knuth                ;bxabst
+           license:public-domain))))    ;docmac
+
 (define-public texlive-adhocfilelist
   (package
     (name "texlive-adhocfilelist")
