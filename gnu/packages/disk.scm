@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2016, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
@@ -259,7 +259,8 @@ tmpfs/ramfs filesystems.")
       #:configure-flags (if (target-hurd?)
                             #~'("--disable-device-mapper")
                             #~'())
-      #:tests? (not (target-hurd?))
+      #:tests? (not (or (target-hurd?)
+                        (%current-target-system)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-locales-and-python
