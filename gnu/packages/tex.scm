@@ -2627,6 +2627,29 @@ only one statement.  The fonts may be used readily at various predefined
 sizes.")
     (license license:cc-by-sa3.0)))
 
+(define-public texlive-fontch
+  (package
+    (name "texlive-fontch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/fontch/" "tex/plain/fontch/")
+             (base32
+              "19v8l76181yhan6ybc47i5sq4mirc8lc7x1zxqxmk15wyvax9lm9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontch")
+    (synopsis "Changing fonts, sizes and encodings in Plain TeX")
+    (description
+     "The fontch macros allow the user to change font size and family anywhere
+in a plain TeX document.  Sizes of 8, 10, 12, 14, 20 and 24 points are
+available.  A sans serif family is defined in addition to the families already
+defined in plain TeX. Optional support for Latin Modern T1 and TS1 fonts is
+given.  There are macros for non-latin1 letters and for most TS1 symbols.
+Math mode always uses CM fonts.  A command for producing doubled-spaced
+documents is also provided.")
+    (license license:lppl)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
