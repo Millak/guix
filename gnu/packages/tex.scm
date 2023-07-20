@@ -1482,6 +1482,22 @@ with a wide array of formats.  For the moment, it works out of the box with
 ConTeXt and LaTeX.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-cweb-old
+  (package
+    (name "texlive-cweb-old")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/plain/cweb-old/")
+             (base32
+              "0vx235zpflqpnrfa9kqq7wmc1rylg5bw1r26knfzvh3w1swbp4ai")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cweb-old")
+    (synopsis "Obsolete files from CWEB")
+    (description
+     "This package contains parts of CWEB that are no longer useful.")
+    (license license:knuth)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
