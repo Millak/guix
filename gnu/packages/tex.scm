@@ -3537,6 +3537,25 @@ file created by @code{weave}.  From there, all depends on the TeX engine you
 use.")
     (license license:public-domain)))
 
+(define-public texlive-random
+  (package
+    (name "texlive-random")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/random/" "tex/generic/random/")
+             (base32
+              "04z7s4pm620bfjwgl46g4bqxzm2ab70ai8pj1x4p0qg8n50xaylf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/random")
+    (synopsis "Generate pseudo-random numbers in TeX")
+    (description
+     "This package generates pseudo-random integers.  Macros are to provide
+random integers in a given range, or random dimensions, which can be used to
+provide random real numbers.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
