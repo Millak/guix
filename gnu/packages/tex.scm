@@ -2544,6 +2544,23 @@ enough context to enable you to find the hyphenated word that's being
 referenced.")
     (license license:gpl2)))
 
+(define-public texlive-fixpdfmag
+  (package
+    (name "texlive-fixpdfmag")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/plain/fixpdfmag/")
+             (base32
+              "0s5ilsmnhvi57x9cqwp7nwpagfribmgkbl0z1ci55aw2a6bff9hn")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixpdfmag")
+    (synopsis "Fix magnification in pdfTeX")
+    (description
+     "This package provides a recent change to pdfTeX has caused magnification
+to apply to page dimensions.")
+    (license license:public-domain)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
