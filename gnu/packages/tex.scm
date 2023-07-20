@@ -2854,6 +2854,24 @@ which are not necessarily balanced.  It is in particular used a lot in the
 to work with entire braced groups at a time.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hlist
+  (package
+    (name "texlive-hlist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/hlist/" "tex/generic/hlist/")
+             (base32
+              "14rm9npzcanw4p4nkqd0rrm4655f9yhw58zf0qfa5azs305ba687")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hlist")
+    (synopsis "Horizontal and columned lists")
+    (description
+     "This plain TeX and LaTeX package provides the @code{hlist} environment
+in which @code{\\hitem} starts a horizontal and columned item.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
