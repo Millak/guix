@@ -456,6 +456,7 @@ EXAMPLES =					\
   gnu/system/examples/desktop.tmpl		\
   gnu/system/examples/lightweight-desktop.tmpl	\
   gnu/system/examples/docker-image.tmpl		\
+  gnu/system/examples/plasma.tmpl		\
   gnu/system/examples/raspberry-pi-64.tmpl	\
   gnu/system/examples/raspberry-pi-64-nfs-root.tmpl	\
   gnu/system/examples/vm-image.tmpl
