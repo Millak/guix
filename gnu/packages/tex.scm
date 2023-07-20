@@ -3981,6 +3981,24 @@ a size-change macro.  Note that @file{10point.tex} is by convention called by
 one of the other files, so that there's always a way back.")
     (license license:public-domain)))
 
+(define-public texlive-xii
+  (package
+    (name "texlive-xii")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/xii/")
+             (base32
+              "19jhzv5hqzj59wrfcr1dsj6z56qfckax694idgf8arri5lnbkdd8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xii")
+    (synopsis "Christmas silliness (English)")
+    (description
+     "This is the plain TeX file @file{xii.tex}.  Call @samp{pdftex xii.tex}
+to produce a (perhaps) surprising typeset document.")
+    (license license:lppl)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
