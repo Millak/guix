@@ -2496,6 +2496,30 @@ register.  The packages require the e-TeX extensions; with them, they work
 either with Plain TeX or with LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-figflow
+  (package
+    (name "texlive-figflow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/figflow/" "tex/plain/figflow/")
+             (base32
+              "1vsrsw5rrqjym0flca9537m41vs7wlk8mhl9zmqjfaxgi8jvc9ml")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/figflow")
+    (synopsis "Flow text around a figure")
+    (description
+     "This package provides a Plain TeX macro @code{\\figflow} that allows one
+to insert a figure into an area inset into a paragraph.  Command arguments are
+width and height of the figure, and the figure (and its caption) itself.  The
+package does not work with LaTeX; packages such as @code{wrapfig},
+@code{floatflt} and @code{picins} support the needs of LaTeX users in this
+area.")
+    ;; README states: "You may freely use, modify, and/or distribute this
+    ;; file, without limitation."
+    (license (license:fsf-free "file://doc/plain/figflow/README"))))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
