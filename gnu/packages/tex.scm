@@ -2386,6 +2386,27 @@ epigram, laid out on a single line) whether to produce a line or a displayed
 paragraph.")
     (license license:public-domain)))
 
+(define-public texlive-epsf-dvipdfmx
+  (package
+    (name "texlive-epsf-dvipdfmx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/epsf-dvipdfmx/"
+                   "tex/plain/epsf-dvipdfmx/")
+             (base32
+              "0xj4hag3nldxxjcpympvra5cdn19nk76af9dxq07ci585gcki3x5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epsf-dvipdfmx")
+    (synopsis "Plain TeX file for using epsf.tex with (x)dvipdfmx")
+    (description
+     "@file{epsf-dvipdfmx.tex} is a plain TeX file to be @code{\\input} after
+@file{epsf.tex} when using plain TeX with @code{dvipdfmx}.  It is needed when
+an @file{.eps} file has anything except the origin for the lower-left of its
+bounding box.")
+    (license license:public-domain)))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
