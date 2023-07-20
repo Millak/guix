@@ -2368,6 +2368,24 @@ and Slovak typographical rules.  It is implemented using encTeX and provides
 files both for plain TeX and LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-epigram
+  (package
+    (name "texlive-epigram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/epigram/")
+             (base32
+              "1zps5067mgi7xq3fpjvjln8i0rz53j7qn660khraq8ribv4glnpf")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epigram")
+    (synopsis "Display short quotations")
+    (description
+     "The package determines (on the basis of the width of the text of the
+epigram, laid out on a single line) whether to produce a line or a displayed
+paragraph.")
+    (license license:public-domain)))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
