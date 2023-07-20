@@ -2891,6 +2891,26 @@ languages and/or dialects, and to select them or switch between them while
 typesetting.")
     (license license:public-domain)))
 
+(define-public texlive-inputnormalization
+  (package
+    (name "texlive-inputnormalization")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inputnormalization/"
+                   "source/latex/inputnormalization/"
+                   "tex/latex/inputnormalization/")
+             (base32
+              "0nfvcmr0lp7nig8mz3j1lwi0wbk8yf1ibdnz3lq22pysfjjl3200")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inputnormalization")
+    (synopsis "Wrapper for XeTeX's and LuaTeX's input normalization")
+    (description
+     "This package provides a cross engine interface to normalizing input
+before it's read by TeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
