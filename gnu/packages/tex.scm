@@ -3879,6 +3879,34 @@ and simple input.  The macros use a radix sort mechanism so that the order of
 input is not critical.")
     (license license:lppl)))
 
+(define-public texlive-transparent-io
+  (package
+    (name "texlive-transparent-io")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/transparent-io/")
+             (base32
+              "04zfmk25qw2cnja1zqhafabsy26zalxiawf6pm5zqx4x1jl47i6j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/transparent-io")
+    (synopsis
+     "Show for approval the filenames used in @code{\\input}, @code{\\openin},
+or @code{\\openout}")
+    (description
+     "This package provides macros to make the file I/O in plain TeX more
+transparent.  That is, every @code{\\input}, @code{\\openin}, and
+@code{\\openout} operation by TeX is presented to the user who must check
+carefully if the file name of the source is acceptable.  The user must
+sometimes enter additional text and has to specify the file name that the TeX
+operation should use.  The macros require a complex installation procedure;
+the package contains Sed and Bash scripts.  Every installation is different
+from any other as password-protected macro names and private messages have to
+be chosen by the installer.  Therefore, the files in the package cannot be
+used directly.  For details see the manual.")
+    (license license:gpl3)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
