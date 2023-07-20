@@ -1393,6 +1393,25 @@ mechanism.
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-chronosys
+  (package
+    (name "texlive-chronosys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/chronosys/"
+                   "tex/generic/chronosys/")
+             (base32
+              "145ap67ykdkp2f0ahasp9sjccrv1wzxdfl05nq6hbi6z65pk56s5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chronosys")
+    (synopsis "Drawing time-line diagrams")
+    (description
+     "This package provides macros to produce time line diagrams.
+Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
