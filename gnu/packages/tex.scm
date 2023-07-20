@@ -3333,6 +3333,29 @@ regarded as punctuation may be changed from the package's default.")
 TeX boxes (based on plain and pdfeTeX primitives).")
     (license license:public-domain)))
 
+(define-public texlive-pdfmsym
+  (package
+    (name "texlive-pdfmsym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pdfmsym/"
+                   "tex/generic/pdfmsym/")
+             (base32
+              "128lhj72s2ddzbl7w3pl6cw84qqmx322rw1jb4m2db8whj8d2fbz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfmsym")
+    (synopsis "PDF Math Symbols --- various drawn mathematical symbols")
+    (description
+     "This package defines a handful of mathematical symbols many of which are
+implemented via PDF's builtin drawing utility.  It is intended for use with
+pdfTeX and LuaTeX and is supported by XeTeX to a lesser extent.  Among the
+symbols it defines are some variants of commonly used ones, as well as more
+obscure symbols which cannot be as easily found in other TeX or LaTeX
+packages.")
+    (license license:expat)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
