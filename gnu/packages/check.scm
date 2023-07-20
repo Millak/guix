@@ -3658,7 +3658,7 @@ retried.")
 (define-public python-pyhamcrest
   (package
     (name "python-pyhamcrest")
-    (version "2.0.2")
+    (version "2.0.3")
     (source (origin
               (method git-fetch)        ;no tests in PyPI archive
               (uri (git-reference
@@ -3667,7 +3667,7 @@ retried.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05kdzlhs2kvj82pfca13qszszcj6dyrk4b9pbr46x06sq2s4qyls"))))
+                "0j0fpd7vw700l6gx29gz9j28d22ajkz6sngfzp4c8an4ibd2fw85"))))
     (native-inputs                      ;all native inputs are for tests
      (list python-pytest-cov python-mock python-pytest python-hypothesis))
     (build-system python-build-system)
