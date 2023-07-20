@@ -508,14 +508,14 @@ KDE Frameworks 5 to better interact with the system.")
 (define-public khotkeys
   (package
     (name "khotkeys")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0c9i4vxiiv90dpzsd2hjwavks87cvwplkj63751z8mazax6r95as"))))
+                "0zixhdnsm3956w2bff6fk1ksvk61ywjkylg690b90l041rhfriyv"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kdbusaddons
