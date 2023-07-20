@@ -2429,6 +2429,46 @@ to refer to examples, as well as some inline formatting commands commonly used
 in linguistics.")
     (license license:lppl1.3+)))
 
+(define-public texlive-expkv-bundle
+  (package
+    (name "texlive-expkv-bundle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/expkv-bundle/"
+                   "source/latex/expkv-bundle/"
+                   "tex/context/third/expkv-bundle/"
+                   "tex/generic/expkv-bundle/"
+                   "tex/latex/expkv-bundle/")
+             (base32
+              "09ijb71w69bnhi38i8z2bnv8d4r4sdg337v61yi66y94z8d9iid9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/expkv-bundle")
+    (synopsis "Expandable @samp{key=val} implementation and friends")
+    (description
+     "This is a collection of different packages that provide @samp{key=value}
+functionality in plainTeX, LaTeX, and ConTeXt.
+
+At the core, the @code{expkv} package implements two expandable
+@samp{key=value} parsers that are somewhat fast and robust against common bugs
+in many key=value implementations (no accidental brace stripping, no fragility
+for active commas or equals signs).
+
+@code{expkv-cs} enables users to define expandable @samp{key=value} macros in
+a comfortable and straightforward way.
+
+@code{expkv-def} provides an interface to define common key types for
+@code{expkv} similar to the key defining interfaces of widespread
+@samp{key=value} implementations.
+
+@code{expkv-opt} allows to parse package or class options in LaTeX via
+@code{expkv}.
+
+@code{expkv-pop} is a utility package to define prefix oriented parsers that
+allow a somewhat natural formulation.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
