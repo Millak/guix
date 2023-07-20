@@ -3460,6 +3460,24 @@ format called @code{pfd} (plain @code{fd}) is required and must be loaded
 manually.")
     (license license:lppl)))
 
+(define-public texlive-plstmary
+  (package
+    (name "texlive-plstmary")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/plstmary/" "tex/plain/plstmary/")
+             (base32
+              "03adq5fkl620z0hpbdpqcsm1qjxlr43ip1bhi5xv2izxpw952x0z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plstmary")
+    (synopsis "St Mary's Road font support for plain TeX")
+    (description
+     "The package provides commands to produce all the symbols of the St
+Mary's Road fonts, in a Plain TeX environment.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
