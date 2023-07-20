@@ -2347,6 +2347,27 @@ a CD label; and @code{repeat}, a nestable, generic loop macro.")
      (list license:gpl2+                ;CD_labeler and DB_process.tex
            license:lppl))))             ;repeat.tex
 
+(define-public texlive-encxvlna
+  (package
+    (name "texlive-encxvlna")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/encxvlna/"
+                   "tex/latex/encxvlna/" "tex/plain/encxvlna/")
+             (base32
+              "01lgh560xhn56k5pps65lq9c5rn0kbrcfvqfikrqq83g3n7k2p8v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/encxvlna")
+    (synopsis "Insert nonbreakable spaces, using encTeX")
+    (description
+     "The package provides tools for inserting nonbreakable spaces after
+nonsyllabic prepositions and single letter conjunctions as required by Czech
+and Slovak typographical rules.  It is implemented using encTeX and provides
+files both for plain TeX and LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
