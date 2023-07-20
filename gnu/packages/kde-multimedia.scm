@@ -678,14 +678,14 @@ Some features:
 (define-public kwave
   (package
     (name "kwave")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kwave-" version ".tar.xz"))
        (sha256
-        (base32 "0j6ck44lkfcnaa0rymv2aqvdcy0zbybbklm1s6mvbgdpfsh0rhkm"))))
+        (base32 "0s9w8jgwblljwfji2a19bqs3nx6sr2qzz35kwbi0ahwncy69k4jx"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools))
