@@ -2327,6 +2327,26 @@ optionally be replaced with graphics paths so that applications that do not
 support SVG fonts are enabled to render the graphics properly.")
     (license license:gpl3+)))
 
+(define-public texlive-eijkhout
+  (package
+    (name "texlive-eijkhout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/eijkhout/")
+             (base32
+              "00y3y01jpgzww1x6zjh748hpvizlrbgrv04p8aq3cm2pzs0g17qk")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eijkhout")
+    (synopsis "Victor Eijkhout's packages")
+    (description
+     "The package provides three unrelated tools: @code{DB_process}, to parse
+and process database output; @code{CD_labeler}, to typeset user text to fit on
+a CD label; and @code{repeat}, a nestable, generic loop macro.")
+    (license
+     (list license:gpl2+                ;CD_labeler and DB_process.tex
+           license:lppl))))             ;repeat.tex
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
