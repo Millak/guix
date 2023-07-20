@@ -3615,6 +3615,28 @@ The rule widths are 0.05mm, which can be challenging for (old) laser
 printers.")
     (license license:gpl3+)))
 
+(define-public texlive-schemata
+  (package
+    (name "texlive-schemata")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/schemata/"
+                   "source/generic/schemata/"
+                   "tex/generic/schemata/")
+             (base32
+              "1196653ankylbcsiv1cnrrazz2qplcs27llpv947h4m94vx4sl19")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schemata")
+    (synopsis "Print topical diagrams")
+    (description
+     "The package facilitates the creation of topical schemata, i.e.,
+outlines that use braces (or facsimiles thereof) to illustrate the breakdown
+of concepts and categories in Scholastic thought from late medieval and early
+modern periods.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
