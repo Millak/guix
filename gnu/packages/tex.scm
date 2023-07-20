@@ -3907,6 +3907,23 @@ be chosen by the installer.  Therefore, the files in the package cannot be
 used directly.  For details see the manual.")
     (license license:gpl3)))
 
+(define-public texlive-treetex
+  (package
+    (name "texlive-treetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/treetex/" "tex/plain/treetex/")
+             (base32
+              "0cv7kwa865i473l8ffsyq5n7kw6pihclf87asbpsc1rx2h4v6mhs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/treetex-plain")
+    (synopsis "Draw trees")
+    (description
+     "This package provides macros to draw trees, within TeX or LaTeX.")
+    (license license:public-domain)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
