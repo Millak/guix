@@ -3029,6 +3029,26 @@ documentation and six demo presentations ranging from geometric abstraction to
 classic style to silly video game.")
     (license license:lppl)))
 
+(define-public texlive-letterspacing
+  (package
+    (name "texlive-letterspacing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/letterspacing/")
+             (base32
+              "0ry7rri76dgbrkzr6na2kkh7bn0jpwkhh9b5qw0cl5xwyp81rddg")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/letterspacing")
+    (synopsis "Letter spacing")
+    (description
+     "This package helps spacing out the letters of text; the command is
+@code{\\letterspace<\\hbox modifier>@{<text>@}}: the text is placed in an
+@code{\\hbox} of the specified size, and space is inserted between each glyph
+to make the text fit the box.  Note that letterspacing is not ordinarily
+considered acceptable in modern typesetting of English.")
+    (license license:knuth)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
