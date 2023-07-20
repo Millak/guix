@@ -3314,6 +3314,25 @@ hyphen-less breaks at punctuation characters.  The set of characters to be
 regarded as punctuation may be changed from the package's default.")
     (license license:knuth)))
 
+(define-public texlive-pdf-trans
+  (package
+    (name "texlive-pdf-trans")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pdf-trans/"
+                   "tex/generic/pdf-trans/")
+             (base32
+              "1n7l0p1950lk3n5jm3si0qqhb8b7mm7jh33fm97l2r7d3qn9jac8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdf-trans")
+    (synopsis "Macros for various transformations of TeX boxes")
+    (description
+     "@code{pdf-trans} is a set of macros offering various transformations of
+TeX boxes (based on plain and pdfeTeX primitives).")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
