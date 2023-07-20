@@ -7277,7 +7277,8 @@ program for nucleotide and protein sequences.")
                   "1hkw21rq1mwf7xp0rmbb2gqc0i6p11108m69i7mr7xcjl268pxnb"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? ,(not (target-riscv64?)) ;XXX: stuck on riscv64-linux
+       `(#:tests? ,(not (or (target-riscv64?)   ;XXX: stuck on riscv64-linux
+                            (%current-target-system)))
          #:make-flags (list "CFLAGS=-O2 -g -fcommon")))
       (inputs
        ;; XXX: TODO: Enable Lua and Guile bindings.
