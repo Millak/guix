@@ -380,7 +380,7 @@ manager which re-parents a Client window to a window decoration frame.")
 (define-public kde-cli-tools
   (package
     (name "kde-cli-tools")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -388,10 +388,10 @@ manager which re-parents a Client window to a window decoration frame.")
               (patches (search-patches "kde-cli-tools-delay-mime-db.patch"))
               (sha256
                (base32
-                "0i1lnkyb2bdvbhnr2wsgjy2sjichzxxqkvn30ca85rj21cavk2z3"))))
+                "1ahgpaa073lg6n7xnrkflqz9cj8sl7f77sla93415hc2pz1v3qmm"))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f ;TODO: Failing sub-tests 3/7
+     (list #:tests? #f ;TODO: Failing 1 test
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'set-writable-location
@@ -402,7 +402,13 @@ GenericDataLocation.")
                       (string-append "\"" (getcwd) "/\"")))))
                (add-before 'check 'setup-env
                  (lambda* _
-                   (setenv "HOME" (getcwd)))))))
+                   (setenv "HOME" (getcwd))))
+               (add-after 'install 'symlink-kdesu
+                 (lambda _
+                   ;; XXX: nixpkgs say kdesu need kdeinit5 in PATH, but i can't
+                   ;; found in source, need check
+                   (symlink (string-append #$output "/lib/libexec/kf5/kdesu")
+                            (string-append #$output "/bin/kdesu")))))))
     (native-inputs (list extra-cmake-modules pkg-config shared-mime-info))
     (inputs (list kconfig
                   kdesu
