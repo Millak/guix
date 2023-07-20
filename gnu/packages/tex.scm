@@ -1365,6 +1365,34 @@ south-east, etc.); 12 types and 32 directions are available.")
 in Python, C and Pascal.  Program source files may also be input.")
     (license license:public-domain)))
 
+(define-public texlive-catcodes
+  (package
+    (name "texlive-catcodes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/catcodes/"
+                   "source/generic/catcodes/"
+                   "tex/generic/catcodes/")
+             (base32
+              "0di6rd5c0viiwvc6ncwndah38q318l3s1pf47ddmzjdq6rys9s33")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/catcodes")
+    (synopsis "Generic handling of TeX category codes")
+    (description
+     "The bundle deals with category code switching; the packages of the
+bundle should work with any TeX format (with the support of the
+@code{plainpkg} package).  The bundle provides:
+@itemize
+@item @file{stacklet.sty}, which supports stacks that control the use of
+different catcodes;
+@item @file{actcodes.sty}, which deals with active characters;
+@item @file{catchdq.sty}, which provides a simple quotation character control
+mechanism.
+@end itemize")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
