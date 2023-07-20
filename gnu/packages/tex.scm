@@ -4063,6 +4063,25 @@ features allow to deal with numbers (tests, display, some high level
 operations, etc.)")
     (license license:lppl1.3+)))
 
+(define-public texlive-zztex
+  (package
+    (name "texlive-zztex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/zztex/" "tex/plain/zztex/")
+             (base32
+              "07vx3m2g4vl2v1nxxy5dih67jg406y2i94sgkrmplm54b0pp42g3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zztex")
+    (synopsis "TeX macro package for producing books, journals, and manuals")
+    (description
+     "The ZzTeX macro package is a full-featured TeX macro package specially
+designed for producing books, journals, and manuals.  ZzTeX runs under Plain
+TeX.")
+    (license license:expat)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
