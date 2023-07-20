@@ -2811,6 +2811,28 @@ However, the gobble macros for optional macros require @code{\\@@@@ifnextchar}
 to be defined.")
     (license license:lppl1.3+)))
 
+(define-public texlive-graphics-pln
+  (package
+    (name "texlive-graphics-pln")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/graphics-pln/"
+                   "tex/plain/graphics-pln/")
+             (base32
+              "1iv3g76dzkpr2qak79bj9sdm6w9lb0n2md32cc23szrhgv6q7il3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphics-pln")
+    (synopsis "LaTeX-style graphics for Plain TeX users")
+    (description
+     "The Plain TeX graphics package is mostly a thin shell around the LaTeX
+@code{graphicx} and @code{color} packages, with support of the LaTeX-isms in
+those packages provided by @code{miniltx}.  The bundle also contains a file
+@file{picture.tex}, which is a wrapper around the @file{autopict.sty}, and
+provides the LaTeX picture mode to Plain TeX users.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
