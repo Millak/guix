@@ -2872,6 +2872,25 @@ to work with entire braced groups at a time.")
 in which @code{\\hitem} starts a horizontal and columned item.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hyplain
+  (package
+    (name "texlive-hyplain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/hyplain/" "tex/plain/hyplain/")
+             (base32
+              "1xj23zhv0sapjvchlcp013d32kayjf48wq5ywdak5n0fkb09mzl2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hyplain")
+    (synopsis "Basic support for multiple languages in Plain TeX")
+    (description
+     "The package offers a means to set up hyphenation suitable for several
+languages and/or dialects, and to select them or switch between them while
+typesetting.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
