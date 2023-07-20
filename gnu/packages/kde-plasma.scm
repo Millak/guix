@@ -2488,20 +2488,21 @@ UI for Plasma")
 (define-public powerdevil
   (package
     (name "powerdevil")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0anisirn7z8aw442npdnk1csb5ghpzj2hx49gpw4l6ijk70b76pr"))))
+                "1dbz479ikjy6fi3l701hvhkwhbll1gkibay3vzimb13kyamhy8vb"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules qttools-5 pkg-config))
     (inputs (list bluez-qt
                   glib
                   kauth
                   kactivities
+                  kcmutils
                   kscreen
                   kidletime
                   kconfig
