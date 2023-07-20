@@ -2469,6 +2469,33 @@ a comfortable and straightforward way.
 allow a somewhat natural formulation.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fenixpar
+  (package
+    (name "texlive-fenixpar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/fenixpar/"
+                   "tex/generic/fenixpar/")
+             (base32
+              "1363dr8fnhflw0mysv23mpp2vf02vfxs43nnv95yqkbsvp9fj502")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fenixpar")
+    (synopsis "One-shot changes to token registers such as @code{\\everypar}")
+    (description
+     "The bundle provides two packages, @code{fenxitok} and
+@code{fenixpar}.  The @code{fenixtok} package provides user macros to
+add material to a token register; the material will be
+(automatically) removed from the token register when the register is executed.
+Material may be added either to the left or to the right, and care is taken
+not to override any redefinition that may be included in the token register
+itself.  The @code{fenixpar} package uses the macros of @code{fenixtok} to
+provide a user interface to manipulation of the @code{\\everypar} token
+register.  The packages require the e-TeX extensions; with them, they work
+either with Plain TeX or with LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
