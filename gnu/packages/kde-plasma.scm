@@ -1468,14 +1468,14 @@ on top of Baloo.")
 (define-public plasma-bigscreen
   (package
     (name "plasma-bigscreen")
-    (version "5.25.90")
+    (version "5.26.90")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/unstable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1445j8hzfvh2z91fa8nxrc0z576c67cq5fxcs19pmzpnjjli1ads"))))
+                "1n9sd0d1s31l29c9jy6gavp8dsrvsi3im4978dw56xybcc8mgm2c"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
