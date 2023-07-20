@@ -3394,6 +3394,29 @@ their appropriate section, but to prevent them from intruding into the
 following section, even when sections do not normally begin a new page.")
     (license license:public-domain)))
 
+(define-public texlive-plainpkg
+  (package
+    (name "texlive-plainpkg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/plainpkg/"
+                   "source/generic/plainpkg/"
+                   "tex/generic/plainpkg/")
+             (base32
+              "10p796lms7rzwqgjf60nqm8x79hiz1cwiq1j8acjg1a6lnvadbq0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plainpkg")
+    (synopsis "Minimal method for making generic packages")
+    (description
+     "The package provides a minimal method for making generic (i.e.,
+TeX-format-independent) packaged, combining maybeload functionality, fallback
+definitions for LaTeX @code{\\ProvidesPackage} and @code{\\RequirePackage}
+functionality, and handling of arbitrary (multiple) private letters (analagous
+LaTeX packages use of @samp{@@@@}) in nested package files.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
