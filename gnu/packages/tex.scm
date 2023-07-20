@@ -3676,6 +3676,28 @@ the resolution used in the Metafont printer parameters.")
      "The package provides a simple key/value system for TeX and LaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-swrule
+  (package
+    (name "texlive-swrule")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/swrule/")
+             (base32
+              "075mshpyi9gxbi3n0hbh3ygidzw1daxy697lhc7cc99i39y8scpi")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/swrule")
+    (synopsis "Lines thicker in the middle than at the ends")
+    (description
+     "This package defines commands that create rules split into
+a (specified) number of pieces, whose size varies to produce the
+effect of a rule that swells in its centre.")
+    ;; Library mentions: "The style package is copyrighted but may be used and
+    ;; extended in any way, as long as a pointer to the original author is
+    ;; maintained.  The author is not liable for any problem that may or may
+    ;; not result from using this package. Use at your own risk".
+    (license (license:fsf-free "file://tex/generic/swrule/swrule.sty"))))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
