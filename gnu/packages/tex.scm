@@ -1295,6 +1295,31 @@ math expressions.")
 of mathematical disciplines.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bitelist
+  (package
+    (name "texlive-bitelist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/bitelist/"
+                   "source/generic/bitelist/"
+                   "tex/generic/bitelist/")
+             (base32
+              "1jv9w2jgx8q2k9xx0n4azlngsh26zs37ihavq0xy4n62ajf64ps6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bitelist")
+    (synopsis "Split list, in TeX's mouth")
+    (description
+     "The package provides commands for splitting a token list at the first
+occurrence of another (specified) token list.  The package's mechanism differs
+from those of packages providing similar features, in the following ways: the
+method uses TeX's mechanism of reading delimited macro parameters; splitting
+macros work by pure expansion, without assignments; the operation is carried
+out in a single macro call.  A variant of the operation is provided, that
+retains outer braces.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
