@@ -3579,6 +3579,23 @@ operations.  The hidden aim is to build a personnal collection of exercises
 with different data for each pupil.")
     (license license:lppl1.3+)))
 
+(define-public texlive-resumemac
+  (package
+    (name "texlive-resumemac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/resumemac/"
+                   "tex/plain/resumemac/")
+             (base32
+              "0q6ngs2inzk2nk9f06s9w9q2qhx71dw7nflmrc9hzx9w0pinw830")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/resumemac")
+    (synopsis "Plain TeX macros for resumes")
+    (description "This package provides a set of macros for resumes.")
+    (license license:public-domain)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
