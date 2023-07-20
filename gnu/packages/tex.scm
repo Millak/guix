@@ -3861,6 +3861,24 @@ languages.")
 dimensional units, usable both with Plain TeX and with LaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-timetable
+  (package
+    (name "texlive-timetable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/plain/timetable/")
+             (base32
+              "1lnl8gi2rrzcy688qb8b1ff9yivwxdqmbcfx2ph49aymkxfym97b")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/timetable")
+    (synopsis "Generate timetables")
+    (description
+     "This package provides a highly-configurable package, with nice output
+and simple input.  The macros use a radix sort mechanism so that the order of
+input is not critical.")
+    (license license:lppl)))
+
 (define-public texlive-lcdftypetools
   (package
     (name "texlive-lcdftypetools")
