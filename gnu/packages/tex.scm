@@ -3796,6 +3796,26 @@ Knuth's TeX book; this source is there to read, as an example of writing TeX ;
 it should not be processed without Knuth's direct permission.")
     (license license:knuth)))
 
+(define-public texlive-tex-ps
+  (package
+    (name "texlive-tex-ps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tex-ps/cmyk-hax/"
+                   "doc/generic/tex-ps/poligraf/"
+                   "dvips/tex-ps/" "tex/generic/tex-ps/")
+             (base32
+              "09f70q2bhmq7bn98f2g2pq62wnfhj24bzkbv652sjrw5rafp0311")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-ps")
+    (synopsis "TeX to PostScript generic macros and add-ons")
+    (description
+     "This package provides TeX to PostScript generic macros and add-ons:
+transformations of EPS files, prepress preparation, color separation, mirror,
+etc.")
+    (license license:public-domain)))
 
 (define-public texlive-lcdftypetools
   (package
