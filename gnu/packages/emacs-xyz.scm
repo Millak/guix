@@ -3491,6 +3491,30 @@ read-only based on user configuration.  User configuration may be prefix
 directories or regex patterns.")
       (license license:gpl3+))))
 
+;; Use latest commit since there are no tags anymore for several versions
+(define-public emacs-rebecca-theme
+  (let ((commit "4b8b5aae9099185e07c2b4cac4943c7f66a3f003")
+        (revision "0"))
+    (package
+      (name "emacs-rebecca-theme")
+      (version (git-version "1.3.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vic/rebecca-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y2kcs6zgi3dijagyz6lxbv6gi2mih8m943fhjrzkj35wfvjmhsz"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/vic/rebecca-theme")
+      (synopsis "Dark Emacs theme with purple/violet colors")
+      (description
+       "Rebecca Emacs theme is a dark theme with purple/violet colors, based on
+the @code{Dracula} theme for Emacs and the @code{Gloom} theme for Atom.")
+      (license license:expat))))
+
 (define-public emacs-bbdb
   (package
     (name "emacs-bbdb")
