@@ -4221,6 +4221,31 @@ Some of its major features include:
 Lock key.")
     (license license:gpl3+)))
 
+(define-public emacs-chocolate-theme
+  (let ((commit "ccc05f7ad96d3d1332727689bf6250443adc7ec0")
+        (revision "0"))
+    (package
+      (name "emacs-chocolate-theme")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/SavchenkoValeriy/emacs-chocolate-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1d8a9jwv9y0sncw24k840c8yyrig30f2d6q2zqlc09f05yzq9p9p"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-autothemer))
+      (home-page "https://github.com/SavchenkoValeriy/emacs-chocolate-theme")
+      (synopsis "Dark chocolatey theme for Emacs")
+      (description
+       "Chocolate theme is a dark, chocolatey, vibrant and subtle theme for
+Emacs.")
+      (license license:gpl3))))
+
 (define-public emacs-chronometrist
   (package
     (name "emacs-chronometrist")
