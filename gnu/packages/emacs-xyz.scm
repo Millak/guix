@@ -11078,16 +11078,16 @@ answers.")
 (define-public emacs-base16-theme
   (package
     (name "emacs-base16-theme")
-    (version "3.0")
+    (version "3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/belak/base16-emacs")
+             (url "https://github.com/tinted-theming/base16-emacs")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qp71j77zg8gippcn277s0j5a9n6dbwv3kdp2nya6li4b412vgba"))))
+        (base32 "1yq9afvybrgkmn17h22ha9231am7hlh3wccxw7g2ks3g0k5vvds0"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons "^build\\/.*\\.el$" %default-include)
@@ -11107,7 +11107,7 @@ answers.")
                                                      'pre 'post)))
                                (find-files theme-dir "\\.el$"))
                      (delete-file-recursively theme-dir)))))))
-    (home-page "https://github.com/belak/base16-emacs")
+    (home-page "https://github.com/tinted-theming/base16-emacs")
     (synopsis "Base16 color themes for Emacs")
     (description
      "Base16 provides carefully chosen syntax highlighting and a default set
