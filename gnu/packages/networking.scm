@@ -350,37 +350,30 @@ them in order to efficiently transfer a minimal amount of data.")
 (define-public libcamera
   (package
     (name "libcamera")
-    (version "0.0.0-1")
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "git://linuxtv.org/libcamera.git")
-         (commit "10be87fa7c3bfb097b21ca3d469c67e40c333f7e")))
+         (url "https://git.libcamera.org/libcamera/libcamera.git")
+         (commit (string-append "v" version))))
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0qgirhlalmk9f9v6piwz50dr2asb64rvbb9zb1vix7y9zh7m11by"))))
+        (base32 "06dj3dpfbayj61015n5kffin2g3hyys11ra0px2g4hmrznvdkhc9"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
      `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
        #:configure-flags
        (list
+        "-Dtest=true"
         "-Dv4l2=true"
         ;; XXX: Requires bundled pybind11.
         "-Dpycamera=disabled")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "test/meson.build"
-               (("\\['list-cameras',                    'list-cameras.cpp'\\],")
-                "")
-               ;; TODO: Why do the gstreamer tests fail.
-               (("^subdir\\('gstreamer'\\)")
-                ""))))
          (add-after 'install 'move-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -390,7 +383,8 @@ them in order to efficiently transfer a minimal amount of data.")
                 (string-append out "/share/doc")
                 (string-append doc "/share/doc"))))))))
     (native-inputs
-     (list graphviz                     ;for 'dot'
+     (list googletest
+           graphviz                     ;for 'dot'
            doxygen
            pkg-config
            python-wrapper
