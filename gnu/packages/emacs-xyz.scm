@@ -27283,6 +27283,30 @@ recursive size is not obtained.  Once this mode is enabled, every new Dired
 buffer displays recursive dir sizes.")
     (license license:gpl3+)))
 
+(define-public emacs-dired-preview
+  (package
+    (name "emacs-dired-preview")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/dired-preview")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d485812k1rv0qrw4xvzv4z3qf370apsajnf4q3pjk3q0r1fpm8b"))))
+    (build-system emacs-build-system)
+    (home-page "https://protesilaos.com/emacs/dired-preview")
+    (synopsis "Automatically preview file at point in Dired")
+    (description
+     "This is a simple package to automatically preview in a side window the
+file at point in Dired buffers.  Preview windows are closed when they are no
+longer relevant, while preview buffers are killed if they have not been used
+for other purposes beside previewing.  The package provides several
+customisation options to control its behaviour.")
+    (license license:gpl3+)))
+
 (define-public emacs-dired-rsync
   (package
     (name "emacs-dired-rsync")
