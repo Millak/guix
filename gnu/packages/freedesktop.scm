@@ -101,6 +101,7 @@
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
@@ -2891,14 +2892,14 @@ interfaces.")
 (define-public xdg-desktop-portal-kde
   (package
     (name "xdg-desktop-portal-kde")
-    (version "5.25.5")
+    (version "5.27.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0l3lmwihxyl65y0mkyg3afk1k6gc0ldjw2vg92g7yydbgmn39q7k"))))
+                "0wzp21l521d9z9mnfgiapzljqpg5qc5ghyzndpr8cz54c2bf9mdf"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list cups
@@ -2917,7 +2918,12 @@ interfaces.")
                   kiconthemes
                   qtdeclarative-5
                   qtwayland-5
-                  wayland))
+                  wayland
+                  kglobalaccel
+                  kguiaddons
+                  libxkbcommon
+                  kio-fuse
+                  wayland-protocols))
     (synopsis "Backend implementation for xdg-desktop-portal using Qt/KF5")
     (description "This package provides a backend implementation
 for xdg-desktop-portal that is using Qt/KF5.")
