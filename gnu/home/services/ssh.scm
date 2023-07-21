@@ -203,6 +203,9 @@
                                           first))))
         (memq keyword ssh-match-keywords))))
 
+(define (serialize-match-criteria _ value)
+  (string-append "Match " value "\n"))
+
 (define-maybe match-criteria)
 
 (define-configuration openssh-host
@@ -214,7 +217,7 @@ top-level options.")
   (host-name
    maybe-string
    "Host name---e.g., @code{\"foo.example.org\"} or @code{\"192.168.1.2\"}.")
-  (match-criteria ;TODO implement stricter match-criteria rules
+  (match-criteria
    maybe-match-criteria
    "When specified, this string denotes the set of hosts to which the entry
 applies, superseding the @code{host-name} field.  Its first element must be
@@ -288,8 +291,7 @@ through before connecting to the server.")
              (G_ "define either 'name' or 'match-criteria', not both")))
            (string-append "Host " (openssh-host-name config) "\n"))
        (if (maybe-value-set? (openssh-host-match-criteria config))
-           (string-append
-            "Match " (string-join (openssh-host-match-criteria config) " ") "\n")
+           (serialize-match-criteria #t (openssh-host-match-criteria config))
            (raise
             (formatted-message
              (G_ "define either 'name' or 'match-criteria' once")))))
