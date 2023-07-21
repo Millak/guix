@@ -17323,27 +17323,31 @@ is the primary mode of interaction.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
+;; Package has no releases or tags.  Version is extracted from "Version:"
+;; keyword in main file.
 (define-public emacs-idle-highlight
+  (let ((commit "f9091c907d41e7b12d99d108a194229b8dbfc5ae")
+        (revision "0"))
   (package
     (name "emacs-idle-highlight")
-    (version "1.1.3")
+    (version (git-version "1.1.4" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nonsequitur/idle-highlight-mode")
-             (commit version)))
+             (url "https://codeberg.org/ideasman42/emacs-idle-highlight-mode")
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x4w1ksrw7dicl84zpf4d4scg672dyan9g95jkn6zvri0lr8xciv"))))
+        (base32 "0757x4iy7q0mj1rshlxr00hbc78g5hzijgzyqs36nrw6bn65fb93"))))
     (build-system emacs-build-system)
-    (home-page "https://www.emacswiki.org/emacs/IdleHighlight")
+    (home-page "https://codeberg.org/ideasman42/emacs-idle-highlight-mode")
     (synopsis "Highlights all occurrences of the word the point is on")
     (description
      "This Emacs package provides @code{idle-highlight-mode} that sets
  an idle timer to highlight all occurrences in the buffer of the word under
  the point.")
-    (license license:gpl3+)))
+    (license license:gpl3+))))
 
 (define-public emacs-ox-twbs
   (package
