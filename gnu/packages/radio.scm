@@ -938,7 +938,8 @@ environment.")
       (native-inputs
        (list doxygen pkg-config pybind11 python-mako python-six))
       (inputs
-       (list airspyhf
+       (list airspy
+             airspyhf
              boost
              fftwf
              gmp
