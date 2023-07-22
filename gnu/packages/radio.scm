@@ -2510,7 +2510,8 @@ voice formats.")
     (native-inputs
      (list doxygen graphviz pkg-config))
     (inputs
-     (list airspyhf
+     (list airspy
+           airspyhf
            alsa-lib
            aptdec
            boost
