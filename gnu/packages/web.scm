@@ -326,7 +326,7 @@ and its related documentation.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.0.44")
+    (version "2.0.46")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -335,21 +335,32 @@ and its related documentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18ggk71nk3zylgkwq32glggdcapgsj772qn2y4i9hbk374l6h61w"))))
+                "1qv95kipjlg374kiq6gssh5jsb5arahq4jsb7vkg3njnx0ldwvkb"))))
     (build-system go-build-system)
     (arguments
      (list #:go go-1.19
            #:install-source? #f
            #:import-path "miniflux.app"
+           #:build-flags
+           #~(list (string-append
+                    "-ldflags= -X miniflux.app/version.Version=" #$version))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'install 'rename-binary
+               (add-before 'build 'disable-cgo
+                 (lambda _
+                   (setenv "CGO_ENABLED" "0")))
+               (add-after 'install 'install-manpage
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (let ((man1 (string-append #$output "/share/man/man1/"))
+                         (page (format #f "src/~a/miniflux.1" import-path)))
+                     (install-file page man1))))
+               (add-after 'install-manpage 'rename-binary
                  (lambda _
                    (let ((bindir (string-append #$output "/bin/")))
                      (rename-file (string-append bindir "miniflux.app")
                                   (string-append bindir "miniflux"))))))))
     (inputs
-     (list go-github-com-coreos-go-oidc
+     (list go-github-com-coreos-go-oidc-v3
            go-github-com-go-telegram-bot-api-telegram-bot-api
            go-github-com-gorilla-mux
            go-github-com-lib-pq
