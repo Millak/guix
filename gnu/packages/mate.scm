@@ -1551,7 +1551,6 @@ used to bring up authentication dialogs.")
                    mate-calc
                    mate-backgrounds
                    mate-netbook
-                   mate-utils
                    mate-polkit
                    mate-system-monitor
                    mate-utils
