@@ -9589,6 +9589,28 @@ use one of our glamorous default themes.")
 @code{go-golang-org-x-oauth2} package.")
     (license license:asl2.0)))
 
+(define-public go-github-com-coreos-go-oidc-v3
+  (package
+    (inherit go-github-com-coreos-go-oidc)
+    (name "go-github-com-coreos-go-oidc-v3")
+    (version "3.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/coreos/go-oidc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sbm6n3lp48lymn0g921afhq2j6inb38w3wy5rhyx9h8gpzhnxx9"))))
+    (arguments
+     (list ;; no Go files in [...]/src/github.com/coreos/go-oidc/v3.
+           #:import-path "github.com/coreos/go-oidc/v3/oidc"
+           #:unpack-path "github.com/coreos/go-oidc/v3"))
+    (propagated-inputs
+     (list go-github-com-go-jose-go-jose-v3
+           go-golang-org-x-oauth2))))
+
 (define-public go-github-com-coreos-go-semver
   (package
     (name "go-github-com-coreos-go-semver")
