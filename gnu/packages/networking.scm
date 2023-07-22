@@ -256,7 +256,7 @@ protocols.")
 (define-public lcrq
   (package
     (name "lcrq")
-    (version "0.0.1")
+    (version "0.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -265,7 +265,7 @@ protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jf7x3zcdbz5b99qz7liw4i90hn9s457zr82n0r8g9qsi81a1d8c"))))
+                "13mfg866scvy557zrvjxjhkzam39h8d07s2w3fqbwhw6br6axkxk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
