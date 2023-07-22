@@ -2258,7 +2258,7 @@ RFC6455, regardless of your programming paradigm.")
 (define-public hypercorn
   (package
     (name "hypercorn")
-    (version "0.14.3")
+    (version "0.14.4")
     (source (origin
               (method git-fetch) ;PyPI does not have tests
               (uri (git-reference
@@ -2267,7 +2267,7 @@ RFC6455, regardless of your programming paradigm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hkph0sdr94hxmrq1grnh842snm561sw4az5q6a3ba9hqnrl890h"))))
+                "0zyf5b8959sd12ycmqzvsb8746i3gn76rz55gxvix5cwj672m7yx"))))
     (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
     (propagated-inputs
