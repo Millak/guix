@@ -1449,52 +1449,71 @@ on top of Baloo.")
     (arguments
      (list #:builder #~(begin
                          (mkdir #$output))))
-    (propagated-inputs (list bluedevil
+    ;; TODO: cleanup, check what is no need
+    (propagated-inputs (list kdeclarative ;; require by sddm breeze theme
+
+                             baloo
+                             breeze-icons ; default mouse icon
                              breeze
                              breeze-gtk
-                             discover
                              drkonqi
-                             kactivitymanagerd
+                             kactivitymanagerd ; require this run dbus
                              kde-cli-tools
-                             ;; kde-gtk-config
                              kdecoration
                              kdeplasma-addons
                              kgamma
                              khotkeys
-                             kinfocenter
-                             kmenuedit
+                             ktexteditor
+
                              kscreen
-                             kscreenlocker
-                             ksshaskpass
+                             libkscreen
+
                              ksystemstats
                              kwallet-pam
-                             kwayland-integration
                              kwin
-                             kwrited
                              kinit
-                             layer-shell-qt
-                             libkscreen
+
                              libksysguard
                              milou
                              ;; oxygen
                              oxygen-sounds
+
+                             kdesu
+                             krunner
+                             kinfocenter
+                             kscreenlocker
+                             ksshaskpass
+                             discover
+                             kmenuedit
+                             plasma-welcome
                              plasma-browser-integration
                              plasma-desktop
                              plasma-disks
+                             polkit-kde-agent
+                             system-settings
+                             xdg-desktop-portal-kde
+                             ;; module cyclic referencing
+                             (module-ref
+                              (resolve-interface
+                               '(gnu packages kde-systemtools))
+                              'dolphin)
+                             (module-ref
+                              (resolve-interface
+                               '(gnu packages kde-systemtools))
+                              'konsole)
+                             ;; kde-gtk-config ;; TODO
+
                              plasma-firewall
                              plasma-integration
                              plasma-nm
                              plasma-pa
                              plasma-systemmonitor
                              ;; plasma-thunderbolt ;; waiting for bolt
+
+                             kglobalaccel
                              plasma-vault
                              plasma-workspace
-                             plasma-workspace-wallpapers
-                             polkit-kde-agent
-                             powerdevil
-                             sddm
-                             system-settings
-                             xdg-desktop-portal-kde))
+                             powerdevil))
     (synopsis "The KDE Plasma desktop environment")
     (home-page "https://kde.org/plasma-desktop/")
     (description
