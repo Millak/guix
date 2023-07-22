@@ -682,7 +682,7 @@ infamous 'Wanda the Fish'.")
 (define-public atril
   (package
     (name "atril")
-    (version "1.24.0")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
@@ -690,7 +690,7 @@ infamous 'Wanda the Fish'.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0967gxw7h2qh2kpwl0jgv58hicz6aa92kr12mnykbpikad25s95y"))))
+         "194inkvgsj49pp0f46xfl1mq7kniah15kgviss5a20cprcx62fm5"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--with-openjpeg="
