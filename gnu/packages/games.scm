@@ -5002,6 +5002,92 @@ Transport Tycoon Deluxe.")
     "openrct2-objects is a set of objects for OpenRCT2.")
    (license license:gpl3+)))
 
+(define-public openquest
+  (package
+    (name "openquest")
+    (version "0.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/AlbanBedel/scummc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yyq05kfmvgx5aa68kg1l5a4lpsky7hzxxcdvv2xbgf0jljdcl3k"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (substitute* "configure"
+                     (("\\|alpha" all)
+                      (string-append all "|arm|aarch64|powerpc64le")))
+                   (substitute* "examples/example.mak"
+                     (("scost.*\n$") "scost\n")
+                     (("bmp \\$\\(.*\n$") "bmp\n")
+                     (("/%.scc.*\n$") "/%.scc\n")
+                     (("voc \\$\\(.*\n$") "voc\n"))
+                   (substitute* "Makefile.target"
+                     (("distrib-data:.*\n") "distrib-data:\n")
+                     (("cp.*/bin" all)
+                      (string-append all " || true")))))))
+    (build-system gnu-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments scummc)
+       ((#:make-flags _)
+        #~(list "SCC=scc"
+                "SLD=sld"
+                "COST=cost"
+                "CHAR=char"
+                "SOUN=soun"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'build
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (with-directory-excursion "examples/openquest"
+                  (apply invoke "make" "tentacle" make-flags))))
+            (add-after 'install 'install-executable
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Create standalone executable.
+                (let* ((bash (search-input-file inputs "/bin/bash"))
+                       (share (string-append #$output "/examples/openquest"))
+                       (scummvm (search-input-file inputs "/bin/scummvm"))
+                       (bin (string-append #$output "/bin"))
+                       (executable (string-append bin "/openquest")))
+                  (mkdir-p bin)
+                  (with-output-to-file executable
+                    (lambda ()
+                      (format #t "#!~a~%" bash)
+                      (format #t
+                              "exec ~a --path=~a tentacle~%"
+                              scummvm share)))
+                  (chmod executable #o755))))
+            (add-after 'install-executable 'install-desktop-file
+              (lambda _
+                ;; Create desktop file.  There is no official icon,
+                ;; but the main character of the game is a good choice.
+                (let* ((apps (string-append #$output "/share/applications"))
+                       (share (string-append #$output "/examples/openquest")))
+                  (mkdir-p apps)
+                  (make-desktop-entry-file
+                   (string-append apps "/openquest.desktop")
+                   #:name "OpenQuest"
+                   #:generic-name "OpenQuest"
+                   #:exec (string-append #$output "/bin/openquest")
+                   #:icon (string-append share "/graphics/zob/frames/stand_S.bmp")
+                   #:categories '("AdventureGame" "Game" "RolePlaying")
+                   #:keywords '("game" "adventure" "roleplaying" "2D" "sci-fi")
+                   #:comment '((#f "Simple 2D point and click adventure game"))))))))))
+    (inputs
+     (list bash scummvm))
+    (native-inputs
+     (modify-inputs (package-native-inputs scummc)
+       (prepend scummc)))
+    (home-page "https://www.scummvm.org")
+    (synopsis "Simple 2D point and click adventure game")
+    (description "OpenQuest is a two room adventure game
+that follows two aliens who come to Earth in search of a stolen artifact.")
+    (license license:gpl2+)))
+
 (define-public openrct2
   (package
     (name "openrct2")
