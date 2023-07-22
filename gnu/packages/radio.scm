@@ -2237,7 +2237,8 @@ receiver.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list alsa-lib
+     (list airspy
+           alsa-lib
            faad2
            fftwf
            lame
@@ -2253,9 +2254,10 @@ receiver.")
            qtquickcontrols2-5
            soapysdr))
     (arguments
-     `(#:configure-flags '("-DRTLSDR=ON"
-                           "-DSOAPYSDR=ON")
-       #:tests? #f))
+     (list #:configure-flags #~(list "-DAIRSPY=ON"
+                                     "-DRTLSDR=ON"
+                                     "-DSOAPYSDR=ON")
+           #:tests? #f))
     (home-page "https://www.welle.io/")
     (synopsis "DAB and DAB+ software radio")
     (description
