@@ -153,6 +153,7 @@
   #:use-module (guix packages)
   #:use-module (guix cvs-download)
   #:use-module (guix download)
+  #:use-module (guix deprecation)
   #:use-module (guix bzr-download)
   #:use-module (guix gexp)
   #:use-module (guix i18n)
@@ -1287,7 +1288,7 @@ some utility functions, and commands using that infrastructure.")
 its mode line.")
       (license license:gpl3+))))
 
-(define-public git-modes
+(define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
     (version "1.4.1")
@@ -1310,6 +1311,8 @@ its mode line.")
 configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
 @file{.git/config}.")
     (license license:gpl3+)))
+
+(define-deprecated/public-alias git-modes emacs-git-modes)
 
 (define-public emacs-with-editor
   (package
