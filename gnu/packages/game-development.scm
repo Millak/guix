@@ -65,6 +65,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
@@ -704,6 +705,60 @@ clone.")
 development of visual novels, written on top of Guile-SDL2.  It is still
 experimental.")
     (license license:lgpl3+)))
+
+(define-public scummc
+  (package
+    (name "scummc")
+    (version "0.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/AlbanBedel/scummc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yyq05kfmvgx5aa68kg1l5a4lpsky7hzxxcdvv2xbgf0jljdcl3k"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (substitute* "configure"
+                     (("\\|alpha" all)
+                      (string-append all "|arm|aarch64|powerpc64le")))
+                   (substitute* "examples/example.mak"
+                     (("scost.*\n$") "scost\n")
+                     (("bmp \\$\\(.*\n$") "bmp\n")
+                     (("/%.scc.*\n$") "/%.scc\n")
+                     (("voc \\$\\(.*\n$") "voc\n"))
+                   (substitute* "Makefile.target"
+                     (("distrib-data:.*\n") "distrib-data:\n")
+                     (("cp.*/bin" all)
+                      (string-append all " || true")))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:tests? #f ; The only tests verify that game checksums match
+           #:make-flags
+           #~(list "SHOW_WARNINGS=no")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure ; ScummC uses a non-standard configure
+                    (lambda* (#:key configure-flags #:allow-other-keys)
+                      (apply invoke  "./configure" configure-flags)))
+               (replace 'install ; install target is referred to as distrib
+                 (lambda _
+                   (invoke "make" "distrib"
+                           (string-append "DISTRIB=" #$output)))))))
+    (inputs
+     (list freetype gtk+-2 sdl))
+    (native-inputs
+     (list bison doxygen libxslt pkg-config))
+    (synopsis "SCUMM Compiler")
+    (description
+     "ScummC is a set of tools allowing to create SCUMM games from scratch.
+It is capable of creating games for SCUMM version 6 and partially version 7.")
+    (home-page "https://github.com/AlbanBedel/scummc")
+    (license license:gpl2+)))
 
 (define-public sfml
   (package
