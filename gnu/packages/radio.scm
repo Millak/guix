@@ -2601,7 +2601,8 @@ various hardware.")
       (native-inputs
        (list pkg-config))
       (inputs
-       (list airspyhf
+       (list airspy
+             airspyhf
              alsa-lib
              codec2
              fftwf
@@ -2618,8 +2619,7 @@ various hardware.")
              (list zstd "lib")))
       (arguments
        (list #:tests? #f ; No test suite.
-             #:configure-flags #~(list "-DOPT_BUILD_AIRSPY_SOURCE=OFF"
-                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+             #:configure-flags #~(list "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
                                        "-DOPT_BUILD_M17_DECODER=ON")
              #:phases
              #~(modify-phases %standard-phases
