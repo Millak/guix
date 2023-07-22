@@ -272,6 +272,57 @@ To install the rtl-sdr udev rules, you must extend 'udev-service-type' with
 this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
       (license license:gpl2+))))
 
+(define-public airspy
+  (let ((commit "6f92f47146aa8a8fce59b60927cf8c53da6851b3")
+        (revision "1"))
+    (package
+      (name "airspy")
+      (version (git-version "1.0.10" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/airspy/airspyone_host")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0y2yz8agp4v36z1766hi92msgs35yvy32brfcscijxdkgswdgbkd"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list libusb))
+      (arguments
+       (list #:configure-flags #~(list "-DINSTALL_UDEV_RULES=ON")
+             #:tests? #f ; No tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda _
+                     (substitute* "airspy-tools/CMakeLists.txt"
+                       (("DESTINATION \"/etc/udev/")
+                        (string-append "DESTINATION \""
+                                       #$output
+                                       "/lib/udev/")))))
+                 (add-after 'fix-paths 'fix-udev-rules
+                   (lambda _
+                     (substitute* "airspy-tools/52-airspy.rules"
+                       ;; The plugdev group does not exist; use dialout as in
+                       ;; the hackrf package.
+                       (("GROUP=\"plugdev\"")
+                        "GROUP=\"dialout\"")))))))
+      (home-page "https://github.com/airspy/airspyone_host")
+      (synopsis "Software defined radio driver for Airspy")
+      (description
+       "This package provides the driver and utilities for controlling the
+Airspy Software Defined Radio (SDR) over USB.
+
+To install the airspy udev rules, you must extend @code{udev-service-type}
+with this package.  E.g.: @code{(udev-rules-service 'airspy airspy)}")
+      (license (list license:bsd-3
+                     license:expat
+                     license:gpl2+)))))
+
 (define-public airspyhf
   (let ((commit "40836c59d35d989fe00ac12ef774df736a36c6e4")
         (revision "1"))
