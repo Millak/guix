@@ -97,6 +97,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -1310,31 +1311,25 @@ manage system or application containers.")
 (define-public lxcfs
   (package
     (name "lxcfs")
-    (version "4.0.11")
+    (version "5.0.4")
     (home-page "https://github.com/lxc/lxcfs")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "lxcfs-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "02cgzh97cgxh9iyf7gkn5ikdc0sfzqfjj6al0hikdf9rbwcscqwd"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url home-page)
+                           (commit (string-append "lxcfs-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15cc7kvnln4qqlv22hprfzmq89jbkx7yra730hap8wkvamn33sxy"))))
+    (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "--localstatedir=/var")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'bootstrap
-            ;; Work around missing interpreter shebang.
-            (lambda _
-              (invoke "bash" "bootstrap.sh"))))))
+      #~(list "-Dinit-script=sysvinit"))) ; no ‘none’ option
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list help2man pkg-config python python-jinja2))
     (inputs
-     (list fuse-2))
-    (build-system gnu-build-system)
+     (list fuse))
     (synopsis "FUSE-based file system for LXC")
     (description "LXCFS is a small FUSE file system written with the intention
 of making Linux containers feel more like a virtual machine.
