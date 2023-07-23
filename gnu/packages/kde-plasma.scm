@@ -2412,7 +2412,13 @@ sensors, process information and other system resources.")
                   libxcursor
                   libkexiv2
                   gpsd
-                  zlib))
+                  zlib
+
+                  ;; qml dependency
+                  qtquickcontrols-5
+                  plasma-nm
+                  plasma-pa
+                  kscreen))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
