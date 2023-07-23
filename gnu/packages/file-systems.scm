@@ -1770,9 +1770,8 @@ local file system using FUSE.")
     (license license:bsd-3)))
 
 (define-public rewritefs
-  (let ((revision "0")
-        ;; This is the last commit supporting our fuse@2.
-        (commit "31e2810b596028a12e49a08664567755f4b387b2"))
+  (let ((revision "1")
+        (commit "3a56de8b5a2d44968b8bc3885c7d661d46367306"))
     (package
       (name "rewritefs")
       (version (git-version "0.0.0" revision commit))
@@ -1784,7 +1783,7 @@ local file system using FUSE.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0k1aas2bdq2l3a6q3fvmngpakcxiws8qny2w6z7ffngyqxh33fv7"))))
+          (base32 "1w2rik0lhqm3wr68x51zs45gqfx79l7fi4p0sqznlfq7sz5s8xxn"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((srfi srfi-26)
@@ -1805,7 +1804,7 @@ local file system using FUSE.")
       (native-inputs
        (list pkg-config))
       (inputs
-       (list fuse-2 pcre))
+       (list fuse pcre))
       (home-page "https://github.com/sloonz/rewritefs")
       (synopsis "FUSE file system that changes particular file names")
       (description
