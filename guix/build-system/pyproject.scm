@@ -46,6 +46,7 @@
   ;; Build-side modules imported by default.
   `((guix build pyproject-build-system)
     (guix build json)
+    (guix build toml)
     ,@%python-build-system-modules))
 
 (define (default-python)
@@ -93,6 +94,7 @@
                           #:key source
                           (tests? #t)
                           (configure-flags ''())
+                          (backend-path #f)
                           (build-backend #f)
                           (test-backend #f)
                           (test-flags ''())
@@ -118,6 +120,7 @@
                  #:source #+source
                  #:configure-flags #$configure-flags
                  #:system #$system
+                 #:backend-path #$backend-path
                  #:build-backend #$build-backend
                  #:test-backend #$test-backend
                  #:test-flags #$test-flags

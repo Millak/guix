@@ -21,6 +21,7 @@
   #:use-module ((guix build python-build-system) #:prefix python:)
   #:use-module (guix build utils)
   #:use-module (guix build json)
+  #:use-module (guix build toml)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 format)
@@ -60,8 +61,8 @@
 ;;; wheel and expected to be created by the installing utility.
 ;;; TODO: Add support for PEP-621 entry points.
 ;;;
-;;; Caveats:
-;;; - There is no support for in-tree build backends.
+;;; This module also supports in-tree build backends, which can be
+;;; overridden by #:backend-path.
 ;;;
 ;;; Code:
 ;;;
@@ -86,23 +87,23 @@
 ;; Raised, when no wheel has been built by the build system.
 (define-condition-type &no-wheels-built &python-build-error no-wheels-built?)
 
-(define* (build #:key outputs build-backend configure-flags #:allow-other-keys)
+(define* (build #:key outputs build-backend backend-path configure-flags #:allow-other-keys)
   "Build a given Python package."
-
-  (define (pyproject.toml->build-backend file)
-    "Look up the build backend in a pyproject.toml file."
-    (call-with-input-file file
-      (lambda (in)
-        (let loop
-          ((line (read-line in 'concat)))
-          (if (eof-object? line) #f
-              (let ((m (string-match "build-backend = [\"'](.+)[\"']" line)))
-                (if m
-                    (match:substring m 1)
-                    (loop (read-line in 'concat)))))))))
 
   (let* ((wheel-output (assoc-ref outputs "wheel"))
          (wheel-dir (if wheel-output wheel-output "dist"))
+         (pyproject.toml (if (file-exists? "pyproject.toml")
+                             (parse-toml-file "pyproject.toml")
+                             '()))
+         ;; backend-path is prepended to sys.path, so in-tree backends can be
+         ;; found. We assume toml is json-compatible and do not encode the resulting
+         ;; JSON list expression.
+         (auto-backend-path (recursive-assoc-ref
+                             pyproject.toml
+                             '("build-system" "backend-path")))
+         (use-backend-path (call-with-output-string
+                            (cut write-json
+                             (or backend-path auto-backend-path '()) <>)))
          ;; There is no easy way to get data from Guile into Python via
          ;; s-expressions, but we have JSON serialization already, which Python
          ;; also supports out-of-the-box.
@@ -111,10 +112,9 @@
          ;; python-setuptools’ default backend supports setup.py *and*
          ;; pyproject.toml. Allow overriding this automatic detection via
          ;; build-backend.
-         (auto-build-backend (if (file-exists? "pyproject.toml")
-                                 (pyproject.toml->build-backend
-                                  "pyproject.toml")
-                                 #f))
+         (auto-build-backend (recursive-assoc-ref
+                              pyproject.toml
+                              '("build-system" "build-backend")))
          ;; Use build system detection here and not in importer, because a) we
          ;; have alot of legacy packages and b) the importer cannot update arbitrary
          ;; fields in case a package switches its build system.
@@ -122,15 +122,22 @@
                                 auto-build-backend
                                 "setuptools.build_meta")))
     (format #t
-     "Using '~a' to build wheels, auto-detected '~a', override '~a'.~%"
-     use-build-backend auto-build-backend build-backend)
+     (string-append
+      "Using '~a' to build wheels, auto-detected '~a', override '~a'.~%"
+      "Prepending '~a' to sys.path, auto-detected '~a', override '~a'.~%")
+     use-build-backend auto-build-backend build-backend
+     use-backend-path auto-backend-path backend-path)
     (mkdir-p wheel-dir)
     ;; Call the PEP 517 build function, which drops a .whl into wheel-dir.
     (invoke "python" "-c"
      "import sys, importlib, json
-config_settings = json.loads (sys.argv[3])
-builder = importlib.import_module(sys.argv[1])
-builder.build_wheel(sys.argv[2], config_settings=config_settings)"
+backend_path = json.loads (sys.argv[1]) or []
+backend_path.extend (sys.path)
+sys.path = backend_path
+config_settings = json.loads (sys.argv[4])
+builder = importlib.import_module(sys.argv[2])
+builder.build_wheel(sys.argv[3], config_settings=config_settings)"
+     use-backend-path
      use-build-backend
      wheel-dir
      config-settings)))

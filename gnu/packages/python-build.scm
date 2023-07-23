@@ -191,13 +191,7 @@ Python file, so it can be easily copied into your project.")
         (base32 "0kwazq3i18rphcr8gak4fgzdcj5w5bbn4k4j2l6ma32gj496qlny"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ;disabled to avoid extra dependencies
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'add-self-to-path
-           (lambda _
-             ;; The build system of tomli requires... tomli.
-             (setenv "PYTHONPATH" "src"))))))
+     `(#:tests? #f))                      ;disabled to avoid extra dependencies
     (native-inputs (list python-flit-core-bootstrap python-six-bootstrap))
     (home-page "https://github.com/hukkin/tomli")
     (synopsis "Small and fast TOML parser")
@@ -567,13 +561,7 @@ compatible build front-ends to build Poetry managed projects.")
         (base32 "053c8dw632p7jkhjb51k0wcx6hdw4r3lk97mds76df653qxnqmf6"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ;disabled to avoid extra dependencies
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'add-self-to-path
-           (lambda _
-             ;; The build system requires itself.
-             (setenv "PYTHONPATH" "src"))))))
+     `(#:tests? #f))                      ;disabled to avoid extra dependencies
     (home-page "https://github.com/python-poetry/poetry-core")
     (synopsis "Poetry PEP 517 build back-end")
     (description
@@ -744,12 +732,7 @@ reflected in the package visible to Python, without needing a reinstall.")
                 "1nn5cyc9fgrbawz38drfkl2s588k2gn3yqdm2cldbx9zy0fsjbj6"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f                  ;to keep dependencies to a minimum
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'build 'add-src-to-path
-                          ;; Hatchling uses itself to build itself.
-                          (lambda _
-                            (setenv "PYTHONPATH" "src"))))))
+     (list #:tests? #f))                  ;to keep dependencies to a minimum
     (propagated-inputs (list python-editables
                              python-packaging-bootstrap
                              python-pathspec
@@ -823,12 +806,7 @@ version control system (like Git) to determine project versions.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; Depends on pytest, which we cannot import into this module.
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-pythonpath
-            (lambda _
-              (setenv "PYTHONPATH" (string-append (getcwd) "/src")))))))
+      #:tests? #f)) ; Depends on pytest, which we cannot import into this module.
     (home-page "https://pdm-backend.fming.dev/")
     (synopsis
      "PEP 517 build backend for PDM")
