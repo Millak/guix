@@ -1,0 +1,23 @@
+From 2d01202eee44d8bad5bb982e72829b4a98d58bcd Mon Sep 17 00:00:00 2001
+From: Joseph Lansdowne <j49137@gmail.com>
+Date: Thu, 4 Apr 2019 20:37:06 +0100
+Subject: [PATCH] fix memory leak
+
+---
+ ChangeLog | 1 +
+ ftpfs.c   | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/ftpfs.c b/ftpfs.c
+index 34f8c38..020e559 100644
+--- a/ftpfs.c
++++ b/ftpfs.c
+@@ -607,6 +607,8 @@ static int finish_write_thread(struct ftpfs_file *fh)
+ 
+ 
+ static void free_ftpfs_file(struct ftpfs_file *fh) {
++  buf_free(&fh->buf);
++  buf_free(&fh->stream_buf);
+   if (fh->write_conn)
+     curl_easy_cleanup(fh->write_conn);
+   g_free(fh->full_path);

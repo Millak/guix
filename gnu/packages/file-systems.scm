@@ -1012,8 +1012,12 @@ All of this is accomplished without a centralized metadata server.")
        (uri (string-append "mirror://sourceforge/curlftpfs/curlftpfs/" version
                            "/curlftpfs-" version ".tar.gz"))
        (sha256
-        (base32
-         "0n397hmv21jsr1j7zx3m21i7ryscdhkdsyqpvvns12q7qwwlgd2f"))))
+        (base32 "0n397hmv21jsr1j7zx3m21i7ryscdhkdsyqpvvns12q7qwwlgd2f"))
+       (patches
+        (search-patches "curlftpfs-fix-error-closing-file.patch"
+                        "curlftpfs-fix-file-names.patch"
+                        "curlftpfs-fix-memory-leak.patch"
+                        "curlftpfs-fix-no_verify_hostname.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
