@@ -649,11 +649,7 @@ from a mounted file system.")
              `(,util-linux "lib")
              lz4
              zlib
-             `(,zstd "lib")
-             ;; Only for mount.bcachefs.sh.
-             coreutils-minimal
-             gawk
-             util-linux))
+             `(,zstd "lib")))
       (home-page "https://bcachefs.org/")
       (synopsis "Tools to create and manage bcachefs file systems")
       (description
@@ -677,17 +673,7 @@ performance and other characteristics.")
      (substitute-keyword-arguments (package-arguments bcachefs-tools)
        ((#:make-flags make-flags)
         #~(append #$make-flags
-              (list "LDFLAGS=-static")))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'skip-shared-library
-              (lambda _
-                (substitute* "Makefile"
-                  ;; Building the shared library with ‘-static’ obviously fails…
-                  (("^((all|install):.*)\\blib\\b(.*)" _ prefix suffix)
-                   (string-append prefix suffix "\n"))
-                  ;; …as does installing a now non-existent file.
-                  ((".*\\$\\(INSTALL\\).* lib.*") ""))))))))
+                  (list "LDFLAGS=-static")))))
     (inputs (modify-inputs (package-inputs bcachefs-tools)
               (prepend `(,eudev "static")
                        `(,keyutils "static")
