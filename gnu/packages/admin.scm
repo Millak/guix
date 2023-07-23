@@ -4682,45 +4682,48 @@ Logitech Unifying Receiver.")
            (sha256
             (base32 "05qq4395x8f0kyl1ppm74npsf8sb3hhgz0ck4fya91sy6a26b4ja"))))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           ;; XXX Remove after fixing <https://issues.guix.gnu.org/55287>.
-           (lambda* (#:key source #:allow-other-keys)
-             (mkdir "source")
-             (chdir "source")
-             (copy-recursively source "."
-                               #:keep-mtime? #t)))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "lynis"
-               (("/usr/share/lynis")
-                (string-append (assoc-ref outputs "out") "/share/lynis")))
-             (substitute* "include/functions"
-               (("/usr/local/etc/lynis")
-                (string-append (assoc-ref outputs "out") "/etc/lynis")))))
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "lynis" (string-append out "/bin/"))
-               (install-file "default.prf" (string-append out "/etc/lynis"))
-               (for-each
-                (lambda (dir)
-                  (copy-recursively dir (string-append out "/share/lynis/" dir)))
-                (list "db" "include" "plugins"))
-               (install-file "lynis.8" (string-append out "/share/man/man8")))))
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "lynis-sdk") "../lynis-sdk")
-             (setenv "LANG" "en_US.UTF-8")
-             (let ((lynis-dir (getcwd)))
-               (with-directory-excursion "../lynis-sdk"
-                 (substitute* "config"
-                   (("\\.\\./lynis") lynis-dir))
-                 (substitute* "unit-tests/tests-language-translations.sh"
-                   (("\\.\\./lynis") lynis-dir))
-                 (invoke "sh" "lynis-devkit" "run" "unit-tests"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            ;; XXX Remove after fixing <https://issues.guix.gnu.org/55287>.
+            (lambda* (#:key source #:allow-other-keys)
+              (mkdir "source")
+              (chdir "source")
+              (copy-recursively source "."
+                                #:keep-mtime? #t)))
+          (replace 'configure
+            (lambda _
+              (substitute* "lynis"
+                (("/usr/share/lynis")
+                 (string-append #$output "/share/lynis")))
+              (substitute* "include/functions"
+                (("/usr/local/etc/lynis")
+                 (string-append #$output "/etc/lynis")))))
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (install-file "lynis" (string-append #$output "/bin/"))
+              (install-file "default.prf" (string-append #$output "/etc/lynis"))
+              (for-each
+               (lambda (dir)
+                 (copy-recursively
+                  dir (string-append #$output "/share/lynis/" dir)))
+               (list "db" "include" "plugins"))
+              (install-file "lynis.8"
+                            (string-append #$output "/share/man/man8"))))
+          (replace 'check
+            (lambda _
+              (copy-recursively #$(this-package-native-input "lynis-sdk")
+                                "../lynis-sdk")
+              (setenv "LANG" "en_US.UTF-8")
+              (let ((lynis-dir (getcwd)))
+                (with-directory-excursion "../lynis-sdk"
+                  (substitute* "config"
+                    (("\\.\\./lynis") lynis-dir))
+                  (substitute* "unit-tests/tests-language-translations.sh"
+                    (("\\.\\./lynis") lynis-dir))
+                  (invoke "sh" "lynis-devkit" "run" "unit-tests"))))))))
     (home-page "https://cisofy.com/lynis/")
     (synopsis "Security auditing tool")
     (description "Lynis is a security auditing tool.  It performs an in-depth
