@@ -5393,6 +5393,35 @@ interface for statistics based on hmatrix and GSL.")
 functions for Haskell.")
     (license license:gpl3+)))
 
+(define-public ghc-hookup
+  (package
+    (name "ghc-hookup")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "hookup" version))
+       (sha256
+        (base32 "02prkwj4rj8g330z17bpjh7hpwfdvasaxsk74mcvbi03gjpydrib"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1x4hxcb81rczpywcda3s9jbh2gs1sfwvd7wzv3cxxkbd4smlrh1r")))
+    (inputs
+     (list ghc-async
+           ghc-network
+           ghc-attoparsec
+           ghc-hsopenssl
+           ghc-hsopenssl-x509-system))
+    (properties '((upstream-name . "hookup")))
+    (home-page "https://github.com/glguy/irc-core")
+    (synopsis "Abstracts network connections over SOCKS5 and TLS")
+    (description
+     "This package provides an abstraction for communicating with line-oriented
+network services while abstracting over the use of SOCKS5 and TLS (via
+OpenSSL)")
+    (license license:isc)))
+
 (define-public ghc-hostname
   (package
     (name "ghc-hostname")
