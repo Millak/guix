@@ -148,9 +148,11 @@
   (home-page "https://github.com/glguy/irc-core")
   (synopsis "Console IRC client")
   (description
-   "Glirc is a console IRC client with an emphasis on providing dynamic views
-into the model of your IRC connections.  All views and transformation are
-dynamic and don't change the underlying model.")
+   "Glirc is a console IRC client that focuses on providing both high-detail
+and concise views of an IRC connection.  All views and transformation are
+dynamic and don't change the underlying model.  It also provides advanced
+line-editing features including syntax-highlighting, multi-line buffering,
+and argument placeholders.")
   (license license:isc)))
 
 (define-public quassel
