@@ -2786,15 +2786,17 @@ database.")
       (sha256
         (base32 "1xm7s2ag15498kp7g8r20gxk22ncz3b3hz4b3srqf7ypif3a5dyf"))))
   (build-system perl-build-system)
+  (arguments
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+        (add-before 'configure 'modify-config.in
+          (lambda _
+            (substitute* "config.in"
+              (("/usr/local/BerkeleyDB")
+               #$(this-package-input "bdb"))))))))
   (inputs (list bdb))
   (native-inputs (list perl-test-pod))
-  (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before
-                   'configure 'modify-config.in
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "config.in"
-                       (("/usr/local/BerkeleyDB") (assoc-ref inputs "bdb"))))))))
   (home-page "https://metacpan.org/release/DB_File")
   (synopsis "Perl5 access to Berkeley DB version 1.x")
   (description
