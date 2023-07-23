@@ -9975,6 +9975,46 @@ formats.")
     (license (list license:gpl2
                    license:lgpl2.1))))
 
+(define-public libtracefs
+  (package
+    (name "libtracefs")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v896n3q0df0nxx5drbwyaqhrqiyxl06rvrdw3gp2r37awa9g1zb"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (substitute* (list "Makefile" "scripts/utils.mk")
+              (("/bin/(pwd)" _ command) command))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no test suite
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "pkgconfig_dir=" #$output "/lib/pkgconfig")
+         (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ; no configure script
+    (native-inputs (list pkg-config))
+    (inputs (list libtraceevent))
+    (home-page "https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/")
+    (synopsis "Linux kernel trace file system library")
+    (description
+     "This library provides APIs to access the Linux kernel's trace file
+system.")
+    (license (list license:gpl2
+                   license:lgpl2.1))))
+
 (define-public libtree
   (package
     (name "libtree")
