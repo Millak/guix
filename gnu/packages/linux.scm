@@ -3889,34 +3889,34 @@ UnionFS-FUSE additionally supports copy-on-write.")
   (package (inherit unionfs-fuse)
     (synopsis "User-space union file system (statically linked)")
     (name (string-append (package-name unionfs-fuse) "-static"))
-    (source (origin (inherit (package-source unionfs-fuse))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Add -ldl to the libraries, because libfuse.a needs that.
-                  (substitute* "src/CMakeLists.txt"
-                    (("target_link_libraries(.*)\\)" _ libs)
-                     (string-append "target_link_libraries"
-                                    libs " dl)")))
-                  #t))))
+    (source
+     (origin
+       (inherit (package-source unionfs-fuse))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Add -ldl to the libraries, because libfuse.a needs that.
+            (substitute* "src/CMakeLists.txt"
+              (("target_link_libraries(.*)\\)" _ libs)
+               (string-append "target_link_libraries"
+                              libs " dl)")))))))
     (arguments
-     '(#:tests? #f
-       #:configure-flags '("-DCMAKE_EXE_LINKER_FLAGS=-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (exe (string-append out "/bin/unionfs")))
-               ;; By default, 'unionfs' keeps references to
-               ;; $glibc/share/locale and similar stuff.  Remove them.
-               (remove-store-references exe)
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DCMAKE_EXE_LINKER_FLAGS=-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'post-install
+            (lambda _
+              ;; By default, 'unionfs' keeps references to
+              ;; $glibc/share/locale and similar stuff.  Remove them.
+              (remove-store-references (string-append #$output "/bin/unionfs"))
 
-               ;; 'unionfsctl' has references to glibc as well.  Since
-               ;; we don't need it, remove it.
-               (delete-file (string-append out "/bin/unionfsctl"))
-               #t))))))
-    (inputs `(("fuse" ,fuse-static)))))
+              ;; 'unionfsctl' has references to glibc as well.  Since
+              ;; we don't need it, remove it.
+              (delete-file (string-append #$output "/bin/unionfsctl")))))))
+    (inputs (list fuse-static))))
 
 (define-public sshfs
   (package
