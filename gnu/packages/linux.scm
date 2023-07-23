@@ -4455,7 +4455,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
 (define-public lvm2
   (package
     (name "lvm2")
-    (version "2.03.11")
+    (version "2.03.21")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/ftp/lvm2/LVM2."
@@ -4464,7 +4464,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
                                         version ".tgz")))
               (sha256
                (base32
-                "1m4xpda8vbyd89ca0w8nacvnl4j34yzsa625gn990fb5sh84ab44"))
+                "0zksqsz8y47kh6vq0ykkgxf19il4wxfn234n6zf8m691sqhij9hy"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -4475,9 +4475,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
                     (("^confdir = .*$")
                      "confdir = @sysconfdir@\n")
                     (("DEFAULT_SYS_DIR = @DEFAULT_SYS_DIR@")
-                     "DEFAULT_SYS_DIR = @sysconfdir@"))
-                  #t))
-              (patches (search-patches "lvm2-static-link.patch"))))
+                     "DEFAULT_SYS_DIR = @sysconfdir@"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list config
@@ -4503,8 +4501,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
              (setenv "SHELL" (which "sh"))
 
              ;; Replace /bin/sh with the right file name.
-             (patch-makefile-SHELL "make.tmpl")
-             #t)))
+             (patch-makefile-SHELL "make.tmpl"))))
 
        #:configure-flags (list (string-append "--sysconfdir="
                                               (assoc-ref %outputs "out")
