@@ -5584,6 +5584,27 @@ client protocol.")
     (home-page "https://github.com/net-ssh/net-scp")
     (license license:expat)))
 
+(define-public ruby-net-sftp
+  (package
+    (name "ruby-net-sftp")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "net-sftp" version))
+              (sha256
+               (base32
+                "0r33aa2d61hv1psm0l0mm6ik3ycsnq8symv7h84kpyf2b7493fv5"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-ssh))
+    (synopsis "Pure Ruby implementation of the SFTP client protocol")
+    (description
+     "@code{Net::SFTP} is a pure Ruby implementation of the SFTP
+protocol (specifically, versions 1 through 6 of the SFTP protocol).  Note that
+this is the “Secure File Transfer Protocol”, typically run over an SSH
+connection, and has nothing to do with the FTP protocol.")
+    (home-page "https://github.com/net-ssh/net-sftp")
+    (license license:expat)))
+
 (define-public ruby-minima
   (package
     (name "ruby-minima")
