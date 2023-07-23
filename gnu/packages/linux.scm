@@ -3837,14 +3837,15 @@ user-space processes.")
                 "1wl5m5qnwf3s1792xphr35pb80sx8ybaqi3n3ddi5vvk3qjc4iws"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           ;; The epitome of ‘I tried’: run the 2 trivial tests that don't rely
-           ;; on the fuse kernel module being loaded.  All others would fail.
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "../source/test_all.py" "-k" "test_help")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            ;; The epitome of ‘I tried’: run the 2 trivial tests that don't rely
+            ;; on the fuse kernel module being loaded.  All others would fail.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "../source/test_all.py" "-k" "test_help")))))))
     (native-inputs
      (list pkg-config
 
