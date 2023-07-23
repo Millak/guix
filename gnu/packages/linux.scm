@@ -9970,8 +9970,8 @@ older system-wide @file{/sys} interface.")
           (delete 'configure))))        ; no configure script
     (home-page "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/")
     (synopsis "Linux kernel trace event library")
-    (description "This package provides library to parse raw trace event
-formats.")
+    (description
+     "This library parses raw Linux kernel trace event formats.")
     (license (list license:gpl2
                    license:lgpl2.1))))
 
