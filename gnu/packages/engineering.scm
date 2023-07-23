@@ -2406,7 +2406,7 @@ simulation.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/radareorg/cutter")
+             (url "https://github.com/rizinorg/cutter")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
