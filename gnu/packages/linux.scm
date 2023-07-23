@@ -3825,7 +3825,7 @@ user-space processes.")
 (define-public unionfs-fuse
   (package
     (name "unionfs-fuse")
-    (version "2.2")
+    (version "3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3834,15 +3834,25 @@ user-space processes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yigh8z1q6iq6yjyq7kl7vpbpjnxjld32apvjaw2bl44pqqg56hh"))))
+                "1wl5m5qnwf3s1792xphr35pb80sx8ybaqi3n3ddi5vvk3qjc4iws"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list python))
-    (inputs (list fuse-2))
     (arguments
-     ;; The tests were never actually run ("collected 0 items"), but in recent
-     ;; versions of pytest that causes an error.
-     '(#:tests? #f))
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           ;; The epitome of ‘I tried’: run the 2 trivial tests that don't rely
+           ;; on the fuse kernel module being loaded.  All others would fail.
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "../source/test_all.py" "-k" "test_help")))))))
+    (native-inputs
+     (list pkg-config
+
+           ;; Only for the test ‘suite’.
+           python
+           python-pytest))
+    (inputs
+     (list fuse))
     (home-page "https://github.com/rpodgorny/unionfs-fuse")
     (synopsis "User-space union file system")
     (description
@@ -3852,25 +3862,27 @@ space, using the FUSE library.  Mounting a union file system allows you to
 UnionFS-FUSE additionally supports copy-on-write.")
     (license license:bsd-3)))
 
-(define fuse-2-static
-  (package (inherit fuse-2)
+(define fuse-static
+  (package (inherit fuse)
     (name "fuse-static")
-    (source (origin (inherit (package-source fuse-2))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Normally libfuse invokes mount(8) so that /etc/mtab is
-                  ;; updated.  Change calls to 'mtab_needs_update' to 0 so
-                  ;; that it doesn't do that, allowing us to remove the
-                  ;; dependency on util-linux (something that is useful in
-                  ;; initrds.)
-                  (substitute* '("lib/mount_util.c"
-                                 "util/mount_util.c")
-                    (("mtab_needs_update[[:blank:]]*\\([a-z_]+\\)")
-                     "0")
-                    (("/bin/")
-                     ""))
-                  #t))))))
+    (source
+     (origin
+       (inherit (package-source fuse))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Normally libfuse invokes mount(8) so that /etc/mtab is updated.
+            ;; Change calls to 'mtab_needs_update' to 0 so that it doesn't do
+            ;; that, allowing us to remove the dependency on util-linux
+            ;; (something that is useful in initrds.)
+            (substitute* "lib/mount_util.c"
+              (("mtab_needs_update[[:blank:]]*\\([a-z_]+\\)") "0")
+              (("/bin/") ""))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments fuse)
+       ((#:configure-flags flags '())
+        #~(cons "-Ddefault_library=static"
+                #$flags))))))
 
 (define-public unionfs-fuse/static
   (package (inherit unionfs-fuse)
@@ -3903,7 +3915,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
                ;; we don't need it, remove it.
                (delete-file (string-append out "/bin/unionfsctl"))
                #t))))))
-    (inputs `(("fuse" ,fuse-2-static)))))
+    (inputs `(("fuse" ,fuse-static)))))
 
 (define-public sshfs
   (package
