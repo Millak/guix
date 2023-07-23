@@ -738,6 +738,30 @@ includes the @code{Comparable} module for handling dates.")
     (home-page "https://github.com/ruby/date")
     (license license:bsd-2)))
 
+(define-public ruby-time
+  (package
+    (name "ruby-time")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)  ; for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/time")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jd6df2lxd60wcxyaf37j8v3nnfn952d5xhg6aap9zlcdmkk4g2n"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-date))
+    (native-inputs (list ruby-test-unit-ruby-core))
+    (synopsis
+     "Extends the Time class with methods for parsing and conversion")
+    (description
+     "When this gem is @code{require}d, it extends the Time class with with
+additional methods for parsing and converting Times.")
+    (home-page "https://github.com/ruby/time")
+    (license license:bsd-2)))
+
 (define-public ruby-diff-lcs
   (package
     (name "ruby-diff-lcs")
