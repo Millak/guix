@@ -1158,9 +1158,8 @@ network.  LIBNFS offers three different APIs, for different use :
                    ))))
 
 (define-public apfs-fuse
-  ;; Later versions require FUSE 3.
-  (let ((commit "7b89418e8dc27103d3c4f8fa348086ffcd634c17")
-        (revision "1"))
+  (let ((commit "66b86bd525e8cb90f9012543be89b1f092b75cf3")
+        (revision "2"))
     (package
       (name "apfs-fuse")
       (version (git-version "0.0.0" revision commit))
@@ -1171,14 +1170,11 @@ network.  LIBNFS offers three different APIs, for different use :
                        (recursive? #t) ; for lzfse
                        (commit commit)))
          (sha256
-          (base32
-           "0x2siy3cmnm9wsdfazg3xc8r3kbg73gijmnn1vjw33pp71ckylxr"))
+          (base32 "0f63slyzv8fbgshpzrx2g01x9h73g5yvh5kis4yazl19fjm2b05r"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
        `(#:tests? #f ; No test suite
-         #:configure-flags
-         '("-DUSE_FUSE3=OFF")
          #:phases
          (modify-phases %standard-phases
            ;; No 'install' target in CMakeLists.txt
@@ -1192,11 +1188,9 @@ network.  LIBNFS offers three different APIs, for different use :
                  (install-file "apfs-dump" bin)
                  (install-file "apfs-dump-quick" bin)
                  (install-file "apfs-fuse" bin)
-                 (install-file "libapfs.a" lib)
-                 (install-file "../source/README.md" doc)
-                 #t))))))
+                 (install-file "../source/README.md" doc)))))))
       (inputs
-       (list bzip2 fuse-2 zlib))
+       (list bzip2 fuse zlib))
       (synopsis "Read-only FUSE driver for the APFS file system")
       (description "APFS-FUSE is a read-only FUSE driver for the @dfn{Apple File
 System} (APFS).  It is currently in an experimental state — it may not be able
