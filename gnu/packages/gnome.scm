@@ -4689,7 +4689,7 @@ and RDP protocols.")
     (propagated-inputs
      ;; In Requires of dconf.pc.
      (list glib))
-    (home-page "https://developer.gnome.org/dconf/")
+    (home-page "https://wiki.gnome.org/action/show/Projects/dconf")
     (synopsis "Low-level GNOME configuration system")
     (description "Dconf is a low-level configuration system.  Its main purpose
 is to provide a backend to GSettings on platforms that don't already have
