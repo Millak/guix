@@ -13884,6 +13884,48 @@ and from some existing type with an Unbox instance.")
 given term should not exist.")
     (license license:bsd-3)))
 
+(define-public ghc-vty
+  (package
+  (name "ghc-vty")
+  (version "5.35.1")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "vty" version))
+     (sha256
+      (base32 "062dpz8fxrnggzpl041zpbph0xj56jki98ajm2s78dldg5vy0c9k"))))
+  (build-system haskell-build-system)
+  (native-inputs
+   (list ghc-hunit
+         ghc-quickcheck
+         ghc-quickcheck-assertions
+         ghc-random
+         ghc-smallcheck
+         ghc-string-qq
+         ghc-test-framework
+         ghc-test-framework-smallcheck
+         ghc-test-framework-hunit))
+  (inputs
+   (list ghc-ansi-terminal
+         ghc-blaze-builder
+         ghc-hashable
+         ghc-microlens
+         ghc-microlens-mtl
+         ghc-microlens-th
+         ghc-parallel
+         ghc-utf8-string
+         ghc-vector))
+  (arguments
+   `(#:cabal-revision ("1"
+                       "1zqcvgqhcij92241g20zn3c3a4033biid3f3cqg05q1ygrmznxb5")))
+  (properties '((upstream-name . "vty")))
+  (home-page "https://github.com/jtdaugherty/vty")
+  (synopsis "Simple terminal UI library")
+  (description
+   "vty is a terminal GUI library in the niche of ncurses, intended to be easy
+to use and to provide good support for common terminal types.")
+  (license license:bsd-3)))
+
 (define-public ghc-wave
   (package
     (name "ghc-wave")
