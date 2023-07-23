@@ -8477,9 +8477,9 @@ NexGen, Rise, and SiS CPUs.")
      (list pkg-config))
     (home-page "https://github.com/JasonFerrara/jmtpfs")
     (synopsis "Use a FUSE file system to access data over MTP")
-    (description "jmtpfs uses FUSE (file system in userspace) to provide access
-to data over the Media Transfer Protocol (MTP).  Unprivileged users can mount
-the MTP device as a file system.")
+    (description "jmtpfs uses @acronym{FUSE, File system in USEr space} to
+provide access to data over @acronym{MTP, the Media Transfer Protocol}.
+Unprivileged users can mount the MTP device as a file system.")
     (license license:gpl3)))
 
 (define-public procenv
