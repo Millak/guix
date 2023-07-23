@@ -12051,6 +12051,32 @@ dependency, @code{pg}.")
     (home-page "https://github.com/QueueClassic/queue_classic")
     (license license:expat)))
 
+(define-public ruby-pairing-heap
+  (package
+    (name "ruby-pairing-heap")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "pairing_heap" version))
+              (sha256
+               (base32
+                "059kqpw53cancnp0bp7y1s74y1955riw33w3lqfbnms4b4mdh5zj"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                (("require \"standard/rake\"") "")
+                ((":\"standard:fix\",") "")))))))
+    (synopsis "Priority queue in pure Ruby")
+    (description "This package provides a performant priority queue in pure
+ruby with support for changing priority using pairing heap data structure")
+    (home-page "https://github.com/mhib/pairing_heap")
+    (license license:expat)))
+
 (define-public ruby-ae
   (package
     (name "ruby-ae")
