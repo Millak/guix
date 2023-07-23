@@ -1738,6 +1738,7 @@ the KDE Plasma 5 desktop.")
                   qqc2-desktop-style
                   qtbase-5
                   qtdeclarative-5
+                  qtquickcontrols-5
                   qtquickcontrols2-5
                   qtwayland
                   qtx11extras
