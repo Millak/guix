@@ -6172,6 +6172,32 @@ Jupyter notebooks, along with @code{ToJSON} and @code{FromJSON}
 instances for conversion to and from JSON .ipynb files.")
     (license license:bsd-3)))
 
+(define-public ghc-irc-core
+  (package
+  (name "ghc-irc-core")
+  (version "2.11")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "irc-core" version))
+     (sha256
+      (base32 "13jkfb30kynqd55c2slxjg98lr076rn1ymsxniwp0bssjzizgnfc"))))
+  (build-system haskell-build-system)
+  (native-inputs
+   (list ghc-hunit))
+  (inputs
+   (list ghc-base64-bytestring
+         ghc-attoparsec
+         ghc-hashable
+         ghc-primitive ghc-vector))
+  (properties '((upstream-name . "irc-core")))
+  (home-page "https://github.com/glguy/irc-core")
+  (synopsis "IRC core library for glirc")
+  (description
+   "This is the IRC core library for glirc.  The client is available in its own
+glirc package.")
+  (license license:isc)))
+
 (define-public ghc-iwlib
   (package
     (name "ghc-iwlib")
