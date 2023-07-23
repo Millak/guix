@@ -17764,6 +17764,25 @@ generation functionality.")
     (home-page "https://protobuf.dev")
     (license license:bsd-3)))
 
+(define-public ruby-googleapis-common-protos-types
+  (package
+    (name "ruby-googleapis-common-protos-types")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "googleapis-common-protos-types" version))
+              (sha256
+               (base32
+                "1zrxnv9s2q39f2nh32x7nbfi8lpwzmmn3ji4adglg8dlfr1xrz16"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f))  ;; has no tests
+    (propagated-inputs (list ruby-google-protobuf))
+    (synopsis "Common protocol buffer types used by Google APIs")
+    (description "Common protocol buffer types used by Google APIs")
+    (home-page "https://github.com/googleapis/common-protos-ruby")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
