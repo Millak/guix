@@ -13297,13 +13297,13 @@ third-party code.")
 (define-public python-llfuse
   (package
     (name "python-llfuse")
-    (version "1.4.1")
+    (version "1.4.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "llfuse" version))
               (sha256
                (base32
-                "1jaf790rsxvz3hs9fbr3hrnmg0xzl6a2bqfa10bbbsjsdbcpk762"))))
+                "1jb4c9avvb0v3830xlbj1r9kj05i98vv6nq05105ppg57y7lq14j"))))
     (build-system python-build-system)
     (inputs
      (list fuse-2 attr))
