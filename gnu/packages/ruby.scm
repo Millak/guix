@@ -17737,6 +17737,33 @@ has not yet been packaged for Guix.")
     (license license:bsd-2)
     (properties `((upstream-name . "anystyle-cli")))))
 
+(define-public ruby-google-protobuf
+  (package
+    (name "ruby-google-protobuf")
+    (version "3.25.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "google-protobuf" version))
+              (sha256
+               (base32
+                "1mnxzcq8kmyfb9bkzqnp019d1hx1vprip3yzdkkha6b3qz5rgg9r"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f))  ;; has no tests
+    (native-inputs (list ruby-rake))
+    (synopsis "Protocol Buffers are Google's data interchange format")
+    (description "This library contains the Ruby extension that implements
+Protocol Buffers functionality in Ruby.
+
+The Ruby extension makes use of generated Ruby code that defines message and
+enum types in a Ruby DSL.  You may write definitions in this DSL directly, but
+we recommend using protoc's Ruby generation support with @code{.proto} files.
+The build process in this directory only installs the extension; you need to
+install @code{protoc} (in package ruby-grpc-tools) as well to have Ruby code
+generation functionality.")
+    (home-page "https://protobuf.dev")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
