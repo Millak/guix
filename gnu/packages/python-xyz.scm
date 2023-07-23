@@ -32287,13 +32287,13 @@ than trying to just split strings.")
 (define-public python-srsly
   (package
     (name "python-srsly")
-    (version "2.4.6")
+    (version "2.4.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "srsly" version))
               (sha256
                (base32
-                "0vsafkvk4g0p5m0dqrczqvlyza837i20xxmb24rrqk5s78r1zd27"))))
+                "022x0djlkl6pgh9yrd4avlai1n6y4hxm9l1xnb6630kpi12wrhlk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
