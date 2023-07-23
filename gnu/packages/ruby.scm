@@ -9629,6 +9629,30 @@ follows Ruby conventions and requires little knowledge of REST.")
     (home-page "https://github.com/octokit/octokit.rb")
     (license license:expat)))
 
+(define-public ruby-vagrant-cloud
+  (package
+    (name "ruby-vagrant-cloud")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hashicorp/vagrant_cloud")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bnjd8b86lrgj5ar1l7pg5if95bv0sxa75mz7x2ikqyz6q8rmjb3"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (native-inputs (list ruby-rspec ruby-webmock))
+    (propagated-inputs (list ruby-excon ruby-log4r ruby-rexml))
+    (synopsis "Vagrant Cloud API library")
+    (description "This library provides the functionality to create, modify,
+and delete boxes, versions, and providers on HashiCorp's Vagrant Cloud.")
+    (home-page "https://github.com/hashicorp/vagrant_cloud")
+    (license license:asl2.0)))
+
 (define-public ruby-pry-byebug
   (package
     (name "ruby-pry-byebug")
