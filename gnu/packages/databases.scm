@@ -2777,14 +2777,14 @@ database.")
 (define-public perl-db-file
  (package
   (name "perl-db-file")
-  (version "1.856")
+  (version "1.858")
   (source
     (origin
       (method url-fetch)
       (uri (string-append "mirror://cpan/authors/id/P/PM/PMQS/DB_File-"
                           version ".tar.gz"))
       (sha256
-        (base32 "1ab6rm2b8lz0g3gc8k9y79gkgajyby0zpybkdg9mk4g35y9bmyfd"))))
+        (base32 "1xm7s2ag15498kp7g8r20gxk22ncz3b3hz4b3srqf7ypif3a5dyf"))))
   (build-system perl-build-system)
   (inputs (list bdb))
   (native-inputs (list perl-test-pod))
@@ -2794,8 +2794,7 @@ database.")
                    'configure 'modify-config.in
                    (lambda* (#:key inputs #:allow-other-keys)
                      (substitute* "config.in"
-                       (("/usr/local/BerkeleyDB") (assoc-ref inputs "bdb")))
-                     #t)))))
+                       (("/usr/local/BerkeleyDB") (assoc-ref inputs "bdb"))))))))
   (home-page "https://metacpan.org/release/DB_File")
   (synopsis "Perl5 access to Berkeley DB version 1.x")
   (description
