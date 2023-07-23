@@ -1321,13 +1321,15 @@ manage system or application containers.")
                (base32
                 "02cgzh97cgxh9iyf7gkn5ikdc0sfzqfjj6al0hikdf9rbwcscqwd"))))
     (arguments
-     '(#:configure-flags '("--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           ;; Work around missing interpreter shebang.
-           (lambda _
-             (invoke "bash" "bootstrap.sh"))))))
+     (list
+      #:configure-flags
+      #~(list "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            ;; Work around missing interpreter shebang.
+            (lambda _
+              (invoke "bash" "bootstrap.sh"))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
