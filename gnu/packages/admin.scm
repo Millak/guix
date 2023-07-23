@@ -4828,7 +4828,7 @@ LUKS volumes encrypted with the user's log-in password.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.23.3")
+    (version "1.23.4")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -4838,7 +4838,7 @@ LUKS volumes encrypted with the user's log-in password.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02rylrh2dr593xf2l865lvvxnsb9337nd4fiqbahfyz4cbqgzq3x"))))
+        (base32 "07ic7pd9684k59f6zycn20903q31jdacqqjymrbr5zqj4qv8whkp"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
