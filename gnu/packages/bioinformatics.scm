@@ -7184,6 +7184,10 @@ sequences).")
        #:make-flags (list "CC=gcc")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           ;; The bootstrap script is missing a shebang.
+           (lambda _
+             (invoke "bash" "./bootstrap.sh")))
          (add-after 'unpack 'fix-includes
            (lambda _
              (substitute* '("src/mash/Sketch.cpp"
