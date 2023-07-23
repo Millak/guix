@@ -46,6 +46,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages hurd)
+  #:use-module (gnu packages linux)
   #:use-module (gnu system privilege)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -899,12 +900,14 @@ FILES must be a list of name/file-like object pairs."
                                (setuid?      (privileged-program-setuid? program))
                                (setgid?      (privileged-program-setgid? program))
                                (user         (privileged-program-user program))
-                               (group        (privileged-program-group program)) )
+                               (group        (privileged-program-group program))
+                               (capabilities (privileged-program-capabilities program)))
                            #~(privileged-program
                               (setuid? #$setuid?)
                               (setgid? #$setgid?)
                               (user    #$user)
                               (group   #$group)
+                              (capabilities #$capabilities)
                               (program #$program-name))))
                        programs)))
     (with-imported-modules (source-module-closure
@@ -912,7 +915,9 @@ FILES must be a list of name/file-like object pairs."
       #~(begin
           (use-modules (gnu system privilege))
 
-          (activate-privileged-programs (list #$@programs))))))
+          (activate-privileged-programs (list #$@programs)
+                                        #$(and (supported-package? libcap)
+                                               libcap))))))
 
 (define privileged-program-service-type
   (service-type (name 'privileged-program)

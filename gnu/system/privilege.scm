@@ -25,13 +25,14 @@
             privileged-program-setuid?
             privileged-program-setgid?
             privileged-program-user
-            privileged-program-group))
+            privileged-program-group
+            privileged-program-capabilities))
 
 ;;; Commentary:
 ;;;
 ;;; Data structures representing privileged programs: binaries with additional
-;;; permissions such as setuid/setgid.  This is meant to be used both on the
-;;; host side and at run time--e.g., in activation snippets.
+;;; permissions such as setuid/setgid, or POSIX capabilities.  This is meant to
+;;; be used both on the host side and at run time--e.g., in activation snippets.
 ;;;
 ;;; Code:
 
@@ -51,4 +52,7 @@
                  (default 0))
   ;; The group name or ID we want to set this to (defaults to root's).
   (group         privileged-program-group ;integer or string
-                 (default 0)))
+                 (default 0))
+  ;; POSIX capabilities in cap_from_text(3) form (defaults to #f: none).
+  (capabilities  privileged-program-capabilities ;string or #f
+                 (default #f)))

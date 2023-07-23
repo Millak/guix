@@ -288,9 +288,10 @@ they already exist."
   ;; Place where privileged copies of programs are stored.
   "/run/privileged/bin")
 
-(define (activate-privileged-programs programs)
+(define (activate-privileged-programs programs libcap)
   "Turn PROGRAMS, a list of file privileged-programs records, into privileged
-copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
+copies stored under %PRIVILEGED-PROGRAM-DIRECTORY, using LIBCAP's setcap(8)
+binary if needed."
   (define (ensure-empty-directory directory)
     (if (file-exists? directory)
         (for-each (compose delete-file
@@ -301,7 +302,7 @@ copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
                            string<?))
         (mkdir-p directory))    )
 
-  (define (make-privileged-program program setuid? setgid? uid gid)
+  (define (make-privileged-program program setuid? setgid? uid gid capabilities)
     (let ((target (string-append %privileged-program-directory
                                  "/" (basename program)))
           (mode (+ #o0555                   ; base permissions
@@ -309,7 +310,10 @@ copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
                    (if setgid? #o2000 0)))) ; setgid bit
       (copy-file program target)
       (chown target uid gid)
-      (chmod target mode)))
+      (chmod target mode)
+      (when (and capabilities libcap)
+        (system* (string-append libcap "/sbin/setcap")
+                 "-q" capabilities target))))
 
   (define (make-deprecated-wrapper program)
     ;; This will eventually become a script that warns on usage, then vanish.
@@ -331,13 +335,16 @@ copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
                          (setgid?      (privileged-program-setgid? program))
                          (user         (privileged-program-user program))
                          (group        (privileged-program-group program))
+                         (capabilities (privileged-program-capabilities program))
                          (uid (match user
                                 ((? string?) (passwd:uid (getpwnam user)))
                                 ((? integer?) user)))
                          (gid (match group
                                 ((? string?) (group:gid (getgrnam group)))
                                 ((? integer?) group))))
-                    (make-privileged-program program-name setuid? setgid? uid gid)
+                    (make-privileged-program program-name
+                                             setuid? setgid? uid gid
+                                             capabilities)
                     (make-deprecated-wrapper program-name)))
                 (lambda args
                   ;; If we fail to create a privileged program, better keep going

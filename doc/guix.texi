@@ -41655,6 +41655,8 @@ invokation.
 @cindex privileged programs
 @cindex setuid programs
 @cindex setgid programs
+@cindex capabilities, POSIX
+@cindex setcap
 Some programs need to run with elevated privileges, even when they are
 launched by unprivileged users.  A notorious example is the
 @command{passwd} program, which users can run to change their
@@ -41719,6 +41721,11 @@ defaults to root.
 @item @code{group} (default: @code{0})
 GID (integer) group name (string) for the group owner of the program,
 defaults to root.
+
+@item @code{capabilities} (default: @code{#f})
+A string representing the program's POSIX capabilities, as described by
+the @code{cap_to_text(3)} man page from the libcap package, or @code{#f}
+to make no changes.
 
 @end table
 @end deftp
