@@ -1786,21 +1786,24 @@ local file system using FUSE.")
           (base32 "1w2rik0lhqm3wr68x51zs45gqfx79l7fi4p0sqznlfq7sz5s8xxn"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules ((srfi srfi-26)
-                    ,@%gnu-build-system-modules)
-         #:make-flags
-         (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-         #:test-target "test"
-         #:tests? #f                   ; all require a kernel with FUSE loaded
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (add-after 'install 'install-examples
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (doc (string-append out "/share/doc/" ,name "-" ,version)))
-                 (for-each (cut install-file <> (string-append doc "/examples"))
-                           (find-files "." "^config\\."))))))))
+       (list
+        #:modules
+        '((guix build gnu-build-system)
+          (guix build utils)
+          (srfi srfi-26))
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output))
+        #:test-target "test"
+        #:tests? #f                    ; all require a kernel with FUSE loaded
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ; no configure script
+            (add-after 'install 'install-examples
+              (lambda _
+                (let ((doc (string-append #$output "/share/doc/"
+                                          #$name "-" #$version)))
+                  (for-each (cut install-file <> (string-append doc "/examples"))
+                            (find-files "." "^config\\."))))))))
       (native-inputs
        (list pkg-config))
       (inputs
