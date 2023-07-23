@@ -4448,6 +4448,27 @@ address.  Both IPv4 and IPv6 are supported.")
     (home-page "https://github.com/ruby/ipaddr")
     (license license:bsd-2)))
 
+(define-public ruby-fake-ftp
+  (package
+    (name "ruby-fake-ftp")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "fake_ftp" version))
+              (sha256
+               (base32
+                "1zl9q9m4x7lz9890g0h1qqj7hcxnwzpjfnfbxadjblps7b5054q4"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rspec ruby-rubocop ruby-simplecov))
+    (arguments
+     '(#:test-target "spec"))
+    (synopsis "Fake FTP server for use with ruby tests")
+    (description "This package allows you to test FTP implementations in ruby.
+It is a minimal single-client FTP server that can be bound to any arbitrary
+port on localhost.")
+    (home-page "https://rubygems.org/gems/fake_ftp")
+    (license license:expat)))
+
 (define-public ruby-net-ftp
   (package
     (name "ruby-net-ftp")
