@@ -747,6 +747,29 @@ stable.  You may also be interested in the tls package,
 implementation of SSL.")
     (license license:public-domain)))
 
+(define-public ghc-hsopenssl-x509-system
+  (package
+  (name "ghc-hsopenssl-x509-system")
+  (version "0.1.0.4")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "HsOpenSSL-x509-system" version))
+     (sha256
+      (base32 "15mp70bqg1lzp971bzp6wym3bwzvxb76hzbgckygbfa722xyymhr"))))
+  (build-system haskell-build-system)
+  (inputs
+   (list ghc-hsopenssl))
+  (properties '((upstream-name . "HsOpenSSL-x509-system")))
+  (home-page "https://github.com/redneb/HsOpenSSL-x509-system")
+  (synopsis "Use the system's native CA certificate store with HsOpenSSL")
+  (description
+   "This package provides a cross-platform library that tries to find
+a (reasonable) CA certificate bundle that can be used with HsOpenSSL to verify
+the certificates of remote peers.  It is for HsOpenSSL what x509-system is for
+the tls package, and borrows some ideas from x509-system.")
+  (license license:bsd-3)))
+
 (define-public ghc-openssl-streams
   (package
     (name "ghc-openssl-streams")
