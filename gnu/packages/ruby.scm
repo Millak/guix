@@ -67,6 +67,7 @@
   #:use-module (gnu packages rails)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libffi)
@@ -3401,6 +3402,39 @@ maintains its elements in ascending key order.  The interface is the almost
 identical to that of Hash.")
     (home-page "http://rbtree.rubyforge.org/")
     (license license:expat)))
+
+(define-public ruby-rgl
+  (package
+    (name "ruby-rgl")
+    (version "0.6.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rgl" version))
+              (sha256
+               (base32
+                "0dji1k9knrf8cxm5psd3pgd9i8f7cfq182jwjpi1pwxw15axf496"))))
+    (build-system ruby-build-system)
+  (arguments
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+        (add-after 'unpack 'remove-unnecessary-dependencies
+          (lambda _
+            (substitute* "Gemfile"
+              ;; Caring about coverage is a not a packager's task but a
+              ;; developer's
+              ;;(("gem \"simplecov\"") "")
+              ;; CodeClimate is an online service, and is unnecessary for
+              ;; running the tests
+              (("gem \"codeclimate-test-reporter\", .*") "\n")))))))
+    (native-inputs (list ruby-test-unit ruby-simplecov ruby-yard graphviz-minimal))
+    (propagated-inputs (list ruby-pairing-heap ruby-rexml ruby-stream))
+    (synopsis "Framework for graph data structures and algorithms")
+    (description "RGL is a framework for graph data structures and algorithms.
+The design of the library is much influenced by the Boost Graph Library (BGL)
+which is written in C++.")
+    (home-page "https://github.com/monora/rgl")
+    (license license:bsd-2)))
 
 (define-public ruby-hkdf
   (package
