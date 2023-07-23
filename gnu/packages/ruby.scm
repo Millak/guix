@@ -13813,6 +13813,54 @@ GFM dialect to HTML.")
 parser for writing http servers, clients and proxies.")
     (license license:expat)))
 
+(define-public ruby-excon
+  (package
+    (name "ruby-excon")
+    (version "0.109.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/excon/excon")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "199niqbpzj70k3n6ybg4vbcw3qm76kwic4nl9747l1n0v49aaj24"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;; some tests require DNS
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "excon.gemspec"
+                (("`git ls-files -- data/. lib/.`")
+                 "`find data lib -type f`"))))
+          (add-before 'check 'disable-server-spec-checks
+            (lambda _ ;; TODO: Remove this if ruby-unicorn is available.
+              ;; Some of the tests in this file require ruby-unicorn, which is
+              ;; not yet packaged for guix and would pull in a lot of other
+              ;; dependencies.
+              (delete-file "spec/excon/test/server_spec.rb"))))))
+    (native-inputs
+     (list
+      ruby-activesupport
+      ruby-eventmachine
+      ruby-json
+      ruby-open4
+      ruby-puma
+      ruby-rspec
+      ruby-shindo
+      ruby-sinatra
+      ruby-webrick))
+    (synopsis "Usable, fast, simple Ruby HTTP 1.1")
+    (description "Excon was designed to be simple, fast and performant.  It
+works great as a general HTTP(s) client and is particularly well suited to
+usage in API clients.")
+    (home-page "https://github.com/excon/excon")
+    (license license:expat)))
+
 (define-public ruby-em-websocket
   (package
     (name "ruby-em-websocket")
