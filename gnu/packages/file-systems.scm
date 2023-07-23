@@ -618,7 +618,17 @@ from a mounted file system.")
                                                "not test_fsck and "
                                                "not test_list and "
                                                "not test_list_inodes and "
-                                               "not test_list_dirent"))))))))
+                                               "not test_list_dirent")))))
+                 (add-after 'install 'patch-shell-wrappers
+                   ;; These are overcomplicated wrappers that invoke readlink(1)
+                   ;; to exec the appropriate bcachefs(8) subcommand.  We can
+                   ;; simply patch in the latter file name directly, and do.
+                   (lambda _
+                     (let ((sbin/ (string-append #$output "/sbin/")))
+                       (substitute* (find-files sbin/ (lambda (file stat)
+                                                        (not (elf-file? file))))
+                         (("SDIR=.*") "")
+                         (("\\$\\{SDIR.*}/") sbin/))))))))
       (native-inputs
        (cons* pkg-config
               ;; For generating documentation with rst2man.
