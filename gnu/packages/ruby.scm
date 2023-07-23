@@ -4427,6 +4427,27 @@ help tests uncover more bugs.")
     (home-page "https://github.com/jordansissel/ruby-flores")
     (license license:asl2.0)))
 
+(define-public ruby-ipaddr
+  (package
+    (name "ruby-ipaddr")
+    (version "1.2.6")
+    (source (origin
+              (method git-fetch)  ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/ipaddr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h3z8i1fa8s4gx48322fflhpkzghd4bmd9109hglsgdkic7b0dyp"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-test-unit-ruby-core))
+    (synopsis "Manipulate IP addresses")
+    (description "This package provides a set of methods to manipulate an IP
+address.  Both IPv4 and IPv6 are supported.")
+    (home-page "https://github.com/ruby/ipaddr")
+    (license license:bsd-2)))
+
 (define-public ruby-net-http-persistent
   (package
     (name "ruby-net-http-persistent")
