@@ -114,7 +114,8 @@
                            `("delta" "multidelta" "topformflat"))))
              #t))
          (delete 'configure))))         ; no configure script
-    (home-page "http://delta.tigris.org/")
+    (home-page
+     "https://web.archive.org/web/20200701152100/http://delta.tigris.org/")
     (synopsis "Heuristical file minimizer")
     (description
      "Delta assists you in minimizing \"interesting\" files subject to a test
