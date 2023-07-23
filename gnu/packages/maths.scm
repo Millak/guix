@@ -265,14 +265,14 @@ interactive dialogs to guide them.")
 (define-public calc
   (package
     (name "calc")
-    (version "2.14.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
-                    version ".tar.bz2"))
-              (sha256
-               (base32
-                "0kg7cqhq70dlj7k8mrl0dbps1yvflfhri7c1gvm9nh4g2adlkxkf"))))
+    (version "2.14.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "1swalx3cxjcx4aprnchb2jf0wig89ggvxjzzzx488r115w58lxnr"))))
     (build-system gnu-build-system)
     (inputs (list readline))
     (native-inputs (list util-linux)) ; for col
