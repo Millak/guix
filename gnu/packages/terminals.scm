@@ -92,6 +92,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
@@ -105,6 +106,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -184,61 +186,40 @@ configurable through a graphical wizard.")
 (define-public termite
   (package
     (name "termite")
-    (version "15")
+    (version "16.6")
     (source
       (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url (string-append "https://github.com/thestinger/"
-                                  name ".git"))
-              (commit (string-append "v" version))
-              (recursive? #t)))
-        (file-name (string-append name "-" version "-checkout"))
+        (method url-fetch)
+        ;; XXX: The release includes a modified version of VTE.
+        (uri (string-append
+              "https://github.com/aperezdc/termite/releases/download/v"
+              version "/termite-" version ".tar.xz"))
         (sha256
          (base32
-          "0hp1x6lj098m3jgna274wv5dv60lnzg22297di68g4hw9djjyd2k"))))
-    (build-system gnu-build-system)
+          "1n8x84pkp7l9xl0sd07jbj5gjb574qm3w7656qlnzw8hf9kr69il"))))
+    (build-system meson-build-system)
     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'patch-xdg-open
-            (lambda _
-              (substitute* "termite.cc"
-                (("xdg-open") (which "xdg-open")))
-              #t))
-          (delete 'configure))
-        #:tests? #f
-        ;; This sets the destination when installing the necessary terminal
-        ;; capability data, which are not provided by 'ncurses'.  See
-        ;; <https://lists.gnu.org/archive/html/bug-ncurses/2009-10/msg00031.html>.
-        #:make-flags (list "PREFIX="
-                           (string-append "VERSION=v" (version))
-                           (string-append "DESTDIR="
-                                          (assoc-ref %outputs "out")))))
+     (list #:configure-flags
+           #~(list "-Dvte:_systemd=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-xdg-open
+                 (lambda _
+                   (substitute* "termite.cc"
+                     (("xdg-open") (which "xdg-open")))))
+               (replace 'install
+                 (lambda _
+                   (invoke "meson" "install" "--skip-subprojects" "vte"))))))
     (inputs
-     `(("vte" ,vte-ng)
-       ("gtk+" ,gtk+)
-       ("xdg-utils" ,xdg-utils)
-       ("ncurses" ,ncurses)))
+     (list gnutls gtk+ pcre2 xdg-utils))
     (native-inputs
-     (list pkg-config))
-
-    ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
-    ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
-    (native-search-paths
-      (list (search-path-specification
-              (variable "TERMINFO_DIRS")
-              (files '("share/terminfo")))))
-    (home-page "https://github.com/thestinger/termite/")
+     (list (list glib "bin") pkg-config))
+    (home-page "https://github.com/aperezdc/termite/")
     (synopsis "Keyboard-centric, VTE-based terminal")
-    (description "Termite is a minimal terminal emulator.  It is no longer
-maintained as the author considers it obsoleted by Alacritty.
-
-It was designed for use with tiling window managers.  It is a modal
-application, similar to Vim, with an insert mode and command mode where
-keybindings have different functions.")
-
-    ;; Files under util/ are under the Expat license; the rest is LGPLv2+.
+    (description "Termite is a minimal terminal emulator, with a slightly
+modified version of VTE exposing the necessary functions for keyboard text
+selection and URL hints.  It was designed for use with tiling window
+managers.")
     (license license:lgpl2.0+)))
 
 (define-public asciinema
