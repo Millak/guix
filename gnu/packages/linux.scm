@@ -6526,24 +6526,22 @@ supported.")
     (source (package-source linux-libre))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "INSTALL_ROOT=" (assoc-ref %outputs "out"))
-             "BINDIR=bin")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-subdirectory
-           (lambda _
-             (chdir "tools/thermal/tmon")
-             #t))
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man8 (string-append out "/share/man/man8")))
-               (install-file "tmon.8" man8)
-               #t)))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                       ; no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "INSTALL_ROOT=" #$output)
+              "BINDIR=bin")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _
+              (chdir "tools/thermal/tmon")))
+          (add-after 'install 'install-man-page
+            (lambda _
+              (let ((man8 (string-append #$output "/share/man/man8")))
+                (install-file "tmon.8" man8))))
+          (delete 'configure))))        ; no configure script
     (inputs
      (list ncurses))
     (home-page (package-home-page linux-libre))
