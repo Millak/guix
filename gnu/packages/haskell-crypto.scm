@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 rsiddharth <s@ricketyspace.net>
-;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2019, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -289,6 +289,37 @@ It supports a wide range of symmetric ciphers, cryptographic hash functions,
 public key algorithms, key derivation numbers, cryptographic random number
 generators, and more.")
     (license license:bsd-3)))
+
+(define-public ghc-curve25519
+  (package
+  (name "ghc-curve25519")
+  (version "0.2.7")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "curve25519" version))
+     (sha256
+      (base32 "1p8b1lppkvc19974hr43lcqdi4nj55j2nf7gsnp8dn7gyf23aayq"))))
+  (build-system haskell-build-system)
+  (native-inputs
+   (list ghc-hunit
+         ghc-quickcheck
+         ghc-tagged
+         ghc-test-framework
+         ghc-test-framework-hunit
+         ghc-test-framework-quickcheck2))
+  (inputs
+   (list ghc-crypto-api))
+  (properties '((upstream-name . "curve25519")))
+  (home-page "https://github.com/acw/curve25519")
+  (synopsis "Fast implementations of the curve25519 elliptic curve primitives.")
+  (description
+   "This module provides Haskell bindings and extensions to the curve25519-donna
+codebase.  It's a pretty straightforward implementation of the basic
+cryptographic routines you'd want from a project that uses curve25519: key
+generation, and key agreement.  For further functionality, you'll want to look
+elsewhere.")
+  (license license:bsd-3)))
 
 (define-public ghc-digest
   (package
