@@ -47,7 +47,7 @@
 (define-public debian-archive-keyring
   (package
     (name "debian-archive-keyring")
-    (version "2023.3")
+    (version "2023.4")
     (source
       (origin
         (method git-fetch)
@@ -56,8 +56,7 @@
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "1x0hsgfq08c53ws5llkhr1jqwr6yr0sccy5w9pz3p1dzbgfv2wd5"))))
+         (base32 "0gn24dgzpg9zwq2hywkac4ljr5lrh7smyqxm21k2bivl0bhc4ca6"))))
     (build-system gnu-build-system)
     (arguments
      '(#:test-target "verify-results"
@@ -74,8 +73,7 @@
                (install-file "keyrings/debian-archive-removed-keys.gpg" key)
                (for-each (lambda (file)
                            (install-file file apt))
-                         (find-files "trusted.gpg" "\\.gpg$")))
-             #t)))))
+                         (find-files "trusted.gpg" "\\.gpg$"))))))))
     (native-inputs
      (list gnupg jetring))
     (home-page "https://packages.qa.debian.org/d/debian-archive-keyring.html")
