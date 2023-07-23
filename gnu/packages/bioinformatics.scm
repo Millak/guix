@@ -8713,7 +8713,7 @@ unique transcripts.")
      (list ngs-sdk
            ncbi-vdb
            file
-           fuse
+           fuse-2
            hdf5-1.10
            libxml2
            zlib

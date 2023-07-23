@@ -605,7 +605,7 @@ software.")
                    (display "au BufNewFile,BufRead Tupfile,*.tup setf tup")))
                #t))))))
     (inputs
-     (list fuse-3 pcre
+     (list fuse pcre
            `(,pcre "bin") ; pcre-config
            sqlite))
     (native-inputs

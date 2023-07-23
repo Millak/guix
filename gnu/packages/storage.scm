@@ -222,7 +222,7 @@
            expat
            fcgi
            fmt-8
-           fuse
+           fuse-2
            icu4c
            jemalloc
            keyutils

@@ -1863,7 +1863,7 @@ for packaging and deployment of cross-compiled Windows applications.")
            docbook-xml
            docbook-xsl
            e2fsprogs
-           fuse
+           fuse-2
            glib
            gpgme
            libarchive
@@ -1964,7 +1964,7 @@ cp -r /tmp/locale/*/en_US.*")))
            bubblewrap
            curl
            dconf
-           fuse
+           fuse-2
            gdk-pixbuf
            gpgme
            json-glib

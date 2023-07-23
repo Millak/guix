@@ -198,7 +198,7 @@ large and/or frequently changing (network) environment.")
        ;; ("which" ,which)
      (list pkg-config))
     (inputs
-     (list fuse))
+     (list fuse-2))
     (home-page "https://bindfs.org")
     (synopsis "Bind mount a directory and alter permission bits")
     (description
@@ -275,7 +275,7 @@ unmaintained---to use the @code{inotify} API instead of the deprecated
     (arguments
      '(#:configure-flags '("--enable-library" "--enable-fuse")))
     (native-inputs (list pkg-config))
-    (inputs (list xz fuse))
+    (inputs (list xz fuse-2))
     (synopsis "Virtual file system that allows browsing of compressed files")
     (description
      "AVFS is a FUSE-based filesystem that allows browsing of compressed
@@ -565,7 +565,7 @@ AES-GCM implementation.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse glib libgphoto2))
+     (list fuse-2 glib libgphoto2))
     (synopsis "Virtual file system for libgphoto2 using FUSE")
     (description "GPhotoFS is a FUSE file system module to mount your camera as
 a file system on Linux.  This allow using your camera with any tool able to read
@@ -756,7 +756,7 @@ Extensible File Allocation Table} file systems.  Included are
     (native-inputs
      (list asciidoc docbook-xml libxml2 libxslt pkg-config))
     (inputs
-     (list fuse gnutls))
+     (list fuse-2 gnutls))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -921,7 +921,7 @@ files mistakenly overwritten or destroyed just a few seconds ago.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse attr))
+     (list fuse-2 attr))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (delete 'configure))  ; no configure script
@@ -983,7 +983,7 @@ non-determinism in the build process.")
        ("cmocka" ,cmocka)))
     (inputs
      `(("acl" ,acl)
-       ("fuse" ,fuse)
+       ("fuse" ,fuse-2)
        ("openssl" ,openssl)
        ("liburcu" ,liburcu)
        ("libuuid" ,util-linux "lib")
@@ -1030,7 +1030,7 @@ All of this is accomplished without a centralized metadata server.")
               (("4426192") "12814800"))
              #t)))))
     (inputs
-     (list curl glib fuse))
+     (list curl glib fuse-2))
     (native-inputs
      (list pkg-config))
     (home-page "https://curlftpfs.sourceforge.net/")
@@ -1178,7 +1178,7 @@ network.  LIBNFS offers three different APIs, for different use :
       (arguments
        `(#:tests? #f ; No test suite
          #:configure-flags
-         '("-DUSE_FUSE3=OFF") ; FUSE 3 is not packaged yet.
+         '("-DUSE_FUSE3=OFF")
          #:phases
          (modify-phases %standard-phases
            ;; No 'install' target in CMakeLists.txt
@@ -1196,7 +1196,7 @@ network.  LIBNFS offers three different APIs, for different use :
                  (install-file "../source/README.md" doc)
                  #t))))))
       (inputs
-       (list bzip2 fuse zlib))
+       (list bzip2 fuse-2 zlib))
       (synopsis "Read-only FUSE driver for the APFS file system")
       (description "APFS-FUSE is a read-only FUSE driver for the @dfn{Apple File
 System} (APFS).  It is currently in an experimental state — it may not be able
@@ -1614,7 +1614,7 @@ On Guix System, you will need to invoke the included shell scripts as
                (("/sbin") "$(EXEC_PREFIX)/sbin")
                (("chown") "true")  ; disallowed in the build environment
                (("strip") "true")) ; breaks cross-compilation
-             ;; These were copied from the fuse package.
+             ;; These were copied from the fuse-2 package.
              (substitute* '("libfuse/lib/mount_util.c"
                             "libfuse/util/mount_util.c")
                (("/bin/(u?)mount" _ maybe-u)
@@ -1811,7 +1811,7 @@ local file system using FUSE.")
       (native-inputs
        (list pkg-config))
       (inputs
-       (list fuse pcre))
+       (list fuse-2 pcre))
       (home-page "https://github.com/sloonz/rewritefs")
       (synopsis "FUSE file system that changes particular file names")
       (description
@@ -1839,7 +1839,7 @@ the XDG directory specification from @file{~/.@var{name}} to
         (base32 "03aw8pw8694jyrzpnbry05rk9718sqw66kiyq878bbb679gl7224"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
-    (inputs (list attr fuse xz zlib `(,zstd "lib")))
+    (inputs (list attr fuse-2 xz zlib `(,zstd "lib")))
     (home-page "https://github.com/vasi/squashfuse")
     (synopsis "Fuse filesystem to mount squashfs archives")
     (description
@@ -1935,7 +1935,7 @@ and rewritable media that wears out (DVD/CD-RW).")
     (native-inputs
      (list automake autoconf libtool pkg-config))
     (inputs
-     (list fuse-3))
+     (list fuse))
     (home-page "https://github.com/containers/fuse-overlayfs")
     (synopsis "FUSE implementation of overlayfs")
     (description "This package provides an implementation of overlay+shiftfs
@@ -2056,7 +2056,7 @@ spend on disk between being written and being deduplicated.")
       boost
       double-conversion
       fmt
-      fuse-3
+      fuse
       gflags
       jemalloc
       libarchive

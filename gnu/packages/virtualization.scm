@@ -1325,7 +1325,7 @@ manage system or application containers.")
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
-     (list fuse))
+     (list fuse-2))
     (build-system gnu-build-system)
     (synopsis "FUSE-based file system for LXC")
     (description "LXCFS is a small FUSE file system written with the intention
@@ -1499,7 +1499,7 @@ pretty simple, REST API.")
     (inputs
      (list acl
            attr
-           fuse
+           fuse-2
            libxml2
            eudev
            libpciaccess

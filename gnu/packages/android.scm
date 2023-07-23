@@ -1291,7 +1291,7 @@ Java bytecode, which simplifies the analysis of Android applications.")
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;there are no tests
-    (inputs (list qtbase-5 fuse-3 libxkbcommon))
+    (inputs (list qtbase-5 fuse libxkbcommon))
     (native-inputs (list qttools-5 openssl readline))
     (home-page "https://whoozle.github.io/android-file-transfer-linux/")
     (synopsis "MTP client for Android devices")

@@ -523,7 +523,7 @@ music and video to the device.")
                (base32
                 "11wdv44qwia77sh38n36809ysaib52rwd4fvqwb5ybsbz4p70l1m"))))
     (inputs
-     (list fuse libimobiledevice))
+     (list fuse-2 libimobiledevice))
     (native-inputs
      (list pkg-config))
     (build-system gnu-build-system)

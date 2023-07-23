@@ -7008,7 +7008,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
            docbook-xsl
            dbus
            elogind
-           fuse-3
+           fuse
            gcr
            glib
            gnome-online-accounts

@@ -2980,7 +2980,7 @@ modules and plugins that extend Ansible.")
     (inputs
      (list ansible
            encfs
-           fuse
+           fuse-2
            util-linux ;; for umount
            findutils
            gnupg

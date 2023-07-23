@@ -2309,7 +2309,7 @@ by Robert Shea and Robert Anton Wilson.")
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f)) ;no test suite
-    (inputs (list fuse mbedtls-apache))
+    (inputs (list fuse-2 mbedtls-apache))
     (synopsis "FUSE driver to read/write Windows BitLocker drives")
     (description
      "This package provides means to to read BitLocker encrypted
@@ -3692,7 +3692,7 @@ are blocking others and adjust their priority (using @command{ionice}) or stop
 or kill them altogether.")
     (license license:gpl2+)))
 
-(define-public fuse
+(define-public fuse-2
   (package
     (name "fuse")
     (version "2.9.9")
@@ -3762,9 +3762,9 @@ user-space processes.")
     (license (list license:lgpl2.1                ;library
                    license:gpl2+))))              ;command-line utilities
 
-(define-public fuse-3
+(define-public fuse
   (package
-    (inherit fuse)
+    (inherit fuse-2)
     (name "fuse")
     (version "3.10.5")
     (source (origin
@@ -3838,7 +3838,7 @@ user-space processes.")
     (build-system cmake-build-system)
     (native-inputs
      (list python))
-    (inputs (list fuse))
+    (inputs (list fuse-2))
     (arguments
      ;; The tests were never actually run ("collected 0 items"), but in recent
      ;; versions of pytest that causes an error.
@@ -3852,10 +3852,10 @@ space, using the FUSE library.  Mounting a union file system allows you to
 UnionFS-FUSE additionally supports copy-on-write.")
     (license license:bsd-3)))
 
-(define fuse-static
-  (package (inherit fuse)
+(define fuse-2-static
+  (package (inherit fuse-2)
     (name "fuse-static")
-    (source (origin (inherit (package-source fuse))
+    (source (origin (inherit (package-source fuse-2))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3903,7 +3903,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
                ;; we don't need it, remove it.
                (delete-file (string-append out "/bin/unionfsctl"))
                #t))))))
-    (inputs `(("fuse" ,fuse-static)))))
+    (inputs `(("fuse" ,fuse-2-static)))))
 
 (define-public sshfs
   (package
@@ -3922,7 +3922,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
      ;; XXX: tests are skipped: FUSE kernel module does not seem to be loaded
      '(#:tests? #f))
     (inputs
-     (list fuse-3 glib))
+     (list fuse glib))
     (native-inputs
      (list pkg-config
            ;; man page
@@ -3953,7 +3953,7 @@ file system is as easy as logging into the server with an SSH client.")
        (sha256
         (base32 "1cy5b6qril9c3ry6fv7ir87s8iyy5vxxmbyx90dm86fbra0vjaf5"))))
     (build-system gnu-build-system)
-    (inputs (list fuse libarchive))
+    (inputs (list fuse-2 libarchive))
     (native-inputs (list pkg-config))
     (home-page "https://www.cybernoia.de/software/archivemount.html")
     (synopsis "Tool for mounting archive files with FUSE")
@@ -5913,7 +5913,7 @@ is flexible, efficient and uses a modular implementation.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse))
+     (list fuse-2))
     (home-page "https://github.com/relan/exfat")
     (synopsis "Mount exFAT file systems")
     (description
@@ -5936,7 +5936,7 @@ write access to exFAT devices.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse glib zlib))
+     (list fuse-2 glib zlib))
     (home-page "https://sourceforge.net/projects/fuseiso/")
     (synopsis "Mount ISO file system images")
     (description
@@ -6611,7 +6611,7 @@ invocations of itself.")
                              "@sbindir@"))))))
     (build-system gnu-build-system)
     (inputs (list util-linux ; libuuid
-                  fuse))
+                  fuse-2))
     (native-inputs (list pkg-config))
     (arguments
      '(#:configure-flags (list "--disable-static"
@@ -8472,7 +8472,7 @@ NexGen, Rise, and SiS CPUs.")
           "1pm68agkhrwgrplrfrnbwdcvx5lrivdmqw8pb5gdmm3xppnryji1"))))
     (build-system gnu-build-system)
     (inputs
-     (list file fuse libmtp))
+     (list file fuse-2 libmtp))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/JasonFerrara/jmtpfs")

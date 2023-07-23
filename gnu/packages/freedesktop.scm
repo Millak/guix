@@ -2798,7 +2798,7 @@ compatible with the well-known scripts of the same name.")
        ("dbus" ,dbus)
        ("geoclue" ,geoclue)
        ("pipewire" ,pipewire)
-       ("fuse" ,fuse-3)))
+       ("fuse" ,fuse)))
     (arguments
      `(#:configure-flags
        (list "--with-systemd=no")

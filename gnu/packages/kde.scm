@@ -507,7 +507,7 @@ the functionality of the KDE resource and network access abstractions.")
                               (invoke "dbus-launch" "ctest" "-E"
                                "(fileopstest-cache|fileopstest-filejob)")))))))
     (native-inputs (list dbus extra-cmake-modules pkg-config))
-    (inputs (list fuse-3 kio kcoreaddons qtbase-5))
+    (inputs (list fuse kio kcoreaddons qtbase-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "FUSE Interface for KIO")
     (description "This package provides FUSE Interface for KIO.")
