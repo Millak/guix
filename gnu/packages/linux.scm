@@ -3901,21 +3901,19 @@ UnionFS-FUSE additionally supports copy-on-write.")
                (string-append "target_link_libraries"
                               libs " dl)")))))))
     (arguments
-     (list
-      #:tests? #f
-      #:configure-flags
-      #~(list "-DCMAKE_EXE_LINKER_FLAGS=-static")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'post-install
-            (lambda _
-              ;; By default, 'unionfs' keeps references to
-              ;; $glibc/share/locale and similar stuff.  Remove them.
-              (remove-store-references (string-append #$output "/bin/unionfs"))
-
-              ;; 'unionfsctl' has references to glibc as well.  Since
-              ;; we don't need it, remove it.
-              (delete-file (string-append #$output "/bin/unionfsctl")))))))
+     (substitute-keyword-arguments (package-arguments unionfs-fuse)
+       ((#:configure-flags flags #~'())
+        #~(cons "-DCMAKE_EXE_LINKER_FLAGS=-static" #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'post-install
+              (lambda _
+                ;; By default, 'unionfs' keeps references to
+                ;; $glibc/share/locale and similar stuff.  Remove them.
+                (remove-store-references (string-append #$output "/bin/unionfs"))
+                ;; 'unionfsctl' has references to glibc as well.  Since
+                ;; we don't need it, remove it.
+                (delete-file (string-append #$output "/bin/unionfsctl"))))))))
     (inputs (list fuse-static))))
 
 (define-public sshfs
