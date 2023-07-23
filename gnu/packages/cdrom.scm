@@ -745,9 +745,10 @@ information is written to standard error.")
         (base32 "0srpag9bca76iiv8766kxmbvhsri58k15xp70348frkvp7hy4s48"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:out-of-source? #f
+     (list
+      #:out-of-source? #f
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-before 'check 'fix-tests
            ;; As of 3.0.1, there are no ‘real’ tests under src/, and the linty
            ;; test under po/ is broken.  Still, it's trivial to fix.
@@ -756,19 +757,17 @@ information is written to standard error.")
                (format file "~%src/upload.c~%")
                (close-port file))))
          (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((program (string-append (assoc-ref outputs "out")
-                                           "/bin/asunder")))
-               (define (bin-directory input-name)
-                 (string-append (assoc-ref inputs input-name) "/bin"))
-               (wrap-program program
-                 `("PATH" ":" prefix
-                   ,(map bin-directory (list "cdparanoia"
-                                             "lame"
-                                             "vorbis-tools"
-                                             "flac"
-                                             "opus-tools"
-                                             "wavpack"))))))))))
+           (lambda _
+             (wrap-program (string-append #$output "/bin/asunder")
+               `("PATH" ":" prefix
+                 ,(map (lambda (input) (string-append input "/bin"))
+                       '#$(map (lambda (label) (this-package-input label))
+                               (list "cdparanoia"
+                                     "flac"
+                                     "lame"
+                                     "opus-tools"
+                                     "vorbis-tools"
+                                     "wavpack"))))))))))
     (native-inputs (list intltool pkg-config))
     ;; TODO: Add the necessary packages for Musepack encoding.
     (inputs `(("gtk+-2" ,gtk+-2)
