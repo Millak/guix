@@ -12,7 +12,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 rsiddharth <s@ricketyspace.net>
-;;; Copyright © 2017–2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2019, 2021, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Tonton <tonton@riseup.net>
 ;;; Copyright © 2018, 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -2377,6 +2377,31 @@ differ only in the field we changed and @emph{that's it}: field order, comments,
 and incidental whitespace will remain unchanged.  The library aims to produce
 human-readable error messages when things go wrong.")
     (license license:bsd-3)))
+
+(define-public ghc-config-value
+  (package
+    (name "ghc-config-value")
+    (version "0.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "config-value" version))
+       (sha256
+        (base32 "0pkcwxg91wali7986k03d7q940hb078hlsxfknqhkp2spr3d1f3w"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("3"
+                         "1qiqaad3zpgvwpcb5p1q9aaska82bfm75qrsfdcdlwc70r7w57gj")))
+    (native-inputs
+     (list ghc-alex ghc-happy))
+    (properties '((upstream-name . "config-value")))
+    (home-page "https://github.com/glguy/config-value")
+    (synopsis "Simple, layout-based value language similar to YAML or JSON")
+    (description
+     "This package implements a language similar to YAML or JSON but with fewer
+special cases and fewer dependencies.  It emphasizes layout structure for
+sections and lists, and requires quotes around strings.")
+    (license license:expat)))
 
 (define-public ghc-configurator
   (package
