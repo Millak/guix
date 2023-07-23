@@ -2378,6 +2378,35 @@ and incidental whitespace will remain unchanged.  The library aims to produce
 human-readable error messages when things go wrong.")
     (license license:bsd-3)))
 
+(define-public ghc-config-schema
+  (package
+    (name "ghc-config-schema")
+    (version "1.2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "config-schema" version))
+       (sha256
+        (base32 "10mp76j2gxcb51865lb6cf3nkc2nc7fwarkghb6yz71q6sbrg3yx"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("3"
+                         "16rwj3vcafq4fqqh5rq1na1g4syk63kki2gjinb6yj3h8s59vpp7")))
+    (inputs
+     (list ghc-config-value
+           ghc-free
+           ghc-kan-extensions
+           ghc-semigroupoids))
+    (properties '((upstream-name . "config-schema")))
+    (home-page "https://github.com/glguy/config-schema")
+    (synopsis "Schema definitions for the config-value package")
+    (description
+     "This package makes it possible to define schemas for use when loading
+configuration files using the config-value format.  These schemas can be used to
+process a configuration file into a Haskell value or to automatically generate
+documentation for the file format.")
+    (license license:isc)))
+
 (define-public ghc-config-value
   (package
     (name "ghc-config-value")
