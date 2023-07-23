@@ -448,8 +448,8 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
                          python-setuptools-scm))
     (propagated-inputs (list python-fonttools-minimal))
     (home-page "https://github.com/googlefonts/compreffor")
-    (synopsis "Compact Font Format (CFF) subroutinizer for fontTools")
-    (description "This package provides a Compact Font Format (CFF)
+    (synopsis "@acronym{CFF, Compact Font Format} subroutinizer for fontTools")
+    (description "This package provides a @acronym{CFF, Compact Font Format}
 subroutinizer for fontTools.")
     (license license:asl2.0)))
 
