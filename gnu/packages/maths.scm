@@ -7822,7 +7822,7 @@ diagrams.")
 (define-public libpoly
   (package
    (name "libpoly")
-   (version "0.1.11")
+   (version "0.1.12")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -7831,7 +7831,7 @@ diagrams.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0qylmg30rklvg00a0h1b3pb52cj9ki98yd27cylihjhq2klh3dmy"))))
+              "1cgdj7mxjyq4r2n852nxqacml90jm9irbvv27an0fmg7q4v1p2kb"))))
    (build-system cmake-build-system)
    (arguments
     (list #:configure-flags #~(list "-DLIBPOLY_BUILD_PYTHON_API=off")))
