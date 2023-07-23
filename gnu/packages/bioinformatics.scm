@@ -7190,16 +7190,12 @@ sequences).")
                             "src/mash/CommandFind.cpp"
                             "src/mash/CommandScreen.cpp")
                (("^#include \"kseq\\.h\"")
-                "#include \"htslib/kseq.h\""))
-             #t))
+                "#include \"htslib/kseq.h\""))))
          (add-after 'fix-includes 'use-c++14
            (lambda _
-             ;; capnproto 0.7 requires c++14 to build
-             (substitute* "configure.ac"
-               (("c\\+\\+11") "c++14"))
-             (substitute* "Makefile.in"
-               (("c\\+\\+11") "c++14"))
-             #t)))))
+             ;; capnproto 1.0 requires c++14 to build.
+             (substitute* (list "configure.ac" "Makefile.in")
+               (("c\\+\\+11") "c++14")))))))
     (native-inputs
      (list autoconf))
     (inputs
