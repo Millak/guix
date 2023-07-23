@@ -2436,7 +2436,7 @@ simulation.")
            ;; Depends on radare2 4.5.1 officially, builds and works fine with
            ;; radare2 5.0.0 but fails to build with radare2 5.1.1.
            radare2-for-cutter))
-    (home-page "https://github.com/radareorg/cutter")
+    (home-page "https://cutter.re")
     (synopsis "GUI for radare2 reverse engineering framework")
     (description "Cutter is a GUI for radare2 reverse engineering framework.
 Its goal is making an advanced andcustomizable reverse-engineering platform
