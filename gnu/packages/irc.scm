@@ -107,6 +107,19 @@
      (sha256
       (base32 "0jaywb43jfv6kzyz540k02mxdgw1shc6hn7kia21alssszkilh4r"))))
   (build-system haskell-build-system)
+  (arguments
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+      (add-after 'install 'install-extra-documentation
+        (lambda _
+          (install-file "glirc.1"
+                        (string-append #$output "/share/man/man1"))
+          ;; The man page is very terse and punts to the GitHub wiki for real
+          ;; information.  Some of that is also in the README, so install it.
+          (install-file "README.md"
+                        (string-append #$output "/share/doc/"
+                                       #$name "-" #$version)))))))
   (native-inputs
    (list ghc-hunit))
   (inputs
