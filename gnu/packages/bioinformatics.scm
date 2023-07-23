@@ -1867,6 +1867,61 @@ protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
 
+(define-public python-liana-py
+  (package
+    (name "python-liana-py")
+    (version "0.1.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/saezlab/liana-py")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00lqrmi38wmdpjlcafgmrnkwsbp0yvm2rya6qs8y6jfizww9ff8i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests require internet access.
+             (string-append "not test_generate_lr_resource"
+                            " and not test_generate_nondefault_lr_resource"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable directory to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs (list python-anndata
+                             python-cell2cell
+                             python-decoupler-py
+                             python-hypothesis
+                             python-ipykernel
+                             python-ipython
+                             python-mofax
+                             python-mudata
+                             python-nbconvert
+                             python-nbsphinx
+                             python-numpydoc
+                             python-omnipath
+                             python-pandas
+                             python-plotnine
+                             python-pypandoc
+                             python-scipy
+                             python-requests
+                             python-scanpy
+                             python-statsmodels
+                             python-tqdm
+                             tzdata))
+    (native-inputs
+     (list python-black python-pytest python-pytest-cov python-numpy))
+    (home-page "https://github.com/saezlab/liana-py")
+    (synopsis "LIANA is a ligand-receptor analysis framework")
+    (description "This is a Ligand-Receptor inference framework.  The
+framework enables the use of any LR method with any resources.")
+    (license license:gpl3+)))
+
 (define-public python-logomaker
   (package
     (name "python-logomaker")
