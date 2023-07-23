@@ -2780,6 +2780,7 @@ DKIM and/or DomainKeys.")
                (wrap.pl (list "/bin/dkimproxy.in"
                               "/bin/dkimproxy.out")
                         (list "perl-crypt-openssl-rsa"
+                              "perl-cryptx"
                               "perl-io-socket-inet6"
                               "perl-mailtools"
                               "perl-mail-authenticationresults"
@@ -2789,6 +2790,7 @@ DKIM and/or DomainKeys.")
                               "perl-socket6"))
                (wrap.pl (list "/bin/dkim_responder.pl")
                         (list "perl-crypt-openssl-rsa"
+                              "perl-cryptx"
                               "perl-mail-dkim"
                               "perl-mailtools"
                               "perl-mime-tools"
@@ -2797,6 +2799,7 @@ DKIM and/or DomainKeys.")
     (inputs
      (list perl
            perl-crypt-openssl-rsa
+           perl-cryptx
            perl-io-socket-inet6
            perl-mailtools
            perl-mail-authenticationresults
