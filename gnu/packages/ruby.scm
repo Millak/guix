@@ -14936,6 +14936,26 @@ can be used to build formatters, linters, language servers, and more.")
     (home-page "https://github.com/ruby-syntax-tree/syntax_tree")
     (license license:expat)))
 
+(define-public ruby-stringio
+  (package
+    (name "ruby-stringio")
+    (version "3.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruby/stringio")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jgi2w5y0z0x9mfapr2pdlag4wvn03fpf5kbai8bscyh8nn79yka"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rake-compiler ruby-test-unit-ruby-core))
+    (synopsis "Pseudo `IO` class from and to `String`")
+    (description "Pseudo `IO` class from and to `String`.")
+    (home-page "https://github.com/ruby/stringio")
+    (license license:bsd-2)))
+
 (define sorbet-version "0.5.10610.20230106174520-1fa668010")
 
 (define sorbet-monorepo
