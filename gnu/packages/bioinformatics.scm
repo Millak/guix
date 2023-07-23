@@ -1680,11 +1680,11 @@ and sequence consensus.")
 
 (define-public python-decoupler-py
   ;; This latest commit fixes a bug in test_omnip.py.
-  (let ((commit "b84c524ec4a9280a56c0db963e2c7b010316ce8f")
+  (let ((commit "459b235348ddd9135217a3722d9dd1caa9a14ace")
         (revision "1"))
     (package
       (name "python-decoupler-py")
-      (version (git-version "1.3.1" revision commit))
+      (version (git-version "1.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1693,7 +1693,7 @@ and sequence consensus.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0d74yr5jqc52vcxaca84kxqw7m5rbazpmvnrcp2y4xxrj6yr1sfc"))))
+                  "1c0xk006iilyffdaqar2d05qdhik22fbkny387zx0bndkgqifxhl"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -1704,6 +1704,10 @@ and sequence consensus.")
                               " and not test_show_resources"
                               " and not test_get_dorothea"
                               " and not test_get_progeny"
+                              " and not test_get_ksn_omnipath"
+                              ;; XXX module 'omnipath.interactions' has no
+                              ;; attribute 'CollecTRI'
+                              " and not test_get_collectri"
                               ;; XXX This one fails because the "texts" list
                               ;; is empty, so there are no texts to adjust.
                               ;; It is not clear whether this a compatibility
