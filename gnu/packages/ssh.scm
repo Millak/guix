@@ -198,7 +198,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "9.3p1")
+   (version "9.3p2")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
@@ -207,91 +207,82 @@ a server that supports the SSH-2 protocol.")
                                       "openssh-trust-guix-store-directory.patch"))
              (sha256
               (base32
-               "1a7qia3c255igny5kf00m5zxkp69lf1w6qjsv3rm2sm705vvmfp9"))))
+               "1s3nqv57r3l7avsdkzwd575dvxra8h19xpqczl0z3cvcgwabw3i0"))))
    (build-system gnu-build-system)
-   (native-inputs (list groff pkg-config))
-   (inputs `(("libedit" ,libedit)
-             ("openssl" ,openssl)
-             ,@(if (target-hurd?)
-                   '()
-                   `(("pam" ,linux-pam)
-                     ("libfido2" ,libfido2)))     ;fails to build on GNU/Hurd
-             ("mit-krb5" ,mit-krb5)
-             ("zlib" ,zlib)
-             ("xauth" ,xauth)))        ; for 'ssh -X' and 'ssh -Y'
    (arguments
-    `(#:test-target "tests"
-      ;; Otherwise, the test scripts try to use a nonexistent directory and
-      ;; fail.
-      #:make-flags '("REGRESSTMP=\"$${BUILDDIR}/regress\"")
-      #:configure-flags  `("--sysconfdir=/etc/ssh"
-
-                           ;; Default value of 'PATH' used by sshd.
-                          "--with-default-path=/run/current-system/profile/bin"
-
-                          ;; configure needs to find krb5-config.
-                          ,(string-append "--with-kerberos5="
-                                          (assoc-ref %build-inputs "mit-krb5")
-                                          "/bin")
-
-                          ;; libedit is needed for sftp completion.
-                          "--with-libedit"
-
-                          ;; Enable PAM support in sshd.
-                          ,,@(if (target-hurd?)
-                               '()
-                               '("--with-pam"
-
-                                 ;; Support creation and use of ecdsa-sk,
-                                 ;; ed25519-sk keys.
-                                 "--with-security-key-builtin"))
-
-
-
-                          ;; "make install" runs "install -s" by default,
-                          ;; which doesn't work for cross-compiled binaries
-                          ;; because it invokes 'strip' instead of
-                          ;; 'TRIPLET-strip'.  Work around this.
-                          ,,@(if (%current-target-system)
-                                 '("--disable-strip")
-                                 '()))
-
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'configure 'reset-/var/empty
-         (lambda* (#:key outputs #:allow-other-keys)
-           (let ((out (assoc-ref outputs "out")))
+    (list
+     #:test-target "tests"
+     ;; Otherwise, the test scripts try to use a nonexistent directory and fail.
+     #:make-flags
+     #~(list "REGRESSTMP=\"$${BUILDDIR}/regress\"")
+     #:configure-flags
+     #~(append
+        (list "--sysconfdir=/etc/ssh"
+              ;; Default value of 'PATH' used by sshd.
+              "--with-default-path=/run/current-system/profile/bin"
+              ;; configure needs to find krb5-config.
+              (string-append "--with-kerberos5="
+                             #$(this-package-input "mit-krb5")
+                             "/bin")
+              ;; libedit is needed for sftp completion.
+              "--with-libedit")
+        ;; Enable PAM support in sshd.
+        (if #$(target-hurd?)
+            '()
+            (list "--with-pam"
+                  ;; Support creation and use of ecdsa-sk, ed25519-sk keys.
+                  "--with-security-key-builtin"))
+        ;; "make install" runs "install -s" by default, which doesn't work for
+        ;; cross-compiled binaries because it invokes 'strip' instead of
+        ;; 'TRIPLET-strip'.  Work around this.
+        (if #$(%current-target-system)
+            (list "--disable-strip")
+            '()))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'configure 'reset-/var/empty
+           (lambda _
              (substitute* "Makefile"
                (("PRIVSEP_PATH=/var/empty")
-                (string-append "PRIVSEP_PATH=" out "/var/empty"))))))
-        (add-after 'configure 'set-store-location
-          (lambda* _
-            (substitute* "misc.c"
-              (("@STORE_DIRECTORY@")
-               (string-append "\"" (%store-directory) "\"")))))
-        (add-before 'check 'patch-tests
-         (lambda _
-           (substitute* "regress/test-exec.sh"
-             (("/bin/sh") (which "sh")))
+                (string-append "PRIVSEP_PATH=" #$output "/var/empty")))))
+         (add-after 'configure 'set-store-location
+           (lambda _
+             (substitute* "misc.c"
+               (("@STORE_DIRECTORY@")
+                (string-append "\"" (%store-directory) "\"")))))
+         (add-before 'check 'patch-tests
+           (lambda _
+             (substitute* "regress/test-exec.sh"
+               (("/bin/sh") (which "sh")))
 
-           ;; Remove 't-exec' regress target which requires user 'sshd'.
-           (substitute* (list "Makefile"
-                              "regress/Makefile")
-             (("^(tests:.*) t-exec(.*)" all pre post)
-              (string-append pre post)))))
-        (replace 'install
-          (lambda* (#:key outputs (make-flags '()) #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              ;; Install without host keys and system configuration files.
-              ;; This will install /var/empty to the store, which is needed
-              ;; by the system openssh-service-type.
-              (apply invoke "make" "install-nosysconf" make-flags)
-              (with-directory-excursion "contrib"
-                (chmod "ssh-copy-id" #o555)
-                (install-file "ssh-copy-id"
-                              (string-append out "/bin/"))
-                (install-file "ssh-copy-id.1"
-                              (string-append out "/share/man/man1/")))))))))
+             ;; Remove 't-exec' regress target which requires user 'sshd'.
+             (substitute* (list "Makefile"
+                                "regress/Makefile")
+               (("^(tests:.*) t-exec(.*)" all pre post)
+                (string-append pre post)))))
+         (replace 'install
+           (lambda* (#:key (make-flags '()) #:allow-other-keys)
+             ;; Install without host keys and system configuration files.  This
+             ;; will install /var/empty to the store, which is needed by the
+             ;; system openssh-service-type.
+             (apply invoke "make" "install-nosysconf" make-flags)
+             (with-directory-excursion "contrib"
+               (chmod "ssh-copy-id" #o555)
+               (install-file "ssh-copy-id"
+                             (string-append #$output "/bin/"))
+               (install-file "ssh-copy-id.1"
+                             (string-append #$output "/share/man/man1/"))))))))
+   (native-inputs (list groff pkg-config))
+   (inputs
+    (cons* libedit
+           openssl
+           mit-krb5
+           zlib
+           xauth                        ; for 'ssh -X' and 'ssh -Y'
+           (if (target-hurd?)
+               '()
+               (list linux-pam
+                     libfido2))))       ; fails to build on GNU/Hurd
    (synopsis "Client and server for the secure shell (ssh) protocol")
    (description
     "The SSH2 protocol implemented in OpenSSH is standardised by the
@@ -324,7 +315,8 @@ Additionally, various channel-specific options can be negotiated.")
   (package
     (inherit openssh)
     (name "openssh-sans-x")
-    (inputs (alist-delete "xauth" (package-inputs openssh)))
+    (inputs (modify-inputs (package-inputs openssh)
+              (delete "xauth")))
     (synopsis "OpenSSH client and server without X11 support")))
 
 (define-public guile-ssh

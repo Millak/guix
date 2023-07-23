@@ -5325,7 +5325,7 @@ Lisp (from GBBopen project).")
 (define-public sbcl-usocket
   (package
     (name "sbcl-usocket")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method git-fetch)
@@ -5334,7 +5334,7 @@ Lisp (from GBBopen project).")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-usocket" version))
        (sha256
-        (base32 "1pn5mf4d9g3b7h0vfx0mh7rlrydfbk8q35pg4ip6prf4zyg70wba"))))
+        (base32 "0by8hhg6gijdbq5vjykd374rmvqyikp4synpyk0wjcl7rk3r0vgn"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rt))
@@ -10365,11 +10365,11 @@ macro.  This library provides a set of simple utilities to help with that.")
   (sbcl-package->ecl-package sbcl-form-fiddle))
 
 (define-public sbcl-array-utils
-  (let ((commit "40cea8fc895add87d1dba9232da817750222b528")
-        (revision "1"))
+  (let ((commit "29da8fccf6093fe8f8c7b2daef7de1a428ef1834")
+        (revision "0"))
     (package
       (name "sbcl-array-utils")
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -10379,7 +10379,7 @@ macro.  This library provides a set of simple utilities to help with that.")
            (commit commit)))
          (file-name (git-file-name "cl-array-utils" version))
          (sha256
-          (base32 "0d7nddak8h2aa82z11vdbd97srk5bdgq41pzmibsz3ymspnndicd"))))
+          (base32 "1d66s2inb9hpw27hdb20x27dychmpn1mn35v0mlsib848qdz87az"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -25508,22 +25508,22 @@ JavaScript code.")
 (define-public sbcl-nhooks
   (package
     (name "sbcl-nhooks")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/atlas-engineer/nhooks")
              (commit version)))
-       (file-name (git-file-name "nhooks" version))
+       (file-name (git-file-name "cl-nhooks" version))
        (sha256
         (base32
-         "1cpd9ydxkrl4vxn2clfwljl4q5hdybxkc96qshq7dczq2jvg1nfs"))))
+         "10ym4ybda2l426flicqz0f4yg7fbw7yjk1k0wqpf4wfk24gm1b8g"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-serapeum))
     (native-inputs
-     (list sbcl-fiveam))
+     (list sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/nhooks")
     (synopsis "Hook facility for Common Lisp")
     (description "This package holds an enhanced implementation of
@@ -27956,23 +27956,22 @@ manipulations as the composition of more primitive operations.")
 (define-public sbcl-ndebug
   (package
     (name "sbcl-ndebug")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/atlas-engineer/ndebug")
              (commit version)))
-       (file-name (git-file-name "ndebug" version))
+       (file-name (git-file-name "cl-ndebug" version))
        (sha256
-        (base32 "0wdp0wqk6clq3hh9yqmgdm55x50b5m7ly9004j2c8k5zz1rgi4rr"))))
+        (base32 "1sndg4qclkdr53xkxrfjskx8gcqx0bn4r0vslzfx1kgznl4hbf1d"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     (list
-      sbcl-dissect
-      sbcl-lparallel
-      sbcl-slime-swank
-      sbcl-trivial-custom-debugger))
+     (list sbcl-dissect
+           sbcl-trivial-custom-debugger
+           sbcl-bordeaux-threads
+           sbcl-trivial-gray-streams))
     (native-inputs
      (list sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/ndebug/")

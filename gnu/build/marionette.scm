@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
             wait-for-unix-socket
             marionette-control
             wait-for-screen-text
+            %default-ocrad-arguments
             %qwerty-us-keystrokes
             marionette-type
 
@@ -287,23 +289,30 @@ Monitor\")."
      ;; The "quit" command terminates QEMU immediately, with no output.
      (unless (string=? command "quit") (wait-for-monitor-prompt monitor)))))
 
-(define* (invoke-ocrad-ocr image #:key (ocrad "ocrad"))
+(define %default-ocrad-arguments
+  '("--invert" "--scale=10"))
+
+(define* (invoke-ocrad-ocr image #:key (ocrad "ocrad")
+                           (ocr-arguments %default-ocrad-arguments))
   "Invoke the OCRAD command on image, and return the recognized text."
-  (let* ((pipe (open-pipe* OPEN_READ ocrad "-i" "-s" "10" image))
+  (let* ((command (string-join `(,ocrad ,@ocr-arguments ,image)))
+         (pipe (open-input-pipe command))
          (text (get-string-all pipe)))
     (unless (zero? (close-pipe pipe))
       (error "'ocrad' failed" ocrad))
     text))
 
-(define* (invoke-tesseract-ocr image #:key (tesseract "tesseract"))
+(define* (invoke-tesseract-ocr image #:key (tesseract "tesseract")
+                               (ocr-arguments '()))
   "Invoke the TESSERACT command on IMAGE, and return the recognized text."
   (let* ((output-basename (tmpnam))
-         (output-basename* (string-append output-basename ".txt")))
+         (output-basename* (string-append output-basename ".txt"))
+         (arguments (cons* image output-basename ocr-arguments)))
     (dynamic-wind
       (const #t)
       (lambda ()
         (let ((exit-val (status:exit-val
-                         (system* tesseract image output-basename))))
+                         (apply system* tesseract arguments))))
           (unless (zero? exit-val)
             (error "'tesseract' failed" tesseract))
           (call-with-input-file output-basename* get-string-all)))
@@ -311,7 +320,8 @@ Monitor\")."
         (false-if-exception (delete-file output-basename))
         (false-if-exception (delete-file output-basename*))))))
 
-(define* (marionette-screen-text marionette #:key (ocr "ocrad"))
+(define* (marionette-screen-text marionette #:key (ocr "ocrad")
+                                 ocr-arguments)
   "Take a screenshot of MARIONETTE, perform optical character
 recognition (OCR), and return the text read from the screen as a string, along
 the screen dump image used.  Do this by invoking OCR, which should be the file
@@ -324,14 +334,22 @@ if it is not needed."
   ;; Process it via the OCR.
   (cond
    ((string-contains ocr "ocrad")
-    (values (invoke-ocrad-ocr image #:ocrad ocr) image))
+    (values (invoke-ocrad-ocr image
+                              #:ocrad ocr
+                              #:ocr-arguments
+                              (or ocr-arguments %default-ocrad-arguments))
+            image))
    ((string-contains ocr "tesseract")
-    (values (invoke-tesseract-ocr image #:tesseract ocr) image))
+    (values (invoke-tesseract-ocr image
+                                  #:tesseract ocr
+                                  #:ocr-arguments (or ocr-arguments '()))
+            image))
    (else (error "unsupported ocr command"))))
 
 (define* (wait-for-screen-text marionette predicate
                                #:key
                                (ocr "ocrad")
+                               ocr-arguments
                                (timeout 30)
                                pre-action
                                post-action)
@@ -359,7 +377,10 @@ Likewise for POST-ACTION, except it runs at the end of a successful OCR."
                  'ocr-text: last-text
                  'screendump: screendump-backup))
         (let* ((_ (and (procedure? pre-action) (pre-action)))
-               (text screendump (marionette-screen-text marionette #:ocr ocr))
+               (text screendump
+                     (marionette-screen-text marionette
+                                             #:ocr ocr
+                                             #:ocr-arguments ocr-arguments))
                (_ (and (procedure? post-action) (post-action)))
                (result (predicate text)))
           (cond (result

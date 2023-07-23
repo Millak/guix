@@ -553,7 +553,7 @@ you create custom user interfaces for your MIDI hardware.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.17")
+    (version "1.0.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -562,7 +562,7 @@ you create custom user interfaces for your MIDI hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xcf9jighb759kdh4p32wib2pipgcx3qdf5x7da6cjhxjbzgfrk7"))
+                "1knijckphq2jxrz8nmv4cb64zl1rz3bjyq5ipac09hnj2gvv5rmw"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -1508,9 +1508,9 @@ and auto-mapping slices to MIDI note numbers.")
            texinfo
            texi2html-1.82
            (texlive-updmap.cfg
-            (list texlive-epsf
+            (list texlive-cyrillic
+                  texlive-epsf
                   texlive-fontinst
-                  texlive-latex-cyrillic
                   texlive-lh
                   texlive-lm
                   texlive-metapost))
@@ -2371,7 +2371,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.27")
+    (version "0.9.31")
     (source (origin
               (method url-fetch)
               (uri
@@ -2379,7 +2379,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "13qcig5j69qzcxqs9w5x9shrbb6vyj00g2fz1jw1kxramppyvcvg"))))
+                "06yfiwnxdawyby63zqm1jv4ihi4fxzabpkba7v4d8lgwvhxa014k"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2403,7 +2403,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.27")
+    (version "0.9.31")
     (source (origin
               (method url-fetch)
               (uri
@@ -2411,7 +2411,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0j96z5bqh1mnldsda6dyp0jqp01mf7p55yr956rzkzg6jivj8fs3"))))
+                "0cw0lqxd4igkb25vlivbi0hamn33d26nl96mzm59cda158r0jayl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2436,7 +2436,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.27")
+    (version "0.9.31")
     (source (origin
               (method url-fetch)
               (uri
@@ -2444,7 +2444,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0wxdcw5qs58kjfnnl4lnmafj8qim8qmdfdzrgnxggyhjg5mrpyby"))))
+                "1jqblmb24vbnpm4a4wlvasz45h3zy00rrpf850yxaplyf0qb8klx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2469,7 +2469,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.27")
+    (version "0.9.31")
     (source (origin
               (method url-fetch)
               (uri
@@ -2477,7 +2477,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0ydm09g0ibvp1nf4fzzj6bkwlxx46pjxqgg8h76hwi6l8k0rz5m4"))))
+                "1iqmjdxihil039c8g9kywd5dx3rd47ph2fs6f6kcyfwj9jz4aprh"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2635,7 +2635,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
 (define-public setbfree
   (package
     (name "setbfree")
-    (version "0.8.11")
+    (version "0.8.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2644,27 +2644,28 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s3ps3cjwlm63ml4izb7mizy8ci5pl9a19lvz62xf0br089h3afc"))))
+                "1lzrrpm57pilvwxpr1qhnx6273md2k96ygxjlhi5gqjdl0nl3z95"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "FONTFILE="
-                            (assoc-ref %build-inputs "font-bitstream-vera")
-                            "/share/fonts/truetype/VeraBd.ttf")
-             ;; Disable unsupported optimization flags on non-x86
-             ,@(let ((system (or (%current-target-system)
-                                 (%current-system))))
-                 (if (or (string-prefix? "x86_64" system)
-                         (string-prefix? "i686" system))
-                     '()
-                     '("OPTIMIZATIONS=-ffast-math -fomit-frame-pointer -O3"))))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-CC-variable
-           (lambda _ (setenv "CC" "gcc") #t))
-         (delete 'configure))))
+     (list
+      #:tests? #f                       ; no "check" target
+      #:make-flags
+      #~(cons* (string-append "PREFIX=" #$output)
+               (string-append "FONTFILE="
+                              #$(this-package-input "font-bitstream-vera")
+                              "/share/fonts/truetype/VeraBd.ttf")
+               ;; Disable unsupported optimization flags on non-x86
+               (let ((system #$(or (%current-target-system)
+                                   (%current-system))))
+                   (if (or (string-prefix? "x86_64" system)
+                           (string-prefix? "i686" system))
+                       '()
+                       '("OPTIMIZATIONS=-ffast-math -fomit-frame-pointer -O3"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-CC-variable
+            (lambda _ (setenv "CC" #$(cc-for-target))))
+          (delete 'configure))))
     (inputs
      (list jack-1
            lv2
@@ -3216,7 +3217,7 @@ capabilities, custom envelopes, effects, etc.")
 (define-public yoshimi
   (package
     (name "yoshimi")
-    (version "2.3.0")
+    (version "2.3.0.2")
     (source
      (origin
        (method url-fetch)
@@ -3224,7 +3225,7 @@ capabilities, custom envelopes, effects, etc.")
                            (version-major+minor version)
                            "/yoshimi-" version ".tar.bz2"))
        (sha256
-        (base32 "0rkwz545bipanyl8kcp6rgdqppiad7s0j409a4n8dd97maislsa0"))))
+        (base32 "1024ykyaq0s6zzyksrmgdz8ix0a4yranlsv5rbq72dbrkh3h8wqm"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3481,14 +3482,14 @@ from the command line.")
 (define-public qtractor
   (package
     (name "qtractor")
-    (version "0.9.29")
+    (version "0.9.34")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.sourceforge.net/qtractor/"
                                   "qtractor-" version ".tar.gz"))
               (sha256
                (base32
-                "05g0zj5iy8knqccwglgql1flabgvpy4yqms4z1zqrkl9ws9bwc1x"))))
+                "0w6g51jhj9c72j6qjjkjhiq0vwklb6q4cr3xgj4mzp0iw279hbjz"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" target
@@ -6133,7 +6134,7 @@ short-time Fourier transform, available as LV2 audio plugin and JACK client.")
 (define-public x42-plugins
   (package
     (name "x42-plugins")
-    (version "20221119")
+    (version "20230701")
     (source
      (origin
        (method url-fetch)
@@ -6141,7 +6142,7 @@ short-time Fourier transform, available as LV2 audio plugin and JACK client.")
         (string-append "https://gareus.org/misc/x42-plugins/x42-plugins-"
                        version ".tar.xz"))
        (sha256
-        (base32 "128h9x7yzhy6q6l0fqk2zd6l48wgs2lhf2pzbiba6h3n6l9n555b"))))
+        (base32 "1why4mkaxbd0p7qr4jrx3d903wnw2l8gya8v3y32z2vjz31w7jqn"))))
     (build-system gnu-build-system)
     (arguments
      (list

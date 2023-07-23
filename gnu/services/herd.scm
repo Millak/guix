@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016-2019, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
             live-service-canonical-name
 
             with-shepherd-action
+            current-service
             current-services
             unload-services
             unload-service
@@ -208,31 +210,43 @@ of pairs."
   "Return the 'canonical name' of SERVICE."
   (first (live-service-provision service)))
 
-(define (current-services)
-  "Return the list of currently defined Shepherd services, represented as
-<live-service> objects.  Return #f if the list of services could not be
-obtained."
-  (with-shepherd-action 'root ('status) results
-    ;; We get a list of results, one for each service with the name 'root'.
+(define (current-service name)
+  "Return the currently defined Shepherd service NAME, as a <live-service>
+object.  Return #f if the service could not be obtained.  As a special case,
+@code{(current-service 'root)} returns all the current services."
+  (define (process-services services)
+    (resolve-transients
+     (map (lambda (service)
+            (alist-let* service (provides requires running transient?)
+              ;; The Shepherd 0.9.0 would not provide 'transient?' in
+              ;; its status sexp.  Thus, when it's missing, query it
+              ;; via an "eval" request.
+              (live-service provides requires
+                            (if (sloppy-assq 'transient? service)
+                                transient?
+                                (and running *unspecified*))
+                            running)))
+          services)))
+
+  (with-shepherd-action name ('status) results
+    ;; We get a list of results, one for each service with the name NAME.
     ;; In practice there's only one such service though.
     (match results
       ((services _ ...)
        (match services
          ((('service ('version 0 _ ...) _ ...) ...)
-          (resolve-transients
-           (map (lambda (service)
-                  (alist-let* service (provides requires running transient?)
-                    ;; The Shepherd 0.9.0 would not provide 'transient?' in its
-                    ;; status sexp.  Thus, when it's missing, query it via an
-                    ;; "eval" request.
-                    (live-service provides requires
-                                  (if (sloppy-assq 'transient? service)
-                                      transient?
-                                      (and running *unspecified*))
-                                  running)))
-                services)))
+          ;; Summary of all services (when NAME is 'root or 'shepherd).
+          (process-services services))
+         (('service ('version 0 _ ...) _ ...) ;single service
+          (first (process-services (list services))))
          (x
-          #f))))))
+          #f))))))                ;singleton
+
+(define (current-services)
+  "Return the list of currently defined Shepherd services, represented as
+<live-service> objects.  Return #f if the list of services could not be
+obtained."
+  (current-service 'root))
 
 (define (resolve-transients services)
   "Resolve the subset of SERVICES whose 'transient?' field is undefined.  This

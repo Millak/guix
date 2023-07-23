@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +113,28 @@
                      (("run-reverse-sections-self.sh") "")
                      (("run-strip-strmerge.sh") "")
                      (("run-elflint-self.sh") "")))))
+             '())
+         ,@(if (system-hurd?)
+             `((add-after 'unpack 'skip-tests
+                 (lambda _
+                   (substitute* '("tests/elfstrtab.c"
+                                  "tests/emptyfile.c")
+                     (("elf_version \\(EV_CURRENT\\);" all)
+                      "exit (77);"))
+                   (substitute* '("tests/run-all-dwarf-ranges.sh"
+                                  "tests/run-allfcts-multi.sh"
+                                  "tests/run-attr-integrate-skel.sh"
+                                  "tests/run-bug1-test.sh"
+                                  "tests/run-copyadd-sections.sh"
+                                  "tests/run-deleted.sh"
+                                  "tests/run-get-units-split.sh"
+                                  "tests/run-native-test.sh"
+                                  "tests/run-readelf-loc.sh"
+                                  "tests/run-readelf-ranges.sh"
+                                  "tests/run-unit-info.sh"
+                                  "tests/run-varlocs.sh")
+                               (("^#!.*" all)
+                                (string-append all "exit 77;\n"))))))
              '()))))
 
     (native-inputs (list m4))

@@ -158,7 +158,6 @@ know anything about Autoconf or M4.")
         "1fjm21k2na07f3vasf288a0zx66lbv0hd3l9bvv3q8p62s3pg569"))))))
 
 (define-public autoconf-2.64
-  ;; As of GDB 7.8, GDB is still developed using this version of Autoconf.
   (package (inherit autoconf)
     (version "2.64")
     (source

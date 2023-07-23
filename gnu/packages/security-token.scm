@@ -14,12 +14,13 @@
 ;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -80,6 +82,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
@@ -403,12 +406,12 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
     (inputs
      (list gengetopt perl pcsc-lite openssl))
     (native-inputs
-     (list doxygen
+     (list check
+           doxygen
            graphviz
            help2man
-           check
-           texlive-bin
-           pkg-config))
+           pkg-config
+           (texlive-updmap.cfg)))
     (home-page "https://developers.yubico.com/yubico-piv-tool/")
     (synopsis "Interact with the PIV application on a YubiKey")
     (description
@@ -462,7 +465,7 @@ retrieve a YubiKey's serial number, and so forth.")
 (define-public python-pyscard
   (package
     (name "python-pyscard")
-    (version "1.9.9")
+    (version "2.0.7")
     (source (origin
               (method url-fetch)
               ;; The maintainer publishes releases on various sites, but
@@ -472,7 +475,7 @@ retrieve a YubiKey's serial number, and so forth.")
                     version "/pyscard-" version ".tar.gz"))
               (sha256
                (base32
-                "082cjkbxadaz2jb4rbhr0mkrirzlqyqhcf3r823qb0q1k50ybgg6"))))
+                "1gy1hmzrhfa7bqs132v89pchm9q3rpnqf3a6225vwpx7bx959017"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -480,24 +483,21 @@ retrieve a YubiKey's serial number, and so forth.")
          ;; Tell pyscard where to find the PCSC include directory.
          (add-after 'unpack 'patch-platform-include-dirs
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pcsc-include-dir (string-append
-                                      (assoc-ref inputs "pcsc-lite")
-                                      "/include/PCSC")))
+             (let ((pcsc-include-dir (search-input-directory
+                                      inputs "/include/PCSC")))
                (substitute* "setup.py"
                  (("platform_include_dirs = \\[.*?\\]")
                   (string-append
-                   "platform_include_dirs = ['" pcsc-include-dir "']")))
-               #t)))
+                   "platform_include_dirs = ['" pcsc-include-dir "']"))))))
          ;; pyscard wants to dlopen libpcsclite, so tell it where it is.
          (add-after 'unpack 'patch-dlopen
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "smartcard/scard/winscarddll.c"
                (("lib = \"libpcsclite\\.so\\.1\";")
-                (simple-format #f
-                               "lib = \"~a\";"
-                               (search-input-file inputs
-                                                  "/lib/libpcsclite.so.1"))))
-             #t)))))
+                (simple-format
+                 #f
+                 "lib = \"~a\";"
+                 (search-input-file inputs "/lib/libpcsclite.so.1")))))))))
     (inputs
      (list pcsc-lite))
     (native-inputs
@@ -684,7 +684,7 @@ your existing infrastructure.")
 (define-public python-fido2
   (package
     (name "python-fido2")
-    (version "0.9.3")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -693,31 +693,30 @@ your existing infrastructure.")
                 version "/fido2-" version ".tar.gz"))
               (sha256
                (base32
-                "1v366h449f8q74jkmy1291ffj2345nm7cdsipgqvgz4w22k8jpml"))
+                "1hwz0xagkmy6hhcyfl66dxf2vfa69lqqqjrv70vw7harik59bi2x"))
               (snippet
                ;; Remove bundled dependency.
                '(delete-file "fido2/public_suffix_list.dat"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(;; This attempts to access
-       ;; /System/Library/Frameworks/IOKit.framework/IOKit
-       ;; The recommendation is to use tox for testing.
-       #:tests? #false
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'install-public-suffix-list
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-file
-              (search-input-file inputs
-                                 (string-append
-                                  "/share/public-suffix-list-"
-                                  ,(package-version public-suffix-list)
-                                  "/public_suffix_list.dat"))
-              "fido2/public_suffix_list.dat"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-public-suffix-list
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-file
+               (search-input-file inputs
+                                  (string-append
+                                   "/share/public-suffix-list-"
+                                   #$(package-version public-suffix-list)
+                                   "/public_suffix_list.dat"))
+               "fido2/public_suffix_list.dat"))))))
     (propagated-inputs
-     (list python-cryptography python-six))
+     (list python-cryptography python-pyscard))
     (native-inputs
-     (list python-mock python-pyfakefs public-suffix-list))
+     (list python-poetry-core
+           python-pytest
+           public-suffix-list))
     (home-page "https://github.com/Yubico/python-fido2")
     (synopsis "Python library for communicating with FIDO devices over USB")
     (description
@@ -739,33 +738,31 @@ implementing a Relying Party.")
 (define-public python-yubikey-manager
   (package
     (name "python-yubikey-manager")
-    (version "4.0.7")
+    (version "5.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://developers.yubico.com/yubikey-manager/Releases"
-                    "/yubikey-manager-" version ".tar.gz"))
+                    "/yubikey_manager-" version ".tar.gz"))
               (sha256
                (base32
-                "0kzwal7i4kyywm4f5zh8b823mh0ih2nsh5c0c4dfn4vw3j5dnwlr"))))
-    (build-system python-build-system)
-    (arguments
-     '(;; This attempts to access
-       ;; /System/Library/Frameworks/IOKit.framework/IOKit
-       ;; The recommendation is to use tox for testing.
-       #:tests? #false))
+                "1kma08rxvpzn2gf8b9vxyyb2pvrakm7hhpdmbnb54nwbdnbxp1v4"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-six
-           python-pyscard
-           python-pyusb
-           python-click
+     (list python-click
            python-cryptography
+           python-fido2
+           python-keyring
            python-pyopenssl
-           python-fido2))
+           python-pyscard
+           python-pyusb))
     (inputs
      (list pcsc-lite))
     (native-inputs
-     (list swig python-mock))
+     (list python-makefun
+           python-poetry-core
+           python-pytest
+           swig))
     (home-page "https://developers.yubico.com/yubikey-manager/")
     (synopsis "Command line tool and library for configuring a YubiKey")
     (description

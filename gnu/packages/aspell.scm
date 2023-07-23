@@ -329,7 +329,7 @@ dictionaries, including personal ones.")
 
 (define-public aspell-dict-nb
   (aspell-dictionary "nb" "Norwegian Bokmål"
-                     #:version "0.50.1-2"
+                     #:version "0.50-2"
                      #:prefix "aspell-"
                      #:sha256
                      (base32

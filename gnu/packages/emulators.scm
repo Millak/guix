@@ -116,14 +116,14 @@
 (define-public vice
   (package
     (name "vice")
-    (version "3.6")
+    (version "3.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/vice-emu/releases/"
                            "vice-" version ".tar.gz"))
        (sha256
-        (base32 "1zfkl9j40v2417l1fmczdvl9yzh81jlpcy5cl2svjzb2rrffbgv5"))))
+        (base32 "165b1ixrarcqy1rl06yhaf46ni3j8lrbn8f3zf5nkc2d0bk12f3y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-html-docs"

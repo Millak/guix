@@ -310,7 +310,7 @@ Counterpane's Passwordsafe.")
 (define-public otpclient
   (package
     (name "otpclient")
-    (version "3.1.7")
+    (version "3.1.9")
     (source
      (origin
        (method git-fetch)
@@ -319,7 +319,7 @@ Counterpane's Passwordsafe.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cwn4spddhg099hcqcvzgbws3xpmnd29g1vayk36118x94wmajaf"))))
+        (base32 "0n5h76zwchdp3nbiczcfcg9sr0hbfs1npwq26x78rz8jf6md898m"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -435,19 +435,19 @@ convert SSH @code{ed25519} keys to @code{age} keys.")
 (define-public yapet
   (package
     (name "yapet")
-    (version "2.5")
+    (version "2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://yapet.guengel.ch/downloads/yapet-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0hpibsdry259cmvps35isr6jn9cd9fsk3r1h0ppjx9zxfrpqwldg"))))
+        (base32 "00k38n5vlxl73m11pp1v50fqf702lv86hzwgj0qca6qxqz4i3jjl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list (string-append "--docdir=" (assoc-ref %outputs "out")
-                            "/share/doc",name "-" ,version))))
+                            "/share/doc/" ,name "-" ,version))))
     (inputs
      (list argon2 ncurses openssl))
     (native-inputs
@@ -534,21 +534,21 @@ random passwords that pass the checks.")
 (define-public passwdqc
   (package
     (name "passwdqc")
-    (version "2.0.2")
+    (version "2.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.openwall.com/passwdqc/passwdqc"
                                   "-" version ".tar.gz"))
               (sha256
                (base32
-                "1aq40v5094bhnj86v4i2nmqkybmzzp20q7jb92jgc860cibm07zz"))))
+                "1x4c92b3i5wmxh2111lynyndalpkryvan4wybqchd7rn96yg9c2k"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no tests provided
+      #:tests? #f                       ; no tests provided
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "DESTDIR=" #$output)
+              (string-append "DESTDIR=" #$output) ; no $prefix support
               "BINDIR=/bin"
               "DEVEL_LIBDIR=/lib"
               "SHARED_LIBDIR_REL=."
@@ -959,7 +959,7 @@ using password-store through rofi interface:
 (define-public tessen
   (package
     (name "tessen")
-    (version "2.1.2")
+    (version "2.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -968,7 +968,7 @@ using password-store through rofi interface:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01jaxakq847k3v2wid8fzhcmq8mraxz0q1j87s1jv75l1gy4qiij"))))
+                "0v0mkdwwxpy23fm5dqspp9c77b5ifcj7fsi8xhjrkrv1vqwmh67j"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests?
@@ -985,15 +985,15 @@ using password-store through rofi interface:
                      (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
                (delete 'configure)) ;no configure script
            #:make-flags
-           #~(list (string-append "PREFIX="
-                                  #$output))))
+           #~(list (string-append "DESTDIR=" #$output)
+                   "PREFIX=''")))
     (native-inputs (list scdoc))
     (inputs (list libnotify wl-clipboard wtype xdg-utils))
     (home-page "https://github.com/ayushnix/tessen")
     (synopsis "Frontend for password-store and gopass")
     (description "Tessen is a bash script that can autotype and copy data
 from password-store and gopass files.")
-    (license license:gpl2+)))
+    (license license:gpl2)))
 
 (define-public browserpass-native
   (package
@@ -1443,7 +1443,7 @@ group them into chains.")
 (define-public hydra
   (package
     (name "hydra")
-    (version "9.4")
+    (version "9.5")
     (home-page "https://github.com/vanhauser-thc/thc-hydra")
     (source (origin
               (method git-fetch)
@@ -1453,7 +1453,7 @@ group them into chains.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dbx7yaqf4nl63pi8wmr19cxnp5v4w7fsd369krdy8hlc8k0qjgr"))))
+                "0pg4alaznygngdzn4k6p540g059w7mpiakchsp0526f1b9s33lw1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ;no test suite

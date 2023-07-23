@@ -451,7 +451,7 @@ operating on batches.")
 (define-public google-highway
   (package
     (name "google-highway")
-    (version "1.0.3")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -460,7 +460,7 @@ operating on batches.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1828rz9w9sr3zlyg25b6nm7j5j5m0xnic7hy36gpsbxvq358ibpf"))))
+        (base32 "01ig4iqicm57nycl9q8mx1b22gvl4wj5j1vfp1jczhmrga4bca8v"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
@@ -677,7 +677,7 @@ intuitive syntax and trivial integration.")
 (define-public xtl
   (package
     (name "xtl")
-    (version "0.7.4")
+    (version "0.7.5")
     (source (origin
               (method git-fetch)
               (uri
@@ -686,19 +686,20 @@ intuitive syntax and trivial integration.")
                 (commit version)))
               (sha256
                (base32
-                "134pgvmf9cx5dxs0m0m3qhp3m3r1gl86ic3xax21zc4sdj8sdq46"))
+                "1llfy6pkzqx2va74h9xafjylyvw6839a843mqc05n6x6wll5bkam"))
               (file-name (git-file-name name version))))
     (native-inputs
      (list doctest googletest nlohmann-json))
     (arguments
-     '(#:configure-flags
-       '("-DBUILD_TESTS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* _
-             (with-directory-excursion "test"
-               (invoke "./test_xtl")))))))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (with-directory-excursion "test"
+                (invoke "./test_xtl")))))))
     (home-page "https://github.com/QuantStack/xtl")
     (build-system cmake-build-system)
     (synopsis "C++ template library providing some basic tools")

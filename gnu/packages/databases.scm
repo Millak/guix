@@ -2420,14 +2420,14 @@ similar to BerkeleyDB, LevelDB, etc.")
 (define-public redis
   (package
     (name "redis")
-    (version "7.0.9")
+    (version "7.0.12")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://download.redis.io/releases/redis-"
+              (uri (string-append "https://download.redis.io/releases/redis-"
                                   version".tar.gz"))
               (sha256
                (base32
-                "0rczzcy2mwy6hjdgg10l9lr4vavh8jrs7zlb0ba534bwlk13awgp"))
+                "1dwayif99cipf0xs26zipbnj800px31pbsxz747bzclb4xdkvn4x"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled jemalloc, as the package will use the libc one
@@ -2435,7 +2435,7 @@ similar to BerkeleyDB, LevelDB, etc.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags #~(list #$(string-append "CC=" (cc-for-target))
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                            "MALLOC=libc"
                            "LDFLAGS=-ldl"
                            (string-append "PREFIX=" #$output))
@@ -2452,7 +2452,7 @@ similar to BerkeleyDB, LevelDB, etc.")
                  (which "env")))))
           (add-after 'unpack 'adjust-tests
             (lambda _
-              ;; Disable failing tests
+              ;; Disable failing tests.
               (substitute* "tests/test_helper.tcl"
                 ;; The AOF tests cause the test suite to hang waiting for a
                 ;; "background AOF rewrite to finish", perhaps because dead
@@ -3321,83 +3321,85 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.9")
+    (version "7.2.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "145s4lqixdxa3j0lp9lgzbb664zzy1imw04hmgia5y5679i8r0xy"))
+        (base32 "03vznas39valis02zk0hnli7x5asiam4rxzqhr58agzkdyb0lay0"))
        (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
        (modules '((guix build utils)))
        ;; This snippet removes pre-built Java archives.
        (snippet
-        '(for-each delete-file-recursively
-                   (list "binsrc/hibernate"
-                         "binsrc/jena"
-                         "binsrc/jena2"
-                         "binsrc/jena3"
-                         "binsrc/jena4"
-                         "binsrc/rdf4j"
-                         "binsrc/sesame"
-                         "binsrc/sesame2"
-                         "binsrc/sesame3"
-                         "binsrc/sesame4"
-                         "libsrc/JDBCDriverType4")))))
+        #~(for-each delete-file-recursively
+                    (list "binsrc/hibernate"
+                          "binsrc/jena"
+                          "binsrc/jena2"
+                          "binsrc/jena3"
+                          "binsrc/jena4"
+                          "binsrc/rdf4j"
+                          "binsrc/sesame"
+                          "binsrc/sesame2"
+                          "binsrc/sesame3"
+                          "binsrc/sesame4"
+                          "libsrc/JDBCDriverType4")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; Tests require a network connection.
-       ;; TODO: Removing the libsrc/zlib source directory breaks the build.
-       ;; This indicates that the internal zlib code may still be used.
-       #:configure-flags '("--without-internal-zlib"
-                           "--with-readline"
-                           "--enable-static=no")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda _
-             (invoke "sh" "autogen.sh")))
-         (add-after 'unpack 'avoid-embedding-kernel-and-timestamps
-           ;; For a reproducible build, avoid embedding the kernel version and
-           ;; timestamps.
-           (lambda _
-             (substitute*
-                 (list "bin/makever"
-                       "appsrc/ODS-Polls/make_vad.sh"
-                       "appsrc/ODS-Blog/make_vad.sh"
-                       "appsrc/ODS-Community/make_vad.sh"
-                       "appsrc/ODS-Framework/make_vad.sh"
-                       "appsrc/ODS-Framework/oauth/make_vad.sh"
-                       "appsrc/ODS-WebMail/make_vad.sh"
-                       "appsrc/ODS-Calendar/make_vad.sh"
-                       "appsrc/ODS-Gallery/make_vad.sh"
-                       "appsrc/ODS-Briefcase/make_vad.sh"
-                       "appsrc/ODS-FeedManager/make_vad.sh"
-                       "appsrc/ODS-Bookmark/make_vad.sh"
-                       "appsrc/ODS-Addressbook/make_vad.sh"
-                       "binsrc/dbpedia/make_vad.sh"
-                       "binsrc/samples/demo/make_vad.sh"
-                       "binsrc/samples/demo/mkdoc.sh"
-                       "binsrc/samples/sparql_demo/make_vad.sh"
-                       "binsrc/bpel/make_vad.sh"
-                       "binsrc/fct/make_vad.sh"
-                       "binsrc/rdf_mappers/make_vad.sh"
-                       "binsrc/isparql/make_vad.sh"
-                       "binsrc/conductor/mkvad.sh")
-               (("^UNAME_SYSTEM=.*") "UNAME_SYSTEM=unknown\n")
-               (("^UNAME_RELEASE=.*") "UNAME_RELEASE=unknown\n")
-               (("^PACKDATE=.*") "PACKDATE=2012-04-18\n")
-               (("^DATE=.*") "DATE=2012-04-18\n"))))
-         ;; Even with "--enable-static=no", "libvirtuoso-t.a" is left in
-         ;; the build output.  The following phase removes it.
-         (add-after 'install 'remove-static-libs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
-               (for-each (lambda (file)
-                           (delete-file (string-append lib "/" file)))
-                         '("libvirtuoso-t.a"
-                           "libvirtuoso-t.la"))))))))
+     (list
+      #:tests? #f                       ; tests require a network connection
+      ;; TODO: Removing the libsrc/zlib source directory breaks the build.
+      ;; This indicates that the internal zlib code may still be used.
+      #:configure-flags
+      #~(list "--without-internal-zlib"
+              "--with-readline"
+              "--enable-static=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _
+              (invoke "sh" "autogen.sh")))
+          (add-after 'unpack 'avoid-embedding-kernel-and-timestamps
+            ;; For a reproducible build, avoid embedding the kernel version and
+            ;; timestamps.
+            (lambda _
+              (substitute*
+                  (list "bin/makever"
+                        "appsrc/ODS-Polls/make_vad.sh"
+                        "appsrc/ODS-Blog/make_vad.sh"
+                        "appsrc/ODS-Community/make_vad.sh"
+                        "appsrc/ODS-Framework/make_vad.sh"
+                        "appsrc/ODS-Framework/oauth/make_vad.sh"
+                        "appsrc/ODS-WebMail/make_vad.sh"
+                        "appsrc/ODS-Calendar/make_vad.sh"
+                        "appsrc/ODS-Gallery/make_vad.sh"
+                        "appsrc/ODS-Briefcase/make_vad.sh"
+                        "appsrc/ODS-FeedManager/make_vad.sh"
+                        "appsrc/ODS-Bookmark/make_vad.sh"
+                        "appsrc/ODS-Addressbook/make_vad.sh"
+                        "binsrc/dbpedia/make_vad.sh"
+                        "binsrc/samples/demo/make_vad.sh"
+                        "binsrc/samples/demo/mkdoc.sh"
+                        "binsrc/samples/sparql_demo/make_vad.sh"
+                        "binsrc/bpel/make_vad.sh"
+                        "binsrc/fct/make_vad.sh"
+                        "binsrc/rdf_mappers/make_vad.sh"
+                        "binsrc/isparql/make_vad.sh"
+                        "binsrc/conductor/mkvad.sh")
+                (("^UNAME_SYSTEM=.*") "UNAME_SYSTEM=unknown\n")
+                (("^UNAME_RELEASE=.*") "UNAME_RELEASE=unknown\n")
+                (("^PACKDATE=.*") "PACKDATE=2012-04-18\n")
+                (("^DATE=.*") "DATE=2012-04-18\n"))))
+          ;; Even with "--enable-static=no", "libvirtuoso-t.a" is left in
+          ;; the build output.  The following phase removes it.
+          (add-after 'install 'remove-static-libs
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (delete-file (string-append #$output "/lib/" file)))
+               '("libvirtuoso-t.a"
+                 "libvirtuoso-t.la")))))))
     (native-inputs
      (list autoconf automake bison flex gperf libtool))
     (inputs

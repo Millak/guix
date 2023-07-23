@@ -296,7 +296,7 @@ Example file names:
 
 @code{emacs-dired-hacks} has @code{dired-avfs} module which enables seamless
 integration with @code{avfs}.")
-    (home-page "http://avf.sourceforge.net/")
+    (home-page "https://avf.sourceforge.net")
     (license license:gpl2+)))
 
 (define-public davfs2
@@ -574,8 +574,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "46a6b9210c927ab46fd1227cb6f641be0b4a7505")
-        (revision "16"))
+  (let ((commit "c8bec83e307f28751c433ba1d3f648429fb5a34c")
+        (revision "17"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -587,7 +587,7 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0jblpwz8mxrx0pa2gc5bwj60qjj2c0zmd8r06f2bhgzs75avpkj3"))))
+          (base32 "0b1avy5mw3r3ppfs3n9cq4zb74yl45nd5l69r6hi27z9q5bc3nv8"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
@@ -596,45 +596,39 @@ from a mounted file system.")
                      "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
                      (string-append "CC=" #$(cc-for-target))
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                     (string-append "PYTEST_CMD="
-                                    #$(this-package-native-input "python-pytest")
-                                    "/bin/pytest")
-                     (string-append "PYTEST_ARGS=-k '"
-                                    ;; These fail (‘invalid argument’) on
-                                    ;; kernels with a previous bcachefs version.
-                                    "not test_format and "
-                                    "not test_fsck and "
-                                    "not test_list and "
-                                    "not test_list_inodes and "
-                                    "not test_list_dirent"
-                                    "'"))
+                     ;; ‘This will be less of an option in the future, as more
+                     ;; code gets rewritten in Rust.’
+                     "NO_RUST=better")
              #:phases
              #~(modify-phases %standard-phases
                  (delete 'configure)    ; no configure script
-                 (add-after 'install 'promote-mount.bcachefs.sh
-                   ;; XXX The (optional) ‘mount.bcachefs’ requires rust:cargo.
-                   ;; This shell alternative does the job well enough for now.
-                   (lambda _
-                     (with-directory-excursion (string-append #$output "/sbin")
-                       (rename-file "mount.bcachefs.sh" "mount.bcachefs")
-                       ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
-                       (wrap-program "mount.bcachefs"
-                         `("PATH" ":" prefix
-                           ,(list (string-append #$output            "/sbin")
-                                  (string-append #$coreutils-minimal "/bin")
-                                  (string-append #$gawk              "/bin")
-                                  (string-append #$util-linux        "/bin"))))))))))
+                 (replace 'check
+                   ;; The test suite is moribund upstream (‘never been useful’),
+                   ;; but let's keep running it as a sanity check until then.
+                   (lambda* (#:key tests? make-flags #:allow-other-keys)
+                     (when tests?
+                       ;; We must manually build the test_helper first.
+                       (apply invoke "make" "tests" make-flags)
+                       (invoke (string-append
+                                #$(this-package-native-input "python-pytest")
+                                "/bin/pytest") "-k"
+                                ;; These fail (‘invalid argument’) on kernels
+                                ;; with a previous bcachefs version.
+                                (string-append "not test_format and "
+                                               "not test_fsck and "
+                                               "not test_list and "
+                                               "not test_list_inodes and "
+                                               "not test_list_dirent"))))))))
       (native-inputs
-       (append
-         (list pkg-config
-               ;; For tests.
-               python-pytest)
-         (if (member (%current-system) (package-supported-systems valgrind))
-           (list valgrind)
-           '())
-         ;; For generating documentation with rst2man.
-         (list python
-               python-docutils)))
+       (cons* pkg-config
+              ;; For generating documentation with rst2man.
+              python
+              python-docutils
+              ;; For tests.
+              python-pytest
+              (if (member (%current-system) (package-supported-systems valgrind))
+                  (list valgrind)
+                  '())))
       (inputs
        (list eudev
              keyutils
@@ -1213,8 +1207,8 @@ APFS.")
 
 (define-public xfstests
   ;; The last release (1.1.0) is from 2011.
-  (let ((revision "1")
-        (commit "bae1d15f6421cbe99b3e2e134c39d50248e7c261"))
+  (let ((revision "2")
+        (commit "87f90a2dae7a4adb7a0a314e27abae9aa1de78fb"))
     (package
       (name "xfstests")
       (version (git-version "1.1.0" revision commit))
@@ -1226,7 +1220,7 @@ APFS.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "01y7dx5sx1xg3dycqlp2b6azclz3xcnx7vdy2rr6zmf210501xd9"))))
+          (base32 "11p690k7h4f00bd14r60xa8sw34x14bh5rfd6x7j8gbkpsgsidli"))))
       (build-system gnu-build-system)
       (arguments
        `(#:phases
@@ -1698,13 +1692,13 @@ compatible directories.")
 (define-public python-dropbox
   (package
     (name "python-dropbox")
-    (version "11.36.0")
+    (version "11.36.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dropbox" version))
         (sha256
-         (base32 "0iwbi1qdw9qr7isa37yys582am59k80dqrwvm6s0afdwv0ifa343"))
+         (base32 "00650gk8557x3f38nd8a1mdby7v1l8l4l72aq48qpiw6shb3v3fl"))
         (snippet
          '(begin
             (use-modules (guix build utils))

@@ -1553,6 +1553,15 @@ blacklisted.certs.pem"
                (base32
                 "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk17)
+       ((#:configure-flags configure-flags)
+        #~(append #$configure-flags
+                  (list "--with-jvm-features=shenandoahgc"
+                        "--enable-cds=yes"
+                        "--with-vendor-name=JetBrains s.r.o"
+                        "--with-vendor-url=https://www.jetbrains.com/"
+                        "--with-vendor-bug-url=https://youtrack.jetbrains.com/issues/JBR")))))
     (synopsis "JetBrains Java Runtime")
     (description "This package provides a Java runtime environment for
 and Java development kit.  It supports enhanced class redefinition (DCEVM),

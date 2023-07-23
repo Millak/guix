@@ -120,8 +120,8 @@ exception."
               (let ((s (platform-system platform)))
                 (and (string? s) (string=? s system))))
             (platforms))
-      (raise-exception (condition (&platform-not-found-error
-                                   (target-or-system system))))))
+      (raise (condition (&platform-not-found-error
+                         (target-or-system system))))))
 
 (define (lookup-platform-by-target target)
   "Return the platform corresponding to the given TARGET.  Raise
@@ -130,16 +130,16 @@ exception."
               (let ((t (platform-target platform)))
                 (and (string? t) (string=? t target))))
             (platforms))
-      (raise-exception (condition (&platform-not-found-error
-                                   (target-or-system target))))))
+      (raise (condition (&platform-not-found-error
+                         (target-or-system target))))))
 
 (define (lookup-platform-by-target-or-system target-or-system)
   "Return the platform corresponding to the given TARGET or SYSTEM.  Raise
 &PLATFORM-NOT-FOUND-ERROR when no platform could be found."
   (or (false-if-platform-not-found (lookup-platform-by-target target-or-system))
       (false-if-platform-not-found (lookup-platform-by-system target-or-system))
-      (raise-exception (condition (&platform-not-found-error
-                                   (target-or-system target-or-system))))))
+      (raise (condition (&platform-not-found-error
+                         (target-or-system target-or-system))))))
 
 (define (platform-system->target system)
   "Return the target matching the given SYSTEM if it exists or false

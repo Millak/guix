@@ -10,7 +10,7 @@
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -136,6 +136,19 @@ using the CMake build system.")
     ;; This test fails for unknown reason.
     "RunCMake.file-GET_RUNTIME_DEPENDENCIES"))
 
+(define %common-disabled-tests/hurd
+  '("CTestTestTimeout"
+    "CTestTestRerunFailed"
+    "RunCMake.CompilerChange"
+    "RunCMake.ctest_test"
+    "RunCMake.file"
+    "RunCMake.BundleUtilities"
+    "RunCMake.configure_file"
+    "RunCMake.CTestTimeout"
+    "RunCMake.CTestTimeoutAfterMatch"
+    "RunCMake.CommandLine"
+    "RunCMake.CTestCommandLine"))
+
 (define %preserved-third-party-files
   '(;; 'Source/cm_getdate.c' includes archive_getdate.c wholesale, so it must
     ;; be available along with the required headers.
@@ -190,7 +203,10 @@ using the CMake build system.")
                      "CTestTestSubdir" ; This test fails to build 2 of the 3 tests.
                      ;; This test fails when ARGS (below) is in use, see
                      ;; <https://gitlab.kitware.com/cmake/cmake/issues/17165>.
-                     "CTestCoverageCollectGCOV")))
+                     "CTestCoverageCollectGCOV"
+                     #$@(if (target-hurd?)
+                            %common-disabled-tests/hurd
+                            #~()))))
           (list
            (string-append
             ;; These arguments apply for the tests only.
@@ -210,20 +226,17 @@ using the CMake build system.")
           ;; CMake uses its own configure script.
           (replace 'configure
             (lambda* (#:key (configure-flags '()) #:allow-other-keys)
-              (apply invoke "./configure" configure-flags))))))
+              (apply invoke "./configure" configure-flags)))
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'patch-hurd
+                      (lambda _
+                        ;; Version 3.25.0 has a similar fix.
+                        (substitute* "Utilities/cmlibuv/src/unix/udp.c"
+                          (("!defined\\(__QNX__\\)")
+                           "!defined(__GNU__)")))))
+                 #~()))))
     (inputs
-     (append
-      (if (target-hurd?)
-          '()
-          (list libuv))                 ;not supported on the Hurd
-      (list bzip2
-            curl
-            expat
-            file
-            jsoncpp
-            libarchive
-            rhash
-            zlib)))
+     (list libuv bzip2 curl expat file jsoncpp libarchive rhash zlib))
     (native-search-paths
      (list (search-path-specification
             (variable "CMAKE_PREFIX_PATH")
@@ -311,7 +324,10 @@ and workspaces that can be used in the compiler environment of your choice.")
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
               (let ((skipped-tests (list #$@%common-disabled-tests
                                          ;; This test requires the bundled libuv.
-                                         "BootstrapTest")))
+                                         "BootstrapTest"
+                                         #$@(if (system-hurd?)
+                                                %common-disabled-tests/hurd
+                                                #~()))))
                 (if tests?
                     (begin
                       (invoke "ctest" "-j" (if parallel-tests?

@@ -266,13 +266,13 @@ listed in REFS."
       p))
 
 
-(define (standard-packages)
+(define* (standard-packages #:optional (system (%current-system)))
   "Return the list of (NAME PACKAGE OUTPUT) or (NAME PACKAGE) tuples of
 standard packages used as implicit inputs of the GNU build system."
 
   ;; Resolve (gnu packages commencement) lazily to hide circular dependency.
   (let ((distro (resolve-module '(gnu packages commencement))))
-    (module-ref distro '%final-inputs)))
+    ((module-ref distro '%final-inputs) system)))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs target
@@ -303,7 +303,7 @@ standard packages used as implicit inputs of the GNU build system."
                           (standard-cross-packages target 'host)
                           '())
                     ,@(if implicit-inputs?
-                          (standard-packages)
+                          (standard-packages system)
                           '())))
     (host-inputs (if target inputs '()))
 

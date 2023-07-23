@@ -1377,8 +1377,7 @@ libpanel, librsvg and quartz.")
      `(("ocaml" ,ocaml-4.09)
        ;; For documentation
        ("ghostscript" ,ghostscript)
-       ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-fonts-ec texlive-dvips-l3backend)))
+       ("texlive" ,(texlive-updmap.cfg))
        ("hevea" ,hevea)
        ("lynx" ,lynx)
        ("which" ,which)))
@@ -10239,24 +10238,30 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
     (name "ocaml-bibtex2html")
     (version "1.99")
     (source
-      (origin
-        (method url-fetch)
-        (uri "https://www.lri.fr/~filliatr/ftp/bibtex2html/bibtex2html-1.99.tar.gz")
-        (sha256 (base32 "07gzrs4lfrkvbn48cgn2gn6c7cx3jsanakkrb2irj0gmjzfxl96j"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.lri.fr/~filliatr/ftp/bibtex2html/"
+                           "bibtex2html-"  version ".tar.gz"))
+       (sha256
+        (base32
+         "07gzrs4lfrkvbn48cgn2gn6c7cx3jsanakkrb2irj0gmjzfxl96j"))))
     (build-system ocaml-build-system)
     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-/bin/sh
             (lambda _
               (substitute* "configure" (("/bin/sh") (which "bash")))
-              (setenv "HOME" (getcwd)) ;; mktexfmt needs writable home directory
-              #t)))))
+              ;; mktexfmt needs writable home directory.
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("which" ,which)
-       ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-fonts-ec texlive-preprint
-                          texlive-hyperref texlive-bibtex)))))
+     (list (texlive-updmap.cfg
+            (list texlive-infwarerr
+                  texlive-kvoptions
+                  texlive-pdftexcmds
+                  texlive-preprint))
+           which))
     (propagated-inputs
      (list hevea))
     (home-page "https://www.lri.fr/~filliatr/bibtex2html/")

@@ -12,7 +12,7 @@
 ;;; Copyright © 2019 Meiyo Peng <meiyo.peng@gmail.com>
 ;;; Copyright © 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -416,6 +416,13 @@ written by Paul Haahr and Byron Rakitzis.")
                           (("CC_FOR_GETHOST=\"cc\"")
                            "CC_FOR_GETHOST=\"gcc\"")))))
                  #~())
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'skip-tests
+                      (lambda _
+                        (substitute* "tests/testsuite.at"
+                          (("m4_include\\(\\[subst.at\\]\\)" all)
+                           (string-append "# " all))))))
+                 #~())
           (add-before 'check 'patch-test-scripts
             (lambda _
               ;; Take care of pwd
@@ -460,7 +467,7 @@ history mechanism, job control and a C-like syntax.")
 (define-public zsh
   (package
     (name "zsh")
-    (version "5.8.1")
+    (version "5.9")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -471,7 +478,7 @@ history mechanism, job control and a C-like syntax.")
                            ".tar.xz")))
               (sha256
                (base32
-                "06crvpqbpm8sq5c215f4b985z7npwnqnj0i0g53hnq6fp8h3b5xn"))
+                "1mdc8lnq8qxq1ahxp8610n799pd7a9kqg3liy7xq2pjvvp71x3cv"))
               (patches (search-patches "zsh-egrep-failing-test.patch"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags

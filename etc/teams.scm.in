@@ -542,7 +542,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
   r core mentors tex)
 
 (define-member (person "Christopher Baines"
-                       "mail@cbaines.net")
+                       "guix@cbaines.net")
   core mentors ruby)
 
 (define-member (person "Andrew Tropin"

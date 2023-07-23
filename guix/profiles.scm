@@ -1789,17 +1789,16 @@ MANIFEST."
            '()))))
   (define texlive-inputs
     (append-map entry->texlive-input (manifest-entries manifest)))
-  (define texlive-bin
-    (module-ref (resolve-interface '(gnu packages tex)) 'texlive-bin))
+  (define texlive-scripts
+    (module-ref (resolve-interface '(gnu packages tex)) 'texlive-scripts))
+  (define texlive-libkpathsea
+    (module-ref (resolve-interface '(gnu packages tex)) 'texlive-libkpathsea))
   (define coreutils
     (module-ref (resolve-interface '(gnu packages base)) 'coreutils))
   (define grep
     (module-ref (resolve-interface '(gnu packages base)) 'grep))
   (define sed
     (module-ref (resolve-interface '(gnu packages base)) 'sed))
-  (define updmap.cfg
-    (module-ref (resolve-interface '(gnu packages tex))
-                'texlive-default-updmap.cfg))
   (define build
     (with-imported-modules '((guix build utils)
                              (guix build union))
@@ -1816,26 +1815,29 @@ MANIFEST."
                        #:create-all-directories? #t
                        #:log-port (%make-void-port "w"))
 
-          ;; XXX: This is annoying, but it's necessary because texlive-bin
-          ;; does not provide wrapped executables.
+          ;; XXX: This is annoying, but it's necessary because
+          ;; texlive-libkpathsea does not provide wrapped executables.
           (setenv "PATH"
                   (string-append #$(file-append coreutils "/bin")
                                  ":"
                                  #$(file-append grep "/bin")
                                  ":"
-                                 #$(file-append sed "/bin")))
-          (setenv "PERL5LIB" #$(file-append texlive-bin "/share/tlpkg"))
+                                 #$(file-append sed "/bin")
+                                 ":"
+                                 #$(file-append texlive-libkpathsea "/bin")))
+          (setenv "PERL5LIB" #$(file-append texlive-scripts "/share/tlpkg"))
           (setenv "GUIX_TEXMF" "/tmp/texlive/share/texmf-dist")
 
           ;; Remove invalid maps from config file.
           (let* ((web2c (string-append #$output "/share/texmf-dist/web2c/"))
                  (maproot (string-append #$output "/share/texmf-dist/fonts/map/"))
                  (updmap.cfg (string-append web2c "updmap.cfg")))
-            (mkdir-p web2c)
-            (copy-file #$updmap.cfg updmap.cfg)
+            (install-file #$(file-append texlive-scripts
+                                         "/share/texmf-dist/web2c/updmap.cfg")
+                          web2c)
             (make-file-writable updmap.cfg)
             (let* ((port (open-pipe* OPEN_WRITE
-                                     #$(file-append texlive-bin "/bin/updmap-sys")
+                                     #$(file-append texlive-scripts "/bin/updmap-sys")
                                      "--syncwithtrees"
                                      "--nohash"
                                      "--force"
@@ -1845,7 +1847,7 @@ MANIFEST."
                 (error "failed to filter updmap.cfg")))
 
             ;; Generate font maps.
-            (invoke #$(file-append texlive-bin "/bin/updmap-sys")
+            (invoke #$(file-append texlive-scripts "/bin/updmap-sys")
                     (string-append "--cnffile=" updmap.cfg)
                     (string-append "--dvipdfmxoutputdir="
                                    maproot "dvipdfmx/updmap")
@@ -1863,13 +1865,15 @@ MANIFEST."
             ;; to /tmp and run mktexlsr only once.
             (let ((a (string-append #$output "/share/texmf-dist"))
                   (b "/tmp/texlive/share/texmf-dist")
-                  (mktexlsr #$(file-append texlive-bin "/bin/mktexlsr")))
+                  (mktexlsr #$(file-append texlive-scripts "/bin/mktexlsr")))
+              ;; Ignore original "updmap.cfg" from texlive-scripts input.
+              (delete-file "/tmp/texlive/share/texmf-dist/web2c/updmap.cfg")
               (copy-recursively a b)
               (invoke mktexlsr b)
               (install-file (string-append b "/ls-R") a))))))
 
-  (mlet %store-monad ((texlive-base (manifest-lookup-package manifest "texlive-base")))
-    (if (and texlive-base (pair? texlive-inputs))
+  (with-monad %store-monad
+    (if (pair? texlive-inputs)
         (gexp->derivation "texlive-font-maps" build
                           #:substitutable? #f
                           #:local-build? #t

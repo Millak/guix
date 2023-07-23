@@ -457,7 +457,7 @@ data types.")
                 (format #f "TESTOPTS=-j~d" (parallel-job-count))
                 ;; test_mmap fails on low-memory systems
                 " --exclude test_mmap test_socket"
-                ,@(if (target-hurd?)
+                ,@(if (system-hurd?)
                       '(" test_posix"      ;multiple errors
                         " test_time"
                         " test_pty"
@@ -487,12 +487,33 @@ data types.")
                         " test_open_unix_connection"
                         " test_open_unix_connection_error"
                         " test_read_pty_output"
-                        " test_write_pty")
+                        " test_write_pty"
+                        " test_concurrent_futures" ;freeze
+                        " test_venv"       ;freeze
+                        " test_multiprocessing_forkserver" ;runs over 10min
+                        " test_multiprocessing_spawn" ;runs over 10min
+                        " test_builtin"
+                        " test_capi"
+                        " test_dbm_ndbm"
+                        " test_exceptions"
+                        " test_faulthandler"
+                        " test_getopt"
+                        " test_importlib"
+                        " test_json"
+                        " test_multiprocessing_fork"
+                        " test_multiprocessing_main_handling"
+                        " test_pdb "
+                        " test_regrtest"
+                        " test_sqlite")
                       '()))))
        ((#:phases phases)
         `(modify-phases ,phases
            ,@(if (system-hurd?)
-                 `((delete 'patch-regen-for-hurd)) ;regen was removed after 3.5.9
+                 `((delete 'patch-regen-for-hurd)  ;regen was removed after 3.5.9
+                   (add-after 'unpack 'disable-multi-processing
+                     (lambda _
+                       (substitute* "Makefile.pre.in"
+                         (("-j0") "-j1")))))
                  '())
            (add-after 'unpack 'remove-windows-binaries
              (lambda _

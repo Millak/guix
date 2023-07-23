@@ -1279,41 +1279,46 @@ libraries designed for computer vision research and implementation.")
         (base32 "0bs63mk4q8jmx38f031jy5w5n9yy5ng9x8ijwinvjyvas8cichqi"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f            ; tests require network access and external data
-       #:configure-flags
-       '("-DITK_USE_GPU=ON"
-         "-DITK_USE_SYSTEM_LIBRARIES=ON"
-         "-DITK_USE_SYSTEM_GOOGLETEST=ON"
-         "-DITK_BUILD_SHARED=ON"
-         ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
-         ;; variable in the installed CMake files.  This is necessary as other
-         ;; packages using insight-toolkit could not be configured otherwise.
-         "-DGTEST_ROOT=gtest")
+     (list #:tests? #f ; tests require network access and external data
+           #:configure-flags #~'("-DITK_USE_GPU=ON"
+                                 "-DITK_USE_SYSTEM_LIBRARIES=ON"
+                                 "-DITK_USE_SYSTEM_GOOGLETEST=ON"
+                                 "-DITK_BUILD_SHARED=ON"
+                                 ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
+                                 ;; variable in the installed CMake files.  This is necessary as other
+                                 ;; packages using insight-toolkit could not be configured otherwise.
+                                 "-DGTEST_ROOT=gtest"
+                                 "-DCMAKE_CXX_STANDARD=17")
 
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-tune
-           (lambda _
-             (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
-               (("-mute=native") ""))
-             #t)))))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'do-not-tune
+                          (lambda _
+                            (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
+                              (("-mtune=native")
+                               "")))))))
     (inputs
-     `(("eigen" ,eigen)
-       ("expat" ,expat)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("hdf5" ,hdf5)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("mesa" ,mesa-opencl)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("tbb" ,tbb)
-       ("vxl" ,vxl-1)
-       ("zlib" ,zlib)))
+     (list eigen
+           expat
+           fftw
+           fftwf
+           hdf5
+           libjpeg-turbo
+           libpng
+           libtiff
+           mesa-opencl
+           perl
+           python
+           tbb
+           vxl-1
+           zlib))
     (native-inputs
      (list googletest pkg-config))
+
+    ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
+    ;; '-mtune=native -march=corei7', suggesting there's something to be
+    ;; gained from CPU-specific optimizations.
+    (properties '((tunable? . #t)))
+
     (home-page "https://github.com/InsightSoftwareConsortium/ITK/")
     (synopsis "Scientific image processing, segmentation and registration")
     (description "The Insight Toolkit (ITK) is a toolkit for N-dimensional
@@ -1338,13 +1343,12 @@ combine the information contained in both.")
        (sha256
         (base32 "19cgfpd63gqrvc3m27m394gy2d7w79g5y6lvznb5qqr49lihbgns"))))
     (arguments
-     `(#:tests? #f            ; tests require network access and external data
-       #:configure-flags
-       '("-DITKV3_COMPATIBILITY=ON"     ; needed for itk-snap
-         "-DITK_USE_GPU=ON"
-         "-DITK_USE_SYSTEM_LIBRARIES=ON"
-         "-DITK_USE_SYSTEM_GOOGLETEST=ON"
-         "-DITK_USE_SYSTEM_VXL=ON")))))
+     (list #:tests? #f ; tests require network access and external data
+           #:configure-flags #~'("-DITKV3_COMPATIBILITY=ON" ; needed for itk-snap
+                                 "-DITK_USE_GPU=ON"
+                                 "-DITK_USE_SYSTEM_LIBRARIES=ON"
+                                 "-DITK_USE_SYSTEM_GOOGLETEST=ON"
+                                 "-DITK_USE_SYSTEM_VXL=ON")))))
 
 (define-public insight-toolkit-4.12
   (package (inherit insight-toolkit-4)

@@ -466,7 +466,7 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.9.9-pre-release.14")
+    (version "9.9.9-pre-release.16")
     ;; The version should match `scheme-version`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
@@ -759,13 +759,7 @@ Chez Scheme.")))
        ;; though it would probably be easy to add.
        (propagated-inputs
         (list xorg-rgb
-              (texlive-updmap.cfg
-               (list texlive-dvips-l3backend
-                     texlive-hyperref
-                     texlive-bibtex
-                     texlive-epsf
-                     texlive-fonts-ec
-                     texlive-oberdiek))
+              (texlive-updmap.cfg (list texlive-epsf))
               ghostscript
               netpbm))
        ;; Debian uses a versionless path for STEXLIB,
@@ -1014,18 +1008,11 @@ create compilers, making them easier to understand and maintain.")
       (native-inputs
        (list (chez-scheme-for-system)
              ghostscript
-             ;; FIXME: This package fails to build with the error:
-             ;;     mktexpk: don't know how to create bitmap font for bchr8r
-             ;; Replacing the following with `texlive` fixes it.
-             ;; What is missing?
-             (texlive-updmap.cfg (list texlive-oberdiek
-                                       texlive-epsf
-                                       texlive-metapost
-                                       texlive-charter
-                                       texlive-pdftex
-                                       texlive-context
-                                       texlive-cm
-                                       texlive-tex-plain))))
+             (texlive-updmap.cfg
+              (list texlive-charter
+                    texlive-context
+                    texlive-cweb
+                    texlive-metapost))))
       (arguments
        (list
         #:make-flags
@@ -1035,9 +1022,18 @@ create compilers, making them easier to understand and maintain.")
                 ;; lib/chez-scheme/chezweb ???
                 (string-append "LIBDIR=" #$output "/lib/chezweb")
                 (string-append "TEXDIR=" #$output "/share/texmf-local"))
-        #:tests? #f ; no tests
+        #:tests? #f                     ; no tests
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-tex-input
+              (lambda _
+                ;; Fix "I can't find file `supp-pdf'." error.
+                (substitute* "chezweb.w"
+                  (("supp-pdf") "supp-pdf.mkii"))
+                ;; Recent cweb packages do not include "\acrofalse".  Remove
+                ;; it.
+                (substitute* "doc/cwebman.tex"
+                  (("\\acrofalse.*") ""))))
             ;; This package has a custom "bootstrap" script that
             ;; is meant to be run from the Makefile.
             (delete 'bootstrap)
@@ -1079,10 +1075,10 @@ programming in Scheme.")
       (native-inputs
        (list (chez-scheme-for-system)
              chez-web
-             (texlive-updmap.cfg (list texlive-pdftex))))
+             (texlive-updmap.cfg)))
       (arguments
        (list
-        #:tests? #f ; no tests
+        #:tests? #f                     ; no tests
         #:phases
         #~(modify-phases %standard-phases
             (replace 'configure

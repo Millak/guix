@@ -1252,9 +1252,9 @@ Take a look at the profile reported by @command{guix size}
 (@pxref{Invoking guix size}).  This will allow you to notice references
 to other packages unwillingly retained.  It may also help determine
 whether to split the package (@pxref{Packages with Multiple Outputs}),
-and which optional dependencies should be used.  In particular, avoid adding
-@code{texlive} as a dependency: because of its extreme size, use
-the @code{texlive-tiny} package or @code{texlive-union} procedure instead.
+and which optional dependencies should be used.  In particular, avoid
+adding @code{texlive} as a dependency: because of its extreme size, use
+@code{texlive-updmap.cfg} procedure instead.
 
 @item
 Check that dependent packages (if applicable) are not affected by the

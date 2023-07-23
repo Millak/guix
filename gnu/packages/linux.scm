@@ -34,7 +34,7 @@
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 mikadoZero <mikadozero@yandex.com>
-;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -95,6 +95,7 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages apparmor)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
@@ -486,7 +487,22 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.3-version "6.3.12")
+(define-public linux-libre-6.4-version "6.4.3")
+(define-public linux-libre-6.4-gnu-revision "gnu")
+(define deblob-scripts-6.4
+  (linux-libre-deblob-scripts
+   linux-libre-6.4-version
+   linux-libre-6.4-gnu-revision
+   (base32 "1hfircard99kmf81416xnln0chs6hskpjqz0p55ic8alm4rdlljs")
+   (base32 "1566506bmci15i80y0l0s93dgpgima0lqfmkg5ql7gd671aawkra")))
+(define-public linux-libre-6.4-pristine-source
+  (let ((version linux-libre-6.4-version)
+        (hash (base32 "18c8ikghvlr6h9jajy11dldck4h57wl301j14rxg7xhd6qlysd3i")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.4)))
+
+(define-public linux-libre-6.3-version "6.3.13")
 (define-public linux-libre-6.3-gnu-revision "gnu")
 (define deblob-scripts-6.3
   (linux-libre-deblob-scripts
@@ -496,7 +512,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1i6vyakvqgmr3lcmr0aj8n7lbcksrp4d0rm1sz7cz64hwbsr67pq")))
 (define-public linux-libre-6.3-pristine-source
   (let ((version linux-libre-6.3-version)
-        (hash (base32 "1mvcirkhqnf03cci3jiq077fs9b42a3xdk3zjkpyim3x43ydwzyb")))
+        (hash (base32 "1ywijjhf19bciip75ppzjjh7bkadd449jr64yg2j5049w9h0aipa")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.3)))
@@ -622,26 +638,42 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (patches (append (origin-patches source)
                      patches))))
 
+(define-public linux-libre-6.4-source
+  (source-with-patches linux-libre-6.4-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
+
 (define-public linux-libre-6.3-source
   (source-with-patches linux-libre-6.3-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-6.1-source
   (source-with-patches linux-libre-6.1-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch
-                             (search-patch "linux-libre-infodocs-target.patch"))))
+                       (append
+                        (list %boot-logo-patch
+                              %linux-libre-arm-export-__sync_icache_dcache-patch)
+                        (search-patches
+                         "linux-libre-infodocs-target.patch"
+                         "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-5.10-source
   (source-with-patches linux-libre-5.10-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-5.4-source
   (source-with-patches linux-libre-5.4-pristine-source
@@ -737,6 +769,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-6.4
+  (make-linux-libre-headers* linux-libre-6.4-version
+                             linux-libre-6.4-gnu-revision
+                             linux-libre-6.4-source))
 
 (define-public linux-libre-headers-6.3
   (make-linux-libre-headers* linux-libre-6.3-version
@@ -1080,6 +1117,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;;;
 ;;; Generic kernel packages.
 ;;;
+
+(define-public linux-libre-6.4
+  (make-linux-libre* linux-libre-6.4-version
+                     linux-libre-6.4-gnu-revision
+                     linux-libre-6.4-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-6.3
   (make-linux-libre* linux-libre-6.3-version
@@ -2356,7 +2401,14 @@ parameters.")
                    (let* ((out #$output)
                           (dup (append-map (cut find-files out <>)
                                            '("^kill" "^uptime"))))
-                     (for-each delete-file dup)))))))
+                     (for-each delete-file dup))))
+               #$@(if (system-hurd?)
+                      #~((add-after 'unpack 'skip-tests
+                           (lambda _
+                             (substitute* "library/tests/test_version.c"
+                               (("^int main\\(.*" all)
+                                (string-append all "{\n  exit (77);//"))))))
+                      #~()))))
     (inputs (list ncurses))
     (native-inputs (list pkg-config))
     (home-page "https://gitlab.com/procps-ng/procps/")
@@ -2464,7 +2516,7 @@ module.")
                          perl
                          procps))
     (arguments
-     '(;; util-linux is the preferred source for some of the libraries and
+     `(;; util-linux is the preferred source for some of the libraries and
        ;; commands, so disable them (see, e.g.,
        ;; <http://git.buildroot.net/buildroot/commit/?id=e1ffc2f791b33633>.)
        #:configure-flags (list "--disable-libblkid"
@@ -2511,7 +2563,77 @@ module.")
                  (let ((archives (find-files lib "\\.a$")))
                    (for-each (lambda (file)
                                (chmod file #o666))
-                             archives))))))))
+                             archives)))))
+           ,@(if (system-hurd?)
+                 '((add-after 'unpack 'skip-tests
+                     (lambda _
+                       (with-directory-excursion "tests"
+                         (for-each
+                          (lambda (directory)
+                            (delete-file-recursively directory))
+                          '("d_bad_ostype"
+                            "f_detect_junk"
+                            "f_extent_oobounds"
+                            "j_ext_long_revoke_trans"
+                            "j_ext_long_trans"
+                            "j_long_revoke_trans"
+                            "j_long_revoke_trans_mcsum_32bit"
+                            "j_long_revoke_trans_mcsum_64bit"
+                            "j_long_trans"
+                            "j_long_trans_mcsum_32bit"
+                            "j_long_trans_mcsum_64bit"
+                            "j_short_revoke_trans"
+                            "j_short_revoke_trans_mcsum_64bit"
+                            "j_short_trans_64bit"
+                            "j_short_trans"
+                            "j_short_trans_mcsum_64bit"
+                            "j_short_trans_old_csum"
+                            "j_short_trans_open_recover"
+                            "j_short_trans_recover"
+                            "j_short_trans_recover_mcsum_64bit"
+                            "j_short_uncommitted_trans"
+                            "j_short_uncommitted_trans_mcsum_64bit"
+                            "m_error_behavior"
+                            "m_minrootdir"
+                            "m_rootdir"
+                            "r_32to64bit_expand_full"
+                            "r_expand_full"
+                            "r_fixup_lastbg_big"
+                            "t_change_uuid"
+                            "t_change_uuid_mcsum"
+                            "t_change_uuid_mcsum_mounted"
+                            "t_change_uuid_mcsum_seed_mounted"
+                            "t_change_uuid_mounted"
+                            "t_disable_changed_csum_seed"
+                            "t_disable_changed_csum_seed_mounted"
+                            "t_disable_csum_seed"
+                            "t_disable_meta_csum_and_seed"
+                            "t_enable_csum_seed"
+                            "t_format_csum_seed"
+                            "t_replay_and_set"
+                            "u_compound_rollback"
+                            "u_corrupt_blk_csum"
+                            "u_corrupt_blk_csum_force"
+                            "u_corrupt_key_csum"
+                            "u_debugfs_opt"
+                            "u_dryrun"
+                            "u_e2fsck_opt"
+                            "u_errorout"
+                            "u_force"
+                            "u_force_dryrun"
+                            "u_incomplete"
+                            "u_mke2fs_opt"
+                            "u_mke2fs_opt_oddsize"
+                            "u_offset"
+                            "u_onefile_bad"
+                            "u_resize2fs_opt"
+                            "u_revert_64bitmcsum_onefile"
+                            "u_revert_all_onefile"
+                            "u_revert_upgrade_to_64bitmcsum"
+                            "u_tune2fs_opt"
+                            "u_undo_undo"
+                            "u_wrong_fs"))))))
+                 '()))))
     (home-page "https://e2fsprogs.sourceforge.net/")
     (synopsis "Creating and checking ext2/ext3/ext4 file systems")
     (description
@@ -3476,6 +3598,7 @@ settings.")
     (source (origin
               (method url-fetch)
               (uri (string-append
+                    "https://web.archive.org/web/20211201184543/"
                     "http://www.jpj.net/~trevor/aumix/releases/aumix-"
                     version ".tar.bz2"))
               (sha256
@@ -3486,7 +3609,8 @@ settings.")
      ;; Allow compilation with GCC 10.
      '(#:configure-flags '("CFLAGS=-O2 -g -fcommon")))
     (inputs (list ncurses))
-    (home-page "http://www.jpj.net/~trevor/aumix.html")
+    (home-page (string-append "https://web.archive.org/web/20211201184543/"
+                              "http://jpj.net/~trevor/aumix.html"))
     (synopsis "Audio mixer for X and the console")
     (description
      "Aumix adjusts an audio mixer from X, the console, a terminal,
@@ -5096,21 +5220,24 @@ Translation (@dfn{SAT}) are also supported.")
 (define-public libnvme
   (package
     (name "libnvme")
-    (version "1.3")
+    (version "1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/linux-nvme/libnvme.git")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1fngj5acp2sl4162xalq5simfasnika6gy0xrbi41x09wikvhn7y"))
+               (base32 "1wq8bw60l090z2kb717wyzk5wz1jrcn31ykdaa7k9pz9w79v0v67"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
+    (outputs (list "out" "doc"))        ; docs are 80% of all output
     (arguments
      (list
-      #:configure-flags #~(list (format #f "-Dhtmldir=~a/share/doc/~a/html"
-                                        #$output #$name)
-                                "-Ddocs-build=true" "-Ddocs=all")))
+      #:configure-flags
+      #~(let ((doc (string-append #$output:doc "/share/doc/" #$name)))
+          (list (string-append "-Dhtmldir=" doc "/html")
+                (string-append "-Drstdir=" doc "/rst")
+                "-Ddocs-build=true" "-Ddocs=all"))))
     (native-inputs (list pkg-config perl python python-sphinx))
     ;; libnvme.pc, libnvme-mi.pc lists these in Requires.private.
     (propagated-inputs (list dbus json-c openssl))
@@ -5125,7 +5252,7 @@ and manage nvme devices on a Linux system.")
 (define-public nvme-cli
   (package
     (name "nvme-cli")
-    (version "2.3")
+    (version "2.5")
     (home-page "https://github.com/linux-nvme/nvme-cli")
     (source (origin
               (method git-fetch)
@@ -5133,13 +5260,14 @@ and manage nvme devices on a Linux system.")
                     (url home-page)
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1f3bhxh2kr94s6glzibrmgxxgs66qyabn8plnw5y0v9cpi78b3qs"))
+               (base32 "1jv1xir6gm86yyk5846qqkcjhc1bq103zyxf794fznyinh4nhlbg"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
+    (outputs (list "out" "doc"))        ; docs make up ~70% of total size
     (arguments
      (list
       #:configure-flags #~(list (format #f "-Dhtmldir=~a/share/doc/~a/html"
-                                        #$output #$name)
+                                        #$output:doc #$name)
                                 "-Ddocs=all")))
     (native-inputs (list pkg-config))
     (inputs (list libnvme json-c zlib))
@@ -6321,7 +6449,7 @@ from userspace.")
 (define-public tpacpi-bat
   (package
     (name "tpacpi-bat")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method git-fetch)
@@ -6330,22 +6458,21 @@ from userspace.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wbaz34z99gqx721alh5vmpxpj2yxg3x9m8jqyivfi1wfpwc2nd5"))))
+        (base32 "0nd8s2bqbhl0sjpflphb4l9ix71p7kvnbvkq4dg9a1v0sxafyygm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test target
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'refer-to-inputs
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "tpacpi-bat"
                (("cat ")
-                (format #f "~a " (which "cat")))
+                (string-append (search-input-file inputs "bin/cat") " "))
                ;; tpacpi-bat modprobes the acpi_call kernel module if it's not
                ;; loaded.  That's the administrator's prerogative; disable it.
                (("system \"(modprobe .*)\"" _ match)
-                (format #f "die \"Please run ‘~a’ first.\\n\"" match)))
-             #t))
+                (format #f "die \"Please run ‘~a’ first.\\n\"" match)))))
          (delete 'configure)            ; nothing to configure
          (delete 'build)                ; nothing to build
          (replace 'install
@@ -6360,10 +6487,10 @@ from userspace.")
                            (let ((target (string-append doc "/" file)))
                              (mkdir-p (dirname target))
                              (copy-recursively file target)))
-                         (list "battery_asl" "examples" "README.md"))
-               #t))))))
+                         (list "battery_asl" "examples" "README.md"))))))))
     (inputs
-     (list perl))
+     (list coreutils-minimal
+           perl))
     (home-page "https://github.com/teleshoes/tpacpi-bat")
     (synopsis "ThinkPad battery charge controller")
     (description
@@ -8819,7 +8946,7 @@ IP addresses and routes, and configure IPsec.")
 (define-public libinih
   (package
     (name "libinih")
-    (version "56")
+    (version "57")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8828,7 +8955,7 @@ IP addresses and routes, and configure IPsec.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fjqvf56yij15lgwj58dcmxlq5n98gzpbss0nnn1d2i5j7gf4kgf"))))
+                "03hpyahdkipm5wfalj2xkz6y9ncd9zrlhnf7vap6lr56jj2fz2bb"))))
     (build-system meson-build-system)
     ;; Install static libraries for use by the initrd's xfsprogs/static.
     (outputs (list "out" "static"))
@@ -9806,7 +9933,7 @@ older system-wide @file{/sys} interface.")
 (define-public libtraceevent
   (package
     (name "libtraceevent")
-    (version "1.7.1")
+    (version "1.7.3")
     (source
      (origin
        (method git-fetch)
@@ -9815,26 +9942,23 @@ older system-wide @file{/sys} interface.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kbl11lqh8cadi6r3qqxx68idr7597l6i50pr5p5mdgsf6k2i83c"))
+        (base32 "06mw2f0xnk6dy9w2z0n4dz7lnm02qfsmnmj2h24453qxlw57x0d6"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            (substitute* "Makefile"
-              (("/bin/pwd") "pwd"))
-            (substitute* "scripts/utils.mk"
-              (("/bin/pwd") "pwd"))))))
+            (substitute* (list "Makefile" "scripts/utils.mk")
+              (("/bin/(pwd)" _ command) command))))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f ;no test suite
+      #:tests? #f                       ; no test suite
       #:make-flags
       #~(list
          (string-append "pkgconfig_dir=" #$output "/lib/pkgconfig")
          (string-append "prefix=" #$output))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure))))
+          (delete 'configure))))        ; no configure script
     (home-page "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/")
     (synopsis "Linux kernel trace event library")
     (description "This package provides library to parse raw trace event
@@ -10129,6 +10253,42 @@ suggestions from various sources, including:
 @end itemize\n
 This tool supports checking Kconfig options and kernel cmdline parameters.")
     (license license:gpl3)))
+
+(define-public firejail
+  (package
+    (name "firejail")
+    (version "0.9.72")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/netblue30/firejail/releases/download/" version
+                    "/firejail-" version ".tar.xz" ))
+              (sha256
+               (base32
+                "1x77xy1mwfgjrcsymdda82bjnqgl7z2yymcb10mzd1zwik27gqc2"))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "test"
+                       (invoke "make"))))))))
+    (build-system gnu-build-system)
+    (inputs
+     (list apparmor xdg-dbus-proxy))
+    (synopsis "Linux namespaces sandbox program")
+    (description
+     "Firejail is a SUID sandbox program that reduces the risk of security
+breaches by restricting the running environment of untrusted applications
+using Linux namespaces, seccomp-bpf and Linux capabilities.  The software
+includes sandbox profiles for a number of common Linux programs.  Firejail
+should be added to the list of setuid programs in the system configuration to
+work properly.")
+    (home-page "https://github.com/netblue30/firejail")
+    (supported-systems
+     (filter (cut string-suffix? "-linux" <>) %supported-systems))
+    (license license:gpl2+)))
 
 (define-public edac-utils
   (package

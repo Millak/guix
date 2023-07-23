@@ -147,8 +147,8 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system waf)
   #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -721,25 +721,18 @@ streams from live audio.")
 purposes developed at Queen Mary, University of London.")
     (license license:gpl2+)))
 
-(define (ardour-rpath-phase major-version)
-  `(lambda* (#:key outputs #:allow-other-keys)
-     (let ((libdir (string-append (assoc-ref outputs "out")
-                                  "/lib/ardour" ,major-version)))
-       (substitute* "wscript"
-         (("linker_flags = \\[\\]")
-          (string-append "linker_flags = [\""
-                         "-Wl,-rpath="
-                         libdir ":"
-                         libdir "/backends" ":"
-                         libdir "/engines" ":"
-                         libdir "/panners" ":"
-                         libdir "/surfaces" ":"
-                         libdir "/vamp" "\"]"))))))
+(define ardour-bundled-media
+  (origin
+    (method url-fetch)
+    (uri "http://stuff.ardour.org/loops/ArdourBundledMedia.zip")
+    (sha256
+     (base32
+      "0k135sm559yywfidrya7h5cddwqa2p2abhimrar2khydf43f03d0"))))
 
 (define-public ardour
   (package
     (name "ardour")
-    (version "7.4")
+    (version "7.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -756,7 +749,7 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "0v66h9fghjyjinldw9yfhhlfi3my235x6n4dpxx432z35lka2h89"))
+                "18pgxnxfp0pqsy24cmf3hanr6vh0pnimsh48x5nfbflqy7ljsrkj"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -769,7 +762,20 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-rpath-in-LDFLAGS
-          ,(ardour-rpath-phase (version-major version)))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((libdir (string-append (assoc-ref outputs "out")
+                                          "/lib/ardour"
+                                          ,(version-major version))))
+               (substitute* "wscript"
+                 (("linker_flags = \\[\\]")
+                  (string-append "linker_flags = [\""
+                                 "-Wl,-rpath="
+                                 libdir ":"
+                                 libdir "/backends" ":"
+                                 libdir "/engines" ":"
+                                 libdir "/panners" ":"
+                                 libdir "/surfaces" ":"
+                                 libdir "/vamp" "\"]"))))))
          (add-after 'install 'install-freedesktop-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
@@ -794,7 +800,14 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
          (add-after 'install 'install-man-page
            (lambda* (#:key outputs #:allow-other-keys)
              (install-file "ardour.1" (string-append (assoc-ref outputs "out")
-                                                     "/share/man/man1")))))
+                                                     "/share/man/man1"))))
+         (add-after 'install 'install-bundled-media
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "unzip" "-d" (string-append (assoc-ref outputs "out")
+                                                 "/share/ardour"
+                                                 ,(version-major version)
+                                                 "/media/")
+                     ,ardour-bundled-media))))
        #:test-target "test"))
     (inputs
      (list alsa-lib
@@ -849,14 +862,17 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            gettext-minimal
            itstool
            perl
-           pkg-config))
+           pkg-config
+           unzip))
     (home-page "https://ardour.org")
     (synopsis "Digital audio workstation")
     (description
      "Ardour is a multi-channel digital audio workstation, allowing users to
 record, edit, mix and master audio and MIDI projects.  It is targeted at audio
 engineers, musicians, soundtrack editors and composers.")
-    (license license:gpl2+)))
+    (license (list license:gpl2+
+                   license:cc0 ;used by MIDI Beats
+                   license:expat)))) ;used by MIDI Chords and Progressions
 
 (define-public audacity
   (package
@@ -1400,7 +1416,7 @@ envelope follower, distortion effects, tape effects and more.")
 (define-public snapcast
   (package
     (name "snapcast")
-    (version "0.26.0")
+    (version "0.27.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1409,7 +1425,7 @@ envelope follower, distortion effects, tape effects and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "091gf3k1xv3k0m0kf2apr9bwiifw2czjcksd3vzwy544sfgrya08"))))
+                "10l5hvmaqr9ykipsnzl95wqg19ff36rhpa1q88axxcia0k2valkn"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no included tests
@@ -5194,7 +5210,7 @@ bluetooth profile.")
 (define-public libopenshot-audio
   (package
     (name "libopenshot-audio")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5203,7 +5219,7 @@ bluetooth profile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "164ibsp5g162cyjgpa0ap35h75igmfnmhxmwkkk1fvm1cpbf1jgj"))))
+                "0g49akqhd0jsd0ar6sacdqz6cv8y0a4zclnyliifiidxrkv43fiw"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
@@ -5214,11 +5230,12 @@ bluetooth profile.")
            libxinerama
            libxcursor))
     (arguments
-     `(#:tests? #f                      ;there are no tests
-       #:configure-flags
-       (list (string-append "-DCMAKE_CXX_FLAGS=-I"
-                            (assoc-ref %build-inputs "freetype")
-                            "/include/freetype2"))))
+     (list
+      #:tests? #f                       ; there are no tests
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
+                           #$(this-package-input "freetype")
+                           "/include/freetype2"))))
     (home-page "https://openshot.org")
     (synopsis "Audio editing and playback for OpenShot")
     (description "OpenShot Audio Library (libopenshot-audio) allows
@@ -6236,7 +6253,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.4.4")
+    (version "0.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6245,7 +6262,7 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05j98y8j3f0dybaal6qawq9nsrvr1hylsnig4yk6si16mhb32y7l"))))
+                "06pgkma0i9dbir74cfhgnnkqjcq8z496by4lk1whqcj7j9ldbi2l"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib

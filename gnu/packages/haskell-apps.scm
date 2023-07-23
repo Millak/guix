@@ -121,7 +121,7 @@ library.  It is primarily used with HLint's @code{--refactor} flag.")
    (arguments
     `(#:cabal-revision ("2"
                         "1kpgyfl5njxp4c8ax5ziag1bhqvph3h0pn660v3vpxalz8d1j6xv")))
-   (home-page "http://www.haskell.org/cabal/")
+   (home-page "https://www.haskell.org/cabal/")
    (synopsis "Command-line interface for Cabal and Hackage")
    (description
     "The cabal command-line program simplifies the process of managing

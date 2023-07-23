@@ -8,6 +8,7 @@
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Christopher Lam <christopher.lck@gmail.com>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -64,14 +66,14 @@
   ;; directory.
   (package
     (name "gnucash")
-    (version "5.0")
+    (version "5.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                            version "/gnucash-" version ".tar.bz2"))
        (sha256
-        (base32 "09482f1w4yawrdw5c2wi0jb8hwlp1x9mdvq552bf9n5f66mkphfg"))))
+        (base32 "0npilq0spalpg1ma956j7vlbn0yc5f0z5imy4kbyksl5ql4cnn0l"))))
     (outputs '("out" "doc" "debug" "python"))
     (build-system cmake-build-system)
     (arguments
@@ -87,13 +89,11 @@
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-unsupported-test
-               ;; test test-gnc-quotes neeeds perl JSON::Parse
-               ;; not packaged in Guix yet
+          (add-after 'unpack 'disable-online-test
             (lambda _
-              (substitute* "libgnucash/app-utils/test/CMakeLists.txt"
-                    (("gnc_add_test\\(test-gnc-quotes")
-                     "#gnc_add_test\\(test-gnc-quotes"))))
+              (call-with-output-file "libgnucash/app-utils/test/CMakeLists.txt"
+                (lambda (port)
+                  (display "set(CTEST_CUSTOM_TESTS_IGNORE online_wiggle)" port)))))
           (add-after 'unpack 'set-env-vars
             (lambda* (#:key inputs #:allow-other-keys)
               ;; At least one test is time-related and requires this
@@ -171,6 +171,7 @@
            swig))
     (inputs
      (list aqbanking
+           bash-minimal
            boost
            glib
            gtk+
@@ -183,6 +184,7 @@
            libxslt
            perl-date-manip
            perl-finance-quote
+           perl-json-parse
            python
            tzdata-for-tests
            webkitgtk-with-libsoup2))
@@ -212,11 +214,13 @@ installed as well as Yelp, the Gnome help browser.")
       (source
        (origin
          (method url-fetch)
+         ;; The filename for version 5.3 is gnucash-docs-5.2.tar.gz, not
+         ;; gnucash-docs-5.3.tar.gz.
          (uri (string-append
                "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
-               version "/gnucash-docs-" version revision ".tar.gz"))
+               version "/gnucash-docs-5.2" revision ".tar.gz"))
          (sha256
-          (base32 "1cgdb5qrwrx6yf6dsc8zlhi67lbyjs1g82i0n53sw6n6v38dd882"))))
+          (base32 "16xlxwdgc0w4cg9kxg4w2f1y974cb16wq2c9icq5qrh3nj0nbsxr"))))
       (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.
@@ -264,7 +268,7 @@ to be read using the GNOME Yelp program.")
      (list libgcrypt gnutls openssl gtk+))
     (native-inputs
      (list pkg-config))
-    (home-page "https://www.aquamaniac.de/sites/aqbanking/index.php")
+    (home-page "https://www.aquamaniac.de")
     (synopsis "Utility library for networking and security applications")
     (description
      "This package provides a helper library for networking and security
@@ -303,7 +307,7 @@ applications and libraries.  It is used by AqBanking.")
      (list gmp xmlsec gnutls))
     (native-inputs
      (list pkg-config gettext-minimal libltdl))
-    (home-page "https://www.aquamaniac.de/sites/aqbanking/index.php")
+    (home-page "https://www.aquamaniac.de")
     (synopsis "Interface for online banking tasks")
     (description
      "AqBanking is a modular and generic interface to online banking tasks,

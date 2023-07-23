@@ -91,8 +91,7 @@
        "ftp://ftp.gnupg.org/gcrypt/")
       (gnome
        "https://download.gnome.org/"
-       "http://ftp.gnome.org/pub/GNOME/"
-       "http://mirror.yandex.ru/mirrors/ftp.gnome.org/")
+       "http://ftp.gnome.org/pub/GNOME/")
       (hackage
        "http://hackage.haskell.org/")
       (savannah           ; http://download0.savannah.gnu.org/mirmon/savannah/
@@ -103,7 +102,6 @@
        "https://mirror.csclub.uwaterloo.ca/nongnu/"
        "https://nongnu.askapache.com/"
        "https://savannah.c3sl.ufpr.br/"
-       "http://download.savannah.gnu.org/releases-noredirect/"
        "https://download-mirror.savannah.gnu.org/releases/"
        "ftp://ftp.twaren.net/Unix/NonGNU/"
        "ftp://mirror.csclub.uwaterloo.ca/nongnu/"
@@ -129,9 +127,7 @@
        "ftp://www.lt.netfilter.org/pub/")
       (kernel.org
        "http://linux-kernel.uio.no/pub/"
-       "http://kernel.osuosl.org/pub/"
        "http://ftp.be.debian.org/pub/"
-       "http://mirror.linux.org.au/"
        "https://mirrors.edge.kernel.org/pub/"
        "ftp://ftp.funet.fi/pub/mirrors/ftp.kernel.org/pub/")
       (apache             ; from http://www.apache.org/mirrors/dist.html
@@ -151,7 +147,6 @@
        "http://www.x.org/releases/" ; main mirrors
        "http://mirror.csclub.uwaterloo.ca/x.org/" ; North America
        "http://xorg.mirrors.pair.com/"
-       "http://mirror.us.leaseweb.net/xorg/"
        "ftp://mirror.csclub.uwaterloo.ca/x.org/"
        "ftp://xorg.mirrors.pair.com/"
        "ftp://artfiles.org/x.org/" ; Europe
@@ -168,8 +163,7 @@
        "ftp://mirror.switch.ch/mirror/X11/"
        "ftp://mirrors.ircam.fr/pub/x.org/"
        "ftp://x.mirrors.skynet.be/pub/ftp.x.org/"
-       "http://x.cs.pu.edu.tw/" ; East Asia
-       "ftp://ftp.cs.cuhk.edu.hk/pub/X11"
+       "ftp://ftp.cs.cuhk.edu.hk/pub/X11" ; East Asia
        "ftp://ftp.u-aizu.ac.jp/pub/x11/x.org/"
        "ftp://ftp.yz.yamagata-u.ac.jp/pub/X11/x.org/"
        "ftp://ftp.kaist.ac.kr/x.org/"

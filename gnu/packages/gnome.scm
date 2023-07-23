@@ -2610,13 +2610,15 @@ forgotten when the session ends.")
 (define-public evince
   (package
     (name "evince")
-    (version "44.1")
-    (source (origin
-              (method url-fetch)
-              (uri "mirror://gnome/sources/evince/44/evince-44.1.tar.xz")
-              (sha256
-               (base32
-                "0523lzk7xpfr6gir8nx80fmp1lhajm837hilmgn8zczz2nxx7bqm"))))
+    (version "44.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/evince/"
+                           (version-major version) "/"
+                           "evince-" version ".tar.xz"))
+       (sha256
+        (base32 "08inp13kksa027ij9ai10734jxdn1y7s0skbgzsyk9j739ca32rv"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -5306,8 +5308,9 @@ floating in an ocean using only your brain and a little bit of luck.")
                (("meson.add_install_script" &) (string-append "# " &)))
              #t)))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config))
     (inputs
      (list gtk+
            glib ; for gio
@@ -6134,9 +6137,10 @@ throughout GNOME for API documentation).")
     (license license:gpl2+)))
 
 (define-public devhelp-with-libsoup2
-  (package/inherit devhelp
-    (inputs (modify-inputs (package-inputs devhelp)
-              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
+  (hidden-package
+   (package/inherit devhelp
+     (inputs (modify-inputs (package-inputs devhelp)
+               (replace "webkitgtk" webkitgtk-with-libsoup2))))))
 
 (define-public cogl
   (package

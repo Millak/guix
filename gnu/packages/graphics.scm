@@ -1642,17 +1642,19 @@ exec -a \"$0\" ~a/.brdf-real~%"
        (list qttools-5)) ;for 'qmake'
       (inputs
        (list qtbase-5 mesa glew freeglut zlib))
-      (home-page "https://www.disneyanimation.com/technology/brdf.html")
+      (home-page
+       (string-append "https://web.archive.org/web/20190115030100/"
+                      "https://www.disneyanimation.com/technology/brdf.html"))
       (synopsis
-       "Analyze bidirectional reflectance distribution functions (BRDFs)")
+       "@acronym{BRDF, bidirectional reflectance distribution function} analyzer")
       (description
        "BRDF Explorer is an application that allows the development and analysis
-of bidirectional reflectance distribution functions (BRDFs).  It can load and
-plot analytic BRDF functions (coded as functions in OpenGL's GLSL shader
-language), measured material data from the MERL database, and anisotropic
-measured material data from MIT CSAIL.  Graphs and visualizations update in
-real time as parameters are changed, making it a useful tool for evaluating
-and understanding different BRDFs (and other component functions).")
+of @acronym{BRDF, bidirectional reflectance distribution functions}.  It can
+load and plot analytic BRDF functions (coded as functions in OpenGL's GLSL
+shader language), measured material data from the MERL database, and anisotropic
+measured material data from MIT CSAIL.  Graphs and visualizations update in real
+time as parameters are changed, making it a useful tool for evaluating and
+understanding different BRDFs (and other component functions).")
       (license license:ms-pl))))
 
 (define-public agg
@@ -2470,7 +2472,7 @@ generated discrete signed distance field using the cubic spline kernel.
      (list doxygen graphviz
            ;; TODO: Fix failing LaTeX invocation (which results in equations
            ;; being inserted literally into PNGs rather than being typeset).
-           ;;texlive-tiny
+           ;; (texlive-updmap.cfg)
 
            perl))                            ;used to generate Fortran headers
     (inputs

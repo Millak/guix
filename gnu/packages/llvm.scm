@@ -699,12 +699,7 @@ of programming tools as well as libraries with equivalent functionality.")
           #~(modify-phases #$phases
               (add-after 'unpack 'change-directory
                 (lambda _
-                  (chdir "compiler-rt")))
-              (add-after 'install 'delete-static-libraries
-                ;; Reduce size from 33 MiB to 7.4 MiB.
-                (lambda _
-                  (for-each delete-file
-                            (find-files #$output "\\.a(\\.syms)?$"))))))))
+                  (chdir "compiler-rt")))))))
       (native-inputs
        (modify-inputs (package-native-inputs template)
          (prepend gcc-12)))             ;libfuzzer fails to build with GCC 11

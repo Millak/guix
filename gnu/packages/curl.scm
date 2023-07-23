@@ -11,7 +11,7 @@
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Dale Mellor <guix-devel-0brg6b@rdmp.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -125,7 +125,22 @@
                 ;; The top-level "make check" does "make -C tests quiet-test", which
                 ;; is too quiet.  Use the "test" target instead, which is more
                 ;; verbose.
-                (invoke "make" "-C" "tests" "test")))))))
+                (invoke "make" "-C" "tests" "test"))))
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'skip-tests
+                      (lambda _
+                        (let ((port (open-file "tests/data/DISABLED" "a")))
+                          (display "526\n" port)
+                          (display "527\n" port)
+                          (display "532\n" port)
+                          (display "533\n" port)
+                          (display "537\n" port)
+                          (display "546\n" port)
+                          (display "575\n" port)
+                          (display "1021\n" port)
+                          (display "1501\n" port)
+                          (close port)))))
+                 #~()))))
     (synopsis "Command line tool for transferring data with URL syntax")
     (description
      "curl is a command line tool for transferring data with URL syntax,
@@ -386,7 +401,7 @@ sugar and output formatting inspired from @code{httpie}.")
 (define-public trurl
   (package
     (name "trurl")
-    (version "0.5")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -395,7 +410,7 @@ sugar and output formatting inspired from @code{httpie}.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mvkpjs6wnz5hzmp2iglik85zljrzglsa6fm839l78fhw89dg3w6"))))
+        (base32 "19zdpjp01n7s7zgixq3irqfnx66dmqf8zyp0dlb6y7ga673lqwi8"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -408,11 +423,11 @@ sugar and output formatting inspired from @code{httpie}.")
     (native-inputs (list python))
     (inputs (list curl))
     (home-page "https://curl.se/trurl/")
-    (synopsis "Command line tool for URL parsing and manipulatio")
-    (description "@code{trurl} is a tool in a similar spirit of @code{tr} but
-for URLs.  Here, @code{tr} stands for translate or transpose.
+    (synopsis "Command line tool for URL parsing and manipulation")
+    (description "@code{trurl} is a command line tool that parses and
+manipulates URLs, designed to help shell script authors everywhere.
 
-@code{trurl} is a command line tool that parses and manipulates URLs, designed
-to help shell script authors everywhere.")
+It is similar in spirit to @code{tr}.  Here, @code{tr} stands for translate or
+transpose.")
    (license (license:non-copyleft "file://COPYING"
                                   "See COPYING in the distribution."))))

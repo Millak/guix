@@ -410,6 +410,8 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.4-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.4-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.3-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.3-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.3-i686.conf	\
@@ -556,6 +558,7 @@ SCM_TESTS =					\
   tests/services/lightdm.scm			\
   tests/services/linux.scm			\
   tests/services/telephony.scm			\
+  tests/services/vpn.scm			\
   tests/sets.scm				\
   tests/size.scm				\
   tests/status.scm				\

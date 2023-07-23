@@ -778,6 +778,34 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 emit information from within their applications to the AWS X-Ray service.")
     (license license:asl2.0)))
 
+(define-public python-ovh
+  (package
+    (name "python-ovh")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ovh" version))
+              (sha256
+               (base32
+                "0ygniv12lixh9rvnjcd01gzbzk2b5xwcg2a59b7964a77dd9p3qh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; XXX: tests require networking
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-black
+                         python-coverage
+                         python-flake8
+                         python-isort
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-sphinx
+                         python-wheel))
+    (home-page "https://api.ovh.com")
+    (synopsis "Interact with OVHcloud APIs")
+    (description "This package provides the official module to perform HTTP requests
+to the OVHcloud APIs.")
+    (license license:bsd-3)))
+
 (define-public python-cbor2
   (package
     (name "python-cbor2")

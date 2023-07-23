@@ -439,14 +439,14 @@ features.")))
 (define-public librnd
   (package
     (name "librnd")
-    (version "4.0.0")
+    (version "4.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.repo.hu/projects/librnd/releases/"
                                   "librnd-" version ".tar.bz2"))
               (sha256
                (base32
-                "1fqh7gf9imhghlfajrsgzjx61mynfmdasciwpcajk7pn85d4ymql"))))
+                "0z578x3sd8yjfbhivy1hz4hlgiy43qq6x7mnby872plpm08vgqxz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -454,7 +454,7 @@ features.")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'cc-is-gcc
-            (lambda _ (setenv "CC" "gcc")))
+            (lambda _ (setenv "CC" #$(cc-for-target))))
           (replace 'configure
             ;; The configure script doesn't tolerate most of our configure flags.
             (lambda _
@@ -527,21 +527,21 @@ optimizer; and it can produce photorealistic and design review images.")
 (define-public pcb-rnd
   (package (inherit pcb)
     (name "pcb-rnd")
-    (version "3.1.0")
+    (version "3.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://repo.hu/projects/pcb-rnd/releases/"
                                   "pcb-rnd-" version ".tar.gz"))
               (sha256
                (base32
-                "0yw4sf4qrmmai48f3f5byn2fphc453myjszh3sy9z0dnfcz3x7fw"))))
+                "0szcsp2049wh3wslv7743wbjqllrmphi07yz0933sz4vf6f1c8dg"))))
     (arguments
      (list
       #:tests? #false                   ;no check target
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'cc-is-gcc
-            (lambda _ (setenv "CC" "gcc")))
+            (lambda _ (setenv "CC" #$(cc-for-target))))
           (replace 'configure
             ;; The configure script doesn't tolerate most of our configure flags.
             (lambda _
@@ -575,10 +575,11 @@ featuring various improvements and bug fixes.")))
                                        "fastcap-mulGlobal.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     ;; FIXME: with texlive-tiny citation references are rendered as question
-     ;; marks.  During the build warnings like these are printed:
-     ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line 3.
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts)))
+     ;; FIXME: with (texlive-updmap.cfg) citation references are rendered as
+     ;; question marks.  During the build warnings like these are printed:
+     ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line
+     ;; 3.
+     `(("texlive" ,(texlive-updmap.cfg))
        ("ghostscript" ,ghostscript)))
     (arguments
      `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")
@@ -1289,7 +1290,7 @@ with the kernel and various utilities such as per-cpu counters.")
 (define-public linsmith
   (package
     (name "linsmith")
-    (version "0.99.31")
+    (version "0.99.33")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1297,14 +1298,14 @@ with the kernel and various utilities such as per-cpu counters.")
                     version "/linsmith-" version ".tar.gz"))
               (sha256
                (base32
-                "13qj7n9826qc9shkkgd1p6vcpj78v4h9d67wbg45prg7rbnzkzds"))))
+                "1629p29casy9pgy8hzva1bmgrvh923qk01ls3anik6zqn6swkjfn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("CFLAGS=-fcommon")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gtk" ,gtk+-2)
-       ("libgnome" ,libgnomeui)))
+     (list pkg-config))
+    (inputs
+     (list gtk+-2 libgnomeui))
     (home-page "https://jcoppens.com/soft/linsmith/index.en.php")
     (synopsis "Smith Charting program")
     (description "LinSmith is a Smith Charting program, mainly designed for

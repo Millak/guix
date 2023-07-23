@@ -1261,6 +1261,32 @@ face properties and allows configuration of faces and colors.")
 some utility functions, and commands using that infrastructure.")
     (license license:gpl3+)))
 
+;; Package has no release.  Version is extracted from "Version:" keyword in
+;; main file.
+(define-public emacs-project-mode-line-tag
+  (let ((commit "a8809cc1a50cfdedaf7bed2810249ae262884716")
+        (revision "0"))
+    (package
+      (name "emacs-project-mode-line-tag")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/fritzgrabo/project-mode-line-tag")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0bmx9a1g199axj9ypqisvfyf1517czw23zg96x1wdzqrpw3cb7cx"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/fritzgrabo/project-mode-line-tag")
+      (synopsis "Display a buffer's project in its mode line")
+      (description
+       "Display information about a buffer's project (a \"project tag\") in
+its mode line.")
+      (license license:gpl3+))))
+
 (define-public git-modes
   (package
     (name "emacs-git-modes")
@@ -3729,6 +3755,30 @@ always indented.  It reindents after every change, making it more reliable
 than @code{electric-indent-mode}.")
     (license license:gpl2+)))
 
+(define-public emacs-gc-stats
+  (package
+    (name "emacs-gc-stats")
+    (version "1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/"
+                                  "emacs-gc-stats-" version ".tar"))
+              (sha256
+               (base32
+                "19195s2nw87nmdz861j6shw5m2lv0spbcb1wff0y338fgx9sicgz"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~yantar92/emacs-gc-stats")
+    (synopsis "Collect Emacs GC statistics")
+    (description
+     "This package collects Emacs @dfn{garbage collection} (GC) statistics over
+time and saves it in the format that can be shared with Emacs maintainers.
+
+This package does not upload anything automatically.  You will need to upload
+the data manually, by sending email attachment.  If necessary, you can review
+@code{emacs-gc-stats-file} (defaults to @code{~/.emacs.d/emacs-gc-stats.eld})
+before uploading-it is just a text file.")
+    (license license:gpl3+)))
+
 (define-public emacs-gcmh
   ;; No tagged release upstream, but the commit below correspond to the 0.2.1
   ;; release.
@@ -3952,41 +4002,36 @@ as a library for other Emacs packages.")
     ;; We use 'emacs' because AUCTeX requires dbus at compile time
     ;; ('emacs-minimal' does not provide dbus).
     (arguments
-     `(#:emacs ,emacs
-       #:include '("\\.el$" "^images/" "^latex/" "\\.info$")
-       #:exclude '("^tests/" "^latex/README")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (emacs-substitute-variables "preview.el"
-               ("preview-gs-command"
-                (search-input-file inputs "/bin/gs")))
-             (substitute* "preview.el"
-               (("\"dvipng ")
-                (let ((dvipng (search-input-file inputs "/bin/dvipng")))
-                  (string-append "\"" dvipng " ")))
-               (("\"dvips ")
-                (let ((dvips (search-input-file inputs "/bin/dvips")))
-                  (string-append "\"" dvips " ")))
-               (("\"pdf2dsc ")
-                (let ((pdf2dsc (search-input-file inputs "/bin/pdf2dsc")))
-                  (string-append "\"" pdf2dsc " "))))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (etc-dir (string-append out "/share/" ,name "/"
-                                            ,version "/etc")))
-               (with-directory-excursion "doc"
-                 (setenv "HOME" (getenv  "TMPDIR")) ; for mktextfm
-                 (invoke "pdftex" "tex-ref")
-                 (install-file "tex-ref.pdf"
-                               (string-append etc-dir "/refcards")))))))))
+     (list
+      #:emacs emacs
+      #:include #~(cons* "^images/" "^latex/" %default-include)
+      #:exclude #~(cons "^latex/README" %default-exclude)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "preview.el"
+                ("preview-gs-command"
+                 (search-input-file inputs "/bin/gs")))
+              ;; Leave "dvipng" and "dvips" executables as-is.  Otherwise, this
+              ;; would require to add a TeX Live system to inputs, which is
+              ;; much for an Emacs package.
+              (substitute* "preview.el"
+                (("\"pdf2dsc ")
+                 (let ((pdf2dsc (search-input-file inputs "/bin/pdf2dsc")))
+                   (string-append "\"" pdf2dsc " "))))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((doc-dir (string-append #$output "/share/doc/"
+                                            #$name "-" #$version)))
+                (with-directory-excursion "doc"
+                  (setenv "HOME" (getenv  "TMPDIR")) ; for mktextfm
+                  (invoke "pdftex" "tex-ref")
+                  (install-file "tex-ref.pdf" doc-dir))))))))
     (native-inputs
-     (list perl))
+     (list perl (texlive-updmap.cfg)))
     (inputs
-     (list ghostscript
-           (texlive-updmap.cfg (list texlive-amsfonts))))
+     (list ghostscript))
     (home-page "https://www.gnu.org/software/auctex/")
     (synopsis "Integrated environment for TeX")
     (description
@@ -6560,6 +6605,31 @@ detecting specific uses of Ruby, e.g. when using rails, and using a
 appropriate console.")
     (license license:gpl3+)))
 
+;; Package has no release.  Version is extracted from "Version:" keyword in
+;; main file.
+(define-public emacs-zeno-theme
+  (let ((commit "70fa7b7442f24ea25eab538b5a22da690745fef5")
+        (revision "0"))
+    (package
+      (name "emacs-zeno-theme")
+      (version (git-version "1.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zenobht/zeno-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10v6yf9c5qdsxrp6rk1n1xkv4byyfkinsikskdb2apjg05cx2273"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/zenobht/zeno-theme")
+      (synopsis "Dark theme using different shades of blue for Emacs")
+      (description
+       "This package provides a dark theme using different shades of blue for
+Emacs, inspired by @code{Dracula} theme.")
+      (license license:gpl3+))))
+
 (define-public emacs-zig-mode
   (let ((commit "dbc648f5bca8f3b9ca2cc7827f326f5530115144")
         (revision "0"))
@@ -7476,6 +7546,28 @@ as moving between the spec files, and corresponding code files.
 Also included are keybindings for spec files and Dired buffers, as well as
 snippets for yasnippet.")
       (license license:gpl3+))))
+
+(define-public emacs-mode-line-bell
+  (package
+    (name "emacs-mode-line-bell")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/purcell/mode-line-bell")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13n3di05lgqfm4f8krn3p36yika5znhymp5vr2d747x54hqmgh7y"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/purcell/mode-line-bell")
+    (synopsis "Flash the mode-line instead of ringing the bell")
+    (description
+     "This Emacs package provides a global minor mode @code{mode-line-bell-mode}
+which sets @code{ring-bell-function} to a function that will briefly flash the
+mode-line when the bell is rung.")
+    (license license:gpl3+)))
 
 (define-public emacs-mode-line-idle
   ;; Package has no release.  Version is extracted from "Version:" keyword in
@@ -11310,6 +11402,31 @@ provides a front-end interface for the workspace/symbols LSP procedure
 call.")
    (license license:gpl3+)))
 
+(define-public emacs-consult-flycheck
+  ;; This particular commit introduces bug fixes above latest release.
+  (let ((commit "3f2a7c17cc2fe64e0c07e3bf90e33c885c0d7062")
+        (revision "0"))
+    (package
+      (name "emacs-consult-flycheck")
+      (version (git-version "0.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/minad/consult-flycheck")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0cvxl6ynbns3wlpzilhg4ldakb91ikpibbr9wpb2wkzbgi5c766c"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult emacs-flycheck))
+      (home-page "https://github.com/minad/consult-flycheck")
+      (synopsis "Consult integration for Flycheck")
+      (description
+       "This package provides the @code{consult-flycheck} command for Emacs,
+ which integrates @code{Consult} with @code{Flycheck}.")
+      (license license:gpl3+))))
+
 (define-public emacs-eglot-tempel
   (let ((commit "e08b203d6a7c495d4b91ed4537506b5f1ea8a84f")
         (revision "0"))
@@ -12038,6 +12155,28 @@ The following completions are currently available:
 @item Many more.
 @end itemize")
     (license license:gpl3+)))
+
+(define-public emacs-sweet-theme
+  (let ((commit "78f741806ecebe01224bf54d09ad80e306652508")
+        (revision "0"))
+    (package
+      (name "emacs-sweet-theme")
+      (version (git-version "4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/2bruh4me/sweet-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yqz15l6xa1vkll4gaa3jpr30vq3yjgbgadjilsmz5p8mblawhyx"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/2bruh4me/sweet-theme")
+      (synopsis "Emacs theme inspired by the GTK theme Sweet")
+      (description "Sweet is an Emacs theme inspired by the GTK theme with
+the same name.")
+      (license license:gpl3+))))
 
 (define-public emacs-swiper
   (package
@@ -13393,6 +13532,45 @@ and tooling.")
 and RSS, with a user interface inspired by notmuch.")
     (license license:gpl3+)))
 
+(define-public emacs-elfeed-goodies
+  (let ((commit "544ef42ead011d960a0ad1c1d34df5d222461a6b"))
+    (package
+      (name "emacs-elfeed-goodies")
+      (version commit)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jeetelongname/elfeed-goodies")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "147pwqx2maf430qhigzfd6lqk7a5sbrydf9a4c5bvsw8jv7wzb6l"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list
+        emacs-elfeed
+        emacs-popwin
+        emacs-powerline
+        emacs-link-hint))
+      (home-page "https://github.com/jeetelongname/elfeed-goodies")
+      (synopsis
+       "Various bits and pieces to enhance the Elfeed user experience.")
+      (description
+       "This package enhances the vanilla Elfeed user experience with:
+@itemize @bullet
+@item
+An adaptive, powerline-based header for the @code{*elfeed-search*} and
+@code{*elfeed-entry*} buffers, with a matching entry format.
+
+@item
+Split pane setup.
+
+@item
+A function to toggle the @code{*elfeed-log*} buffer in a popup window.
+@end itemize")
+      (license license:gpl3+))))
+
 (define-public emacs-elfeed-org
   (let ((commit "77b6bbf222487809813de260447d31c4c59902c9"))
     (package
@@ -13628,6 +13806,34 @@ maximizes flexibility (at the expense of conciseness).")
 directories quickly in the current project.  The project root is detected
 automatically when Git, Subversion or Mercurial are used.  It also provides
 functions to assist in reviewing changes on files.")
+    (license license:gpl3+)))
+
+(define-public emacs-popwin
+  (package
+    (name "emacs-popwin")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacsorphanage/popwin")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x1iimzbwb5izbia6aj6xv49jybzln2qxm5ybcrcq7xync5swiv1"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires an attached terminal
+      ))
+    (native-inputs
+     (list emacs-ert-runner))
+    (home-page "https://github.com/emacsorphanage/popwin")
+    (synopsis "Popup window manager for Emacs")
+    (description
+     "This package provides utilities for treating certain windows as @dfn{pop
+up windows}, which close automatically when quitting a command or selecting
+another window.")
     (license license:gpl3+)))
 
 (define-public emacs-pyvenv
@@ -14970,7 +15176,7 @@ Lua programming language}.")
 (define-public emacs-ebuild-mode
   (package
     (name "emacs-ebuild-mode")
-    (version "1.64")
+    (version "1.65")
     (source
      (origin
        (method url-fetch)
@@ -14979,7 +15185,7 @@ Lua programming language}.")
              "ebuild-mode-" version ".tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "180wjbi385fhafijmmimcf23fdympdk2km0yj9rv6pmfbfjgq2bv"))))
+        (base32 "07zla002lxkck4cgpfr5c5lmarxb12yfnldgflv9vf88yfa997xw"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -17460,6 +17666,31 @@ DefaultEncrypt, please refer to the home page or read the comments in the
 source file, @file{jl-encrypt.el}.")
     (license license:gpl3+)))
 
+;; Package has no release.  Version is extracted from "Version:" keyword in
+;; main file.
+(define-public emacs-exotica-theme
+  (let ((commit "ff3ef4f6fa38c93b99becad977c7810c990a4d2f")
+        (revision "0"))
+    (package
+      (name "emacs-exotica-theme")
+      (version (git-version "1.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zenobht/exotica-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1kp6q55g3dcya4y79x877vqwxa4z2rkkvhs49pkwr3wljf4af2pd"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/zenobht/exotica-theme")
+      (synopsis "Dark theme for Emacs with vibrant colors")
+      (description
+       "A dark opinionated theme with vibrant colors for Emacs.  Inspired by
+@code{Molokai} and @code{Dracula} themes.")
+      (license license:gpl3+))))
+
 (define-public emacs-extend-smime
   (package
     (name "emacs-extend-smime")
@@ -19243,6 +19474,34 @@ available key bindings that follow C-x (or as many as space allows given your
 settings).")
     (license license:gpl3+)))
 
+;; Tagged release upstream is from before the package was orphaned.
+;; The base version is extracted from the "Version" keyword in the main file
+;; with "-git" suffix removed.
+(define-public emacs-which-key-posframe
+  (let ((commit "e4a9ce9a1b20de550fca51f14d055821980d534a")
+        (revision "0"))
+    (package
+      (name "emacs-which-key-posframe")
+      (version (git-version "0.2.0.50" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/emacsorphanage/which-key-posframe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0kgc29pb5k6cb2m13cz1yhys1k8l4dpx6wjjgldpdlg9qw2i1b53"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-posframe emacs-which-key))
+      (home-page "https://github.com/emacsorphanage/which-key-posframe")
+      (synopsis "Display which-key popup in a posframe (a child frame)")
+      (description
+       "This package is a @code{which-key} extension, which uses posframe
+(a child frame) to show @code{which-key} popups.")
+      (license license:gpl3+))))
+
 (define-public emacs-display-wttr
   (package
     (name "emacs-display-wttr")
@@ -19444,7 +19703,7 @@ multiplexer.")
 (define-public emacs-plz
   (package
     (name "emacs-plz")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -19453,7 +19712,7 @@ multiplexer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12hnsafv1bxkk1pb471i8hw0zy0yfla8afpcahlg4k4dni4dnqsm"))))
+        (base32 "18lq7v2gglfnax5r1svh9p0fcd5hs745js57nl8bk58ba047a9q8"))))
     (build-system emacs-build-system)
     (inputs (list curl))
     (arguments
@@ -23186,10 +23445,10 @@ within Emacs.")
 (define-public emacs-svg-lib
   ;; XXX: Upstream does not tag releases.  The commit hash below corresponds
   ;; to the version bump.
-  (let ((commit "0486c9453449771bc3f5872f70bc5cb23580d0f4"))
+  (let ((commit "5ba4e4ea2b5c66e8811beb53251dee13685b2cb2"))
     (package
       (name "emacs-svg-lib")
-      (version "0.2.5")
+      (version "0.2.6")
       (source
        (origin
          (method git-fetch)
@@ -23198,7 +23457,7 @@ within Emacs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "059vd4k7bvskkriwaiz4n2yafc3inndrr018hqfpic4k02cbwzpv"))))
+          (base32 "1zpcw8arizwjiz7diky7f0nh65zkp0pmnpyqzb0h1qgqnlf734k4"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/rougier/svg-lib")
       (synopsis "Emacs SVG library for creating tags, icons and bars")
@@ -26203,6 +26462,33 @@ displayed in chronological order) or as an Org document where the node tree
 maps the thread tree.")
       (license license:gpl3+))))
 
+;; Package has no releases or tags.  Version is extracted from "Version:"
+;; keyword in main file.
+(define-public emacs-mu4e-dashboard
+  (let ((commit "16ffbb2a36817647e345f60acdfaac66dda28c0f")
+        (revision "0"))
+    (package
+      (name "emacs-mu4e-dashboard")
+      (version (git-version "0.1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rougier/mu4e-dashboard")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1fp2f9rvh20r3advbzcgm5vv2dzcyvy1618hfykbm6ac4wjscdll"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list mu))
+      (home-page "https://github.com/rougier/mu4e-dashboard")
+      (synopsis "Build your own dashboard for mu4e using org-mode")
+      (description
+       "This package provides an @code{org-mode} link type that allows
+execution of various @code{mu4e} queries when clicked.  Such links can be
+organized into a dashboard, by simply writing an org file.")
+      (license license:gpl3+))))
+
 (define-public emacs-pinentry
   (let ((commit "dcc9ba03252ee5d39e03bba31b420e0708c3ba0c")
         (revision "1"))
@@ -26870,6 +27156,26 @@ text-tree applications inside GNU Emacs.  It consists of 2 subprojects:
 @command{ztree-diff} and @command{ztree-dir} (the basis of
 @command{ztree-diff}).")
       (license license:gpl3))))
+
+(define-public emacs-heaven-and-hell
+  (package
+    (name "emacs-heaven-and-hell")
+    (version "0.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/valignatev/heaven-and-hell")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bgs638nsn9hyvc9wbc2jpqm5i3hblld1mhmf0h9z0j6fjr0aapx"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/valignatev/heaven-and-hell")
+    (synopsis "Easily toggle light/dark themes in Emacs")
+    (description "This package makes the process of switching between
+light and dark themes as easy as hitting a single keystroke.")
+    (license license:expat)))
 
 (define-public emacs-helm-org-contacts
   (let ((commit "741eca6239684950219c9a12802386a132491b8c")
@@ -34208,7 +34514,7 @@ launching other commands/applications from within Emacs, similar to the
 (define-public emacs-no-littering
   (package
     (name "emacs-no-littering")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -34217,7 +34523,7 @@ launching other commands/applications from within Emacs, similar to the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i5fcci8fg14hbd4cjb84q3mx6rfwhbwkw0g21v25dal61kw4yvb"))))
+        (base32 "14f07irjbk3akc07a0y5awyflmhsxvj8gg67y81zp90danjkgvvr"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
@@ -34387,6 +34693,27 @@ Values are stored in a directory in @code{user-emacs-directory}, using
 one file per value.  This makes it easy to delete or remove unused
 variables.")
     (license license:gpl3+)))
+
+(define-public emacs-persistent-scratch
+  (package
+    (name "emacs-persistent-scratch")
+    (version "0.3.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Fanael/persistent-scratch")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "187cyl005csmmmh292km1v3ffl8x49h5qyn87i4adz9l5sqnpdgj"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/Fanael/persistent-scratch")
+    (synopsis "Preserve the scratch buffer across Emacs sessions")
+    (description
+     "Preserve the state of scratch buffers across Emacs sessions by saving the
+state to and restoring it from a file, with auto-saving and backups.")
+    (license license:bsd-2)))
 
 (define-public emacs-company-emoji
   (package
@@ -35740,6 +36067,29 @@ uncluttered design pattern to achieve optimal focus and readability for code
 syntax highlighting and UI components.")
     (license license:expat)))
 
+(define-public emacs-weyland-yutani-theme
+  (let ((commit "e89a63a62e071180c9cdd9067679fadc3f7bf796")
+        (revision "0"))
+    (package
+      (name "emacs-weyland-yutani-theme")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jstaursky/weyland-yutani-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gxlz9b7fvbjkqxsyb4l75g7jsxyms0i1vpnb6y499hl115akcaz"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/jstaursky/weyland-yutani-theme")
+      (synopsis "Emacs theme based on the Alien movie franchise")
+      (description
+       "Weyland Yutani is a dark Emacs theme based on the Alien movie
+franchise.")
+      (license license:gpl3+))))
+
 (define-public emacs-janet-mode
   (let ((commit "2f5bcabcb6953e1ed1926ba6a2328c453e8b4ac7"))
     (package
@@ -36677,7 +37027,7 @@ Fennel code within Emacs.")
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
-   (version "0.9")
+   (version "0.10")
    (source
      (origin
        (method git-fetch)
@@ -36685,7 +37035,7 @@ Fennel code within Emacs.")
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "16c74vff882rx8yp4ybaydlg5774xz68iasajhidbn0fb4fhz8ph"))
+        (base32 "0fpc6pf1chjs9bb4m9hzacny3cdxvnpvwsf0vrbbz3vy9sf1a30c"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (propagated-inputs (list emacs-compat))
@@ -37421,6 +37771,32 @@ a way to pop up a frame at point.  Vertico-posframe is an Emacs package and
 a Vertico extension which provides a way to pop up a frame at point to show
 a vertical completion UI.")
     (license license:gpl3+)))
+
+;; No tagged release upstream
+(define-public emacs-transient-posframe
+  (let ((commit "dcd898d1d35183a7d4f2c8f0ebcb43b4f8e70ebe")
+        (revision "0"))
+    (package
+      (name "emacs-transient-posframe")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/yanghaoxie/transient-posframe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1aq1vbkww55xplyaa3xagz9z4kdlsxk13x054asnk0dqps4bcgbf"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-posframe emacs-transient))
+      (home-page "https://github.com/yanghaoxie/transient-posframe")
+      (synopsis "Pop up a posframe (a child frame) to show Transients")
+      (description
+       "This package is a @code{transient} extension, which uses @code{posframe}
+(a child frame) to show @code{transient} popups in Emacs.  It was developed with
+@code{transient} popups of @code{magit} in mind.")
+      (license license:gpl3+))))
 
 (define-public emacs-tintin-mode
   (let ((commit "82e71e1db92ee3d94c7d0208bafc5de337193de8")

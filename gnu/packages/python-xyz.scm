@@ -61,7 +61,7 @@
 ;;; Copyright © 2019, 2023 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019-2023, Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
@@ -2446,7 +2446,7 @@ conventions and aliases in the same expression.")
              (setenv "MAGICK_HOME" (assoc-ref inputs "imagemagick"))
              (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16")))
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest" "-vv")))))))
     (native-inputs
@@ -4273,7 +4273,8 @@ processing tasks.")
     (propagated-inputs
      (list python-matplotlib python-numpy python-pandas python-scipy))
     (native-inputs
-     (list python-setuptools python-pytest python-pytest-cov tzdata))
+     (list python-setuptools python-setuptools-scm
+           python-pytest python-pytest-cov tzdata))
     (home-page "https://github.com/has2k1/mizani")
     (synopsis "Create data visualizations in Python")
     (description
@@ -5270,6 +5271,26 @@ recognition library with full Unicode support.  It has features like:
 @item Allows rules extension and custom normalizers.
 @end itemize")
     (license license:expat)))
+
+(define-public python-makefun
+  (package
+    (name "python-makefun")
+    (version "1.15.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "makefun" version))
+              (sha256
+               (base32
+                "19a8dga8rnmjn5gy1cy1wdi28swbkdkypwbqikbxil6ynqcg3c20"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/smarie/python-makefun")
+    (synopsis "Library to dynamically create python functions")
+    (description "@code{makefun} helps create functions dynamically with a
+given signature.  It was largely inspired by @code{python-decorator} and
+@code{functools}.")
+    (license license:bsd-3)))
 
 (define-public python-markdown-it-py
   (package
@@ -6334,7 +6355,7 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests? (invoke "pytest" "-vv" "tests")))))))
     (propagated-inputs (list python-paramiko))
-    (native-inputs (list openssh python-pytest))
+    (native-inputs (list openssh python-pytest python-mock))
     (home-page "https://github.com/pahaz/sshtunnel")
     (synopsis "Python SSH tunnels library")
     (description "@code{sshtunnel} is a Python module for easily creating SSH
@@ -7226,13 +7247,15 @@ capabilities.")
            python-sphinx-4
            python-sphinx-panels
            texinfo
-           texlive-bin
-           texlive-cbfonts
-           texlive-cm-super
-           texlive-greek-fontenc
-           texlive-latex-expdlist
-           texlive-polyglossia
-           texlive-xindy))
+           (texlive-updmap.cfg
+            (list texlive-cbfonts
+                  texlive-cm-super
+                  texlive-expdlist
+                  texlive-greek-fontenc
+                  texlive-latexmk
+                  texlive-polyglossia
+                  texlive-xetex
+                  texlive-xindy))))
     (inputs '())
     (propagated-inputs '())
     (synopsis "Documentation for the @code{python-numpy} package")
@@ -8011,26 +8034,26 @@ toolkits.")
      (list graphviz
            inkscape/stable
            python-colorspacious
+           python-ipython
+           python-ipywidgets
            python-mpl-sphinx-theme
+           python-numpydoc
            python-scipy
            python-sphinx
            python-sphinx-copybutton
            python-sphinx-gallery
            python-sphinxcontrib-svg2pdfconverter
-           python-numpydoc
-           python-ipython
-           python-ipywidgets
+           texinfo
            texlive-amsfonts
            texlive-amsmath
            texlive-babel
-           texlive-fontspec
-           texlive-unicode-math
            texlive-etoolbox
-           texlive-latex-expdlist
-           texlive-underscore
-           texlive-latex-type1cm
+           texlive-expdlist
+           texlive-fontspec
            texlive-times
-           texinfo))
+           texlive-type1cm
+           texlive-underscore
+           texlive-unicode-math))
     (synopsis "Documentation for the @code{python-matplotlib} package")))
 
 (define-public python-matplotlib-inline
@@ -10826,9 +10849,11 @@ computing.")
            python-sphinx
            python-sphinx-rtd-theme
            texinfo
-           texlive-bin
-           texlive-polyglossia
-           texlive-xindy))))
+           (texlive-updmap.cfg
+            (list texlive-latexmk
+                  texlive-polyglossia
+                  texlive-xetex
+                  texlive-xindy))))))
 
 (define-public python-urwid
   (package
@@ -15159,37 +15184,38 @@ time.")
            texlive-adjustbox
            texlive-booktabs
            texlive-caption
+           texlive-collection-basic
            texlive-enumitem
+           texlive-environ
+           texlive-eurosym
+           texlive-fancyvrb
+           texlive-float
            texlive-fontspec
-           texlive-iftex
+           texlive-geometry
            texlive-grffile
            texlive-hyperref
-           texlive-fancyvrb
-           texlive-latex-float
-           texlive-latex-geometry
-           texlive-latex-jknapltx
+           texlive-jknapltx
+           texlive-jknapltx
+           texlive-lm
+           texlive-lm-math
+           texlive-mathpazo
            texlive-ms
-           texlive-latex-parskip
-           texlive-latex-trimspaces
-           texlive-latex-upquote
+           texlive-parskip
+           texlive-pdfcol
+           texlive-pgf
+           texlive-rsfs
            texlive-stringenc
            texlive-tcolorbox
            texlive-titling
            texlive-tools
+           texlive-trimspaces
+           texlive-ucs
            texlive-ulem
            texlive-unicode-math
+           texlive-upquote
            texlive-xcolor
-           (texlive-updmap.cfg (list texlive-amsfonts
-                                     texlive-amsmath
-                                     texlive-eurosym
-                                     texlive-fonts-rsfs
-                                     texlive-jknappen
-                                     texlive-latex-ucs
-                                     texlive-lm
-                                     texlive-lm-math
-                                     texlive-mathpazo
-                                     texlive-oberdiek
-                                     texlive-zapfding))))
+           texlive-xetex
+           texlive-zapfding))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")
     (description "The @code{nbconvert} tool, @code{jupyter nbconvert}, converts
@@ -25570,16 +25596,16 @@ decisions with any given backend.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2023.4.1")
+    (version "2023.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dask/dask/")
-             (commit "a69a808f75a961504a9ba18058bff5e458be97fb")))
+             (commit "8523b3bae2ec0183d9d92cc536a3405f15189b7e")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "089kz6hcgl4yxwx99br1124sg1gkdy554hf120z9a5cfbrf0ah9y"))))
+        (base32 "1x617m0jlc63v938kqga9mhflhac3aj1ylq5mkpf2g9pd9x2hcbz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -29169,13 +29195,7 @@ By default it uses the open Python vulnerability database Safety DB.")
     (propagated-inputs
      `(("wheel" ,python-wheel)))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-fonts-ec
-                                        texlive-iftex
-                                        texlive-hyperref
-                                        texlive-oberdiek
-                                        texlive-lm
-                                        texlive-xcolor)))))
+     `(("texlive" ,(texlive-updmap.cfg (list texlive-lm texlive-xcolor)))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

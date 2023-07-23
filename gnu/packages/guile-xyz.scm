@@ -4044,12 +4044,13 @@ feature-set, fully programmable in Guile Scheme.")
     (inputs
      (list vigra vigra-c guile-2.2))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-booktabs
-                                        texlive-lm
-                                        texlive-siunitx
-                                        texlive-standalone
-                                        texlive-xcolor
-                                        texlive-fonts-iwona)))
+     `(("texlive" ,(texlive-updmap.cfg
+                    (list texlive-booktabs
+                          texlive-iwona
+                          texlive-lm
+                          texlive-siunitx
+                          texlive-standalone
+                          texlive-xcolor)))
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
      `(("guile-lib" ,guile2.2-lib)))
