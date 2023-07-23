@@ -386,16 +386,26 @@ share smart cards from client system to local or remote virtual machines.")
 (define-public virt-viewer
   (package
     (name "virt-viewer")
+    ;; XXX Remove the 'build-with-recent-meson phase when updating.
     (version "11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://virt-manager.org/download/sources/virt-viewer/"
-                    "virt-viewer-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1l5bv6x6j21l487mk3n93ai121gg62n6b069r2jpf72cbhra4gx4"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://virt-manager.org/download/sources/virt-viewer/"
+             "virt-viewer-" version ".tar.xz"))
+       (sha256
+        (base32 "1l5bv6x6j21l487mk3n93ai121gg62n6b069r2jpf72cbhra4gx4"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'build-with-recent-meson
+                 ;; Fix ‘ERROR: Function does not take positional arguments.’
+                 (lambda _
+                   (substitute* "data/meson.build"
+                     (("i18n\\.merge_file \\(.*" match)
+                      (string-append match "#"))))))))
     (native-inputs
      (list `(,glib "bin")
            gettext-minimal
