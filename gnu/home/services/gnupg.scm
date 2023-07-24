@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,7 +24,7 @@
   #:use-module (gnu services configuration)
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
-  #:autoload   (gnu packages gnupg) (gnupg pinentry)
+  #:autoload   (gnu packages gnupg) (gnupg pinentry parcimonie)
   #:export (home-gpg-agent-configuration
             home-gpg-agent-configuration?
             home-gpg-agent-configuration-gnupg
@@ -34,7 +35,16 @@
             home-gpg-agent-configuration-max-cache-ttl-ssh
             home-gpg-agent-configuration-extra-content
 
-            home-gpg-agent-service-type))
+            home-gpg-agent-service-type
+
+            home-parcimonie-configuration
+            home-parcimonie-configuration?
+            home-parcimonie-configuration-parcimonie
+            home-parcimonie-configuration-gnupg-already-torified?
+            home-parcimonie-configuration-refresh-guix-keyrings?
+            home-parcimonie-configuration-extra-content
+
+            home-parcimonie-service-type))
 
 (define raw-configuration-string? string?)
 
@@ -148,3 +158,68 @@ agent, with support for handling OpenSSH material."))))
 managing OpenPGP and optionally SSH private keys.  When SSH support is
 enabled, @command{gpg-agent} acts as a drop-in replacement for OpenSSH's
 @command{ssh-agent}.")))
+
+(define-configuration/no-serialization home-parcimonie-configuration
+  (parcimonie
+    (file-like parcimonie)
+    "The parcimonie package to use.")
+  (verbose?
+    (boolean #f)
+    "Provide extra output to the log file.")
+  (gnupg-aleady-torified?
+    (boolean #f)
+    "GnuPG is already configured to use tor and parcimonie won't attempt to use
+tor directly.")
+  (refresh-guix-keyrings?
+    (boolean #f)
+    "Also refresh any Guix keyrings found in the XDG_CONFIG_DIR.")
+  (extra-content
+    (raw-configuration-string "")
+    "Raw content to add to the parcimonie service."))
+
+(define (home-parcimonie-shepherd-service config)
+  "Return a user service to run parcimonie."
+  (match-record config <home-parcimonie-configuration>
+    (parcimonie verbose? gnupg-aleady-torified?
+                refresh-guix-keyrings? extra-content)
+    (let ((log-file #~(string-append %user-log-dir "/parcimonie.log")))
+      (list (shepherd-service
+              (provision '(parcimonie))
+              (modules '((shepherd support)   ;for '%user-log-dir'
+                         (guix build utils)
+                         (srfi srfi-1)))
+              (start #~(make-forkexec-constructor
+                         (cons*
+                           #$(file-append parcimonie "/bin/parcimonie")
+                           #$@(if verbose?
+                                '("--verbose")
+                                '())
+                           #$@(if gnupg-aleady-torified?
+                                '("--gnupg_already_torified")
+                                '())
+                           #$@(if (not (string=? extra-content ""))
+                                (list extra-content)
+                                '())
+                           #$@(if refresh-guix-keyrings?
+                                '((append-map
+                                    (lambda (item)
+                                      (list (string-append "--gnupg_extra_args="
+                                                           "--keyring=" item)))
+                                    (find-files
+                                      (string-append (getenv "XDG_CONFIG_HOME") "/guix")
+                                      "^trustedkeys\\.kbx$")))
+                                '((list))))
+                         #:log-file #$log-file))
+              (stop #~(make-kill-destructor))
+              (respawn? #t)
+              (documentation "Incrementally refresh gnupg keyring over Tor"))))))
+
+(define home-parcimonie-service-type
+  (service-type
+   (name 'home-parcimonie)
+   (extensions
+    (list (service-extension home-shepherd-service-type
+                             home-parcimonie-shepherd-service)))
+   (default-value (home-parcimonie-configuration))
+   (description
+    "Incrementally refresh GnuPG keyrings over Tor.")))

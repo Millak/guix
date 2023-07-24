@@ -43944,6 +43944,62 @@ Extra content appended as-is to this @code{Host} block in
 
 @end deftp
 
+@cindex Parcimonie, Home service
+The @code{parcimonie} service runs a daemon that slowly refreshes a GnuPG
+public key from a keyserver.  It refreshes one key at a time; between every
+key update parcimonie sleeps a random amount of time, long enough for the
+previously used Tor circuit to expire.  This process is meant to make it hard
+for an attacker to correlate the multiple key update.
+
+As an example, here is how you would configure @code{parcimonie} to refresh the
+keys in your GnuPG keyring, as well as those keyrings created by Guix, such as
+when running @code{guix import}:
+
+@lisp
+(service home-parcimonie-service-type
+         (home-parcimonie-configuration
+           (refresh-guix-keyrings? #t)))
+@end lisp
+
+This assumes that the Tor anonymous routing daemon is already running on your
+system.  On Guix System, this can be achieved by setting up
+@code{tor-service-type} (@pxref{Networking Services, @code{tor-service-type}}).
+
+The service reference is given below.
+
+@defvar parcimonie-service-type
+This is the service type for @command{parcimonie}
+(@uref{https://salsa.debian.org/intrigeri/parcimonie, Parcimonie's web site}).
+Its value must be a @code{home-parcimonie-configuration}, as shown below.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Table} home-parcimonie-configuration
+Available @code{home-parcimonie-configuration} fields are:
+
+@table @asis
+@item @code{parcimonie} (default: @code{parcimonie}) (type: file-like)
+The parcimonie package to use.
+
+@item @code{verbose?} (default: @code{#f}) (type: boolean)
+Whether to have more verbose logging from the service.
+
+@item @code{gnupg-already-torified?} (default: @code{#f}) (type: boolean)
+Whether GnuPG is already configured to pass all traffic through
+@uref{https://torproject.org, Tor}.
+
+@item @code{refresh-guix-keyrings?} (default: @code{#f}) (type: boolean)
+Guix creates a few keyrings in the @var{$XDG_CONFIG_DIR}, such as when running
+@code{guix import} (@pxref{Invoking guix import}).  Setting this to @code{#t}
+will also refresh any keyrings which Guix has created.
+
+@item @code{extra-content} (default: @code{#f}) (type: raw-configuration-string)
+Raw content to add to the parcimonie command.
+
+@end table
+
+@end deftp
 
 @c %end of fragment
 
