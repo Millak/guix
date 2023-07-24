@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;; Copyright © 2022 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -705,6 +706,25 @@ safety and thread safety guarantees.")
 (define rust-1.68
   (rust-bootstrapped-package
    rust-1.67 "1.68.2" "15ifyd5jj8rd979dkakp887hgmhndr68pqaqvd2hqkfdywirqcwk"))
+
+(define rust-1.69
+  (let ((base-rust
+          (rust-bootstrapped-package
+            rust-1.68 "1.69.0"
+            "03zn7kx5bi5mdfsqfccj4h8gd6abm7spj0kjsfxwlv5dcwc9f1gv")))
+    (package
+      (inherit base-rust)
+      (source
+        (origin
+          (inherit (package-source base-rust))
+          (snippet
+           '(begin
+              (for-each delete-file-recursively
+                        '("src/llvm-project"
+                          "vendor/tikv-jemalloc-sys/jemalloc"))
+              ;; Also remove the bundled (mostly Windows) libraries.
+              (for-each delete-file
+                        (find-files "vendor" "\\.(a|dll|exe|lib)$")))))))))
 
 ;;; Note: Only the latest version of Rust is supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
