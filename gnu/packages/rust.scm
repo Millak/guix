@@ -743,6 +743,12 @@ safety and thread safety guarantees.")
         ;; for a precompiled library.
         (patches (search-patches "rust-1.70-fix-rustix-build.patch")))))))
 
+(define (make-ignore-test-list strs)
+  "Function to make creating a list to ignore tests a bit easier."
+  (map (lambda (str)
+    `((,str) (string-append "#[ignore]\n" ,str)))
+    strs))
+
 ;;; Note: Only the latest version of Rust is supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
