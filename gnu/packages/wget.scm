@@ -46,16 +46,15 @@
 (define-public wget
   (package
     (name "wget")
-    (version "1.21.3.24")
+    (version "1.21.4")
     (source
      (origin
       (method url-fetch)
-      ;;(uri (string-append "mirror://gnu/wget/wget-"
-      ;;                    version ".tar.lz"))
-      (uri "https://www.multiprecision.org/wget-1.21.3.24-2b723.tar.lz")
+      (uri (string-append "mirror://gnu/wget/wget-"
+                          version ".tar.lz"))
       (sha256
        (base32
-        "17ip94mvax83h0gh4905jqc64g5qf3vgxr3bj9gn02pijjm5lzbp"))))
+        "1nabhxx3rg28h2scba2mlawzjyx3dw07j2kjn76cpvahbyd630rn"))))
     (build-system gnu-build-system)
     (inputs
      (list gnutls libidn2 libpsl))
