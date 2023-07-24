@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1939,7 +1940,7 @@ by name.")
     (package
       (inherit rofi)
       (name "rofi-wayland")
-      (version "1.7.5+wayland1")
+      (version "1.7.5+wayland2")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://github.com/lbonn/rofi"
@@ -1947,16 +1948,16 @@ by name.")
                                     "/rofi-" version ".tar.xz"))
                 (sha256
                  (base32
-                  "09n71wv3nxpzpjmvqmxlxk0zfln3x2l8admfq571781p9hw0w6wp"))))
+                  "0l6rf8qwvawyh938pinl9fkwzjnq72xpa9a7lwk9jrr5lkk3h8yj"))))
       (build-system meson-build-system)
       (inputs
        (modify-inputs (package-inputs base)
          (append wayland wayland-protocols)))
       (description
-       (string-append
-        (package-description base)
-        "  This package, @code{rofi-wayland}, provides additional wayland
-support.")))))
+       "Rofi is a minimalist application launcher.  It memorizes which
+applications you regularly use and also allows you to search for an
+application by name.  This package, @code{rofi-wayland}, provides additional
+wayland support."))))
 
 (define-public rofi-calc
   (package
