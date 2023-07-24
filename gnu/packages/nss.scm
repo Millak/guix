@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016-2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -155,13 +155,18 @@ in the Mozilla clients.")
                   (ice-9 match)
                   (srfi srfi-26))
       #:tests? (not (or (%current-target-system)
-                        ;; Tests take more than 30 hours on riscv64-linux.
-                        (target-riscv64?)))
+                        ;; Tests take more than 30 hours on some architectures.
+                        (target-riscv64?)
+                        (target-ppc32?)))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
             (lambda _
               (setenv "CC" #$(cc-for-target))
+              ;; No VSX on powerpc-linux.
+              #$@(if (target-ppc32?)
+                     #~((setenv "NSS_DISABLE_CRYPTO_VSX" "1"))
+                     #~())
               ;; Tells NSS to build for the 64-bit ABI if we are 64-bit system.
               #$@(if (target-64bit?)
                      #~((setenv "USE_64" "1"))
