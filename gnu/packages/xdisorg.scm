@@ -2647,7 +2647,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
 (define-public wl-clipboard
   (package
     (name "wl-clipboard")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2656,7 +2656,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g6hcsn4klapvz3bw0k8syixwyyi4cl1c7vbc6f1a2hjpcf4pawn"))))
+        (base32 "0r45k6fk9k26qs88s2sjlgjjamhj2jqghdivlh2xjqknws63d29g"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -2669,7 +2669,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
                (add-after 'unpack 'patch-file-names
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* (find-files "src" "\\.c$")
-                     (("\"(cat|rm)\"" _ command)
+                     (("\"(cat)\"" _ command)
                       (string-append "\"" (assoc-ref inputs "coreutils")
                                      "/bin/" command "\""))
                      (("\"xdg-mime\"")
