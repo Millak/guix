@@ -1211,6 +1211,35 @@ the @env{RSPEC_DEBUG} environment variable to @samp{true} then invoke the
     (home-page "https://github.com/ko1/rspec-debug")
     (license license:expat)))
 
+(define-public ruby-specinfra
+  (package
+    (name "ruby-specinfra")
+    (version "2.88.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "specinfra" version))
+              (sha256
+               (base32
+                "07lap3sknncffpq9jw1x1mn9c5xxd058wxs5vnyz1y0lawdjfnsf"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-scp ruby-net-ssh ruby-net-telnet
+                             ruby-sfl))
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-dependencies
+            (lambda _
+              (substitute* "specinfra.gemspec"
+                (("%q<net-telnet>.freeze, \\[.*\\]")
+                 "%q<net-telnet>.freeze, [\">= 0\"]")))))))
+    (synopsis "Common layer for serverspec and itamae")
+    (description "This Gem provides a common layer for serverspec and
+itamae.")
+    (home-page "https://github.com/mizzy/specinfra")
+    (license license:expat)))
+
 ;; Bundler is yet another source of circular dependencies, so we must disable
 ;; its test suite as well.
 (define-public bundler
