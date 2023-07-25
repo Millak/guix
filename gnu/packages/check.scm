@@ -2101,6 +2101,12 @@ same arguments.")
         (base32
          "1psf5dqxvc38qzxvc305mkg5xpdmdkbkkfiyqlmdnkgh7z5dx025"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Fails with OSError: cannot send to <Channel id=1 closed>
+      ;; on foreign distribution.
+      '(list "-k" "not test_internal_errors_propagate_to_controller")))
     (native-inputs (list python-setuptools-scm python-filelock python-pytest))
     (propagated-inputs (list python-execnet python-pytest-forked))
     (home-page "https://github.com/pytest-dev/pytest-xdist")
