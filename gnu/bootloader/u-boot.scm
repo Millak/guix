@@ -45,6 +45,7 @@
             u-boot-rock64-rk3328-bootloader
             u-boot-rockpro64-rk3399-bootloader
             u-boot-sifive-unmatched-bootloader
+            u-boot-starfive-visionfive2-bootloader
             u-boot-ts7970-q-2g-1000mhz-c-bootloader
             u-boot-wandboard-bootloader))
 
@@ -145,6 +146,15 @@
                               image (* 34 512))
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               image (* 2082 512)))))
+
+(define install-starfive-visionfive2-u-boot
+  #~(lambda (bootloader root-index image)
+      (let ((spl (string-append bootloader "/libexec/spl/u-boot-spl.bin.normal.out"))
+            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
+        (write-file-on-device spl (stat:size (stat spl))
+                              image (* 4096 512))
+        (write-file-on-device u-boot (stat:size (stat u-boot))
+                              image (* 8192 512)))))
 
 
 
@@ -290,3 +300,9 @@
    (inherit u-boot-bootloader)
    (package u-boot-sifive-unmatched)
    (disk-image-installer install-sifive-unmatched-u-boot)))
+
+(define u-boot-starfive-visionfive2-bootloader
+  (bootloader
+   (inherit u-boot-bootloader)
+   (package u-boot-starfive-visionfive2)
+   (disk-image-installer install-starfive-visionfive2-u-boot)))
