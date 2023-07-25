@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Aleksandr Vityazev <avityazev@posteo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -566,6 +567,47 @@ executing in M-mode.")
     (synopsis "OpenSBI firmware files for QEMU")
     (description
      "This package contains OpenSBI firmware files for use with QEMU.")))
+
+(define-public starfive-tech-tools
+  (let ((commit "8c5acc4e5eb7e4ad012463b05a5e3dbbfed1c38d")
+        (revision "1"))
+    (package
+      (name "starfive-tech-tools")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/starfive-tech/Tools")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y0k7pmdydl8djrl47a2qk3ly3gaa7zlxfdy3dfdawkcr7mpxzr9"))
+                (snippet
+                 #~(begin
+                     (use-modules (guix build utils))
+                     ;; Delete bundled recovery binary blobs.
+                     (delete-file-recursively "recovery")))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f    ; no check target
+             #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'chdir-spl-tool
+                   (lambda _
+                     (chdir "spl_tool")))
+                 (delete 'configure)
+                 (replace 'install
+                   (lambda _
+                     (install-file "spl_tool" (string-append #$output "/bin")))))))
+      (home-page "https://github.com/starfive-tech/Tools")
+      (synopsis "Starfive Tech tools")
+      (description "This package provides Starfive Tech tools.  @code{spl_tool}
+is a jh7110 signature tool used to generate spl header information and generate
+@file{u-boot-spl.bin.normal.out}.")
+      (license license:gpl2+))))
 
 (define-public seabios
   (package
