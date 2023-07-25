@@ -1245,6 +1245,31 @@ Documentation} for more information (for example by running @samp{info
        (modify-inputs (package-inputs base)
          (append opensbi-generic))))))
 
+(define-public u-boot-starfive-visionfive2
+  (let ((base (make-u-boot-package "starfive_visionfive2" "riscv64-linux-gnu")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "OPENSBI" (search-input-file inputs
+                                                       "fw_dynamic.bin"))))
+              (add-after 'install 'install-spl-binary
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let ((spl-tool (search-input-file inputs "/bin/spl_tool")))
+                    (with-directory-excursion
+                      (string-append #$output "/libexec/spl")
+                      (invoke spl-tool
+                              "--creat-splhdr"
+                              "--file"
+                              "u-boot-spl.bin")))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append opensbi-starfive-visionfive2 starfive-tech-tools))))))
+
 (define-public u-boot-rock64-rk3328
   (let ((base (make-u-boot-package "rock64-rk3328" "aarch64-linux-gnu")))
     (package
