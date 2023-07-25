@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,7 +31,7 @@
              (srfi srfi-1))
 
 (use-package-modules
- base commencement compression file gawk gdb gettext guile
+ base bootloaders commencement compression file gawk gdb gettext guile
  hurd less m4 package-management python ssh version-control)
 
 (define (input->package input)
@@ -64,11 +64,14 @@
 
   ;; development packages
   gcc-toolchain gdb-minimal git-minimal gnu-make
+  gettext-minimal python-minimal
 
-  ;; guix environment guix --without-tests=python-minimal --without-tests=gettext-minimal
-  (package-without-tests gettext-minimal)
-  (package-without-tests python-minimal)
+  ;; ourselves!
+  (package-without-tests guix)
+
+  ;; system
+  grub-minimal grub
 
   (append
    guix-dependencies
-   (delete guile-3.0 %base-packages/hurd))))
+   %base-packages/hurd)))
