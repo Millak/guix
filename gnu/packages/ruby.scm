@@ -12983,6 +12983,26 @@ manifest file.")
     (home-page "https://github.com/mvz/rake-manifest")
     (license license:expat)))
 
+(define-public ruby-sfl
+  (package
+    (name "ruby-sfl")
+    (version "2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "sfl" version))
+              (sha256
+               (base32
+                "1qm4hvhq9pszi9zs1cl9qgwx1n4wxq0af0hq9sbf6qihqd8rwwwr"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f  ;; some tests fail, gem is a dummy for ruby >= 1.9 anyway
+       #:test-target "spec"))
+    (synopsis "Spawn for Ruby 1.8")
+    (description "This pure ruby library provides @code{spawn()} which is
+almost perfectly compatible with ruby 1.9's.")
+    (home-page "https://github.com/ujihisa/spawn-for-legacy")
+    (license license:bsd-2)))
+
 (define-public ruby-childprocess
   (package
     (name "ruby-childprocess")
