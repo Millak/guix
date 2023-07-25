@@ -25673,10 +25673,10 @@ change since last write.
            (package-inputs sbcl-nfiles)))))
 
 (define-public sbcl-nasdf
-  (let ((commit "5d823d97282e11cecd8da9bcb255c4a8ead1ba93"))
+  (let ((commit "73c89680ace25929c2a1ccc0809db99e9edffa07"))
     (package
       (name "sbcl-nasdf")
-      (version "0.1.5")
+      (version "0.1.6")
       (source
        (origin
          (method git-fetch)
@@ -25686,7 +25686,7 @@ change since last write.
          (file-name (git-file-name "cl-ntemplate" version))
          (sha256
           (base32
-           "0vs40ndfyhpx3nj9fc505apk98qgp0pq3cdmqpf67jqkrpcdmnvx"))))
+           "193wwcp84pyyv33pkkm41s7ca2limpcqqi41hxd1pm5il5r9q9h7"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
