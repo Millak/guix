@@ -89,6 +89,7 @@
             dhcp-client-configuration?
             dhcp-client-configuration-package
             dhcp-client-configuration-interfaces
+            dhcp-client-configuration-shepherd-provision
             dhcp-client-configuration-shepherd-requirement
 
             dhcpd-service-type
@@ -303,6 +304,8 @@
                 (default isc-dhcp))
   (shepherd-requirement dhcp-client-configuration-shepherd-requirement
                         (default '()))
+  (shepherd-provision   dhcp-client-configuration-provision
+                        (default '(networking)))
   (interfaces   dhcp-client-configuration-interfaces
                 (default 'all)))                  ;'all | list of strings
 
@@ -310,19 +313,19 @@
   (match-lambda
     ((? dhcp-client-configuration? config)
      (let ((package (dhcp-client-configuration-package config))
-           (shepherd-requirement (dhcp-client-configuration-shepherd-requirement config))
+           (requirement (dhcp-client-configuration-shepherd-requirement config))
+           (provision (dhcp-client-configuration-shepherd-provision config))
            (interfaces (dhcp-client-configuration-interfaces config))
            (pid-file "/var/run/dhclient.pid"))
        (list (shepherd-service
               (documentation "Set up networking via DHCP.")
-              (requirement `(user-processes udev ,@shepherd-requirement))
+              (requirement `(user-processes udev ,@requirement))
+              (provision provision)
 
               ;; XXX: Running with '-nw' ("no wait") avoids blocking for a minute when
               ;; networking is unavailable, but also means that the interface is not up
               ;; yet when 'start' completes.  To wait for the interface to be ready, one
               ;; should instead monitor udev events.
-              (provision '(networking))
-
               (start #~(lambda _
                          (define dhclient
                            (string-append #$package "/sbin/dhclient"))

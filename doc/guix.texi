@@ -20461,10 +20461,16 @@ non-loopback interfaces that can be activated.  Otherwise the DHCP
 client listens only on the specified interfaces.
 
 @item @code{shepherd-requirement} (default: @code{'()})
+@itemx @code{shepherd-provision} (default: @code{'(networking)})
 This option can be used to provide a list of symbols naming Shepherd services
 that this service will depend on, such as @code{'wpa-supplicant} or
 @code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
 networks.
+
+Likewise, @code{shepherd-provision} is a list of Shepherd service names
+(symbols) provided by this service.  You might want to change the
+default value if you intend to run several DHCP clients, only one of
+which provides the @code{networking} Shepherd service.
 @end table
 @end deftp
 
