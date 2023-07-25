@@ -4005,6 +4005,7 @@ color-related widgets.")
      (substitute-keyword-arguments (package-arguments python-shiboken-2)
        ((#:phases p)
         #~(modify-phases #$p
+            (delete 'workaround-importlib-error)
             (replace 'use-shiboken-dir-only
               (lambda _ (chdir "sources/shiboken6")))))
        ((#:configure-flags flags)
