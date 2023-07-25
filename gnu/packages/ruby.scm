@@ -1240,6 +1240,36 @@ itamae.")
     (home-page "https://github.com/mizzy/specinfra")
     (license license:expat)))
 
+(define-public ruby-serverspec
+  (package
+    (name "ruby-serverspec")
+    (version "2.42.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "serverspec" version))
+              (sha256
+               (base32
+                "0kfaqrqynly8n3dy5qrbjvx4lx6mk9a5vynwb7xwqj8bixm0mab4"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-multi-json ruby-rspec ruby-rspec-its
+                             ruby-specinfra))
+    (arguments
+     (list #:test-target "spec"))
+    (synopsis
+     "RSpec tests for servers configured by Puppet, Chef, Itamae, etc")
+    (description
+     "With Serverspec, you can write RSpec tests for checking your servers are
+configured correctly.
+
+Serverspec tests your servers’ actual state by executing command locally, via
+SSH, via WinRM, via Docker API and so on.  So you don’t need to install any
+agent softwares on your servers and can use any configuration management
+tools, Puppet, Ansible, CFEngine, Itamae and so on.
+
+But the true aim of Serverspec is to help refactoring infrastructure code.")
+    (home-page "https://serverspec.org/")
+    (license license:expat)))
+
 ;; Bundler is yet another source of circular dependencies, so we must disable
 ;; its test suite as well.
 (define-public bundler
