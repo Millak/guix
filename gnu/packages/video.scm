@@ -2194,7 +2194,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.35.1")
+    (version "0.36.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2202,7 +2202,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1lzaijqddr4ir9nb27cv9ki20b0k5jns2k47v4xvmi30v1gi71ha"))))
+               (base32 "1ri06h7pv6hrxmxxc618n9hymlgr0gfx38bqq5dcszdgnlashsgk"))))
     (build-system waf-build-system)
     (arguments
      (list
@@ -2211,7 +2211,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
           (add-after 'unpack 'patch-file-names
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "player/lua/ytdl_hook.lua"
-		(("\"yt-dlp\",")
+                (("\"yt-dlp\",")
                  (string-append
                   "\"" (search-input-file inputs "bin/yt-dlp") "\",")))))
           (add-before 'configure 'build-reproducibly
