@@ -4969,6 +4969,32 @@ directly inside Emacs.  It requires a Google Map Static API key to function.")
 reverse geocode using Nominatim, a component of OpenStreetMap.")
       (license license:gpl3+))))
 
+(define-public emacs-org-street
+  (let ((revision "0")
+        (commit "17913afe01504ee0cbcf83abaca18c5c618f9b33"))
+    (package
+      (name "emacs-org-street")
+      (version (git-version "0.7.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/emacs-weirdware/org-street")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1a5mnnvs4yxrw4s71z9ap65xi0fc1ki1qprif5jxn8apswjlmiw1"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-nominatim))
+      (home-page "https://codeberg.org/emacs-weirdware/org-street")
+      (synopsis "(Reverse) Geocoding for Emacs Org files")
+      (description "Org Street is an extension for Org Mode for turning the
+names of places into a LOCATION property containing their address.  Given some
+freeform text approximately describing a location, it geocodes it with
+OpenStreetMap’s Nominatim API to determine a canonical location.  If Nominatim
+returns multiple locations, a list is displayed to choose from.")
+      (license license:gpl3+))))
+
 (define-public emacs-graphviz-dot-mode
   (package
     (name "emacs-graphviz-dot-mode")
