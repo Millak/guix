@@ -568,6 +568,17 @@ executing in M-mode.")
     (description
      "This package contains OpenSBI firmware files for use with QEMU.")))
 
+(define-public opensbi-starfive-visionfive2
+  (package
+    (inherit opensbi-generic)
+    (name "opensbi-starfive-visionfive2")
+    (arguments
+     (substitute-keyword-arguments (package-arguments opensbi-generic)
+       ((#:make-flags flags)
+        #~(cons* "FW_TEXT_START=0x40000000"
+                 "FW_OPTIONS=0"
+                 #$flags))))))
+
 (define-public starfive-tech-tools
   (let ((commit "8c5acc4e5eb7e4ad012463b05a5e3dbbfed1c38d")
         (revision "1"))
