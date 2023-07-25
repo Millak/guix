@@ -28,6 +28,7 @@
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1125,6 +1126,57 @@ Guix to build virtual machines.")
      "This package provides a guest OS definition for Ganeti.  It installs
 Debian or a derivative using @command{debootstrap}.")
     (license license:gpl2+)))
+
+(define-public rvvm
+  (package
+    (name "rvvm")
+    (version "0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/LekKit/RVVM")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ldabcrmpa044bahpqa6ymwbhhwy69slh77f0m3421sq6j50l06p"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       ;; See src/rvjit/rvjit.h for list of architectures.
+       #~(#$@(if (or (target-x86?)
+                     (target-arm?))
+               #~'()
+               #~(list "-DRVVM_USE_JIT=NO")))
+       #:modules `((srfi srfi-26)
+                  (guix build utils)
+                  (guix build cmake-build-system))
+       #:phases
+       #~(modify-phases %standard-phases
+           ;; Install phase inspired by the Makefile.
+           (replace 'install
+             (lambda _
+               (let ((src "../source/src/")
+                     (incl (string-append #$output "/include/rvvm/")))
+                 (install-file "rvvm" (string-append #$output "/bin"))
+                 (for-each
+                   (cut install-file <> (string-append #$output "/lib"))
+                   (find-files "." "\\.(so|a)$"))
+                 (install-file (string-append src "rvvmlib.h") incl)
+                 (for-each
+                   (cut install-file <> (string-append incl "devices"))
+                   (find-files (string-append src "devices") "\\.h$"))))))
+       #:tests? #f))    ; no tests
+    (home-page "https://github.com/LekKit/RVVM")
+    (synopsis "RISC-V virtual machine")
+    (description
+     "RVVM is a RISC-V CPU and system software implementation written in C.  It
+supports the entire RV64GC ISA, and it passes compliance tests for both RV64 and
+RV32.  OpenSBI, U-Boot, and custom firmwares boot and execute properly.  It is
+capable of running Linux, FreeBSD, OpenBSD, Haiku, and other OSes.  Furthermore,
+it emulates a variety of hardware and peripherals.")
+    (license (list license:gpl3+ license:mpl2.0))))
 
 (define-public spike
   (package
