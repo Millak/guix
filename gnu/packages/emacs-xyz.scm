@@ -37038,6 +37038,40 @@ dict.org) from within Emacs.")
 to the @url{https://multitran.com} online dictionary.")
     (license license:gpl3+)))
 
+(define-public emacs-lexic
+  (let ((commit "f9b3de4d9c2dd1ce5022383e1a504b87bf7d1b09")
+        (revision "0"))
+    (package
+      (name "emacs-lexic")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.tecosaur.net/tec/lexic")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02iz8dh18gb1q97v8ghcd3lavkf28sqbrk0bx6jzzryp69ickk4h"))))
+      (build-system emacs-build-system)
+      (inputs (list sdcv))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'set-sdcv-path
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (emacs-substitute-variables "lexic.el"
+                 ("lexic-program-path"
+                  (string-append (assoc-ref inputs "sdcv")
+                                 "/bin/sdcv"))))))))
+      (home-page "https://git.tecosaur.net/tec/lexic")
+      (synopsis "Find out more about words using Stardict dictionaries")
+      (description "This provides a major mode to view the output of
+dictionary tools, and utilities that perform searches and nicely format the
+results.  Currently tied to sdcv, but this is intended to be changed in the
+future.")
+      (license license:gpl3+))))
+
 (define-public emacs-blacken
   (package
     (name "emacs-blacken")
