@@ -4469,6 +4469,22 @@ port on localhost.")
     (home-page "https://rubygems.org/gems/fake_ftp")
     (license license:expat)))
 
+(define-public ruby-net-telnet
+  (package
+    (name "ruby-net-telnet")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "net-telnet" version))
+              (sha256
+               (base32
+                "16nkxc79nqm7fd6w1fba4kb98vpgwnyfnlwxarpdcgywz300fc15"))))
+    (build-system ruby-build-system)
+    (synopsis "Telnet client functionality")
+    (description "This package provides telnet client functionality.")
+    (home-page "https://github.com/ruby/net-telnet")
+    (license license:bsd-2)))
+
 (define-public ruby-net-ftp
   (package
     (name "ruby-net-ftp")
