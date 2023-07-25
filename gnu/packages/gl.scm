@@ -279,7 +279,6 @@ also known as DXTn or DXTC) for Mesa.")
          (base32
           "1mcjf41x2bhxs6yxars7nh2vfryfw50g6rvbcfbb1wqdv2jn4qrq"))))
     (build-system meson-build-system)
-    (replacement mesa-vulkan-hasvk)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
      (list libdrm
@@ -346,7 +345,7 @@ svga,swrast,virgl")))
          ;; Explicitly enable Vulkan on some architectures.
          #$@(match (%current-system)
              ((or "i686-linux" "x86_64-linux")
-              '("-Dvulkan-drivers=intel,amd"))
+              '("-Dvulkan-drivers=intel,intel_hasvk,amd,swrast"))
              ((or "powerpc64le-linux" "powerpc-linux")
               '("-Dvulkan-drivers=amd,swrast"))
              ("aarch64-linux"
@@ -527,21 +526,6 @@ specifications - systems for rendering interactive 3D graphics.  A variety of
 device drivers allows Mesa to be used in many different environments ranging
 from software emulation to complete hardware acceleration for modern GPUs.")
     (license license:x11)))
-
-(define mesa-vulkan-hasvk
-  (let ((graft mesa)
-        (vulk "-Dvulkan-drivers=intel,amd"))
-    (package
-      (inherit graft)
-      (arguments
-        (substitute-keyword-arguments (package-arguments graft)
-          ((#:configure-flags flags)
-           #~(begin
-               (use-modules (ice-9 match))
-               (map (match-lambda
-                      (#$vulk (string-append #$vulk ",intel_hasvk,swrast"))
-                      (x x))
-                 #$flags))))))))
 
 (define-public mesa-opencl
   (package/inherit mesa
