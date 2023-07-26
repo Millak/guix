@@ -1653,8 +1653,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "b27ca4dc0efbb0d9c397fc39347af9b8e8734ab9")
-        (revision "20"))
+  (let ((commit "53682fac7e00cd2801406edbd014922c1720c347")
+        (revision "21"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1665,64 +1665,64 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "075acihpxvw4rkmbn7wiswqixv2afla8d8x7mgxqc26hba090404"))
+                  "18mzrpc5ni8d6xbp1bg0nzdj0brmnji4jm1gyiq77dm17c118zyz"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules (((guix build guile-build-system)
+       (list
+        #:modules `(((guix build guile-build-system)
                      #:select (target-guile-effective-version))
                     ,@%gnu-build-system-modules)
-         #:imported-modules ((guix build guile-build-system)
+        #:imported-modules `((guix build guile-build-system)
                              ,@%gnu-build-system-modules)
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'build 'set-GUILE_AUTO_COMPILE
-             (lambda _
-               ;; To avoid warnings relating to 'guild'.
-               (setenv "GUILE_AUTO_COMPILE" "0")))
-           (add-after 'install 'wrap-executable
-             (lambda* (#:key inputs outputs target #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (guile (assoc-ref inputs "guile"))
-                      (version (target-guile-effective-version))
-                      (scm (string-append out "/share/guile/site/" version))
-                      (go  (string-append out "/lib/guile/" version "/site-ccache")))
-                 (for-each
-                  (lambda (file)
-                    (simple-format (current-error-port) "wrapping: ~A\n" file)
-                    (let ((guile-inputs (list
-                                         "guile-json"
-                                         "guile-gcrypt"
-                                         "guix"
-                                         "guile-lib"
-                                         "guile-lzlib"
-                                         "guile-zstd"
-                                         "guile-prometheus"
-                                         "guile-sqlite3"
-                                         "guile-gnutls"
-                                         "guile-fibers")))
-                      (wrap-program file
-                        `("GUILE_LOAD_PATH" ":" prefix
-                          (,scm ,(string-join
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-GUILE_AUTO_COMPILE
+              (lambda _
+                ;; To avoid warnings relating to 'guild'.
+                (setenv "GUILE_AUTO_COMPILE" "0")))
+            (add-after 'install 'wrap-executable
+              (lambda* (#:key inputs outputs target #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (bin (string-append out "/bin"))
+                       (guile (assoc-ref inputs "guile"))
+                       (version (target-guile-effective-version))
+                       (scm (string-append out "/share/guile/site/" version))
+                       (go  (string-append out "/lib/guile/" version "/site-ccache")))
+                  (for-each
+                   (lambda (file)
+                     (simple-format (current-error-port) "wrapping: ~A\n" file)
+                     (let ((guile-inputs (list
+                                          "guile-json"
+                                          "guile-gcrypt"
+                                          "guix"
+                                          "guile-lib"
+                                          "guile-lzlib"
+                                          "guile-zstd"
+                                          "guile-prometheus"
+                                          "guile-sqlite3"
+                                          "guile-gnutls"
+                                          "guile-fibers")))
+                       (wrap-program file
+                         `("GUILE_LOAD_PATH" ":" prefix
+                           (,scm ,(string-join
+                                   (map (lambda (input)
+                                          (string-append
+                                           (assoc-ref inputs input)
+                                           "/share/guile/site/"
+                                           version))
+                                        guile-inputs)
+                                   ":")))
+                         `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                           (,go ,(string-join
                                   (map (lambda (input)
                                          (string-append
                                           (assoc-ref inputs input)
-                                          "/share/guile/site/"
-                                          version))
+                                          "/lib/guile/" version "/site-ccache"))
                                        guile-inputs)
-                                  ":")))
-                        `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                          (,go ,(string-join
-                                 (map (lambda (input)
-                                        (string-append
-                                         (assoc-ref inputs input)
-                                         "/lib/guile/" version "/site-ccache"))
-                                      guile-inputs)
-                                 ":"))))))
-                  (find-files bin)))
-               #t))
-           (delete 'strip))))           ; As the .go files aren't compatible
+                                  ":"))))))
+                   (find-files bin)))))
+            (delete 'strip))))           ; As the .go files aren't compatible
       (native-inputs
        (list pkg-config
              autoconf
