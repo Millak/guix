@@ -2314,6 +2314,25 @@ the image.
 @end enumerate")
     (license license:asl2.0)))
 
+(define-public ruby-vagrant-spec-helper-basic
+  (package
+    (name "ruby-vagrant-spec-helper-basic")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant-spec-helper-basic" version))
+              (sha256
+               (base32
+                "1qhxxc07dhrma1s1x2g9sma7xxgwzs20s6v5pv9jrpz6bl4b527n"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f))  ;; has not tests
+    (synopsis "Helper for vagrant-spec")
+    (description "This package is an internal helper for vagrant-spec.  Don't
+use it.")
+    (home-page "https://github.com/hashicorp/vagrant-spec")
+    (license license:mpl2.0)))
+
 (define-public ruby-vagrant-spec
   (package
     (name "ruby-vagrant-spec")
