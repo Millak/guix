@@ -21,7 +21,7 @@ Copyright @copyright{} 2020 Brice Waegeneire@*
 Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
-Copyright @copyright{} 2022 Maxim Cournoyer@*
+Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
 Copyright @copyright{} 2023 Ludovic Courtès
 
 Permission is granted to copy, distribute and/or modify this document
@@ -127,7 +127,7 @@ System Configuration
 * Dynamic DNS mcron job::       Job to update the IP address behind a DuckDNS host name.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
-* Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server.
+* Running Guix on a Linode Server::  Running Guix on a Linode Server.
 * Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
@@ -1574,7 +1574,7 @@ reference.
 * Dynamic DNS mcron job::       Job to update the IP address behind a DuckDNS host name.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
-* Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server.
+* Running Guix on a Linode Server::  Running Guix on a Linode Server.
 * Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
@@ -2133,6 +2133,24 @@ and validating that the security key can be reset via the ``Reset your
 security key'' menu.  If it works, congratulations, your security key is
 ready to be used with applications supporting two-factor authentication
 (2FA).
+
+@subsection Disabling OTP code generation for a Yubikey
+@cindex disabling yubikey OTP
+If you use a Yubikey security key and are irritated by the spurious OTP
+codes it generates when inadvertently touching the key (e.g. causing you
+to become a spammer in the @samp{#guix} channel when discussing from
+your favorite IRC client!), you can disable it via the following
+@command{ykman} command:
+
+@example
+guix shell python-yubikey-manager -- ykman config usb --force --disable OTP
+@end example
+
+Alternatively, you could use the @command{ykman-gui} command provided by
+the @code{yubikey-manager-qt} package and either wholly disable the
+@samp{OTP} application for the USB interface or, from the
+@samp{Applications -> OTP} view, delete the slot 1 configuration, which
+comes pre-configured with the Yubico OTP application.
 
 @node Dynamic DNS mcron job
 @section Dynamic DNS mcron job
