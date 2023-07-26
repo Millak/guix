@@ -1,0 +1,172 @@
+From: Hartmut Goebel <h.goebel@crazy-compilers.com>
+Date: Mon, 07 Aug 2023 18:09:09 +0200
+Subject: Support system-installed plugins
+
+Plugins must be installed as regular Ruby libraries, and they must
+contain share/vagrant-plugins/plugins.d/$PLUGINNAME.json with the
+following content:
+
+{
+  "${PLUGINNAME}": {
+    "ruby_version":"$(ruby -e 'puts RUBY_VERSION')",
+    "vagrant_version":"$(cat /usr/share/vagrant/version.txt)",
+    "gem_version":"",
+    "require":"",
+    "sources":[]
+  }
+}
+
+This patch was based on the respective patch from Debian, anyhow heavily
+adjusted to Guix and to support GUIX_VAGRANT_PLUGINS_PATH.
+
+Orignal-Author: Antonio Terceiro <terceiro@debian.org>
+Co-authored-by: Antonio Terceiro <terceiro@debian.org>
+---
+ bin/vagrant                      | 15 +++++++++++++++
+ lib/vagrant/bundler.rb           |  2 +-
+ lib/vagrant/plugin/manager.rb    |  4 ++--
+ lib/vagrant/plugin/state_file.rb | 30 ++++++++++++++++++++++++++++--
+ lib/vagrant/shared_helpers.rb    |  8 ++++++++
+ 5 files changed, 54 insertions(+), 5 deletions(-)
+
+diff --git a/bin/vagrant b/bin/vagrant
+index d3f4ea6..cc00efa 100755
+--- a/bin/vagrant
++++ b/bin/vagrant
+@@ -86,6 +86,21 @@ $stderr.sync = true
+ # so we can provide correct resolutions later
+ builtin_specs = []
+ 
++# Add the gem paths of vagrant plugins to the Gem search path
++# TODO: find a better way to add paths to the Gem search path
++gempath = []
++if ENV['GEM_PATH']
++  gempath.append(ENV['GEM_PATH'])
++end
++ENV['GUIX_VAGRANT_PLUGINS_PATH'].split(File::PATH_SEPARATOR).each do |pluginsdir|
++  gemdir = File.absolute_path(File.join(pluginsdir, "../../lib/ruby/vendor_ruby"))
++  gempath.append(gemdir)
++end
++ENV['GEM_PATH'] = gempath.join(':')
++gemdir = nil
++gempath = nil
++Gem.clear_paths()  # make GEM_PATH be reevaluated
++
+ vagrant_spec = Gem::Specification.find_all_by_name("vagrant").detect do |spec|
+   spec.version == Gem::Version.new(Vagrant::VERSION)
+ end
+diff --git a/lib/vagrant/bundler.rb b/lib/vagrant/bundler.rb
+index 46ef69f..27979b9 100644
+--- a/lib/vagrant/bundler.rb
++++ b/lib/vagrant/bundler.rb
+@@ -665,7 +665,7 @@ module Vagrant
+         spec_dir = Gem::Specification.default_specifications_dir
+       end
+       directories = [spec_dir]
+-      if Vagrant.in_bundler?
++      if Vagrant.in_bundler? || Vagrant.in_guix_package?
+         Gem::Specification.find_all{true}.each do |spec|
+           list[spec.full_name] = spec
+         end
+diff --git a/lib/vagrant/plugin/manager.rb b/lib/vagrant/plugin/manager.rb
+index b73f07f..94cd609 100644
+--- a/lib/vagrant/plugin/manager.rb
++++ b/lib/vagrant/plugin/manager.rb
+@@ -18,7 +18,7 @@ module Vagrant
+ 
+       # Returns the path to the [StateFile] for system plugins.
+       def self.system_plugins_file
+-        dir = Vagrant.installer_embedded_dir
++        dir = nil
+         return nil if !dir
+         Pathname.new(dir).join("plugins.json")
+       end
+@@ -38,7 +38,7 @@ module Vagrant
+ 
+         system_path  = self.class.system_plugins_file
+         @system_file = nil
+-        @system_file = StateFile.new(system_path) if system_path && system_path.file?
++        @system_file = StateFile.new(system_path, true) #if system_path && system_path.file?
+ 
+         @local_file = nil
+         @globalized = @localized = false
+diff --git a/lib/vagrant/plugin/state_file.rb b/lib/vagrant/plugin/state_file.rb
+index c6872d4..b927fd8 100644
+--- a/lib/vagrant/plugin/state_file.rb
++++ b/lib/vagrant/plugin/state_file.rb
+@@ -11,11 +11,17 @@ module Vagrant
+       # @return [Pathname] path to file
+       attr_reader :path
+ 
+-      def initialize(path)
++      def initialize(path, system = false)
+         @path = path
++        @system = system
+ 
+         @data = {}
+-        if @path.exist?
++        if system
++          if  ENV.has_key?('GUIX_VAGRANT_PLUGINS_PATH')
++            @data["installed"] = {}
++            load_system_plugins
++          end
++        elsif @path.exist?
+           begin
+             @data = JSON.parse(@path.read)
+           rescue JSON::ParserError => e
+@@ -30,6 +36,22 @@ module Vagrant
+         @data["installed"] ||= {}
+       end
+ 
++      def load_system_plugins
++        ENV['GUIX_VAGRANT_PLUGINS_PATH'].split(File::PATH_SEPARATOR).each do |pluginsdir|
++          extra_plugins = Dir.glob(File.join(pluginsdir, 'plugins.d', '*.json'))
++          extra_plugins.each do |filename|
++            json = File.read(filename)
++            begin
++              plugin_data = JSON.parse(json)
++              @data["installed"].merge!(plugin_data)
++            rescue JSON::ParserError => e
++              raise Vagrant::Errors::PluginStateFileParseError,
++                path: filename, message: e.message
++            end
++          end
++        end
++      end
++
+       # Add a plugin that is installed to the state file.
+       #
+       # @param [String] name The name of the plugin
+@@ -107,6 +129,10 @@ module Vagrant
+           f.close
+           FileUtils.mv(f.path, @path)
+         end
++      rescue Errno::EACCES
++        # Ignore permission denied against system-installed plugins; regular
++        # users are not supposed to write there.
++        raise unless @system
+       end
+ 
+       protected
+diff --git a/lib/vagrant/shared_helpers.rb b/lib/vagrant/shared_helpers.rb
+index 7b0b87c..eb9a21e 100644
+--- a/lib/vagrant/shared_helpers.rb
++++ b/lib/vagrant/shared_helpers.rb
+@@ -43,6 +43,14 @@ module Vagrant
+       !defined?(::Bundler).nil?
+   end
+ 
++  # This returns a true/false if we are running from a Guix package
++  #
++  # @return [Boolean]
++  def self.in_guix_package?
++    # FIXME write a proper check if this ever goes upstream
++    true
++  end
++
+   # Returns the path to the embedded directory of the Vagrant installer,
+   # if there is one (if we're running in an installer).
+   #
+-- 
+2.30.9
+

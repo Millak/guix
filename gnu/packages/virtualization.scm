@@ -31,7 +31,7 @@
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2023-2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
@@ -2622,6 +2622,118 @@ and its various components should behave as well as a library of testing
 helpers that let you write your own unit and acceptance tests for Vagrant.")
     (home-page "https://github.com/hashicorp/vagrant-spec")
     (license license:mpl2.0)))
+
+(define-public vagrant
+  (package
+    (name "vagrant")
+    (version "2.3.7")  ;; last release under BSD-3 license
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hashicorp/vagrant")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c674c5v70skh38lpydz8cdmcp8wgr9h7rn00rxdpgizrzbfxl82"))
+              (patches (search-patches
+                        "vagrant-bin-vagrant-silence-warning-about-installer.patch"
+                        "vagrant-Support-system-installed-plugins.patch"
+                        "vagrant-Use-a-private-temporary-dir.patch"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; test require ruby-grpc-tools which are not packaged yet
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-gemfile
+            (lambda _
+              (substitute* "Gemfile"
+                ((", git:.*") "\n"))))
+          (add-after 'unpack 'pin-executables
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bsdtar (search-input-file inputs "/bin/bsdtar"))
+                     (curl (search-input-file inputs "/bin/curl"))
+                     (dnsmasq (search-input-file inputs "/sbin/dnsmasq"))
+                     (grep (search-input-file inputs "/bin/grep"))
+                     (modinfo (search-input-file inputs "/bin/modinfo"))
+                     (ps (search-input-file inputs "/bin/ps")))
+                ;; bsdtar
+                (for-each
+                 (lambda (rbfile)
+                   (substitute* rbfile
+                     (("\"bsdtar\",") (string-append "\"" bsdtar "\","))))
+                 (find-files "lib/vagrant/" "\\.rb$"))
+                ;; curl
+                (substitute* "lib/vagrant/util/downloader.rb"
+                  (("\"curl\",") (string-append "\"" curl "\",")))
+                (substitute* "lib/vagrant/util/uploader.rb"
+                  (("\"curl\",") (string-append "\"" curl "\",")))
+                (substitute* "plugins/hosts/linux/cap/nfs.rb"
+                  ;; grep
+                  (("\\| grep #\\{nfs_service")
+                   (string-append "| " grep " #{nfs_service"))
+                  (("\"grep\",") (string-append "\"" grep "\","))
+                  ;; modinfo
+                  (("Vagrant::Util::Which.which\\(\"modinfo\"\\)")
+                   (string-append "\"" modinfo "\"")))
+                ;; ssh, rsync:
+                ;; Don't pin ssh to allow different clients and to avoid
+                ;; configuration conflicts when running on a foreign distro.
+                ;; (substitute* "lib/vagrant/util/ssh.rb"
+                ;;   (("Which.which\\(\"ssh\", original_path: true\\)")
+                ;;    (string-append "\"" ssh "\"")))
+                ;; ps
+                (substitute* "lib/vagrant/util/platform.rb"
+                  (("\"ps\",") (string-append "\"" ps "\","))))))
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "vagrant.gemspec"
+                ;; Relax some version specification.
+                (("s\\.required_ruby_version ") "# s.required_ruby_version ")
+                (("dependency \"rgl\", \"~> 0.5.10\"")
+                 "dependency \"rgl\"")
+                (("dependency \"vagrant_cloud\", \"~> 3.0.5\"")
+                 "dependency \"vagrant_cloud\"")
+                (("dependency \"rexml\", .*")
+                 "dependency \"rexml\"\n")
+                ;; Remove Windows specific dependencies
+                ((".*dependency \"(wdm|winrm(|-elevated|-fs))\".*") "")
+                ;; Remove BSD dependency
+                ((".*dependency \"rb-kqueue\".*") "")
+                ;; Remove cyclic inclusion of gem
+                (("^  gitignore_path = " line)
+                 (string-append
+                  "all_files.reject! { |file| file.match?(\"vagrant-.*\\.gem\") }\n"
+                  line))))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUIX_VAGRANT_PLUGINS_PATH")
+            (files '("share/vagrant-plugins")))))
+    ;; TODO: install bash/zsh completions, man-page, etc.
+    ;; see http://svnweb.mageia.org/packages/cauldron/vagrant/current/SPECS/vagrant.spec
+    (native-inputs (list ruby-fake-ftp ruby-webrick bundler ruby-vagrant-spec))
+    (inputs (list curl dnsmasq grep kmod libarchive openssh procps))
+    (propagated-inputs
+     (list ruby-bcrypt-pbkdf ruby-childprocess ruby-ed25519 ruby-erubi
+           ruby-googleapis-common-protos-types ruby-grpc
+           ruby-hashicorp-checkpoint ruby-i18n ruby-listen ruby-log4r
+           ruby-mime-types ruby-net-ftp ruby-net-ssh ruby-net-sftp
+           ruby-net-scp ruby-ipaddr ruby-rexml ruby-rgl ruby-rubyzip
+           ruby-vagrant-cloud ruby-vagrant-spec))
+    (synopsis "Build and distribute virtualized development environments")
+    (description "Vagrant is the command line utility for managing the
+lifecycle of virtual machines.  Isolate dependencies and their configuration
+within a single disposable and consistent environment.
+
+Note: Make sure to have @code{ssh} and @code{rsync} installed — if you use the
+respective Vagrant functions.  This package does not link to any specific
+implementation of these to allow different clients and to avoid configuration
+conflicts when running on a `foreign distribution'.")
+    (home-page "https://www.vagrantup.com")
+    ;; CVE-2021-21361 is related to the gradle-vagrant-plugin
+    (properties '((lint-hidden-cve . ("CVE-2021-21361"))))
+    (license license:bsd-3)))
 
 (define-public python-vagrant
   (package
