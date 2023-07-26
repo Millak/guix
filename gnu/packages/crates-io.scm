@@ -12138,14 +12138,14 @@ Command Line Argument Parser.")
 (define-public rust-clap-builder-4
   (package
     (name "rust-clap-builder")
-    (version "4.3.0")
+    (version "4.3.19")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap-builder" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "141rmj9l6xal8lwy6g6zi4pfgl47frzrqbdsrb4piyyy3qs3whjg"))))
+                "1qg9xrshy9h5cmavg4zfc1gzjkcwq2p97qyg6lm6dr8zizqa7ih1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -12157,7 +12157,6 @@ Command Line Argument Parser.")
        (("rust-anstream" ,rust-anstream-0.3)
         ("rust-anstyle" ,rust-anstyle-1)
         ("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bitflags" ,rust-bitflags-1)
         ("rust-clap-lex" ,rust-clap-lex-0.5)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-strsim" ,rust-strsim-0.10)
