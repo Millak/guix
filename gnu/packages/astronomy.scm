@@ -917,7 +917,7 @@ from Stark Labs.")
 (define-public sextractor
   (package
     (name "sextractor")
-    (version "2.25.0")
+    (version "2.28.0")
     (source
      (origin
        (method git-fetch)
@@ -926,7 +926,7 @@ from Stark Labs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q69n3nyal57h3ik2xirwzrxzljrwy9ivwraxzv9566vi3n4z5mw"))))
+        (base32 "15v7brjiraj2rdyxiidcgb58b3dqzdd363j31cjrfqhd1wc8ii5j"))))
     (build-system gnu-build-system)
     ;; NOTE: (Sharlatan-20210124T103117+0000): Building with `atlas' is failing
     ;; due to missing shared library which required on configure phase. Switch
@@ -936,6 +936,10 @@ from Stark Labs.")
      `(#:configure-flags
        (list
         "--enable-openblas"
+        (string-append
+         "--with-cfitsio-libdir=" (assoc-ref %build-inputs "cfitsio") "/lib")
+        (string-append
+         "--with-cfitsio-incdir=" (assoc-ref %build-inputs "cfitsio") "/include")
         (string-append
          "--with-openblas-libdir=" (assoc-ref %build-inputs "openblas") "/lib")
         (string-append
@@ -947,7 +951,8 @@ from Stark Labs.")
     (native-inputs
      (list autoconf automake libtool))
     (inputs
-     `(("openblas" ,openblas)
+     `(("cfitsio" ,cfitsio)
+       ("openblas" ,openblas)
        ("fftw" ,fftwf)))
     (home-page "https://www.astromatic.net/software/sextractor")
     (synopsis "Extract catalogs of sources from astronomical images")
