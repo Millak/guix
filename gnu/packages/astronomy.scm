@@ -3413,13 +3413,13 @@ datetime object.")
 (define-public python-synphot
   (package
     (name "python-synphot")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "synphot" version))
               (sha256
                (base32
-                "02pjp1bnbyq7zi1bxqv56nif4ijd8fscmnn9ldrs8yvgsbmgdvlc"))))
+                "10kcdg2gqmi1w2hsjx9hfizwbff3kll10s68hys13nzh4i8b7cc4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
