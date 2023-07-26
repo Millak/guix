@@ -531,13 +531,13 @@ mining in astronomy.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.1.8")
+    (version "1.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "1y80hgvlkjz1bijfyb2j03853yc1kc63yrf9ab7as31ad2r6kxb1"))
+        (base32 "0dv2vjj8qn3rq5sr99x5yjjch5h867c8q7zh73i67dzdsk7ix0jf"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio
@@ -563,9 +563,12 @@ mining in astronomy.")
                   (("self.use_system_fitsio") "True")
                   (("self.system_fitsio_includedir") includedir)
                   (("self.system_fitsio_libdir") libdir))))))))
-    (inputs (list curl))
+    (native-inputs
+     (list python-pytest))
+    (inputs
+     (list curl cfitsio))
     (propagated-inputs
-     (list python-numpy cfitsio))
+     (list python-numpy))
     (home-page "https://github.com/esheldon/fitsio")
     (synopsis
      "Python library to read from and write to FITS files")
