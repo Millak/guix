@@ -1918,23 +1918,29 @@ the easy construction of interactive matplotlib widget based animations.")
        (uri (pypi-uri "photutils" version))
        (sha256
         (base32 "1bq4ma402lpa5d6l85awlc23kasxf40nq8hgi3iyrilnfikan0jz"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:test-target "pytest"
-       #:phases
-       (modify-phases %standard-phases
-         ;; This file is opened in both install and check phases.
-         (add-before 'install 'writable-compiler
-           (lambda _ (make-file-writable "photutils/_compiler.c")))
-         (add-before 'check 'writable-compiler
-           (lambda _ (make-file-writable "photutils/_compiler.c"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This file is opened in both install and check phases.
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "photutils/_compiler.c")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running
+              ;; the tests. If it's not build it fails with error:
+              ;;
+              ;; ModuleNotFoundError: No module named
+              ;; 'photutils.geometry.circular_overlap'
+              (make-file-writable "photutils/_compiler.c")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-astropy python-numpy))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-pytest-astropy
-           python-pytest-runner
            python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
     (synopsis "Source detection and photometry")
