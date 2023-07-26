@@ -11976,6 +11976,32 @@ traits.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libloading" ,rust-libloading-0.3))))))
 
+(define-public rust-clap-complete-fig-4
+  (package
+    (name "rust-clap-complete-fig")
+    (version "4.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap-complete-fig" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "17yfrdxy555fv56y0n69r4kgd2iwpq4mgz6k5rn5lc2i1b9y3zlr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-snapbox" ,rust-snapbox-0.4))))
+    (home-page "https://github.com/clap-rs/clap/tree/master/clap_complete_fig")
+    (synopsis "Generator library used with clap for Fig completion scripts")
+    (description
+     "This package provides a generator library used with clap for Fig
+completion scripts.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-complete-nushell-0.1
   (package
     (name "rust-clap-complete-nushell")
