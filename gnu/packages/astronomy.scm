@@ -3251,23 +3251,23 @@ exposures and high-level data products (mosaics, extracted spectra, etc.).")
         (base32 "0f8zykzxjsiwv5ibdn5asla2ng2xl0xdkrcrrd61j31mb3xbnzyp"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove bundled submodule library.
-           (delete-file-recursively "liberfa")
-           #t))))
+        #~(begin
+            ;; Remove bundled submodule library.
+            (delete-file-recursively "liberfa")))))
     (build-system pyproject-build-system)
     (arguments
-     `(;; Disable only one failing test:
-       ;; AttributeError: __warningregistry__
-       #:test-flags '("-k" "not test_errwarn_reporting")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'use-system-liberfa
-           (lambda _
-             (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1")))
-         (add-before 'check 'build-extensions
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+     (list
+      ;; Disable only one failing test:
+      ;; AttributeError: __warningregistry__
+      #:test-flags #~(list "-k" "not test_errwarn_reporting")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-liberfa
+            (lambda _
+              (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-pytest-doctestplus python-pytest python-setuptools-scm))
     (inputs
