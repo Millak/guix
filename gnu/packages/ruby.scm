@@ -4448,6 +4448,29 @@ address.  Both IPv4 and IPv6 are supported.")
     (home-page "https://github.com/ruby/ipaddr")
     (license license:bsd-2)))
 
+(define-public ruby-net-ftp
+  (package
+    (name "ruby-net-ftp")
+    (version "0.3.4")
+    (source (origin
+              (method git-fetch)  ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/net-ftp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11b1sw7c4c7xrhn5li5m0wylw42hp52jp6pqacyb43hkw1m5zr36"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-protocol ruby-time))
+    (synopsis "File Transfer Protocol client library")
+    (description "This class implements the File Transfer Protocol.  If you
+have used a command-line FTP program, and are familiar with the commands, you
+will be able to use this class easily.  Some extra features are included to
+take advantage of Ruby's style and strengths.")
+    (home-page "https://github.com/ruby/net-ftp")
+    (license license:bsd-2)))
+
 (define-public ruby-net-http-persistent
   (package
     (name "ruby-net-http-persistent")
