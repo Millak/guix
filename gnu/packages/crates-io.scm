@@ -10322,6 +10322,31 @@ capabilities.")
         ("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-carapace-spec-clap-0.1
+  (package
+    (name "rust-carapace-spec-clap")
+    (version "0.1.12")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "carapace-spec-clap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pb140siiqbljpvpck5hldmfyadi3db3s8xhcqnf9ff2ln3bs9zf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9))
+       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.4))))
+    (home-page "https://github.com/rsteube/carapace-spec-clap")
+    (synopsis "spec generation for clap-rs/clap")
+    (description "This package provides spec generation for clap-rs/clap.")
+    (license license:expat)))
+
 (define-public rust-cargo-0.69
   (package
     (name "rust-cargo")
