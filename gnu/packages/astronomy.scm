@@ -3886,7 +3886,12 @@ pipelines.")
        (sha256
         (base32 "0hly20a65540hr3l1lsd1i4d90a0vdrbwnn6zx3z8s89ha9lq3pb"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-astropy python-ccdproc python-pillow))
+    (native-inputs
+     (list python-astropy
+           python-ccdproc
+           python-pillow
+           python-pytest
+           python-semantic-version))
     (propagated-inputs
      (list python-bottleneck
            python-numpy
