@@ -13133,21 +13133,26 @@ almost perfectly compatible with ruby 1.9's.")
 (define-public ruby-childprocess
   (package
     (name "ruby-childprocess")
-    (version "3.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "childprocess" version))
        (sha256
         (base32
-         "1ic028k8xgm2dds9mqnvwwx3ibaz32j8455zxr9f4bcnviyahya5"))))
+         "1lvcp8bsd35g57f7wz4jigcw2sryzzwrpcgjwwf3chmjrjcww5in"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f))
+     `(#:tests? #f  ;; one failing test, even with fixes below
+       #:test-target "spec"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda _
+             (substitute* "spec/spec_helper.rb"
+               (("#!/bin/sh\\\\n") (string-append "#!" (which "sh") "\\n"))))))))
     (native-inputs
-     (list bundler ruby-rspec))
-    (propagated-inputs
-     (list ruby-ffi))
+     (list ruby-coveralls ruby-rspec))
     (synopsis "Control external programs running in the background, in Ruby")
     (description "@code{childprocess} provides a gem to control external
 programs running in the background, in Ruby.")
