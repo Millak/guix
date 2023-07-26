@@ -13879,8 +13879,33 @@ applications.")
 configuration files.")
     (license license:bsd-2)))
 
+(define-public rust-configparser-3
+  (package
+    (name "rust-configparser")
+    (version "3.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "configparser" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ypq3phwrlx2c7agdj1rlivkhsk9k795jb30j58azvw7lp8xjn2l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-indexmap" ,rust-indexmap-1))))
+    (home-page "https://github.com/QEDK/configparser-rs")
+    (synopsis "Simple parsing utility for INI and ini-style syntax")
+    (description
+     "This package provides a simple configuration parsing utility with no
+dependencies that allows you to parse INI and ini-style syntax.  You can use
+this to write Rust programs which can be customized by end users easily.")
+    (license (list license:expat license:lgpl3+))))
+
 (define-public rust-configparser-2
   (package
+    (inherit rust-configparser-3)
     (name "rust-configparser")
     (version "2.0.0")
     (source
@@ -13890,15 +13915,7 @@ configuration files.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1qdaggalm3js86s2i11pjjcndrrvpk0pw1lfvmv7v25z3y66sqg2"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/mexili/configparser-rs")
-    (synopsis "Simple parsing utility for INI and ini-style syntax")
-    (description
-     "This package provides a simple configuration parsing utility with no
-dependencies that allows you to parse INI and ini-style syntax.  You can use
-this to write Rust programs which can be customized by end users easily.")
-    (license (list license:expat license:lgpl3+))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-console-0.15
   (package
