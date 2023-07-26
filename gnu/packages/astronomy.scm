@@ -2231,13 +2231,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "4.1.5")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1j5g0ivsrc5ji9s7jc3kcbi2injfs3y31pm3priycljwcsxspkpm"))))
+        (base32 "1w75yc8az86pwbf79h083j4kc2ycfk76ky5kzlmcwgp0ih23mhym"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2245,7 +2245,10 @@ orbits described in TLE files.")
       #~(list "-k" (string-append
                     ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
                     "not test_main_nonexisting_module"
-                    " and not test_main_stdlib_module"))
+                    " and not test_main_stdlib_module"
+                    ;; XXX: packaging.version.InvalidVersion: Invalid version: 'unknown'
+                    " and not test_read_cdf"
+                    " and not test_read_empty_cdf"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'writable-compiler
