@@ -60017,14 +60017,14 @@ exactly where a binary came from and how it was built.")
 (define-public rust-shell-words-1
   (package
     (name "rust-shell-words")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "shell-words" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x5hw7ch98sp6b99ihxjs5vw5dmwg4yvy4yxzr59394xr4w3kymn"))))
+        (base32 "1plgwx8r0h5ismbbp6cp03740wmzgzhip85k5hxqrrkaddkql614"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/tmiasko/shell-words")
     (synopsis "Process command line according to parsing rules of UNIX shell")
