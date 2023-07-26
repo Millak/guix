@@ -545,7 +545,7 @@ mining in astronomy.")
             (delete-file-recursively "cfitsio3490")
             (substitute* "MANIFEST.in"
               (("recursive-include cfitsio3490.*$\n") ""))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -562,7 +562,10 @@ mining in astronomy.")
                   (("self.system_fitsio_libdir = None") "pass")
                   (("self.use_system_fitsio") "True")
                   (("self.system_fitsio_includedir") includedir)
-                  (("self.system_fitsio_libdir") libdir))))))))
+                  (("self.system_fitsio_libdir") libdir)))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-pytest))
     (inputs
