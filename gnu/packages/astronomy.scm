@@ -3242,13 +3242,13 @@ exposures and high-level data products (mosaics, extracted spectra, etc.).")
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
-    (version "2.0.0.1")
+    (version "2.0.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyerfa" version))
        (sha256
-        (base32 "0c6y1rm51kj8ahbr1vwbswck3ix77dc3zhc2fkg6w7iczrzn7m1g"))
+        (base32 "0f8zykzxjsiwv5ibdn5asla2ng2xl0xdkrcrrd61j31mb3xbnzyp"))
        (modules '((guix build utils)))
        (snippet
         '(begin
