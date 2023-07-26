@@ -603,8 +603,8 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                   "1l7ik4q4zk7vq4m3gnwizc0b64b1mdr31hxqlzxs94xaf2lvi7s2"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-2.2)
-         ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
+         ((#:phases phases)
+          #~(modify-phases #$phases
              (replace 'bootstrap
                (lambda _
                  ;; Disable broken tests.
@@ -617,8 +617,7 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                     (string-append "#;" m)))
 
                  (patch-shebang "build-aux/git-version-gen")
-                 (invoke "sh" "autogen.sh")
-                 #t))))))
+                 (invoke "sh" "autogen.sh")))))))
       (native-inputs
        (modify-inputs (package-native-inputs guile-2.2)
          (prepend autoconf
