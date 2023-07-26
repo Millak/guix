@@ -1605,15 +1605,18 @@ Herschel.")
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ccdproc" version))
        (sha256
-        (base32 "0fy1sni87cr05dkljd8wb7vgh7z9agh8wv5kiagxcpbcf8l06jv1"))))
+        (base32 "186plgfhrj7wivs053y65jlv1x33y8ii31jdr2rm4s6pl0j7x29z"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-memory-profiler python-pytest-astropy))
+    (native-inputs
+     (list python-memory-profiler
+           python-pytest-astropy
+           python-semantic-version))
     (propagated-inputs
      (list python-astropy
            python-astroscrappy
