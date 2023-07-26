@@ -9629,6 +9629,26 @@ follows Ruby conventions and requires little knowledge of REST.")
     (home-page "https://github.com/octokit/octokit.rb")
     (license license:expat)))
 
+(define-public ruby-hashicorp-checkpoint
+  (package
+    (name "ruby-hashicorp-checkpoint")
+    (version "0.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "hashicorp-checkpoint" version))
+              (sha256
+               (base32
+                "1z6mwzvd7p2wqhmk07dwrhvm0ncgqm7pxn0pr2k025rwsspp9bsd"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f)) ;; no need to test, useless outside HashiCorp anyway
+    (synopsis "Internal HashiCorp service to check version information")
+    (description "This package is probably useless outside of internal
+HashiCorp use.  It is open source for disclosure and because HashiCorp's open
+source projects must be able to link to it.")
+    (home-page "https://github.com/hashicorp/ruby-checkpoint")
+    (license license:mpl2.0)))
+
 (define-public ruby-vagrant-cloud
   (package
     (name "ruby-vagrant-cloud")
