@@ -14956,6 +14956,29 @@ can be used to build formatters, linters, language servers, and more.")
     (home-page "https://github.com/ruby/stringio")
     (license license:bsd-2)))
 
+(define-public ruby-stream
+  (package
+    (name "ruby-stream")
+    (version "0.5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "stream" version))
+              (sha256
+               (base32
+                "016m9v81vpj14d8g5ins91zc4pzl7vf5f1gxl7jhfsfy601k7cv2"))))
+    (build-system ruby-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'remove-version-constraints
+           (lambda _
+             (delete-file "Gemfile.lock"))))))
+    (native-inputs (list bundler ruby-stringio ruby-webrick ruby-yard))
+    (synopsis "Interface for external iterators")
+    (description "Module Stream defines an interface for external iterators.")
+    (home-page "https://github.com/monora/stream")
+    (license license:bsd-2)))
+
 (define sorbet-version "0.5.10610.20230106174520-1fa668010")
 
 (define sorbet-monorepo
