@@ -2141,13 +2141,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "1ha0a1ja7k09ysd05adffgsapfwzc6m6az34a0av2mhmlwy4zb1q"))))
+        (base32 "0p07qlqinb826m4n5b5invyfyv4z750sai2caqaf598mgj04l61p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2170,21 +2170,26 @@ Virtual observatory (VO) using Python.")
             (lambda _
               (setenv "HOME" (getcwd)))))))
     (propagated-inputs
-     (list python-astropy
-           python-astropy-healpix
-           python-numpy
-           python-scipy))
-    (native-inputs
      (list python-asdf
-           python-cython
-           python-extension-helpers
+           python-astropy
+           python-astropy-healpix
+           python-click
+           python-cloudpickle
+           python-dask
+           python-fsspec
            python-gwcs
-           python-pytest-astropy
+           python-numpy
            python-pyvo
+           python-scipy
+           python-shapely
+           python-zarr))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-pytest-astropy
            python-semantic-version
            python-pytest
-           python-setuptools-scm
-           python-shapely))
+           python-setuptools-scm))
     (home-page "https://reproject.readthedocs.io")
     (synopsis "Astronomical image reprojection in Python")
     (description
