@@ -933,27 +933,26 @@ from Stark Labs.")
     ;; build to use `openblas' instead. It requires FFTW with single precision
     ;; `fftwf'.
     (arguments
-     `(#:configure-flags
-       (list
-        "--enable-openblas"
-        (string-append
-         "--with-cfitsio-libdir=" (assoc-ref %build-inputs "cfitsio") "/lib")
-        (string-append
-         "--with-cfitsio-incdir=" (assoc-ref %build-inputs "cfitsio") "/include")
-        (string-append
-         "--with-openblas-libdir=" (assoc-ref %build-inputs "openblas") "/lib")
-        (string-append
-         "--with-openblas-incdir=" (assoc-ref %build-inputs "openblas") "/include")
-        (string-append
-         "--with-fftw-libdir=" (assoc-ref %build-inputs "fftw") "/lib")
-        (string-append
-         "--with-fftw-incdir=" (assoc-ref %build-inputs "fftw") "/include"))))
+     (list
+      #:configure-flags
+      #~(list
+         "--enable-openblas"
+         (string-append "--with-cfitsio-incdir="
+                        #$(this-package-input "cfitsio") "/include")
+         (string-append "--with-cfitsio-libdir="
+                        #$(this-package-input "cfitsio") "/lib")
+         (string-append "--with-fftw-incdir="
+                        #$(this-package-input "fftwf") "/include")
+         (string-append "--with-fftw-libdir="
+                        #$(this-package-input "fftwf") "/lib")
+         (string-append "--with-openblas-incdir="
+                        #$(this-package-input "openblas") "/include")
+         (string-append "--with-openblas-libdir="
+                        #$(this-package-input "openblas") "/lib"))))
     (native-inputs
      (list autoconf automake libtool))
     (inputs
-     `(("cfitsio" ,cfitsio)
-       ("openblas" ,openblas)
-       ("fftw" ,fftwf)))
+     (list cfitsio fftwf openblas))
     (home-page "https://www.astromatic.net/software/sextractor")
     (synopsis "Extract catalogs of sources from astronomical images")
     (description
