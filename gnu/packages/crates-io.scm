@@ -19392,6 +19392,30 @@ procedural macros.")
 example.")
     (license license:bsd-3)))
 
+(define-public rust-dialoguer-0.10
+  (package
+    (name "rust-dialoguer")
+    (version "0.10.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "dialoguer" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11rgzrhi677w9gf1r3ip2x361svdkjkr2m5dsfca9fcljacg5ijr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-console" ,rust-console-0.15)
+        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/mitsuhiko/dialoguer")
+    (synopsis "Command line prompting library")
+    (description "This package provides a command line prompting library.")
+    (license license:expat)))
+
 (define-public rust-diesel-1
   (package
     (name "rust-diesel")
