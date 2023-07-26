@@ -2769,9 +2769,7 @@ standard astronomy libraries:
 (define-public libxisf
   (package
     (name "libxisf")
-    ;; TODO: v0.2.2 (current latest) failed to build on configure phase, issue
-    ;; was open directly with author as he hosts source on seflhosted gitea.
-    (version "0.2.1")
+    (version "0.2.8")
     (source
      (origin
        (method git-fetch)
@@ -2780,7 +2778,7 @@ standard astronomy libraries:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fz9mmj1nz5v7hlr53q8na7khadfn1hm0d1gfpzzw3167bqpy2xv"))))
+        (base32 "1j2bg53hrr2yc55qa6549vcpj7qjnwmxjcdgc98w3ygnrjy7n7v0"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
