@@ -663,17 +663,6 @@ appended to the configuration.")
                           (format #t
                                   "Issued SIGHUP to Service MPD (PID ~a)."
                                   pid))
-                        (format #t "Service MPD is not running.")))))
-              (shepherd-action
-               (name 'update)
-               (documentation "Request MPD to update its music database.")
-               (procedure
-                #~(lambda (pid)
-                    (if pid
-                        (begin
-                          (invoke #$(file-append mpd-mpc "/bin/mpc") "update")
-                          (format #t "Database update requested for service \
-MPD (PID ~a)." pid))
                         (format #t "Service MPD is not running.")))))))))))
 
 (define (mpd-accounts config)
