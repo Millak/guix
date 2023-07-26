@@ -1347,13 +1347,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.2.2")
+    (version "5.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "170ddflli35mvhf6pla7aizfw8a7ckq66g1mi1br99dx2r3y7ag6"))
+        (base32 "0x4dh7wx9sn1gy6sl2d54zsd24cgfjwrlk6kfrwpzzrmbsv22lwv"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1362,9 +1362,10 @@ accurately in real time at any rate desired.")
              (for-each delete-file-recursively '("ply" "configobj")))
            ;; Remove cextern bundles. Check bundled versions against available
            ;; in Guix in the future update of astropy.
+           ;; Linking against an external cfitsio version has been removed,
+           ;; see https://github.com/astropy/astropy/pull/14311
            (with-directory-excursion "cextern"
-             (for-each delete-file-recursively '("cfitsio" "expat" "wcslib")))
-           #t))))
+             (for-each delete-file-recursively '("expat" "wcslib")))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1431,7 +1432,7 @@ accurately in real time at any rate desired.")
            python-skyfield
            python-timezonefinder))
     (inputs
-     (list cfitsio expat wcslib))
+     (list expat wcslib))
     (propagated-inputs
      (list python-configobj
            python-numpy
