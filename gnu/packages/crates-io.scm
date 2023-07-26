@@ -13907,15 +13907,15 @@ this to write Rust programs which can be customized by end users easily.")
   (package
     (inherit rust-configparser-3)
     (name "rust-configparser")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "configparser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qdaggalm3js86s2i11pjjcndrrvpk0pw1lfvmv7v25z3y66sqg2"))))
-    (arguments `(#:skip-build? #t))))
+        (base32 "13zcjw2jlcc73fd1lcjmb2vzh3ckankin490m24xa96i2vj1w87p"))))
+    (arguments `())))
 
 (define-public rust-console-0.15
   (package
