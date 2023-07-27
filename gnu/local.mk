@@ -610,6 +610,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/terraform.scm			\
   %D%/packages/texinfo.scm			\
   %D%/packages/tex.scm				\
+  %D%/packages/texlive.scm                      \
   %D%/packages/textutils.scm			\
   %D%/packages/text-editors.scm			\
   %D%/packages/time.scm				\
@@ -945,6 +946,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/bazaar-CVE-2017-14176.patch		\
   %D%/packages/patches/bc-fix-cross-compilation.patch		\
   %D%/packages/patches/bdb-5.3-atomics-on-gcc-9.patch		\
+  %D%/packages/patches/biber-adapt-perl-5.36.patch              \
   %D%/packages/patches/bind-re-add-attr-constructor-priority.patch	\
   %D%/packages/patches/brightnessctl-elogind-support.patch	\
   %D%/packages/patches/bsd-games-2.17-64bit.patch		\
