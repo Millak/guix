@@ -85863,6 +85863,30 @@ implementation of webview, a tiny cross-platform library to render web-based
 GUIs as desktop applications.")
     (license license:expat)))
 
+(define-public rust-wee-alloc-0.4
+  (package
+    (name "rust-wee-alloc")
+    (version "0.4.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "wee_alloc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13hb19nfqwjwcqlfj46sjz4j49wd7sj6hbjasimcn5xvnakbbcyv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memory-units" ,rust-memory-units-0.4)
+                       ("rust-spin" ,rust-spin-0.5)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/rustwasm/wee_alloc")
+    (synopsis "wee_alloc: The Wasm-Enabled, Elfin Allocator")
+    (description "wee_alloc: The Wasm-Enabled, Elfin Allocator")
+    (license license:mpl2.0)))
+
 (define-public rust-weezl-0.1
   (package
     (name "rust-weezl")
