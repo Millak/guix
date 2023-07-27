@@ -10349,7 +10349,7 @@ error detection and correction (EDAC).")
 (define-public spectre-meltdown-checker
   (package
     (name "spectre-meltdown-checker")
-    (version "0.45")
+    (version "0.46")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10358,15 +10358,14 @@ error detection and correction (EDAC).")
               (file-name (git-file-name name version))
               (patches
                (search-patches
-                "spectre-meltdown-checker-externalize-fwdb.patch"
-                "spectre-meltdown-checker-find-kernel.patch"))
+                "spectre-meltdown-checker-externalize-fwdb.patch"))
               ;; Remove builtin firmware database.
               (modules '((guix build utils)))
               (snippet '(substitute* "spectre-meltdown-checker.sh"
                           (("^# [AI],.*") "")))
               (sha256
                (base32
-                "1xx8h5791lhc2xw0dcbzjkklzvlxwxkjzh8di4g8divfy24fqsn8"))))
+                "0j42p6dayb7k87kf8sqimxlaswis3qh0569a15zccyknv9vf129k"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -10385,11 +10384,11 @@ error detection and correction (EDAC).")
                  (find-command inputs cmd))
 
                 ;; Commands safe to substitute directly.
-                (("\\<(awk|(base|dir)name|bunzip|g(un)?zip|lz4)\\>" all cmd)
+                (("\\<(awk|(base|dir)name|bunzip2|g(un)?zip|lz4)\\>" all cmd)
                  (find-command inputs cmd))
-                (("\\<(modprobe|pgrep|rmmod|umount|unlzma)\\>" all cmd)
+                (("\\<(lzop|mktemp|modprobe|pgrep|rmmod|umount)\\>" all cmd)
                  (find-command inputs cmd))
-                (("\\<(unxz|unzstd|uuencode)\\>" all cmd)
+                (("\\<(unlzma|unxz|unzstd|uuencode)\\>" all cmd)
                  (find-command inputs cmd))
 
                 ;; Commands which should only be substituted based on their
