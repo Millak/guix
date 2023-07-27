@@ -23706,6 +23706,26 @@ Emacs' support for dynamic modules.")
      `(#:cargo-inputs
        (("rust-bindgen" ,rust-bindgen-0.48))))))
 
+(define-public rust-emacs-org-link-parser-0.1
+  (package
+    (name "rust-emacs-org-link-parser")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "emacs-org-link-parser" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vvkl6wbgr1pc6abii2yra0saw0cca1wqm5sxflcmz1w47wrj7gx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags       ; Skip the doctests.
+       '("--release" "--lib" "--bins" "--tests")))
+    (home-page "https://github.com/lily-mosquitoes/emacs-org-link-parser")
+    (synopsis "Library for parsing Emacs Org-mode hyperlinks from a string")
+    (description "Library for parsing Emacs Org-mode hyperlinks from a string.")
+    (license license:gpl3+)))
+
 (define-public rust-email-0.0.20
   (package
     (name "rust-email")
