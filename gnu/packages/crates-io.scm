@@ -43119,6 +43119,23 @@ for Rust structs.")
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (inputs '())))
 
+(define-public rust-memory-units-0.4
+  (package
+    (name "rust-memory-units")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "memory_units" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1hyk1alsdpcw5r33c5yn7pk9h259klfxv4vhzx08y1j7l1di0ll4"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/pepyakin/memory_units")
+    (synopsis "Safe conversions between units of memory")
+    (description "Safe conversions between units of memory.")
+    (license license:mpl2.0)))
+
 (define-public rust-memsec-0.6
   (package
     (name "rust-memsec")
