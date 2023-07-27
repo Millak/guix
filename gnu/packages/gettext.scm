@@ -237,14 +237,14 @@ from Markdown files.")
 (define-public po4a
   (package
     (name "po4a")
-    (version "0.68")
+    (version "0.69")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mquinson/po4a/releases/download/v"
                                   version "/po4a-" version ".tar.gz"))
               (sha256
                (base32
-                "045i8izp2dqmkdzvnxyy5sy27ffrwl85dk8n6cmg1804ikk28qdg"))))
+                "15llrfdp4ilbrxy65hmmxka86xj0mrbqfiyzv715wrk16vqszm3w"))))
     (build-system perl-build-system)
     (arguments
      (list
