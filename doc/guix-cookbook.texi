@@ -124,9 +124,10 @@ System Configuration
 * Customizing the Kernel::      Creating and using a custom Linux kernel on Guix System.
 * Guix System Image API::       Customizing images to target specific platforms.
 * Using security keys::         How to use security keys with Guix System.
+* Dynamic DNS mcron job::       Job to update the IP address behind a DuckDNS host name.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
-* Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server
+* Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server.
 * Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
@@ -1570,9 +1571,10 @@ reference.
 * Customizing the Kernel::      Creating and using a custom Linux kernel on Guix System.
 * Guix System Image API::       Customizing images to target specific platforms.
 * Using security keys::         How to use security keys with Guix System.
+* Dynamic DNS mcron job::       Job to update the IP address behind a DuckDNS host name.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
-* Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server
+* Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server.
 * Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
@@ -2131,6 +2133,59 @@ and validating that the security key can be reset via the ``Reset your
 security key'' menu.  If it works, congratulations, your security key is
 ready to be used with applications supporting two-factor authentication
 (2FA).
+
+@node Dynamic DNS mcron job
+@section Dynamic DNS mcron job
+
+@cindex dynamic DNS, DDNS
+If your @acronym{ISP, Internet Service Provider} only provides dynamic
+IP addresses, it can be useful to setup a dynamic @acronym{DNS, Domain
+Name System} (also known as @acronym{DDNS, Dynamic DNS}) service to
+associate a static host name to a public but dynamic (often changing) IP
+address.  There are multiple existing services that can be used for
+this; in the following mcron job, @url{https://duckdns.org, DuckDNS} is
+used.  It should also work with other dynamic DNS services that offer a
+similar interface to update the IP address, such as
+@url{https://freedns.afraid.org/}, with minor adjustments.
+
+The mcron job is provided below, where @var{DOMAIN} should be
+substituted for your own domain prefix, and the DuckDNS provided token
+associated to @var{DOMAIN} added to the
+@file{/etc/duckdns/@var{DOMAIN}.token} file.
+
+@lisp
+(define duckdns-job
+  ;; Update personal domain IP every 5 minutes.
+  #~(job '(next-minute (range 0 60 5))
+	 #$(program-file
+            "duckdns-update"
+            (with-extensions (list guile-gnutls) ;required by (web client)
+              #~(begin
+                  (use-modules (ice-9 textual-ports)
+                               (web client))
+                  (let ((token (string-trim-both
+                                (call-with-input-file "/etc/duckdns/@var{DOMAIN}.token"
+                                  get-string-all)))
+                        (query-template (string-append "https://www.duckdns.org/"
+                                                       "update?domains=@var{DOMAIN}"
+                                                       "&token=~a&ip=")))
+                    (http-get (format #f query-template token))))))
+         "duckdns-update"
+         #:user "nobody"))
+@end lisp
+
+The job then needs to be added to the list of mcron jobs for your
+system, using something like:
+
+@lisp
+(operating-system
+ (services
+  (cons* (service mcron-service-type
+           (mcron-configuration
+             (jobs (list duckdns-job ...))))
+         ...
+         %base-services)))
+@end lisp
 
 @node Connecting to Wireguard VPN
 @section Connecting to Wireguard VPN
