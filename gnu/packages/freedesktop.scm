@@ -663,14 +663,14 @@ the freedesktop.org XDG Base Directory specification.")
                  (libexec (string-append out "/libexec/elogind"))
                  (dbuspolicy (string-append out "/etc/dbus-1/system.d"))
                  #$@(if (not (target-riscv64?))
-                      #~((kexec-tools #$(this-package-input "kexec-tools")))
-                      #~())
+                        #~((kexec-tools #$(this-package-input "kexec-tools")))
+                        #~())
                  (shadow #$(this-package-input "shadow"))
                  (shepherd #$(this-package-input "shepherd"))
                  (halt-path (string-append shepherd "/sbin/halt"))
                  #$@(if (not (target-riscv64?))
-                      #~((kexec-path (string-append kexec-tools "/sbin/kexec")))
-                      #~())
+                        #~((kexec-path (string-append kexec-tools "/sbin/kexec")))
+                        #~())
                  (nologin-path (string-append shadow "/sbin/nologin"))
                  (poweroff-path (string-append shepherd "/sbin/shutdown"))
                  (reboot-path (string-append shepherd "/sbin/reboot")))
@@ -683,8 +683,8 @@ the freedesktop.org XDG Base Directory specification.")
              (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
              (string-append "-Dhalt-path=" halt-path)
              #$@(if (not (target-riscv64?))
-                  #~((string-append "-Dkexec-path=" kexec-path))
-                  #~())
+                    #~((string-append "-Dkexec-path=" kexec-path))
+                    #~())
              (string-append "-Dpoweroff-path=" poweroff-path)
              (string-append "-Dreboot-path=" reboot-path)
              (string-append "-Dnologin-path=" nologin-path)
@@ -754,29 +754,29 @@ the freedesktop.org XDG Base Directory specification.")
              (substitute* "src/login/elogind.c"
                (("\"/run/elogind.pid\"") "\"/run/systemd/elogind.pid\"")))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.5)
-       ("docbook-xml-4.2" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gettext" ,gettext-minimal)
-       ("gperf" ,gperf)
-       ("libxml2" ,libxml2)                     ;for XML_CATALOG_FILES
-       ("m4" ,m4)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("xsltproc" ,libxslt)))
+     (list docbook-xml-4.5
+           docbook-xml-4.2
+           docbook-xsl
+           gettext-minimal
+           gperf
+           libxml2                      ;for XML_CATALOG_FILES
+           m4
+           pkg-config
+           python
+           libxslt))
     (inputs
      (append
-       (if (not (target-riscv64?))
-         (list kexec-tools)
-         '())
-       (list linux-pam
-             libcap
-             shadow         ; for 'nologin'
-             shepherd       ; for 'halt' and 'reboot', invoked
-                            ; when pressing the power button
-             dbus
-             eudev
-             acl)))         ; to add individual users to ACLs on /dev nodes
+      (if (not (target-riscv64?))
+          (list kexec-tools)
+          '())
+      (list linux-pam
+            libcap
+            shadow                      ; for 'nologin'
+            shepherd                    ; for 'halt' and 'reboot', invoked
+                                        ; when pressing the power button
+            dbus
+            eudev
+            acl)))             ; to add individual users to ACLs on /dev nodes
     (home-page "https://github.com/elogind/elogind")
     (synopsis "User, seat, and session management service")
     (description "Elogind is the systemd project's \"logind\" service,
