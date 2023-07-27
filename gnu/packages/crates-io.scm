@@ -35971,6 +35971,28 @@ or numerical index.  A corresponding hash set type is also provided.")
         ("rust-rand" ,rust-rand-0.7)
         ("rust-serde-derive" ,rust-serde-derive-1))))))
 
+(define-public rust-indextree-4
+  (package
+    (name "rust-indextree")
+    (version "4.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "indextree" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1dnysxws5kpw8c3yvnhq3r9p2kfqqrgcw29x7hrg2gn6wp812164"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/saschagrunert/indextree")
+    (synopsis "Arena based tree structure by using indices")
+    (description
+     "This package provides arena based tree structure by using indices instead
+of reference counted pointers.")
+    (license license:expat)))
+
 (define-public rust-indicatif-0.16
   (package
     (name "rust-indicatif")
