@@ -71,15 +71,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-;; The starting point for this file is
-;; commit ad457d01147b8d6fcb4ee64b2dc2d699caa1d1ee
-
-
-;; These variables specify the SVN tag and the matching SVN revision.  They
-;; are taken from https://www.tug.org/svn/texlive/tags/
-(define %texlive-tag "texlive-2021.3")
-(define %texlive-revision 59745)
-
 (define %texlive-date "20210325")
 (define %texlive-version (string-take %texlive-date 4))
 
@@ -119,33 +110,21 @@
        (snippet
         ;; TODO: Unbundle stuff in texk/dvisvgm/dvisvgm-src/libs too.
         '(with-directory-excursion "libs"
-           (let ((preserved-directories '("." ".." "lua53" "luajit" "pplib" "xpdf")))
+           (let ((preserved-directories
+                 '("." ".." "lua53" "luajit" "pplib" "xpdf")))
              ;; Delete bundled software, except Lua which cannot easily be
              ;; used as an external dependency, pplib and xpdf which aren't
              ;; supported as system libraries (see m4/kpse-xpdf-flags.m4).
-             (for-each delete-file-recursively
-                       (scandir "."
-                                (lambda (file)
-                                  (and (not (member file preserved-directories))
-                                       (eq? 'directory (stat:type (stat file))))))))))))
+             (for-each
+               delete-file-recursively
+               (scandir "."
+                 (lambda (file)
+                   (and (not (member file preserved-directories))
+                        (eq? 'directory (stat:type (stat file))))))))))))
     (build-system gnu-build-system)
     (inputs
      `(("texlive-extra-src" ,texlive-extra-src)
        ("config" ,config)
-       ("texlive-scripts"
-        ,(origin
-           (method svn-fetch)
-           (uri (svn-reference
-                 (url (string-append "svn://www.tug.org/texlive/tags/"
-                                     %texlive-tag "/Master/texmf-dist/"
-                                     "/scripts/texlive"))
-                 (revision %texlive-revision)))
-           (file-name (string-append "texlive-scripts-"
-                                     (number->string %texlive-revision)
-                                     "-checkout"))
-           (sha256
-            (base32
-             "1jrphfjhmw17rp1yqsl70shmvka3vg0g8841q6zx2lfn48p7vqf3"))))
        ("cairo" ,cairo)
        ("fontconfig" ,fontconfig)
        ("fontforge" ,fontforge)
@@ -268,71 +247,6 @@
              (with-directory-excursion "texlive-extra"
                (apply (assoc-ref %standard-phases 'unpack)
                       (list #:source (assoc-ref inputs "texlive-extra-src"))))))
-         (add-after 'unpack-texlive-extra 'unpack-texlive-scripts
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir "texlive-scripts")
-             (with-directory-excursion "texlive-scripts"
-               (apply (assoc-ref %standard-phases 'unpack)
-                      (list #:source (assoc-ref inputs "texlive-scripts")))
-               ;; Configure the version string for some scripts.
-               ;; Normally this would be done by Subversion.
-               ;; See <https://issues.guix.gnu.org/43442#15>.
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("\\$Id\\$")
-                              (format #f "$Id: ~a ~a ~a nobody $"
-                                      file
-                                      ,%texlive-revision
-                                      ,%texlive-date))
-                             (("\\$Revision\\$")
-                              (format #f "$Revision: ~a $"
-                                      ,%texlive-revision))
-                             (("\\$Date\\$")
-                              (format #f "$Date: ~a $"
-                                      ,%texlive-date))))
-                         '("fmtutil.pl"
-                           "mktexlsr"
-                           "mktexlsr.pl"
-                           "mktexmf"
-                           "mktexpk"
-                           "mktextfm"
-                           "tlmgr.pl"
-                           "tlmgrgui.pl"
-                           "updmap.pl")))))
-         (add-after 'unpack-texlive-scripts 'patch-scripts
-           (lambda _
-             (let* ((scripts (append (find-files "texk/kpathsea" "^mktex")
-                                     (find-files "texk/texlive/linked_scripts"
-                                                 "\\.sh$")
-                                     (find-files "texlive-scripts" "\\.sh$")))
-                    (commands '("awk" "basename" "cat" "grep" "mkdir" "rm"
-                                "sed" "sort" "uname"))
-                    (command-regexp (format #f "\\b(~a)\\b"
-                                            (string-join commands "|")))
-                    (iso-8859-1-encoded-scripts
-                     '("texk/texlive/linked_scripts/texlive-extra/rubibtex.sh"
-                       "texk/texlive/linked_scripts/texlive-extra/rumakeindex.sh")))
-
-               (define (substitute-commands scripts)
-                 (substitute* scripts
-                   ((command-regexp dummy command)
-                    (which command))))
-
-               (substitute-commands (lset-difference string= scripts
-                                                     iso-8859-1-encoded-scripts))
-
-               (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                 (substitute-commands iso-8859-1-encoded-scripts)))))
-         ;; When ST_NLINK_TRICK is set, kpathsea attempts to avoid work when
-         ;; searching files by assuming that a directory with exactly two
-         ;; links has no subdirectories.  This assumption does not hold in our
-         ;; case, so some directories with symlinked subdirectories would not
-         ;; be traversed.
-         (add-after 'patch-scripts 'patch-directory-traversal
-           (lambda _
-             (substitute* "texk/kpathsea/config.h"
-               (("#define ST_NLINK_TRICK") ""))))
-
          ,@(if (target-arm32?)
                `((add-after 'unpack 'skip-faulty-test
                    (lambda _
@@ -344,39 +258,12 @@
                         (string-append "exit 77 # skip\n" all))))))
                '())
 
-         (add-after 'check 'customize-texmf.cnf
-           ;; The default texmf.cnf is provided by this package, texlive-bin.
-           ;; Every variable of interest is set relatively to the GUIX_TEXMF
-           ;; environment variable defined via a search path specification
-           ;; further below.  The configuration file is patched after the test
-           ;; suite has run, as it relies on the default configuration to find
-           ;; its paths (and the GUIX_TEXMF variable isn't set yet).
-           (lambda _
-             ;; The current directory is build/ because of the out-of-tree
-             ;; build.
-             (let* ((source    (first (scandir ".." (cut string-suffix?
-                                                         "source" <>))))
-                    (texmf.cnf (string-append "../" source
-                                              "/texk/kpathsea/texmf.cnf")))
-               (substitute* texmf.cnf
-                 (("^TEXMFROOT = .*")
-                  "TEXMFROOT = {$GUIX_TEXMF}/..\n")
-                 (("^TEXMF = .*")
-                  "TEXMF = {$GUIX_TEXMF}\n")
-                 (("^%TEXMFCNF = .*")
-                  "TEXMFCNF = {$GUIX_TEXMF}/web2c\n")
-                 ;; Don't truncate lines.
-                 (("^error_line = .*$") "error_line = 254\n")
-                 (("^half_error_line = .*$") "half_error_line = 238\n")
-                 (("^max_print_line = .*$") "max_print_line = 1000\n")))))
          (add-after 'install 'post-install
            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
              (let* ((out (assoc-ref outputs "out"))
                     (patch-source-shebangs (assoc-ref %standard-phases
                                                       'patch-source-shebangs))
                     (share (string-append out "/share"))
-                    (scripts (string-append share
-                                            "/texmf-dist/scripts/texlive"))
                     (source (string-append
                              "../" (first (scandir ".." (cut string-suffix?
                                                              "source" <>)))))
@@ -402,37 +289,17 @@
 
                ;; Install tlpkg.
                (copy-recursively tlpkg-src (string-append share "/tlpkg"))
-
-               ;; Install texlive-scripts.
-               (copy-recursively (string-append
-                                  source "/texlive-scripts/source/")
-                                 scripts)
-
-               ;; Patch them.
-               (let ((dirs (map dirname (list (which "sed") (which "awk")))))
-                 (with-directory-excursion scripts
-                   (substitute* '("mktexpk" "mktexmf" "mktexlsr")
-                     (("^version=" m)
-                      (format #false "PATH=\"~{~a:~}$PATH\"; export PATH~%~a"
-                              dirs m)))))
-
-               ;; Make sure that fmtutil can find its Perl modules.
-               (substitute* (string-append scripts "/fmtutil.pl")
-                 (("\\$TEXMFROOT/")
-                  (string-append share "/")))
-
-               ;; Likewise for updmap.pl.
-               (substitute* (string-append scripts "/updmap.pl")
-                 (("\\$TEXMFROOT/tlpkg")
-                  (string-append share "/tlpkg")))
-
-               ;; Likewise for the tlmgr.
-               (substitute* (string-append scripts "/tlmgr.pl")
-                 ((".*\\$::installerdir = \\$Master.*" all)
-                  (format #f "  $Master = ~s;~%~a" share all)))
-
-               ;; Install the config.guess script, required by tlmgr.
                (with-directory-excursion share
+                 ;; Make sure tlmgr finds its Perl modules.
+                 ;; tlmgr is a script in bin/ that runs tlmgr.pl in
+                 ;; texmf-dist/; so although texmf-dist/ will be discarded in
+                 ;; the texlive package in favour of the one from texlivetexmf,
+                 ;; through the absolute path our modifications will be used
+                 ;; by the script.
+                 (substitute* "texmf-dist/scripts/texlive/tlmgr.pl"
+                   ((".*\\$::installerdir = \\$Master.*" all)
+                    (format #f "  $Master = ~s;~%~a" share all)))
+                 ;; Install the config.guess script, required by tlmgr.
                  (mkdir-p "tlpkg/installer/")
                  (symlink config.guess "tlpkg/installer/config.guess"))
 
@@ -442,10 +309,7 @@
                (setenv "PATH" (string-append (getenv "PATH") ":" out "/bin"))
                (with-directory-excursion out
                  (patch-source-shebangs))))))))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "GUIX_TEXMF")
-            (files '("share/texmf-dist")))))
+
     (synopsis "TeX Live, a package of the TeX typesetting system")
     (description
      "TeX Live provides a comprehensive TeX document production system.
