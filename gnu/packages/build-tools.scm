@@ -14,7 +14,7 @@
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022, 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

@@ -37,7 +37,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
-;;; Copyright © 2022, 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>

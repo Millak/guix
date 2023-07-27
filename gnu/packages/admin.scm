@@ -55,7 +55,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022, 2023 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>

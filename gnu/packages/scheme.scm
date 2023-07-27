@@ -21,7 +21,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2023 Andrew Whatson <whatson@tailcall.au>
-;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
