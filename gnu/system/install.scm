@@ -517,22 +517,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
     (file-systems
      ;; Note: the disk image build code overrides this root file system with
      ;; the appropriate one.
-     (cons* (file-system
-              (mount-point "/")
-              (device (file-system-label "Guix_image"))
-              (type "ext4"))
-
-            ;; Make /tmp a tmpfs instead of keeping the overlayfs.  This
-            ;; originally was used for unionfs because FUSE creates
-            ;; '.fuse_hiddenXYZ' files for each open file, and this confuses
-            ;; Guix's test suite, for instance (see
-            ;; <http://bugs.gnu.org/23056>).  We keep this for overlayfs to be
-            ;; on the safe side.
-            (file-system
-              (mount-point "/tmp")
-              (device "none")
-              (type "tmpfs")
-              (check? #f))
+     (append %base-live-file-systems
 
             ;; XXX: This should be %BASE-FILE-SYSTEMS but we don't need
             ;; elogind's cgroup file systems.
