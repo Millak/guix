@@ -711,14 +711,14 @@ introspection of @code{zope.interface} instances in code.")
 (define-public python-sphinx-alabaster-theme
   (package
     (name "python-sphinx-alabaster-theme")
-    (version "0.7.12")
+    (version "0.7.13")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "alabaster" version))
               (sha256
                (base32
-                "00nwwjj2d2ym4s2kk217x7jkx1hnczc3fvm8yxbqmsp6b0nxfqd6"))))
-    (build-system python-build-system)
+                "1qjam3hks6a3fa89nhb9ajk62b2m5qmss0qyw0b0wsay9l44lym2"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-pygments))
     (home-page "https://alabaster.readthedocs.io/")
