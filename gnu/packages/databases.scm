@@ -3706,7 +3706,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.40.0.0")
+    (version "3.42.0.1")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3716,11 +3716,11 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "02sgja00azvd08wi2wm105apmhp2644s7aw9b1zdg3dkcwjnsiad"))))
+         "0dr7zymn45x2793cilr709rnwn9g1c4n4vzln57y2lhj7420ykic"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.40 required.
+    (inputs (list sqlite-next))         ;SQLite 3.42 required.
     (arguments
      (list
       #:phases
