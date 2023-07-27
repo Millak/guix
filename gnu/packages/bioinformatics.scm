@@ -19134,7 +19134,7 @@ coordinates between different assemblies.")
 (define-public python-cgatcore
   (package
     (name "python-cgatcore")
-    (version "0.6.14")
+    (version "0.6.15")
     ;; The version of pypi does not include test data.
     (source (origin
               (method git-fetch)
@@ -19144,7 +19144,7 @@ coordinates between different assemblies.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fjjaski39j8b7v21wldmbwwsfhicngajah7n4skafi56kdck33p"))))
+                "103hpdnkqr3a34blbicshk56j36g652s0g1zi9isppc5dngn0s18"))))
     (build-system pyproject-build-system)
     (arguments
      (list
