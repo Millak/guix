@@ -1169,7 +1169,7 @@ Some ACTIONS support additional ARGS.\n"))
     (debug . 0)
     (verbosity . #f)                              ;default
     (validate-reconfigure . ,ensure-forward-reconfigure)
-    (image-type . efi-raw)
+    (image-type . mbr-raw)
     (image-size . guess)
     (install-bootloader? . #t)
     (label . #f)

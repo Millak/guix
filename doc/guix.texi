@@ -40884,7 +40884,7 @@ QEMU monitor and the VM.
 @cindex image, creating disk images
 The @code{image} command can produce various image types.  The image
 type can be selected using the @option{--image-type} option.  It
-defaults to @code{efi-raw}.  When its value is @code{iso9660}, the
+defaults to @code{mbr-raw}.  When its value is @code{iso9660}, the
 @option{--label} option can be used to specify a volume ID with
 @code{image}.  By default, the root file system of a disk image is
 mounted non-volatile; the @option{--volatile} option can be provided to
@@ -40903,7 +40903,7 @@ qemu-system-x86_64 -enable-kvm -hda /tmp/my-image.qcow2 -m 1000 \
                    -bios $(guix build ovmf)/share/firmware/ovmf_x64.bin
 @end example
 
-When using the @code{efi-raw} image type, a raw disk image is produced;
+When using the @code{mbr-raw} image type, a raw disk image is produced;
 it can be copied as is to a USB stick, for instance.  Assuming
 @code{/dev/sdc} is the device corresponding to a USB stick, one can copy
 the image to it using the following command:
@@ -41041,7 +41041,7 @@ of the image.
 For the @code{image} action, create an image with given @var{type}.
 
 When this option is omitted, @command{guix system} uses the
-@code{efi-raw} image type.
+@code{mbr-raw} image type.
 
 @cindex ISO-9660 format
 @cindex CD image format
@@ -45193,7 +45193,7 @@ then directly boot from it, without any kind of installation procedure.
 
 The @command{guix system image} command is able to turn an operating
 system definition into a bootable image.  This command supports
-different image types, such as @code{efi-raw}, @code{iso9660} and
+different image types, such as @code{mbr-raw}, @code{iso9660} and
 @code{docker}.  Any modern @code{x86_64} machine will probably be able
 to boot from an @code{iso9660} image.  However, there are a few machines
 out there that require specific image types.  Those machines, in general
@@ -45545,6 +45545,10 @@ record.
 There are several @code{image-type} records provided by the @code{(gnu
 system image)} and the @code{(gnu system images @dots{})} modules.
 
+@defvar mbr-raw-image-type
+Build an image based on the @code{mbr-disk-image} image.
+@end defvar
+
 @defvar efi-raw-image-type
 Build an image based on the @code{efi-disk-image} image.
 @end defvar
@@ -45554,7 +45558,7 @@ Build an image based on the @code{efi32-disk-image} image.
 @end defvar
 
 @defvar qcow2-image-type
-Build an image based on the @code{efi-disk-image} image but with the
+Build an image based on the @code{mbr-disk-image} image but with the
 @code{compressed-qcow2} image format.
 @end defvar
 
@@ -45625,7 +45629,7 @@ wsl -d Guix
 
 So, if we get back to the @code{guix system image} command taking an
 @code{operating-system} declaration as argument.  By default, the
-@code{efi-raw-image-type} is used to turn the provided
+@code{mbr-raw-image-type} is used to turn the provided
 @code{operating-system} into an actual bootable image.
 
 To use a different @code{image-type}, the @code{--image-type} option can

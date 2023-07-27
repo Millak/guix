@@ -76,6 +76,7 @@
             esp32-partition
             root-partition
 
+            mbr-disk-image
             efi-disk-image
             iso9660-image
             docker-image
@@ -84,6 +85,7 @@
             raw-with-offset-disk-image
 
             image-with-os
+            mbr-raw-image-type
             efi-raw-image-type
             efi32-raw-image-type
             qcow2-image-type
@@ -145,6 +147,15 @@ parent image record."
    (flags '(boot))
    (initializer (gexp initialize-root-partition))))
 
+(define mbr-disk-image
+  (image-without-os
+   (format 'disk-image)
+   (partition-table-type 'mbr)
+   (partitions
+    (list (partition
+           (inherit root-partition)
+           (offset root-offset))))))
+
 (define efi-disk-image
   (image-without-os
    (format 'disk-image)
@@ -201,6 +212,11 @@ set to the given OS."
    (inherit base-image)
    (operating-system os)))
 
+(define mbr-raw-image-type
+  (image-type
+   (name 'mbr-raw)
+   (constructor (cut image-with-os mbr-disk-image <>))))
+
 (define efi-raw-image-type
   (image-type
    (name 'efi-raw)
@@ -216,8 +232,7 @@ set to the given OS."
    (name 'qcow2)
    (constructor (cut image-with-os
                  (image
-                  (inherit efi-disk-image)
-                  (partition-table-type 'mbr)
+                  (inherit mbr-disk-image)
                   (name 'image.qcow2)
                   (format 'compressed-qcow2))
                  <>))))

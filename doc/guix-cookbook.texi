@@ -2019,17 +2019,23 @@ One can run:
 mathieu@@cervin:~$ guix system --list-image-types
 The available image types are:
 
+   - unmatched-raw
+   - rock64-raw
    - pinebook-pro-raw
    - pine64-raw
    - novena-raw
    - hurd-raw
    - hurd-qcow2
    - qcow2
-   - uncompressed-iso9660
-   - efi-raw
-   - arm64-raw
-   - arm32-raw
    - iso9660
+   - uncompressed-iso9660
+   - tarball
+   - efi-raw
+   - mbr-raw
+   - docker
+   - wsl2
+   - raw-with-offset
+   - efi32-raw
 @end example
 
 and by writing an @code{operating-system} file based on
