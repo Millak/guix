@@ -69937,6 +69937,25 @@ functions.")
 Unicode strings.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-slugify-0.1
+  (package
+    (name "rust-slugify")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "slugify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "12xcybjhm7g2rql0n91lgb2j195za58qx3smswqvi2107lhczf6n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unidecode" ,rust-unidecode-0.3))))
+    (home-page "https://github.com/mattgathu/slugify")
+    (synopsis "Macro for flexible slug generation")
+    (description "Macro for flexible slug generation.")
+    (license license:expat)))
+
 (define-public rust-sluice-0.5
   (package
     (name "rust-sluice")
@@ -85876,15 +85895,14 @@ GUIs as desktop applications.")
                 "13hb19nfqwjwcqlfj46sjz4j49wd7sj6hbjasimcn5xvnakbbcyv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-0.1)
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-0.1)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-memory-units" ,rust-memory-units-0.4)
                        ("rust-spin" ,rust-spin-0.5)
                        ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/rustwasm/wee_alloc")
     (synopsis "wee_alloc: The Wasm-Enabled, Elfin Allocator")
-    (description "wee_alloc: The Wasm-Enabled, Elfin Allocator")
+    (description "wee_alloc: The Wasm-Enabled, Elfin Allocator.")
     (license license:mpl2.0)))
 
 (define-public rust-weezl-0.1
