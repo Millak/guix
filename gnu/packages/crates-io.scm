@@ -50054,6 +50054,43 @@ iteration.  NOTE: This crate was renamed to @code{indexmap}.  Please use it
 under its new name.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-orgize-0.9
+  (package
+    (name "rust-orgize")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "orgize" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ynpryx33yzhfb8dsnzflzsh37p39lyfv0wgw430rh33z2l9hj8y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytecount" ,rust-bytecount-0.6)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-indextree" ,rust-indextree-4)
+                       ("rust-jetscii" ,rust-jetscii-0.5)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-wasm-bindgen" ,rust-serde-wasm-bindgen-0.3)
+                       ("rust-serde-indextree" ,rust-serde-indextree-0.2)
+                       ("rust-syntect" ,rust-syntect-4)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-wee-alloc" ,rust-wee-alloc-0.4))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-slugify" ,rust-slugify-0.1))))
+    (home-page "https://github.com/PoiScript/orgize")
+    (synopsis "Rust library for parsing orgmode files")
+    (description
+     "This package provides a Rust library for parsing orgmode files.")
+    (license license:expat)))
+
 (define-public rust-orion-0.17
   (package
     (name "rust-orion")
