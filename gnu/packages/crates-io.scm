@@ -46026,6 +46026,28 @@ Rust with reasonable performance.")
 path.Clean.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-path-slash-0.2
+  (package
+    (name "rust-path-slash")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "path-slash" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0hjgljv4vy97qqw9gxnwzqhhpysjss2yhdphfccy3c388afhk48y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/rhysd/path-slash")
+    (synopsis "Rust library to convert a file path from/to slash path")
+    (description
+     "This package provides @code{path-slash}, a tiny library to convert a file
+path (e.g. @code{foo/bar}, @code{foo\\bar} or @code{C:\\foo\\bar}) from/to a
+slash path (e.g. @code{foo/bar}, @code{C:/foo/bar}).")
+    (license license:expat)))
+
 (define-public rust-pathdiff-0.2
   (package
     (name "rust-pathdiff")
