@@ -643,7 +643,7 @@ the freedesktop.org XDG Base Directory specification.")
 (define-public elogind
   (package
     (name "elogind")
-    (version "246.10")
+    (version "252.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -652,16 +652,21 @@ the freedesktop.org XDG Base Directory specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16045bhpwjq2nqgswln67ipg1zrz2djxlgkfngqng3jqpwagmnzq"))
-              (patches (search-patches
-                        "elogind-revert-polkit-detection.patch"))))
+                "049cfv97975x700s7lx4p9i22nv6v7j046iwkspxba7kr5qq7akw"))
+              (patches (search-patches "elogind-fix-rpath.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
        ,#~(let* ((out #$output)
                  (sysconf (string-append out "/etc"))
                  (libexec (string-append out "/libexec/elogind"))
-                 (dbuspolicy (string-append out "/etc/dbus-1/system.d"))
+                 (dbus-data (string-append out "/share/dbus-1"))
+                 (dbuspolicy (string-append dbus-data "/system.d"))
+                 (dbussessionservice (string-append dbus-data "/services"))
+                 (dbussystemservice (string-append dbus-data
+                                                   "/system-services"))
+                 (dbusinterfaces (string-append dbus-data "/interfaces"))
+
                  #$@(if (not (target-riscv64?))
                         #~((kexec-tools #$(this-package-input "kexec-tools")))
                         #~())
@@ -679,6 +684,9 @@ the freedesktop.org XDG Base Directory specification.")
              (string-append "-Dsysconfdir=" sysconf)
              (string-append "-Drootlibexecdir=" libexec)
              (string-append "-Ddbuspolicydir=" dbuspolicy)
+             (string-append "-Ddbussessionservicedir=" dbussessionservice)
+             (string-append "-Ddbussystemservicedir=" dbussystemservice)
+             (string-append "-Ddbus-interfaces-dir=" dbusinterfaces)
              (string-append "-Dc_link_args=-Wl,-rpath=" libexec)
              (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
              (string-append "-Dhalt-path=" halt-path)
@@ -703,21 +711,28 @@ the freedesktop.org XDG Base Directory specification.")
            ;; XXX There is no run-time setting to set this per-process, only a
            ;; build-time, hard-coded list of global directories.
            (lambda _
-             (substitute* (list "src/login/elogind-dbus.c"
-                                "src/sleep/sleep.c")
+             (substitute* (list "src/login/logind-core.c"
+                                "src/login/logind-dbus.c"
+                                "src/sleep/sleep.c"
+                                "src/shared/sleep-config.c")
                (("PKGSYSCONFDIR") "\"/etc/elogind\""))))
          (add-after 'unpack 'adjust-tests
            (lambda _
-             ;; Skip the following test, which depends on users such as 'root'
-             ;; existing in the build environment.
-             (invoke "sed" "/src\\/test\\/test-user-util.c/,+2s/^/#/g"
-                     "-i" "src/test/meson.build")
+             ;; Skip the user-util tests, which depends on users such as
+             ;; 'root' existing in the build environment.
+             (substitute* "src/test/meson.build"
+               ((".*'test-user-util.c'.*") "")
+               ((".*'test-cgroup.c'.*") ""))
              ;; This test tries to copy some bytes from /usr/lib/os-release,
              ;; which does not exist in the build container.  Choose something
              ;; more likely to be available.
              (substitute* "src/test/test-copy.c"
                (("/usr/lib/os-release")
-                "/etc/passwd"))
+                "/etc/passwd")
+               ;; Skip the copy_holes test, which fails for unknown reasons
+               ;; (see: https://github.com/elogind/elogind/issues/261).
+               (("TEST_RET\\(copy_holes).*" all)
+                (string-append all "        return 77;\n")))
              ;; Use a shebang that works in the build container.
              (substitute* "src/test/test-exec-util.c"
                (("#!/bin/sh")
@@ -742,12 +757,6 @@ the freedesktop.org XDG Base Directory specification.")
              ;; loopback device, but that fails because /sys is unavailable.
              (substitute* "src/libelogind/sd-device/test-sd-device-thread.c"
                ((".*sd_device_new_from_syspath.*/sys/class/net/lo.*")
-                "return 77;"))
-             ;; Most of these tests require cgroups or an actual live
-             ;; logind system so that it can flicker the monitor, etc.
-             ;; Just skip it until a more narrow selection can be made.
-             (substitute* "src/libelogind/sd-login/test-login.c"
-               (("test_login\\(\\);")
                 "return 77;"))))
          (add-after 'unpack 'change-pid-file-path
            (lambda _
@@ -763,6 +772,7 @@ the freedesktop.org XDG Base Directory specification.")
            m4
            pkg-config
            python
+           python-jinja2
            libxslt))
     (inputs
      (append
@@ -771,9 +781,10 @@ the freedesktop.org XDG Base Directory specification.")
           '())
       (list linux-pam
             libcap
-            shadow                      ; for 'nologin'
-            shepherd                    ; for 'halt' and 'reboot', invoked
-                                        ; when pressing the power button
+            `(,util-linux "lib")        ;for 'libmount'
+            shadow                      ;for 'nologin'
+            shepherd                    ;for 'halt' and 'reboot', invoked
+                                        ;when pressing the power button
             dbus
             eudev
             acl)))             ; to add individual users to ACLs on /dev nodes
