@@ -66745,6 +66745,26 @@ fragment of code.")
 standard formatting APIs.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-serde-indextree-0.2
+  (package
+    (name "rust-serde-indextree")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "serde_indextree" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0kzp3dk6smfy0509fd1sih9ai4a31kgpb1rshsxb0m2l01c7s3m7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-indextree" ,rust-indextree-4)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/PoiScript/serde_indextree")
+    (synopsis "Serializing indextree structure")
+    (description "Serializing indextree structure.")
+    (license license:expat)))
+
 (define-public rust-serde-ini-0.2
   (package
     (name "rust-serde-ini")
