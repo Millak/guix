@@ -23618,20 +23618,20 @@ from the header, as well as section details and data available.")
 (define-public python-imagesize
   (package
     (name "python-imagesize")
-    (version "1.2.0")
+    (version "1.4.1")
     (source
-      (origin
-      (method url-fetch)
-      (uri (pypi-uri "imagesize" version))
-      (sha256
-       (base32
-        "1cd24x0vqbd6c8ym1n21qc0aj54mfb7rzdqglmwk9xxixajbbxmi"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "imagesize" version))
+       (sha256
+        (base32
+         "0jndjx26p8qibrx997p3kb6vfbqbdxkv74jsrkav177vmx2085b9"))))
+    (build-system pyproject-build-system)
     (home-page "https://github.com/shibukawa/imagesize_py")
     (synopsis "Gets image size of files in various formats in Python")
     (description
-      "This package allows determination of image size from
-     PNG, JPEG, JPEG2000 and GIF files in pure Python.")
+     "This package allows determination of image size from PNG, JPEG,
+JPEG2000 and GIF files in pure Python.")
     (license license:expat)))
 
 (define-public python-termstyle
