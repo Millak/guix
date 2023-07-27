@@ -32688,7 +32688,7 @@ can run on headless servers.  The Xvnc implementations provided by the
 
 @defvar xvnc-service-type
 
-The @code{xvnc-server-type} service can be configured via the
+The @code{xvnc-service-type} service can be configured via the
 @code{xvnc-configuration} record, documented below.  A second virtual
 display could be made available on a remote machine via the
 following configuration:
