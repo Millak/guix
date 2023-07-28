@@ -94,6 +94,28 @@
 @end itemize\n")
       (license license:expat))))
 
+(define-public go-github-com-alecthomas-assert-v2
+  (package
+    (inherit go-github-com-alecthomas-assert)
+    (name "go-github-com-alecthomas-assert-v2")
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/assert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "055w46gr47rrn5g2hh7z6hj3x2b8advbcph8gs8szrpzlympyyz0"))))
+    (arguments
+     (list #:go go-1.18
+           #:import-path "github.com/alecthomas/assert/v2"))
+    (propagated-inputs
+     (list go-github-com-alecthomas-repr
+           go-github-com-hexops-gotextdiff))
+    (native-inputs '())))
+
 (define-public go-github-com-cheekybits-is
   (let ((commit "68e9c0620927fb5427fda3708222d0edee89eae9")
         (revision "0"))
