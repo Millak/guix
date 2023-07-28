@@ -74,6 +74,34 @@
 substitution.")
     (license license:expat)))
 
+(define-public go-github-com-alecthomas-participle-v2
+  (package
+    (name "go-github-com-alecthomas-participle-v2")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/participle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k2vsd58rgwyylyn5zja6z6k1sg4m39g2fhd88lvja60ca51bh98"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:go go-1.18
+           #:import-path "github.com/alecthomas/participle/v2"))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2))
+    (home-page "https://github.com/alecthomas/participle")
+    (synopsis "Parser library for Go")
+    (description
+     "This package provides a parser library for Golang which constructs
+parsers from definitions in struct tags and parses directly into those
+structs.  The approach is similar to how other marshallers work in Golang,
+\"unmarshalling\" an instance of a grammar into a struct.")
+    (license license:expat)))
+
 (define-public go-github-com-anmitsu-go-shlex
   (package
     (name "go-github-com-anmitsu-go-shlex")
