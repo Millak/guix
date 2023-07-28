@@ -588,8 +588,6 @@ human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
 
 (define-public h-client
-  ;; The Python 3 port hasn't yet been integrated into the main branch
-  ;; (currently lives in the 'python3-port' branch).
   (let ((commit "e6c78b16e034ccf78ae9cb4c29268c2f57a30bfc")
         (revision "1"))
     (package
@@ -628,7 +626,7 @@ human-readable format and checks if it conforms to the standards.")
                   ;; Namespace GdkPixbuf not available".
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
                   `("PATH" = (,(dirname (search-input-file
-                                         inputs "sbin/lspci"))
+                                         inputs "bin/lspci"))
                               ,(dirname (search-input-file
                                          inputs "bin/lsusb"))))))))))
       (inputs
