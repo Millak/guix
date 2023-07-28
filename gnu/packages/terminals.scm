@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,6 +101,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -1156,6 +1158,32 @@ strings")
     (description "Curtsies is a Python library for interacting with the
 terminal.  It features string-like objects which carry formatting information,
 per-line fullscreen terminal rendering, and keyboard input event reporting.")
+    (license license:expat)))
+
+(define-public python-spinners
+  (package
+    (name "python-spinners")
+    (version "0.0.24")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spinners" version))
+              (sha256
+               (base32
+                "0zz2z6dpdjdq5z8m8w8dfi8by0ih1zrdq0caxm1anwhxg2saxdhy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "requirements-dev.txt"
+                     (("(.*)==(.*)$" _ dep ver)
+                      (string-append dep ">=" ver))))))))
+    (native-inputs (list python-coverage python-nose python-pylint python-tox))
+    (home-page "https://github.com/manrajgrover/py-spinners")
+    (synopsis "Python library with graphical spinners for the terminal")
+    (description "Spinners is a Python library that contains graphical spinners
+that can be displayed terminal.")
     (license license:expat)))
 
 (define-public tmate
