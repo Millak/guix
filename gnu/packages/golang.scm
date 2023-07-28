@@ -3011,6 +3011,31 @@ web framework
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-playground-validator-v10
+  (package
+    (inherit go-gopkg-in-go-playground-validator-v9)
+    (name "go-github-com-go-playground-validator-v10")
+    (version "10.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-playground/validator")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j8q3mlyhjirzr3fjaj0rx9z1pnaav1hjwjwf7982gdl2p9z3mgg"))))
+    (arguments
+     (list #:import-path "github.com/go-playground/validator/v10"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs
+                     go-gopkg-in-go-playground-validator-v9)
+       (append go-github-com-gabriel-vasile-mimetype
+               go-golang-org-x-crypto
+               go-golang-org-x-text)))
+    (native-inputs
+     (list go-github-com-go-playground-assert-v2))))
+
 (define-public go-github-com-nathan-osman-go-sunrise
   (let ((commit "c8f9f1eb869135f07378e7e3c5ec7a005f806c73")
         (revision "0"))
