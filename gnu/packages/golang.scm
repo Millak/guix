@@ -6596,7 +6596,7 @@ filters for Go.")
 (define-public go-github-com-fatih-color
   (package
     (name "go-github-com-fatih-color")
-    (version "1.8.0")
+    (version "1.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6605,11 +6605,7 @@ filters for Go.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zc0zlilf03h121f9jqq3ar0hfm7706547zysxp2qxbm920pz7h0"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively "vendor")))))
+                "15689x103gy9q7g7623rlvhwrw27p079ardapmrrag0sdwrx5bq2"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/fatih/color"))
@@ -6619,7 +6615,7 @@ filters for Go.")
     (synopsis "Print colored text in Go")
     (description "This package provides an ANSI color package to output
 colorized or SGR defined output to the standard output.")
-    (home-page "https://godoc.org/github.com/fatih/color")
+    (home-page "https://pkg.go.dev/github.com/fatih/color")
     (license license:expat)))
 
 (define-public go-github-com-google-go-cmp-cmp
