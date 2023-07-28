@@ -4009,7 +4009,7 @@ updating files, like @command{tail -f}.")
 (define-public go-github-com-magiconair-properties
   (package
     (name "go-github-com-magiconair-properties")
-    (version "1.8.5")
+    (version "1.8.7")
     (source
      (origin
        (method git-fetch)
@@ -4019,7 +4019,7 @@ updating files, like @command{tail -f}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v4agnkhc30fblbmhs0gq2bikhdnnmqmpp4phrnza68m04j5hxbn"))))
+         "0xy5nq7mwhrdcwjlgh4arjn6w5mjla0kni3cvl3z5vxcrnfrn3ax"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/magiconair/properties"))
