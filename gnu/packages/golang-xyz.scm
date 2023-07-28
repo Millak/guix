@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
@@ -50,6 +51,29 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-a8m-envsubst
+  (package
+    (name "go-github-com-a8m-envsubst")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/a8m/envsubst")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mjs729g9nmalx25l4nn3p07amm4vsciqmdf0jbh2jwpy1zymz41"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/a8m/envsubst"))
+    (home-page "https://github.com/a8m/envsubst")
+    (synopsis "Environment variables substitution for Go")
+    (description
+     "This package provides a library for environment variables
+substitution.")
+    (license license:expat)))
+
 (define-public go-github-com-anmitsu-go-shlex
   (package
     (name "go-github-com-anmitsu-go-shlex")
