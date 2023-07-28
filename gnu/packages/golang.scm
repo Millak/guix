@@ -8900,7 +8900,7 @@ modifying them.")
 (define-public go-github-com-goccy-yaml
   (package
     (name "go-github-com-goccy-yaml")
-    (version "1.8.0")
+    (version "1.11.3")
     (home-page "https://github.com/goccy/go-yaml")
     (source
      (origin
@@ -8910,10 +8910,11 @@ modifying them.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nps58dwkd915mx35h5f0dc05b880b4fdl6dcjxpfmmbzyinvg38"))))
+        (base32 "1rm2rfnlvv704zkb1mnjqv5xx32vfkzv7r2kc8if6gr9ryb7hmbf"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.18
       #:import-path "github.com/goccy/go-yaml"
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'remove-benchmarks
@@ -8923,7 +8924,8 @@ modifying them.")
     (propagated-inputs
      (list go-github-com-fatih-color go-golang-org-x-xerrors))
     (native-inputs
-     (list go-gopkg-in-go-playground-validator-v9))
+     (list go-github-com-go-playground-validator-v10
+           go-github-com-google-go-cmp-cmp))
     (synopsis "YAML support for the Go language")
     (description
      "This package provides features beyond the
