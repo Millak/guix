@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -397,6 +398,7 @@ broadband modem as found, for example, on PinePhone.")
       #:test-target "tests"
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "STRIP=" #$(strip-for-target))
               (string-append "DESTDIR=" #$output))
       #:phases
       #~(modify-phases %standard-phases
