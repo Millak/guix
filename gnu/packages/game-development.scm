@@ -2017,10 +2017,6 @@ scripted in a Python-like language.")
                               "assimp"
                               "astcenc"
                               "basis_universal"
-                              ;; TODO: Can unbundle once
-                              ;; <https://github.com/godotengine/godot/pull/79101>
-                              ;; is merged
-                              "brotli"
                               ;; Godot needs ca-certificates.crt, but that is
                               ;; not available in build environment
                               "certs"
@@ -2067,6 +2063,7 @@ scripted in a Python-like language.")
                         "use_volk=no"
                         ;; Avoid using many of the bundled libs.
                         ;; Note: These options can be found in the SConstruct file.
+                        "builtin_brotli=no"
                         "builtin_embree=no"
                         "builtin_enet=no"
                         "builtin_freetype=no"
@@ -2193,6 +2190,7 @@ scripted in a Python-like language.")
      (list pkg-config))
     (inputs
      (list alsa-lib
+           brotli
            dbus
            embree
            enet
