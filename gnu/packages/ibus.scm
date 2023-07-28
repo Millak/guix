@@ -906,6 +906,50 @@ hanja dictionary and small hangul character classification.")
      "ibus-hangul is a Korean input method engine for IBus.")
     (license gpl2+)))
 
+(define-public ibus-table
+  (package
+    (name "ibus-table")
+    (version "1.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/mike-fabian/ibus-table/releases/download/"
+             version "/ibus-table-" version ".tar.gz"))
+       (sha256
+        (base32 "063ba4fwk04lh0naj8z9r9x15ikckp94pd3f8xn40z3lnwsjx2sj"))
+       (patches (search-patches "ibus-table-paths.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda _
+                   (substitute* "engine/tabcreatedb.py"
+                     (("/usr/share/ibus-table")
+                      (string-append #$output "/share/ibus-table")))
+                   (substitute* "engine/ibus_table_location.py"
+                     (("/usr/share/ibus-table")
+                      (string-append #$output "/share/ibus-table"))
+                     (("/usr/libexec")
+                      (string-append #$output "/libexec")))))
+               (add-before 'check 'pre-check
+                 (lambda _
+                   (setenv "HOME" (getcwd))))))) ; tests write to $HOME
+    (native-inputs (list (list glib "bin") pkg-config))
+    (inputs (list glib gtk+ ibus python python-pygobject))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "IBUS_TABLE_LOCATION")
+            (files '("share/ibus-table"))
+            (separator #f))))
+    (home-page "https://mike-fabian.github.io/ibus-table")
+    (synopsis "Table based input framework for IBus")
+    (description
+     "@code{ibus-table} is a framework for table based input methods using
+IBus.")
+    (license lgpl2.1+)))
+
 (define-public ibus-speech-to-text
   (package
     (name "ibus-speech-to-text")
