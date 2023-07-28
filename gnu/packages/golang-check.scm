@@ -292,6 +292,28 @@ also update a file with new \"golden\" output that is deemed correct.")
 values for the purpose of fuzz testing.")
       (license license:asl2.0))))
 
+(define-public go-github-com-hexops-gotextdiff
+  (package
+    (name "go-github-com-hexops-gotextdiff")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hexops/gotextdiff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vgq6w0cfhr76qlczgm5khsj1wnjkva0vhkh3qspaa1nkfw3jny1"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/hexops/gotextdiff"))
+    (home-page "https://github.com/hexops/gotextdiff")
+    (synopsis "Unified text diffing in Go")
+    (description
+     "This package provides a library to generate unified diffs.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-jacobsa-oglematchers
   (let ((commit "141901ea67cd4769c6800aa7bfdfc558fa22bda5")
         (revision "0"))
