@@ -538,6 +538,29 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-jinzhu-copier
+  (package
+    (name "go-github-com-jinzhu-copier")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jinzhu/copier")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kf29cmmbic72kfrfd1xnass7l9j85impf8mqn5f3fd3ibi9bs74"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/jinzhu/copier"))
+    (home-page "https://github.com/jinzhu/copier")
+    (synopsis "Go copier library")
+    (description
+     "This package provides a library, which supports copying value from one
+struct to another.")
+    (license license:expat)))
+
 (define-public go-github-com-matryer-try
   (package
     (name "go-github-com-matryer-try")
