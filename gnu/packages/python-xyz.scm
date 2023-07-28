@@ -4235,6 +4235,26 @@ package.")
      "Extras is a set of extensions to the Python standard library.")
     (license license:expat)))
 
+(define-public python-milc
+  (package
+    (name "python-milc")
+    (version "1.6.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "milc" version))
+              (sha256
+               (base32
+                "1pnwdg2653lc82qsv6c0kv9qcydh2f6w5mx5l4227zy1f6kr7b52"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-appdirs python-argcomplete python-colorama
+                             python-halo python-spinners))
+    (home-page "https://github.com/clueboard/milc")
+    (synopsis "Python library for command line interface programs")
+    (description "MILC is a Python library for developing command line
+interface programs.  This library provides features to parse arguments,
+automatic tab-completion, color support, logging to @code{std}, etc.")
+    (license license:expat)))
+
 (define-public python-mimeparse
   (package
     (name "python-mimeparse")
