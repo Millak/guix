@@ -755,6 +755,23 @@ reformat the source code, it only prints out style mistakes.")
 custom assertions to be used alongside native Go testing.")
     (license license:expat)))
 
+(define-public go-github-com-go-playground-assert-v2
+  (package
+    (inherit go-gopkg-in-go-playground-assert-v1)
+    (name "go-github-com-go-playground-assert-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-playground/assert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13mb07dxhcy9ydqbracnrpfj682g6sazjpm56yrlbn2jc1yfy44c"))))
+    (arguments
+     (list #:import-path "github.com/go-playground/assert/v2"))))
+
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
