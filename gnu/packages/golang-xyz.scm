@@ -462,6 +462,31 @@ Mark} detection.")
 atimes for files.")
     (license license:expat)))
 
+(define-public go-github-com-elliotchance-orderedmap
+  (package
+    (name "go-github-com-elliotchance-orderedmap")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elliotchance/orderedmap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06gq5hsgfmzfr46wds366ghyn16qkygyz83vrsgargf4l7db9zg7"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/elliotchance/orderedmap"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/elliotchance/orderedmap")
+    (synopsis "Go ordered map library")
+    (description
+     "This package provides a ordered map library that maintains amortized O(1)
+for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
+    (license license:expat)))
+
 (define-public go-github-com-gabriel-vasile-mimetype
   (package
     (name "go-github-com-gabriel-vasile-mimetype")
