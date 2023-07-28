@@ -2929,7 +2929,7 @@ implemented features include
 (define-public go-github-com-go-playground-universal-translator
   (package
     (name "go-github-com-go-playground-universal-translator")
-    (version "0.17.0")
+    (version "0.18.1")
     (home-page "https://github.com/go-playground/universal-translator")
     (source
      (origin
@@ -2939,7 +2939,7 @@ implemented features include
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zdiaisb32iv4x93cpbqrgx8ll7sxh4hcd2iibpswy4bwvjbjlz6"))))
+        (base32 "1lgz9wrkcfx6q3x6i9fprr8rfwnk0c6x61jgzacgikbmzsl7dw6v"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/go-playground/universal-translator"))
