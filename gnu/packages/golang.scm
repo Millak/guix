@@ -2835,7 +2835,7 @@ Under Windows, the console APIs are used.  Otherwise, ANSI texts are output.")
 (define-public go-github-com-leodido-go-urn
   (package
     (name "go-github-com-leodido-go-urn")
-    (version "1.2.0")
+    (version "1.4.0")
     (home-page "https://github.com/leodido/go-urn")
     (source
      (origin
@@ -2845,7 +2845,7 @@ Under Windows, the console APIs are used.  Otherwise, ANSI texts are output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d4g1vkhc1180l1n7q48vl84b27c7cziywml78cyijbcdz2f8vim"))))
+        (base32 "0bn9dj6y299jdh8szfim32yxj9zip38cqgv965dj23cixgr7baxb"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/leodido/go-urn"))
