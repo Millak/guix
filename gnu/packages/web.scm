@@ -5248,6 +5248,22 @@ processor.  It uses @code{jq}-like syntax but works with YAML files as well as
 JSON, XML, properties, CSV and TSV.")
     (license license:expat)))
 
+(define-public yq
+  (package
+    (inherit go-github-com-mikefarah-yq-v4)
+    (name "yq")
+    (arguments
+     (list #:install-source? #f
+           #:import-path "github.com/mikefarah/yq/v4"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'rename-binary
+                 (lambda _
+                   (rename-file (string-append #$output "/bin/v4")
+                                (string-append #$output "/bin/yq")))))))
+    (propagated-inputs '())
+    (inputs (package-propagated-inputs go-github-com-mikefarah-yq-v4))))
+
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
