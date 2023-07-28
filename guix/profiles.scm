@@ -1815,6 +1815,21 @@ MANIFEST."
                        #:create-all-directories? #t
                        #:log-port (%make-void-port "w"))
 
+          ;; Clear files that are going to be regenerated.
+          (with-directory-excursion "/tmp/texlive/share/texmf-dist"
+            (for-each delete-file
+                      (list "fonts/map/dvipdfmx/updmap/kanjix.map"
+                            "fonts/map/dvips/updmap/builtin35.map"
+                            "fonts/map/dvips/updmap/download35.map"
+                            "fonts/map/dvips/updmap/ps2pk.map"
+                            "fonts/map/dvips/updmap/psfonts.map"
+                            "fonts/map/dvips/updmap/psfonts_pk.map"
+                            "fonts/map/dvips/updmap/psfonts_t1.map"
+                            "fonts/map/pdftex/updmap/pdftex.map"
+                            "fonts/map/pdftex/updmap/pdftex_dl14.map"
+                            "fonts/map/pdftex/updmap/pdftex_ndl14.map"
+                            "web2c/updmap.cfg")))
+
           ;; XXX: This is annoying, but it's necessary because
           ;; texlive-libkpathsea does not provide wrapped executables.
           (setenv "PATH"
@@ -1866,8 +1881,6 @@ MANIFEST."
             (let ((a (string-append #$output "/share/texmf-dist"))
                   (b "/tmp/texlive/share/texmf-dist")
                   (mktexlsr #$(file-append texlive-scripts "/bin/mktexlsr")))
-              ;; Ignore original "updmap.cfg" from texlive-scripts input.
-              (delete-file "/tmp/texlive/share/texmf-dist/web2c/updmap.cfg")
               (copy-recursively a b)
               (invoke mktexlsr b)
               (install-file (string-append b "/ls-R") a))))))
