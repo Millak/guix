@@ -243,13 +243,20 @@ may also simplify input method development.")
         #~(modify-phases #$phases
             (replace 'wrap-with-additional-paths
               (lambda* (#:key outputs #:allow-other-keys)
-                ;; Make sure 'ibus-setup' runs with the correct
-                ;; GUIX_PYTHONPATH and GI_TYPELIB_PATH.
-                (wrap-program (search-input-file outputs "bin/ibus-setup")
-                  `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-                  `("GI_TYPELIB_PATH" ":" prefix
-                    (,(getenv "GI_TYPELIB_PATH")
-                     ,(string-append #$output "/lib/girepository-1.0"))))))))))
+                ;; Make sure 'ibus-setup' and 'ibus-daemon' runs with the
+                ;; correct GUIX_PYTHONPATH and GI_TYPELIB_PATH.  Wrap
+                ;; 'ibus-daemon' is needed because engines spawned by
+                ;; the daemon need access to those libraries.
+                (for-each
+                  (lambda (prog)
+                    (wrap-program prog
+                      `("GUIX_PYTHONPATH" ":" prefix
+                        (,(getenv "GUIX_PYTHONPATH")))
+                      `("GI_TYPELIB_PATH" ":" prefix
+                        (,(getenv "GI_TYPELIB_PATH")
+                         ,(string-append #$output "/lib/girepository-1.0")))))
+                  (list (search-input-file outputs "bin/ibus-setup")
+                        (search-input-file outputs "bin/ibus-daemon")))))))))
     (inputs (modify-inputs (package-inputs ibus-minimal)
               (prepend gtk
                        pango
