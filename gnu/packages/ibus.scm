@@ -950,6 +950,55 @@ hanja dictionary and small hangul character classification.")
 IBus.")
     (license lgpl2.1+)))
 
+(define-public ibus-table-others
+  (package
+    (name "ibus-table-others")
+    (version "1.3.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/moebiuscurve/ibus-table-others/releases/"
+             "download/" version "/ibus-table-others-" version ".tar.gz"))
+       (sha256
+        (base32 "0vllwrjlgcvdjhs7nrg45hfvnivnfhrc05r6rhw8m0c41layl9jg"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pre-build
+                 (lambda _
+                   (setenv "HOME" (getcwd))))))) ; db written in $HOME
+    (native-inputs (list pkg-config python))
+    (inputs (list ibus ibus-table))
+    (home-page "https://github.com/moebiuscurve/ibus-table-others")
+    (synopsis "Various table-based input methods for IBus")
+    (description
+     "@code{ibus-table-others} provides the following input methods on
+IBus-Table on IBus framework:
+
+@itemize
+@item CNS11643
+@item Compose
+@item Emoji
+@item IPA-X-SAMPA
+@item LaTex
+@item Mathwriter
+@item Mongol bichig
+@item RussianTraditional
+@item Telex
+@item Thai
+@item Translit
+@item Ua-Translit
+@item Viqr
+@item VNI
+@item Yawerty
+@end itemize")
+    ;; GPL-3.0-or-later: vni, ipa-x-sampa, telex
+    ;; WTFPL: mongol_bichig
+    ;; LGPL-2.1-or-later: others
+    (license (list lgpl2.1+ gpl3+ wtfpl2))))
+
 (define-public ibus-speech-to-text
   (package
     (name "ibus-speech-to-text")
