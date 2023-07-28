@@ -16929,6 +16929,41 @@ from Common Lisp.  It provides a progress bar.")
 (define-public ecl-trivial-download
   (sbcl-package->ecl-package sbcl-trivial-download))
 
+(define-public sbcl-transmission
+  (let ((commit "4bbf1d2761bfa5dfa79b7bc12c3238089b994d95"))
+    (package
+      (name "sbcl-transmission")
+      (version (git-version "0.1" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/libre-man/cl-transmission/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sg3f2jqs2z3mvscjhc43hkd34vlcc4c8hq8rhh5w1gjg19z57hb"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("cl-transmission")))
+      (inputs
+       (list sbcl-cl-ppcre sbcl-jonathan sbcl-named-readtables sbcl-rutils
+             sbcl-drakma))
+      (native-inputs
+       (list sbcl-prove))
+      (home-page "https://github.com/libre-man/cl-transmission/")
+      (synopsis "Common Lisp interface with Transmission using its RPC")
+      (description
+       "@code{cl-transmission} is a library to interface with the Transmission
+torrent client using its RPC (remote procedure call).")
+      (license license:expat))))
+
+(define-public cl-transmission
+  (sbcl-package->cl-source-package sbcl-transmission))
+
+(define-public ecl-transmission
+  (sbcl-package->ecl-package sbcl-transmission))
+
 (define-public sbcl-gtwiwtg
   (package
     (name "sbcl-gtwiwtg")
