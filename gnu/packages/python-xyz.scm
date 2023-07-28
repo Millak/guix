@@ -140,6 +140,7 @@
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2166,6 +2167,30 @@ complete wrapping of the HDF5 API, while the high-level component supports
 access to HDF5 files, datasets and groups using established Python and NumPy
 concepts.")
     (license license:bsd-3)))
+
+(define-public python-hjson
+  ;; Using commit from master branch as the PyPI version does not contain
+  ;; the hjson/tests/ directory.
+  (let ((revision "0")
+        (commit "1687b811fcbbc54b5ac71cfbaa99f805e406fbcb"))
+    (package
+      (name "python-hjson")
+      (version (git-version "3.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/hjson/hjson-py")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1qfqnhvfx5mm7bdajjnnagmvns1zxyksjzh3k5la2ag6a8bp5gki"))))
+      (build-system pyproject-build-system)
+      (home-page "https://github.com/hjson/hjson-py")
+      (synopsis "Python package to parse HJSON documents")
+      (description "This package provides a Python library and a command-line
+interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
+      (license license:expat))))
 
 (define-public python-hnswlib
   (package
