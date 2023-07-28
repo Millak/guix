@@ -646,7 +646,7 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
-    (version "0.9.10")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch)
@@ -655,15 +655,14 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bg8p4c6r8r0kixdxv2m8xmdsmb1zl5sd8czswpccldjk3c358wp"))
-       (modules '((guix build utils)))
-       (snippet '(delete-file-recursively "benchmarks"))))
+        (base32 "1krid2hlvs808jl9zmv7m6zx92samc60gymhwr2mwwykicwbnks8"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/goccy/go-json"))
     (home-page "https://github.com/goccy/go-json")
     (synopsis "JSON encoder/decoder in Go")
-    (description "Fast JSON encoder/decoder compatible with encoding/json for Go.")
+    (description
+     "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
 
 (define-public go-github-com-google-go-github
