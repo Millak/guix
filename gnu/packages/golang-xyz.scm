@@ -1013,6 +1013,15 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
 CPU quota.")
     (license license:expat)))
 
+(define-public go-gopkg-in-op-go-logging-v1
+  (package
+    (inherit go-github-com-op-go-logging)
+    (name "go-gopkg-in-op-go-logging-v1")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-op-go-logging)
+       ((#:import-path _) "gopkg.in/op/go-logging.v1")))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
