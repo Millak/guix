@@ -4054,6 +4054,26 @@ updating files, like @command{tail -f}.")
     (description "Go library for the TOML configuration language")
     (license license:expat)))
 
+(define-public go-github-com-pelletier-go-toml-v2
+  (package
+    (inherit go-github-com-pelletier-go-toml)
+    (name "go-github-com-pelletier-go-toml-v2")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pelletier/go-toml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k0rwg7870f4va7jaavnpwvdn6d76gxgyr7c978bx2h829a9sx2a"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/pelletier/go-toml/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))))
+
 (define-public go-github-com-subosito-gotenv
   (package
     (name "go-github-com-subosito-gotenv")
