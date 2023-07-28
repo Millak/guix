@@ -417,6 +417,29 @@ of unit files.")))
 metrics to Graphite.")
     (license license:bsd-2)))
 
+(define-public go-github-com-dimchansky-utfbom
+  (package
+    (name "go-github-com-dimchansky-utfbom")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dimchansky/utfbom")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ll3wqvifmdanfyg6wsvz31c7n4mnczg2yxb65j35qxrnak89hn3"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/dimchansky/utfbom"))
+    (home-page "https://github.com/dimchansky/utfbom")
+    (synopsis "Go Unicode byte order mark detection library")
+    (description
+     "This package provides a library for @acronym{BOM, Unicode Byte Order
+Mark} detection.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-djherbis-atime
   (package
     (name "go-github-com-djherbis-atime")
