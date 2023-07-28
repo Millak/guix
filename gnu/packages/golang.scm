@@ -4493,7 +4493,7 @@ terminal.")
 (define-public go-github-com-mattn-go-colorable
   (package
     (name "go-github-com-mattn-go-colorable")
-    (version "0.1.8")
+    (version "0.1.13")
     (home-page "https://github.com/mattn/go-colorable")
     (source
      (origin
@@ -4504,7 +4504,7 @@ terminal.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q34zqwbnls72md8q8mhj368s7p3i4xspvs3rk8fs76s0pn7dr2l"))))
+         "05hl2ddp67p5kj3ix4zzqqjh4fan4ban3vgw8f98simwigs3q41j"))))
     (build-system go-build-system)
     (native-inputs
      (list go-github-com-mattn-go-isatty))
