@@ -626,6 +626,25 @@ hierarchy creation, can be initialized with keys, can be initialized from a
 dictionary, can be convert to a dictionary, and is ordered by insertion.")
     (license license:expat)))
 
+(define-public python-dotty-dict
+  (package
+    (name "python-dotty-dict")
+    (version "1.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dotty_dict" version))
+              (sha256
+               (base32
+                "058sah2nyg44xq5wxywlzc3abzcv9fifnlvsflwma9mfp01nw0ab"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/pawelzny/dotty_dict")
+    (synopsis "Python library for accessing dictionaries using a dot syntax")
+    (description "This package provides a library that wraps the traditional
+Python dictionaries and provides a syntax to access nested dictionaries values
+using a dot syntax, for example: @code{dictionary['deeply.nested.key']}.")
+    (license license:expat)))
+
 (define-public python-twodict
   (package
     (name "python-twodict")
