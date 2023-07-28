@@ -144,7 +144,9 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -5198,6 +5200,53 @@ mangle the data format that you have into the one that you want with very
 little effort, and the program to do so is often shorter and simpler than
 you'd expect.")
     (license (list license:expat license:cc-by3.0))))
+
+(define-public go-github-com-mikefarah-yq-v4
+  (package
+    (name "go-github-com-mikefarah-yq-v4")
+    (version "4.34.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mikefarah/yq")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y5i0p4fiq0kad9xqihhyclhd9d3l2r5yligdkvsdc90hlqjmql3"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/mikefarah/yq/v4"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'remove-binary
+                 (lambda _
+                   (delete-file-recursively
+                    (string-append #$output "/bin")))))))
+    (propagated-inputs
+     (list go-github-com-a8m-envsubst
+           go-github-com-alecthomas-participle-v2
+           go-github-com-dimchansky-utfbom
+           go-github-com-elliotchance-orderedmap
+           go-github-com-fatih-color
+           go-github-com-goccy-go-json
+           go-github-com-goccy-yaml
+           go-github-com-jinzhu-copier
+           go-github-com-magiconair-properties
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-spf13-cobra
+           go-golang-org-x-net
+           go-golang-org-x-text
+           go-gopkg-in-op-go-logging-v1
+           go-gopkg-in-yaml-v3))
+    (home-page "https://mikefarah.gitbook.io/yq/")
+    (synopsis
+     "Command-line YAML, JSON, XML, CSV, TOML and properties processor")
+    (description
+     "This package provides @code{yq}, a command-line YAML, JSON and XML
+processor.  It uses @code{jq}-like syntax but works with YAML files as well as
+JSON, XML, properties, CSV and TSV.")
+    (license license:expat)))
 
 (define-public go-github-com-itchyny-timefmt-go
   (package
