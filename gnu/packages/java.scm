@@ -6242,6 +6242,32 @@ NIO.")))
     (description "This package provides the HttpCore benchmarking tool.  It is
 an Apache AB clone based on HttpCore.")))
 
+(define-public java-httpcomponents-httpcore-osgi
+  (package (inherit java-httpcomponents-httpcore)
+    (name "java-httpcomponents-httpcore-osgi")
+    (arguments
+     `(#:jar-name "httpcomponents-httpcore-osgi.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "httpcore-osgi"))))))
+    (inputs
+     (modify-inputs (package-inputs java-httpcomponents-httpcore)
+                    (prepend java-httpcomponents-httpcore
+                             java-httpcomponents-httpcore-nio
+                             java-hamcrest-core)))
+    (native-inputs (list java-ops4j-pax-exam-core
+                         java-ops4j-pax-exam-core-junit
+                         java-ops4j-pax-exam-core-spi
+                         java-junit))
+    (description "HttpCore is a set of low level HTTP transport components
+that can be used to build custom client and server side HTTP services with a
+minimal footprint.  HttpCore supports two I/O models: blocking I/O model based
+on the classic Java I/O and non-blocking, event driven I/O model based on Java
+NIO.
+
+This package provides... some tests.")))
+
 (define-public java-httpcomponents-httpclient
   (package
     (name "java-httpcomponents-httpclient")
