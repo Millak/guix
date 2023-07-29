@@ -306,14 +306,14 @@ projects.")
 (define-public kdevelop
   (package
     (name "kdevelop")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/release-service/" version
                             "/src/kdevelop-" version ".tar.xz"))
         (sha256
-         (base32 "14a80z4sahxyzssrz605zp7ah5xdjbc22ccv0vwcnhr5lzr76v31"))))
+         (base32 "0m1q5nhx7wd4b8850ikw7dk6zka57gapf78wawjv2h1hijxcyf4v"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config shared-mime-info qttools-5))
@@ -372,14 +372,16 @@ projects.")
        ;; heaptrack_gui
        ;; meson
     (arguments
-     `(#:tests? #f  ;; there are some issues with the test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'add-include-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cmake/modules/FindClang.cmake"
-               (("^\\s*PATHS \"\\$\\{CLANG_LIBRARY_DIRS\\}\"" line)
-                (string-append line " " (assoc-ref inputs "clang") "/lib"))))))))
+     (list #:tests? #f ;; there are some issues with the test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'add-include-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "plugins/clang/Locate_CLANG_BUILTIN_DIR.cmake"
+                     (("\"\\$[{]CLANG_INCLUDE_DIRS[}]\"" line)
+                      (string-append
+                       line " \""
+                       (assoc-ref inputs "clang") "/lib\""))))))))
     (home-page "https://kdevelop.org")
     (synopsis "IDE for C, C++, Python, Javascript and PHP")
     (description "The KDevelop IDE provides semantic syntax highlighting, as
