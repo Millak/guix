@@ -183,14 +183,14 @@ This package is part of the KDE networking module.")
 (define-public konversation
   (package
     (name "konversation")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konversation-" version ".tar.xz"))
        (sha256
-        (base32 "08b4vnm66hbbnvkkh1p0a82pd2aj4zy5a8indfv3fzczsfpx6gp0"))))
+        (base32 "1ip0jlz71fad5l0ppbc6w914hqk7h626s12ssbb9p1c2yvlr1j1v"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
