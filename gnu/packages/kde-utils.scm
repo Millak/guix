@@ -890,14 +890,14 @@ sentences to be re-spoken.")
 (define-public kronometer
   (package
     (name "kronometer")
-    (version "2.2.3")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/kronometer/" version
                            "/src/kronometer-" version ".tar.xz"))
        (sha256
-        (base32 "05hs8729a3aqjpwmn2xdf2sriacrll4sj4ax3lm4s1ravj09n9bm"))))
+        (base32 "0xn4z9y2yl57a5skwp4cjsn1456kiwnwvhrddc0qsihgdyif3fbm"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
