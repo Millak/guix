@@ -923,15 +923,24 @@ to save the times and resume them later.")
 (define-public krusader
   (package
     (name "krusader")
-    (version "2.7.2")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/krusader/" version
                            "/krusader-" version ".tar.xz"))
        (sha256
-        (base32 "02b1jz5a7cjr13v6c7fczrhs1xmg1krnva5fxk8x2bf4nd1rm8s1"))))
+        (base32 "16n2y861ka8jhackf7hd9b0b0argifc1p0a114dvrc0qjddg0k4f"))))
     (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-compat.h
+                 (lambda _
+                   ;; Those fallbacks for pre KF-5.91 cause missing includes.
+                   (substitute* "app/compat.h"
+                     (("#  include <kcompletion_version\\.h>") "")
+                     (("#  include <karchive_version\\.h>") "")))))))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
