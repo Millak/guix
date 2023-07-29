@@ -3433,6 +3433,40 @@ model fitting and error handling.")
 into a pipeline of data manipulation and visualisation.")
     (license license:gpl3)))
 
+(define-public r-morpho
+  (package
+    (name "r-morpho")
+    (version "2.11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "Morpho" version))
+              (sha256
+               (base32
+                "1c69n9284chygd375gkir4nk5bjglamhfyk2lz4z3kzy3z25qw50"))))
+    (properties `((upstream-name . "Morpho")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bezier
+                             r-colorramps
+                             r-doparallel
+                             r-foreach
+                             r-jsonlite
+                             r-mass
+                             r-matrix
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rgl
+                             r-rvcg
+                             r-sf))
+    (home-page "https://github.com/zarquon42b/Morpho")
+    (synopsis
+     "Calculations and visualizations related to geometric morphometrics")
+    (description
+     "This package provides a toolset for Geometric Morphometrics and mesh
+processing.  This includes (among other stuff) mesh deformations based on
+reference points, permutation tests, detection of outliers, processing of
+sliding semi-landmarks and semi-automated surface landmark placement.")
+    (license license:gpl2)))
+
 (define-public r-hgnchelper
   (package
     (name "r-hgnchelper")
