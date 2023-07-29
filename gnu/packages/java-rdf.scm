@@ -270,6 +270,23 @@ querying RDF.")
     (description "This package provides an algebra model for RDF queries.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-queryparser-api
+  (package
+    (name "java-eclipse-rdf4j-queryparser-api")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-queryparser-api.jar"
+                             "core/queryparser/api"))
+    (propagated-inputs (list java-eclipse-rdf4j-query
+                             java-eclipse-rdf4j-queryalgebra-model))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Generic query parser API")
+    (description "This package provides a common API for query parsers in
+RDF4J.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-repository-api
   (package
     (name "java-eclipse-rdf4j-repository-api")
