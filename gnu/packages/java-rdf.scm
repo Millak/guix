@@ -465,6 +465,25 @@ RDF queries.")
 of RDF data.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-repository-sparql
+  (package
+    (name "java-eclipse-rdf4j-repository-sparql")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-repository-sparql.jar"
+                             "core/repository/sparql"))
+    (inputs (list java-httpcomponents-httpclient
+                  java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-http-client
+                             java-eclipse-rdf4j-queryparser-sparql
+                             java-eclipse-rdf4j-repository-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Repository based on SPARQL")
+    (description "This package provides a repository implementation that SPARQL.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-rio-api
   (package
     (name "java-eclipse-rdf4j-rio-api")
