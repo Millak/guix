@@ -70,3 +70,32 @@
     (native-inputs (list unzip))
     (description "This package provides common test classes for packages
 implementing java-commons-rdf-api.")))
+
+(define-public java-commons-rdf-simple
+  (package
+    (inherit java-commons-rdf-api)
+    (name "java-commons-rdf-simple")
+    (arguments
+     (list #:jar-name "commons-rdf-api.jar"
+           #:source-dir "src/main/java"
+           #:test-dir "src/test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'chdir
+                 (lambda _ (chdir "commons-rdf-simple")))
+               (add-after 'chdir 'delete-failing-tests
+                 (lambda _
+                   (with-directory-excursion "src/test/java/org/apache/commons/"
+                     (delete-file "rdf/simple/SimpleServiceLoaderTest.java"))))
+               (add-before 'install 'fix-pom
+                 (lambda _
+                   (substitute* "pom.xml"
+                     (("\\$\\{project\\.parent\\.groupId\\}")
+                      "org.apache.commons"))))
+               (replace 'install
+                 (install-from-pom "pom.xml")))))
+    (propagated-inputs (list java-commons-rdf-api))
+    (native-inputs (list java-commons-rdf-api-tests unzip))
+    (synopsis "Simple implementation of RDF 1.1 concepts")
+    (description "This package provides a simple implementation of RDF 1.1
+concepts in Java.")))
