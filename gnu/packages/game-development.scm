@@ -1458,7 +1458,7 @@ are only used to bootstrap it.")
             (lambda _
               (substitute* (list "launcher/game/gui7.rpy"
                                  "launcher/game/gui7/images.py")
-                ((", \"game\",") ","))
+                ((", \"game\", \"gui7\",") ", \"gui7\","))
               #t))
           (add-before 'build 'start-xserver
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
