@@ -1146,6 +1146,7 @@ want what you have.")
              qtsvg-5
              qttools-5
              qtwebsockets-5
+             qtwayland-5
              xz
              zlib))
       (home-page "https://cockatrice.github.io")
