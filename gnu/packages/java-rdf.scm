@@ -171,6 +171,41 @@ concepts in Java.")))
             (replace 'install
               (install-from-pom "pom.xml")))))
 
+(define-public java-eclipse-rdf4j-http-client
+  (package
+    (name "java-eclipse-rdf4j-http-client")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (rdf4j-common-arguments "rdf4j-http-client.jar"
+                                 "core/http/client")
+       ((#:phases phases)
+       #~(modify-phases #$phases
+           (add-before 'install 'generate-pom.xml
+             (generate-pom.xml "guix-pom.xml"
+                               "org.eclipse.rdf4j"
+                               "rdf4j-http-client" #$version))
+           (replace 'install
+             (install-from-pom "guix-pom.xml"))))))
+    (inputs (list java-commons-io
+                  java-httpcomponents-httpcore
+                  java-httpcomponents-httpclient
+                  java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-http-protocol
+                             java-eclipse-rdf4j-repository-api
+                             java-eclipse-rdf4j-queryparser-sparql
+                             java-eclipse-rdf4j-queryresultio-api
+                             java-eclipse-rdf4j-queryresultio-binary
+                             java-eclipse-rdf4j-queryresultio-sparqlxml
+                             java-eclipse-rdf4j-queryresultio-sparqljson))
+    (home-page "https://rdf4j.org/")
+    (synopsis "HTTP client for RDF4J")
+    (description "This package provides a client for communicating with RDF4J
+servers.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-http-protocol
   (package
     (name "java-eclipse-rdf4j-http-protocol")
