@@ -432,14 +432,14 @@ a full-featured client for BitTorrent.")
 (define-public libktorrent
   (package
     (name "libktorrent")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "098ac7b5wa7v6svqv4rx1w44j18pr22qgr236fj94r2kpl2nq79q"))))
+        (base32 "1m6gyk1bids7qr9wfh6gcfq73ac9j5b2bljvfvfsw9f1ky1cmwab"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
