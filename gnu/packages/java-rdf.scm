@@ -264,6 +264,39 @@ various RDF formats.")
     (description "This package provides datatype handlers used in RDF4J.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-rio-jsonld
+  (package
+    (name "java-eclipse-rdf4j-rio-jsonld")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (rdf4j-common-arguments "rdf4j-rio-jsonld.jar"
+                                 "core/rio/jsonld")
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'install 'generate-pom.xml
+              (generate-pom.xml "guix-pom.xml"
+                                "org.eclipse.rdf4j"
+                                "rdf4j-rio-jsonld" #$version))
+            (replace 'install
+              (install-from-pom "guix-pom.xml"))))))
+    (inputs (list java-commons-io
+                  java-slf4j-api
+                  java-fasterxml-jackson-core
+                  java-fasterxml-jackson-databind
+                  java-jsonld-java))
+    (propagated-inputs (list java-eclipse-rdf4j-rio-api
+                             java-eclipse-rdf4j-rio-datatypes
+                             java-eclipse-rdf4j-rio-languages
+                             java-eclipse-rdf4j-model))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF JSON-LD serialization")
+    (description "This package provides an implementation of the RDF4J Rio API,
+which reads and writes JSON-LD.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-rio-languages
   (package
     (name "java-eclipse-rdf4j-rio-languages")
