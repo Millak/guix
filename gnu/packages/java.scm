@@ -5019,6 +5019,47 @@ constructor on object instantiation.")
 mock objects in unit testing.")
     (license license:asl2.0)))
 
+(define-public java-easymock-3.2
+  (package
+    (inherit java-easymock)
+    (name "java-easymock")
+    (version "3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/easymock/easymock/")
+                     (commit (string-append "easymock-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cn6qqa261mhk9mwxrsz39lkkknfv2h7iprr5zw7wpz9p96dwgv4"))))
+    (arguments
+     (list #:jar-name "easymock.jar"
+           #:source-dir "easymock/src/main"
+           #:test-dir "easymock/src/test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'delete-android-support
+                 (lambda _
+                   (with-directory-excursion "easymock/src/main/java/org/easymock/internal"
+                     (substitute* "MocksControl.java"
+                       (("AndroidSupport.isAndroid\\(\\)") "false")
+                       (("return classProxyFactory = new AndroidClassProxyFactory\\(\\);") ""))
+                     (delete-file "AndroidClassProxyFactory.java"))))
+               (add-after 'unpack 'delete-broken-tests
+                 (lambda _
+                   (with-directory-excursion "easymock/src/test/java/org/easymock"
+                     ;; This test depends on dexmaker.
+                     (delete-file "tests2/ClassExtensionHelperTest.java")
+                     ;; This is not a test.
+                     (delete-file "tests/BaseEasyMockRunnerTest.java")
+                     ;; ...but deleting it means that we also have to delete these
+                     ;; dependent files.
+                     (delete-file "tests2/EasyMockRunnerTest.java")
+                     ;; This test fails because the file "easymock.properties" does
+                     ;; not exist.
+                     (delete-file "tests2/EasyMockPropertiesTest.java")))))))))
+
 (define-public java-jmock-1
   (package
     (name "java-jmock")
