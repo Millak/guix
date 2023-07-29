@@ -788,6 +788,27 @@ framework.")
 @acronym{SAIL, Storage And Interface Layer} API, which stores data in RAM.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-sail-nativerdf
+  (package
+    (name "java-eclipse-rdf4j-sail-nativerdf")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-sail-nativerdf.jar"
+                             "core/sail/nativerdf"))
+    (inputs (list java-slf4j-api
+                  java-commons-io
+                  java-guava))
+    (propagated-inputs (list java-eclipse-rdf4j-sail-api
+                             java-eclipse-rdf4j-sail-base))
+    (home-page "https://rdf4j.org/")
+    (synopsis "File-based implementations of RD4J's storage API")
+    (description "This package provides an implementation of RDF4J's
+@acronym{SAIL, Storage And Interface Layer} API, which stores data on disk
+in various formats.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-util
   (package
     (name "java-eclipse-rdf4j-util")
