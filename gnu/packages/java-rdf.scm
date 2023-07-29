@@ -763,6 +763,31 @@ framework.")
 @acronym{SAIL, Storage And Interface Layer} API.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-sail-memory
+  (package
+    (name "java-eclipse-rdf4j-sail-memory")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-sail-memory.jar"
+                             "core/sail/memory"))
+    (inputs (list java-slf4j-api
+                  java-commons-lang3
+                  java-guava))
+    (propagated-inputs (list java-eclipse-rdf4j-sail-api
+                             java-eclipse-rdf4j-sail-base
+                             java-eclipse-rdf4j-model
+                             java-eclipse-rdf4j-rio-turtle
+                             java-eclipse-rdf4j-query
+                             java-eclipse-rdf4j-queryalgebra-model
+                             java-eclipse-rdf4j-queryalgebra-evaluation))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Memory-based implementations of RD4J's storage API")
+    (description "This package provides an implementation of RDF4J's
+@acronym{SAIL, Storage And Interface Layer} API, which stores data in RAM.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-util
   (package
     (name "java-eclipse-rdf4j-util")
