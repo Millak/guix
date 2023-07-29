@@ -339,6 +339,23 @@ on RDF query results.")
 queries.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-queryresultio-sparqlxml
+  (package
+    (name "java-eclipse-rdf4j-queryresultio-sparqlxml")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-queryresultio-sparqlxml.jar"
+                             "core/queryresultio/sparqlxml"))
+    (inputs (list java-slf4j-api java-commons-lang3))
+    (propagated-inputs (list java-eclipse-rdf4j-queryresultio-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Handling RDF query results")
+    (description "This package provides classes for handling SPARQL/XML-based
+RDF queries.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-repository-api
   (package
     (name "java-eclipse-rdf4j-repository-api")
