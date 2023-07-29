@@ -280,6 +280,26 @@ various RDF formats.")
     (description "This package provides language handlers used in RDF4J.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-rio-ntriples
+  (package
+    (name "java-eclipse-rdf4j-rio-ntriples")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-rio-ntriples.jar"
+                             "core/rio/ntriples"))
+    (inputs (list java-commons-io java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-rio-api
+                             java-eclipse-rdf4j-rio-datatypes
+                             java-eclipse-rdf4j-rio-languages
+                             java-eclipse-rdf4j-model))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF NTriples serialization")
+    (description "This package provides an implementation of the RDF4J Rio API,
+which reads and writes NTriples.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-rio-turtle
   (package
     (name "java-eclipse-rdf4j-rio-turtle")
