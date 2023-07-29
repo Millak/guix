@@ -6278,6 +6278,34 @@ feature-rich package implementing the client side of the most recent HTTP
 standards and recommendations.")
     (license license:asl2.0)))
 
+(define-public java-httpcomponents-httpclient-cache
+  (package (inherit java-httpcomponents-httpclient)
+    (name "java-httpcomponents-httpclient-cache")
+    (arguments
+     `(#:jar-name "httpcomponents-httpclient-cache.jar"
+       #:source-dir "src/main/java"
+       #:test-dir "src/test"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-unused-impls
+           (lambda _
+             (for-each
+              delete-file-recursively
+              '("src/main/java/org/apache/http/impl/client/cache/ehcache/"
+                "src/main/java/org/apache/http/impl/client/cache/memcached/"
+                "src/test/java/org/apache/http/impl/client/cache/ehcache/"
+                "src/test/java/org/apache/http/impl/client/cache/memcached/"))))
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "httpclient-cache"))))))
+    (inputs
+     (modify-inputs (package-inputs java-httpcomponents-httpclient)
+                    (prepend java-httpcomponents-httpclient
+                             java-httpcomponents-httpmime
+                             java-hamcrest-core)))
+    (native-inputs (list java-easymock-3.2 java-easymock-class-extension))
+    (description "This package provides an API for caching accessed HTTP
+resources.")))
+
 (define-public java-httpcomponents-httpmime
   (package (inherit java-httpcomponents-httpclient)
     (name "java-httpcomponents-httpmime")
