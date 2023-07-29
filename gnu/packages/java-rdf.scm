@@ -507,6 +507,27 @@ of RDF data.")
     (description "This package provides a repository implementation that SPARQL.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-repository-sail
+  (package
+    (name "java-eclipse-rdf4j-repository-sail")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-repository-sail.jar"
+                             "core/repository/sail"))
+    (inputs (list java-httpcomponents-httpclient
+                  java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-queryparser-sparql
+                             java-eclipse-rdf4j-queryalgebra-evaluation
+                             java-eclipse-rdf4j-repository-api
+                             java-eclipse-rdf4j-sail-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Repository based on SAIL")
+    (description "This package provides a repository implementation that uses
+an RDF4J SAIL stack.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-rio-api
   (package
     (name "java-eclipse-rdf4j-rio-api")
