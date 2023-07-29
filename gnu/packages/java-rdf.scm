@@ -113,6 +113,51 @@
     (description "This package provides common test classes for packages
 implementing java-commons-rdf-api.")))
 
+(define-public java-commons-rdf-rdf4j
+  (package
+    (inherit java-commons-rdf-api)
+    (name "java-commons-rdf-rdf4j")
+    (version "0.5.0")
+    (arguments
+     (list #:jar-name "commons-rdf-rdf4j.jar"
+           #:source-dir "src/main/java"
+           #:test-dir "src/test"
+           #:test-exclude (list "**/RDF4JServiceLoaderTest.java")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'chdir
+                 (lambda _ (chdir "commons-rdf-rdf4j")))
+               (add-before 'install 'fix-pom
+                 (lambda _
+                   (substitute* "pom.xml"
+                     (("\\$\\{project\\.parent\\.groupId\\}")
+                      "org.apache.commons"))))
+               (replace 'install
+                 (install-from-pom "pom.xml")))))
+    (inputs (list java-guava
+                  java-commons-io
+                  java-commons-lang3
+                  java-commons-text
+                  java-fasterxml-jackson-annotations
+                  java-fasterxml-jackson-core
+                  java-fasterxml-jackson-databind
+                  java-mapdb))
+    (propagated-inputs (list java-commons-rdf-api
+                             java-commons-rdf-simple
+                             java-eclipse-rdf4j-model
+                             java-eclipse-rdf4j-repository-api
+                             java-eclipse-rdf4j-repository-sail
+                             java-eclipse-rdf4j-rio-turtle
+                             java-eclipse-rdf4j-rio-nquads
+                             java-eclipse-rdf4j-rio-jsonld
+                             java-eclipse-rdf4j-rio-rdfxml
+                             java-eclipse-rdf4j-sail-memory
+                             java-eclipse-rdf4j-sail-nativerdf))
+    (native-inputs (list java-commons-rdf-api-tests unzip))
+    (synopsis "Implementation RDF 1.1 concepts backed by RDF4J")
+    (description "This package provides an RDF4J-based implementation of RDF 1.1
+concepts.")))
+
 (define-public java-commons-rdf-simple
   (package
     (inherit java-commons-rdf-api)
