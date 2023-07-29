@@ -264,6 +264,22 @@ various RDF formats.")
     (description "This package provides datatype handlers used in RDF4J.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-rio-languages
+  (package
+    (name "java-eclipse-rdf4j-rio-languages")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-rio-languages.jar"
+                             "core/rio/languages"))
+    (propagated-inputs (list java-eclipse-rdf4j-model
+                             java-eclipse-rdf4j-rio-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF language handlers")
+    (description "This package provides language handlers used in RDF4J.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-util
   (package
     (name "java-eclipse-rdf4j-util")
