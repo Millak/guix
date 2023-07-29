@@ -5060,6 +5060,27 @@ mock objects in unit testing.")
                      ;; not exist.
                      (delete-file "tests2/EasyMockPropertiesTest.java")))))))))
 
+(define-public java-easymock-class-extension
+  (package
+    (inherit java-easymock-3.2)
+    (name "java-easymock-class-extension")
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "easymock-class-extensions.jar"
+           #:source-dir "easymock-classextension/src/main/java"
+           #:test-dir "easymock-classextension/src/test"))
+    (inputs (list java-asm
+                  java-easymock-3.2
+                  java-cglib
+                  java-objenesis))
+    (native-inputs
+     (list java-junit java-hamcrest-core))
+    (home-page "https://easymock.org/")
+    (synopsis "Easymock extension to mock classes")
+    (description "This package provides an extension to earlier versions of
+easymock that allows mocking classes.")
+    (license license:asl2.0)))
+
 (define-public java-jmock-1
   (package
     (name "java-jmock")
