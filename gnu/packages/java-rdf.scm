@@ -159,3 +159,20 @@ in the RDF4J framework.")
     (description "This package provides Java classes for well known
 RDF vocabularies.")
     (license license:epl1.0)))
+
+(define-public java-eclipse-rdf4j-util
+  (package
+    (name "java-eclipse-rdf4j-util")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-util.jar"
+                             "core/util"))
+    (inputs (list java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-model-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF4J model interfaces")
+    (description "This package provides utility classes used throughout the
+RDF4J framework.")
+    (license license:epl1.0)))
