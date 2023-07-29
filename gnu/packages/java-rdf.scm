@@ -252,6 +252,24 @@ RDF vocabularies.")
 querying RDF.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-queryalgebra-model
+  (package
+    (name "java-eclipse-rdf4j-queryalgebra-model")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-queryalgebra-model.jar"
+                             "core/queryalgebra/model"))
+    (inputs (list java-fasterxml-jackson-annotations
+                  java-guava))
+    (propagated-inputs (list java-eclipse-rdf4j-model
+                             java-eclipse-rdf4j-query))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF query algebra")
+    (description "This package provides an algebra model for RDF queries.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-rio-api
   (package
     (name "java-eclipse-rdf4j-rio-api")
