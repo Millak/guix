@@ -483,6 +483,26 @@ which reads and writes Turtle.")
 which reads and writes TriG.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-sail-api
+  (package
+    (name "java-eclipse-rdf4j-sail-api")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-sail-api.jar"
+                             "core/sail/api"))
+    (inputs (list java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-query
+                             java-eclipse-rdf4j-queryalgebra-model
+                             java-eclipse-rdf4j-model))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Interfaces for low-level access to RDF data")
+    (description "The @acronym{SAIL, Storage And Interface Layer} API
+decouples database implementations and the functional modules of the RDF4J
+framework.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-util
   (package
     (name "java-eclipse-rdf4j-util")
