@@ -287,6 +287,23 @@ querying RDF.")
 RDF4J.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-queryparser-sparql
+  (package
+    (name "java-eclipse-rdf4j-queryparser-sparql")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-queryparser-sparql.jar"
+                             "core/queryparser/sparql"))
+    (propagated-inputs (list java-eclipse-rdf4j-queryparser-api
+                             java-eclipse-rdf4j-model
+                             java-eclipse-rdf4j-rio-trig))
+    (home-page "https://rdf4j.org/")
+    (synopsis "SPARQL query parser")
+    (description "This package provides a parser for SPARQL queries.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-repository-api
   (package
     (name "java-eclipse-rdf4j-repository-api")
