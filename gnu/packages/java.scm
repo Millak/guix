@@ -6332,6 +6332,23 @@ standards and recommendations.")
     (description "This package provides an API for caching accessed HTTP
 resources.")))
 
+(define-public java-httpcomponents-httpclient-osgi
+  (package (inherit java-httpcomponents-httpclient)
+    (name "java-httpcomponents-httpclient-osgi")
+    (arguments
+     `(#:jar-name "httpcomponents-httpclient-osgi.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "httpclient-osgi") #t)))))
+    (inputs
+     (modify-inputs (package-inputs java-httpcomponents-httpclient)
+                    (prepend java-httpcomponents-httpclient
+                             java-httpcomponents-httpclient-cache
+                             java-osgi-framework
+                             java-osgi-service-cm
+                             java-hamcrest-core)))))
+
 (define-public java-httpcomponents-httpmime
   (package (inherit java-httpcomponents-httpclient)
     (name "java-httpcomponents-httpmime")
