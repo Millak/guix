@@ -8631,6 +8631,29 @@ converted into other popular R objects.  This package provides a link between
 VCF data and familiar R software.")
    (license license:gpl3)))
 
+(define-public r-rvcg
+  (package
+    (name "r-rvcg")
+    (version "0.22.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "Rvcg" version))
+              (sha256
+               (base32
+                "16rr2kqw7lqb7m01pwn496zf2nr25gm6wcncz44kszjzzmv2xanv"))))
+    (properties `((upstream-name . "Rvcg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppeigen))
+    (home-page "https://github.com/zarquon42b/Rvcg")
+    (synopsis "Manipulations of triangular meshes based on the VCGLIB API")
+    (description
+     "This is a package for operations on triangular meshes based on VCGLIB.
+This package integrates nicely with the R-package rgl to render the meshes
+processed by Rvcg.  The Visualization and Computer Graphics Library (VCG for
+short) is a library for manipulation, processing and displaying with OpenGL of
+triangle and tetrahedral meshes.")
+    (license license:gpl2+)))
+
 (define-public r-ica
   (package
     (name "r-ica")
