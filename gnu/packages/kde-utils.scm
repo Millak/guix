@@ -335,14 +335,14 @@ your computer.")
 (define-public kate
   (package
     (name "kate")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "0dnlr1cld6lqanqv98bss66w2bi2y78vqb8jx26addn2r1w4ygkf"))))
+        (base32 "0yyhh21pvzsaz7swmghdchzsfk089axhqkjwjv1m8j4q3q3rhv86"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -368,16 +368,23 @@ your computer.")
            kxmlgui
            breeze-icons ;; default icon set
            qtbase-5
-           qtscript))
+           qtscript
+           qtx11extras))
     (arguments
-     `(#:tests? #f ;; 2/7 tests fail
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; This test requires a 'bin' diretory under '/usr'.
+             (substitute* "addons/externaltools/autotests/externaltooltest.cpp"
+               (("QStringLiteral[(]\"/usr\"[)]")
+                (format #f "QStringLiteral(\"~a\")"
+                        (dirname (dirname (which "ls"))))))))
          (add-before 'check 'check-setup
            (lambda _
              ;; make Qt render "offscreen", required for tests
              (setenv "QT_QPA_PLATFORM" "offscreen")
-             (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache"))))))
+             (setenv "HOME" (getcwd)))))))
     (home-page "https://kate-editor.org/")
     (synopsis "Multi-document, multi-view text editor")
     (description "Kate is a powerful text editor that can open multiple files
