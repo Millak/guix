@@ -322,6 +322,23 @@ RDF4J.")
 on RDF query results.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-queryresultio-binary
+  (package
+    (name "java-eclipse-rdf4j-queryresultio-binary")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-queryresultio-binary.jar"
+                             "core/queryresultio/binary"))
+    (inputs (list java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-queryresultio-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Handling RDF query results")
+    (description "This package provides binary input and output for RDF
+queries.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-repository-api
   (package
     (name "java-eclipse-rdf4j-repository-api")
