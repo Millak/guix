@@ -304,35 +304,33 @@ your computer.")
       (license license:lgpl2.1+))))
 
 (define-public isoimagewriter
-  (let ((commit "bd1ef4f0ce179fa874b102689022ebda3e7b4c16")
-        (revision "1"))
-    (package
-      (name "isoimagewriter")
-      (version (git-version "0.8" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://invent.kde.org/utilities/isoimagewriter")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0dha2y4kmyppi6c0g0hclp53fjj963vq27q7azznpl0bz6zb4042"))))
-      (build-system qt-build-system)
-      (native-inputs (list extra-cmake-modules))
-      (inputs (list kauth
-                    karchive
-                    kcoreaddons
-                    ki18n
-                    kiconthemes
-                    kcrash
-                    solid
-                    kwidgetsaddons))
-      (home-page "https://invent.kde.org/utilities/isoimagewriter")
-      (synopsis "Write hybrid ISO files onto USB disks")
-      (description
-       "This package provides a tool to write ISO files to USB disks.")
-      (license license:gpl3+))))
+  (package
+    (name "isoimagewriter")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://invent.kde.org/utilities/isoimagewriter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1iphp2krgadc175570iiyaxbnjgpc1xilc71gkcbn5n0yd7qmkbv"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kauth
+                  karchive
+                  kcoreaddons
+                  ki18n
+                  kiconthemes
+                  kcrash
+                  solid
+                  kwidgetsaddons))
+    (home-page "https://invent.kde.org/utilities/isoimagewriter")
+    (synopsis "Write hybrid ISO files onto USB disks")
+    (description
+     "This package provides a tool to write ISO files to USB disks.")
+    (license license:gpl3+)))
 
 (define-public kate
   (package
