@@ -143,3 +143,19 @@ concepts in Java.")))
     (description "This package provides interfaces for the RDF data model used
 in the RDF4J framework.")
     (license license:epl1.0)))
+
+(define-public java-eclipse-rdf4j-model-vocabulary
+  (package
+    (name "java-eclipse-rdf4j-model-vocabulary")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-model-vocabulary.jar"
+                             "core/model-vocabulary"))
+    (propagated-inputs (list java-eclipse-rdf4j-model-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Well known RDF vocabularies")
+    (description "This package provides Java classes for well known
+RDF vocabularies.")
+    (license license:epl1.0)))
