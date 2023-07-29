@@ -332,6 +332,29 @@ querying RDF.")
     (description "This package provides an algebra model for RDF queries.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-queryalgebra-evaluation
+  (package
+    (name "java-eclipse-rdf4j-queryalgebra-evaluation")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-queryalgebra-evaluation.jar"
+                             "core/queryalgebra/evaluation"))
+    (inputs (list java-guava
+                  java-slf4j-api
+                  java-commons-math3
+                  java-mapdb))
+    (propagated-inputs (list java-eclipse-rdf4j-model
+                             java-eclipse-rdf4j-repository-sparql
+                             java-eclipse-rdf4j-queryalgebra-model
+                             java-eclipse-rdf4j-queryparser-sparql))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF query algebra")
+    (description "This package provides evaluation strategies and an
+implementation for RDF4J's query algebra.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-queryparser-api
   (package
     (name "java-eclipse-rdf4j-queryparser-api")
