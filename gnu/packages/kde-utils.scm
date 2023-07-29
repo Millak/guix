@@ -1068,14 +1068,14 @@ redone.")
 (define-public print-manager
   (package
     (name "print-manager")
-    (version "22.08.0")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/print-manager-" version ".tar.xz"))
        (sha256
-        (base32 "1abwj1ccm70adzx07ykqjlb4f6y55k2rv1j861dl0822187vl799"))))
+        (base32 "1fnbkx2xk3pr3cwcji1xbswcf5b7h8r4kag8i3lv28cnjw3ahs52"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
