@@ -356,6 +356,34 @@ queries.")
 RDF queries.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-queryresultio-sparqljson
+  (package
+    (name "java-eclipse-rdf4j-queryresultio-sparqljson")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (substitute-keyword-arguments
+      (rdf4j-common-arguments "rdf4j-queryresultio-sparqljson.jar"
+                              "core/queryresultio/sparqljson")
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (add-before 'install 'generate-pom.xml
+             (generate-pom.xml "guix-pom.xml"
+                               "org.eclipse.rdf4j"
+                               "rdf4j-queryresultio-sparqljson" #$version))
+           (replace 'install
+             (install-from-pom "guix-pom.xml"))))))
+    (inputs (list java-slf4j-api
+                  java-commons-lang3
+                  java-fasterxml-jackson-core))
+    (propagated-inputs (list java-eclipse-rdf4j-queryresultio-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Handling RDF query results")
+    (description "This package provides classes for handling SPARQL/JSON-based
+RDF queries.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-repository-api
   (package
     (name "java-eclipse-rdf4j-repository-api")
