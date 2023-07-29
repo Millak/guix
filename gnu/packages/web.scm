@@ -5983,8 +5983,7 @@ on the fly.")
                       ;; process has shut down.
                       (substitute* "src/tests/hitch_test.sh"
                         (("kill -0 \"\\$HITCH_PID\"")
-                         "$(ps -p $HITCH_PID -o state= | grep -qv '^Z$')"))
-                      #t)))))
+                         "$(ps -p $HITCH_PID -o state= | grep -qv '^Z$')")))))))
     (native-inputs
      (list pkg-config
 
