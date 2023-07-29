@@ -472,14 +472,14 @@ drive, USB stick, etc
 (define-public kcalc
   (package
     (name "kcalc")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kcalc-" version ".tar.xz"))
               (sha256
                (base32
-                "01rn6qy40q4b90i5mysrygkqh5fzq885dgcd11l6r8s59ijjcjlk"))))
+                "04mqicwqn6h99jgh1zl0wsgk1rdkswzxaq8b8yz5hq654dsyq6y1"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools))
     (inputs (list gmp
