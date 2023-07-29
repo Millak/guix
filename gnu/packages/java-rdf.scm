@@ -27,6 +27,47 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java))
 
+(define-public java-jsonld-java
+  (package
+    (name "java-jsonld-java")
+    (version "0.13.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jsonld-java/jsonld-java")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d113szja4p16k2n2way8mmdj1kxzanjcnnsdan65iw27qag7dr0"))))
+    (build-system ant-build-system)
+    (arguments
+     (list #:tests? #f                  ; no tests included
+           #:jar-name "jsonld-java.jar"
+           #:source-dir "core/src/main/java"
+           #:test-dir "core/src/test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'generate-pom.xml
+                 (generate-pom.xml "guix-pom.xml"
+                                   "com.github.jsonld-java"
+                                   "jsonld-java" #$version))
+               (replace 'install
+                 (install-from-pom "guix-pom.xml")))))
+    (inputs (list java-slf4j-api java-guava
+                  java-commons-io
+                  java-httpcomponents-httpcore
+                  java-httpcomponents-httpcore-osgi
+                  java-httpcomponents-httpclient
+                  java-httpcomponents-httpclient-cache
+                  java-httpcomponents-httpclient-osgi
+                  java-fasterxml-jackson-core
+                  java-fasterxml-jackson-databind))
+    (home-page "https://github.com/jsonld-java/jsonld-java")
+    (synopsis "Java implementation of JSON-LD")
+    (description "This package provides a Java implementation of JSON-LD 1.0.")
+    (license license:bsd-3)))
+
 (define-public java-commons-rdf-api
   (package
     (name "java-commons-rdf-api")
