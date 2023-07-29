@@ -171,6 +171,33 @@ concepts in Java.")))
             (replace 'install
               (install-from-pom "pom.xml")))))
 
+(define-public java-eclipse-rdf4j-http-protocol
+  (package
+    (name "java-eclipse-rdf4j-http-protocol")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (rdf4j-common-arguments "rdf4j-http-protocol.jar"
+                                 "core/http/protocol")
+       ((#:phases phases)
+       #~(modify-phases #$phases
+           (add-before 'install 'generate-pom.xml
+             (generate-pom.xml "guix-pom.xml"
+                               "org.eclipse.rdf4j"
+                               "rdf4j-http-protocol" #$version))
+           (replace 'install
+             (install-from-pom "guix-pom.xml"))))))
+    (propagated-inputs (list java-eclipse-rdf4j-rio-ntriples
+                             java-eclipse-rdf4j-repository-api
+                             java-eclipse-rdf4j-model))
+    (home-page "https://rdf4j.org/")
+    (synopsis "HTTP protocol for RDF4J")
+    (description "This package provides a protocol for communicating RDF
+resourcess over HTTP.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-model
   (package
     (name "java-eclipse-rdf4j-model")
