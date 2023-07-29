@@ -742,6 +742,27 @@ decouples database implementations and the functional modules of the RDF4J
 framework.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-sail-base
+  (package
+    (name "java-eclipse-rdf4j-sail-base")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-sail-base.jar"
+                             "core/sail/base"))
+    (inputs (list java-slf4j-api))
+    (propagated-inputs (list java-eclipse-rdf4j-sail-api
+                             java-eclipse-rdf4j-queryalgebra-evaluation
+                             java-eclipse-rdf4j-queryalgebra-model
+                             java-eclipse-rdf4j-query
+                             java-eclipse-rdf4j-repository-sail))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Base implementations of RD4J's storage API")
+    (description "This package provides basic implementation of RDF4J's
+@acronym{SAIL, Storage And Interface Layer} API.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-util
   (package
     (name "java-eclipse-rdf4j-util")
