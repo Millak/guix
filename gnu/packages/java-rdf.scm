@@ -99,3 +99,47 @@ implementing java-commons-rdf-api.")))
     (synopsis "Simple implementation of RDF 1.1 concepts")
     (description "This package provides a simple implementation of RDF 1.1
 concepts in Java.")))
+
+(define %rdf4j-version "3.7.7")
+(define %rdf4j-sha256
+  (base32 "1lala4wjl5lbg45jdgd94rfkvdg6r4vq23k3q54bkk9q3w9v2bdx"))
+(define %rdf4j-source
+  (origin
+   (method git-fetch)
+   (uri (git-reference
+         (url "https://github.com/eclipse/rdf4j")
+         (commit %rdf4j-version)))
+   (file-name (git-file-name "rdf4j" %rdf4j-version))
+   (sha256 %rdf4j-sha256)
+   (modules '((guix build utils)))
+   (snippet #~(begin (delete-file-recursively "site")))))
+
+(define (rdf4j-common-arguments jar-name directory)
+  (list #:source-dir "src/main/java"
+        #:test-dir "src/test/java"
+        #:tests? #f                     ; tests require junit 5
+        #:jar-name jar-name
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir (lambda _ (chdir #$directory)))
+            (add-after 'chdir 'fix-pom
+              (lambda _
+                (substitute* "pom.xml"
+                  (("\\$\\{project\\.groupId\\}") "org.eclipse.rdf4j"))))
+            (replace 'install
+              (install-from-pom "pom.xml")))))
+
+(define-public java-eclipse-rdf4j-model-api
+  (package
+    (name "java-eclipse-rdf4j-model-api")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (rdf4j-common-arguments "rdf4j-model-api.jar"
+                             "core/model-api"))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF4J model interfaces")
+    (description "This package provides interfaces for the RDF data model used
+in the RDF4J framework.")
+    (license license:epl1.0)))
