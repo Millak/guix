@@ -32,6 +32,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
@@ -248,14 +249,14 @@ This package is part of the KDE base applications module.")
 (define-public krfb
   (package
     (name "krfb")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krfb-" version ".tar.xz"))
        (sha256
-        (base32 "09h05al7ivf9pzf2p6mnja1124746fawmr3vdk6rggjjw0p0wgn1"))))
+        (base32 "0qbrvf2wa3af1z1dpq3pqkngfbrfdgqfz8xs1qpdpyb7jxnphry7"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
@@ -268,6 +269,7 @@ This package is part of the KDE base applications module.")
            kdnssd
            ki18n
            knotifications
+           kpipewire
            kwallet
            kwayland
            kwidgetsaddons
