@@ -5958,6 +5958,14 @@ on the fly.")
      `(#:phases (modify-phases %standard-phases
                   (add-before 'check 'pre-check
                     (lambda _
+                      ;; Our grep is compiled without perl regexp support. So,
+                      ;; rewrite the grep command to not use it. \t tab
+                      ;; characters are supported only in perl regexps. So,
+                      ;; put in literal tabs using printf instead.
+                      (substitute* "src/tests/test32-proxy-authority.sh"
+                        (("grep -Pq") "grep -q")
+                        (("extension:\\\\tdefault")
+                         "extension:$(printf '\\011')default"))
                       ;; Most tests attempts to access hitch-tls.org which is
                       ;; unavailable in the build container.  Run them against
                       ;; a dummy local web server instead.
