@@ -11280,6 +11280,38 @@ protocol-independent framework to build mail and messaging applications.")
     (license (list license:cddl1.1
                    license:gpl2)))); with classpath exception
 
+(define-public java-mapdb
+  (package
+    (name "java-mapdb")
+    (version "1.0.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jankotek/mapdb")
+                    (commit (string-append "mapdb-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1slb4h282jqvk16896lcvgm65pj3v6crcp2wvjdvad7nx7d2f1kv"))))
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "mapdb.jar"
+           #:source-dir "src/main/java"
+           #:test-dir "src/test"
+           #:test-exclude (list "**/ClosedThrowsExceptionTest.java"
+                                "**/ConcurrentMapInterfaceTest.java"
+                                "**/EngineTest.java"
+                                "**/Issue664Test.java"
+                                "**/MapInterfaceTest.java")
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'install (install-from-pom "pom.xml")))))
+    (native-inputs (list java-junit))
+    (home-page "https://mapdb.org/")
+    (synopsis "Concurrent data structures")
+    (description "MapDB provides concurrent maps, sets and queues backed by
+disk storage or off-heap memory.")
+    (license license:bsd-3)))
+
 (define-public java-jeromq
   (package
     (name "java-jeromq")
