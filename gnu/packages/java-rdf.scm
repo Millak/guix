@@ -55,3 +55,18 @@
     (synopsis "Java interfaces for RDF 1.1 concepts")
     (description "This package provides Java interfaces for RDF 1.1 concepts.")
     (license license:asl2.0)))
+
+(define-public java-commons-rdf-api-tests
+  (package
+    (inherit java-commons-rdf-api)
+    (name "java-commons-rdf-api-tests")
+    (arguments
+     (list #:tests? #f
+           #:jar-name "commons-rdf-api-tests.jar"
+           #:source-dir "commons-rdf-api/src/test/java"))
+    (propagated-inputs (list java-commons-rdf-api
+                             java-junit
+                             java-slf4j-simple))
+    (native-inputs (list unzip))
+    (description "This package provides common test classes for packages
+implementing java-commons-rdf-api.")))
