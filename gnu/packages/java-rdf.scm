@@ -221,6 +221,37 @@ in the RDF4J framework.")
 RDF vocabularies.")
     (license license:epl1.0)))
 
+(define-public java-eclipse-rdf4j-query
+  (package
+    (name "java-eclipse-rdf4j-query")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (substitute-keyword-arguments
+      (rdf4j-common-arguments "rdf4j-query.jar"
+                              "core/query")
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (add-before 'install 'generate-pom.xml
+             (generate-pom.xml "guix-pom.xml"
+                               "org.eclipse.rdf4j"
+                               "rdf4j-query" #$version))
+           (replace 'install
+             (install-from-pom "guix-pom.xml"))))))
+    (inputs (list java-commons-text
+                  java-slf4j-api
+                  java-fasterxml-jackson-annotations
+                  java-fasterxml-jackson-core
+                  java-fasterxml-jackson-databind))
+    (propagated-inputs (list java-eclipse-rdf4j-model
+                             java-eclipse-rdf4j-rio-api))
+    (home-page "https://rdf4j.org/")
+    (synopsis "Querying RDF")
+    (description "This package provides an interface and implementation for
+querying RDF.")
+    (license license:epl1.0)))
+
 (define-public java-eclipse-rdf4j-rio-api
   (package
     (name "java-eclipse-rdf4j-rio-api")
