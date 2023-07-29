@@ -581,15 +581,14 @@ conversions between European currencies.")
 (define-public keysmith
   (package
     (name "keysmith")
-    (version "22.09")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma-mobile/"
-                                  (version-major+minor version) "/keysmith-"
-                                  version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/keysmith-" version ".tar.xz"))
               (sha256
                (base32
-                "0w3vvmp9rn6ahly2fm9n6f4glfr7d84bfvj33mrs5pn7n99h7jgy"))))
+                "1rfp516adliyc57nx4ha1rp8v2z340ygsvblh5sqmsdsg2ivjklj"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list kdbusaddons
