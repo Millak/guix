@@ -2060,6 +2060,31 @@ physics-informed learning.  It includes implementations for the PINN
 MFNN (multifidelity neural network) algorithms.")
     (license license:lgpl2.1+)))
 
+(define-public python-jaxtyping
+  (package
+    (name "python-jaxtyping")
+    (version "0.2.21")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jaxtyping" version))
+              (sha256
+               (base32
+                "19qmsnbn4wv2jl99lpn622qs49mrfxmx8s9pr5y8izzgdjq1fvii"))))
+    (build-system pyproject-build-system)
+    ;; Tests require JAX, but JAX can't be packaged because it uses the Bazel
+    ;; build system.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-hatchling))
+    (propagated-inputs (list python-numpy python-typeguard
+                             python-typing-extensions))
+    (home-page "https://github.com/google/jaxtyping")
+    (synopsis
+     "Type annotations and runtime checking for JAX arrays and others")
+    (description "@code{jaxtyping} provides type annotations and runtime
+checking for shape and dtype of JAX arrays, PyTorch, NumPy, TensorFlow, and
+PyTrees.")
+    (license license:expat)))
+
 ;; There have been no proper releases yet.
 (define-public kaldi
   (let ((commit "be22248e3a166d9ec52c78dac945f471e7c3a8aa")
