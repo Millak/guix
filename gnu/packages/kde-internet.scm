@@ -332,14 +332,14 @@ This package is part of the KDE networking module.")
 (define-public krdc
   (package
     (name "krdc")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "0bs8q3na924lnmra5608jwnn0dqczvh0f72nn43673ib3m1mddlr"))))
+        (base32 "0jva74n11fpm4ix4sbi0y1xnbly97lnap7dfj0bliw5s2d0sdjr0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
