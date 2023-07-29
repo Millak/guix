@@ -23,6 +23,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java))
@@ -218,6 +219,33 @@ in the RDF4J framework.")
     (synopsis "Well known RDF vocabularies")
     (description "This package provides Java classes for well known
 RDF vocabularies.")
+    (license license:epl1.0)))
+
+(define-public java-eclipse-rdf4j-rio-api
+  (package
+    (name "java-eclipse-rdf4j-rio-api")
+    (version %rdf4j-version)
+    (source %rdf4j-source)
+    (build-system ant-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (rdf4j-common-arguments "rdf4j-rio-api.jar"
+                                 "core/rio/api")
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'install 'generate-pom.xml
+              (generate-pom.xml "guix-pom.xml"
+                                "org.eclipse.rdf4j"
+                                "rdf4j-rio-api" #$version))
+            (replace 'install
+              (install-from-pom "guix-pom.xml"))))))
+    (inputs (list java-commons-codec java-commons-io java-slf4j-api
+                  java-jsonld-java))
+    (propagated-inputs (list java-eclipse-rdf4j-model))
+    (home-page "https://rdf4j.org/")
+    (synopsis "RDF Input/Output API")
+    (description "This package provides an API for parsers and writers of
+various RDF formats.")
     (license license:epl1.0)))
 
 (define-public java-eclipse-rdf4j-util
