@@ -670,14 +670,14 @@ external services.")
 (define-public kcalendarsupport
   (package
     (name "kcalendarsupport")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/calendarsupport-" version ".tar.xz"))
        (sha256
-        (base32 "09fs15qckydmbs6idl5k1b6gyhjkygsa1r8frlysn1ahhfmxr33p"))))
+        (base32 "1zk6kv5nhcd7a5llzh31890xpqdg522ahjdgbwsm7pcp62y0nbsj"))))
     (properties `((upstream-name . "calendarsupport")))
     (build-system qt-build-system)
     (native-inputs
