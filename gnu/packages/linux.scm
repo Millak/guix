@@ -7762,7 +7762,7 @@ every time the power supply source is changed.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((defaults.conf
                       (search-input-file inputs "/share/tlp/defaults.conf"))
-                    (lspci (search-input-file inputs "/sbin/lspci"))
+                    (lspci (search-input-file inputs "/bin/lspci"))
                     (lsusb (search-input-file inputs "/bin/lsusb"))
                     (tlp-stat (search-input-file inputs "/bin/tlp-stat")))
                 (with-directory-excursion "tlpui"
