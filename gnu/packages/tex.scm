@@ -6554,6 +6554,28 @@ syllogisms and syllogistic-like arguments, composed of two premises and
 a conclusion.")
     (license license:lppl)))
 
+(define-public texlive-sympytexpackage
+  (package
+    (name "texlive-sympytexpackage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sympytexpackage/"
+                   "scripts/sympytexpackage/"
+                   "source/latex/sympytexpackage/"
+                   "tex/latex/sympytexpackage/")
+             (base32
+              "0ph8pldk2f477dm79vf5vrismfy8w1p2m455qfjqm7p704jm1pr3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sympytex")
+    (synopsis "Include symbolic computation (using @code{sympy}) in documents")
+    (description
+     "The bundle supports inclusion of symbolic-python (@code{sympy})
+expressions, as well as graphical output from the @code{sympy} plotting
+module (or from Matplotlib).")
+    (license license:gpl2)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
