@@ -753,14 +753,14 @@ functions for accessing calendar data using the kcalcore API.")
 (define-public kdepim-runtime
   (package
     (name "kdepim-runtime")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-runtime-" version ".tar.xz"))
        (sha256
-        (base32 "1g6bq27s7nf9rmrbl5kwycl4lzjpp3m088mji3p7qrrv01ywp4mn"))))
+        (base32 "1wvwibq6zzjlhh8yqrlqras0m8i01ynlwj9z6l3f0g0hyyz5nkw4"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools libxslt shared-mime-info))
