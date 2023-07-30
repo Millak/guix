@@ -2900,6 +2900,34 @@ Environmental scores will be part of a future release.")
      "This package contains parts of CWEB that are no longer useful.")
     (license license:knuth)))
 
+(define-public texlive-decision-table
+  (package
+    (name "texlive-decision-table")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/decision-table/"
+                   "source/latex/decision-table/"
+                   "tex/latex/decision-table/")
+             (base32
+              "14cgf142wmi2qlrxaa8dmyr7grb7d33ngfpg8sbrm82a78cvl1yc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/decision-table")
+    (synopsis "Create Decision Model and Notation decision tables")
+    (description
+     "The decision-table package allows for an easy way to generate decision
+tables in the Decision Model and Notation (DMN) format.  This package ensures
+consistency in the tables (i.e., fontsize), and is thus a better alternative
+to inserting tables via images.
+
+The decision-table package adds the @code{\\dmntable} command, with which
+tables can be created.  This command expands into a tabular, so it can be used
+within a @code{table} or @code{figure} environment.  Furthermore, this allows
+labels and captions to be added seamlessly.  It is also possible to place
+multiple DMN tables in one table/figure environment.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
