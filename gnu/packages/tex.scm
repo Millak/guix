@@ -4272,6 +4272,27 @@ semi-automatically or manually.  Last but not least it contains commands for
 drawing implicants on top of the map.")
     (license license:cc-by-sa3.0)))
 
+(define-public texlive-karnaughmap
+  (package
+    (name "texlive-karnaughmap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/karnaughmap/"
+                   "source/latex/karnaughmap/"
+                   "tex/latex/karnaughmap/")
+             (base32
+              "0wwgdcpv5chr7frnlf2j56yiwk5m28bixbv83p2h4f3jl10v5hwi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/karnaughmap")
+    (synopsis "Typeset Karnaugh maps")
+    (description
+     "This package provides an easy to use interface to typeset Karnaugh maps
+using TikZ.  Though similar to the @code{karnaugh} macros, it provides
+a key-value system to customize Karnaugh maps and a proper LaTeX package.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
