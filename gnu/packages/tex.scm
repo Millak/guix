@@ -6826,6 +6826,42 @@ is used by logicians for denoting a consequence relation, related to a given
 logic, between a collection of formulas and a derived formula.")
     (license license:lppl)))
 
+(define-public texlive-ulqda
+  (package
+    (name "texlive-ulqda")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ulqda/" "scripts/ulqda/"
+                   "source/latex/ulqda/" "tex/latex/ulqda/")
+             (base32
+              "07jzmk0p4l28dxxqqpma4px9riykg0zynnjycyripg2m76a9ah2g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "ulqda.pl")
+           #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-dot2texi
+                  texlive-hypdoc
+                  texlive-moreverb
+                  texlive-pgf
+                  texlive-soul
+                  texlive-subfigure
+                  texlive-xkeyval))))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ulqda")
+    (synopsis "Support of Qualitative Data Analysis")
+    (description
+     "The package is for use in Qualitative Data Analysis research.  It
+supports the integration of Qualitative Data Analysis (QDA) research tasks,
+specifically for Grounded Theory, into the LaTeX work flow.  It assists in the
+analysis of textual data such as interview transcripts and field notes by
+providing the LaTeX user with macros which are used to markup textual
+information.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
