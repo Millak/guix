@@ -5303,6 +5303,29 @@ stylistic variants are available to suit personal taste.")
     ;; condition for use are retained".
     (license (license:fsf-free "file://tex/latex/oubraces/oubraces.sty"))))
 
+(define-public texlive-overarrows
+  (package
+    (name "texlive-overarrows")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/overarrows/"
+                   "source/latex/overarrows/"
+                   "tex/latex/overarrows/")
+             (base32
+              "1zr1qq6g3zfabz4x37bc2ajlbrkdlskk99144kqwkvmrwr9nxpww")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/overarrows")
+    (synopsis "Custom extensible arrows over math expressions")
+    (description
+     "This package provides a LaTeX package to create custom arrows over math
+expressions, mainly for vectors (but arrows can as well be drawn below).
+Arrows stretch with content, scale with math styles, and have a correct
+kerning when a subscript follows.  Some predefined commands are also
+provided.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
