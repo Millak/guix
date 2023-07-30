@@ -5016,6 +5016,23 @@ rendered in a plain-text mode using a simplified Extended Backus-Naur
 Form (EBNF) notation.")
     (license license:expat)))
 
+(define-public texlive-namedtensor
+  (package
+    (name "texlive-namedtensor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/namedtensor/"
+                   "tex/latex/namedtensor/")
+             (base32
+              "1bsphfy1k9kplfmhn8qcb2y90l5ga1281r5xds4jn73m319n0iq5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/namedtensor")
+    (synopsis "Macros for named tensor notation")
+    (description "This style file provides macros for named tensor notation.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
