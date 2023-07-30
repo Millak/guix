@@ -3283,6 +3283,29 @@ simple roots.")
 to the PGF mathematical engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-econometrics
+  (package
+    (name "texlive-econometrics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/econometrics/"
+                   "tex/latex/econometrics/")
+             (base32
+              "09sjgdsa93pfz7iha335z4xdh80939iqrwr3jxdmdxjyracz61vs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/econometrics")
+    (synopsis
+     "Simplified mathematic notation in economic and econometric writing")
+    (description
+     "Econometrics is a package that defines some commands that simplify
+mathematic notation in economic and econometrics writing.  The commands are
+related to the notation of vectors, matrices, sets, calligraphic and roman
+letters statistical distributions constants and symbols matrix operators and
+statistical operators.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
