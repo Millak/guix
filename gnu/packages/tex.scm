@@ -3652,6 +3652,27 @@ the commands @code{\\upDelta} and @code{\\upOmega}; and provides a new math
 alphabet @code{\\mathbold} for boldface italic letters, including Greek.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fnspe
+  (package
+    (name "texlive-fnspe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fnspe/" "tex/latex/fnspe/")
+             (base32
+              "1wvr0jp8qyrrx907diphgjzvgq0alc922bmx905sndnwqzfl8fhd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fnspe")
+    (synopsis "Macros for supporting mainly students of FNSPE CTU in Prague")
+    (description
+     "This package is primary intended for students of FNSPE CTU in Prague but
+many other students or scientists can found this package as useful.  This
+package implements different standards of tensor notation, interval notation
+and complex notation.  Further many macros and shortcuts are added, e.g., for
+spaces, operators, physics unit, etc.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
