@@ -600,7 +600,7 @@ management system and its Plasma integration components.")
 (define-public kalendar
   (package
     (name "kalendar")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -608,7 +608,7 @@ management system and its Plasma integration components.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "0slk9z7p1z5m2kbb8kq05afslxad8w5pjsajxawckcx0mlsd3apj"))))
+                "1w56glv8m1rlk86v78h69d21ydxb6i61g1dk6mcizjr5rvi4liy0"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f ;All 2 tests fail
