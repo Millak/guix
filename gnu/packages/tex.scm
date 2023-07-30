@@ -6413,6 +6413,27 @@ the popular @code{amsmath} package.")
 numbers in the Steinmetz notation used in electrotechnics.")
     (license license:lppl)))
 
+(define-public texlive-structmech
+  (package
+    (name "texlive-structmech")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/structmech/"
+                   "tex/latex/structmech/")
+             (base32
+              "1xh9qwwk3fgdwaz5bb0w2yyv0li9vsdpfyx0r6hg694vf99ym6mb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/structmech")
+    (synopsis "TikZ command set for structural mechanics drawings")
+    (description
+     "This package provides a collection of TikZ commands that allow users to
+draw basic elements in material/structural mechanics.  It is thus possible to
+draw member forces, nodal forces/displacements, various boundary conditions,
+internal force distributions, etc.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
