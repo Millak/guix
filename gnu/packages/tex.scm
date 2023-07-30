@@ -2990,6 +2990,35 @@ default.")
 delimiters in math mode whose size can be adjusted conveniently.")
     (license license:lppl1.3+)))
 
+(define-public texlive-derivative
+  (package
+    (name "texlive-derivative")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/derivative/"
+                   "tex/latex/derivative/")
+             (base32
+              "1klskr46gr0r7wraygi8m0g49ils7lgqlcwg799zpnnip8jhr738")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/derivative")
+    (synopsis "Nice and easy derivatives")
+    (description
+     "Typesetting derivatives and differentials in a consistent way are clumsy
+and require care to ensure the preferred formatting.  Several packages have
+been developed for this purpose, each with its own features and drawbacks,
+with the most ambitious one being @code{diffcoeff}.  While this package is
+comparable to diffcoeff in terms of features, it takes a different approach.
+One difference is this package provides more options to tweak the format of
+the derivatives and differentials.  However, the automatic calculation of the
+total order isn't as developed as the one in @code{diffcoeff}.  This package
+makes it easy to write derivatives and differentials consistently with its
+predefined commands.  It also provides a set of commands that can define
+custom derivatives and differential operators.  The options follow
+a consistent naming scheme making them easy to use and understand.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
