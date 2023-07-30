@@ -2158,6 +2158,26 @@ mechanism.
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-causets
+  (package
+    (name "texlive-causets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/causets/" "tex/latex/causets/")
+             (base32
+              "03n3k1xklf42k8ybvvg0hlakqavcsa2dap8hpj3ln007yr4m22g8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/causets")
+    (synopsis "Draw causal set (Hasse) diagrams")
+    (description
+     "This LaTeX package uses TikZ to generate (Hasse) diagrams for causal sets
+(causets) to be used inline with text or in mathematical expressions.  The
+macros can also be used in the @code{tikzpicture} environment to annotate or
+modify a diagram.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
