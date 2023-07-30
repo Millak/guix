@@ -3346,6 +3346,25 @@ symbols but does not provide any fonts.  The fonts themselves must be acquired
 otherwise.")
     (license license:gpl3)))
 
+(define-public texlive-endiagram
+  (package
+    (name "texlive-endiagram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/endiagram/"
+                   "tex/latex/endiagram/")
+             (base32
+              "07vm7ka7651mp5kk7m4ipk6agh4afmnq5ns1mjxvssb2wxfli3f0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/endiagram")
+    (synopsis "Easy creation of potential energy curve diagrams")
+    (description
+     "The package provides the facility of drawing potential energy curve
+diagrams with just a few simple commands.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
