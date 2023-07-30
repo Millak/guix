@@ -2086,6 +2086,50 @@ at the side opposite to the equation numbers.  Calculations are allowed inside
 hints although numbering and commenting is then disabled.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cartonaugh
+  (package
+    (name "texlive-cartonaugh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cartonaugh/"
+                   "source/latex/cartonaugh/"
+                   "tex/latex/cartonaugh/")
+             (base32
+              "05f6xslfv3d1n48j2ivl7vdgs12lzgzx8ccfv6l49ddgq0dssnir")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cartonaugh")
+    (synopsis
+     "LuaLaTeX package for drawing karnaugh maps with up to 6 variables")
+    (description
+     "This package, a fork of @code{karnaugh-map} package, draws karnaugh maps
+with 2, 3, 4, 5, and 6 variables.  It also contains commands for filling the
+karnaugh map with terms semi-automatically or manually.  Last but not least it
+contains commands for drawing implicants on top of the map.")
+    (license license:cc-by-sa3.0)))
+
+(define-public texlive-cascade
+  (package
+    (name "texlive-cascade")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cascade/" "source/latex/cascade/"
+                   "tex/latex/cascade/")
+             (base32
+              "13950pv70hr21jn7f0hg4hyai3b28bwcnrd23l44mhynv4hbs5yz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cascade")
+    (synopsis
+     "Constructions with braces to present mathematical demonstrations")
+    (description
+     "The LaTeX package cascade provides a command @code{\\Cascade} to do
+constructions to present mathematical demonstrations with successive braces
+for the deductions.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-catcodes
   (package
     (name "texlive-catcodes")
