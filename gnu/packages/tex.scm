@@ -4498,6 +4498,27 @@ The primary objective of this package is to be used together with the
 knowledge package for a proper handling of mathematical notations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mathcomp
+  (package
+    (name "texlive-mathcomp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathcomp/"
+                   "source/latex/mathcomp/"
+                   "tex/latex/mathcomp/")
+             (base32
+              "0a7y6r9ikasr9v48671ij40z31j0mxiliy1k3yg3ldbiggrjh07i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathcomp")
+    (synopsis "Text symbols in maths mode")
+    (description
+     "This package provides a package which provides access to some
+interesting characters of the Text Companion fonts (TS1 encoding) in maths
+mode.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
