@@ -2019,6 +2019,28 @@ alternate form.")
 entire (sub)deductions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bytefield
+  (package
+    (name "texlive-bytefield")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bytefield/"
+                   "source/latex/bytefield/"
+                   "tex/latex/bytefield/")
+             (base32
+              "0sijllb1nmg7alp8kma9gg2cl591p6vjs488yndpbjg49ih2bx71")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bytefield")
+    (synopsis "Create illustrations for network protocol specifications")
+    (description
+     "The @code{bytefield} package helps the user create illustrations for
+network protocol specifications and anything else that utilizes fields of
+data.  These illustrations show how the bits and bytes are laid out in
+a packet or in memory.")
+    (license license:lppl1.3a)))
+
 (define-public texlive-c-pascal
   (package
     (name "texlive-c-pascal")
