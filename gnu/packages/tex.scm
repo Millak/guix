@@ -5496,6 +5496,29 @@ It is designed as a tool that is easy to use, with a lean syntax, native to
 LaTeX, and directly supporting PDF output format.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pm-isomath
+  (package
+    (name "texlive-pm-isomath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pm-isomath/"
+                   "source/latex/pm-isomath/"
+                   "tex/latex/pm-isomath/")
+             (base32
+              "1a3qsv8x1pj2fd8hdbds6skvda9hpaph0a3hakf61xngc7q4ymxn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pm-isomath")
+    (synopsis "Poor man ISO math for pdfLaTeX users")
+    (description
+     "This small package realizes a poor man approximation of the ISO
+regulations for physical sciences and technology.  Contrary to other more
+elegant solutions, it does not load any math alphabet, since pdfLaTeX can use
+only a maximum of such alphabets.  The necessary user macros are defined for
+typsetting common math symbols that require special ISO treatment.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
