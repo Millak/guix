@@ -4070,6 +4070,27 @@ adds a collection of useful @acronym{HEP, High Energy Physics} units to the
 existing SIunits set.")
     (license license:lppl)))
 
+(define-public texlive-ibrackets
+  (package
+    (name "texlive-ibrackets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ibrackets/"
+                   "source/latex/ibrackets/"
+                   "tex/latex/ibrackets/")
+             (base32
+              "0ipqh7z1v4l6fgbgkizn5v2g2l3b4n5zlmdaalj22ylgd2k25mv6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ibrackets")
+    (synopsis "Intelligent brackets")
+    (description
+     "This small package provides a new definition of brackets @samp{[} and
+@samp{]} as active characters to get correct blank spaces in mathematical mode
+when using for open intervals.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
