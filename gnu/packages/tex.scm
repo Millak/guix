@@ -3365,6 +3365,24 @@ otherwise.")
 diagrams with just a few simple commands.")
     (license license:lppl1.3+)))
 
+(define-public texlive-engtlc
+  (package
+    (name "texlive-engtlc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/engtlc/" "tex/latex/engtlc/")
+             (base32
+              "1xl0x6yanf2933p4ajlwzlrxjrn36kkdy6bm7cy10s1nys3y3pqk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/engtlc")
+    (synopsis "Support for users in telecommunications engineering")
+    (description
+     "The package provides a wide range of abbreviations for terms used in
+telecommunications engineering.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
