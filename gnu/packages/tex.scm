@@ -5519,6 +5519,29 @@ only a maximum of such alphabets.  The necessary user macros are defined for
 typsetting common math symbols that require special ISO treatment.")
     (license license:lppl1.3c)))
 
+(define-public texlive-polexpr
+  (package
+    (name "texlive-polexpr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/polexpr/"
+                   "tex/generic/polexpr/")
+             (base32
+              "09lryzizy59aaq92m2rzryxf0q0b9wqhrm258q1kqgm0sd2z6pn3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/polexpr")
+    (synopsis "Parser for polynomial expressions")
+    (description
+     "The package provides a parser @code{\\poldef} of algebraic polynomial
+expressions.  Once defined, a polynomial is usable by its name either as
+a numerical function in @code{\\xintexpr} or @code{\\xinteval}, or for
+additional polynomial definitions, or as argument to the package macros.  The
+localization of real roots to arbitrary precision as well as the determination
+of all rational roots is implemented via such macros.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
