@@ -2276,6 +2276,27 @@ each compound.  The package differs from the @code{chemcono} package by not
 generating an odd-looking list of compounds inside the text.")
     (license license:lppl)))
 
+(define-public texlive-chemcono
+  (package
+    (name "texlive-chemcono")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemcono/" "tex/latex/chemcono/")
+             (base32
+              "1lwsizrypzn6vnhf7szg47b1synafihihq14wfc0ffrksq1c730c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemcono")
+    (synopsis "Support for compound numbers in chemistry documents")
+    (description
+     "This package provides a LaTeX package for using compound numbers in
+chemistry documents.  It works like @code{\\cite} and the
+@code{\\thebibliography}, using @code{\\fcite} and @code{\\theffbibliography}
+instead.  It allows compound names in documents to be numbered and does not
+affect the normal citation routines.")
+    (license license:lppl)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
