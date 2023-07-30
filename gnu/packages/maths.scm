@@ -1368,6 +1368,28 @@ Extern C linkage permits the package routines to be called from C++.")
     (license (license:non-copyleft ; original minpack license
               "https://github.com/certik/minpack/blob/master/LICENSE"))))
 
+(define-public bonmin
+  (package
+    (name "bonmin")
+    (version "1.8.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/coin-or/Bonmin")
+                    (commit (string-append "releases/" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "153kj4wx386609g21hw3cv5yxps62qqrc64zwb9ryd2xad1w1a4y"))))
+    (build-system gnu-build-system)
+    (native-inputs (list gfortran pkg-config))
+    (inputs (list cbc ipopt lapack))
+    (home-page "https://coin-or.github.io/Bonmin/")
+    (synopsis "Basic Open-source Nonlinear Mixed INteger programming")
+    (description "Bonmin is a code for solving general MINLP (Mixed Integer
+NonLinear Programming) problems.  It builds on top of Cbc and Ipopt.")
+    (license license:epl1.0)))
+
 (define-public gctp
   (package
     (name "gctp")
