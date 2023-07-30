@@ -43,6 +43,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system r)
@@ -54,12 +55,15 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gtk)
@@ -90,6 +94,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -2344,6 +2349,94 @@ building design matrices.")
 statistical computations including descriptive statistics and estimation and
 inference for statistical models.")
     (license license:bsd-3)))
+
+(define-public python-openturns
+  (package
+    (name "python-openturns")
+    (version "1.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openturns/openturns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05lbx8npvvk7jyakvfpgi9ggdp6cnzwv2hjmjrkji2s42axv0q6d"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)
+          ;; This is a Python package which is fully managed by CMake.  In
+          ;; cmake-build-system the check phase runs before install, but the
+          ;; Python modules required for testing are only installed in the
+          ;; install phase.  Move check to after the install phase.
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "--exclude-regex"
+                        ;; XXX: Cpp tests fail in 'No such file or directory',
+                        ;; skip for now and only run the Python tests.
+                        ;; TODO: To pass the Python tests below, Ipopt must be
+                        ;; built with MUMPS support, but simply adding mumps
+                        ;; to the inputs doesn't work for it to be found,
+                        ;; possibly because MUMPS doesn't generate a .pc file.
+                        (string-join
+                         (list "^cpp"
+                               "pyinstallcheck_Bonmin_std"
+                               "pyinstallcheck_Bonmin_4dsoo"
+                               "pyinstallcheck_Bonmin_MIT15"
+                               "pyinstallcheck_Bonmin_swiler2014"
+                               "pyinstallcheck_Ipopt_std"
+                               "pyinstallcheck_example_plot_optimization_bonmin"
+                               "pyinstallcheck_coupling_tools")
+                         "|"))))))))
+    (native-inputs
+     (list bison
+           dvisvgm
+           flex
+           python-numpydoc
+           python-sphinx
+           ;; python-sphinx-gallery ;; Currently broken
+           swig))
+    (inputs
+     (list openblas                ; the only required dependency
+           ;; The dependecies below are all optional.
+           bonmin
+           boost
+           cbc ;; Maybe this should be propagated by Bonmin?
+           ceres
+           cminpack
+           dlib
+           hdf5
+           hmat
+           ipopt
+           libxml2
+           mpc
+           mpfr
+           nlopt
+           pagmo
+           primesieve
+           python-wrapper
+           spectra
+           tbb))
+    (propagated-inputs
+     (list python-chaospy
+           python-dill
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-scipy))
+    (home-page "https://openturns.github.io/www/")
+    (synopsis "Uncertainty treatment library")
+    (description
+     "OpenTURNS is a scientific C++ and Python library including an internal
+data model and algorithms dedicated to the treatment of uncertainties.  The
+main goal of this library is giving to specific applications all the
+functionalities needed to treat uncertainties in studies.")
+    (license license:lgpl3+)))
 
 (define-public r-coda
   (package
