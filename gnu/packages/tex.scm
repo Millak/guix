@@ -5223,6 +5223,24 @@ terms of recurrence relations.")
 mathematical function values.")
     (license license:lppl1.3c)))
 
+(define-public texlive-objectz
+  (package
+    (name "texlive-objectz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/objectz/" "source/latex/objectz/"
+                   "tex/latex/objectz/")
+             (base32
+              "0a10ajlpmx6gfg4h9rvwf0q7zkb843pl5xfcsd9pzfg33245wbrz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/objectz")
+    (synopsis "Macros for typesetting Object Z")
+    (description
+     "The package will typeset both Z and Object-Z specifications.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
