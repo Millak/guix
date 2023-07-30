@@ -3718,6 +3718,28 @@ level, as appropriate.  The package provides an alternative to the use of the
 @code{\\sideset} command in the @code{amsmath} package.")
     (license license:lppl)))
 
+(define-public texlive-functan
+  (package
+    (name "texlive-functan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/functan/" "source/latex/functan/"
+                   "tex/latex/functan/")
+             (base32
+              "077jfm145bnan63r1rlqlmy15zqj89fl4nwksdpyd67zcda3k1vf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/functan")
+    (synopsis "Macros for functional analysis and PDE theory")
+    (description
+     "This package provides a convenient and coherent way to deal with name of
+functional spaces (mainly Sobolev spaces) in functional analysis and PDE
+theory.  It also provides a set of macros for dealing with norms, scalar
+products and convergence with some object oriented flavor (it gives the
+possibility to override the standard behavior of norms, ...).")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
