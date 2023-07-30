@@ -5348,6 +5348,35 @@ customized by means of different @code{\\pascal} macro options or the
 @code{\\pascalset} macro.")
     (license license:lppl1.3c)))
 
+(define-public texlive-perfectcut
+  (package
+    (name "texlive-perfectcut")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/perfectcut/"
+                   "tex/latex/perfectcut/")
+             (base32
+              "13lclcf5aynbivhlsgnssi36dgacmyjl3rmr0i8s3az5941bsyfh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/perfectcut")
+    (synopsis
+     "Nested delimiters that consistently grow regardless of the contents")
+    (description
+     "This package defines the command @code{\\perfectcut#1#2} which displays
+a bracket @samp{<#1||#2>}.  Various other delimiters are similarly
+defined (parentheses, square brackets ...).  The effect of these commands is
+to let the delimiters grow according to the number of nested
+@code{\\perfectcommands} (regardless of the size of the contents).
+
+The package was originally intended for solving a notational issue for
+direct-style continuation calculi in proof theory.  For general use, the
+package also defines commands for defining other sorts of delimiters which
+will behave in the same way.  The package also offers a robust
+reimplementation of @code{\\big}, @code{\\bigg}, etc.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
