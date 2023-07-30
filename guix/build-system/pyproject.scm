@@ -93,7 +93,7 @@
 (define* (pyproject-build name inputs
                           #:key source
                           (tests? #t)
-                          (configure-flags ''())
+                          (configure-flags ''(@))
                           (backend-path #f)
                           (build-backend #f)
                           (test-backend #f)
