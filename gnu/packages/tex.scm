@@ -6118,6 +6118,26 @@ rather unwieldy.  This package provides a simpler syntax for Wick
 contractions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-simples-matrices
+  (package
+    (name "texlive-simples-matrices")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simples-matrices/"
+                   "source/latex/simples-matrices/"
+                   "tex/latex/simples-matrices/")
+             (base32
+              "0dvb989qf0ibgax0rjj49y827f9mzls0axdh28a6ar0r6dfvyjb3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simples-matrices")
+    (synopsis "Define matrices by given list of values")
+    (description
+     "This package provides macros to define and write matrices whose
+coefficients are given row by row in a list of values separated by commas.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
