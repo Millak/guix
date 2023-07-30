@@ -5726,6 +5726,26 @@ algorithms in a natural manner.")
 a domain-specific language for quantum programming.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rank-2-roots
+  (package
+    (name "texlive-rank-2-roots")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rank-2-roots/"
+                   "tex/latex/rank-2-roots/")
+             (base32
+              "04mjbq1nyv9jq0xx6zdkr6qz94j46b1xw7wza0r8f8s33q3q6jbb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rank-2-roots")
+    (synopsis "Draw (mathematical) rank 2 root systems")
+    (description
+     "This package concerns mathematical drawings arising in representation
+theory.  The purpose of this package is to ease drawing of rank 2 root
+systems, with Weyl chambers, weight lattices, and parabolic subgroups.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
