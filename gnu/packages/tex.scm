@@ -6498,6 +6498,25 @@ created.")
 combinations of left and right sub- and superscripts.")
     (license license:lppl)))
 
+(define-public texlive-subtext
+  (package
+    (name "texlive-subtext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subtext/" "tex/latex/subtext/")
+             (base32
+              "0wpb4087acwsgnsc1zw6ivqaqgdsq90zm63bgmrk77ban54qsqv0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subtext")
+    (synopsis "Easy text-style subscripts in math mode")
+    (description
+     "This LaTeX package gives easy access to text-style subscripts in math
+mode by providing an optional argument to @samp{_}.  This is implemented by
+using the @code{\\text@{@}} command from the @code{amstext} package.")
+    (license license:gpl3)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
