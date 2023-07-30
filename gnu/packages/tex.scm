@@ -1998,6 +1998,27 @@ involving brackets and allow partial differentials to be expressed in an
 alternate form.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bussproofs-extra
+  (package
+    (name "texlive-bussproofs-extra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bussproofs-extra/"
+                   "source/latex/bussproofs-extra/"
+                   "tex/latex/bussproofs-extra/")
+             (base32
+              "08n6ww2fcijkisldrhbvvm52n3r4fy10bz1i4jyac7wnnpw8dd2p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bussproofs-extra")
+    (synopsis "Extra commands for @file{bussproofs.sty}")
+    (description
+     "This package provides additional functionality for
+@file{bussproofs.sty}; specifically, it allows for typesetting of
+entire (sub)deductions.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-c-pascal
   (package
     (name "texlive-c-pascal")
