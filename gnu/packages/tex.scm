@@ -3779,6 +3779,25 @@ provides an environment like @code{eqnarray}, a @code{newtheorem}-like
 environment (NewTheorem), and several macros.")
     (license license:isc)))
 
+(define-public texlive-ghsystem
+  (package
+    (name "texlive-ghsystem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ghsystem/" "tex/latex/ghsystem/")
+             (base32
+              "1a8plly9zcbym67yzk6rp5mlk12lngmhdx6c3riar2w86nlvq55l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ghsystem")
+    (synopsis "Globally harmonised system of chemical (etc) naming")
+    (description
+     "The package provides the means to typeset all the hazard and
+precautionary statements and pictograms in a straightforward way.  The
+statements are taken from EU regulation 1272/2008.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
