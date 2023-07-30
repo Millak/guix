@@ -73,29 +73,34 @@ success, #f otherwise."
                      (catch #t
                        (lambda ()
                          (http-fetch (string->uri url)))
-                       (lambda args
+                       (lambda (key . args)
+                         (format #t "Unable to fetch from ~a, ~a: ~a~%"
+                                 (uri-host (string->uri url))
+                                 key
+                                 args)
                          (values #f #f)))))
          (if (not port)
              (loop rest)
-             (let* ((reporter (progress-reporter/file
-                               url
-                               size
-                               (current-error-port)
-                               #:abbreviation nar-uri-abbreviation))
-                    (port-with-progress
-                     (progress-report-port reporter port
-                                           #:download-size size)))
+             (begin
                (if size
                    (format #t "Downloading from ~a (~,2h MiB)...~%" url
                            (/ size (expt 2 20.)))
                    (format #t "Downloading from ~a...~%" url))
-               (if (string-contains url "/lzip")
-                   (restore-lzipped-nar port-with-progress
-                                        item
-                                        size)
-                   (begin
+               (let* ((reporter (progress-reporter/file
+                                 url
+                                 size
+                                 (current-error-port)
+                                 #:abbreviation nar-uri-abbreviation))
+                      (port-with-progress
+                       (progress-report-port reporter port
+                                             #:download-size size)))
+                 (if (string-contains url "/lzip")
+                     (restore-lzipped-nar port-with-progress
+                                          item
+                                          size)
                      (restore-file port-with-progress
                                    item)))
+               (newline)
                #t))))
       (()
        #f))))

@@ -1458,7 +1458,7 @@ are only used to bootstrap it.")
             (lambda _
               (substitute* (list "launcher/game/gui7.rpy"
                                  "launcher/game/gui7/images.py")
-                ((", \"game\",") ","))
+                ((", \"game\", \"gui7\",") ", \"gui7\","))
               #t))
           (add-before 'build 'start-xserver
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
@@ -1992,7 +1992,7 @@ scripted in a Python-like language.")
 (define-public godot
   (package
     (name "godot")
-    (version "4.1")
+    (version "4.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2001,7 +2001,7 @@ scripted in a Python-like language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rc34w4nb1qwmxk7ijcm689kk4gdxrmgzbj4qqz8gkqhysn8mnmz"))
+                "1byy4zdsj8nq54rhmij7kl0mdh4zv3c056y6c7rjy17bqjq2n8fh"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))

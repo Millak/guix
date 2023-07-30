@@ -780,7 +780,7 @@ backups on untrusted computers.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse-3 libxml2 ntfs-3g openssl))
+     (list fuse libxml2 ntfs-3g openssl))
     (arguments
      `(#:configure-flags
        (list "--disable-static"

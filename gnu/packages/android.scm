@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
@@ -721,6 +723,35 @@ file system.")
      "This package provides @command{fastboot}, a tool to upload file system images to Android devices.")
     (license license:asl2.0)))
 
+(define-public sdkmanager
+  (package
+    (name "sdkmanager")
+    (version "0.6.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sdkmanager" version ".tar.gz"))
+              (sha256
+               (base32
+                "11as7n2mj3nbqsqb3ivyv9985n73i022s748qvjg36cs8ig50afx"))))
+    (build-system pyproject-build-system)
+    (inputs (list python-requests python-argcomplete python-urllib3 gnupg))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'patch-gnupg
+                          (lambda _
+                            (substitute* "sdkmanager.py"
+                              (("gpgv")
+                               (string-append #$(this-package-input "gnupg")
+                                              "/bin/gpgv"))))))))
+    (home-page "https://gitlab.com/fdroid/sdkmanager")
+    (synopsis "Replacement for Android sdkmanager written in Python")
+    (description
+     "This package provides a drop-in replacement for sdkmanager from
+the Android SDK.  It is written in Python and part of the F-Droid
+project.  It implements the exact API of the Android sdkmanager command
+line.  The project also attempts to maintain the same terminal output.")
+    (license license:agpl3+)))
+
 (define-public android-udev-rules
   (package
     (name "android-udev-rules")
@@ -1260,7 +1291,7 @@ Java bytecode, which simplifies the analysis of Android applications.")
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;there are no tests
-    (inputs (list qtbase-5 fuse-3 libxkbcommon))
+    (inputs (list qtbase-5 fuse libxkbcommon))
     (native-inputs (list qttools-5 openssl readline))
     (home-page "https://whoozle.github.io/android-file-transfer-linux/")
     (synopsis "MTP client for Android devices")

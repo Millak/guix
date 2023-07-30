@@ -60,6 +60,7 @@
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -261,6 +262,39 @@ student to write code, the program offers an intuitive interface with
 interactive dialogs to guide them.")
    (license license:gpl3+)
    (home-page "https://www.gnu.org/software/c-graph/")))
+
+(define-public calc
+  (package
+    (name "calc")
+    (version "2.14.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "0kg7cqhq70dlj7k8mrl0dbps1yvflfhri7c1gvm9nh4g2adlkxkf"))))
+    (build-system gnu-build-system)
+    (inputs (list readline))
+    (native-inputs (list util-linux)) ; for col
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-before 'build 'patch-makefile
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("^PREFIX= /usr/local")
+                               (string-append "PREFIX=" #$output))
+                              (("=\\s?/usr")
+                               "= ${PREFIX}")))))))
+    (synopsis "Arbitrary precision console calculator")
+    (description
+     "Calc is an arbitrary precision arithmetic system that uses a C-like
+language.  It can be used as a calculator, an algorithm prototyper and as
+a mathematical research tool, and it comes with built in mathematical and
+programmatic functions.")
+    (home-page "http://www.isthe.com/chongo/tech/comp/calc/")
+    (license license:lgpl2.1)))
 
 (define-public coda
   (package

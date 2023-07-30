@@ -1,0 +1,23 @@
+From d27d1cd3a79959ff1eb8439b06e108149f21141f Mon Sep 17 00:00:00 2001
+From: Joseph Lansdowne <j49137@gmail.com>
+Date: Sun, 31 Mar 2019 19:26:10 +0100
+Subject: [PATCH] fix error on closing written file
+
+---
+ ChangeLog | 1 +
+ ftpfs.c   | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/ftpfs.c b/ftpfs.c
+index 0346354..34f8c38 100644
+--- a/ftpfs.c
++++ b/ftpfs.c
+@@ -503,7 +503,7 @@ static void *ftpfs_write_thread(void *data) {
+   
+   curl_easy_setopt_or_die(fh->write_conn, CURLOPT_URL, fh->full_path);
+   curl_easy_setopt_or_die(fh->write_conn, CURLOPT_UPLOAD, 1);
+-  curl_easy_setopt_or_die(fh->write_conn, CURLOPT_INFILESIZE, -1);
++  curl_easy_setopt_or_die(fh->write_conn, CURLOPT_INFILESIZE, -1L);
+   curl_easy_setopt_or_die(fh->write_conn, CURLOPT_READFUNCTION, write_data_bg);
+   curl_easy_setopt_or_die(fh->write_conn, CURLOPT_READDATA, fh);
+   curl_easy_setopt_or_die(fh->write_conn, CURLOPT_LOW_SPEED_LIMIT, 1);

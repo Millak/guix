@@ -1697,7 +1697,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit") ;formerly known as python-pre-commit
-    (version "3.3.1")
+    (version "3.3.3")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1706,7 +1706,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cssp1p8xmidiimcjfp799zlldbr6id8ar0sf5rs0dd44ns1j3yr"))
+        (base32 "1spkg3ld3s6l7wz24lcywlf1z2ywp751bcdlxjfdsln76bi9ylp8"))
        (modules '((guix build utils)))
        (snippet '(substitute* "setup.cfg"
                    (("virtualenv>=20.10.0") ;our virtualenv (20.3.1) is fine

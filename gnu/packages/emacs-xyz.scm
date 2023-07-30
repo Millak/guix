@@ -153,6 +153,7 @@
   #:use-module (guix packages)
   #:use-module (guix cvs-download)
   #:use-module (guix download)
+  #:use-module (guix deprecation)
   #:use-module (guix bzr-download)
   #:use-module (guix gexp)
   #:use-module (guix i18n)
@@ -1287,7 +1288,7 @@ some utility functions, and commands using that infrastructure.")
 its mode line.")
       (license license:gpl3+))))
 
-(define-public git-modes
+(define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
     (version "1.4.1")
@@ -1310,6 +1311,8 @@ its mode line.")
 configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
 @file{.git/config}.")
     (license license:gpl3+)))
+
+(define-deprecated/public-alias git-modes emacs-git-modes)
 
 (define-public emacs-with-editor
   (package
@@ -3491,6 +3494,30 @@ read-only based on user configuration.  User configuration may be prefix
 directories or regex patterns.")
       (license license:gpl3+))))
 
+;; Use latest commit since there are no tags anymore for several versions
+(define-public emacs-rebecca-theme
+  (let ((commit "4b8b5aae9099185e07c2b4cac4943c7f66a3f003")
+        (revision "0"))
+    (package
+      (name "emacs-rebecca-theme")
+      (version (git-version "1.3.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vic/rebecca-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y2kcs6zgi3dijagyz6lxbv6gi2mih8m943fhjrzkj35wfvjmhsz"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/vic/rebecca-theme")
+      (synopsis "Dark Emacs theme with purple/violet colors")
+      (description
+       "Rebecca Emacs theme is a dark theme with purple/violet colors, based on
+the @code{Dracula} theme for Emacs and the @code{Gloom} theme for Atom.")
+      (license license:expat))))
+
 (define-public emacs-bbdb
   (package
     (name "emacs-bbdb")
@@ -4196,6 +4223,31 @@ Some of its major features include:
      "This package provides a minor mode to emulate the behavior of a Caps
 Lock key.")
     (license license:gpl3+)))
+
+(define-public emacs-chocolate-theme
+  (let ((commit "ccc05f7ad96d3d1332727689bf6250443adc7ec0")
+        (revision "0"))
+    (package
+      (name "emacs-chocolate-theme")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/SavchenkoValeriy/emacs-chocolate-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1d8a9jwv9y0sncw24k840c8yyrig30f2d6q2zqlc09f05yzq9p9p"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-autothemer))
+      (home-page "https://github.com/SavchenkoValeriy/emacs-chocolate-theme")
+      (synopsis "Dark chocolatey theme for Emacs")
+      (description
+       "Chocolate theme is a dark, chocolatey, vibrant and subtle theme for
+Emacs.")
+      (license license:gpl3))))
 
 (define-public emacs-chronometrist
   (package
@@ -11054,16 +11106,16 @@ answers.")
 (define-public emacs-base16-theme
   (package
     (name "emacs-base16-theme")
-    (version "3.0")
+    (version "3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/belak/base16-emacs")
+             (url "https://github.com/tinted-theming/base16-emacs")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qp71j77zg8gippcn277s0j5a9n6dbwv3kdp2nya6li4b412vgba"))))
+        (base32 "1yq9afvybrgkmn17h22ha9231am7hlh3wccxw7g2ks3g0k5vvds0"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons "^build\\/.*\\.el$" %default-include)
@@ -11083,7 +11135,7 @@ answers.")
                                                      'pre 'post)))
                                (find-files theme-dir "\\.el$"))
                      (delete-file-recursively theme-dir)))))))
-    (home-page "https://github.com/belak/base16-emacs")
+    (home-page "https://github.com/tinted-theming/base16-emacs")
     (synopsis "Base16 color themes for Emacs")
     (description
      "Base16 provides carefully chosen syntax highlighting and a default set
@@ -17323,27 +17375,32 @@ is the primary mode of interaction.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
+;; Package has no releases or tags.  Version is extracted from "Version:"
+;; keyword in main file.
 (define-public emacs-idle-highlight
-  (package
-    (name "emacs-idle-highlight")
-    (version "1.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nonsequitur/idle-highlight-mode")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0x4w1ksrw7dicl84zpf4d4scg672dyan9g95jkn6zvri0lr8xciv"))))
-    (build-system emacs-build-system)
-    (home-page "https://www.emacswiki.org/emacs/IdleHighlight")
-    (synopsis "Highlights all occurrences of the word the point is on")
-    (description
-     "This Emacs package provides @code{idle-highlight-mode} that sets
+  (let ((commit "f9091c907d41e7b12d99d108a194229b8dbfc5ae")
+        (revision "0"))
+    (package
+      (name "emacs-idle-highlight")
+      (version (git-version "1.1.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://codeberg.org/ideasman42/emacs-idle-highlight-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0757x4iy7q0mj1rshlxr00hbc78g5hzijgzyqs36nrw6bn65fb93"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/ideasman42/emacs-idle-highlight-mode")
+      (synopsis "Highlights all occurrences of the word the point is on")
+      (description
+       "This Emacs package provides @code{idle-highlight-mode} that sets
  an idle timer to highlight all occurrences in the buffer of the word under
  the point.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-ox-twbs
   (package
@@ -18066,7 +18123,7 @@ Pippel also uses Tabulated List mode, it provides a similar package menu like
 (define-public emacs-pos-tip
   (package
     (name "emacs-pos-tip")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -18075,7 +18132,7 @@ Pippel also uses Tabulated List mode, it provides a similar package menu like
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w8bnspnk871qndp18hs0wk4x9x31xr9rwbvf5dc8mcbnj29ch33"))))
+        (base32 "1k6r59jhbyiknhsl7df0zafyc4d9r3vk953x6sdxgz92kx6hxpfy"))))
     (build-system emacs-build-system)
     ;; The following functions and variables needed by emacs-pos-tip are
     ;; not included in emacs-minimal:
@@ -27227,6 +27284,30 @@ are obtained with Lisp.  The former is faster and provide a more precise
 value.  For directories where the user doesn't have read permission, the
 recursive size is not obtained.  Once this mode is enabled, every new Dired
 buffer displays recursive dir sizes.")
+    (license license:gpl3+)))
+
+(define-public emacs-dired-preview
+  (package
+    (name "emacs-dired-preview")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/dired-preview")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d485812k1rv0qrw4xvzv4z3qf370apsajnf4q3pjk3q0r1fpm8b"))))
+    (build-system emacs-build-system)
+    (home-page "https://protesilaos.com/emacs/dired-preview")
+    (synopsis "Automatically preview file at point in Dired")
+    (description
+     "This is a simple package to automatically preview in a side window the
+file at point in Dired buffers.  Preview windows are closed when they are no
+longer relevant, while preview buffers are killed if they have not been used
+for other purposes beside previewing.  The package provides several
+customisation options to control its behaviour.")
     (license license:gpl3+)))
 
 (define-public emacs-dired-rsync

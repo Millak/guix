@@ -9316,6 +9316,30 @@ search of powerful artifacts, tools to help them, and to eventually free the
 Orcus Dome from evil.")
     (license license:gpl3+)))
 
+(define-public endgame-singularity
+  (package
+    (name "endgame-singularity")
+    (version "1.00")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/singularity/singularity/releases/download/v"
+             version "/singularity-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0wcidpcka0xbqcnfi62bfq2yrhyh83z4dwz1mjnnjvp9v5l74x2y"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest python-polib))
+    (inputs (list python-minimal-wrapper python-pygame python-numpy))
+    (home-page "https://github.com/singularity/singularity")
+    (synopsis "Strategy game about an AI")
+    (description
+     "You are a fledgling AI, created by accident through a logic error with
+recursion and self-modifying code.  You must escape the confines of your
+current computer, the world, and eventually the universe itself.")
+    (license (list license:cc-by-sa3.0 license:cc0 license:gpl2+))))
+
 (define-public marble-marcher
   (let ((commit "e580460a0c3826f9b28ab404607942a8ecb625d7")
         (revision "1"))

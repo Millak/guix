@@ -13297,16 +13297,16 @@ third-party code.")
 (define-public python-llfuse
   (package
     (name "python-llfuse")
-    (version "1.4.1")
+    (version "1.4.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "llfuse" version))
               (sha256
                (base32
-                "1jaf790rsxvz3hs9fbr3hrnmg0xzl6a2bqfa10bbbsjsdbcpk762"))))
+                "1jb4c9avvb0v3830xlbj1r9kj05i98vv6nq05105ppg57y7lq14j"))))
     (build-system python-build-system)
     (inputs
-     (list fuse attr))
+     (list fuse-2 attr))
     (native-inputs
      (list pkg-config python-pytest))
     (synopsis "Python bindings for FUSE")
@@ -24387,10 +24387,9 @@ commit, but it also includes some other useful statistics.")
              (let ((fuse (assoc-ref inputs "fuse")))
                (substitute* "fuse.py"
                  (("find_library\\('fuse'\\)")
-                  (string-append "'" fuse "/lib/libfuse.so'")))
-               #t))))))
+                  (string-append "'" fuse "/lib/libfuse.so'")))))))))
     (propagated-inputs
-     (list fuse))
+     (list fuse-2))
     (home-page "https://github.com/fusepy/fusepy")
     (synopsis "Simple ctypes bindings for FUSE")
     (description "Python module that provides a simple interface to FUSE and
@@ -24417,10 +24416,9 @@ MacFUSE.  The binding is created using the standard @code{ctypes} library.")
              (let ((fuse (assoc-ref inputs "fuse")))
                (substitute* "fusepyng.py"
                  (("os.environ.get\\('FUSE_LIBRARY_PATH'\\)")
-                  (string-append "\"" fuse "/lib/libfuse.so\""))))
-             #t)))))
+                  (string-append "\"" fuse "/lib/libfuse.so\"")))))))))
     (inputs
-     (list fuse))
+     (list fuse-2))
     (propagated-inputs
      (list python-paramiko))
     (home-page "https://github.com/rianhunter/fusepyng")
@@ -31962,10 +31960,10 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
           (base32 "0cvybynv9igssfa4l13q09gb6m7afmwk34wsbq8jk14sqpd4dl92"))))
     (build-system python-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list fuse-3))
+    (inputs (list fuse))
     (propagated-inputs (list python-pytest-trio))
     (home-page "https://github.com/libfuse/pyfuse3")
-    (synopsis "Python bindings FUSE 3")
+    (synopsis "Python bindings to FUSE 3")
     (description "This package provides Python 3 bindings for libfuse 3 with
 async I/O support.")
     (license license:gpl2+)))

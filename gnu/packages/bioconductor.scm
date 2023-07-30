@@ -4723,6 +4723,77 @@ error rates and dispersion - and prior knowledge, e.g.  from variation data
 bases such as COSMIC.")
     (license license:gpl3)))
 
+(define-public r-degreport
+  (package
+    (name "r-degreport")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DEGreport" version))
+              (sha256
+               (base32
+                "15xm1l2qgsyzaw820a1fq5qdzh5pj4dmr1hx6s6b6wm2p02cvvai"))
+              (snippet
+               '(delete-file "docs/jquery.sticky-kit.min.js"))))
+    (properties `((upstream-name . "DEGreport")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "esbuild"
+                     (assoc-ref inputs "js-jquery-sticky-kit")
+                     "--minify"
+                     "--outfile=docs/jquery.sticky-kit.min.js"))))))
+    (propagated-inputs (list r-biobase
+                             r-biocgenerics
+                             r-broom
+                             r-circlize
+                             r-cluster
+                             r-complexheatmap
+                             r-consensusclusterplus
+                             r-cowplot
+                             r-deseq2
+                             r-dplyr
+                             r-edger
+                             r-ggdendro
+                             r-ggplot2
+                             r-ggrepel
+                             r-knitr
+                             r-logging
+                             r-magrittr
+                             r-psych
+                             r-rcolorbrewer
+                             r-reshape
+                             r-rlang
+                             r-s4vectors
+                             r-scales
+                             r-stringr
+                             r-summarizedexperiment
+                             r-tibble
+                             r-tidyr))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("js-jquery-sticky-kit"
+        ,(origin
+           (method url-fetch)
+           (uri "https://raw.githubusercontent.com/leafo/sticky-kit/\
+v1.1.2/jquery.sticky-kit.js")
+           (sha256
+            (base32
+             "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))))
+    (home-page "https://lpantano.github.io/DEGreport/")
+    (synopsis "Report of DEG analysis")
+    (description
+     "This is a package for creating na HTML report of differential expression
+analyses of count data.  It integrates some of the code mentioned in DESeq2
+and @code{edgeR} vignettes, and report a ranked list of genes according to the
+fold changes mean and variability for each selected gene.")
+    (license license:expat)))
+
 (define-public r-delayedarray
   (package
     (name "r-delayedarray")

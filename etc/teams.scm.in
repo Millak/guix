@@ -128,6 +128,17 @@ the haskell-build-system."
               "guix/import/stackage.scm"
               "guix/scripts/import/hackage.scm")))
 
+(define-team qt
+  (team 'qt
+        #:name "Qt team"
+        #:description
+        "The Qt toolkit/library and the qt-build-system,
+as well as some packages using Qt."
+        #:scope (list "gnu/packages/qt.scm"
+                      "guix/build-system/qt.scm"
+                      "guix/build/qt-build-system.scm"
+                      "guix/build/qt-utils.scm")))
+
 (define-team r
   (team 'r
         #:name "R team"
@@ -141,6 +152,20 @@ and the r-build-system."
                       "guix/import/cran.scm"
                       "guix/scripts/import/cran.scm"
                       "tests/cran.scm")))
+
+(define-team telephony
+  (team 'telephony
+        #:name "Telephony team"
+        #:description
+        "Telephony packages and services such as Jami, Linphone, etc."
+        #:scope (list "gnu/build/jami-service.scm"
+                      "gnu/packages/jami.scm"
+                      "gnu/packages/linphone.scm"
+                      "gnu/packages/telephony.scm"
+                      "gnu/services/telephony.scm"
+                      "gnu/tests/data/jami-dummy-account.dat"
+                      "gnu/tests/telephony.scm"
+                      "tests/services/telephony.scm")))
 
 (define-team tex
   (team 'tex
@@ -587,7 +612,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Maxim Cournoyer"
                        "maxim.cournoyer@gmail.com")
-  gnome)
+  gnome qt telephony)
 
 
 (define (find-team name)

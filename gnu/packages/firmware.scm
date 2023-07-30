@@ -489,7 +489,7 @@ provide OpenFirmware functionality on top of an already running system.")
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
     (name name)
-    (version "1.3")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -498,7 +498,7 @@ provide OpenFirmware functionality on top of an already running system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "opensbi" version))
        (sha256
-        (base32 "0shri9jlhi2g464l05vrkzr6v754m868rr4136kq2b86amypmg8f"))))
+        (base32 "01pr7fyg3gcb5pj6d48w2an3m4mfjs9b398x31drqxwqcaz0zn94"))))
     (build-system gnu-build-system)
     (native-inputs
      (append
@@ -518,11 +518,6 @@ provide OpenFirmware functionality on top of an already running system.")
                                 `("CC=gcc"))
                           "FW_PAYLOAD=n"
                           "V=1")
-       ;; Direct __asm__ is used with fence.i instructions, which are not
-       ;; available in the generic riscv ISA.  We need a micro-arch with
-       ;; support for it, and rv64g is the official ISA with support for
-       ;; fence.i.
-       #:configure-flags (list "-march=rv64g")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)

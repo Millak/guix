@@ -455,7 +455,7 @@ Poppler PDF rendering library.")
 (define-public libharu
   (package
     (name "libharu")
-    (version "2.4.2")
+    (version "2.4.3")
     (source
      (origin
        (method git-fetch)
@@ -464,7 +464,7 @@ Poppler PDF rendering library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jwzqvv81zf5f7zssyixhyjirlp9ddwkbaabd177syb1bxljlsdc"))))
+        (base32 "00b89zqf0bxslx03ginzqdjg84zfmblq13p5f4xm0h05j7aq7ixz"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ; No tests

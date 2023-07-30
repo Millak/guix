@@ -24,7 +24,8 @@
   #:use-module (guix deprecation)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
-  #:use-module (gnu services)
+  #:use-module (guix modules)
+  #:use-module ((gnu services) #:hide (delete))
   #:use-module (gnu services admin)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
@@ -143,7 +144,7 @@
 ;; Helpers for deprecated field types, to be removed later.
 (define %lazy-group (make-symbol "%lazy-group"))
 
-(define (%set-user-group user group)
+(define (set-user-group user group)
   (user-account
    (inherit user)
    (group (user-group-name group))))
@@ -184,13 +185,15 @@
 
 (define %mpd-user
   (user-account
-      (name "mpd")
-      (group %lazy-group)
-      (system? #t)
-      (comment "Music Player Daemon (MPD) user")
-      ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data
-      (home-directory "/var/lib/mpd")
-      (shell (file-append shadow "/sbin/nologin"))))
+   (name "mpd")
+   ;; XXX: This is a place-holder to be lazily substituted in (…-accounts)
+   ;; with the value from the 'group' field of <mpd-configuration>.
+   (group %lazy-group)
+   (system? #t)
+   (comment "Music Player Daemon (MPD) user")
+   ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data.
+   (home-directory "/var/lib/mpd")
+   (shell (file-append shadow "/sbin/nologin"))))
 
 (define %mpd-group
   (user-group
@@ -235,10 +238,7 @@
 user-account instead~%"))
          (user-account
           (inherit %mpd-user)
-          (name value)
-          ;; XXX: This is to be lazily substituted in (…-accounts)
-          ;; with the value from 'group'.
-          (group %lazy-group)))
+          (name value)))
         (else
          (configuration-field-error #f 'user value))))
 
@@ -252,6 +252,18 @@ user-group instead~%"))
           (name value)))
         (else
          (configuration-field-error #f 'group value))))
+
+(define (mpd-log-file-sanitizer value)
+  (match value
+    (%unset-value
+     ;; XXX: While leaving the 'sys_log' option out of the mpd.conf file is
+     ;; supposed to cause logging to happen via systemd (elogind provides a
+     ;; compatible interface), this doesn't work (nothing gets logged); use
+     ;; syslog instead.
+     "syslog")
+    ((? string?)
+     value)
+    (_ (configuration-field-error #f 'log-file value))))
 
 ;;;
 
@@ -350,15 +362,18 @@ open. This may be useful for streaming servers, when you don’t want to
 disconnect all listeners even when playback is accidentally stopped.")
 
   (mixer-type
-   (string "none")
-   "This field accepts a string that specifies which mixer should be used
-for this audio output: the @code{hardware} mixer, the @code{software}
-mixer, the @code{null} mixer (allows setting the volume, but with no
-effect; this can be used as a trick to implement an external mixer
-External Mixer) or no mixer (@code{none})."
+   maybe-string
+   "This field accepts a string that specifies which mixer should be used for
+this audio output: the @code{hardware} mixer, the @code{software} mixer, the
+@code{null} mixer (allows setting the volume, but with no effect; this can be
+used as a trick to implement an external mixer External Mixer) or no
+mixer (@code{none}).  When left unspecified, a @code{hardware} mixer is used
+for devices that support it."
    (sanitizer
     (lambda (x)  ; TODO: deprecated, remove me later.
       (cond
+       ((eq? %unset-value x)
+        x)
        ((symbol? x)
         (warning (G_ "symbol value for 'mixer-type' is deprecated, \
 use string instead~%"))
@@ -425,16 +440,17 @@ will depend on."
    empty-serializer)
 
   (log-file
-   (maybe-string "/var/log/mpd/log")
-   "The location of the log file. Set to @code{syslog} to use the
-local syslog daemon or @code{%unset-value} to omit this directive
-from the configuration file.")
+   maybe-string
+   "The location of the log file.  Unless specified, logs are sent to the
+local syslog daemon.  Alternatively, a log file name can be specified, for
+example @file{/var/log/mpd.log}."
+   (sanitizer mpd-log-file-sanitizer))
 
   (log-level
    maybe-string
    "Supress any messages below this threshold.
-Available values: @code{notice}, @code{info}, @code{verbose},
-@code{warning} and @code{error}.")
+The available values, in decreasing order of verbosity, are: @code{verbose},
+@code{info}, @code{notice}, @code{warning} and @code{error}.")
 
   (music-directory
    maybe-string
@@ -456,7 +472,8 @@ Available values: @code{notice}, @code{info}, @code{verbose},
 
   (db-file
    maybe-string
-   "The location of the music database.")
+   "The location of the music database.  When left unspecified,
+@file{~/.cache/db} is used.")
 
   (state-file
    maybe-string
@@ -514,6 +531,11 @@ To use a Unix domain socket, an absolute path can be specified here."
    (serializer (lambda (_ x)
                  (mpd-serialize-list-of-mpd-plugin "archive_plugin" x))))
 
+  (auto-update?
+   maybe-boolean
+   "Whether to automatically update the music database when files are changed
+in the @var{music-directory}.")
+
   (input-cache-size
    maybe-string
    "MPD input cache size."
@@ -563,44 +585,70 @@ appended to the configuration.")
    (serialize-configuration configuration mpd-configuration-fields)))
 
 (define (mpd-log-rotation config)
-  (match-record config <mpd-configuration> (log-file)
-    (log-rotation
-     (files (list log-file))
-     (post-rotate #~(begin
-                      (use-modules (gnu services herd))
-                      (with-shepherd-action 'mpd ('reopen) #f))))))
+  (match-record config <mpd-configuration>
+    (log-file)
+    (if (string=? "syslog" log-file)
+        '()                             ;nothing to do
+        (list (log-rotation
+               (files (list log-file))
+               (post-rotate #~(begin
+                                (use-modules (gnu services herd))
+                                (with-shepherd-action 'mpd ('reopen) #f))))))))
 
 (define (mpd-shepherd-service config)
-  (match-record config <mpd-configuration> (user package shepherd-requirement
-                                            log-file playlist-directory
-                                            db-file state-file sticker-file
-                                            environment-variables)
+  (match-record config <mpd-configuration>
+    (user package shepherd-requirement
+          log-file playlist-directory
+          db-file state-file sticker-file
+          environment-variables)
     (let ((config-file (mpd-serialize-configuration config))
           (username (user-account-name user)))
       (shepherd-service
        (documentation "Run the MPD (Music Player Daemon)")
-       (requirement `(user-processes loopback ,@shepherd-requirement))
+       (requirement `(user-processes loopback
+                                     ,@(if (string=? "syslog" log-file)
+                                           '(syslogd)
+                                           '())
+                                     ,@shepherd-requirement))
        (provision '(mpd))
-       (start #~(begin
-                  (and=> #$(maybe-value log-file)
-                         (compose mkdir-p dirname))
+       (start
+        (with-imported-modules (source-module-closure
+                                '((gnu build activation)))
+          #~(begin
+              (use-modules (gnu build activation))
 
-                  (let ((user (getpw #$username)))
-                    (for-each
-                     (lambda (x)
-                       (when (and x (not (file-exists? x)))
-                         (mkdir-p x)
-                         (chown x (passwd:uid user) (passwd:gid user))))
-                     (list #$(maybe-value playlist-directory)
-                           (and=> #$(maybe-value db-file) dirname)
-                           (and=> #$(maybe-value state-file) dirname)
-                           (and=> #$(maybe-value sticker-file) dirname))))
+              (let ((home #$(user-account-home-directory user)))
+                (let ((user (getpw #$username))
+                      (default-cache-dir (string-append home "/.cache")))
 
-                  (make-forkexec-constructor
-                   (list #$(file-append package "/bin/mpd")
-                         "--no-daemon"
-                         #$config-file)
-                   #:environment-variables '#$environment-variables)))
+                  (define (init-directory directory)
+                    (unless (file-exists? directory)
+                      (mkdir-p/perms directory user #o755)))
+
+                  ;; Define a cache location that can be automatically used
+                  ;; for the database file, in case it hasn't been explicitly
+                  ;; specified.
+                  (for-each
+                   init-directory
+                   (cons default-cache-dir
+                         '#$(map dirname
+                                 ;; XXX: Delete the potential "syslog"
+                                 ;; log-file value, which is not a directory.
+                                 (delete "syslog"
+                                         (filter-map maybe-value
+                                                     (list db-file
+                                                           log-file
+                                                           state-file
+                                                           sticker-file)))))))
+
+                (make-forkexec-constructor
+                 (list #$(file-append package "/bin/mpd") "--no-daemon"
+                       #$config-file)
+                 #:environment-variables
+                 ;; Set HOME so MPD can infer default paths, such as
+                 ;; for the database file.
+                 (cons (string-append "HOME=" home)
+                       '#$environment-variables))))))
        (stop  #~(make-kill-destructor))
        (actions
         (list (shepherd-configuration-action config-file)
@@ -621,7 +669,7 @@ appended to the configuration.")
   (match-record config <mpd-configuration> (user group)
     ;; TODO: Deprecation code, to be removed.
     (let ((user (if (eq? (user-account-group user) %lazy-group)
-                    (%set-user-group user group)
+                    (set-user-group user group)
                     user)))
       (list user group))))
 
@@ -632,10 +680,8 @@ appended to the configuration.")
    (extensions
     (list (service-extension shepherd-root-service-type
                              (compose list mpd-shepherd-service))
-          (service-extension account-service-type
-                             mpd-accounts)
-          (service-extension rottlog-service-type
-                             (compose list mpd-log-rotation))))
+          (service-extension account-service-type mpd-accounts)
+          (service-extension rottlog-service-type mpd-log-rotation)))
    (default-value (mpd-configuration))))
 
 
@@ -660,12 +706,14 @@ appended to the configuration.")
 
 (define %mympd-user
   (user-account
-      (name "mympd")
-      (group %lazy-group)
-      (system? #t)
-      (comment "myMPD user")
-      (home-directory "/var/empty")
-      (shell (file-append shadow "/sbin/nologin"))))
+   (name "mympd")
+   ;; XXX: This is a place-holder to be lazily substituted in 'mympd-accounts'
+   ;; with the value from the 'group' field of <mympd-configuration>.
+   (group %lazy-group)
+   (system? #t)
+   (comment "myMPD user")
+   (home-directory "/var/empty")
+   (shell (file-append shadow "/sbin/nologin"))))
 
 (define %mympd-group
   (user-group
@@ -680,10 +728,7 @@ appended to the configuration.")
 user-account instead~%"))
          (user-account
           (inherit %mympd-user)
-          (name value)
-          ;; XXX: this is to be lazily substituted in (…-accounts)
-          ;; with the value from 'group'.
-          (group %lazy-group)))
+          (name value)))
         (else
          (configuration-field-error #f 'user value))))
 
@@ -697,8 +742,15 @@ user-group instead~%"))
           (name value)))
         (else
          (configuration-field-error #f 'group value))))
-;;;
 
+(define (mympd-log-to-sanitizer value)
+  (match value
+    ('syslog
+     (warning (G_ "syslog symbol value for 'log-to' is deprecated~%"))
+     %unset-value)
+    ((or %unset-value (? string?))
+     value)
+    (_ (configuration-field-error #f 'log-to value))))
 
 ;; XXX: The serialization procedures are insufficient since we require
 ;; access to multiple fields at once.
@@ -763,10 +815,11 @@ will depend on."
    "How much detail to include in logs, possible values: @code{0} to @code{7}.")
 
   (log-to
-   (string-or-symbol "/var/log/mympd/log")
-   "Where to send logs. By default, the service logs to
-@file{/var/log/mympd.log}. The alternative is @code{'syslog}, which
-sends output to the running syslog service under the @samp{daemon} facility."
+   maybe-string
+   "Where to send logs.  Unless specified, the service logs to the local
+syslog service under the @samp{daemon} facility.  Alternatively, a log file
+name can be specified, for example @file{/var/log/mympd.log}."
+   (sanitizer mympd-log-to-sanitizer)
    empty-serializer)
 
   (lualibs
@@ -857,49 +910,58 @@ prompting a pin from the user.")
                                        filename-to-field)))))
 
 (define (mympd-shepherd-service config)
-  (match-record config <mympd-configuration> (package shepherd-requirement
-                                              user work-directory
-                                              cache-directory log-level log-to)
-    (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level))
-          (username (user-account-name user)))
-      (shepherd-service
-       (documentation "Run the myMPD daemon.")
-       (requirement `(loopback user-processes
-                               ,@(if (eq? log-to 'syslog)
-                                     '(syslog)
-                                     '())
-                               ,@shepherd-requirement))
-       (provision '(mympd))
-       (start #~(begin
-                  (let* ((pw (getpwnam #$username))
-                         (uid (passwd:uid pw))
-                         (gid (passwd:gid pw)))
-                    (for-each (lambda (dir)
-                                (mkdir-p dir)
-                                (chown dir uid gid))
-                              (list #$work-directory #$cache-directory)))
+  (match-record config <mympd-configuration>
+    (package shepherd-requirement user work-directory cache-directory
+             log-level log-to)
+    (shepherd-service
+     (documentation "Run the myMPD daemon.")
+     (requirement `(loopback user-processes
+                             ,@(if (maybe-value-set? log-to)
+                                   '()
+                                   '(syslogd))
+                             ,@shepherd-requirement))
+     (provision '(mympd))
+     (start
+      (let ((username (user-account-name user)))
+        (with-imported-modules (source-module-closure
+                                '((gnu build activation)))
+          #~(begin
+              (use-modules (gnu build activation))
 
-                  (make-forkexec-constructor
-                   `(#$(file-append package "/bin/mympd")
-                     "--user" #$username
-                     #$@(if (eq? log-to 'syslog) '("--syslog") '())
-                     "--workdir" #$work-directory
-                     "--cachedir" #$cache-directory)
-                   #:environment-variables (list #$log-level*)
-                   #:log-file #$(if (string? log-to) log-to #f))))
-       (stop #~(make-kill-destructor))))))
+              (let ((user (getpw #$username)))
+
+                (define (init-directory directory)
+                  (unless (file-exists? directory)
+                    (mkdir-p/perms directory user #o755)))
+
+                (for-each init-directory
+                          '#$(map dirname (filter-map maybe-value
+                                                      (list log-to
+                                                            work-directory
+                                                            cache-directory)))))
+
+              (make-forkexec-constructor
+               `(#$(file-append package "/bin/mympd")
+                 "--user" #$username
+                 #$@(if (eq? log-to 'syslog) '("--syslog") '())
+                 "--workdir" #$work-directory
+                 "--cachedir" #$cache-directory)
+               #:environment-variables
+               (list #$(format #f "MYMPD_LOGLEVEL=~a" log-level))
+               #:log-file #$(maybe-value log-to)))))))))
 
 (define (mympd-accounts config)
   (match-record config <mympd-configuration> (user group)
     ;; TODO: Deprecation code, to be removed.
     (let ((user (if (eq? (user-account-group user) %lazy-group)
-                    (%set-user-group user group)
+                    (set-user-group user group)
                     user)))
       (list user group))))
 
 (define (mympd-log-rotation config)
-  (match-record config <mympd-configuration> (log-to)
-    (if (string? log-to)
+  (match-record config <mympd-configuration>
+    (log-to)
+    (if (maybe-value-set? log-to)
         (list (log-rotation
                (files (list log-to))))
         '())))

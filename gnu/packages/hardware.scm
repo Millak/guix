@@ -331,7 +331,7 @@ operability and find drivers.")
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "23.1")
+    (version "23.2")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -342,7 +342,7 @@ operability and find drivers.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sdkkwbl1psqnh6135bmsa3ijrckk1nfz95xqckmd8awmx074ikz"))
+        (base32 "0d9nhhi64d3i9x1bh3ksj0h5z2p4pwa0z88bc0jra9s39nf6q230"))
        (modules
         '((guix build utils)))
        (snippet
@@ -412,8 +412,7 @@ operability and find drivers.")
     (native-inputs
      (list doxygen flex perl pkg-config))
     (inputs
-     `(("libx86emu" ,libx86emu)
-       ("util-linux:lib" ,util-linux "lib")))
+     (list libx86emu `(,util-linux "lib")))
     (synopsis "Hardware information tool")
     (description "HwInfo is used to probe for the hardware present in the system.
 It can be used to generate a system overview log which can be later used for
@@ -589,8 +588,6 @@ human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
 
 (define-public h-client
-  ;; The Python 3 port hasn't yet been integrated into the main branch
-  ;; (currently lives in the 'python3-port' branch).
   (let ((commit "e6c78b16e034ccf78ae9cb4c29268c2f57a30bfc")
         (revision "1"))
     (package
@@ -600,7 +597,7 @@ human-readable format and checks if it conforms to the standards.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/h-client.git")
+               (url "https://git.savannah.gnu.org/git/h-client.git/")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -629,7 +626,7 @@ human-readable format and checks if it conforms to the standards.")
                   ;; Namespace GdkPixbuf not available".
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
                   `("PATH" = (,(dirname (search-input-file
-                                         inputs "sbin/lspci"))
+                                         inputs "bin/lspci"))
                               ,(dirname (search-input-file
                                          inputs "bin/lsusb"))))))))))
       (inputs

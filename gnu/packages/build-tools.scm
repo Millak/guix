@@ -171,14 +171,14 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20230711")
+    (version "20230723")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "1vrg6gclfn34lxyyqf0837hk89n5pf7ms0gmgg1fd87i0cn5908a"))))
+        (base32 "012rzgjmncdla1l43f9wl8v13h7d46zgn28k6djpcgx23fahsan4"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal))
@@ -605,7 +605,7 @@ software.")
                    (display "au BufNewFile,BufRead Tupfile,*.tup setf tup")))
                #t))))))
     (inputs
-     (list fuse-3 pcre
+     (list fuse pcre
            `(,pcre "bin") ; pcre-config
            sqlite))
     (native-inputs

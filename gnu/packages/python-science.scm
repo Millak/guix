@@ -210,6 +210,33 @@ routines such as routines for numerical integration and optimization.")
 genetic variation data.")
     (license license:expat)))
 
+(define-public python-scikit-fem
+  (package
+    (name "python-scikit-fem")
+    (version "8.1.0")
+    (source (origin
+              (method git-fetch)        ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/kinnala/scikit-fem")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zpn0wpsvls5nkrav5a43z77yg9nc09dpyy9ri0dpmpm2ndh2mhs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Examples below require python-autograd and python-pyamg.
+     (list #:test-flags #~(list "-k" "not TestEx32 and not TestEx45")))
+    (propagated-inputs (list python-meshio python-numpy python-scipy))
+    (native-inputs (list python-pytest))
+    (home-page "https://scikit-fem.readthedocs.io/en/latest/")
+    (synopsis "Library for performing finite element assembly")
+    (description
+     "@code{scikit-fem} is a library for performing finite element assembly.
+Its main purpose is the transformation of bilinear forms into sparse matrices
+and linear forms into vectors.")
+    (license license:bsd-3)))
+
 (define-public python-scikit-fuzzy
   (package
     (name "python-scikit-fuzzy")

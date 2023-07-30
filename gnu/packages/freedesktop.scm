@@ -1317,7 +1317,7 @@ fullscreen) or other display servers.")
 (define-public wayland-protocols
   (package
     (name "wayland-protocols")
-    (version "1.29")
+    (version "1.32")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.freedesktop.org/wayland/"
@@ -1325,7 +1325,7 @@ fullscreen) or other display servers.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1n4yzyjbp5fng8pvckandymvwc47mkwyi4pyvr6p0dn7bavrlpp2"))))
+                "04dsn79409mryxs6maq9kfhca97gvl3pr1ggjnv9d0hc6jfpjnbl"))))
     (build-system meson-build-system)
     (inputs
      (list wayland))
@@ -2906,7 +2906,7 @@ compatible with the well-known scripts of the same name.")
        ("dbus" ,dbus)
        ("geoclue" ,geoclue)
        ("pipewire" ,pipewire)
-       ("fuse" ,fuse-3)))
+       ("fuse" ,fuse)))
     (arguments
      `(#:configure-flags
        (list "--with-systemd=no")

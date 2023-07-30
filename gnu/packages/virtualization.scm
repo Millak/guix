@@ -28,6 +28,7 @@
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,6 +97,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -160,15 +162,14 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "7.2.1")
+    (version "7.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32
-         "0fypm8blv0la17vvlx6h38nhq2rpavflr9i9zsjl6ylxryd6k1cc"))
+        (base32 "0795l8xsy67fnh4mbdz40jm880iisd7q6d7ly6nfzpac3gjr8zyf"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-aarch64-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"))
@@ -1127,6 +1128,57 @@ Guix to build virtual machines.")
 Debian or a derivative using @command{debootstrap}.")
     (license license:gpl2+)))
 
+(define-public rvvm
+  (package
+    (name "rvvm")
+    (version "0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/LekKit/RVVM")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ldabcrmpa044bahpqa6ymwbhhwy69slh77f0m3421sq6j50l06p"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       ;; See src/rvjit/rvjit.h for list of architectures.
+       #~(#$@(if (or (target-x86?)
+                     (target-arm?))
+               #~'()
+               #~(list "-DRVVM_USE_JIT=NO")))
+       #:modules `((srfi srfi-26)
+                  (guix build utils)
+                  (guix build cmake-build-system))
+       #:phases
+       #~(modify-phases %standard-phases
+           ;; Install phase inspired by the Makefile.
+           (replace 'install
+             (lambda _
+               (let ((src "../source/src/")
+                     (incl (string-append #$output "/include/rvvm/")))
+                 (install-file "rvvm" (string-append #$output "/bin"))
+                 (for-each
+                   (cut install-file <> (string-append #$output "/lib"))
+                   (find-files "." "\\.(so|a)$"))
+                 (install-file (string-append src "rvvmlib.h") incl)
+                 (for-each
+                   (cut install-file <> (string-append incl "devices"))
+                   (find-files (string-append src "devices") "\\.h$"))))))
+       #:tests? #f))    ; no tests
+    (home-page "https://github.com/LekKit/RVVM")
+    (synopsis "RISC-V virtual machine")
+    (description
+     "RVVM is a RISC-V CPU and system software implementation written in C.  It
+supports the entire RV64GC ISA, and it passes compliance tests for both RV64 and
+RV32.  OpenSBI, U-Boot, and custom firmwares boot and execute properly.  It is
+capable of running Linux, FreeBSD, OpenBSD, Haiku, and other OSes.  Furthermore,
+it emulates a variety of hardware and peripherals.")
+    (license (list license:gpl3+ license:mpl2.0))))
+
 (define-public spike
   (package
     (name "spike")
@@ -1259,23 +1311,25 @@ manage system or application containers.")
 (define-public lxcfs
   (package
     (name "lxcfs")
-    (version "4.0.11")
+    (version "5.0.4")
     (home-page "https://github.com/lxc/lxcfs")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "lxcfs-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "02cgzh97cgxh9iyf7gkn5ikdc0sfzqfjj6al0hikdf9rbwcscqwd"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url home-page)
+                           (commit (string-append "lxcfs-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15cc7kvnln4qqlv22hprfzmq89jbkx7yra730hap8wkvamn33sxy"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:configure-flags '("--localstatedir=/var")))
+     (list
+      #:configure-flags
+      #~(list "-Dinit-script=sysvinit"))) ; no ‘none’ option
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list help2man pkg-config python python-jinja2))
     (inputs
      (list fuse))
-    (build-system gnu-build-system)
     (synopsis "FUSE-based file system for LXC")
     (description "LXCFS is a small FUSE file system written with the intention
 of making Linux containers feel more like a virtual machine.
@@ -1448,7 +1502,7 @@ pretty simple, REST API.")
     (inputs
      (list acl
            attr
-           fuse
+           fuse-2
            libxml2
            eudev
            libpciaccess

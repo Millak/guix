@@ -352,7 +352,7 @@ Chinese pinyin input methods.")
                (base32
                 "16vd0k8wm13s38869jqs3dnwmjvywgn0snnpyi41m28binhlssf8"))
               (patches (search-patches "ibus-anthy-fix-tests.patch"))))
-    (build-system gnu-build-system)
+    (build-system glib-or-gtk-build-system)
     (arguments
      (list
       ;; The test suite hangs (see:
@@ -360,7 +360,10 @@ Chinese pinyin input methods.")
       #:tests? #f
       #:configure-flags
       ;; Use absolute exec path in the anthy.xml.
-      #~(list (string-append "--libexecdir=" #$output "/libexec"))
+      #~(list (string-append "--libexecdir=" #$output "/libexec")
+              (string-append
+               "--with-anthy-zipcode="
+               (assoc-ref %build-inputs "anthy") "/share/anthy/zipcode.t"))
       ;; The test suite fails (see:
       ;; https://github.com/ibus/ibus-anthy/issues/28).
       #:phases
@@ -380,6 +383,11 @@ Chinese pinyin input methods.")
               (substitute* "tests/test-build.sh"
                 (("GI_TYPELIB_PATH=\\$BUILDDIR/../gir" all)
                  (string-append all ":$GI_TYPELIB_PATH")))))
+          (add-before 'configure 'pre-configure
+            (lambda _
+              ;; We need generate new _config.py with correct PKGDATADIR.
+              (delete-file "setup/python3/_config.py")
+              (delete-file "engine/python3/_config.py")))
           (add-before 'check 'prepare-for-tests
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?

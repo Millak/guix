@@ -708,11 +708,7 @@ ca-certificates.crt file in the system profile."
      (shepherd-service
       (documentation "Guix Data Service process jobs")
       (provision '(guix-data-service-process-jobs))
-      (requirement '(postgres
-                     networking
-                     ;; Require guix-data-service, as that the database
-                     ;; migrations are handled through this service
-                     guix-data-service))
+      (requirement '(postgres networking))
       (start #~(make-forkexec-constructor
                 (list
                  #$(file-append package

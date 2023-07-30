@@ -1291,7 +1291,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      #:extra-version "arm64-generic"
                      #:extra-options
                      (append
-                      `(;; needed to fix the RTC on rockchip platforms
+                      `(;; Provide support for ath9k wireless
+                        ("CONFIG_ATH9K_HTC" . m)
+                        ;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t)
                         ;; Pinebook display, battery, charger and usb
                         ("CONFIG_DRM_ANALOGIX_ANX6345" . m)
@@ -2307,7 +2309,7 @@ by Robert Shea and Robert Anton Wilson.")
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f)) ;no test suite
-    (inputs (list fuse mbedtls-apache))
+    (inputs (list fuse-2 mbedtls-apache))
     (synopsis "FUSE driver to read/write Windows BitLocker drives")
     (description
      "This package provides means to to read BitLocker encrypted
@@ -3693,24 +3695,97 @@ or kill them altogether.")
 (define-public fuse
   (package
     (name "fuse")
-    (version "2.9.9")
+    (version "3.10.5")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/libfuse/libfuse/releases/"
-                                  "download/fuse-" version
-                                  "/fuse-" version ".tar.gz"))
+              (uri
+               (string-append "https://github.com/libfuse/libfuse/releases/"
+                              "download/fuse-" version
+                              "/fuse-" version ".tar.xz"))
               (sha256
                (base32
-                "1ddlq6kzxilccgbvxjfx80jx6kamgw4sv49phks2zhlcc1frvrnh"))
-              (patches (search-patches "fuse-overlapping-headers.patch"
-                                       "fuse-glibc-2.34.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake gettext-minimal libtool))
+                "0rlnnsiw614qcmgy8xz67044gqc1pbvvf2yxjv44lh27bm487qmj"))))
+    (build-system meson-build-system)
     (inputs
      (list bash-minimal util-linux))
     (arguments
-     '(#:configure-flags (list (string-append "MOUNT_FUSE_PATH="
+     `(#:configure-flags
+       ,#~(list
+           (string-append "-Dudevrulesdir=" #$output "/udev/rules.d")
+           "-Duseroot=false")
+       #:tests? #f
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-after 'unpack 'set-file-names
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; libfuse calls out to mount(8) and umount(8).  Make sure
+                ;; it refers to the right ones.
+                (substitute* '("lib/mount_util.c")
+                  (("/bin/(u?)mount" _ maybe-u)
+                   (search-input-file inputs
+                                      (string-append "bin/"
+                                                     maybe-u "mount"))))
+                (substitute* '("util/mount.fuse.c")
+                  (("/bin/sh")
+                   (search-input-file inputs "/bin/sh")))
+
+                ;; This hack leads libfuse to search for 'fusermount' in
+                ;; $PATH, where it may find a setuid-root binary, instead of
+                ;; trying solely $out/sbin/fusermount and failing because
+                ;; it's not setuid.
+                (substitute* "lib/meson.build"
+                  (("-DFUSERMOUNT_DIR=[[:graph:]]+")
+                   "-DFUSERMOUNT_DIR=\"/var/empty\"'"))))
+            (add-after 'unpack 'fix-install
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* '("util/meson.build")
+                  (("install_helper.sh") "true"))
+                (substitute* '("util/meson.build")
+                  (("fuseconf_path = .*")
+                   "fuseconf_path = '/etc/fuse.conf'"))))
+            (add-before 'configure 'set-paths
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let ((dummy-init.d
+                       (string-append (getcwd) "/etc/init.d")))
+                  (setenv "MOUNT_FUSE_PATH"
+                          (string-append #$output "/sbin"))
+                  (setenv "UDEV_RULES_PATH"
+                          (string-append #$output
+                                         "/lib/udev/rules.d"))))))))
+    (supported-systems (delete "i586-gnu" %supported-systems))
+    (home-page "https://github.com/libfuse/libfuse")
+    (synopsis "Support file systems implemented in user space")
+    (description
+     "As a consequence of its monolithic design, file system code for Linux
+normally goes into the kernel itself---which is not only a robustness issue,
+but also an impediment to system extensibility.  FUSE, for \"file systems in
+user space\", is a kernel module and user-space library that tries to address
+part of this problem by allowing users to run file system implementations as
+user-space processes.")
+    (license (list license:lgpl2.1      ; library
+                   license:gpl2+))))    ; command-line utilities
+
+(define-public fuse-2
+  (package
+    (inherit fuse)
+    (name "fuse")
+    (version "2.9.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/libfuse/libfuse/releases/"
+                           "download/fuse-" version
+                           "/fuse-" version ".tar.gz"))
+       (sha256
+        (base32 "1ddlq6kzxilccgbvxjfx80jx6kamgw4sv49phks2zhlcc1frvrnh"))
+       (patches (search-patches "fuse-overlapping-headers.patch"
+                                "fuse-glibc-2.34.patch"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake gettext-minimal libtool))
+    (arguments
+     '(#:tests? #t
+       #:configure-flags (list (string-append "MOUNT_FUSE_PATH="
                                               (assoc-ref %outputs "out")
                                               "/sbin")
                                (string-append "INIT_D_PATH="
@@ -3746,84 +3821,12 @@ or kill them altogether.")
              ;; it's not setuid.
              (substitute* "lib/Makefile"
                (("-DFUSERMOUNT_DIR=[[:graph:]]+")
-                "-DFUSERMOUNT_DIR=\\\"/var/empty\\\"")))))))
-    (supported-systems (delete "i586-gnu" %supported-systems))
-    (home-page "https://github.com/libfuse/libfuse")
-    (synopsis "Support file systems implemented in user space")
-    (description
-     "As a consequence of its monolithic design, file system code for Linux
-normally goes into the kernel itself---which is not only a robustness issue,
-but also an impediment to system extensibility.  FUSE, for \"file systems in
-user space\", is a kernel module and user-space library that tries to address
-part of this problem by allowing users to run file system implementations as
-user-space processes.")
-    (license (list license:lgpl2.1                ;library
-                   license:gpl2+))))              ;command-line utilities
-
-(define-public fuse-3
-  (package
-    (inherit fuse)
-    (name "fuse")
-    (version "3.10.5")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://github.com/libfuse/libfuse/releases/"
-                              "download/fuse-" version
-                              "/fuse-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0rlnnsiw614qcmgy8xz67044gqc1pbvvf2yxjv44lh27bm487qmj"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:configure-flags
-       ,#~(list
-           (string-append "-Dudevrulesdir=" #$output "/udev/rules.d")
-           "-Duseroot=false")
-       #:tests? #f
-       #:phases
-       ,#~(modify-phases %standard-phases
-            (add-after 'unpack 'set-file-names
-              (lambda* (#:key inputs #:allow-other-keys)
-                ;; libfuse calls out to mount(8) and umount(8).  Make sure
-                ;; it refers to the right ones.
-                (substitute* '("lib/mount_util.c")
-                  (("/bin/(u?)mount" _ maybe-u)
-                   (search-input-file inputs
-                                      (string-append "bin/"
-                                                     maybe-u "mount"))))
-                (substitute* '("util/mount.fuse.c")
-                  (("/bin/sh")
-                   (search-input-file inputs "/bin/sh")))
-
-                ;; This hack leads libfuse to search for 'fusermount' in
-                ;; $PATH, where it may find a setuid-root binary, instead of
-                ;; trying solely $out/sbin/fusermount and failing because
-                ;; it's not setuid.
-                (substitute* "lib/meson.build"
-                  (("-DFUSERMOUNT_DIR=[[:graph:]]+")
-                   "-DFUSERMOUNT_DIR=\"/var/empty\"'"))))
-            (add-after 'unpack 'fix-install
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* '("util/meson.build")
-                  (("install_helper.sh") "true"))
-               (substitute* '("util/meson.build")
-                  (("fuseconf_path = .*")
-                   "fuseconf_path = '/etc/fuse.conf'"))))
-            (add-before 'configure 'set-paths
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let ((dummy-init.d
-                       (string-append (getcwd) "/etc/init.d")))
-                  (setenv "MOUNT_FUSE_PATH"
-                          (string-append #$output "/sbin"))
-                  (setenv "UDEV_RULES_PATH"
-                          (string-append #$output
-                                         "/lib/udev/rules.d"))))))))))
+                "-DFUSERMOUNT_DIR=\\\"/var/empty\\\"")))))))))
 
 (define-public unionfs-fuse
   (package
     (name "unionfs-fuse")
-    (version "2.2")
+    (version "3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3832,15 +3835,26 @@ user-space processes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yigh8z1q6iq6yjyq7kl7vpbpjnxjld32apvjaw2bl44pqqg56hh"))))
+                "1wl5m5qnwf3s1792xphr35pb80sx8ybaqi3n3ddi5vvk3qjc4iws"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list python))
-    (inputs (list fuse))
     (arguments
-     ;; The tests were never actually run ("collected 0 items"), but in recent
-     ;; versions of pytest that causes an error.
-     '(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            ;; The epitome of ‘I tried’: run the 2 trivial tests that don't rely
+            ;; on the fuse kernel module being loaded.  All others would fail.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "../source/test_all.py" "-k" "test_help")))))))
+    (native-inputs
+     (list pkg-config
+
+           ;; Only for the test ‘suite’.
+           python
+           python-pytest))
+    (inputs
+     (list fuse))
     (home-page "https://github.com/rpodgorny/unionfs-fuse")
     (synopsis "User-space union file system")
     (description
@@ -3853,55 +3867,55 @@ UnionFS-FUSE additionally supports copy-on-write.")
 (define fuse-static
   (package (inherit fuse)
     (name "fuse-static")
-    (source (origin (inherit (package-source fuse))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Normally libfuse invokes mount(8) so that /etc/mtab is
-                  ;; updated.  Change calls to 'mtab_needs_update' to 0 so
-                  ;; that it doesn't do that, allowing us to remove the
-                  ;; dependency on util-linux (something that is useful in
-                  ;; initrds.)
-                  (substitute* '("lib/mount_util.c"
-                                 "util/mount_util.c")
-                    (("mtab_needs_update[[:blank:]]*\\([a-z_]+\\)")
-                     "0")
-                    (("/bin/")
-                     ""))
-                  #t))))))
+    (source
+     (origin
+       (inherit (package-source fuse))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Normally libfuse invokes mount(8) so that /etc/mtab is updated.
+            ;; Change calls to 'mtab_needs_update' to 0 so that it doesn't do
+            ;; that, allowing us to remove the dependency on util-linux
+            ;; (something that is useful in initrds.)
+            (substitute* "lib/mount_util.c"
+              (("mtab_needs_update[[:blank:]]*\\([a-z_]+\\)") "0")
+              (("/bin/") ""))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments fuse)
+       ((#:configure-flags flags '())
+        #~(cons "-Ddefault_library=static"
+                #$flags))))))
 
 (define-public unionfs-fuse/static
   (package (inherit unionfs-fuse)
     (synopsis "User-space union file system (statically linked)")
     (name (string-append (package-name unionfs-fuse) "-static"))
-    (source (origin (inherit (package-source unionfs-fuse))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Add -ldl to the libraries, because libfuse.a needs that.
-                  (substitute* "src/CMakeLists.txt"
-                    (("target_link_libraries(.*)\\)" _ libs)
-                     (string-append "target_link_libraries"
-                                    libs " dl)")))
-                  #t))))
+    (source
+     (origin
+       (inherit (package-source unionfs-fuse))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Add -ldl to the libraries, because libfuse.a needs that.
+            (substitute* "src/CMakeLists.txt"
+              (("target_link_libraries(.*)\\)" _ libs)
+               (string-append "target_link_libraries"
+                              libs " dl)")))))))
     (arguments
-     '(#:tests? #f
-       #:configure-flags '("-DCMAKE_EXE_LINKER_FLAGS=-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (exe (string-append out "/bin/unionfs")))
-               ;; By default, 'unionfs' keeps references to
-               ;; $glibc/share/locale and similar stuff.  Remove them.
-               (remove-store-references exe)
-
-               ;; 'unionfsctl' has references to glibc as well.  Since
-               ;; we don't need it, remove it.
-               (delete-file (string-append out "/bin/unionfsctl"))
-               #t))))))
-    (inputs `(("fuse" ,fuse-static)))))
+     (substitute-keyword-arguments (package-arguments unionfs-fuse)
+       ((#:configure-flags flags #~'())
+        #~(cons "-DCMAKE_EXE_LINKER_FLAGS=-static" #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'post-install
+              (lambda _
+                ;; By default, 'unionfs' keeps references to
+                ;; $glibc/share/locale and similar stuff.  Remove them.
+                (remove-store-references (string-append #$output "/bin/unionfs"))
+                ;; 'unionfsctl' has references to glibc as well.  Since
+                ;; we don't need it, remove it.
+                (delete-file (string-append #$output "/bin/unionfsctl"))))))))
+    (inputs (list fuse-static))))
 
 (define-public sshfs
   (package
@@ -3920,7 +3934,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
      ;; XXX: tests are skipped: FUSE kernel module does not seem to be loaded
      '(#:tests? #f))
     (inputs
-     (list fuse-3 glib))
+     (list fuse glib))
     (native-inputs
      (list pkg-config
            ;; man page
@@ -3951,7 +3965,7 @@ file system is as easy as logging into the server with an SSH client.")
        (sha256
         (base32 "1cy5b6qril9c3ry6fv7ir87s8iyy5vxxmbyx90dm86fbra0vjaf5"))))
     (build-system gnu-build-system)
-    (inputs (list fuse libarchive))
+    (inputs (list fuse-2 libarchive))
     (native-inputs (list pkg-config))
     (home-page "https://www.cybernoia.de/software/archivemount.html")
     (synopsis "Tool for mounting archive files with FUSE")
@@ -4455,7 +4469,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
 (define-public lvm2
   (package
     (name "lvm2")
-    (version "2.03.11")
+    (version "2.03.21")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/ftp/lvm2/LVM2."
@@ -4464,7 +4478,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
                                         version ".tgz")))
               (sha256
                (base32
-                "1m4xpda8vbyd89ca0w8nacvnl4j34yzsa625gn990fb5sh84ab44"))
+                "0zksqsz8y47kh6vq0ykkgxf19il4wxfn234n6zf8m691sqhij9hy"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -4475,9 +4489,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
                     (("^confdir = .*$")
                      "confdir = @sysconfdir@\n")
                     (("DEFAULT_SYS_DIR = @DEFAULT_SYS_DIR@")
-                     "DEFAULT_SYS_DIR = @sysconfdir@"))
-                  #t))
-              (patches (search-patches "lvm2-static-link.patch"))))
+                     "DEFAULT_SYS_DIR = @sysconfdir@"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list config
@@ -4503,8 +4515,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
              (setenv "SHELL" (which "sh"))
 
              ;; Replace /bin/sh with the right file name.
-             (patch-makefile-SHELL "make.tmpl")
-             #t)))
+             (patch-makefile-SHELL "make.tmpl"))))
 
        #:configure-flags (list (string-append "--sysconfdir="
                                               (assoc-ref %outputs "out")
@@ -5914,7 +5925,7 @@ is flexible, efficient and uses a modular implementation.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse))
+     (list fuse-2))
     (home-page "https://github.com/relan/exfat")
     (synopsis "Mount exFAT file systems")
     (description
@@ -5937,7 +5948,7 @@ write access to exFAT devices.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse glib zlib))
+     (list fuse-2 glib zlib))
     (home-page "https://sourceforge.net/projects/fuseiso/")
     (synopsis "Mount ISO file system images")
     (description
@@ -6003,7 +6014,7 @@ and copy/paste text in the console and in xterm.")
 (define-public btrfs-progs
   (package
     (name "btrfs-progs")
-    (version "6.3.2")
+    (version "6.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
@@ -6011,7 +6022,7 @@ and copy/paste text in the console and in xterm.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "093wy9dsvp22nwlsk203l91h3yzkccvzdw58n3sicy41sncn3wm9"))))
+                "0vmrjn3dcmka9rj5b81ag9jwprzyicx05h1ccj0x0w02fqah1qsb"))))
     (build-system gnu-build-system)
     (outputs '("out" "static")) ;static versions of the binaries in "out"
     (arguments
@@ -6612,7 +6623,7 @@ invocations of itself.")
                              "@sbindir@"))))))
     (build-system gnu-build-system)
     (inputs (list util-linux ; libuuid
-                  fuse))
+                  fuse-2))
     (native-inputs (list pkg-config))
     (arguments
      '(#:configure-flags (list "--disable-static"
@@ -8473,14 +8484,14 @@ NexGen, Rise, and SiS CPUs.")
           "1pm68agkhrwgrplrfrnbwdcvx5lrivdmqw8pb5gdmm3xppnryji1"))))
     (build-system gnu-build-system)
     (inputs
-     (list file fuse libmtp))
+     (list file fuse-2 libmtp))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/JasonFerrara/jmtpfs")
     (synopsis "Use a FUSE file system to access data over MTP")
-    (description "jmtpfs uses FUSE (file system in userspace) to provide access
-to data over the Media Transfer Protocol (MTP).  Unprivileged users can mount
-the MTP device as a file system.")
+    (description "jmtpfs uses @acronym{FUSE, File system in USEr space} to
+provide access to data over @acronym{MTP, the Media Transfer Protocol}.
+Unprivileged users can mount the MTP device as a file system.")
     (license license:gpl3)))
 
 (define-public procenv
@@ -9390,7 +9401,7 @@ tools for managing PipeWire.")
 (define-public ell
   (package
     (name "ell")
-    (version "0.56")
+    (version "0.57")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9399,7 +9410,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "084mc9377k2a61wyqnfnsgfrdvv1rinn9wzw8l8crip0hlikn938"))))
+                "1vpzz0z6q0d3h41aqajaw0dlpkdnmjcppmlwbb558hvj40q5dpzm"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests launch dbus-daemon instances that all try to bind to

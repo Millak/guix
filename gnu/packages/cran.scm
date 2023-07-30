@@ -1251,6 +1251,31 @@ quickly isolate key differences makes understanding test failures much
 easier.")
     (license license:expat)))
 
+(define-public r-wheatmap
+  (package
+    (name "r-wheatmap")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "wheatmap" version))
+              (sha256
+               (base32
+                "064idlrnb85xxav39gp3n854fic6514khvazrf5d0x48crpzyvdp"))))
+    (properties `((upstream-name . "wheatmap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-colorspace r-rcolorbrewer))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zwdzwd/wheatmap")
+    (synopsis "Incrementally build complex plots using natural semantics")
+    (description
+     "This package lets you build complex plots, heatmaps in particular, using
+natural semantics.  Bigger plots can be assembled using directives such as
+@code{LeftOf}, @code{RightOf}, @code{TopOf}, and @code{Beneath} and more.
+Other features include clustering, dendrograms and integration with ggplot2
+generated grid objects.  This package is particularly designed for
+bioinformaticians to assemble complex plots for publication.")
+    (license license:gpl3)))
+
 (define-public r-rticles
   (package
     (name "r-rticles")
@@ -21284,6 +21309,28 @@ such as BEDTools, BEDOPS and Tabix.  These tools offer scalable and efficient
 utilities to perform genome arithmetic e.g indexing, formatting and merging.
 The bedr package's API enhances access to these tools as well as offers
 additional utilities for genomic regions processing.")
+    (license license:gpl2)))
+
+(define-public r-setrng
+  (package
+    (name "r-setrng")
+    (version "2022.4-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "setRNG" version))
+              (sha256
+               (base32
+                "09089vr5x8snwxh38kdhgpjl3jl7zrk056f6f9a2jg5lsrmnxh31"))))
+    (properties `((upstream-name . "setRNG")))
+    (build-system r-build-system)
+    (home-page "https://distr.r-forge.r-project.org/")
+    (synopsis "Set (normal) random number generator and seed")
+    (description
+     "This package provides utilities to help set and record the setting of
+the seed and the uniform and normal generators used when a random experiment
+is run.  The utilities can be used in other functions that do random
+experiments to simplify recording and/or setting all the necessary information
+for reproducibility.  See the vignette and reference manual for examples.")
     (license license:gpl2)))
 
 (define-public r-sets
