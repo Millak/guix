@@ -4408,6 +4408,30 @@ or it encounters a repeated remainder. @code{\\intlongdivision} stops when the
 dividend stops (though the dividend doesn't have to be an integer).")
     (license license:lppl)))
 
+(define-public texlive-lpform
+  (package
+    (name "texlive-lpform")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/lpform/" "tex/generic/lpform/")
+             (base32
+              "13pg4wb3z8xhmf9wry4rvdzhg0ydhpbdp6vxjk7g91p6s3lvqa51")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lpform")
+    (synopsis
+     "Typesetting linear programming formulations and sets of equations")
+    (description
+     "The package is designed to aid the author writing linear programming
+formulations, one restriction at a time.  With the package, one can easily
+label equations, formulations can span multiple pages and several elements of
+the layout (such as spacing, texts and equation tags) are also customizable.
+Besides linear programming formulations, this package can also be used to
+display any series of aligned equations with easy labeling/referencing and
+other customization options.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
