@@ -1815,6 +1815,26 @@ out in a single macro call.  A variant of the operation is provided, that
 retains outer braces.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bitpattern
+  (package
+    (name "texlive-bitpattern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bitpattern/"
+                   "source/latex/bitpattern/"
+                   "tex/latex/bitpattern/")
+             (base32
+              "00f423jran7qqg9fwy3p7w1lhi20cxzlvn4hzsrz5pwd87bmvxxb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bitpattern")
+    (synopsis "Typeset bit pattern diagrams")
+    (description
+     "This package provides a package to typeset bit pattern diagrams such as those
+used to describe hardware, data format or protocols.")
+    (license license:lppl)))
+
 (define-public texlive-borceux
   (package
     (name "texlive-borceux")
