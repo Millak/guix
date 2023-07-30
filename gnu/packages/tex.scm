@@ -6306,6 +6306,25 @@ significance in statistical presentations.  An updated, but incompatible,
 version of the package is available: @code{statex2}.")
     (license license:lppl)))
 
+(define-public texlive-statex2
+  (package
+    (name "texlive-statex2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/statex2/" "tex/latex/statex2/")
+             (base32
+              "1g0ymd0l0cvqn61vjbncrg8cr8wkaw7bywnk85c82rsl0wsc89xk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/statex2")
+    (synopsis "Statistics style")
+    (description
+     "The package defines many macros for items of significance in statistical
+presentations.  It represents a syntax-incompatible upgrade of
+@code{statex}.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
