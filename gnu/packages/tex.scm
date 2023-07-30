@@ -4132,6 +4132,40 @@ The package also supports fence scaling and ensures that the enclosing fences
 will end up having the proper closing and opening types.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ionumbers
+  (package
+    (name "texlive-ionumbers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ionumbers/"
+                   "source/latex/ionumbers/"
+                   "tex/latex/ionumbers/")
+             (base32
+              "0rbm4z2qg1ifwslxdsgzdcni701s3q32i2iaqldm7g7jinn8bivn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ionumbers")
+    (synopsis "Restyle numbers in maths mode")
+    (description
+     "@code{ionumbers} stands for input/output numbers.  The package restyles
+numbers in maths mode.  If a number in the input file is written, e.g., as
+@samp{$3,231.44$} as commonly used in English texts, the package is able to
+restyle it to be output as @samp{$3\\,231{,}44$} as commonly used in German
+texts (and vice versa).  This may be useful, for example, if you have a large
+table and want to include it in texts with different output conventions
+without the need to change the table.
+
+The package can also automatically group digits left of the decimal separator
+(thousands) and right of the decimal separator (thousandths) in triplets
+without the need of specifing commas (English) or points (German) as
+separators.  E.g., the input @samp{$1234.567890$} can be output as
+@samp{$1\\,234.\\,567\\,890$}.
+
+Finally, an @emph{e} starts the exponent of the number.  For example,
+@samp{$21e6$} may be output as @samp{$26\\times10\\,^@{6@}$}.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
