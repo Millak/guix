@@ -1975,6 +1975,29 @@ those long IUPAC compound names, and some chemical idioms.  It also supports
 the labelling of compounds and reference to labelled compounds.")
     (license license:lppl)))
 
+(define-public texlive-bropd
+  (package
+    (name "texlive-bropd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bropd/" "source/latex/bropd/"
+                   "tex/latex/bropd/")
+             (base32
+              "1cyyadfvrcym4vvxl9p9zb88692m0578nqljip12xxahb4srcyb9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list (texlive-updmap.cfg (list texlive-hypdoc))))
+    (home-page "https://ctan.org/pkg/bropd")
+    (synopsis "Simplified brackets and differentials in LaTeX")
+    (description
+     "The package simplifies the process of writing differential operators and
+brackets in LaTeX.  The commands facilitate the easy manipulation of equations
+involving brackets and allow partial differentials to be expressed in an
+alternate form.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-c-pascal
   (package
     (name "texlive-c-pascal")
