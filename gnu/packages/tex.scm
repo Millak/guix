@@ -5668,6 +5668,25 @@ and highlighting, and there is functionality for typesetting common syntactic
 elements such as keywords, identifiers, and comments.")
     (license license:expat)))
 
+(define-public texlive-pseudocode
+  (package
+    (name "texlive-pseudocode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pseudocode/"
+                   "tex/latex/pseudocode/")
+             (base32
+              "180m5yja3wkdnpfz0qx9m031qmhqyjjjgxynm3v4y8fz9jz7vidq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pseudocode")
+    (synopsis "LaTeX environment for specifying algorithms in a natural way")
+    (description
+     "This package provides the environment @code{pseudocode} for describing
+algorithms in a natural manner.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
