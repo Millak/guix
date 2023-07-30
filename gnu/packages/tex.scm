@@ -6287,6 +6287,25 @@ engineering, those small structures are a key part for teaching.  This package
 permits to create such 2D and 3D structures in a very fast and simple way.")
     (license (list license:gpl3+ license:lppl1.3+))))
 
+(define-public texlive-statex
+  (package
+    (name "texlive-statex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/statex/" "tex/latex/statex/")
+             (base32
+              "02zd9877kryv749lyxlswdkdfbgc4i1d2vvbkaplxq81njxipxry")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/statex")
+    (synopsis "Statistics style")
+    (description
+     "This package provides a package defining many macros for items of
+significance in statistical presentations.  An updated, but incompatible,
+version of the package is available: @code{statex2}.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
