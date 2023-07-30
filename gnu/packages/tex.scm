@@ -4751,6 +4751,30 @@ styles that ease the declaration of memory graphs.  It is intended for graphs
 that represent the memory of a computer program during its execution.")
     (license license:lppl1.3+)))
 
+(define-public texlive-messagepassing
+  (package
+    (name "texlive-messagepassing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/messagepassing/"
+                   "source/latex/messagepassing/"
+                   "tex/latex/messagepassing/")
+             (base32
+              "0m0ig8rhg7y1gv59cg4ask7n24i6k3jwhci2didh87vh598jg9x1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/messagepassing")
+    (synopsis "Draw diagrams to represent communication protocols")
+    (description
+     "This package provides an environment to easily draw diagrams to
+represent communication protocols using message passing among processes.
+Processes are represented as horizontal or vertical lines, and communications
+as arrows between lines.  The package also provides multiple macros to
+decorate those diagrams, for instance to annotate the diagram, to add crashes
+to the processes, checkpoints, ...")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
