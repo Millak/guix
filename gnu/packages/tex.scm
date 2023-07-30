@@ -2402,6 +2402,27 @@ or @command{rsvg-convert} (for SVG -> PDF/EPS conversion), @command{pdfcrop}
 or @command{ps2eps} (optional; for cropping large margins of PDF/EPS).")
     (license license:bsd-2)))
 
+(define-public texlive-chemplants
+  (package
+    (name "texlive-chemplants")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemplants/"
+                   "tex/latex/chemplants/")
+             (base32
+              "164g4wy0x7jqf5l7hzb05ir7yz130bw34b7pwr8bp4vcyp4wy3ai")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemplants")
+    (synopsis "Symbology to draw chemical plants with TikZ")
+    (description
+     "This package offers tools to draw simple or barely complex schemes of
+chemical processes.  The package defines several standard symbols and styles
+to draw process units and streams.  The guiding light of the package is the
+UNICHIM regulation.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
