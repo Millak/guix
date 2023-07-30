@@ -6033,6 +6033,24 @@ a @code{sesamanuelTIKZ} style to be used for TikZ pictures in the Sesamath
 book.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sfg
+  (package
+    (name "texlive-sfg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sfg/" "tex/latex/sfg/")
+             (base32
+              "0bckiy5ahbbv69fdam1k74n5f7ikhmc3d08hh9770w4aqs6k017b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sfg")
+    (synopsis "Draw signal flow graphs")
+    (description
+     "This package defines some commands to draw signal flow graphs as used by
+electrical and electronics engineers and graph theorists.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
