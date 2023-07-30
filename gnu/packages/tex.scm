@@ -5162,6 +5162,28 @@ mass and energy data in LaTeX documents.  It uses the PythonTeX package and
 requires @command{pythontex} to be called with the TeX file as the argument.")
     (license license:lppl1.3+)))
 
+(define-public texlive-numerica
+  (package
+    (name "texlive-numerica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numerica/" "tex/latex/numerica/")
+             (base32
+              "1dx2nl8p910m8hm7jr9zh6kbpyyxgvz15ya7ppb2d7ilybfg3qqv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numerica")
+    (synopsis "Numerically evaluate mathematical expressions in LaTeX form")
+    (description
+     "This package defines a command to wrap around a mathematical expression
+in its LaTeX form and, once values are assigned to variables, numerically
+evaluate it.  The intent is to avoid the need to modify the LaTeX form of the
+expression being evaluated.  For programs with a preview facility like LyX, or
+compile-as-you-go systems, interactive back-of-envelope calculations and
+numerical exploration are possible within the document being worked on.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
