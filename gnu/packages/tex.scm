@@ -6073,6 +6073,26 @@ electrical and electronics engineers and graph theorists.")
 the shuffle product which is used in some part of mathematics and physics.")
     (license license:public-domain)))
 
+(define-public texlive-simplebnf
+  (package
+    (name "texlive-simplebnf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simplebnf/"
+                   "tex/latex/simplebnf/")
+             (base32
+              "0a8kysfm24yh738pigwprjjyg0dg2fpf5k549wqi6qx09wp4d3xw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simplebnf")
+    (synopsis "Simple package to format Backus-Naur form (BNF)")
+    (description
+     "This package provides a simple way to format Backus-Naur form (BNF).
+The included @code{bnfgrammar} environment parses BNF expressions (possibly
+annotated), so users can write readable BNF expressions in their documents.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
