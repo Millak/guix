@@ -6618,6 +6618,28 @@ including emTeX drivers, dviwin, xdvi and dvips, and (using some code from
 ConTeXt) it may also be used with pdfLaTeX.")
     (license license:gpl3+)))
 
+(define-public texlive-tablor
+  (package
+    (name "texlive-tablor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tablor/" "tex/latex/tablor/")
+             (base32
+              "1qacb25whzxwn85cxq1fa5rklq5fm06g6i5x88qymm8yaq1yxa71")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tablor")
+    (synopsis "Create tables of signs and of variations")
+    (description
+     "The package allows the user to use the computer algebra system XCAS to
+generate tables of signs and of variations (the actual plotting of the tables
+uses the MetaPost macro package tableauVariations).  Tables with forbidden
+regions may be developed using the package.  A configuration file permits some
+configuration of the language to be used in the diagrams.  The @code{tablor}
+package requires that shell escape be enabled.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
