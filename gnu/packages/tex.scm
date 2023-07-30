@@ -5033,6 +5033,24 @@ Form (EBNF) notation.")
     (description "This style file provides macros for named tensor notation.")
     (license license:expat)))
 
+(define-public texlive-natded
+  (package
+    (name "texlive-natded")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/natded/" "tex/latex/natded/")
+             (base32
+              "01zfxh4ryjjv5qyvbs1pgwpcnq19rdrg3drd2gfx3c4ppqvwbxp4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/natded")
+    (synopsis "Typeset natural deduction proofs")
+    (description
+     "The package provides commands to typeset proofs in the style used by Jaskowski,
+or that of Kalish and Montague.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
