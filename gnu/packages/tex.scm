@@ -4991,6 +4991,31 @@ related to multiobjective optimisation, multiobjective evolutionary
 algorithms, multicriteria decision making and similar fields.")
     (license license:lppl)))
 
+(define-public texlive-naive-ebnf
+  (package
+    (name "texlive-naive-ebnf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/naive-ebnf/"
+                   "source/latex/naive-ebnf/"
+                   "tex/latex/naive-ebnf/")
+             (base32
+              "0fi04awwvizb2p4lp90wl7syingnc7fwrhzwd20x82a9v89iy6pf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-filecontentsdef
+           texlive-l3kernel
+           texlive-pgfopts))
+    (home-page "https://ctan.org/pkg/naive-ebnf")
+    (synopsis "EBNF in Plain Text")
+    (description
+     "With the help of this LaTeX package, a context-free grammar (CFG) may be
+rendered in a plain-text mode using a simplified Extended Backus-Naur
+Form (EBNF) notation.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
