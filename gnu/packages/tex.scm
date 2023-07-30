@@ -1955,6 +1955,26 @@ south-east, etc.); 12 types and 32 directions are available.")
 @code{mathcmd}, @code{quotes}, and @code{sobolev}.")
     (license license:lppl)))
 
+(define-public texlive-bpchem
+  (package
+    (name "texlive-bpchem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bpchem/" "source/latex/bpchem/"
+                   "tex/latex/bpchem/")
+             (base32
+              "0qm0w43iyh42l3srhqsgqq5yjxx3ghxamq6nh68qq6x4izlyv51z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bpchem")
+    (synopsis "Typeset chemical names, formulae, etc")
+    (description
+     "The package provides support for typesetting simple chemical formulae,
+those long IUPAC compound names, and some chemical idioms.  It also supports
+the labelling of compounds and reference to labelled compounds.")
+    (license license:lppl)))
+
 (define-public texlive-c-pascal
   (package
     (name "texlive-c-pascal")
