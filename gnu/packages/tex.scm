@@ -4943,6 +4943,27 @@ systems of equations and small matrices, @code{displaymath} in double columns
 for long calculations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-multiobjective
+  (package
+    (name "texlive-multiobjective")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multiobjective/"
+                   "source/latex/multiobjective/"
+                   "tex/latex/multiobjective/")
+             (base32
+              "0f5l6pg8877a7777vzlh91yxv2rliijgdhkm71fim5n66q0ym9y4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multiobjective")
+    (synopsis "Symbols for multiobjective optimisation etc")
+    (description
+     "The package provides a series of operators commonly used in papers
+related to multiobjective optimisation, multiobjective evolutionary
+algorithms, multicriteria decision making and similar fields.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
