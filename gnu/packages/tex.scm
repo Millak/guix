@@ -1404,6 +1404,27 @@ support for long code lines spanning several lines and improved comments.")
 text which spans over multiple lines.")
     (license license:lppl1.3+)))
 
+(define-public texlive-aligned-overset
+  (package
+    (name "texlive-aligned-overset")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aligned-overset/"
+                   "source/latex/aligned-overset/"
+                   "tex/latex/aligned-overset/")
+             (base32
+              "1awawz0ypq15r16mx949g7r7pp9a60xhi8hciy1xsa6dvvj47h5x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aligned-overset")
+    (synopsis "Fix alignment at @code{\\overset} or @code{\\underset}")
+    (description
+     "This package allows the base character of @code{\\underset} or
+@code{\\overset} to be used as the alignment position for the @code{aligned}
+math environments.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
