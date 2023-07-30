@@ -4648,6 +4648,28 @@ pretty-print Matlab and Octave source code. (Note that support of Octave
 syntax is not complete.)")
     (license license:lppl1.3+)))
 
+(define-public texlive-matrix-skeleton
+  (package
+    (name "texlive-matrix-skeleton")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/matrix-skeleton/"
+                   "tex/latex/matrix-skeleton/")
+             (base32
+              "07mqmc0kli0azp2vlzm8q3lp1b70lyggm2hqnq0v9c0jlfhvj9j7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/matrix-skeleton")
+    (synopsis
+     "PGF/TikZ library that simplifies working with multiple matrix nodes")
+    (description
+     "The package provides a PGF/TikZ library that simplifies working with
+multiple matrix nodes.  To do so, it correctly aligns groups of nodes with the
+content of the whole matrix.  Furthermore, @code{matrix-skeleton} provides
+rows and columns for easy styling.")
+    (license license:isc)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
