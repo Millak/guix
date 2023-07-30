@@ -6990,6 +6990,30 @@ mathematical symbols for the representations of groups, providing two macros,
 @code{\\yng(1)} and @code{\\young(1)} to generate the whole Young-Tableau.")
     (license license:lppl1.0+)))
 
+(define-public texlive-yquant
+  (package
+    (name "texlive-yquant")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yquant/" "tex/latex/yquant/")
+             (base32
+              "1ibrll05slxh1xin6zb14nwic4a86gkpk60k8dzgf184l3kkv8lj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yquant")
+    (synopsis "Typesetting quantum circuits in a human-readable language")
+    (description
+     "This LaTeX package allows to quickly draw quantum circuits.  It bridges
+the gap between the two groups of packages that already exist: those that use
+a logic-oriented custom language, which is then translated into TeX by means
+of an external program; and the pure TeX versions that mainly provide some
+macros to allow for an easier input.  @code{yquant} introduces a logic
+oriented language and thus brings the best of both worlds together.  It builds
+on and interacts with TikZ, which brings an enourmous flexibility for
+customization of individual circuit.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
