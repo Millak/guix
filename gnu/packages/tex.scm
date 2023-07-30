@@ -8359,6 +8359,30 @@ a division operation without destroying the values of the counters containing
 the dividend and divisor.")
     (license license:lppl1.3c)))
 
+(define-public texlive-moreverb
+  (package
+    (name "texlive-moreverb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/moreverb/" "source/latex/moreverb/"
+                   "tex/latex/moreverb/")
+             (base32
+              "0kba3df9cfiz168hsxhwg3a838p3vrgfp42fmwafsf3xq3q2z5hg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/moreverb")
+    (synopsis "Extended verbatim")
+    (description
+     "This package provides a collection of verbatim facilities that provide
+line-numbered verbatim, verbatim that obeys TAB characters, verbatim input and
+verbatim output to file.  The package makes use of the @code{verbatim}
+package.  The package is formed from a series of small pieces, and is somewhat
+unstructured.  The user who looks for thought-through verbatim facilities is
+advised to consider using the @code{fancyvrb} package in place of
+@code{moreverb}.")
+    (license license:lppl)))
+
 (define-public texlive-namedef
   (package
     (name "texlive-namedef")
