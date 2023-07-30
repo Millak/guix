@@ -5600,6 +5600,27 @@ includes some short commands for set (blackboard) or
 filtrations (calligraphic).")
     (license license:lppl)))
 
+(define-public texlive-proof-at-the-end
+  (package
+    (name "texlive-proof-at-the-end")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/proof-at-the-end/"
+                   "source/latex/proof-at-the-end/"
+                   "tex/latex/proof-at-the-end/")
+             (base32
+              "1wzkzjja3h12z9ib0p171k6ygbyvm51m139vvlaqmv7201ydvps0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/proof-at-the-end")
+    (synopsis "Move proofs to appendix")
+    (description
+     "This package aims to provide a way to easily move proofs to the appendix.
+You can (among other things) move proofs to different places/sections, create
+links from theorems to proofs, restate theorems, add comments in appendix...")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
