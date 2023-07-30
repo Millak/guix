@@ -3891,6 +3891,37 @@ Afterwards all necessary dimensions are calculated and the scheme is drawn.
 Currently two steps of symmetry reduction are supported.")
     (license license:lppl)))
 
+(define-public texlive-helmholtz-ellis-ji-notation
+  (package
+    (name "texlive-helmholtz-ellis-ji-notation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/helmholtz-ellis-ji-notation/"
+                   "fonts/opentype/public/helmholtz-ellis-ji-notation/"
+                   "source/fonts/helmholtz-ellis-ji-notation/"
+                   "tex/latex/helmholtz-ellis-ji-notation/")
+             (base32
+              "0d2l682v0qsh5x6ab6f0swnbb70niahx145szzhm92ls1lsmkzck")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/helmholtz-ellis-ji-notation")
+    (synopsis "In-line microtonal just intonation accidentals")
+    (description
+     "The Helmholtz-Ellis JI Pitch Notation (HEJI), devised in the early 2000s
+by Marc Sabat and Wolfgang von Schweinitz, explicitly notates the raising and
+lowering of the untempered diatonic Pythagorean notes by specific microtonal
+ratios defined for each prime.  It provides visually distinctive logos
+distinguishing families of justly tuned intervals that relate to the harmonic
+series.  These take the form of strings of additional accidental symbols based
+on historical precedents, extending the traditional sharps and flats.  Since
+its 2020 update, HEJI version 2 (HEJI2) provides unique microtonal symbols
+through the 47-limit.  This package is a simple LaTeX implementation of HEJI2
+that allows for in-line typesetting of microtonal accidentals for use within
+theoretical texts, program notes, symbol legends, etc.  Documents must be
+compiled using XeLaTeX.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
