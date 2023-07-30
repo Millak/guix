@@ -3200,6 +3200,27 @@ such lists.  Applications in mind belonged to LaTeX, but the package should
 work with other formats as well.")
     (license license:lppl1.3+)))
 
+(define-public texlive-drawmatrix
+  (package
+    (name "texlive-drawmatrix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/drawmatrix/"
+                   "source/latex/drawmatrix/"
+                   "tex/latex/drawmatrix/")
+             (base32
+              "14y9xah06ya8krg7ckmhbmxs113g1vw0x2ryldapww7qi08i78yx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/drawmatrix")
+    (synopsis "Draw visual representations of matrices in LaTeX")
+    (description
+     "The package provides macros to visually represent matrices.  Various
+options allow to change the visualizations, e.g., drawing rectangular,
+triangular, or banded matrices.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
