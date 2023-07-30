@@ -6325,6 +6325,33 @@ presentations.  It represents a syntax-incompatible upgrade of
 @code{statex}.")
     (license license:lppl)))
 
+(define-public texlive-statistics
+  (package
+    (name "texlive-statistics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/statistics/"
+                   "source/latex/statistics/"
+                   "tex/latex/statistics/")
+             (base32
+              "0cdajj4fclsqcjfc46n82vi8d276qxqklpvdn4gm36dgckrrxaxf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/statistics")
+    (synopsis "Compute and typeset statistics tables and graphics")
+    (description
+     "The @code{statistics} package can compute and typeset statistics like frequency tables,
+cumulative distribution functions (increasing or decreasing, in frequency or
+absolute count domain), from the counts of individual values, or ranges, or
+even the raw value list with repetitions.  It can also compute and draw a bar
+diagram in case of individual values, or, when the data repartition is known
+from ranges, an histogram or the continuous cumulative distribution function.
+You can ask @code{statistics} to display no result, selective results or all
+of them.  Similarly @code{statistics} can draw only some parts of the
+graphs.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
