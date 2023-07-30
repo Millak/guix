@@ -3651,6 +3651,33 @@ the chapters.  Each chapter can consist of three sections: the lesson, the
 exercises and the activities.")
     (license license:lppl)))
 
+(define-public texlive-filecontentsdef
+  (package
+    (name "texlive-filecontentsdef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/filecontentsdef/"
+                   "source/latex/filecontentsdef/"
+                   "tex/latex/filecontentsdef/")
+             (base32
+              "0pmjvxjsfnyzx3bl10n8is7l27l11mrw22g3w41f72kric0vfd65")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/filecontentsdef")
+    (synopsis "filecontents, macro, and verbatim")
+    (description
+     "The package provides two environments called @code{filecontentsdef} and
+@code{filecontentshere}.  They are derived from the LaTeX @code{filecontents}
+environment.  In addition to the file creation they either store
+the (verbatim) contents in a macro (@code{filecontentsdef}) or typeset
+them (verbatim) on the spot (@code{filecontentshere}).  The author developed
+the package to display TeX code verbatim in documentation and the same time
+produce the corresponding files during the LaTeX run in order to embed them in
+the PDF as file attachment annotations (by using Scott Pakin's package
+@code{attachfile}).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fixdif
   (package
     (name "texlive-fixdif")
