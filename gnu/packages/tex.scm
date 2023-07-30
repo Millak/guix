@@ -6700,6 +6700,27 @@ mathematical proofs and to construct programs.  This package provides macros
 that support calculational proofs and Dijkstra's guarded command language.")
     (license license:bsd-1)))
 
+(define-public texlive-textgreek
+  (package
+    (name "texlive-textgreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textgreek/"
+                   "source/latex/textgreek/"
+                   "tex/latex/textgreek/")
+             (base32
+              "0a0x07xyy1akqwya54k5bf3f8k4vcrv4hfmijmcp60ikw4v5gha1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-greek-fontenc))
+    (home-page "https://ctan.org/pkg/textgreek")
+    (synopsis "Upright greek letters in text")
+    (description
+     "This package provides macros to use upright greek letters as text
+symbols.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
