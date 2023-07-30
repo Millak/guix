@@ -6138,6 +6138,26 @@ contractions.")
 coefficients are given row by row in a list of values separated by commas.")
     (license license:lppl1.3c)))
 
+(define-public texlive-simplewick
+  (package
+    (name "texlive-simplewick")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simplewick/"
+                   "source/latex/simplewick/"
+                   "tex/latex/simplewick/")
+             (base32
+              "13c5hk9f8cw48j08qb0i4vh649n9maq7kjs1cf0zfmkdiqi3b6iw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simplewick")
+    (synopsis "Simple Wick contractions")
+    (description
+     "The package provides a simple means of drawing Wick contractions above
+and below expressions.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
