@@ -2505,14 +2505,14 @@ many readers as needed).")
 (define-public guile-ncurses
   (package
     (name "guile-ncurses")
-    (version "3.0")
+    (version "3.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/guile-ncurses/guile-ncurses-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "038xbffalhymg26lvmzgf7ljilxz2f2zmqg5r5nfzbipfbprwjhf"))))
+               "0cypz1ikw66n8bc2klsnnaj1plpl22dwq6pwyc7dvffamz7fi2gf"))))
     (build-system gnu-build-system)
     (inputs (list ncurses guile-3.0))
     (native-inputs (list pkg-config))
@@ -2539,8 +2539,7 @@ many readers as needed).")
                (substitute* files
                  (("\"libguile-ncurses\"")
                   (format #f "\"~a/lib/guile/~a/libguile-ncurses\""
-                          out (target-guile-effective-version))))
-               #t))))))
+                          out (target-guile-effective-version))))))))))
     (home-page "https://www.gnu.org/software/guile-ncurses/")
     (synopsis "Guile bindings to ncurses")
     (description
