@@ -4111,6 +4111,27 @@ when using for open intervals.")
 installed.")
     (license license:lppl1.3c)))
 
+(define-public texlive-interval
+  (package
+    (name "texlive-interval")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/interval/" "tex/latex/interval/")
+             (base32
+              "16qp8q95s8y4pvd7idh6nzz04nb81sm7w36gc2nc5sjmvjw1sk4f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/interval")
+    (synopsis "Format mathematical intervals, ensuring proper spacing")
+    (description
+     "When typing an open interval as $]a,b[$, a closing bracket is being used
+in place of an opening fence and vice versa.  This leads to wrong spacing.
+The @code{\\interval} macro provided by this package attempts to solve this.
+The package also supports fence scaling and ensures that the enclosing fences
+will end up having the proper closing and opening types.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
