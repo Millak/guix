@@ -6200,6 +6200,25 @@ International System of Units (SI).  Note that the package is now superseded
 by @code{siunitx}; @code{siunits} has maintenance-only support, now.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skmath
+  (package
+    (name "texlive-skmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skmath/" "source/latex/skmath/"
+                   "tex/latex/skmath/")
+             (base32
+              "0si369hs7550v26mm3wcp69vnyr5ci2iqa6k2b8nv8wbjpcsb9jc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skmath")
+    (synopsis "Extensions to the maths command repertoire")
+    (description
+     "The package provides a selection of new maths commands and improved
+re-definitions of existing commands.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
