@@ -6458,6 +6458,27 @@ conventions for alternatives, etc.  The charts are drawn using the
 @code{picture} environment (using @code{pict2e} for preference).")
     (license license:lppl1.2+)))
 
+(define-public texlive-substances
+  (package
+    (name "texlive-substances")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/substances/"
+                   "tex/latex/substances/")
+             (base32
+              "1lqg0bx34f7f9sva1lvvqdb7nfdaaf6lh23j0nwdy70z2g3kgkxp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/substances")
+    (synopsis "Database of chemicals")
+    (description
+     "The package provides the means to create a database-like file that
+contains data of various chemicals.  These data may be retrieved in the
+document; an index of the chemicals mentioned in the document can be
+created.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
