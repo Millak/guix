@@ -1088,6 +1088,25 @@ TGA. Accepted output formats are: EPS, PCL5, PDF, PDF1, PBM, PGM, PPM, PS,
 markedEPS, markedPS, PNG, XWD, BMP, TIFF, JPEG, GIF, XPM.")
     (license license:gpl3+)))
 
+(define-public texlive-accents
+  (package
+    (name "texlive-accents")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/accents/" "tex/latex/accents/")
+             (base32
+              "0p8g86xbfladz52dwbssmw3w9mbl987d1b740d25miphvj4ia9y9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/accents")
+    (synopsis "Multiple mathematical accents")
+    (description
+     "This package provides a package for multiple accents in mathematics,
+with nice features concerning the creation of accents and placement of
+scripts.")
+    (license license:expat)))
+
 (define-public texlive-accfonts
   (package
     (name "texlive-accfonts")
