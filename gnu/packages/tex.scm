@@ -2837,6 +2837,30 @@ advantage terms but also flexible and powerful environments to layout
 game-based proofs or black-box reductions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-csassignments
+  (package
+    (name "texlive-csassignments")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/csassignments/"
+                   "source/latex/csassignments/"
+                   "tex/latex/csassignments/")
+             (base32
+              "1gdrsh0iyg8dz0pnb9ak099qrznp54x37qqwd7kllw8jjzdcaqg1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/csassignments")
+    (synopsis "Extend @code{article} class for computer science assignments")
+    (description
+     "This class wraps the default @code{article} and extends it for
+a homogeneous look of hand-in assignments at university (RWTH Aachen
+University, Computer Science Department), specifically in the field of
+computer science, but easily extensible to other fields.  It provides macros
+for structuring exercises, aggregating points, and displaying a grading table,
+as well as several macros for easier math mode usage.")
+    (license license:expat)))
+
 (define-public texlive-cweb-old
   (package
     (name "texlive-cweb-old")
