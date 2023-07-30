@@ -7014,6 +7014,28 @@ on and interacts with TikZ, which brings an enourmous flexibility for
 customization of individual circuit.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ytableau
+  (package
+    (name "texlive-ytableau")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ytableau/"
+                   "source/latex/ytableau/"
+                   "tex/latex/ytableau/")
+             (base32
+              "1px1gbpbm0vrv8xhdf1gfb6q6fh564y3zra0kg1ab3hcixbqsfxa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ytableau")
+    (synopsis "Many-featured Young tableaux and Young diagrams")
+    (description
+     "The package provides several functions for drawing Young tableaux and
+Young diagrams, extending the @code{young} and @code{youngtab} packages but
+providing lots more features.  Skew and coloured tableaux are easy, and
+pgfkeys-enabled options are provided both at package load and configurably.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
