@@ -5184,6 +5184,26 @@ compile-as-you-go systems, interactive back-of-envelope calculations and
 numerical exploration are possible within the document being worked on.")
     (license license:lppl1.3c)))
 
+(define-public texlive-numerica-plus
+  (package
+    (name "texlive-numerica-plus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numerica-plus/"
+                   "tex/latex/numerica-plus/")
+             (base32
+              "070c2v4y6zwjbq6ydczbl1d86yzv5nvdw9grgcpl7kvf6w8i2d9d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numerica-plus")
+    (synopsis "Iteration and recurrence relations")
+    (description
+     "The package defines commands to iterate functions of a single variable,
+find fixed points, zeros and extrema of such functions, and calculate the
+terms of recurrence relations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
