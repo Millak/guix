@@ -7817,7 +7817,10 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0h1ak3201mdc2qbf67fhcn801ddp33hm0f0c52zis1l7s6ipyb62"))))
+                "0h1ak3201mdc2qbf67fhcn801ddp33hm0f0c52zis1l7s6ipyb62"))
+              ;; TODO: Remove on update as this was merged upstream.  See
+              ;; <https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3047>.
+              (patches (search-patches "mutter-fix-inverted-test.patch"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
