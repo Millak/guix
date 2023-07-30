@@ -1934,6 +1934,27 @@ south-east, etc.); 12 types and 32 directions are available.")
     ;; files in this package without limitation."
     (license (license:fsf-free "file://doc/generic/borceux/README"))))
 
+(define-public texlive-bosisio
+  (package
+    (name "texlive-bosisio")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bosisio/" "source/latex/bosisio/"
+                   "tex/latex/bosisio/")
+             (base32
+              "1z4s0dgvwffy4356zj0m6kkk9lqzq1180km5sg5syvk11m7mxffn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/bosisio")
+    (synopsis "Collection of packages by Francesco Bosisio")
+    (description
+     "This package provides a collection of packages containing: @code{accenti},
+@code{dblfont}, @code{envmath}, @code{evenpage}, @code{graphfig},
+@code{mathcmd}, @code{quotes}, and @code{sobolev}.")
+    (license license:lppl)))
+
 (define-public texlive-c-pascal
   (package
     (name "texlive-c-pascal")
