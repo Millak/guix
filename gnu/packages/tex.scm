@@ -5928,6 +5928,27 @@ diagrams, i.e., flow diagrams in which the width of the arrows is proportional
 to the flow rate.")
     (license (list license:lppl1.3+ license:gpl3+))))
 
+(define-public texlive-sasnrdisplay
+  (package
+    (name "texlive-sasnrdisplay")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sasnrdisplay/"
+                   "tex/latex/sasnrdisplay/")
+             (base32
+              "0siifxzkvgryixypgw7dywr5g7qqqrnbq622qhhyfd4xlgix43in")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sasnrdisplay")
+    (synopsis "Typeset SAS or R code or output")
+    (description
+     "The SASnRdisplay package serves as a front-end to listings, which
+permits statisticians and others to import source code and the results of
+their calculations or simulations into LaTeX projects.  The package is also
+capable of overloading the Sweave User Manual and SASweave packages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
