@@ -3673,6 +3673,29 @@ and complex notation.  Further many macros and shortcuts are added, e.g., for
 spaces, operators, physics unit, etc.")
     (license license:lppl)))
 
+(define-public texlive-formal-grammar
+  (package
+    (name "texlive-formal-grammar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/formal-grammar/"
+                   "source/latex/formal-grammar/"
+                   "tex/latex/formal-grammar/")
+             (base32
+              "00vr0gdz6jikdycsbfn7n8ddb8391h9fl314vjf8yxz25rn75qz4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/formal-grammar")
+    (synopsis "Typeset formal grammars")
+    (description
+     "This package provides a new environment and associated commands to
+typeset BNF grammars.  It allows to easily write formal grammars.  Its
+original motivation was to typeset grammars for beamer presentations,
+therefore, there are macros to emphasize or downplay some parts of the
+grammar (which is the main novelty compared to other BNF packages).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
