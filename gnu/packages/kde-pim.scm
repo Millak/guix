@@ -1587,14 +1587,14 @@ information in non-ASCII character sets.")
 (define-public knotes
   (package
     (name "knotes")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/knotes-" version ".tar.xz"))
        (sha256
-        (base32 "076rwgkwx67rn6z0mj0sj77h1jngcpbvrwka3ijg2309r9f2wg8h"))))
+        (base32 "0f2a9xy2w909y792hwwnmsqvxx91azn6f0j0xl2mlmav00a4w6za"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools libxslt))
