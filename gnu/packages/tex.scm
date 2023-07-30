@@ -3221,6 +3221,26 @@ options allow to change the visualizations, e.g., drawing rectangular,
 triangular, or banded matrices.")
     (license license:expat)))
 
+(define-public texlive-drawstack
+  (package
+    (name "texlive-drawstack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/drawstack/"
+                   "tex/latex/drawstack/")
+             (base32
+              "1qv2j7crg4b1ggxvmjb6zf0cxmr4mmpk382l7w3dqhywf9lr722v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/drawstack")
+    (synopsis "Draw execution stacks")
+    (description
+     "This simple LaTeX package provides support for drawing execution stack
+(typically to illustrate assembly language notions).  The code is written on
+top of TikZ.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
