@@ -410,13 +410,15 @@ for the IRCv3 protocol.")
   (package
     (name "catgirl")
     (version "2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://git.causal.agency/catgirl/snapshot/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "13pfphcfkdzqfb4x7w21xp6rnmg3ix9f39mpqmxxzg15ys1gp2x6"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.causal.agency/catgirl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gxxblv3bwv1rl2ajjy791333r6qwgzb6qmk3iviw71mzi6ckxba"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
