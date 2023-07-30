@@ -3560,6 +3560,29 @@ as @code{\\xleftarrow} from @code{amsmath}), and a simple command to create
 new ones.")
     (license license:lppl1.3+)))
 
+(define-public texlive-faktor
+  (package
+    (name "texlive-faktor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/faktor/" "source/latex/faktor/"
+                   "tex/latex/faktor/")
+             (base32
+              "1sridf0sn775n9ivrbfxz2fgrcm0wl7ajbhr4509ck0pq2n5hq17")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/faktor")
+    (synopsis "Typeset quotient structures with LaTeX")
+    (description
+     "The package provides the means to typeset factor structures, as are used
+in many areas of algebraic notation.  The structure is similar to the A/B that
+is provided by the @code{nicefrac} package (part of the @code{units}
+distribution), and by the @code{xfrac} package; the most obvious difference is
+that the numerator and denominator's sizes do not change in the
+@code{\\faktor} command.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
