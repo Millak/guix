@@ -2419,15 +2419,15 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20220331")
+    (version "20230628")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://acpica.org/sites/acpica/files/acpica-unix2-"
+                    "https://downloadmirror.intel.com/783536/acpica-unix2-"
                     version ".tar.gz"))
               (sha256
                (base32
-                "0yjcl00nnnlw01sz6a1i5d3v75gr17mkbxkxfx2v344al33abk8w"))))
+                "1fmkng72zb0yqp4hfl8a6pqmylixqbpjd43xmi6k3p74x5qiq0h6"))))
     (build-system gnu-build-system)
     (native-inputs (list flex bison))
     (arguments
