@@ -4691,6 +4691,25 @@ representation of common vectors and tensors such as forces, velocities,
 moments of inertia, etc.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mecaso
+  (package
+    (name "texlive-mecaso")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mecaso/" "tex/latex/mecaso/")
+             (base32
+              "11h10mxjdmknvi8r4dnkhv5q2bzgckwaq7p3dziyxkibq1ciq622")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mecaso")
+    (synopsis "Formulas frequently used in rigid body mechanics")
+    (description
+     "This package provides a number of formulas frequently used in rigid body
+mechanics.  Since most of these formulas are long and tedious to write, this
+package wraps them up in short commands.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
