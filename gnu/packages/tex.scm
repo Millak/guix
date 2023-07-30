@@ -2668,6 +2668,29 @@ font classes are typeset in and how many are defined (all of them or just the
 basic, most commonly used ones).")
     (license license:lppl1.3c)))
 
+(define-public texlive-computational-complexity
+  (package
+    (name "texlive-computational-complexity")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/computational-complexity/"
+                   "doc/latex/computational-complexity/"
+                   "source/latex/computational-complexity/"
+                   "tex/latex/computational-complexity/")
+             (base32
+              "12205p6i611vcywsvkq4qnkbgfyyrkxgrqhj93bfdy4n8y2802ir")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/computational-complexity")
+    (synopsis "Class for the journal Computational Complexity")
+    (description
+     "The LaTeX2e class @code{cc} was written for the journal Computational
+Complexity, and it can also be used for a lot of other articles.  You may like
+it since it contains a lot of features such as more intelligent references,
+a set of theorem definitions, an algorithm environment, and more.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
