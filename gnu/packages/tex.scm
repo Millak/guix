@@ -5051,6 +5051,30 @@ Form (EBNF) notation.")
 or that of Kalish and Montague.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nath
+  (package
+    (name "texlive-nath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nath/" "tex/latex/nath/")
+             (base32
+              "0dq9hb3gbqak6406x8av9zig4pc7kxasa3ak0fr50hx4fvfa6v8q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nath")
+    (synopsis "Natural mathematics notation")
+    (description
+     "Nath is a LaTeX style to separate presentation and content in
+mathematical typography.  The style delivers a particular context-dependent
+presentation on the basis of a rather coarse context-independent notation.
+Highlighted features: depending on the context, the command @code{\\frac}
+produces either built-up or case or solidus fractions, with parentheses added
+whenever required for preservation of the mathematical meaning; delimiters
+adapt their size to the material enclosed, rendering @code{\\left} and
+@code{\\right} almost obsolete.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
