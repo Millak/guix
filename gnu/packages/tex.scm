@@ -4627,6 +4627,27 @@ only unify typesetting of math formulae but also allow to easily adapt
 notation if a user prefers to.  The semantic layer is split into topics.")
     (license license:expat)))
 
+(define-public texlive-matlab-prettifier
+  (package
+    (name "texlive-matlab-prettifier")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/matlab-prettifier/"
+                   "source/latex/matlab-prettifier/"
+                   "tex/latex/matlab-prettifier/")
+             (base32
+              "1mr3h2pwz5ghhy3k9c35c6q9k946qzmg7clldmlzlrq3cm685lsh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/matlab-prettifier")
+    (synopsis "Pretty-print Matlab source code")
+    (description
+     "The package extends the facilities of the listings package, to
+pretty-print Matlab and Octave source code. (Note that support of Octave
+syntax is not complete.)")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
