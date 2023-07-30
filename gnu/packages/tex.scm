@@ -2605,6 +2605,28 @@ delimiter commands, together with a @code{\\fullfunction} (function, with both
 domain and range, and function operation) and various reference commands.")
     (license license:lppl)))
 
+(define-public texlive-commutative-diagrams
+  (package
+    (name "texlive-commutative-diagrams")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/commutative-diagrams/"
+                   "tex/context/third/commutative-diagrams/"
+                   "tex/generic/commutative-diagrams/"
+                   "tex/latex/commutative-diagrams/"
+                   "tex/plain/commutative-diagrams/")
+             (base32
+              "0cj3yx2h5r146rhzd3sla1kx4463qdfyaqdzg8zdyg94ky4k6ixv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/commutative-diagrams")
+    (synopsis "CoDi: Commutative Diagrams for TeX")
+    (description
+     "This package provides a TikZ library for making commutative diagrams
+easy to design, parse and tweak.")
+    (license license:expat)))
+
 (define-public texlive-compare
   (package
     (name "texlive-compare")
