@@ -3518,6 +3518,27 @@ ellipsograph.  This package extends the functionalities of the @code{curve2e}
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-extarrows
+  (package
+    (name "texlive-extarrows")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/extarrows/"
+                   "tex/latex/extarrows/")
+             (base32
+              "0fspc9vgz1vwi5lamv30czh6pp1vqsrk6f2ynqygq166rfxxm1gz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/extarrows")
+    (synopsis "Extra arrows beyond those provided in @code{amsmath}")
+    (description
+     "This package provides arrows to supplement @code{\\xleftarrow} and
+@code{\\xrightarrow} of the @code{amsath} package.")
+    ;; Package mentions LGPL without any reference to the version.  Assuming
+    ;; LGPL 2.1+.
+    (license license:lgpl2.1+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
