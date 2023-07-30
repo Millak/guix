@@ -6969,6 +6969,27 @@ provides three output modes: LaTeX, PostScript and PDF.")
 and a LaTeX package for using them.")
     (license license:lppl1.3c)))
 
+(define-public texlive-youngtab
+  (package
+    (name "texlive-youngtab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/youngtab/"
+                   "source/generic/youngtab/"
+                   "tex/generic/youngtab/")
+             (base32
+              "054dqrcrj32nsngjhxa7nig9ylz0p6smdaqc02mdpy299fwm23f2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/youngtab")
+    (synopsis "Typeset Young-Tableaux")
+    (description
+     "This package provides a package for typesetting Young-Tableaux,
+mathematical symbols for the representations of groups, providing two macros,
+@code{\\yng(1)} and @code{\\young(1)} to generate the whole Young-Tableau.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
