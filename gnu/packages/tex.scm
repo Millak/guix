@@ -5908,6 +5908,26 @@ package solves the problem by extending ideas described in M. I. Grinchuk
 mathematical packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sankey
+  (package
+    (name "texlive-sankey")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sankey/" "source/latex/sankey/"
+                   "tex/latex/sankey/")
+             (base32
+              "020in4r4pim07nya119767zjs90yqpkcyr6h6l5v7ig21n4q7d8s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sankey")
+    (synopsis "Draw Sankey diagrams with TikZ")
+    (description
+     "This package provides macros and an environment for creating Sankey
+diagrams, i.e., flow diagrams in which the width of the arrows is proportional
+to the flow rate.")
+    (license (list license:lppl1.3+ license:gpl3+))))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
