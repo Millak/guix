@@ -6640,6 +6640,24 @@ configuration of the language to be used in the diagrams.  The @code{tablor}
 package requires that shell escape be enabled.")
     (license license:lppl)))
 
+(define-public texlive-tensind
+  (package
+    (name "texlive-tensind")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tensind/" "tex/latex/tensind/")
+             (base32
+              "1i0iczq20ihx5y19j9ifpbm6sad6jv9cs8zwblgkddyhwxa7n764")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tensind")
+    (synopsis "Typeset tensors")
+    (description
+     "This package typesets tensors with dots filling gaps and fine tuning of
+index placement.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
