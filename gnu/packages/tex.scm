@@ -2526,6 +2526,28 @@ commands the same way the package's author did when writing the book, and your
 output will look just like the pseudocode in the text.")
     (license license:lppl)))
 
+(define-public texlive-clrscode3e
+  (package
+    (name "texlive-clrscode3e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clrscode3e/"
+                   "tex/latex/clrscode3e/")
+             (base32
+              "1kcsrlvqs83fc9ianim3drqvz60xp2cfl6a554icnm39p1fjf80c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clrscode3e")
+    (synopsis "Typesets pseudocode as in @emph{Introduction to Algorithms}")
+    (description
+     "This package allows you to typeset pseudocode in the style of
+@emph{Introduction to Algorithms}, Third edition, by Cormen, Leiserson,
+Rivest, and Stein.  The package was written by the authors.  Use the commands
+the same way the package's author did when writing the book, and your output
+will look just like the pseudocode in the text.")
+    (license license:lppl)))
+
 (define-public texlive-colorsep
   (package
     (name "texlive-colorsep")
