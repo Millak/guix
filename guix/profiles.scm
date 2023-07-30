@@ -1815,9 +1815,12 @@ MANIFEST."
                        #:create-all-directories? #t
                        #:log-port (%make-void-port "w"))
 
-          ;; Clear files that are going to be regenerated.
+          ;; Clear files that are going to be regenerated, or copied from
+          ;; a different place, in order to prevent failures during profile
+          ;; generation.
           (with-directory-excursion "/tmp/texlive/share/texmf-dist"
-            (for-each delete-file
+            (for-each (lambda (file)
+                        (when (file-exists? file) (delete-file file)))
                       (list "fonts/map/dvipdfmx/updmap/kanjix.map"
                             "fonts/map/dvips/updmap/builtin35.map"
                             "fonts/map/dvips/updmap/download35.map"
