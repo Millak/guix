@@ -7036,6 +7036,27 @@ providing lots more features.  Skew and coloured tableaux are easy, and
 pgfkeys-enabled options are provided both at package load and configurably.")
     (license license:lppl1.2+)))
 
+(define-public texlive-zx-calculus
+  (package
+    (name "texlive-zx-calculus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zx-calculus/"
+                   "tex/latex/zx-calculus/")
+             (base32
+              "0vs0f1zs0ccmv001a4x2m5qqcwl2gr2jl0z87qvjq17d3b2kzz88")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zx-calculus")
+    (synopsis "Library to typeset ZX Calculus diagrams")
+    (description
+     "This library allows you to typeset ZX-calculus directly in LaTeX.  It
+comes with many pre-built wire shapes, a highly customizable node style (with
+multiple flavours for putting labels inside or outside nodes), and a debugging
+mode to avoid getting lost in big diagrams.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
