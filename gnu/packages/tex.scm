@@ -6219,6 +6219,33 @@ by @code{siunitx}; @code{siunits} has maintenance-only support, now.")
 re-definitions of existing commands.")
     (license license:lppl1.3+)))
 
+(define-public texlive-spalign
+  (package
+    (name "texlive-spalign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spalign/" "source/latex/spalign/"
+                   "tex/latex/spalign/")
+             (base32
+              "1paxgykj07y8l5gbcz2823bn80s6y81zabqx67k0j0513ag75grf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spalign")
+    (synopsis
+     "Typeset matrices and arrays with spaces and semicolons as delimiters")
+    (description
+     "The purpose of this package is to decrease the number of keystrokes
+needed to typeset small amounts of aligned material (matrices, arrays, etc.).
+It provides a facility for typing alignment environments and macros with
+spaces as the alignment delimiter and semicolons (by default) as the
+end-of-row indicator.  This package also contains utility macros for
+typesetting augmented matrices, vectors, arrays, systems of equations, and
+more, and is easily extendable to other situations that use alignments.
+People who have to typeset a large number of matrices (like linear algebra
+teachers) should find this package to be a real time saver.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
