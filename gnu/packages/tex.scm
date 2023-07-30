@@ -5399,6 +5399,33 @@ number of units provided should cover--in Turton's estimate--about 90 percent
 of all fluid processing operations.")
     (license license:lppl1.3c)))
 
+(define-public texlive-physconst
+  (package
+    (name "texlive-physconst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/physconst/"
+                   "source/latex/physconst/"
+                   "tex/latex/physconst/")
+             (base32
+              "1jrhsycm9fp4crhy4g9i4hn7wll85fczwmvxvlzgkzi249zcssm9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/physconst")
+    (synopsis "Macros for commonly used physical constants")
+    (description
+     "This package consists of several macros that are shorthand for a variety
+of physical constants, e.g. the speed of light.  The constants can be used in
+two forms, the most accurate available values, or versions that are rounded to
+3 significant digits for use in typical classroom settings, homework
+assignments, etc.  Most constants are taken from CODATA 2018, with the
+exception of the astronomical objects, whose values are taken from
+International Astronomical Union specified values.  Constants that are derived
+from true constants, e.g. the fine structure constant, have been calculated
+using the accepted values of the fundamental constants.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
