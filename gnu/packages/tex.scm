@@ -3941,6 +3941,27 @@ packages, and a selection of others that are useful in High Energy Physics
 papers, etc.")
     (license license:lppl)))
 
+(define-public texlive-hep-reference
+  (package
+    (name "texlive-hep-reference")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-reference/"
+                   "source/latex/hep-reference/"
+                   "tex/latex/hep-reference/")
+             (base32
+              "1ih6l7agq2lks27f8i2z6hqza7s01jwvjcz6kr3vj36ssyvpsqmz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-reference")
+    (synopsis "Adjustments for publications in High Energy Physics")
+    (description
+     "This package makes some changes to the reference, citation and footnote
+macros to improve the default behavior of LaTeX for High Energy Physics
+publications.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
