@@ -2443,6 +2443,28 @@ UNICHIM regulation.")
 schemes, and also offers automatic structure referencing.")
     (license license:lppl1.2+)))
 
+(define-public texlive-chemsec
+  (package
+    (name "texlive-chemsec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemsec/" "source/latex/chemsec/"
+                   "tex/latex/chemsec/")
+             (base32
+              "1q41mfhnvh4ni7dn0krrrcr9sr6ma855j1hckbg8fl56dl2h7zlp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemsec")
+    (synopsis "Automated creation of numeric entity labels")
+    (description
+     "Packages provides creation of sequential numeric labels for entities in
+a document.  The motivating example is chemical structures in a scientific
+document.  The package can automatically output a full object name and label
+on the first occurence in the document and just labels only on subsequent
+references.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
