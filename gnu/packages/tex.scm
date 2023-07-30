@@ -4519,6 +4519,27 @@ interesting characters of the Text Companion fonts (TS1 encoding) in maths
 mode.")
     (license license:lppl)))
 
+(define-public texlive-mathfixs
+  (package
+    (name "texlive-mathfixs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathfixs/"
+                   "source/latex/mathfixs/"
+                   "tex/latex/mathfixs/")
+             (base32
+              "069gcdc6mhf045cpg5dbd81ng8v7bhqjxwpg9dvz4qdpf508jvq0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathfixs")
+    (synopsis "Fix various layout issues in math mode")
+    (description
+     "This is a LaTeX2e package to fix some odd behaviour in math mode such as
+spacing around fractions and roots, math symbols within bold text as well as
+capital Greek letters.  It also adds some related macros.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
