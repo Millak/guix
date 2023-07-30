@@ -3306,6 +3306,26 @@ letters statistical distributions constants and symbols matrix operators and
 statistical operators.")
     (license license:lppl1.3+)))
 
+(define-public texlive-eltex
+  (package
+    (name "texlive-eltex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eltex/" "tex/latex/eltex/")
+             (base32
+              "1p6wy61n5q93mp07kv7bkp5nnsshshs6wrrhixicn0vankcgnm7w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eltex")
+    (synopsis "Simple circuit diagrams in LaTeX picture mode")
+    (description
+     "The macros enable the user to draw simple circuit diagrams in the
+picture environment, with no need of special resources.  The macros are
+appropriate for drawing for school materials.  The circuit symbols accord to
+the various parts of the standard IEC 617.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
