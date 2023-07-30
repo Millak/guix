@@ -3450,6 +3450,28 @@ you use any special symbols inside your command.")
 components of a formula.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-eqnarray
+  (package
+    (name "texlive-eqnarray")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eqnarray/"
+                   "source/latex/eqnarray/"
+                   "tex/latex/eqnarray/")
+             (base32
+              "0w01rh4a1yglfm9fqkhry1d6bs47caj0dsna9j648z0pxvdf1v38")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eqnarray")
+    (synopsis "More generalised equation arrays with numbering")
+    (description
+     "This package defines an @code{equationarray} environment, that allows
+more than three columns, but otherwise behaves like LaTeX's @code{eqnarray}
+environment.  This environment is similar, in some ways, to the @code{align}
+environment of @code{amsmath}.")
+    (license license:gpl3)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
