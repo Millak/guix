@@ -5120,6 +5120,27 @@ the columns; tools to color rows and columns with a good PDF result; blocks of
 cells; etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nuc
+  (package
+    (name "texlive-nuc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nuc/" "tex/latex/nuc/")
+             (base32
+              "006c9k3nix0y8nys3sf6r1sjzswhc0kwxhm01q0sk2pzih981w37")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nuc")
+    (synopsis "Notation for nuclear isotopes")
+    (description
+     "This package provides a simple package providing nuclear sub- and
+superscripts as commonly used in radiochemistry, radiation science, and
+nuclear physics and engineering applications.  Isotopes which have Z with more
+digits than A require special spacing to appear properly; this spacing is
+supported in the package.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
