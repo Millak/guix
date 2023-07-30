@@ -4558,6 +4558,33 @@ maths mode.")
     ;; The license is basically CC-BY.
     (license (license:fsf-free "file://tex/generic/mathlig/mathlig.tex"))))
 
+(define-public texlive-mathpartir
+  (package
+    (name "texlive-mathpartir")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathpartir/"
+                   "source/latex/mathpartir/"
+                   "tex/latex/mathpartir/")
+             (base32
+              "1baadhdxs4rp1qijkwiki2f4w1faarsq3dqy62q7rxs4640mxqa1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathpartir")
+    (synopsis
+     "Typesetting sequences of math formulas, e.g., type inference rules")
+    (description
+     "The package provides macros for typesetting math formulas in mixed
+horizontal and vertical mode, automatically as best fit.  It provides an
+environment @code{mathpar} that behaves much as a loose centered paragraph
+where words are math formulas, and spaces between them are larger and
+adjustable.  It also provides a macro @code{\\inferrule} for typesetting
+fractions where both the numerator and denominator may be sequences of
+formulas that will be also typeset in a similar way.  It can typically be used
+for typeseting sets of type inference rules or typing derivations.")
+    (license license:gpl2)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
