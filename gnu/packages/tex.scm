@@ -2338,6 +2338,27 @@ reactions in support of other chemistry packages (such as
 @code{chemmacros}).")
     (license license:lppl1.3c)))
 
+(define-public texlive-chemmacros
+  (package
+    (name "texlive-chemmacros")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemmacros/"
+                   "tex/latex/chemmacros/")
+             (base32
+              "1jj7i00h83mhajwayn48x4qf0xz526jrjlj5zclqkgrb6kxmx978")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemmacros")
+    (synopsis "Collection of macros to support typesetting chemistry documents")
+    (description
+     "The bundle offers a collection of macros and commands which are intended
+to make typesetting chemistry documents faster and more convenient.  Coverage
+includes some nomenclature commands, oxidation numbers, thermodynamic data,
+newman projections, etc.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
