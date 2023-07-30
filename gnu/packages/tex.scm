@@ -2548,6 +2548,28 @@ the same way the package's author did when writing the book, and your output
 will look just like the pseudocode in the text.")
     (license license:lppl)))
 
+(define-public texlive-codeanatomy
+  (package
+    (name "texlive-codeanatomy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/codeanatomy/"
+                   "source/latex/codeanatomy/"
+                   "tex/latex/codeanatomy/")
+             (base32
+              "1frkyj86kf9b3n08xlwfndiygllymp2lp7ra82zsnx4xzw1ff4as")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/codeanatomy")
+    (synopsis "Typeset code with annotations")
+    (description
+     "The idea of this Package is to typeset illustrations of pieces of code
+with annotations on each single part of code (Code Anatomy).  The origin of
+this idea are code illustrations from the book @emph{Computer Science: An
+Interdisciplinary Approach} from Robert Sedgewick and Kevin Wayne.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-colorsep
   (package
     (name "texlive-colorsep")
