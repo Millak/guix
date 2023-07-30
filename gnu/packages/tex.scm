@@ -2758,6 +2758,25 @@ systems of continued equalities (or inequalities).  Several variant layouts of
 the equalities are provided, and the user may define their own.")
     (license license:lppl1.3+)))
 
+(define-public texlive-correctmathalign
+  (package
+    (name "texlive-correctmathalign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/correctmathalign/"
+                   "tex/latex/correctmathalign/")
+             (base32
+              "1zqla0gjv1b3x3z6g6fdb89c66ny7agshfmcsjjg42vlkz17ianm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/correctmathalign")
+    (synopsis "Correct spacing of the alignment in expressions")
+    (description
+     "This package realigns the horizontal spacing of the alignments in some
+mathematical environments.")
+    (license license:bsd-2)))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
