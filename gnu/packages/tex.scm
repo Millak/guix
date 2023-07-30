@@ -5579,6 +5579,27 @@ deduction calculi, sequent-like calculi, and similar.")
 Whitehead and Russell's 1910 @emph{Principia Mathematica}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-proba
+  (package
+    (name "texlive-proba")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/proba/" "source/latex/proba/"
+                   "tex/latex/proba/")
+             (base32
+              "0ym6szixg2dl17l07kdqmyah6pi6hn68ckr95xmimqhv8ib124kj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/proba")
+    (synopsis "Shortcuts commands to symbols used in probability texts")
+    (description
+     "This package includes some of the most often used commands in
+probability texts, e.g., probability, expectation, variance, etc.  It also
+includes some short commands for set (blackboard) or
+filtrations (calligraphic).")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
