@@ -2691,6 +2691,27 @@ it since it contains a lot of features such as more intelligent references,
 a set of theorem definitions, an algorithm environment, and more.")
     (license license:lppl1.2+)))
 
+(define-public texlive-concmath
+  (package
+    (name "texlive-concmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/concmath/"
+                   "source/latex/concmath/"
+                   "tex/latex/concmath/")
+             (base32
+              "0lc1bj2yqbyn13bq4fwiqf1hijbj5kwxadifzbg1riscwal3z5vw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/concmath")
+    (synopsis "Concrete Math fonts")
+    (description
+     "This package provides a LaTeX package and font definition files to
+access the Concrete mathematics fonts, which were derived from Computer Modern
+math fonts using parameters from Concrete Roman text fonts.")
+    (license license:lppl)))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
