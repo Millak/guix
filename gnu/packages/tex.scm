@@ -6093,6 +6093,31 @@ The included @code{bnfgrammar} environment parses BNF expressions (possibly
 annotated), so users can write readable BNF expressions in their documents.")
     (license license:expat)))
 
+(define-public texlive-simpler-wick
+  (package
+    (name "texlive-simpler-wick")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simpler-wick/"
+                   "tex/latex/simpler-wick/")
+             (base32
+              "0iicdx5n0ifjwifxk6i0242hkk388jz1mz01zpmznixjlhx780ni")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simpler-wick")
+    (synopsis "Simpler Wick contractions")
+    (description
+     "In every quantum field theory course, there will be a chapter about
+Wick's theorem and how it can be used to convert a very large product of many
+creation and annihilation operators into something more tractable and normal
+ordered.  The contractions are denoted with a square bracket over the
+operators which are being contracted, which used to be rather annoying to
+typeset in LaTeX as the only other package available was simplewick, which is
+rather unwieldy.  This package provides a simpler syntax for Wick
+contractions.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
