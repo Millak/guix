@@ -6434,6 +6434,30 @@ draw member forces, nodal forces/displacements, various boundary conditions,
 internal force distributions, etc.")
     (license license:gpl3+)))
 
+(define-public texlive-struktex
+  (package
+    (name "texlive-struktex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/struktex/"
+                   "source/latex/struktex/"
+                   "tex/latex/struktex/")
+             (base32
+              "05bvzxrqwiw9jcq1dvvwf6ss1207qygg3iqdlfd0yjv0y7rdjvvf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/struktex")
+    (synopsis "Draw Nassi-Shneiderman charts")
+    (description
+     "Nassi-Shneiderman charts are a well known tool to describe an algorithm
+in a graphical way.  The package offers some macros for generating those
+charts in a LaTeX document.  The package provides the most important elements
+of a Nassi-Shneiderman charts, including processing blocks, loops, mapping
+conventions for alternatives, etc.  The charts are drawn using the
+@code{picture} environment (using @code{pict2e} for preference).")
+    (license license:lppl1.2+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
