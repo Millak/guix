@@ -4710,6 +4710,27 @@ mechanics.  Since most of these formulas are long and tedious to write, this
 package wraps them up in short commands.")
     (license license:gpl3+)))
 
+(define-public texlive-membranecomputing
+  (package
+    (name "texlive-membranecomputing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/membranecomputing/"
+                   "tex/latex/membranecomputing/")
+             (base32
+              "1r5k8ipf435vvffr7da8nl2j14myfp102i5qf0yy0jczziddbq6z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/membranecomputing")
+    (synopsis "Membrane Computing notation")
+    (description
+     "This is a LaTeX package for the Membrane Computing community.  It
+comprises the definition of @samp{P} systems, rules and some concepts related
+to languages and computational complexity usually needed for Membrane
+Computing research.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
