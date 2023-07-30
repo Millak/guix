@@ -2812,6 +2812,31 @@ with a wide array of formats.  For the moment, it works out of the box with
 ConTeXt and LaTeX.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-cryptocode
+  (package
+    (name "texlive-cryptocode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cryptocode/"
+                   "source/latex/cryptocode/"
+                   "tex/latex/cryptocode/")
+             (base32
+              "0i22bdg2mn305vlmpy32yqbsp7kf5ld54vdvjzq49n8v00qxy286")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cryptocode")
+    (synopsis
+     "Pseudocode, protocols, game-based proofs and black-box reductions in cryptography")
+    (description
+     "The @code{cryptocode} package provides a set of macros to ease the
+typesetting of pseudocode, algorithms and protocols.  In addition it comes
+with a wide range of tools to typeset cryptographic papers.  This includes
+simple predefined commands for concepts such as a security parameter or
+advantage terms but also flexible and powerful environments to layout
+game-based proofs or black-box reductions.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cweb-old
   (package
     (name "texlive-cweb-old")
