@@ -1868,6 +1868,25 @@ plots of any transfer function given poles, zeros, and gain.
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-bohr
+  (package
+    (name "texlive-bohr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bohr/" "tex/latex/bohr/")
+             (base32
+              "02slnkmxha906y7z04dffamy0lywq95l9yvklxjlm2kvjhqv2wnw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bohr")
+    (synopsis "Simple atom representation according to the Bohr model")
+    (description
+     "The package provides means for the creation of simple Bohr models of
+atoms up to the atomic number 112.  In addition, commands are provided to
+convert atomic numbers to element symbols or element names and vice versa.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-borceux
   (package
     (name "texlive-borceux")
