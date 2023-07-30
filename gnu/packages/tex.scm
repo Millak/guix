@@ -6246,6 +6246,26 @@ People who have to typeset a large number of matrices (like linear algebra
 teachers) should find this package to be a real time saver.")
     (license license:lppl1.3+)))
 
+(define-public texlive-spbmark
+  (package
+    (name "texlive-spbmark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spbmark/" "tex/latex/spbmark/")
+             (base32
+              "127z28ak94474jif94z0cgrm9ixjfa8lr9cx4i8ar8wksycadnms")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spbmark")
+    (synopsis "Customize superscripts and subscripts")
+    (description
+     "This package provides three commands @code{\\super}, @code{\\sub} and
+@code{\\supersub} to improve the layout of superscripts and subscripts which
+can be adjusted with respect to relative position and format, and can be used
+in text and math mode.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
