@@ -1385,6 +1385,25 @@ parts of the code for highlighting differences.  This package also has better
 support for long code lines spanning several lines and improved comments.")
     (license license:lppl1.3c)))
 
+(define-public texlive-algxpar
+  (package
+    (name "texlive-algxpar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/algxpar/" "source/latex/algxpar/"
+                   "tex/latex/algxpar/")
+             (base32
+              "1d4g8wl29k85x2liwab86fw1yvns68c4ms6v7mvviavcvml4d3mx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/algxpar")
+    (synopsis "Support multiple lines pseudocode")
+    (description
+     "This package extends the package @code{algorithmicx} to support long
+text which spans over multiple lines.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
