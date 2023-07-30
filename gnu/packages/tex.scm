@@ -4293,6 +4293,28 @@ using TikZ.  Though similar to the @code{karnaugh} macros, it provides
 a key-value system to customize Karnaugh maps and a proper LaTeX package.")
     (license license:lppl1.2+)))
 
+(define-public texlive-kvmap
+  (package
+    (name "texlive-kvmap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kvmap/" "source/latex/kvmap/"
+                   "tex/latex/kvmap/")
+             (base32
+              "04sjs8r2ijd0rdx5d13p6pwnwnwd0rgzx894j3cqfi29y860c7yr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-amsmath texlive-l3experimental
+                             texlive-pgf))
+    (home-page "https://ctan.org/pkg/kvmap")
+    (synopsis "Create Karnaugh maps with LaTeX")
+    (description
+     "This LaTeX package allows the creation of (even large) Karnaugh maps.
+It provides a tabular-like input syntax and support for drawing bundles
+(implicants) around adjacent values.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
