@@ -3044,6 +3044,28 @@ The package is built on xtemplate and the configurability it enables,
 extending to differentials (including simple line elements) and jacobians.")
     (license license:lppl1.3c)))
 
+(define-public texlive-digiconfigs
+  (package
+    (name "texlive-digiconfigs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/digiconfigs/"
+                   "tex/latex/digiconfigs/")
+             (base32
+              "13682as94lpy3qws03ymgz380fkkihwppzdwijig85j1yq098wqg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/digiconfigs")
+    (synopsis "Writing ``configurations''")
+    (description
+     "In Stochastic Geometry and Digital Image Analysis some problems can be
+solved in terms of so-called ``configurations''.  A configuration is basically
+a square matrix of @code{\\circ} and @code{\\bullet} symbols.  This package
+provides a convenient and compact mechanism for displaying these
+configurations.")
+    (license license:lppl)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
