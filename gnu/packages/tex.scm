@@ -3472,6 +3472,28 @@ environment.  This environment is similar, in some ways, to the @code{align}
 environment of @code{amsmath}.")
     (license license:gpl3)))
 
+(define-public texlive-eqnnumwarn
+  (package
+    (name "texlive-eqnnumwarn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eqnnumwarn/"
+                   "tex/latex/eqnnumwarn/")
+             (base32
+              "06z6rb0q5qln5knamwxljzw5h373r2xh159ml9akw4kb2cdk3bri")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eqnnumwarn")
+    (synopsis "Warn for a displaced equation number")
+    (description
+     "Sometimes an equation is too long that an equation number will be
+typeset below the equation itself, but yet not long enough to yield an
+@samp{overfull \\hbox} warning.  The @code{eqnnumwarn} package modifies the
+standard @code{amsmath} numbered equation environments to throw a warning
+whenever this occurs.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
