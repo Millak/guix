@@ -24,6 +24,7 @@
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1240,7 +1241,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.27.0")
+    (version "1.29.1")
     (source
      (origin
        (method git-fetch)
@@ -1249,7 +1250,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fd5z9xviwfv635wxil20qjjigb275p3ns9cvxhfx27ca8kkphsj"))))
+        (base32 "18684mxnb0jk63mkzi36zlmd8rjjv0msx3xxpmn67mhrnwz4x861"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
