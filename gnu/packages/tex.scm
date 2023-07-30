@@ -4188,6 +4188,25 @@ characters, and defines macros for markup of vector, matrix and tensor
 symbols.")
     (license license:lppl)))
 
+(define-public texlive-jkmath
+  (package
+    (name "texlive-jkmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jkmath/" "tex/latex/jkmath/")
+             (base32
+              "0gqm6wfarf20yi3cq2h4lbnqp39fif1wg6gpkvbqpy6zlndbdb0r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jkmath")
+    (synopsis "Macros for mathematics that make the code more readable")
+    (description
+     "Inspired by the @code{physicspackage}, the package defines some simple
+macros for mathematical notation which make the code more readable or allow
+flexibility in typesetting material.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
