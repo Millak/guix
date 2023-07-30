@@ -3626,6 +3626,32 @@ with pdfTeX, XeTeX and LuaTeX, and can also be used with the
 @code{unicode-math} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fixmath
+  (package
+    (name "texlive-fixmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fixmath/" "source/latex/fixmath/"
+                   "tex/latex/fixmath/")
+             (base32
+              "15vwikvxxd8wagbfxjb1am3savciyppkq0bdk3zdxp09zg0dx2ra")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixmath")
+    (synopsis "Make maths comply with ISO 31-0:1992 to ISO 31-13:1992")
+    (description
+     "LaTeX's default style of typesetting mathematics does not comply with
+the International Standards ISO 31-0:1992 to ISO 31-13:1992 which require that
+uppercase Greek letters always be typset upright, as opposed to italic (even
+though they usually represent variables) and allow for typsetting of variables
+in a boldface italic style (even though the required fonts are available).
+This package ensures that uppercase Greek be typeset in italic style, that
+upright @samp{$\\Delta$} and @samp{$\\Omega$} symbols are available through
+the commands @code{\\upDelta} and @code{\\upOmega}; and provides a new math
+alphabet @code{\\mathbold} for boldface italic letters, including Greek.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
