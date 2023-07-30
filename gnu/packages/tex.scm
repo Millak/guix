@@ -2928,6 +2928,25 @@ labels and captions to be added seamlessly.  It is also possible to place
 multiple DMN tables in one table/figure environment.")
     (license license:lppl1.3c)))
 
+(define-public texlive-delim
+  (package
+    (name "texlive-delim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/delim/" "source/latex/delim/"
+                   "tex/latex/delim/")
+             (base32
+              "12h0zqn46yrqf079a6k939g3pv843rs417va4g2r39rhb2fvh6r8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/delim")
+    (synopsis "Simplify typesetting mathematical delimiters")
+    (description
+     "The package permits simpler control of delimiters without excessive use
+of @code{\\big} commands and the like.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
