@@ -3870,6 +3870,27 @@ concept-script in the style of his @emph{Grundgesetze der Arithmetik} (Basic
 Laws of Arithmetic).")
     (license license:gpl2)))
 
+(define-public texlive-gu
+  (package
+    (name "texlive-gu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gu/" "tex/latex/gu/")
+             (base32
+              "13gw8gk03s3ha7xwn6vfix7w50if3gvlqywn1l6z5zi3qbfaapvr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gu")
+    (synopsis "Typeset crystallographic group-subgroup-schemes")
+    (description
+     "The package simplifies typesetting of simple crystallographic
+group-subgroup-schemes in the Barnighausen formalism.  It defines a new
+environment @code{stammbaum}, wherein all elements of the scheme are defined.
+Afterwards all necessary dimensions are calculated and the scheme is drawn.
+Currently two steps of symmetry reduction are supported.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
