@@ -4920,6 +4920,29 @@ with an easy syntax.  Minus signs are printed as bar above the corresponding
 number.")
     (license license:lppl)))
 
+(define-public texlive-mismath
+  (package
+    (name "texlive-mismath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mismath/" "source/latex/mismath/"
+                   "tex/latex/mismath/")
+             (base32
+              "1wsy9219aq7q79f34vr2ykgnrlq8z057wkvjq1ca0194v8z2ypnf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mismath")
+    (synopsis "Miscellaneous mathematical macros")
+    (description
+     "The package provides some mathematical macros to typeset: mathematical
+constants @samp{e}, @samp{i}, @samp{p} in upright shape (automatically) as
+recommended by ISO 80000-2, vectors with beautiful arrows and adjusted norm,
+some standard operator names, improved spacings in mathematical formulas,
+systems of equations and small matrices, @code{displaymath} in double columns
+for long calculations.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
