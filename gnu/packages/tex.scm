@@ -6787,6 +6787,24 @@ aesthetic features.  The standard macro @code{\\newtheorem} may be redefined
 to use the environment.")
     (license license:lppl)))
 
+(define-public texlive-tiscreen
+  (package
+    (name "texlive-tiscreen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tiscreen/" "tex/latex/tiscreen/")
+             (base32
+              "1nrwai8qg26412jm8v3vgy7m4qk2kq6asc33j5a76z2ixnnhjlps")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tiscreen")
+    (synopsis "Mimic the screen of older Texas Instruments calculators")
+    (description
+     "This package mimics the screen of older Texas Instruments dot matrix
+display calculators, specifically the TI-82 STATS.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
