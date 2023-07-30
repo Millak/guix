@@ -5766,6 +5766,27 @@ systems, with Weyl chambers, weight lattices, and parabolic subgroups.")
 for typesetting homework assignments, and formula cheat sheets for exams.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rec-thy
+  (package
+    (name "texlive-rec-thy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rec-thy/" "tex/latex/rec-thy/")
+             (base32
+              "1hnh371kvp2m98gg01cnqqia8gp6m0rvblff53sq86ihcij8ifz9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rec-thy")
+    (synopsis "Commands to typeset recursion theory papers")
+    (description
+     "This package is designed to help mathematicians publishing papers in the
+area of recursion theory (aka Computability Theory) easily use standard
+notation.  This includes easy commands to denote Turing reductions, Turing
+functionals, c.e.@: sets, stagewise computations, forcing and syntactic
+classes.")
+    (license license:public-domain)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
