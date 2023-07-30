@@ -2297,6 +2297,26 @@ instead.  It allows compound names in documents to be numbered and does not
 affect the normal citation routines.")
     (license license:lppl)))
 
+(define-public texlive-chemexec
+  (package
+    (name "texlive-chemexec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemexec/" "tex/latex/chemexec/")
+             (base32
+              "1al19xf107qizd7nr7297szqd2k8sf1i3ngpnw6kl6fkak5h7qdg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemexec")
+    (synopsis "Creating (chemical) exercise sheets")
+    (description
+     "The package provides environments and commands that the author needed
+when preparing exercise sheets and other teaching material.  In particular,
+the package supports the creation of exercise sheets, with separating printing
+of solutions.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
