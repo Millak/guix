@@ -5839,6 +5839,31 @@ method description path parameter request body and content type response body,
 content type and status code.")
     (license license:lppl1.3c)))
 
+(define-public texlive-revquantum
+  (package
+    (name "texlive-revquantum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/revquantum/"
+                   "source/latex/revquantum/"
+                   "tex/latex/revquantum/")
+             (base32
+              "00wac9xjzx9mw6vxd3wnjyb1f8c1661s2zwvd4d0r337ccs6jqbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/revquantum")
+    (synopsis
+     "Hacks to make writing quantum papers for revtex4-1 less painful")
+    (description
+     "This package provides a number of useful hacks to solve common
+annoyances with the @code{revtex4-1} package, and to define notation in common
+use within quantum information.  In doing so, it imports and configures
+a number of commonly-available and used packages, and where reasonable,
+provides fallbacks.  It also warns when users try to load packages which are
+known to be incompatible with @code{revtex4-1}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
