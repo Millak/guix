@@ -1690,6 +1690,27 @@ the pdf code inserted in the output file.  The processing involves a run of
 @command{pdflatex}.")
     (license license:gpl3+)))
 
+(define-public texlive-backnaur
+  (package
+    (name "texlive-backnaur")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/backnaur/"
+                   "source/latex/backnaur/"
+                   "tex/latex/backnaur/")
+             (base32
+              "168ng265vdl74l9c2jmp34ba6ir5i6c1jb7jpyzc31g9snqmyr09")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/backnaur")
+    (synopsis "Typeset Backus Naur Form definitions")
+    (description
+     "The package typesets Backus-Naur Form (BNF) definitions.  It prints
+formatted lists of productions, with numbers if required.  It can also print
+in-line BNF expressions using math mode.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-barr
   (package
     (name "texlive-barr")
