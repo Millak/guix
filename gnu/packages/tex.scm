@@ -6517,6 +6517,23 @@ mode by providing an optional argument to @samp{_}.  This is implemented by
 using the @code{\\text@{@}} command from the @code{amstext} package.")
     (license license:gpl3)))
 
+(define-public texlive-susy
+  (package
+    (name "texlive-susy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/susy/" "tex/latex/susy/")
+             (base32
+              "17v3cmkrpkdxssa50vzdasp885waf9jpg8sfjyw1dcj9z7xfz91g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/susy")
+    (synopsis "Macros for SuperSymmetry-related work")
+    (description "The package macros for SuperSymmetry-related work, such as
+abbreviations of longer expressions.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
