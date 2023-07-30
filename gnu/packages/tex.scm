@@ -6679,6 +6679,27 @@ with mixed upper and lower indices with spacing, also typeset preposed
 indices.")
     (license license:lppl)))
 
+(define-public texlive-tex-ewd
+  (package
+    (name "texlive-tex-ewd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tex-ewd/"
+                   "tex/generic/tex-ewd/")
+             (base32
+              "1xlxbnn16mf7mzz57rjzqqv18mcy0immmlcsnksda03dh7hn8b69")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-ewd")
+    (synopsis
+     "Macros to typeset calculational proofs and programs in Dijkstra's style")
+    (description
+     "Edsger W. Dijkstra and others suggest a unique style to present
+mathematical proofs and to construct programs.  This package provides macros
+that support calculational proofs and Dijkstra's guarded command language.")
+    (license license:bsd-1)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
