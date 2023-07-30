@@ -3019,6 +3019,31 @@ custom derivatives and differential operators.  The options follow
 a consistent naming scheme making them easy to use and understand.")
     (license license:lppl1.3+)))
 
+(define-public texlive-diffcoeff
+  (package
+    (name "texlive-diffcoeff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/diffcoeff/"
+                   "tex/latex/diffcoeff/")
+             (base32
+              "1n495bkhqixl77w84fyh1qnc18a9cpnwhpkxijwhdjrczcvxyckw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/diffcoeff")
+    (synopsis "Write differential coefficients easily and consistently")
+    (description
+     "This package allows the easy and consistent writing of ordinary, partial
+and other derivatives of arbitrary (algebraic or numeric) order.  For mixed
+partial derivatives, the total order of differentiation is calculated by the
+package.  Optional arguments allow specification of points of
+evaluation (ordinary derivatives), or variables held constant (partial
+derivatives), and the placement of the differentiand (numerator or appended).
+The package is built on xtemplate and the configurability it enables,
+extending to differentials (including simple line elements) and jacobians.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
