@@ -6576,6 +6576,26 @@ expressions, as well as graphical output from the @code{sympy} plotting
 module (or from Matplotlib).")
     (license license:gpl2)))
 
+(define-public texlive-synproof
+  (package
+    (name "texlive-synproof")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/synproof/" "tex/latex/synproof/")
+             (base32
+              "02r0ld3lcxvjhij4lffx9kljmbv6fvz10x59bjvinqfbmmfmm58m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/synproof")
+    (synopsis "Easy drawing of syntactic proofs")
+    (description
+     "The package provides a set of macros based on PSTricks that will enable
+you to draw syntactic proofs easily (inspired by the Gamut books).  Very few
+commands are needed, however fine tuning of the various
+parameters (dimensions) can still be achieved through key=value pairs.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
