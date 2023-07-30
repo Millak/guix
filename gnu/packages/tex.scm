@@ -5746,6 +5746,26 @@ theory.  The purpose of this package is to ease drawing of rank 2 root
 systems, with Weyl chambers, weight lattices, and parabolic subgroups.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rbt-mathnotes
+  (package
+    (name "texlive-rbt-mathnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rbt-mathnotes/"
+                   "tex/latex/rbt-mathnotes/")
+             (base32
+              "12zhnciww00z4rkxp2pr2l31nwgsp10h38pla5jqgicvvz77x67c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rbt-mathnotes")
+    (synopsis
+     "Rebecca Turner's personal macros and styles for typesetting mathematics notes")
+    (description
+     "This package includes styles for typesetting mathematics notes, classes
+for typesetting homework assignments, and formula cheat sheets for exams.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
