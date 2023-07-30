@@ -2646,6 +2646,28 @@ argument is less than, equal to, or greater than the second argument.  Sorting
 is alphabetic, using ASCII collating order.")
     (license license:public-domain)))
 
+(define-public texlive-complexity
+  (package
+    (name "texlive-complexity")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/complexity/"
+                   "tex/latex/complexity/")
+             (base32
+              "0yqv0qp4i6jkjkrsvjzq5r2x282y5maq6w5cbvkspp7d0g4sg0ph")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/complexity")
+    (synopsis "Computational complexity class names")
+    (description
+     "Complexity is a LaTeX package that defines commands to typeset
+Computational Complexity Classes such as @samp{$\\P$} and @samp{$\\NP$} (as
+well as hundreds of others).  It also offers several options including which
+font classes are typeset in and how many are defined (all of them or just the
+basic, most commonly used ones).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
