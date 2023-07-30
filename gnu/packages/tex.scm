@@ -2423,6 +2423,26 @@ to draw process units and streams.  The guiding light of the package is the
 UNICHIM regulation.")
     (license license:lppl1.3c)))
 
+(define-public texlive-chemschemex
+  (package
+    (name "texlive-chemschemex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemschemex/"
+                   "source/latex/chemschemex/"
+                   "tex/latex/chemschemex/")
+             (base32
+              "09mjxj1gwddbpkriivn8x98z9hls4pcmpdqf24a7gz19whgs1qyk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemschemex")
+    (synopsis "Typeset and cross-reference chemical schemes based on TikZ code")
+    (description
+     "The package provides a comfortable means of typesetting chemical
+schemes, and also offers automatic structure referencing.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
