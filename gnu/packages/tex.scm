@@ -1317,6 +1317,28 @@ or @samp{Function}; the name of these functions may be reused in the text or
 in other algorithms.")
     (license license:lppl)))
 
+(define-public texlive-algorithmicx
+  (package
+    (name "texlive-algorithmicx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/algorithmicx/"
+                   "tex/latex/algorithmicx/")
+             (base32
+              "0q0qkzc88479y5dqifnpfxhclk48gf1c4shxi1xhgqbvjp2gqgza")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/algorithmicx")
+    (synopsis "The algorithmic style you always wanted")
+    (description
+     "Algorithmicx provides a flexible, yet easy to use, way for inserting
+good looking pseudocode or source code in your papers.  It has built in
+support for pseudocode, Pascal and C, and offers powerful means to create
+definitions for any programming language.  The user can adapt a pseudocode
+style to his native language.")
+    (license license:lppl)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
