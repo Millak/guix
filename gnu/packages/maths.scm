@@ -1343,6 +1343,31 @@ C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
  required. primesieve can generate primes and prime k-tuplets up to 264.")
     (license license:bsd-2)))
 
+(define-public cminpack
+  (package
+    (name "cminpack")
+    (version "1.3.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/devernay/cminpack")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bg0954mwry22izsvikpai16pkfp8srz4z34n267bhkmrvvb0zgy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://github.com/devernay/cminpack")
+    (synopsis "C/C++ rewrite of the MINPACK software")
+    (description
+     "This is a C version of the minpack minimization package.  It has been
+derived from the fortran code using f2c and some limited manual editing.
+Extern C linkage permits the package routines to be called from C++.")
+    (license (license:non-copyleft ; original minpack license
+              "https://github.com/certik/minpack/blob/master/LICENSE"))))
+
 (define-public gctp
   (package
     (name "gctp")
