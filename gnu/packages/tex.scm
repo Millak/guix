@@ -5621,6 +5621,32 @@ You can (among other things) move proofs to different places/sections, create
 links from theorems to proofs, restate theorems, add comments in appendix...")
     (license license:lppl1.3+)))
 
+(define-public texlive-prooftrees
+  (package
+    (name "texlive-prooftrees")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prooftrees/"
+                   "tex/latex/prooftrees/")
+             (base32
+              "1nrzir2w46w3ar4irip9f201ii4x3187zgjamx8cq8ywy878xvyj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/prooftrees")
+    (synopsis "Forest-based proof trees (symbolic logic)")
+    (description
+     "The package supports drawing proof trees of the kind often used in
+introductory logic classes, especially those aimed at students without strong
+mathemtical backgrounds.  Hodges (1991) is one example of a text which uses
+this system.  When teaching such a system it is especially useful to annotate
+the tree with line numbers, justifications and explanations of branch
+closures.  The package provides a single environment, @code{prooftree}, and
+a variety of tools for annotating, customising and highlighting such trees.
+A cross-referencing system is provided for trees which cite line numbers in
+justifications for proof lines or branch closures.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
