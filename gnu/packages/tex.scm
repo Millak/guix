@@ -4847,6 +4847,36 @@ interfaces for many programming languages, it also implements its own
 scripting language, called MGL, which can be used independently.")
     (license (list license:gpl3 license:cc-by-sa3.0))))
 
+(define-public texlive-mhchem
+  (package
+    (name "texlive-mhchem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mhchem/" "tex/latex/mhchem/")
+             (base32
+              "1hmsl16l1vzhxy0iv8grbnpv83zffsrk6kzhgcaymdmigsv1i81b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-chemgreek
+           texlive-graphics
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-tools))
+    (home-page "https://ctan.org/pkg/mhchem")
+    (synopsis
+     "Typeset chemical formulae/equations and H and P statements")
+    (description
+     "The bundle provides three packages: The @code{mhchem} package provides
+commands for typesetting chemical molecular formulae and equations.  The
+@code{hpstatement} package provides commands for the official hazard
+statements and precautionary statements (H and P statements) that are used to
+label chemicals.  The @code{rsphrase} package provides commands for the
+official Risk and Safety (R and S) Phrases that are used to label chemicals.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
