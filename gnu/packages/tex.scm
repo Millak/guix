@@ -3583,6 +3583,28 @@ that the numerator and denominator's sizes do not change in the
 @code{\\faktor} command.")
     (license license:lppl)))
 
+(define-public texlive-fascicules
+  (package
+    (name "texlive-fascicules")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fascicules/"
+                   "source/latex/fascicules/"
+                   "tex/latex/fascicules/")
+             (base32
+              "0hsap900psylamhn3my7gsn7n06glqczcff0yw53zs9gjwyh4s13")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fascicules")
+    (synopsis "Create mathematical manuals for schools")
+    (description
+     "This package enables LaTeX users to create math books for middle and
+high schools.  It provides commands to create the front page of the manual and
+the chapters.  Each chapter can consist of three sections: the lesson, the
+exercises and the activities.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
