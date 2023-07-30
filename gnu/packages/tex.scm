@@ -2712,6 +2712,32 @@ access the Concrete mathematics fonts, which were derived from Computer Modern
 math fonts using parameters from Concrete Roman text fonts.")
     (license license:lppl)))
 
+(define-public texlive-concrete
+  (package
+    (name "texlive-concrete")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/concrete/"
+                   "fonts/source/public/concrete/"
+                   "fonts/tfm/public/concrete/")
+             (base32
+              "0xras2ybr33xm27vl0ym3lyd954gizgyd6h84ivxg0zjpqpjanb1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/concrete")
+    (synopsis "Concrete Roman fonts")
+    (description
+     "This package provides Concrete Roman fonts, designed by Donald Knuth,
+originally for use with Euler mathematics fonts.  Alternative mathematics
+fonts, based on the concrete parameter set are available as the
+@code{concmath} fonts bundle.  LaTeX support is offered by the @code{beton},
+@code{concmath} and @code{ccfonts} packages.  T1- and TS1-encoded versions of
+the fonts are available in the @code{ecc} bundle, and Adobe Type 1 versions of
+the @code{ecc} fonts are part of the @code{cm-super} bundle.")
+    (license license:knuth)))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
