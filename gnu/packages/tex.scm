@@ -2178,6 +2178,28 @@ macros can also be used in the @code{tikzpicture} environment to annotate or
 modify a diagram.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ccfonts
+  (package
+    (name "texlive-ccfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ccfonts/" "source/latex/ccfonts/"
+                   "tex/latex/ccfonts/")
+             (base32
+              "1r319fv1n9fsnnycza4z1j23dp03fww98a03hmcapkyr9pp9lvv4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/ccfonts")
+    (synopsis "Support for Concrete text and math fonts in LaTeX")
+    (description
+     "This package provides LaTeX font definition files for the Concrete fonts
+and a LaTeX package for typesetting documents using Concrete as the default
+font family.  The files support OT1, T1, TS1, and Concrete mathematics
+including AMS fonts (Ulrik Vieth's @code{concmath}).")
+    (license license:lppl)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
