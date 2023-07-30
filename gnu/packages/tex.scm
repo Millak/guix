@@ -3849,6 +3849,27 @@ The package also provides an interface to control various settings including
 algorithm parameters.")
     (license license:expat)))
 
+(define-public texlive-grundgesetze
+  (package
+    (name "texlive-grundgesetze")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grundgesetze/"
+                   "source/latex/grundgesetze/"
+                   "tex/latex/grundgesetze/")
+             (base32
+              "0hpl336bn33qjmq2bhqn94fjdxlcxs0lxm4sdr124dnagdnksl4n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grundgesetze")
+    (synopsis "Typeset Frege's @emph{Grundgesetze der Arithmetik}")
+    (description
+     "The package defines maths mode commands for typesetting Gottlob Frege's
+concept-script in the style of his @emph{Grundgesetze der Arithmetik} (Basic
+Laws of Arithmetic).")
+    (license license:gpl2)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
