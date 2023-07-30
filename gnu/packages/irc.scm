@@ -421,9 +421,11 @@ for the IRCv3 protocol.")
         (base32 "0r1h10qdhhgy3359ndbjh269daivm126qc0c23db7bffv0xs4bff"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))))
+     (list
+      #:tests? #f                       ; no tests
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              (string-append "CC=" #$(cc-for-target)))))
     (native-inputs
      (list universal-ctags pkg-config))
     (inputs
