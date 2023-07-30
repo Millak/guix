@@ -4585,6 +4585,25 @@ formulas that will be also typeset in a similar way.  It can typically be used
 for typeseting sets of type inference rules or typing derivations.")
     (license license:gpl2)))
 
+(define-public texlive-mathpunctspace
+  (package
+    (name "texlive-mathpunctspace")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathpunctspace/"
+                   "tex/latex/mathpunctspace/")
+             (base32
+              "0kbsdbnhiwgxa1yznsknni7gvv7x96x02ir2vxmlmhph1j3wqx28")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathpunctspace")
+    (synopsis "Control the space after punctuation in math expressions")
+    (description
+     "This package provides a mechanism to control the space after commas and
+semicolons in mathematical expressions.")
+    (license license:bsd-2)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
