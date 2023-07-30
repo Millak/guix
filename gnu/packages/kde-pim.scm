@@ -29,6 +29,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
@@ -1055,15 +1056,14 @@ easier to do so.")
 (define-public kitinerary
   (package
     (name "kitinerary")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://invent.kde.org/pim/kitinerary/-/archive/v"
-                    version "/kitinerary-v" version ".tar.gz"))
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kitinerary-" version ".tar.xz"))
               (sha256
                (base32
-                "1gpy5siaw9k4332ii6a87rq162dbmyfkqp1l1k8bmldg1755v3jz"))))
+                "0fcqix7hgmv7qcfxzmqy61kg7dqi5zas5vqfs7pfycgcxma0g869"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -1089,7 +1089,8 @@ easier to do so.")
                   qtlocation
                   qtquickcontrols2-5
                   libxml2
-                  zlib))
+                  zlib
+                  zxing-cpp))
     (home-page "https://apps.kde.org/itinerary/")
     (synopsis
      "Data Model and Extraction System for Travel Reservation information")
