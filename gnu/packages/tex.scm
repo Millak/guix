@@ -6479,6 +6479,25 @@ document; an index of the chemicals mentioned in the document can be
 created.")
     (license license:lppl1.3+)))
 
+(define-public texlive-subsupscripts
+  (package
+    (name "texlive-subsupscripts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subsupscripts/"
+                   "tex/latex/subsupscripts/")
+             (base32
+              "1f9yn6ic1yn4nl2s8ngbrrl1xflb4g2j0iw77563j5n7prgy1wrf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subsupscripts")
+    (synopsis "Range of sub- and superscript commands")
+    (description
+     "The package provides a comprehensive and flexible set of commands for
+combinations of left and right sub- and superscripts.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
