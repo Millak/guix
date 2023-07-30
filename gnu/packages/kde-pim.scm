@@ -366,14 +366,14 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
 (define-public itinerary
   (package
     (name "itinerary")
-    (version "22.08.1")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1w1gl4lz8gwf8cmxhsfyp4afiaq9anc8glrxay407bqp28andp3a"))))
+                "132x68wc4pallxgkvridfsimfq5m2g47fj9lcgz1kq4gdsidzf6i"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f)) ;Fails 20/27
@@ -383,6 +383,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
                   ki18n
                   kio
                   kirigami
+                  kirigami-addons
                   kitinerary
                   kitemmodels
                   kcoreaddons
