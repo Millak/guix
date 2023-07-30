@@ -1390,6 +1390,39 @@ Extern C linkage permits the package routines to be called from C++.")
 NonLinear Programming) problems.  It builds on top of Cbc and Ipopt.")
     (license license:epl1.0)))
 
+(define-public pagmo
+  (package
+    (name "pagmo")
+    (version "2.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/esa/pagmo2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g0j0k0cwp8kyyggj80s5cd24bl6gqmf6f5g7j2axswr2bdj16fg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DPAGMO_BUILD_TESTS=ON"
+                                     "-DPAGMO_WITH_EIGEN3=ON")))
+    ;; Eigen is optional, enables some extra features.
+    (inputs (list boost eigen tbb))
+    (home-page "https://esa.github.io/pagmo2/")
+    (synopsis
+     "Platform to perform parallel computations of optimisation tasks")
+    (description "@code{pagmo} is a C++ scientific library for massively
+parallel optimization.  It is built around the idea of providing a unified
+interface to optimization algorithms and to optimization problems and to make
+their deployment in massively parallel environments easy.")
+    ;; Pagmo only supports 64-bit x86, ARM and PowerPC:
+    ;; https://esa.github.io/pagmo2/install.html
+    (supported-systems '("x86_64-linux" "aarch64-linux" "armhf-linux"
+                         "powerpc64le-linux"))
+    ;; Dual licensed, user choice.
+    (license (list license:lgpl3+ license:gpl3+))))
+
 (define-public gctp
   (package
     (name "gctp")
