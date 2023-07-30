@@ -1339,6 +1339,29 @@ definitions for any programming language.  The user can adapt a pseudocode
 style to his native language.")
     (license license:lppl)))
 
+(define-public texlive-algorithms
+  (package
+    (name "texlive-algorithms")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/algorithms/"
+                   "source/latex/algorithms/"
+                   "tex/latex/algorithms/")
+             (base32
+              "0yw0alkigq77a2ha4hdrvpagqvyy0cv61ddhvf227wlwmvw5ch2w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/algorithms")
+    (synopsis "A suite of tools for typesetting algorithms in pseudo-code")
+    (description
+     "The package consists of two environments: @code{algorithm} and
+@code{algorithmic}.  The @code{algorithm} package defines a floating
+@code{algorithm} environment designed to work with the @code{algorithmic}
+style.  Within an @code{algorithmic} environment a number of commands for
+typesetting popular algorithmic constructs are available.")
+    (license license:lgpl2.1)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
