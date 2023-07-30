@@ -4469,7 +4469,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
 (define-public lvm2
   (package
     (name "lvm2")
-    (version "2.03.21")
+    (version "2.03.22")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/ftp/lvm2/LVM2."
@@ -4478,7 +4478,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
                                         version ".tgz")))
               (sha256
                (base32
-                "0zksqsz8y47kh6vq0ykkgxf19il4wxfn234n6zf8m691sqhij9hy"))
+                "0z6w6bknhwh1n3qfkb5ij6x57q3wjf28lq3l8kh7rkhsplinjnjc"))
               (modules '((guix build utils)))
               (snippet
                '(begin
