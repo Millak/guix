@@ -5707,6 +5707,25 @@ algorithms in a natural manner.")
 @code{listings} package.")
     (license license:bsd-3)))
 
+(define-public texlive-qsharp
+  (package
+    (name "texlive-qsharp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qsharp/" "source/latex/qsharp/"
+                   "tex/latex/qsharp/")
+             (base32
+              "104asd1z3n7yqpq2midca2sjjxbbr0c9ngaqncj8zzb0i7ky19v4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qsharp")
+    (synopsis "Syntax highlighting for the Q# language")
+    (description
+     "The package provides syntax highlighting for the Q# language,
+a domain-specific language for quantum programming.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
