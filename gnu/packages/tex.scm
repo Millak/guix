@@ -6721,6 +6721,25 @@ that support calculational proofs and Dijkstra's guarded command language.")
 symbols.")
     (license license:lppl)))
 
+(define-public texlive-textopo
+  (package
+    (name "texlive-textopo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textopo/" "source/latex/textopo/"
+                   "tex/latex/textopo/")
+             (base32
+              "0rw41qg3l4jzvwsrhwazwxn85kgad8r7bxp9bfbq843b4zrlwnaz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/textopo")
+    (synopsis "Annotated membrane protein topology plots")
+    (description
+     "This package provides a LaTeX package for setting shaded and annotated
+membrane protein topology plots and helical wheels.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
