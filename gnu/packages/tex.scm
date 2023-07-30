@@ -5204,6 +5204,25 @@ find fixed points, zeros and extrema of such functions, and calculate the
 terms of recurrence relations.")
     (license license:lppl1.3c)))
 
+(define-public texlive-numerica-tables
+  (package
+    (name "texlive-numerica-tables")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numerica-tables/"
+                   "tex/latex/numerica-tables/")
+             (base32
+              "0g438l2sxij5s8zg6b60w8jvy2jpa2f0s14gjg4f8pq7lf6vk9gj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numerica-tables")
+    (synopsis "Create multi-column tables of mathematical functions")
+    (description
+     "The package defines a command to create possibly multi-column tables of
+mathematical function values.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
