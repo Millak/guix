@@ -3539,6 +3539,27 @@ package.")
     ;; LGPL 2.1+.
     (license license:lgpl2.1+)))
 
+(define-public texlive-extpfeil
+  (package
+    (name "texlive-extpfeil")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/extpfeil/"
+                   "source/latex/extpfeil/"
+                   "tex/latex/extpfeil/")
+             (base32
+              "11vri2kij4y3da2v1gsps66jf4r529w4nqbgbfajrxh2nhfb60iv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/extpfeil")
+    (synopsis "Extensible arrows in mathematics")
+    (description
+     "The package provides some more extensible arrows (usable in the same way
+as @code{\\xleftarrow} from @code{amsmath}), and a simple command to create
+new ones.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
