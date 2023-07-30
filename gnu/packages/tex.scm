@@ -3829,6 +3829,26 @@ package.  Its main features are:
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-gotoh
+  (package
+    (name "texlive-gotoh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gotoh/" "source/latex/gotoh/"
+                   "tex/latex/gotoh/")
+             (base32
+              "0h08ygzlhv1mpd27yfv8slvgfwa250z7alpv99p6768jafysp3k9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gotoh")
+    (synopsis "Implementation of the Gotoh sequence alignment algorithm")
+    (description
+     "This package calculates biological sequence alignment with the Gotoh algorithm.
+The package also provides an interface to control various settings including
+algorithm parameters.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
