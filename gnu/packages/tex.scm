@@ -4775,6 +4775,32 @@ decorate those diagrams, for instance to annotate the diagram, to add crashes
 to the processes, checkpoints, ...")
     (license license:lppl1.3+)))
 
+(define-public texlive-mgltex
+  (package
+    (name "texlive-mgltex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mgltex/" "source/latex/mgltex/"
+                   "tex/latex/mgltex/")
+             (base32
+              "0lv18k5z59ayxm9z02pnfibhdblvl802nhmpxd7wg0fbl1sk886x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mgltex")
+    (synopsis
+     "High-quality graphics from MGL scripts embedded in LaTeX documents")
+    (description
+     "This package allows you to create high-quality publication-ready
+graphics directly from MGL scripts embedded into your LaTeX document, using
+the MathGL library.
+
+MathGL is a fast and efficient library by Alexey Balakin for the creation of
+high-quality publication-ready scientific graphics.  Although it defines
+interfaces for many programming languages, it also implements its own
+scripting language, called MGL, which can be used independently.")
+    (license (list license:gpl3 license:cc-by-sa3.0))))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
