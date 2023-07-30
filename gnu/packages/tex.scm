@@ -3404,6 +3404,34 @@ command and then input its output into your document.  This package also lets
 you use any special symbols inside your command.")
     (license license:expat)))
 
+(define-public texlive-eolang
+  (package
+    (name "texlive-eolang")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eolang/" "source/latex/eolang/"
+                   "tex/latex/eolang/")
+             (base32
+              "1df7hw4dijisx2r9vzar7xpr97cdhbiyrbawzj8vka9gwwn14kqw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-amsmath
+           texlive-fancyvrb
+           texlive-iexec
+           texlive-pgf
+           texlive-pgfopts
+           texlive-stmaryrd))
+    (home-page "https://ctan.org/pkg/eolang")
+    (synopsis "Formulas and graphs for the EO programming language")
+    (description
+     "This LaTeX package helps you write φ-calculus formulas and
+@url{https://github.com/objectionary/sodg, SODG} graphs for the
+@url{https://www.eolang.org, EO} programming language.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
