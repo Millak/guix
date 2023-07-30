@@ -4731,6 +4731,26 @@ to languages and computational complexity usually needed for Membrane
 Computing research.")
     (license license:lppl1.3+)))
 
+(define-public texlive-memorygraphs
+  (package
+    (name "texlive-memorygraphs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/memorygraphs/"
+                   "tex/latex/memorygraphs/")
+             (base32
+              "03wsql3aq6327k905fz902il1acxcz2ik4adxfkl4vm1f1g045xn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/memorygraphs")
+    (synopsis "TikZ styles to typeset graphs of program memory")
+    (description
+     "This package defines some TikZ styles and adds anchors to existing
+styles that ease the declaration of memory graphs.  It is intended for graphs
+that represent the memory of a computer program during its execution.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
