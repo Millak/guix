@@ -5377,6 +5377,28 @@ will behave in the same way.  The package also offers a robust
 reimplementation of @code{\\big}, @code{\\bigg}, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pfdicons
+  (package
+    (name "texlive-pfdicons")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pfdicons/" "tex/latex/pfdicons/")
+             (base32
+              "16xdy0ah7za1gr63w1pdfvbq8x4fkin7q0yfpml7y4wv7m1qxqgc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pfdicons")
+    (synopsis "Draw process flow diagrams in chemical engineering")
+    (description
+     "This package provides TikZ shapes to represent commonly encountered unit
+operations for depiction in process flow diagrams (PFDs) and, to a lesser
+extent, process and instrumentation diagrams (PIDs).  The package was designed
+with undergraduate chemical engineering students and faculty in mind, and the
+number of units provided should cover--in Turton's estimate--about 90 percent
+of all fluid processing operations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
