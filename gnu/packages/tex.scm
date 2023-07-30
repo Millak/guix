@@ -3241,6 +3241,30 @@ triangular, or banded matrices.")
 top of TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dyntree
+  (package
+    (name "texlive-dyntree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dyntree/" "source/latex/dyntree/"
+                   "tex/latex/dyntree/")
+             (base32
+              "05cjw3mk1l1syl5xjg3bjq0j79qpif9w3sgyvjr0i92xwjnqnns4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dyntree")
+    (synopsis "Construct Dynkin tree diagrams")
+    (description
+     "The package is intended for users needing to typeset a Dynkin Tree
+Diagram---a group theoretical construct consisting of cartan coefficients in
+boxes connected by a series of lines.  Such a diagram is a tool for working
+out the states and their weights in terms of the fundamental weights and the
+simple roots.")
+    ;; Package mentions LGPL without any reference to the version.  Assuming
+    ;; LGPL 2.1+.
+    (license license:lgpl2.1+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
