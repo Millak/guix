@@ -3962,6 +3962,31 @@ macros to improve the default behavior of LaTeX for High Energy Physics
 publications.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hepnames
+  (package
+    (name "texlive-hepnames")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hepnames/" "tex/latex/hepnames/")
+             (base32
+              "1wvqf4r7p8bkvxwp7mvqnngxillbpii38i413q8acz0777bpassl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hepnames")
+    (synopsis "Pre-defined high energy particle names")
+    (description
+     "Hepnames provides a pair of LaTeX packages, @code{heppennames} and @code{hepnicenames},
+providing a large set of pre-defined high energy physics particle names built
+with the @code{hepparticles} package.  The packages are based on
+@file{pennames.sty} by Michel Goosens and Eric van Herwijnen.  Heppennames
+re-implements the particle names in @file{pennames.sty}, with some additions
+and alterations and greater flexibility and robustness due to the
+@code{hepparticles} structures, which were written for this purpose.
+Hepnicenames provides the main non-resonant particle names from
+@code{heppennames} with more friendly names.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
