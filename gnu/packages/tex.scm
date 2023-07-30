@@ -5241,6 +5241,26 @@ mathematical function values.")
      "The package will typeset both Z and Object-Z specifications.")
     (license license:lppl)))
 
+(define-public texlive-oplotsymbl
+  (package
+    (name "texlive-oplotsymbl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/oplotsymbl/"
+                   "tex/latex/oplotsymbl/")
+             (base32
+              "0kbkxy18yq7990rbbm8b8ky9dyvxknzhczkfa9ki93jap8hwac2r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oplotsymbl")
+    (synopsis "Some symbols which are not easily available")
+    (description
+     "This package is named oPlotSymbl and it includes symbols, which are not
+easily available.  Especially, these symbols are used in scientific plots, but
+the potential user is allowed to use them in other ways.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
