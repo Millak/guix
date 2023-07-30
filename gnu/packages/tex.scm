@@ -1729,6 +1729,24 @@ in-line BNF expressions using math mode.")
 of mathematical disciplines.")
     (license license:lppl1.3+)))
 
+(define-public texlive-begriff
+  (package
+    (name "texlive-begriff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/begriff/" "tex/latex/begriff/")
+             (base32
+              "0vi7i35fqi32y26crk5aj93mivix61ppgmpz0djshizwrd9pn9xy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/begriff")
+    (synopsis "Typeset Begriffschrift")
+    (description
+     "The package defines maths mode commands for typesetting Frege's
+@emph{Begriffschrift}.")
+    (license license:gpl3+)))
+
 (define-public texlive-bitelist
   (package
     (name "texlive-bitelist")
