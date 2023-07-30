@@ -1039,6 +1039,29 @@ ones.")
 (define-deprecated/alias texlive-union texlive-updmap.cfg)
 (export texlive-union)
 
+(define-public texlive-12many
+  (package
+    (name "texlive-12many")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/12many/" "source/latex/12many/"
+                   "tex/latex/12many/")
+             (base32
+              "104vqgl5kqdbwfa5wxj7gpxfrqa3k4ky4806mg6zscd6palf2gi5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/one2many")
+    (synopsis "Generalising mathematical index sets")
+    (description
+     "In the discrete branches of mathematics and the computer sciences, it
+will only take some seconds before you're faced with a set like
+@samp{@{1,...,m@}}.  Some people write @samp{$1\\ldotp\\ldotp m$}, others
+@samp{$\\{j:1\\leq j\\leq m\\}$}, and the journal you're submitting to might
+want something else entirely.  The @code{12many} package provides an interface
+that makes changing from one to another a one-line change.")
+    (license license:lppl)))
+
 (define-public texlive-a2ping
   (package
     (name "texlive-a2ping")
