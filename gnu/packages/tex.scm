@@ -5560,6 +5560,25 @@ of all rational roots is implemented via such macros.")
 deduction calculi, sequent-like calculi, and similar.")
     (license license:gpl3+)))
 
+(define-public texlive-principia
+  (package
+    (name "texlive-principia")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/principia/"
+                   "tex/latex/principia/")
+             (base32
+              "1pq9plcp0zp5a4nhz80kbkhbg00axp10p20r1bwq4ck7giwci3jf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/principia")
+    (synopsis "Notations for typesetting the @emph{Principia Mathematica}")
+    (description
+     "This package supports typesetting the Peanese notation in Volume I of
+Whitehead and Russell's 1910 @emph{Principia Mathematica}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
