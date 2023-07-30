@@ -6883,6 +6883,22 @@ to define new units and changes the output concerning to the surrounding font
 settings.")
     (license license:lppl)))
 
+(define-public texlive-venn
+  (package
+    (name "texlive-venn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/venn/" "metapost/venn/")
+             (base32
+              "08pp3b58lng4lfaphhpw5nrczlhj86kgi1ciq12f9241z4qgnq6q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/venn")
+    (synopsis "Creating Venn diagrams with MetaPost")
+    (description "This package provides MetaPost macros for Venn diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
