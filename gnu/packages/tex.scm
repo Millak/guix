@@ -2505,6 +2505,27 @@ leading journals.  It also provides some handy chemistry-related macros.")
 Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-clrscode
+  (package
+    (name "texlive-clrscode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clrscode/" "tex/latex/clrscode/")
+             (base32
+              "1gl2ap3w7zanbrn1k2bcf3f75lfpakp5dd0w8m1jy46hyvha7jpd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clrscode")
+    (synopsis "Typesets pseudocode as in Introduction to Algorithms")
+    (description
+     "This package allows you to typeset pseudocode in the style of
+@emph{Introduction to Algorithms}, Second edition, by Cormen, Leiserson,
+Rivest, and Stein.  The package was written by the authors.  You use the
+commands the same way the package's author did when writing the book, and your
+output will look just like the pseudocode in the text.")
+    (license license:lppl)))
+
 (define-public texlive-colorsep
   (package
     (name "texlive-colorsep")
