@@ -4432,6 +4432,28 @@ display any series of aligned equations with easy labeling/referencing and
 other customization options.")
     (license license:lppl)))
 
+(define-public texlive-lplfitch
+  (package
+    (name "texlive-lplfitch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lplfitch/"
+                   "source/latex/lplfitch/"
+                   "tex/latex/lplfitch/")
+             (base32
+              "1x396k71r8sb04pby3h6snjzmyzmai9s11icgxf1vi9dswh191cz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lplfitch")
+    (synopsis "Fitch-style natural deduction proofs")
+    (description
+     "The package provides macros for typesetting natural deduction proofs in
+Fitch style, with subproofs indented and offset by scope lines.  The proofs
+from use of the package are in the format used in the textbook @emph{Language,
+Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
