@@ -6352,6 +6352,26 @@ of them.  Similarly @code{statistics} can draw only some parts of the
 graphs.")
     (license license:gpl3+)))
 
+(define-public texlive-statistik
+  (package
+    (name "texlive-statistik")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/statistik/"
+                   "source/latex/statistik/"
+                   "tex/latex/statistik/")
+             (base32
+              "1j1g9hidkq02v3f4alafi53qny3diazpfxb1w936dcy4wi5l584x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/statistik")
+    (synopsis "Store statistics of a document")
+    (description
+     "The package counts the numbers of pages per chapter, and stores the
+results in a separate file; the format of the file is selectable.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
