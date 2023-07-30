@@ -5075,6 +5075,26 @@ adapt their size to the material enclosed, rendering @code{\\left} and
 @code{\\right} almost obsolete.")
     (license license:gpl3+)))
 
+(define-public texlive-nchairx
+  (package
+    (name "texlive-nchairx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nchairx/" "source/latex/nchairx/"
+                   "tex/latex/nchairx/")
+             (base32
+              "0cgp22c26afdpb5pfk5ljp1fr0wvlkf04viw9zbc4gss8hi3gqi5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nchairx")
+    (synopsis "Maths macros from chair X of Wurzburg University")
+    (description
+     "This package was developed by members of the chair for mathematical
+physics at the University of Wurzburg as a collection of macros and predefined
+environments for quickly creating nice mathematical documents.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
