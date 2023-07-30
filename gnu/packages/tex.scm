@@ -4357,6 +4357,30 @@ simple roots of any complex simple Lie algebra.  It uses the Dynkin diagrams
 package @code{dynkin-diagrams}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-logicproof
+  (package
+    (name "texlive-logicproof")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/logicproof/"
+                   "source/latex/logicproof/"
+                   "tex/latex/logicproof/")
+             (base32
+              "02iif9rvp8njp7zc4ab4jgksf0hrbg6z5cp7066y245bjwi99fi3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/logicproof")
+    (synopsis "Box proofs for propositional and predicate logic")
+    (description
+     "This package provides a common style of proof used in propositional and
+predicate logic is Fitch proofs, in which each line of the proof has
+a statement and a justification, and subproofs within a larger proof have
+boxes around them.  The package provides environments for typesetting such
+proofs and boxes.  It creates proofs in a style similar to that used in
+@emph{Logic in Computer Science} by Huth and Ryan.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
