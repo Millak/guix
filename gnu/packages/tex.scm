@@ -5542,6 +5542,24 @@ localization of real roots to arbitrary precision as well as the determination
 of all rational roots is implemented via such macros.")
     (license license:lppl1.3c)))
 
+(define-public texlive-prftree
+  (package
+    (name "texlive-prftree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prftree/" "tex/latex/prftree/")
+             (base32
+              "1h5cgk0jsdngmhzr90910fqyvnvabbpicwskan6yay7h8iqqmxvf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/prftree")
+    (synopsis "Macros for building proof trees")
+    (description
+     "This package provides a package to typeset proof trees for natural
+deduction calculi, sequent-like calculi, and similar.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
