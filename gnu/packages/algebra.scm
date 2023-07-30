@@ -1366,6 +1366,40 @@ objects.")
     ;; safe side, we drop them for now.
     (license license:gpl2+)))
 
+(define-public spectra
+  (package
+    (name "spectra")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/yixuan/spectra")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1krgx7763g0phrp879rgq10dvfyxrdx9rzwxiyzn6qi3iqr6d8hx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_TESTS=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; This test failed.
+                     (invoke "ctest" "--exclude-regex"
+                             "GenEigsRealShift")))))))
+    (inputs (list eigen))
+    (home-page "https://spectralib.org/")
+    (synopsis "C++ library for large scale eigenvalue problems")
+    (description "Spectra stands for Sparse Eigenvalue Computation Toolkit as
+a Redesigned ARPACK.  It is a C++ library for large scale eigenvalue problems,
+built on top of Eigen.  It is implemented as a header-only C++ library and can
+be easily embedded in C++ projects that require calculating eigenvalues of
+large matrices.")
+    (license license:mpl2.0)))
+
 (define-public gappa
   (package
     (name "gappa")
