@@ -6658,6 +6658,27 @@ package requires that shell escape be enabled.")
 index placement.")
     (license license:expat)))
 
+(define-public texlive-tensor
+  (package
+    (name "texlive-tensor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tensor/" "source/latex/tensor/"
+                   "tex/latex/tensor/")
+             (base32
+              "0rc3mswkwlacfwcz2dbvl3glkwkkyji8aiqa837wr0h8rd7jfl2g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tensor")
+    (synopsis "Typeset tensors")
+    (description
+     "This allows the user to set tensor-style super- and subscripts with
+offsets between successive indices.  It supports the typesetting of tensors
+with mixed upper and lower indices with spacing, also typeset preposed
+indices.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
