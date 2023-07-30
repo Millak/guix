@@ -6596,6 +6596,28 @@ commands are needed, however fine tuning of the various
 parameters (dimensions) can still be achieved through key=value pairs.")
     (license license:lppl)))
 
+(define-public texlive-t-angles
+  (package
+    (name "texlive-t-angles")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/t-angles/" "tex/latex/t-angles/")
+             (base32
+              "0jp16zd64c5xdsxfycdyvlwwss4k46y7nfd2dn6ybshx34kcv0qa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/t-angles")
+    (synopsis
+     "Draw tangles, trees, Hopf algebra operations and other pictures")
+    (description
+     "This package provides a LaTeX2e package for drawing tangles, trees, Hopf
+algebra operations and other pictures.  It is based on emTeX or TPIC
+@code{\\specials}.  Therefore, it can be used with the most popular drivers,
+including emTeX drivers, dviwin, xdvi and dvips, and (using some code from
+ConTeXt) it may also be used with pdfLaTeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
