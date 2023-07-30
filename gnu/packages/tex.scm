@@ -3922,6 +3922,25 @@ theoretical texts, program notes, symbol legends, etc.  Documents must be
 compiled using XeLaTeX.")
     (license license:cc-by4.0)))
 
+(define-public texlive-hep
+  (package
+    (name "texlive-hep")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep/" "tex/latex/hep/")
+             (base32
+              "1p7phgv3d4xch9c9qwkpgrpc34nzijxfxiqkpnc9b9a3xfwh71sg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep")
+    (synopsis "Convenience wrapper for High Energy Physics packages")
+    (description
+     "This package loads the author's @code{hepunits} and @code{hepnicenames}
+packages, and a selection of others that are useful in High Energy Physics
+papers, etc.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
