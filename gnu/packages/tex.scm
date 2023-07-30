@@ -5647,6 +5647,27 @@ A cross-referencing system is provided for trees which cite line numbers in
 justifications for proof lines or branch closures.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pseudo
+  (package
+    (name "texlive-pseudo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pseudo/" "tex/latex/pseudo/")
+             (base32
+              "0dc97v66hilgnl9m7rbr737lb4vy08fwdjs4ldcvvmrk2da026xb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pseudo")
+    (synopsis "Straightforward pseudocode")
+    (description
+     "The package permits writing pseudocode without much fuss and with quite
+a bit of configurability.  Its main environment combines aspects of
+enumeration, tabbing and tabular for nonintrusive line numbering, indentation
+and highlighting, and there is functionality for typesetting common syntactic
+elements such as keywords, identifiers, and comments.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
