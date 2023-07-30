@@ -6766,6 +6766,27 @@ of one's notes from one textbook to another can be achieved relatively easily
 by changing package options.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thmbox
+  (package
+    (name "texlive-thmbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thmbox/" "source/latex/thmbox/"
+                   "tex/latex/thmbox/")
+             (base32
+              "0ibs75aqla6z3lww0xpxd0biarla8hhx9zz245isy9ks8q231v1l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thmbox")
+    (synopsis "Decorate theorem statements")
+    (description
+     "The package defines an environment thmbox that presents theorems,
+definitions and similar objects in boxes decorated with frames and various
+aesthetic features.  The standard macro @code{\\newtheorem} may be redefined
+to use the environment.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
