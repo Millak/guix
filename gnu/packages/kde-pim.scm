@@ -30,6 +30,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
@@ -956,24 +957,26 @@ cryptography to the contents of the clipboard.")
 (define-public khealthcertificate
   (package
     (name "khealthcertificate")
-    (version "22.09")
+    (version "23.01.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma-mobile/"
-                                  (version-major+minor version)
+              (uri (string-append "mirror://kde/stable/plasma-mobile/" version
                                   "/khealthcertificate-" version ".tar.xz"))
               (sha256
                (base32
-                "16vkjpyxwx34pvdpnci0l6mx2bdjialiscjvbdx53xbsq9ff701k"))))
+                "193agd3jg029vcq1h5hdg3gw6zgqcmszl6ffcrid0ajbbiic4pbm"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "ctest" "-E"
-                               "(icaovdsparsertest|nlcoronacheckparsertest)")))))))
-    (native-inputs (list extra-cmake-modules pkg-config))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key inputs tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "TZDIR"
+                             (search-input-directory inputs "share/zoneinfo"))
+                     (invoke "ctest" "-E"
+                             "(icaovdsparsertest|eudgcparsertest)")))))))
+    (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     (inputs (list karchive
                   kcodecs
                   ki18n
