@@ -4250,6 +4250,28 @@ These macros can typeset Karnaugh-Maps and Veitch-Charts with up to ten
 variables.")
     (license license:lppl1.0+)))
 
+(define-public texlive-karnaugh-map
+  (package
+    (name "texlive-karnaugh-map")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/karnaugh-map/"
+                   "source/latex/karnaugh-map/"
+                   "tex/latex/karnaugh-map/")
+             (base32
+              "01gcffk9vys81b0ad1rxlqnq8i8yflfhby43fr46h7li6p08rx09")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/karnaugh-map")
+    (synopsis "LaTeX package for drawing Karnaugh maps with up to 6 variables")
+    (description
+     "This package draws Karnaugh maps with 2, 3, 4, 5, and 6 variables.  It
+also contains commands for filling the karnaugh map with terms
+semi-automatically or manually.  Last but not least it contains commands for
+drawing implicants on top of the map.")
+    (license license:cc-by-sa3.0)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
