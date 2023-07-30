@@ -6180,6 +6180,26 @@ superseded by @code{siunitx}; @code{sistyle} has maintenance-only support,
 now.")
     (license license:lppl)))
 
+(define-public texlive-siunits
+  (package
+    (name "texlive-siunits")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/siunits/" "source/latex/siunits/"
+                   "tex/latex/siunits/")
+             (base32
+              "1lw9qjb1bnk357z20yri3lhcvxdnknb7yymb6hh5y8jb61pskns4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/siunits")
+    (synopsis "International System of Units")
+    (description
+     "This package typesets physical units following the rules of the
+International System of Units (SI).  Note that the package is now superseded
+by @code{siunitx}; @code{siunits} has maintenance-only support, now.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
