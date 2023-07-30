@@ -4381,6 +4381,33 @@ proofs and boxes.  It creates proofs in a style similar to that used in
 @emph{Logic in Computer Science} by Huth and Ryan.")
     (license license:lppl1.3+)))
 
+(define-public texlive-longdivision
+  (package
+    (name "texlive-longdivision")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/longdivision/"
+                   "tex/latex/longdivision/")
+             (base32
+              "110jy01n8n8gmanvfv4sngmrgh2hrgkd1h37g3rdbwgq7s5iffaw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/longdivision")
+    (synopsis "Typesets long division")
+    (description
+     "This package executes the long division algorithm and typesets the solutions.
+The dividend must be a positive decimal number and the divisor must be
+a positive integer.  Repeating decimals is handled correctly, putting a bar
+over the repeated part of the decimal.
+
+The package defines two macros, @code{\\longdivision} and
+@code{\\intlongdivision}.  Each takes two arguments, a dividend and
+a divisor. @code{\\longdivision} keeps dividing until the remainder is zero,
+or it encounters a repeated remainder. @code{\\intlongdivision} stops when the
+dividend stops (though the dividend doesn't have to be an integer).")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
