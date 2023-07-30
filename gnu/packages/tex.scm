@@ -5817,6 +5817,28 @@ solution of a linear system;
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-rest-api
+  (package
+    (name "texlive-rest-api")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rest-api/"
+                   "source/latex/rest-api/"
+                   "tex/latex/rest-api/")
+             (base32
+              "1yv81yisaqkxnq33803z7kx3rk6hsdnyza0dzgqmkf6x1jmsnlp9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rest-api")
+    (synopsis "Describing a REST API")
+    (description
+     "This LaTeX package provides macros to describe REST APIs for
+documentation purposes.  The endpoints can hold the following information:
+method description path parameter request body and content type response body,
+content type and status code.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
