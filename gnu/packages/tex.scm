@@ -3432,6 +3432,24 @@ you use any special symbols inside your command.")
 @url{https://www.eolang.org, EO} programming language.")
     (license license:expat)))
 
+(define-public texlive-eqexpl
+  (package
+    (name "texlive-eqexpl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eqexpl/" "tex/latex/eqexpl/")
+             (base32
+              "0crbq63m7ra20a1s1yka2v24spfvi86ls1v8asswdrf83zkdpibi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eqexpl")
+    (synopsis "Align explanations for formulas")
+    (description
+     "This package tries to create perfectly formatted explanation of
+components of a formula.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
