@@ -6943,6 +6943,32 @@ structural formulas in a way that reflects their structure.  The package
 provides three output modes: LaTeX, PostScript and PDF.")
     (license license:lppl1.3+)))
 
+(define-public texlive-yhmath
+  (package
+    (name "texlive-yhmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/yhmath/"
+                   "fonts/map/dvips/yhmath/"
+                   "fonts/source/public/yhmath/"
+                   "fonts/tfm/public/yhmath/"
+                   "fonts/type1/public/yhmath/"
+                   "fonts/vf/public/yhmath/"
+                   "source/fonts/yhmath/"
+                   "tex/latex/yhmath/")
+             (base32
+              "0blzyr94d7ajb639j7bfnrpn52wicwfqwyba38hgh6s9hgx071cv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/yhmath")
+    (synopsis "Extended maths fonts for LaTeX")
+    (description
+     "The @code{yhmath} bundle contains fonts (in Metafont and type 1 format)
+and a LaTeX package for using them.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
