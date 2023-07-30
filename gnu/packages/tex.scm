@@ -2317,6 +2317,27 @@ the package supports the creation of exercise sheets, with separating printing
 of solutions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chemformula
+  (package
+    (name "texlive-chemformula")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemformula/"
+                   "tex/latex/chemformula/")
+             (base32
+              "14w98hnhljfm62cxg2hml3razrxw9hkzm54v7ybnbhcp5mm7wvdm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-units))
+    (home-page "https://ctan.org/pkg/chemformula")
+    (synopsis "Command for typesetting chemical formulas and reactions")
+    (description
+     "The package provides a command to typeset chemical formulas and
+reactions in support of other chemistry packages (such as
+@code{chemmacros}).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
