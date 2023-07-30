@@ -4474,6 +4474,30 @@ Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
 several languages not included in that package: BUGS, JAGS, and Stan.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mathcommand
+  (package
+    (name "texlive-mathcommand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathcommand/"
+                   "source/latex/mathcommand/"
+                   "tex/latex/mathcommand/")
+             (base32
+              "1vm7k1p5d74vkqmpxdza4127qj7622w0vfr2bh51wb612dpps2a5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathcommand")
+    (synopsis "@code{\\newcommand}-like commands for defining math macros")
+    (description
+     "This package provides functionalities for defining macros that have
+different behaviors depending on whether in math or text mode, that absorb
+Primes, Indices and Exponents (PIE) as extra parameters usable in the code;
+and it offers some iteration facilities for defining macros with similar code.
+The primary objective of this package is to be used together with the
+knowledge package for a proper handling of mathematical notations.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
