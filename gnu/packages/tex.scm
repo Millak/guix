@@ -5864,6 +5864,26 @@ provides fallbacks.  It also warns when users try to load packages which are
 known to be incompatible with @code{revtex4-1}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ribbonproofs
+  (package
+    (name "texlive-ribbonproofs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ribbonproofs/"
+                   "tex/latex/ribbonproofs/")
+             (base32
+              "1590hcnmzffm1z2rqz0g3h5a7xpidjzw5am603pqvlsdxvjfm6my")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ribbonproofs")
+    (synopsis "Drawing ribbon proofs")
+    (description
+     "The package provides a way to draw ribbon proofs in LaTeX, a graphical
+proof system for the propositional fragment of the logic of bunched
+implications.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
