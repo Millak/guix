@@ -4022,6 +4022,36 @@ disappear if these macros are used.
 @end enumerate")
     (license license:lppl)))
 
+(define-public texlive-hepthesis
+  (package
+    (name "texlive-hepthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hepthesis/"
+                   "tex/latex/hepthesis/")
+             (base32
+              "10yrdsrvnb259fi2qyjldwc6h55s5z8vadr5pf6sbaihyqnv9igg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hepthesis")
+    (synopsis "Class for academic reports, especially PhD theses")
+    (description
+     "@code{hepthesis} is a LaTeX class for typesetting large academic
+reports, in particular PhD theses.  In particular, @code{hepthesis} offers:
+
+@itemize
+@item attractive semantic environments for various rubric sections;
+@item extensive options for draft production, screen viewing and binding-ready
+output;
+@item helpful extensions of existing environments, including equation and
+tabular;
+@item support for quotations at the start of the thesis and each chapter.
+@end itemize
+
+The class is based on @code{scrbook}, from the KOMA-Script bundle.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
