@@ -2947,6 +2947,28 @@ multiple DMN tables in one table/figure environment.")
 of @code{\\big} commands and the like.")
     (license license:lppl1.2+)))
 
+(define-public texlive-delimseasy
+  (package
+    (name "texlive-delimseasy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/delimseasy/"
+                   "tex/latex/delimseasy/")
+             (base32
+              "0afgcnwqcbw34wgfryzk1rjw82qakl6nq98gl2w1aw5lkgi4fb9p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/delimseasy")
+    (synopsis "Delimiter commands that are easy to use and resize")
+    (description
+     "This package provides commands to give an easy way to control the size
+and blackness of delimiters: append 1-4 @samp{b}s to command for larger sizes;
+prepend @samp{B} for for boldface.  These commands reduce the likelihood of
+incomplete delimeter pairs and typically use fewer characters than the LaTeX
+default.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
