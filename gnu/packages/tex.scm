@@ -2337,6 +2337,52 @@ of solutions.")
 reactions in support of other chemistry packages (such as
 @code{chemmacros}).")
     (license license:lppl1.3c)))
+(define-public texlive-chemgreek
+  (package
+    (name "texlive-chemgreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemgreek/"
+                   "tex/latex/chemgreek/")
+             (base32
+              "0rpcywz5w2im5ck0kp56dywiy1his01s817pngdf9xdn02qk517n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemgreek")
+    (synopsis "Upright Greek letters in chemistry")
+    (description
+     "The package provides upright Greek letters in support of other chemistry
+packages (such as @code{chemmacros}).")
+    (license license:lppl1.3+)))
+
+(define-public texlive-chemarrow
+  (package
+    (name "texlive-chemarrow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/chemarrow/"
+                   "fonts/afm/public/chemarrow/"
+                   "fonts/map/dvips/chemarrow/"
+                   "fonts/source/public/chemarrow/"
+                   "fonts/tfm/public/chemarrow/"
+                   "fonts/type1/public/chemarrow/"
+                   "source/fonts/chemarrow/"
+                   "tex/latex/chemarrow/")
+             (base32
+              "1ky0v2psxamzilmijih88zxanmq2hnpv1yc18mcy9mpymcmvrhwr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/chemarrow")
+    (synopsis "Arrows for use in chemistry")
+    (description
+     "This bundle consists of a font (available as Metafont source, MetaPost
+source, and generated type 1 versions), and a package to use it.  The arrows
+in the font are designed to look more like those in chemistry text-books than
+do Knuth's originals.")
+    (license license:public-domain)))
 
 (define-public texlive-chemmacros
   (package
