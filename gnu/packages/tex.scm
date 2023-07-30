@@ -4052,6 +4052,24 @@ tabular;
 The class is based on @code{scrbook}, from the KOMA-Script bundle.")
     (license license:lppl)))
 
+(define-public texlive-hepunits
+  (package
+    (name "texlive-hepunits")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin name version
+                            (list "doc/latex/hepunits/" "tex/latex/hepunits/")
+                            (base32
+                             "0k89jdw5hpav5wr2imrb5wcasi53qswnqqn6jb89kh5crbrywrlz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hepunits")
+    (synopsis "Set of units useful in high energy physics applications")
+    (description
+     "@code{hepunits} is a LaTeX package built on the SIunits package which
+adds a collection of useful @acronym{HEP, High Energy Physics} units to the
+existing SIunits set.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
