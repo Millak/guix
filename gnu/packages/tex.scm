@@ -3696,6 +3696,28 @@ therefore, there are macros to emphasize or downplay some parts of the
 grammar (which is the main novelty compared to other BNF packages).")
     (license license:lppl1.3+)))
 
+(define-public texlive-fouridx
+  (package
+    (name "texlive-fouridx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fouridx/" "source/latex/fouridx/"
+                   "tex/latex/fouridx/")
+             (base32
+              "0mlinh47gcazi3icyvkixhdkwd1wkpffq8snabhh4bjsvh6m8sxz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fouridx")
+    (synopsis "Left sub- and superscripts in maths mode")
+    (description
+     "The package enables left subscripts and superscripts in maths mode.  The
+sub- and superscripts are raised for optimum fitting to the symbol indexed, in
+such a way that left and right sub- and superscripts are set on the same
+level, as appropriate.  The package provides an alternative to the use of the
+@code{\\sideset} command in the @code{amsmath} package.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
