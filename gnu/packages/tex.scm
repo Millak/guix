@@ -4207,6 +4207,28 @@ macros for mathematical notation which make the code more readable or allow
 flexibility in typesetting material.")
     (license license:lppl)))
 
+(define-public texlive-jupynotex
+  (package
+    (name "texlive-jupynotex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jupynotex/"
+                   "tex/latex/jupynotex/")
+             (base32
+              "1dfb20pv1ws89ckk80hnj57w64m4whmm8s66wh2lb9s3a2rd0brk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jupynotex")
+    (synopsis "Include whole or partial Jupyter notebooks in LaTeX documents")
+    (description
+     "This package provides a Python script and a LaTeX @file{.sty} file which
+can be used together to include Jupyter Notebooks (all of them, or some
+specific cells) as part of a LaTeX document.  It will convert the Jupyter
+Notebook format to proper LaTeX so it gets included seamlessly, supporting
+text, LaTeX, images, etc.")
+    (license license:asl2.0)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
