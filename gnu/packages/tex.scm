@@ -2254,6 +2254,28 @@ in the font are designed to look more like those in chemistry text-books than
 do Knuth's originals.")
     (license license:public-domain)))
 
+(define-public texlive-chemcompounds
+  (package
+    (name "texlive-chemcompounds")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemcompounds/"
+                   "source/latex/chemcompounds/"
+                   "tex/latex/chemcompounds/")
+             (base32
+              "0bk625vdd6i1dc2569ypcq27hin1yggvadf18463qb6xhyndplvf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemcompounds")
+    (synopsis "Simple consecutive numbering of chemical compounds")
+    (description
+     "The chemcompounds package allows for a simple consecutive numbering of
+chemical compounds.  Optionally, it is possible to supply a custom name for
+each compound.  The package differs from the @code{chemcono} package by not
+generating an odd-looking list of compounds inside the text.")
+    (license license:lppl)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
