@@ -5687,6 +5687,26 @@ elements such as keywords, identifiers, and comments.")
 algorithms in a natural manner.")
     (license license:lppl)))
 
+(define-public texlive-pythonhighlight
+  (package
+    (name "texlive-pythonhighlight")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pythonhighlight/"
+                   "tex/latex/pythonhighlight/")
+             (base32
+              "1grvq2sih8klkvzgyrc4fpalv7q670l9q00vs8293n698bhmn72g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pythonhighlight")
+    (synopsis
+     "Highlighting of Python code, based on the @code{listings} package")
+    (description
+     "This package allows highlighting of Python code, based on the
+@code{listings} package.")
+    (license license:bsd-3)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
