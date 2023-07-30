@@ -3759,6 +3759,26 @@ possibility to override the standard behavior of norms, ...).")
 nets, diagrams, etc., very easily, in the LaTeX @code{picture} environment.")
     (license license:lppl)))
 
+(define-public texlive-gene-logic
+  (package
+    (name "texlive-gene-logic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gene-logic/"
+                   "tex/latex/gene-logic/")
+             (base32
+              "13nibrf1f1w92ia7fj8yfa44w9c5wiyy1ndaby5p6bbjdjcxhyv9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gene-logic")
+    (synopsis "Typeset logic formulae, etc")
+    (description
+     "The package provides a facility to typeset certain logic formulae.  It
+provides an environment like @code{eqnarray}, a @code{newtheorem}-like
+environment (NewTheorem), and several macros.")
+    (license license:isc)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
