@@ -4540,6 +4540,24 @@ spacing around fractions and roots, math symbols within bold text as well as
 capital Greek letters.  It also adds some related macros.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mathlig
+  (package
+    (name "texlive-mathlig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/mathlig/")
+             (base32
+              "0pyaqwr2h9knxf1axi55vm6wr9xj15d5j5pagb2011k3b830f91b")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathlig")
+    (synopsis "Define maths ligatures")
+    (description
+     "The package defines character sequences that behave like ligatures, in
+maths mode.")
+    ;; The license is basically CC-BY.
+    (license (license:fsf-free "file://tex/generic/mathlig/mathlig.tex"))))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
