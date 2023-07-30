@@ -5426,6 +5426,34 @@ from true constants, e.g. the fine structure constant, have been calculated
 using the accepted values of the fundamental constants.")
     (license license:lppl1.3c)))
 
+(define-public texlive-physics2
+  (package
+    (name "texlive-physics2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/physics2/" "tex/latex/physics2/")
+             (base32
+              "03xq3cvyv4d01kmk4p14qkvyrfs583jlrjcbn9vy66gk6gcailih")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/physics2")
+    (synopsis "Macros for typesetting math faster and more simply")
+    (description
+     "The @code{physics2} package defines commands for typesetting math
+formulae faster andmore simply.  @code{physics2} is a modularized package,
+each module provides its own function.  You can load modules separately after
+loading @code{physics2}.
+
+Modules of physics provide the following supports:
+@itemize
+@item automatic braces,
+@item Dirac bracket notation,
+@item easy way to typeset diagonal matrices and matrices with similar entries,
+@item double cross and double dot (binary) operators for tensors.
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
