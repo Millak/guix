@@ -4900,6 +4900,26 @@ equation number if and only if the equation actually has a label, which
 reduces visual clutter.")
     (license license:public-domain)))
 
+(define-public texlive-miller
+  (package
+    (name "texlive-miller")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/miller/" "source/latex/miller/"
+                   "tex/latex/miller/")
+             (base32
+              "062pzzzi72hrhvxqg8ay9bacqq1rcjry3ms3j9amzmz6zma3jrgw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/miller")
+    (synopsis "Typeset Miller indices")
+    (description
+     "This package typesets Miller indices that are used in material science
+with an easy syntax.  Minus signs are printed as bar above the corresponding
+number.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
