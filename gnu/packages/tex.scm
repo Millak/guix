@@ -2861,6 +2861,29 @@ for structuring exercises, aggregating points, and displaying a grading table,
 as well as several macros for easier math mode usage.")
     (license license:expat)))
 
+(define-public texlive-cvss
+  (package
+    (name "texlive-cvss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cvss/" "source/latex/cvss/"
+                   "tex/latex/cvss/")
+             (base32
+              "0hs931xcj7jai901nvfvi942x403sda7xslq14bfjls0v74lkhbd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cvss")
+    (synopsis "Compute and display CVSS base scores")
+    (description
+     "The Common Vulnerability Scoring System (CVSS) is an open framework for
+communicating the characteristics and severity of software vulnerabilities.
+CVSS consists of three metric groups: Base, Temporal, and Environmental.  This
+package allows the user to compute CVSS3.1 base scores and use them in
+documents, i.e., it only deals with the Base score.  Temporal and
+Environmental scores will be part of a future release.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-cweb-old
   (package
     (name "texlive-cweb-old")
