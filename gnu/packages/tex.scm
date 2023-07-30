@@ -4315,6 +4315,28 @@ It provides a tabular-like input syntax and support for drawing bundles
 (implicants) around adjacent values.")
     (license license:lppl1.3c)))
 
+(define-public texlive-letterswitharrows
+  (package
+    (name "texlive-letterswitharrows")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/letterswitharrows/"
+                   "source/latex/letterswitharrows/"
+                   "tex/latex/letterswitharrows/")
+             (base32
+              "0qws4in1qgj52z2d38lfyx3l3dxp01agfbipy5xdi1p4jyhw6b7c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/letterswitharrows")
+    (synopsis "Draw arrows over math letters")
+    (description
+     "This package provides LaTeX math-mode commands for setting left and
+right arrows over mathematical symbols so that the arrows dynamically scale
+with the symbols.  While it is possible to set arrows over longer strings of
+symbols, the focus lies on single characters.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
