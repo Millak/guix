@@ -2377,6 +2377,31 @@ newman projections, etc.")
 compound numbers.")
     (license license:lppl1.3c)))
 
+(define-public texlive-chemobabel
+  (package
+    (name "texlive-chemobabel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemobabel/"
+                   "source/latex/chemobabel/"
+                   "tex/latex/chemobabel/")
+             (base32
+              "0ky7xcyln4j40b18anld77mxc2i4af75y9xdjisj2ixl3vkg5a1x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemobabel")
+    (synopsis "Convert chemical structures from ChemDraw, MDL molfile or SMILES")
+    (description
+     "This package provides a way to convert and include chemical structure
+graphics from various chemical formats, such as ChemDraw files, MDL molfile or
+SMILES notations using Open Babel.  To use this LaTeX package, it is necessary
+to enable execution of the following external commands via
+@samp{latex -shell-escape}: @command{obabel} (Open Babel) @command{inkscape}
+or @command{rsvg-convert} (for SVG -> PDF/EPS conversion), @command{pdfcrop}
+or @command{ps2eps} (optional; for cropping large margins of PDF/EPS).")
+    (license license:bsd-2)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
