@@ -2060,6 +2060,32 @@ a packet or in memory.")
 in Python, C and Pascal.  Program source files may also be input.")
     (license license:public-domain)))
 
+(define-public texlive-calculation
+  (package
+    (name "texlive-calculation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/calculation/"
+                   "source/latex/calculation/"
+                   "tex/latex/calculation/")
+             (base32
+              "15sk3v1cwpjln4rp9k877awxaz9js5gbazlzjknmv5fv1cb4d09c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/calculation")
+    (synopsis
+     "Typesetting reasoned calculations, also called calculational proofs")
+    (description
+     "The @code{calculation} environment formats reasoned calculations, also
+called calculational proofs.  The package allows steps and expressions to be
+numbered (by LaTeX equation numbers, obeying the LaTeX @code{\\label} command
+to refer to these numbers), and a step doesn't take vertical space if its hint
+is empty.  An expression in a calculation can be given a comment; it is placed
+at the side opposite to the equation numbers.  Calculations are allowed inside
+hints although numbering and commenting is then disabled.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-catcodes
   (package
     (name "texlive-catcodes")
