@@ -6393,6 +6393,26 @@ applied and theoretical papers in statistics which are currently lacking in
 the popular @code{amsmath} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-steinmetz
+  (package
+    (name "texlive-steinmetz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/steinmetz/"
+                   "source/latex/steinmetz/"
+                   "tex/latex/steinmetz/")
+             (base32
+              "1x7bs22q1p07njvsg7npm5wg25jx547nv7v98wvcfmlcr4zrvbh1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/steinmetz")
+    (synopsis "Print Steinmetz notation")
+    (description
+     "The @code{steinmetz} package provides a command for typesetting complex
+numbers in the Steinmetz notation used in electrotechnics.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
