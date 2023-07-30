@@ -3383,6 +3383,27 @@ diagrams with just a few simple commands.")
 telecommunications engineering.")
     (license license:lppl1.3+)))
 
+(define-public texlive-iexec
+  (package
+    (name "texlive-iexec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iexec/" "source/latex/iexec/"
+                   "tex/latex/iexec/")
+             (base32
+              "0sk1h5m62lbrlv0p8ihxl15n6dx0dih1bbxl5w8iwznjd3999w0c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-tools texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/iexec")
+    (synopsis "Execute shell commands and input their output")
+    (description
+     "With the help of the @code{\\iexec} command, you can execute a shell
+command and then input its output into your document.  This package also lets
+you use any special symbols inside your command.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
