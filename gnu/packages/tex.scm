@@ -5992,6 +5992,25 @@ effortless pretty-printing of SuperCollider source code in documents typeset
 with LaTeX and friends.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scratchx
+  (package
+    (name "texlive-scratchx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scratchx/" "tex/latex/scratchx/")
+             (base32
+              "1vy8599n8hxrvjc063p1dis0y7y221rlcwxxxryvibhz2kk7zwc2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scratchx")
+    (synopsis "Include Scratch programs in LaTeX documents")
+    (description
+     "This package can be used to include every kind of Scratch program in
+LaTeX documents.  This may be particularly useful for Math Teachers and IT
+specialists.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
