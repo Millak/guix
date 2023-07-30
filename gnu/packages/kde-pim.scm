@@ -2033,14 +2033,14 @@ and allows one to view/extract message formatted text in Rich Text Format.")
 (define-public libkdepim
   (package
     (name "libkdepim")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkdepim-" version ".tar.xz"))
        (sha256
-        (base32 "07ihnps983x3sp74yq5glsq3h3jw4k80mnc4xxzm6ps2vgswah12"))))
+        (base32 "1i5c4qqd4ghlfjvxniy8sbfqh0fsrz4sadvh0n2d207s9rsl274v"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools-5))
