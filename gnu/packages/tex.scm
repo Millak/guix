@@ -1246,6 +1246,29 @@ ligatures, but also offers additional control over them.")
 a given (Unicode) glyph.  It relies on Fontconfig.")
     (license license:bsd-3)))
 
+(define-public texlive-alg
+  (package
+    (name "texlive-alg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/alg/" "source/latex/alg/"
+                   "tex/latex/alg/")
+             (base32
+              "0jqk9sgw2m4c6hssfc5c3qfxqvpyppvcmy8i5crm7fsmkv0y6wkg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alg")
+    (synopsis "LaTeX environments for typesetting algorithms")
+    (description
+     "The package defines two environments for typesetting algorithms in LaTeX2e.
+The @code{algtab} environment is used to typeset an algorithm with
+automatically numbered lines.  The @code{algorithm} environment can be used to
+encapsulate the @code{algtab} environment algorithm in a floating body
+together with a header, a caption, etc.  @code{\\listofalgorithms} is
+defined.")
+    (license license:lppl)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
