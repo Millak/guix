@@ -6862,6 +6862,27 @@ providing the LaTeX user with macros which are used to markup textual
 information.")
     (license license:lppl)))
 
+(define-public texlive-unitsdef
+  (package
+    (name "texlive-unitsdef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unitsdef/"
+                   "source/latex/unitsdef/"
+                   "tex/latex/unitsdef/")
+             (base32
+              "0r3d8af9543sfby3v39gq8vys0m0y3dvni7cly02q0cw6xxw784m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unitsdef")
+    (synopsis "Typesetting units in LaTeX")
+    (description
+     "This package predefines common units, defines an easy to use interface
+to define new units and changes the output concerning to the surrounding font
+settings.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
