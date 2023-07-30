@@ -493,6 +493,25 @@ just one-off queries and multiple independent sessions.  It requires an OpenAI
 API key.")
     (license license:gpl3+)))
 
+(define-public emacs-chatgpt-shell
+  (package
+    (name "emacs-chatgpt-shell")
+    (version "0.74.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xenodium/chatgpt-shell")
+                    (commit "1de7bfa6a34f20cca813006282d9a8f2ef291f95")))
+              (sha256
+               (base32
+                "1rabpp70qlmc47lmp2v7ckvfjhy6wkk881fxpbv2dchzhn77qk5r"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/xenodium/chatgpt-shell")
+    (synopsis "ChatGPT and DALL-E Emacs shells + Org Babel")
+    (description
+     "chatgpt-shell is a comint-based ChatGPT shell for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
