@@ -6922,6 +6922,27 @@ These arrows are usually used to give explanations concerning the mathematical
 calculus presented.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xymtex
+  (package
+    (name "texlive-xymtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xymtex/"
+                   "source/latex/xymtex/"
+                   "tex/latex/xymtex/")
+             (base32
+              "0xj8q4l2xv69sqdqkr4cqzldhnqxfymm0avhc220pl3q74cabh0b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xymtex")
+    (synopsis "Typesetting chemical structures")
+    (description
+     "XyMTeX is a set of packages for drawing a wide variety of chemical
+structural formulas in a way that reflects their structure.  The package
+provides three output modes: LaTeX, PostScript and PDF.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
