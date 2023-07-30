@@ -897,27 +897,28 @@ package.")
 (define-public kgpg
   (package
     (name "kgpg")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kgpg-" version ".tar.xz"))
        (sha256
-        (base32 "1xs0w6lxwq3hzs8r1cwmygcjilbgwa8zpjxwj6zz1wmbg04gqk36"))))
+        (base32 "1ihxw1s4sq7cp5pm6rddcmvqk0v5gfg4v38b6yg8hyjg655x63jz"))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "dbus-launch" "ctest" "-E" ;; FIXME: Failing tests.
-                       "(kgpg-import|kgpg-disable)")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (invoke "ctest")))))))
     (native-inputs
-     (list extra-cmake-modules gnupg ;; TODO: Remove after gpgme uses fixed path
-           dbus ;; Remove after failing test passes
-           kdoctools))
+     (list extra-cmake-modules
+           gnupg ;; TODO: Remove after gpgme uses fixed path
+           kdoctools
+           pkg-config))
     (inputs
      (list akonadi
            akonadi-contacts
