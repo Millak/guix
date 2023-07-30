@@ -2359,6 +2359,24 @@ includes some nomenclature commands, oxidation numbers, thermodynamic data,
 newman projections, etc.")
     (license license:lppl1.3c)))
 
+(define-public texlive-chemnum
+  (package
+    (name "texlive-chemnum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemnum/" "tex/latex/chemnum/")
+             (base32
+              "0ld2ja2by5y48v5k8x1mgmcpr75vkf8r8ni0fmvrpxh8xrv7mq4f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemnum")
+    (synopsis "Method for numbering chemical compounds")
+    (description
+     "The package defines a @code{\\label}- and @code{\\ref}-like commands for
+compound numbers.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
