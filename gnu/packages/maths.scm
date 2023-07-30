@@ -1292,6 +1292,30 @@ plotting engine by third-party applications like Octave.")
     (license (license:fsf-free
               "http://gnuplot.cvs.sourceforge.net/gnuplot/gnuplot/Copyright"))))
 
+(define-public hmat
+  (package
+    (name "hmat")
+    (version "1.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jeromerobert/hmat-oss")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ssjzf3sdhn80w03bhp694s413222cl0100bf36mx70q3a1b6vi5"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; Examples are the tests.
+     (list #:configure-flags #~(list "-DBUILD_EXAMPLES=ON")))
+    (inputs (list openblas))
+    (home-page "https://github.com/jeromerobert/hmat-oss")
+    (synopsis "Hierarchical matrix library")
+    (description "@code{hmat-oss} is hierarchical matrix library written in
+C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
+    (license license:gpl2+)))
+
 (define-public gctp
   (package
     (name "gctp")
