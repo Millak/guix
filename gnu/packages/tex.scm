@@ -2969,6 +2969,27 @@ incomplete delimeter pairs and typically use fewer characters than the LaTeX
 default.")
     (license license:lppl1.3+)))
 
+(define-public texlive-delimset
+  (package
+    (name "texlive-delimset")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/delimset/"
+                   "source/latex/delimset/"
+                   "tex/latex/delimset/")
+             (base32
+              "0vkfk09g7vys4dfa01dxhznczdjklmj90lsw25glbcl1hxr1c1fn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/delimset")
+    (synopsis
+     "Typeset and declare sets of delimiters with convenient size control")
+    (description
+     "@code{delimset} is a LaTeX2e package to typeset and declare sets of
+delimiters in math mode whose size can be adjusted conveniently.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
