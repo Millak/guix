@@ -129,6 +129,31 @@
 
 (define %qt-version "5.15.8")
 
+(define-public qcoro-qt5
+  (package
+    (name "qcoro-qt5")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danvratil/qcoro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pk5ybk6zv7m0wnkl6m3m8sjybmfk6wcn22mmgj942hrc3yrdzci"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DUSE_QT_VERSION=5")))
+    (native-inputs (list dbus))         ;for tests
+    (inputs (list qtbase-5 qtdeclarative-5 qtwebsockets-5))
+    (home-page "https://qcoro.dvratil.cz/")
+    (synopsis "C++ Coroutine Library for Qt5")
+    (description "QCoro is a C++ library that provide set of tools to make use
+of C++20 coroutines in connection with certain asynchronous Qt actions.")
+    (license license:expat)))
+
 (define-public qite
   (let ((commit "75fb3b6bbd5c6a5a8fc35e08a6efbfb588ed546a")
         (revision "74"))
