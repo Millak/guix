@@ -6372,6 +6372,27 @@ graphs.")
 results in a separate file; the format of the file is selectable.")
     (license license:gpl3+)))
 
+(define-public texlive-statmath
+  (package
+    (name "texlive-statmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/statmath/"
+                   "source/latex/statmath/"
+                   "tex/latex/statmath/")
+             (base32
+              "0zqln39cambscblrqck9lw4krpqbhlasz58zvx84h8pmapwsk13g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/statmath")
+    (synopsis "Simple use of statistical notation")
+    (description
+     "The package offers a number of notational conventions to be used in
+applied and theoretical papers in statistics which are currently lacking in
+the popular @code{amsmath} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
