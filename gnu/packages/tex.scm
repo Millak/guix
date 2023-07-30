@@ -5282,6 +5282,27 @@ working with the source code painless (well, less painful).  A variety of
 stylistic variants are available to suit personal taste.")
     (license license:lppl1.3+)))
 
+(define-public texlive-oubraces
+  (package
+    (name "texlive-oubraces")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/oubraces/" "tex/latex/oubraces/")
+             (base32
+              "0kh2acj4420cxd5x5y3dnfkdfqp5m70d16kiwz5b0f095af42v1g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oubraces")
+    (synopsis "Braces over and under a formula")
+    (description
+     "This package provides a means to interleave @code{\\overbrace} and
+@code{\\underbrace} in the same formula.")
+    ;; Library states: "Redistribution and use, with or without modification,
+    ;; are permitted provided that the above copyright notice and this
+    ;; condition for use are retained".
+    (license (license:fsf-free "file://tex/latex/oubraces/oubraces.sty"))))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
