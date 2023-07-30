@@ -5261,6 +5261,27 @@ easily available.  Especially, these symbols are used in scientific plots, but
 the potential user is allowed to use them in other ways.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ot-tableau
+  (package
+    (name "texlive-ot-tableau")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ot-tableau/"
+                   "tex/latex/ot-tableau/")
+             (base32
+              "1f4pxs7k6zv7wk7v3739wznpbrmbihw5hrg5y7l3r0hh71rj9ipj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ot-tableau")
+    (synopsis "Optimality Theory tableaux in LaTeX")
+    (description
+     "The package makes it easy to create beautiful optimality-theoretic tableaux.
+The LaTeX source is visually very similar to a formatted tableau, which makes
+working with the source code painless (well, less painful).  A variety of
+stylistic variants are available to suit personal taste.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
