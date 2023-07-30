@@ -2465,6 +2465,27 @@ on the first occurence in the document and just labels only on subsequent
 references.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chemstyle
+  (package
+    (name "texlive-chemstyle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chemstyle/"
+                   "source/latex/chemstyle/"
+                   "tex/latex/chemstyle/")
+             (base32
+              "1s2k4h153yh0f50q9da390f3ihykvrhsd1zjgfsdb6404059in3p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chemstyle")
+    (synopsis "Writing chemistry with style")
+    (description
+     "The package @code{chemstyle} provides an extensible system for
+formatting chemistry documents according to the conventions of a number of
+leading journals.  It also provides some handy chemistry-related macros.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
