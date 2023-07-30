@@ -6534,6 +6534,26 @@ using the @code{\\text@{@}} command from the @code{amstext} package.")
 abbreviations of longer expressions.")
     (license license:lppl)))
 
+(define-public texlive-syllogism
+  (package
+    (name "texlive-syllogism")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/syllogism/"
+                   "tex/latex/syllogism/")
+             (base32
+              "0ns8bv5qyzvcq59x7cjkncc9wlalcdhhnxs0r4s897qrrbz4cq43")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/syllogism")
+    (synopsis "Typeset syllogisms in LaTeX")
+    (description
+     "The package provides a simple, configurable, way for neatly typesetting
+syllogisms and syllogistic-like arguments, composed of two premises and
+a conclusion.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
