@@ -1269,6 +1269,29 @@ together with a header, a caption, etc.  @code{\\listofalgorithms} is
 defined.")
     (license license:lppl)))
 
+(define-public texlive-algobox
+  (package
+    (name "texlive-algobox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/algobox/" "source/latex/algobox/"
+                   "tex/latex/algobox/")
+             (base32
+              "03z5s4v1asfp6rm51wfkmax69rlggfdyb3p1acdy8cx1gwd10f2w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/algobox")
+    (synopsis "Typeset Algobox programs")
+    (description
+     "This LaTeX package can typeset Algobox programs almost exactly as
+displayed when editing with Algobox itself, using an input syntax very similar
+to the actual Algobox program text.  It gives better results than Algobox's
+own LaTeX export which does not look like the editor rendition, produces
+standalone documents cumbersome to customize, and has arbitrary and
+inconsistent differences between the input syntax and the program text.")
+    (license license:gpl3+)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
