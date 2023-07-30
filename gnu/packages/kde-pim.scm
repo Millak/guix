@@ -1657,14 +1657,14 @@ Features:
 (define-public kontactinterface
   (package
     (name "kontactinterface")
-    (version "22.08.1")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kontactinterface-" version ".tar.xz"))
        (sha256
-        (base32 "0j7cck262j8z7m7fm55qa5i936x81ljn3cijrk5c5h881152h4fs"))))
+        (base32 "16fg24hz9vx912cffc94x5zx4jv3k72mbxgp5ck50lydypx6rfns"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -1675,7 +1675,8 @@ Features:
            kparts
            kwindowsystem
            kxmlgui
-           qtbase-5))
+           qtbase-5
+           qtx11extras))
     (home-page "https://api.kde.org/kdepim/kontactinterface/html/index.html")
     (synopsis "Kontact interface library")
     (description "This library provides the glue necessary for
