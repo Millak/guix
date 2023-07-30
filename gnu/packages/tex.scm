@@ -4604,6 +4604,29 @@ for typeseting sets of type inference rules or typing derivations.")
 semicolons in mathematical expressions.")
     (license license:bsd-2)))
 
+(define-public texlive-mathsemantics
+  (package
+    (name "texlive-mathsemantics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathsemantics/"
+                   "tex/latex/mathsemantics/")
+             (base32
+              "06p4i9nx8sh3dv2nzq3vk1m36nshxgalr8c6660ns9kbhraprkbp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathsemantics")
+    (synopsis "Semantic math commands in LaTeX")
+    (description
+     "This LaTeX package provides both syntactic and semantic helpers to
+typeset mathematics in LaTeX.  The syntactic layer eases typesetting of
+formulae in general, while the semantic layer provides commands like
+@code{\\inner@{x@}@{y@}} to unify typesetting of inner products.  These not
+only unify typesetting of math formulae but also allow to easily adapt
+notation if a user prefers to.  The semantic layer is split into topics.")
+    (license license:expat)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
