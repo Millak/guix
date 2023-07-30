@@ -6158,6 +6158,28 @@ coefficients are given row by row in a list of values separated by commas.")
 and below expressions.")
     (license license:gpl3+)))
 
+(define-public texlive-sistyle
+  (package
+    (name "texlive-sistyle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sistyle/" "source/latex/sistyle/"
+                   "tex/latex/sistyle/")
+             (base32
+              "0y53ijyzridia40a5wrpgff74n6shbdh7xbn1n56ciqfgjn4rdq4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sistyle")
+    (synopsis "Package to typeset SI units, numbers and angles")
+    (description
+     "This package typesets SI units, numbers and angles according to the ISO
+requirements.  Care is taken with font setup and requirements, and language
+customisation is available.  Note that this package is (in principle)
+superseded by @code{siunitx}; @code{sistyle} has maintenance-only support,
+now.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
