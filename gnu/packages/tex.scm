@@ -5476,6 +5476,26 @@ mode.  All major SI units are included, as well as some @acronym{CGS,
 Centimetre–Gram–Second} units used in astronomy.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pinoutikz
+  (package
+    (name "texlive-pinoutikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pinoutikz/"
+                   "tex/latex/pinoutikz/")
+             (base32
+              "1kqdvldrr7r0jsi2sd8rzqcgwfdy0p9ixqcrwg2k94dcs6ad9mhy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pinoutikz")
+    (synopsis "Draw chip pinouts with TikZ")
+    (description
+     "The package provides a set of macros for typesetting electronic chip pinouts.
+It is designed as a tool that is easy to use, with a lean syntax, native to
+LaTeX, and directly supporting PDF output format.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
