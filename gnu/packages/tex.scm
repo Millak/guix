@@ -5454,6 +5454,28 @@ Modules of physics provide the following supports:
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-physunits
+  (package
+    (name "texlive-physunits")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/physunits/"
+                   "source/latex/physunits/"
+                   "tex/latex/physunits/")
+             (base32
+              "139qcg10879q17l84kqh8x1rzp8bgdcyd4iaxwgl4qlnrkg5rbl5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/physunits")
+    (synopsis "Macros for commonly used physical units")
+    (description
+     "This package provides a collection of macros to simplify using physical units
+(e.g., @samp{m} for meters, @samp{J} for joules, etc.), especially in math
+mode.  All major SI units are included, as well as some @acronym{CGS,
+Centimetre–Gram–Second} units used in astronomy.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
