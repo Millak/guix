@@ -1488,6 +1488,26 @@ is the historical basis of @code{amslatex}, which should now be used to
 prepare submissions for the AMS.")
     (license license:lppl)))
 
+(define-public texlive-annotate-equations
+  (package
+    (name "texlive-annotate-equations")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/annotate-equations/"
+                   "tex/latex/annotate-equations/")
+             (base32
+              "1jk08yxwyijspa74k0a79wvh7q0s0xd7ji5m13qb48gw0czwjcxs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/annotate-equations")
+    (synopsis "Easily annotate math equations using TikZ")
+    (description
+     "This package provides commands that make it easy to highlight terms in
+equations and add annotation labels using TikZ.  It should work with pdfLaTeX
+as well as LuaLaTeX.")
+    (license license:expat)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
