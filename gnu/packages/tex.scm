@@ -3987,6 +3987,41 @@ Hepnicenames provides the main non-resonant particle names from
 @code{heppennames} with more friendly names.")
     (license license:lppl)))
 
+(define-public texlive-hepparticles
+  (package
+    (name "texlive-hepparticles")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hepparticles/"
+                   "tex/latex/hepparticles/")
+             (base32
+              "0k8nzw5py23zvp4r4hgddjd2xypcpw85h4slad1yk43zxivb33n7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hepparticles")
+    (synopsis "Macros for typesetting high energy physics particle names")
+    (description
+     "HEPparticles is a set of macros for typesetting high energy particle names,
+to meet the following criteria:
+
+@enumerate
+@item The main particle name is a Roman or Greek symbol, to be typeset in
+upright font in normal contexts.
+@item Additionally a superscript or subscript may follow the main symbol.
+@item Particle resonances may also have a resonance specifier which is typeset
+in parentheses following the main symbol.  In general the parentheses may also
+be followed by sub- and superscripts.
+@item The particle names are expected to be used both in and out of
+mathematical contexts.
+@item If the surrounding text is bold or italic then the particle name should
+adapt to that context as best as possible (this may not be possible for Greek
+symbols).  As a consequence, well-known problems with boldness of particle
+names in section titles, headers and tables of contents automatically
+disappear if these macros are used.
+@end enumerate")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
