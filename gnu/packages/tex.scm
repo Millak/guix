@@ -6051,6 +6051,28 @@ book.")
 electrical and electronics engineers and graph theorists.")
     (license license:lppl)))
 
+(define-public texlive-shuffle
+  (package
+    (name "texlive-shuffle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shuffle/"
+                   "fonts/source/public/shuffle/"
+                   "fonts/tfm/public/shuffle/"
+                   "source/latex/shuffle/" "tex/latex/shuffle/")
+             (base32
+              "06ah481pi9bdbh1f9kpk66wa8yv9qbaif1b3l80415wcxijsxp24")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/shuffle")
+    (synopsis "Symbol for the shuffle product")
+    (description
+     "The bundle provides a LaTeX package and a font (as Metafont source) for
+the shuffle product which is used in some part of mathematics and physics.")
+    (license license:public-domain)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
