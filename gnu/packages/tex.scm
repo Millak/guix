@@ -4337,6 +4337,26 @@ with the symbols.  While it is possible to set arrows over longer strings of
 symbols, the focus lies on single characters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lie-hasse
+  (package
+    (name "texlive-lie-hasse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lie-hasse/"
+                   "tex/latex/lie-hasse/")
+             (base32
+              "1p4ln326spkzcp42p0bjk8cma4cj4ks8xs6ps5mq1b9q1r3vknaa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lie-hasse")
+    (synopsis "Draw Hasse diagrams")
+    (description
+     "This package draws Hasse diagrams of the partially ordered sets of the
+simple roots of any complex simple Lie algebra.  It uses the Dynkin diagrams
+package @code{dynkin-diagrams}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
