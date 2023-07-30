@@ -1607,6 +1607,29 @@ virtual machine.")
 math expressions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-autobreak
+  (package
+    (name "texlive-autobreak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/autobreak/"
+                   "source/latex/autobreak/"
+                   "tex/latex/autobreak/")
+             (base32
+              "1xw4m1wyv17xi6yjfcamb1gjdwzbhrjjdpyc8fydq1qbki1yvv1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/autobreak")
+    (synopsis "Simple line breaking of long formulae")
+    (description
+     "This package implements a simple mechanism of line or page breaking
+within the @code{align} environment of the @code{amsmath} package; new line
+characters are considered as possible candidates for the breaks and the
+package tries to put breaks at adequate places.  It is suitable for
+computer-generated long formulae with many terms.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-barr
   (package
     (name "texlive-barr")
