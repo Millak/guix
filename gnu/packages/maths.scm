@@ -1316,6 +1316,33 @@ plotting engine by third-party applications like Octave.")
 C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
     (license license:gpl2+)))
 
+(define-public primesieve
+  (package
+    (name "primesieve")
+    (version "11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kimwalisch/primesieve")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ja3kxvpya7bwrib40hnyahsiiiavf65ppk7i7afvc093b7gg9bg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_STATIC_LIBS=off"
+                                     "-DBUILD_TESTS=ON")))
+    (home-page "https://github.com/kimwalisch/primesieve")
+    (synopsis "Prime number generator")
+    (description "@code{primesieve} is a command-line program and C/C++
+ library for quickly generating prime numbers.  It is very cache efficient,
+ it detects your CPU's L1 & L2 cache sizes and allocates its main data
+ structures accordingly.  It is also multi-threaded by default, it uses all
+ available CPU cores whenever possible i.e. if sequential ordering is not
+ required. primesieve can generate primes and prime k-tuplets up to 264.")
+    (license license:bsd-2)))
+
 (define-public gctp
   (package
     (name "gctp")
