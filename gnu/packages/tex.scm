@@ -4670,6 +4670,27 @@ content of the whole matrix.  Furthermore, @code{matrix-skeleton} provides
 rows and columns for easy styling.")
     (license license:isc)))
 
+(define-public texlive-mattens
+  (package
+    (name "texlive-mattens")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mattens/" "source/latex/mattens/"
+                   "tex/latex/mattens/")
+             (base32
+              "18v2hypd9vkxk3anixvgf16rmsjzq3apm6s7qxrkk4vyrgrahsnj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mattens")
+    (synopsis "Matrices and tensor typesetting")
+    (description
+     "The @code{mattens} package contains the definitions to typeset matrices,
+vectors and tensors as used in the engineering community for the
+representation of common vectors and tensors such as forces, velocities,
+moments of inertia, etc.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
