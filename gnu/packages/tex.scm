@@ -2586,6 +2586,25 @@ Interdisciplinary Approach} from Robert Sedgewick and Kevin Wayne.")
      "This package provides support for colour separation when using Dvips.")
     (license license:public-domain)))
 
+(define-public texlive-commath
+  (package
+    (name "texlive-commath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/commath/" "tex/latex/commath/")
+             (base32
+              "0mvlqw78183mp8fdvcmrwxvf4cpqdb2sr6jif16rad0av602lnfr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/commath")
+    (synopsis "Mathematics typesetting support")
+    (description
+     "This package provides a range of differential, partial differential and
+delimiter commands, together with a @code{\\fullfunction} (function, with both
+domain and range, and function operation) and various reference commands.")
+    (license license:lppl)))
+
 (define-public texlive-compare
   (package
     (name "texlive-compare")
