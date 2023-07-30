@@ -5326,6 +5326,28 @@ kerning when a subscript follows.  Some predefined commands are also
 provided.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pascaltriangle
+  (package
+    (name "texlive-pascaltriangle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pascaltriangle/"
+                   "tex/latex/pascaltriangle/")
+             (base32
+              "1g5y02gcgwhdq168n7d33plfhfp83zq97vjrfyz8ldlc7vncdnlh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pascaltriangle")
+    (synopsis "Draw beautiful Pascal (Yanghui) triangles")
+    (description
+     "This LaTeX3 package based on TikZ helps to generate beautiful
+Pascal (Yanghui) triangles.  It provides a unique drawing macro
+@code{\\pascal} which can generate isosceles or right-angle triangles
+customized by means of different @code{\\pascal} macro options or the
+@code{\\pascalset} macro.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
