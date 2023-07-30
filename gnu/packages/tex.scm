@@ -1887,6 +1887,27 @@ atoms up to the atomic number 112.  In addition, commands are provided to
 convert atomic numbers to element symbols or element names and vice versa.")
     (license license:lppl1.3+)))
 
+(define-public texlive-boldtensors
+  (package
+    (name "texlive-boldtensors")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/boldtensors/"
+                   "tex/latex/boldtensors/")
+             (base32
+              "06c0wa4qai0qdbad44464nc5zap9bc03yjn89yagsr4dzxif0jrg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/boldtensors")
+    (synopsis
+     "Bold latin and greek characters through simple prefix characters")
+    (description
+     "This package provides bold latin and greek characters within
+@code{\\mathversion@{normal@}}, by using @samp{~} and @samp{\"} as prefix
+characters.")
+    (license license:gpl3+)))
+
 (define-public texlive-borceux
   (package
     (name "texlive-borceux")
