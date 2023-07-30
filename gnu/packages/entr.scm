@@ -35,14 +35,14 @@
 (define-public entr
   (package
     (name "entr")
-    (version "5.2")
+    (version "5.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://eradman.com/entrproject/code/entr-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1063b33bqggyqd0h7cvcvznpgiy9s2zqkdsc1q622xdh8sfk0zi3"))))
+                "17hz4aca6dsh6z58625jg8fbk5m9ng3s95pl4s6ws79zrk9dw7a9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -64,8 +64,7 @@
                (("/bin/cat" command)
                 (search-input-file inputs command))
                (("/usr(/bin/clear)" _ command)
-                (search-input-file inputs command)))
-             #t)))))
+                (search-input-file inputs command))))))))
     (inputs
      (list bash coreutils ncurses))
     (home-page "https://eradman.com/entrproject/")
