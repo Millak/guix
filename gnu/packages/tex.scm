@@ -3265,6 +3265,24 @@ simple roots.")
     ;; LGPL 2.1+.
     (license license:lgpl2.1+)))
 
+(define-public texlive-easing
+  (package
+    (name "texlive-easing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin name version
+                            (list "doc/latex/easing/" "source/latex/easing/"
+                                  "tex/latex/easing/")
+                            (base32
+                             "1j6y1i6cz7pcgrd6pisk6f11r30lrr4cnbhhdshl48wp97byjnw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/easing")
+    (synopsis "Easing functions for @code{pgfmath}")
+    (description
+     "This library implements a collection of easing functions and adds them
+to the PGF mathematical engine.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
