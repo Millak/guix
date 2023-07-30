@@ -5884,6 +5884,30 @@ proof system for the propositional fragment of the logic of bunched
 implications.")
     (license license:lppl1.3+)))
 
+(define-public texlive-rmathbr
+  (package
+    (name "texlive-rmathbr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rmathbr/" "source/latex/rmathbr/"
+                   "tex/latex/rmathbr/")
+             (base32
+              "1rgkl8fmq00w7yn445sfq3w2xf39d3waiphivvm6hx49nd6vacv0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rmathbr")
+    (synopsis
+     "Repeating of math operator at the broken line and the new line in inline equations")
+    (description
+     "Repeating of math operators at the broken line and the new line in
+inline equations is used in Cyrillic mathematical typography (Russian for
+example), but unfortunately LaTeX does not provide such an option.  This
+package solves the problem by extending ideas described in M. I. Grinchuk
+@emph{TeX and Russian Traditions of Typesetting}, and supports most of LaTeX
+mathematical packages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
