@@ -1292,6 +1292,31 @@ standalone documents cumbersome to customize, and has arbitrary and
 inconsistent differences between the input syntax and the program text.")
     (license license:gpl3+)))
 
+(define-public texlive-algorithm2e
+  (package
+    (name "texlive-algorithm2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/algorithm2e/"
+                   "tex/latex/algorithm2e/")
+             (base32
+              "0bf4fc9p84zy2zdl0hiklcbbxn17j3qyl02kyj5ya00lrf6sv93n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/algorithm2e")
+    (synopsis "Floating algorithm environment with algorithmic keywords")
+    (description
+     "Algorithm2e is an environment for writing algorithms.  An algorithm
+becomes a floating object (like figure, table, etc.).  The package provides
+macros that allow you to create different keywords, and a set of predefined
+key words is provided; you can change the typography of the keywords.  The
+package allows vertical lines delimiting a block of instructions in an
+algorithm, and defines different sorts of algorithms such as @samp{Procedure}
+or @samp{Function}; the name of these functions may be reused in the text or
+in other algorithms.")
+    (license license:lppl)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
