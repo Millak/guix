@@ -6899,6 +6899,29 @@ settings.")
     (description "This package provides MetaPost macros for Venn diagrams.")
     (license license:lppl)))
 
+(define-public texlive-witharrows
+  (package
+    (name "texlive-witharrows")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/witharrows/"
+                   "source/generic/witharrows/"
+                   "tex/generic/witharrows/")
+             (base32
+              "0m9imjxi174bh1mr2gl74s8bmhksaabvmfzvv2nq8nbmzvfsic19")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/witharrows")
+    (synopsis "Aligned math environments with arrows for comments")
+    (description
+     "This package provides an environment @code{WithArrows} which is similar
+to the environment @code{aligned} of @code{amsmath} (and @code{mathtools}),
+but gives the possibility to draw arrows on the right side of the alignment.
+These arrows are usually used to give explanations concerning the mathematical
+calculus presented.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
