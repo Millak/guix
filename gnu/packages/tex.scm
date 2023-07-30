@@ -6266,6 +6266,27 @@ can be adjusted with respect to relative position and format, and can be used
 in text and math mode.")
     (license license:cc-by4.0)))
 
+(define-public texlive-stanli
+  (package
+    (name "texlive-stanli")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stanli/" "tex/latex/stanli/")
+             (base32
+              "1kspb85303z642qj3c9b2q3g41p612vshn37j7npf3if2gcyyxbq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stanli")
+    (synopsis "TikZ Library for Structural Analysis")
+    (description
+     "STANLI is a STructural ANalysis LIbrary based on PGF/TikZ.  Creating new
+assignments and tests, at university, is usually a very time-consuming task,
+especially when this includes drawing graphics.  In the field of structural
+engineering, those small structures are a key part for teaching.  This package
+permits to create such 2D and 3D structures in a very fast and simple way.")
+    (license (list license:gpl3+ license:lppl1.3+))))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
