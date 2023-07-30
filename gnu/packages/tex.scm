@@ -4877,6 +4877,29 @@ label chemicals.  The @code{rsphrase} package provides commands for the
 official Risk and Safety (R and S) Phrases that are used to label chemicals.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mhequ
+  (package
+    (name "texlive-mhequ")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mhequ/" "tex/latex/mhequ/")
+             (base32
+              "08k45mklj8ag5z3rmn9c15f6pgixz6pxlip4wp07q4l6xdzkk8fq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mhequ")
+    (synopsis "Multicolumn equations, tags, labels, sub-numbering")
+    (description
+     "The @code{mhequ} style file simplifies creating multi-column equation
+environments and tagging equations therein.  It supports sub-numbering of
+blocks of equations, such as @samp{(1.2a)} and @samp{(1.2b)}, references to
+each equation individually @samp{(1.2a)} or to the whole block @samp{(1.2)}.
+The labels can be shown in draft mode.  The default behaviour is to show an
+equation number if and only if the equation actually has a label, which
+reduces visual clutter.")
+    (license license:public-domain)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
