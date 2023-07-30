@@ -3798,6 +3798,37 @@ precautionary statements and pictograms in a straightforward way.  The
 statements are taken from EU regulation 1272/2008.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glosmathtools
+  (package
+    (name "texlive-glosmathtools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glosmathtools/"
+                   "tex/latex/glosmathtools/")
+             (base32
+              "0rw194qxxf38fp1xczzjvsa6vb0jxz88cgc2s5fqx2k4fwg989kh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glosmathtools")
+    (synopsis
+     "Mathematical nomenclature tools based on the @code{glossaries} package")
+    (description
+     "This package can be used to generate a mathematical nomenclature (also
+called list of symbols or notation).  It is based on the @code{glossaries}
+package.  Its main features are:
+
+@itemize
+@item symbol categories (e.g., latin, greek),
+@item automatic but customizable symbol sorting,
+@item easy subscript management,
+@item easy accentuation management,
+@item abbreviation support (with first use definition),
+@item bilingual nomenclatures (for bilingual documents),
+@item bilingual abbreviations.
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
