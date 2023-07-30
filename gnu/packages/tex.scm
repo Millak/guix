@@ -2738,6 +2738,26 @@ the fonts are available in the @code{ecc} bundle, and Adobe Type 1 versions of
 the @code{ecc} fonts are part of the @code{cm-super} bundle.")
     (license license:knuth)))
 
+(define-public texlive-conteq
+  (package
+    (name "texlive-conteq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/conteq/" "source/latex/conteq/"
+                   "tex/latex/conteq/")
+             (base32
+              "14lj914i1h29pvg7knfn3ym9nsq6qxngbmkks4hircj0082m86pz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/conteq")
+    (synopsis "Typeset multiline continued equalities")
+    (description
+     "The package provides an environment @code{conteq}, which will lay out
+systems of continued equalities (or inequalities).  Several variant layouts of
+the equalities are provided, and the user may define their own.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
