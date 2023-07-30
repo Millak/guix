@@ -1747,6 +1747,27 @@ of mathematical disciplines.")
 @emph{Begriffschrift}.")
     (license license:gpl3+)))
 
+(define-public texlive-binomexp
+  (package
+    (name "texlive-binomexp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/binomexp/"
+                   "source/latex/binomexp/"
+                   "tex/latex/binomexp/")
+             (base32
+              "1wmhsqqz2hy75x20srs1237yba4s00yrdhr52hkrh3nldzqwhqcc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/binomexp")
+    (synopsis "Calculate Pascal's triangle")
+    (description
+     "The package calculates and prints rows of Pascal's triangle.  It may be
+used to print successive rows of the triangle, or to print the rows inside an
+@code{array} or @code{tabular} environment.")
+    (license license:lppl)))
+
 (define-public texlive-bitelist
   (package
     (name "texlive-bitelist")
