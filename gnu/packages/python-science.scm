@@ -630,6 +630,31 @@ Python module with the same interface, but (hopefully) faster.")
 written in C.")
     (license license:bsd-2)))
 
+(define-public python-numpoly
+  (package
+    (name "python-numpoly")
+    (version "1.2.11")
+    (source (origin
+              (method git-fetch) ;; PyPI is missing some Pytest fixtures
+              (uri (git-reference
+                    (url "https://github.com/jonathf/numpoly")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01g21v91f4d66xd0bvap0n6d6485w2fnq1636gx6h2s42550rlbd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata python-numpy))
+    (native-inputs (list python-pytest python-sympy))
+    (home-page "https://numpoly.readthedocs.io/en/master/")
+    (synopsis "Polynomials as a numpy datatype")
+    (description "Numpoly is a generic library for creating, manipulating and
+evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
+    ;; Tests fail with dtype mismatches on 32-bit architectures, suggesting
+    ;; that numpoly only supports 64 bit platforms.
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
+    (license license:bsd-2)))
+
 (define-public python-baycomp
   (package
     (name "python-baycomp")
