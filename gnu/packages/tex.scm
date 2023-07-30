@@ -3066,6 +3066,26 @@ provides a convenient and compact mechanism for displaying these
 configurations.")
     (license license:lppl)))
 
+(define-public texlive-dijkstra
+  (package
+    (name "texlive-dijkstra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dijkstra/" "tex/latex/dijkstra/")
+             (base32
+              "1xjq51x4g1xngp8npicgnpmbkzk0rnj992pmhizjv0j92zmaikqm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dijkstra")
+    (synopsis "Dijkstra algorithm for LaTeX")
+    (description
+     "This small package uses the Dijkstra algorithm for weighted
+graphs,directed or not: the search table of the shortest path can be
+displayed, the minimum distance between two vertices and the corresponding
+path are stored in macros.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-dinat
   (package
     (name "texlive-dinat")
