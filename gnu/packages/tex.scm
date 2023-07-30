@@ -5949,6 +5949,28 @@ their calculations or simulations into LaTeX projects.  The package is also
 capable of overloading the Sweave User Manual and SASweave packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sciposter
+  (package
+    (name "texlive-sciposter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sciposter/"
+                   "tex/latex/sciposter/")
+             (base32
+              "1d4bfzx08df0vx805rhmcsl9b79lqglqbzg0i8y4rk9z9qbaajrq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sciposter")
+    (synopsis "Make posters of ISO A3 size and larger")
+    (description
+     "This collection of files contains LaTeX packages for posters of ISO A3
+size and larger (ISO A0 is the default size).  American paper sizes and custom
+paper are supported.  In particular, @file{sciposter.cls} defines a document
+class which allows cutting and pasting most of an article to a poster without
+any editing (save reducing the size).")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
