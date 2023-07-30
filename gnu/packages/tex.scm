@@ -5971,6 +5971,27 @@ class which allows cutting and pasting most of an article to a poster without
 any editing (save reducing the size).")
     (license license:lppl)))
 
+(define-public texlive-sclang-prettifier
+  (package
+    (name "texlive-sclang-prettifier")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sclang-prettifier/"
+                   "source/latex/sclang-prettifier/"
+                   "tex/latex/sclang-prettifier/")
+             (base32
+              "0pjqhwnz7lihl4yqxr0xgfdxnsj2p7k10vj5y7smjyv0p93lqvaw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sclang-prettifier")
+    (synopsis "Pretty-printing SuperCollider source code")
+    (description
+     "Built on top of the @code{listings} package, the package allows
+effortless pretty-printing of SuperCollider source code in documents typeset
+with LaTeX and friends.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
