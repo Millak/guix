@@ -1450,6 +1450,44 @@ geometry remains.  This nevertheless allows the drawing of a much broader
 class of commutative diagrams and alike.")
     (license license:lppl1.3c)))
 
+(define-public texlive-amstex
+  (package
+    (name "texlive-amstex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/amstex/base/" "doc/man/man1/amstex.1"
+                   "doc/man/man1/amstex.man1.pdf"
+                   "tex/amstex/base/" "tex/amstex/config/")
+             (base32
+              "01yh10g2wwa58q151aqg246bsclks25qvd8axc1v799v37wlgqn3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "amstex")))
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-cm
+           texlive-hyphen-base
+           texlive-knuth-lib
+           texlive-plain
+           texlive-tex))
+    (home-page "https://ctan.org/pkg/amstex")
+    (synopsis "American Mathematical Society plain TeX macros")
+    (description
+     "AMS-TeX is a TeX macro package based on Plain TeX: it provides many
+features for producing more professional-looking maths formulas with less
+burden on authors.
+
+This is the final archival distribution of AMS-TeX.  AMS-TeX is no longer
+supported by the AMS, nor is it used by the AMS publishing program.  The AMS
+does not recommend creating any new documents using AMS-TeX; this distribution
+will be left on CTAN to facilitate processing of legacy documents and as
+a historical record of a pioneering TeX macro collection that played a key
+role in popularizing TeX and revolutionizing mathematics publishing.  AMS-TeX
+is the historical basis of @code{amslatex}, which should now be used to
+prepare submissions for the AMS.")
+    (license license:lppl)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
