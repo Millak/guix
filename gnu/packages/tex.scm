@@ -4229,6 +4229,27 @@ Notebook format to proper LaTeX so it gets included seamlessly, supporting
 text, LaTeX, images, etc.")
     (license license:asl2.0)))
 
+(define-public texlive-karnaugh
+  (package
+    (name "texlive-karnaugh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/karnaugh/" "tex/latex/karnaugh/")
+             (base32
+              "0zpn2q5v9dv8196h9186b9wx2hbp0j9l1fg6k2pdqhwxgdcgssxh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/karnaugh")
+    (synopsis "Typeset Karnaugh-Veitch-maps")
+    (description
+     "The package provides macros for typesetting Karnaugh-Maps and
+Veitch-Charts in a simple and user-friendly way.  Karnaugh-Maps and
+Veitch-Charts are used to display and simplify logic functions manually.
+These macros can typeset Karnaugh-Maps and Veitch-Charts with up to ten
+variables.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
