@@ -4091,6 +4091,26 @@ existing SIunits set.")
 when using for open intervals.")
     (license license:lppl1.3+)))
 
+(define-public texlive-includernw
+  (package
+    (name "texlive-includernw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/includernw/"
+                   "tex/latex/includernw/")
+             (base32
+              "1kc14nq0f3jybidifvr6gjfy4ggs5qkbs1syv1k7bw3xrdmpplb8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/includernw")
+    (synopsis "Include .Rnw inside .tex")
+    (description
+     "This package is for including @file{.Rnw} (knitr/sweave) files inside
+@file{.tex} files.  It requires that you have R and the R-package @code{knitr}
+installed.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
