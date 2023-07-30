@@ -1425,6 +1425,31 @@ text which spans over multiple lines.")
 math environments.")
     (license license:lppl1.3c)))
 
+(define-public texlive-amscdx
+  (package
+    (name "texlive-amscdx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amscdx/" "source/latex/amscdx/"
+                   "tex/latex/amscdx/")
+             (base32
+              "13gxllncd46w4kscb7isivw6x82pw9yfamcv3sq6wnx68z03n2q3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amscdx")
+    (synopsis "Enhanced commutative diagrams")
+    (description
+     "The original @code{amscd} package provides a @code{CD} environment that
+emulates the commutative diagram capabilities of AMS-TeX version 2.x.  This
+means that only simple rectangular diagrams are supported, with no diagonal
+arrows or more exotic features.  This enhancement package implements double,
+dashed, and bidirectional arrows (left-right and up-down), and color
+attributes for arrows and their annotations.  The restriction to rectangular
+geometry remains.  This nevertheless allows the drawing of a much broader
+class of commutative diagrams and alike.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
