@@ -33,7 +33,7 @@
     (version "1.48")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://sg.danny.cz/sg/p/sg3_utils-"
+              (uri (string-append "https://sg.danny.cz/sg/p/sg3_utils-"
                                   version ".tar.xz"))
               (sha256
                (base32
