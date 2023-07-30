@@ -5787,6 +5787,36 @@ functionals, c.e.@: sets, stagewise computations, forcing and syntactic
 classes.")
     (license license:public-domain)))
 
+(define-public texlive-resolsysteme
+  (package
+    (name "texlive-resolsysteme")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/resolsysteme/"
+                   "tex/latex/resolsysteme/")
+             (base32
+              "0g51cmjd5gs0p198sb8v95l8jra6cv6smz2068b1pdpv1fqpmjfv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/resolsysteme")
+    (synopsis "Work on linear systems using xint or pyluatex")
+    (description
+     "This package provides some commands (in French) to perform calculations
+on small (2x2 or 3x3 or 4x4) linear systems, with @code{xint} or
+@code{pyluatex}:
+
+@itemize
+@item @code{\\DetMatrice} or @code{\\DetMatricePY} to diplay the determinant
+of a matrix;
+@item @code{\\MatriceInverse} or @code{\\MatriceInversePY} to display the
+inverse of a matrix;
+@item @code{\\SolutionSysteme} or @code{\\SolutionSystemePY} to display the
+solution of a linear system;
+@item @dots{}
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
