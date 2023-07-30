@@ -3740,6 +3740,25 @@ products and convergence with some object oriented flavor (it gives the
 possibility to override the standard behavior of norms, ...).")
     (license license:lppl)))
 
+(define-public texlive-gastex
+  (package
+    (name "texlive-gastex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gastex/" "dvips/gastex/"
+                   "tex/latex/gastex/")
+             (base32
+              "1bjdq5mbqcfh7syzlky69dq71bcmwaa7pv5glcys2jf7afyzcmnj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gastex")
+    (synopsis "Graphs and Automata Simplified in TeX")
+    (description
+     "GasTeX is a set of LaTeX macros which enable the user to draw graphs, automata,
+nets, diagrams, etc., very easily, in the LaTeX @code{picture} environment.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
