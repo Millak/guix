@@ -7978,7 +7978,7 @@ original.")
 (define xonotic-data
   (package
     (name "xonotic-data")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
@@ -7986,7 +7986,7 @@ original.")
                            version ".zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1r9pdrrki7mkdw99zh9m7911fqldsfdnl0nrp5cv1bk2hcism4hg"))))
+        (base32 "0kcnps65k81sm56s5dclahvllilnir3ix9kf5xr9jx0fh26hz1ah"))))
     (build-system trivial-build-system)
     (native-inputs (list unzip))
     (arguments
