@@ -592,12 +592,8 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
              ;; would get a compile error later:
              "-DPROTOBUF_UPDATE_FILES=ON"
 
-             ;; xfeatures2d disabled, because it downloads extra binaries from
-             ;; https://github.com/opencv/opencv_3rdparty
-             ;; defined in xfeatures2d/cmake/download_{vgg|bootdesc}.cmake
-             ;; Cmp this bug entry:
-             ;; https://github.com/opencv/opencv_contrib/issues/1131
-             "-DBUILD_opencv_xfeatures2d=OFF")
+             ;; For xfeatures2d.
+             "-DOPENCV_SKIP_FEATURES2D_DOWNLOADING=ON")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-broken-tests
@@ -655,7 +651,18 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
              (copy-recursively (assoc-ref inputs "opencv-extra")
                                "../opencv-extra")
              (copy-recursively (assoc-ref inputs "opencv-contrib")
-                               "../opencv-contrib")))
+                               "../opencv-contrib")
+
+             ;; Disable downloads of Boost and VGG descriptors as we include
+             ;; them in native inputs.
+             (substitute* "../opencv-contrib/modules/xfeatures2d/CMakeLists.txt"
+               (("download_(boost|vgg)_descriptors") "#"))
+             (copy-recursively (assoc-ref inputs "opencv-3rdparty-boost")
+                               "../downloads/xfeatures2d")
+             (for-each make-file-writable
+                       (find-files "../downloads/xfeatures2d" "."))
+             (copy-recursively (assoc-ref inputs "opencv-3rdparty-vgg")
+                               "../downloads/xfeatures2d")))
          (add-after 'build 'do-not-install-3rdparty-file
            (lambda _
              (substitute* "cmake_install.cmake"
@@ -673,6 +680,34 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("xorg-server" ,xorg-server-for-tests) ;For running the tests
+       ;; These are files that are derived from the binary descriptors that
+       ;; are part of the BinBoost package.  The BinBoost package is released
+       ;; under GPLv2+.  See
+       ;; https://www.epfl.ch/labs/cvlab/research/descriptors-and-keypoints/research-detect-binboost/
+       ;; See xfeatures2d/cmake/download_boostdesc.cmake for commit hash.
+       ("opencv-3rdparty-boost"
+        ,(let ((commit "34e4206aef44d50e6bbcd0ab06354b52e7466d26"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference (url "https://github.com/opencv/opencv_3rdparty")
+                                 (commit commit)))
+             (file-name (git-file-name "opencv_3rdparty" commit))
+             (sha256
+              (base32
+               "13yig1xhvgghvxspxmdidss5lqiikpjr0ddm83jsi0k85j92sn62")))))
+       ;; These are the Visual Geometry Group descriptors, released under
+       ;; BSD-3.  They are generated files produced by the DLCO framework.
+       ;; See xfeatures2d/cmake/download_vgg.cmake for commit hash.
+       ("opencv-3rdparty-vgg"
+        ,(let ((commit "fccf7cd6a4b12079f73bbfb21745f9babcd4eb1d"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference (url "https://github.com/opencv/opencv_3rdparty")
+                                 (commit commit)))
+             (file-name (git-file-name "opencv_3rdparty" commit))
+             (sha256
+              (base32
+               "0r9fam8dplyqqsd3qgpnnfgf9l7lj44di19rxwbm8mxiw0rlcdvy")))))
        ("opencv-extra"
         ,(origin
            (method git-fetch)
