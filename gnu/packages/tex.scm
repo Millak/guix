@@ -1835,6 +1835,39 @@ retains outer braces.")
 used to describe hardware, data format or protocols.")
     (license license:lppl)))
 
+(define-public texlive-bodeplot
+  (package
+    (name "texlive-bodeplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bodeplot/"
+                   "source/latex/bodeplot/"
+                   "tex/latex/bodeplot/")
+             (base32
+              "1wlzfdm7ngassxhlcq2yc94id6szijan334l5png7avmifkz7m5y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bodeplot")
+    (synopsis "Draw Bode, Nyquist and Nichols plots with Gnuplot or
+ @code{pgfplots}")
+    (description
+     "This is a LaTeX package to plot Bode, Nichols, and Nyquist diagrams.  It
+provides added functionality over the similar @code{bodegraph} package:
+
+@itemize
+@item new @code{\\BodeZPK} and @code{\\BodeTF} commands to generate Bode plots
+of any transfer function given either poles, zeros, gain, and delay, or
+numerator and denominator coefficients and delay;
+@item support for unstable poles and zeros;
+@item support for complex poles and zeros;
+@item support for general stable and unstable second order transfer functions;
+@item support for both Gnuplot (default) and @code{pgfplots};
+@item support for linear and asymptotic approximation of magnitude and phase
+plots of any transfer function given poles, zeros, and gain.
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-borceux
   (package
     (name "texlive-borceux")
