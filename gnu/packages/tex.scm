@@ -4166,6 +4166,28 @@ Finally, an @emph{e} starts the exponent of the number.  For example,
 @samp{$21e6$} may be output as @samp{$26\\times10\\,^@{6@}$}.")
     (license license:gpl3+)))
 
+(define-public texlive-isomath
+  (package
+    (name "texlive-isomath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/isomath/" "tex/latex/isomath/")
+             (base32
+              "1jjz2hp9g6swjfbcd43j12dvsvgwgfid6v6lf3n1c87aq6jqx8ly")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/isomath")
+    (synopsis "Mathematics style for science and technology")
+    (description
+     "The package provides tools for a mathematical style that conforms to the
+International Standard ISO 80000-2 and is common in science and technology.
+It changes the default shape of capital Greek letters to italic, sets up bold
+italic and sans-serif bold italic math alphabets with Latin and Greek
+characters, and defines macros for markup of vector, matrix and tensor
+symbols.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
