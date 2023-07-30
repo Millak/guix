@@ -3605,6 +3605,27 @@ the chapters.  Each chapter can consist of three sections: the lesson, the
 exercises and the activities.")
     (license license:lppl)))
 
+(define-public texlive-fixdif
+  (package
+    (name "texlive-fixdif")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fixdif/" "source/latex/fixdif/"
+                   "tex/latex/fixdif/")
+             (base32
+              "0y4x7vq4vslmiqdzx3d14yyaszs0y9y9sapnkiya3f4065rj8mcf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixdif")
+    (synopsis "Macros for typesetting differential operators")
+    (description
+     "This package redefines the @code{\\d} command in LaTeX and provides an
+interface to define new commands for differential operators.  It is compatible
+with pdfTeX, XeTeX and LuaTeX, and can also be used with the
+@code{unicode-math} package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
