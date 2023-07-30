@@ -1362,6 +1362,29 @@ style.  Within an @code{algorithmic} environment a number of commands for
 typesetting popular algorithmic constructs are available.")
     (license license:lgpl2.1)))
 
+(define-public texlive-algpseudocodex
+  (package
+    (name "texlive-algpseudocodex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/algpseudocodex/"
+                   "tex/latex/algpseudocodex/")
+             (base32
+              "1gjcdmzijiagzxwjwygqpbjjapzk9dfljv5d94iabzr8032l9rsh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/algpseudocodex")
+    (synopsis "Package for typesetting pseudocode")
+    (description
+     "This package allows typesetting pseudocode in LaTeX.  It is based on
+@code{algpseudocode} from the @code{algorithmicx} package and uses the same
+syntax, but adds several new features and improvements.  Notable features
+include customizable indent guide lines and the ability to draw boxes around
+parts of the code for highlighting differences.  This package also has better
+support for long code lines spanning several lines and improved comments.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
