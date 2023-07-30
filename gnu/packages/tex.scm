@@ -3494,6 +3494,30 @@ standard @code{amsmath} numbered equation environments to throw a warning
 whenever this occurs.")
     (license license:lppl1.3+)))
 
+(define-public texlive-euclideangeometry
+  (package
+    (name "texlive-euclideangeometry")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/euclideangeometry/"
+                   "source/latex/euclideangeometry/"
+                   "tex/latex/euclideangeometry/")
+             (base32
+              "02qpa8xvbpk253k3hr3rb49zdyfyj6m1i0bcc3cr9f9mnjxxhb3c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/euclideangeometry")
+    (synopsis "Draw geometrical constructions")
+    (description
+     "This package provides tools to draw most of the geometrical
+constructions that a high school instructor or bachelor degree professor might
+need to teach geometry.  The connection to Euclide depends on the fact that in
+his times calculations were made with ruler, compass and also with
+ellipsograph.  This package extends the functionalities of the @code{curve2e}
+package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
