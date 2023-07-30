@@ -2859,16 +2859,10 @@ with constraints.")
                       (substitute* "CMakeLists.txt"
                         (("set\\(LIB_SUFFIX \"64\"\\)")
                          "set(LIB_SUFFIX \"\")")))))))
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs
-     (list glog))                           ;for #include <glog/glog.h>
-    (inputs
-     (list eigen
-           openblas
-           lapack
-           suitesparse
-           gflags))
+    (native-inputs (list pkg-config))
+    ;; These inputs need to be propagated to satisfy dependent packages.
+    (propagated-inputs (list eigen gflags glog))
+    (inputs (list openblas lapack suitesparse))
     (synopsis "C++ library for solving large optimization problems")
     (description
      "Ceres Solver is a C++ library for modeling and solving large,
