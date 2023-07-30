@@ -5095,6 +5095,31 @@ physics at the University of Wurzburg as a collection of macros and predefined
 environments for quickly creating nice mathematical documents.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nicematrix
+  (package
+    (name "texlive-nicematrix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nicematrix/"
+                   "source/latex/nicematrix/"
+                   "tex/latex/nicematrix/")
+             (base32
+              "0pvl6dj152n38phk8vpknhk253r8vdkm64wg55zk6fa4d4a158fy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nicematrix")
+    (synopsis "Improve the typesetting of mathematical matrices with PGF")
+    (description
+     "This package is based on the package @code{array}.  It creates PGF/TikZ
+nodes under the cells of the array and uses these nodes to provide
+functionalities to construct tabulars, arrays and matrices.  Among the
+features, it provides: continuous dotted lines for the mathematical matrices;
+exterior rows and columns (so-called border matrices); control of the width of
+the columns; tools to color rows and columns with a good PDF result; blocks of
+cells; etc.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
