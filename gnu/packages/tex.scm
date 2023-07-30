@@ -84,6 +84,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -1629,6 +1630,65 @@ characters are considered as possible candidates for the breaks and the
 package tries to put breaks at adequate places.  It is suitable for
 computer-generated long formulae with many terms.")
     (license license:lppl1.3+)))
+
+(define-public texlive-axodraw2
+  (package
+    (name "texlive-axodraw2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/axodraw2/"
+                   "doc/man/man1/axohelp.1"
+                   "doc/man/man1/axohelp.man1.pdf"
+                   "source/latex/axodraw2/"
+                   "tex/latex/axodraw2/")
+             (base32
+              "0x1cskdm3kmf08gdrvgasd1b3l0dri9mdmk13880dz4g2rdgbvi2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Since we're building "axohelp" from source here, it can be
+          ;; removed from `texlive-bin' (world rebuild).
+          (add-after 'unpack 'build-axohelp
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion "source/latex/axodraw2"
+                ;; Autoreconf.
+                (invoke "autoreconf" "-vfi")
+                ;; Configure.
+                (let ((sh (which "sh")))
+                  (setenv "CONFIG_SHELL" sh)
+                  (setenv "SHELL" sh)
+                  (invoke sh "configure" (string-append "--prefix=" #$output)))
+                ;; Build.
+                (invoke "make")
+                ;; Tests.
+                (when tests?
+                  (patch-shebang "axohelp.test") ;Bash script
+                  (invoke "make" "check"))
+                ;; Install.
+                (invoke "make" "install")))))))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list openlibm))
+    (home-page "https://ctan.org/pkg/axodraw2")
+    (synopsis "Feynman diagrams in a LaTeX document")
+    (description
+     "This package defines macros for drawing Feynman graphs in LaTeX documents.
+It is an important update of the @code{axodraw} package, but since it is not
+completely backwards compatible, we have given the style file a changed name.
+
+Many new features have been added, with new types of line, and much more
+flexibility in their properties.  In addition, it is now possible to use
+@code{axodraw2} with pdfLaTeX, as well as with the LaTeX-dvips method.
+However with pdfLaTeX (and also LuaLaTeX and XeLaTeX), an external program,
+@command{axohelp}, is used to perform the geometrical calculations needed for
+the pdf code inserted in the output file.  The processing involves a run of
+@command{pdflatex}, a run of @command{axohelp}, and then another run of
+@command{pdflatex}.")
+    (license license:gpl3+)))
 
 (define-public texlive-barr
   (package
