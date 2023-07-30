@@ -6011,6 +6011,28 @@ LaTeX documents.  This may be particularly useful for Math Teachers and IT
 specialists.")
     (license license:lppl1.3c)))
 
+(define-public texlive-sesamanuel
+  (package
+    (name "texlive-sesamanuel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sesamanuel/"
+                   "source/latex/sesamanuel/"
+                   "tex/latex/sesamanuel/")
+             (base32
+              "1jgr6syi26qbzdg37rq4d633klgb7s5bp1k3zvb3r538bawag8kc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sesamanuel")
+    (synopsis "Class and package for sesamath books or paper")
+    (description
+     "The package contains a @code{sesamanuel} class which could be used to
+compose a student's classroom book with LaTeX, and also
+a @code{sesamanuelTIKZ} style to be used for TikZ pictures in the Sesamath
+book.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
