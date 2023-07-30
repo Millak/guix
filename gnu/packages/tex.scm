@@ -1768,6 +1768,28 @@ used to print successive rows of the triangle, or to print the rows inside an
 @code{array} or @code{tabular} environment.")
     (license license:lppl)))
 
+(define-public texlive-biocon
+  (package
+    (name "texlive-biocon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biocon/" "tex/latex/biocon/")
+             (base32
+              "0m3qqrl5z071w4zs8fs3wv0b4ix0s6cqh4ixzqj28d74aaf9r1y1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biocon")
+    (synopsis "Typesetting biological species names")
+    (description
+     "The biocon--biological conventions--package aids the typesetting of some
+biological conventions.  At the moment, it makes a good job of typesetting
+species names (and ranks below the species level).  A distinction is made
+between the Plant, Fungi, Animalia and Bacteria kingdoms.  There are default
+settings for the way species names are typeset, but they can be customized.
+Different default styles are used in different situations.")
+    (license license:gpl3+)))
+
 (define-public texlive-bitelist
   (package
     (name "texlive-bitelist")
