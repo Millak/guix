@@ -1205,7 +1205,7 @@ tmux.")
 (define-public kitty
   (package
     (name "kitty")
-    (version "0.20.3")
+    (version "0.21.2")
     (home-page "https://sw.kovidgoyal.net/kitty/")
     (source
      (origin
@@ -1215,7 +1215,8 @@ tmux.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13qv4469q9q2xdrb77lbyw4dz491zf1qvqx4adp0dd9annnlir5c"))
+        (base32 "0y0mg8rr18mn0wzym7v48x6kl0ixd5q387kr5jhbdln55ph2jk9d"))
+       (patches (search-patches "kitty-fix-wayland-protocols.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1231,70 +1232,68 @@ tmux.")
            #t))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("libdbus" ,dbus)
-       ("libgl1-mesa" ,mesa)
-       ("libxcursor" ,libxcursor)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxrandr" ,libxrandr)
-       ("ncurses" ,ncurses) ;; for tic command
-       ("pkg-config" ,pkg-config)
-       ("sphinx" ,python-sphinx)
-       ("wayland-protocols" ,wayland-protocols)))
+     (list dbus
+           mesa
+           libxcursor
+           libxi
+           libxinerama
+           libxkbcommon
+           libxrandr
+           ncurses ;; for tic command
+           pkg-config
+           python-sphinx
+           wayland-protocols))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("harfbuzz" ,harfbuzz)
-       ("lcms" ,lcms)
-       ("libcanberra" ,libcanberra)
-       ("libpng" ,libpng)
-       ("pygments" ,python-pygments)
-       ("python" ,python-wrapper)
-       ("wayland" ,wayland)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           harfbuzz
+           lcms
+           libcanberra
+           libpng
+           python-pygments
+           python-wrapper
+           wayland
+           zlib))
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (delete 'configure)   ;no configure script
-                  (replace 'build
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; The "kitty" sub-directory must be writable prior to
-                      ;; configuration (e.g., un-setting updates).
-                      (for-each make-file-writable (find-files "kitty"))
-
-                      (invoke "python3" "setup.py" "linux-package"
-                              ;; Do not phone home.
-                              "--update-check-interval=0"
-                              ;; Wayland backend requires EGL, which isn't
-                              ;; found out-of-the-box for some reason.
-                              (string-append "--egl-library="
-                                             (assoc-ref inputs "libgl1-mesa")
-                                             "/lib/libEGL.so.1"))))
-                  (replace 'check
-                    (lambda _
-                      ;; Fix "cannot find kitty executable" error when running
-                      ;; tests.
-                      (setenv "PATH" (string-append "linux-package/bin:"
-                                                    (getenv "PATH")))
-                      (invoke "python3" "test.py")))
-                  (add-before 'install 'rm-pycache
-                    ;; created python cache __pycache__ are non deterministic
-                    (lambda _
-                      (let ((pycaches (find-files "linux-package/"
-                                                  "__pycache__"
-                                                  #:directories? #t)))
-                        (for-each delete-file-recursively pycaches)
-                        #t)))
-                  (replace 'install
-                    (lambda _
-                      (let* ((out (assoc-ref %outputs "out"))
-                             (obin (string-append out "/bin"))
-                             (olib (string-append out "/lib"))
-                             (oshare (string-append out "/share")))
-                        (copy-recursively "linux-package/bin" obin)
-                        (copy-recursively "linux-package/share" oshare)
-                        (copy-recursively "linux-package/lib" olib)
-                        #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)   ;no configure script
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The "kitty" sub-directory must be writable prior to
+              ;; configuration (e.g., un-setting updates).
+              (for-each make-file-writable (find-files "kitty"))
+              (invoke "python3" "setup.py" "linux-package"
+                      ;; Do not phone home.
+                      "--update-check-interval=0"
+                      ;; Wayland backend requires EGL, which isn't
+                      ;; found out-of-the-box for some reason.
+                      (string-append "--egl-library="
+                                     (search-input-file inputs "/lib/libEGL.so.1")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Fix "cannot find kitty executable" error when running
+                ;; tests.
+                (setenv "PATH" (string-append "linux-package/bin:"
+                                              (getenv "PATH")))
+                (invoke "python3" "test.py"))))
+          (add-before 'install 'rm-pycache
+            ;; created python cache __pycache__ are non deterministic
+            (lambda _
+              (let ((pycaches (find-files "linux-package/"
+                                          "__pycache__"
+                                          #:directories? #t)))
+                (for-each delete-file-recursively pycaches))))
+          (replace 'install
+            (lambda _
+              (let* ((obin (string-append #$output "/bin"))
+                     (olib (string-append #$output "/lib"))
+                     (oshare (string-append #$output "/share")))
+                (copy-recursively "linux-package/bin" obin)
+                (copy-recursively "linux-package/share" oshare)
+                (copy-recursively "linux-package/lib" olib)))))))
     (synopsis "Fast, featureful, GPU based terminal emulator")
     (description "Kitty is a fast and featureful GPU-based terminal emulator:
 @itemize
