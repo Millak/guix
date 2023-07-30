@@ -4454,6 +4454,26 @@ from use of the package are in the format used in the textbook @emph{Language,
 Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lstbayes
+  (package
+    (name "texlive-lstbayes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lstbayes/"
+                   "source/latex/lstbayes/"
+                   "tex/latex/lstbayes/")
+             (base32
+              "1gd3zyq1z1n0ksmazky9dbal0qaiss2lgh7dh3021ckj7c3mwkmd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lstbayes")
+    (synopsis "Listings language driver for Bayesian modeling languages")
+    (description
+     "The package provides language drivers for the listings package for
+several languages not included in that package: BUGS, JAGS, and Stan.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
