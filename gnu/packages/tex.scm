@@ -3326,6 +3326,26 @@ appropriate for drawing for school materials.  The circuit symbols accord to
 the various parts of the standard IEC 617.")
     (license license:lppl)))
 
+(define-public texlive-emf
+  (package
+    (name "texlive-emf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/emf/" "tex/latex/emf/")
+             (base32
+              "1w1wrvb2agq8vw2n8qg0mj3as09nygaxvjj6ji90qd865fj7lwzl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/emf")
+    (synopsis "Support for the EMF symbol")
+    (description
+     "This package provides LaTeX support for the symbol for the EMF in
+electric circuits and electrodynamics.  It provides support for multiple
+symbols but does not provide any fonts.  The fonts themselves must be acquired
+otherwise.")
+    (license license:gpl3)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
