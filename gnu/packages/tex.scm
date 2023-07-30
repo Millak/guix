@@ -6740,6 +6740,32 @@ symbols.")
 membrane protein topology plots and helical wheels.")
     (license license:gpl3+)))
 
+(define-public texlive-thermodynamics
+  (package
+    (name "texlive-thermodynamics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thermodynamics/"
+                   "source/latex/thermodynamics/"
+                   "tex/latex/thermodynamics/")
+             (base32
+              "0shhwyhwrrkclbacqajgr5gk331pypnmn6pladkfmw87l5p4c5dh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thermodynamics")
+    (synopsis "Macros for multicomponent thermodynamics documents")
+    (description
+     "This package makes typesetting quantities found in thermodynamics texts
+relatively simple.  The commands are flexible and intended to be relatively
+intuitive.  It handles several sets of notation for total, specific, and molar
+quantities; allows changes between symbols (e.g., @samp{A} vs. @samp{F} for
+Helmholtz free energy); and greatly simplifies the typesetting of symbols and
+partial derivatives commonly encountered in mixture thermodynamics.  Changes
+of one's notes from one textbook to another can be achieved relatively easily
+by changing package options.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
