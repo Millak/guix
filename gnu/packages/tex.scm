@@ -6805,6 +6805,27 @@ to use the environment.")
 display calculators, specifically the TI-82 STATS.")
     (license license:lppl1.3c)))
 
+(define-public texlive-turnstile
+  (package
+    (name "texlive-turnstile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/turnstile/"
+                   "source/latex/turnstile/"
+                   "tex/latex/turnstile/")
+             (base32
+              "05ffizykplpisjy75s8zbaphpj5vk8r09ii5jzv929y54mi2qs06")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/turnstile")
+    (synopsis "Typeset the (logic) turnstile notation")
+    (description
+     "This package typesets the turnstile sign.  Among other uses, this sign
+is used by logicians for denoting a consequence relation, related to a given
+logic, between a collection of formulas and a derived formula.")
+    (license license:lppl)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
