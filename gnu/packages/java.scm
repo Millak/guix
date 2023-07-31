@@ -1652,6 +1652,11 @@ new Date();"))
                          (string-append "Interpreter specific version of call_VM_base\n"
                                         "  using MacroAssembler::call_VM_leaf_base;"))))))
                 #~())
+           (replace 'remove-timestamping
+             (lambda _
+               (substitute* "src/hotspot/share/runtime/vm_version.cpp"
+                (("__DATE__") "")
+                (("__TIME__") ""))))
            (replace 'fix-java-shebangs
              (lambda _
                ;; 'blocked' was renamed to 'blacklisted' in this version for
