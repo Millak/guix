@@ -1,0 +1,53 @@
+--- jdk-10/src/jdk.jlink/share/classes/jdk/tools/jmod/JmodTask.java.orig	2022-04-04 11:18:52.760626467 +0200
++++ jdk-10/src/jdk.jlink/share/classes/jdk/tools/jmod/JmodTask.java	2022-04-04 12:03:40.645325687 +0200
+@@ -105,6 +105,7 @@
+ import jdk.internal.module.ModuleTarget;
+ import jdk.internal.module.Resources;
+ import jdk.tools.jlink.internal.Utils;
++import java.util.TreeSet;
+ 
+ import static java.util.stream.Collectors.joining;
+ 
+@@ -768,6 +769,7 @@
+         void processSection(JmodOutputStream out, Section section, Path path)
+             throws IOException
+         {
++            TreeSet<Path> paths = new TreeSet<>();
+             Files.walkFileTree(path, Set.of(FileVisitOption.FOLLOW_LINKS),
+                 Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+                     @Override
+@@ -781,20 +783,24 @@
+ 
+                         if (!relPath.toString().equals(MODULE_INFO)
+                                 && !matches(relPath, excludes)) {
+-                            try (InputStream in = Files.newInputStream(file)) {
+-                                out.writeEntry(in, section, relPath.toString());
+-                            } catch (IOException x) {
+-                                if (x.getMessage().contains("duplicate entry")) {
+-                                    warning("warn.ignore.duplicate.entry",
+-                                            relPath.toString(), section);
+-                                    return FileVisitResult.CONTINUE;
+-                                }
+-                                throw x;
+-                            }
++                            paths.add(file);
+                         }
+                         return FileVisitResult.CONTINUE;
+                     }
+                 });
++            for (Path file : paths) {
++                Path relPath = path.relativize(file);
++                try (InputStream in = Files.newInputStream(file)) {
++                    out.writeEntry(in, section, relPath.toString());
++                } catch (IOException x) {
++                    if (x.getMessage().contains("duplicate entry")) {
++                        warning("warn.ignore.duplicate.entry",
++                                  relPath.toString(), section);
++                        continue;
++                    }
++                    throw x;
++                }
++            }
+         }
+ 
+         boolean matches(Path path, List<PathMatcher> matchers) {

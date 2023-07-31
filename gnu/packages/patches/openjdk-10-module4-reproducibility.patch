@@ -1,0 +1,14 @@
+Danny wrote it
+
+--- orig/jdk-6fa770f9f8ab/src/jdk.jlink/share/classes/jdk/tools/jlink/internal/plugins/SystemModulesPlugin.java	2022-04-13 19:24:12.655749459 +0200
++++ jdk-6fa770f9f8ab/src/jdk.jlink/share/classes/jdk/tools/jlink/internal/plugins/SystemModulesPlugin.java	2022-04-14 01:53:23.555465018 +0200
+@@ -861,7 +861,8 @@
+          */
+         private void genModuleReads(ClassWriter cw, Configuration cf) {
+             // module name -> names of modules that it reads
+-            Map<String, Set<String>> map = cf.modules().stream()
++            Map<String, Set<String>> map = cf.modules().stream()
++                    .sorted(java.util.Comparator.comparing(ResolvedModule::name))
+                     .collect(Collectors.toMap(
+                             ResolvedModule::name,
+                             m -> m.reads().stream()

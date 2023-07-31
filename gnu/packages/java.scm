@@ -1215,7 +1215,15 @@ new Date();"))
                (base32
                 "0i47ar8lxzjrkkiwbzybfxs473390h4jq9ahm3xqdvy5zpchxy3y"))
               (patches (search-patches
+                        "openjdk-10-char-reproducibility.patch"
+                        "openjdk-10-classlist-reproducibility.patch"
+                        "openjdk-10-corba-reproducibility.patch"
                         "openjdk-10-idlj-reproducibility.patch"
+                        "openjdk-10-module-reproducibility.patch"
+                        "openjdk-10-module3-reproducibility.patch"
+                        "openjdk-10-module4-reproducibility.patch"
+                        "openjdk-10-jar-reproducibility.patch"
+                        "openjdk-10-jtask-reproducibility.patch"
                         "openjdk-10-pointer-comparison.patch"
                         "openjdk-10-setsignalhandler.patch"
                         "openjdk-currency-time-bomb2.patch"))))
@@ -1241,6 +1249,11 @@ new Date();"))
                ;; this exact first line.
                (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
                  (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))
+           (add-after 'unpack 'remove-timestamping
+             (lambda _
+               (substitute* "./src/hotspot/share/runtime/vm_version.cpp"
+                 (("__DATE__") "")
+                 (("__TIME__") ""))))
            (replace 'configure
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (invoke "bash" "./configure"
