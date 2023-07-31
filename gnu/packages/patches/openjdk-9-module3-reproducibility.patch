@@ -1,0 +1,36 @@
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Wed, 18 Apr 2022 21:50:00 +0100
+Subject: Make module descriptor reproducible
+
+--- orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/java/lang/module/ModuleDescriptor.java	1970-01-01 01:00:01.000000000 +0100
++++ jdk-3cc80be736f2/jdk/src/java.base/share/classes/java/lang/module/ModuleDescriptor.java	2022-04-13 17:30:37.242775977 +0200
+@@ -43,6 +43,7 @@
+ import java.util.Objects;
+ import java.util.Optional;
+ import java.util.Set;
++import java.util.TreeSet;
+ import java.util.function.Supplier;
+ import java.util.stream.Collectors;
+ import java.util.stream.Stream;
+@@ -2155,9 +2156,9 @@
+          * @return The module descriptor
+          */
+         public ModuleDescriptor build() {
+-            Set<Requires> requires = new HashSet<>(this.requires.values());
+-            Set<Exports> exports = new HashSet<>(this.exports.values());
+-            Set<Opens> opens = new HashSet<>(this.opens.values());
++            Set<Requires> requires = new TreeSet<>(this.requires.values());
++            Set<Exports> exports = new TreeSet<>(this.exports.values());
++            Set<Opens> opens = new TreeSet<>(this.opens.values());
+ 
+             // add dependency on java.base
+             if (strict
+@@ -2169,7 +2170,7 @@
+                                           null));
+             }
+ 
+-            Set<Provides> provides = new HashSet<>(this.provides.values());
++            Set<Provides> provides = new TreeSet<>(this.provides.values());
+ 
+             return new ModuleDescriptor(name,
+                                         version,

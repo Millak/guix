@@ -1,0 +1,297 @@
+From a52c4ef44c0553a399a8a47e528db92e3bf51c6c Mon Sep 17 00:00:00 2001
+From: Alan Bateman <alanb@openjdk.org>
+Date: Wed, 29 Apr 2020 08:38:28 +0100
+Subject: [PATCH] 8243666: ModuleHashes attribute generated for JMOD and JAR
+ files depends on timestamps
+See: https://bugs.openjdk.org/browse/JDK-8243666
+
+Reviewed-by: mchung
+---
+
+diff -ru orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashesBuilder.java jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashesBuilder.java
+--- orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashesBuilder.java	1970-01-01 01:00:01.000000000 +0100
++++ jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashesBuilder.java	2022-04-12 16:47:15.690423653 +0200
+@@ -27,9 +27,8 @@
+ 
+ import java.io.PrintStream;
+ import java.lang.module.Configuration;
++import java.lang.module.ModuleReference;
+ import java.lang.module.ResolvedModule;
+-import java.net.URI;
+-import java.nio.file.Path;
+ import java.nio.file.Paths;
+ import java.util.ArrayDeque;
+ import java.util.Collections;
+@@ -40,7 +39,6 @@
+ import java.util.Map;
+ import java.util.Set;
+ import java.util.function.Consumer;
+-import java.util.function.Function;
+ import java.util.stream.Stream;
+ import static java.util.stream.Collectors.*;
+ 
+@@ -116,27 +114,17 @@
+                    mods.addAll(ns);
+ 
+                    if (!ns.isEmpty()) {
+-                       Map<String, Path> moduleToPath = ns.stream()
+-                           .collect(toMap(Function.identity(), this::moduleToPath));
+-                       hashes.put(mn, ModuleHashes.generate(moduleToPath, "SHA-256"));
++                       Set<ModuleReference> mrefs = ns.stream()
++                               .map(name -> configuration.findModule(name)
++                                                         .orElseThrow(InternalError::new))
++                               .map(ResolvedModule::reference)
++                               .collect(toSet());
++                       hashes.put(mn, ModuleHashes.generate(mrefs, "SHA-256"));
+                    }
+                });
+         return hashes;
+     }
+ 
+-    private Path moduleToPath(String name) {
+-        ResolvedModule rm = configuration.findModule(name).orElseThrow(
+-            () -> new InternalError("Selected module " + name + " not on module path"));
+-
+-        URI uri = rm.reference().location().get();
+-        Path path = Paths.get(uri);
+-        String fn = path.getFileName().toString();
+-        if (!fn.endsWith(".jar") && !fn.endsWith(".jmod")) {
+-            throw new UnsupportedOperationException(path + " is not a modular JAR or jmod file");
+-        }
+-        return path;
+-    }
+-
+     /*
+      * Utility class
+      */
+diff -ru orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashes.java jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashes.java
+--- orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashes.java	1970-01-01 01:00:01.000000000 +0100
++++ jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleHashes.java	2022-04-12 16:58:05.639985936 +0200
+@@ -26,17 +26,21 @@
+ package jdk.internal.module;
+ 
+ import java.io.IOException;
++import java.io.InputStream;
+ import java.io.UncheckedIOException;
+-import java.nio.ByteBuffer;
+-import java.nio.channels.FileChannel;
+-import java.nio.file.Path;
++import java.lang.module.ModuleReader;
++import java.lang.module.ModuleReference;
++import java.nio.charset.StandardCharsets;
+ import java.security.MessageDigest;
+ import java.security.NoSuchAlgorithmException;
++import java.util.Arrays;
+ import java.util.Collections;
+ import java.util.HashMap;
+ import java.util.Map;
+ import java.util.Objects;
+ import java.util.Set;
++import java.util.TreeMap;
++import java.util.function.Supplier;
+ 
+ /**
+  * The result of hashing the contents of a number of module artifacts.
+@@ -60,8 +64,8 @@
+      * @param algorithm   the algorithm used to create the hashes
+      * @param nameToHash  the map of module name to hash value
+      */
+-    public ModuleHashes(String algorithm, Map<String, byte[]> nameToHash) {
+-        this.algorithm = algorithm;
++    ModuleHashes(String algorithm, Map<String, byte[]> nameToHash) {
++        this.algorithm = Objects.requireNonNull(algorithm);
+         this.nameToHash = Collections.unmodifiableMap(nameToHash);
+     }
+ 
+@@ -95,54 +99,125 @@
+     }
+ 
+     /**
+-     * Computes the hash for the given file with the given message digest
+-     * algorithm.
++     * Computes a hash from the names and content of a module.
+      *
++     * @param reader the module reader to access the module content
++     * @param algorithm the name of the message digest algorithm to use
++     * @return the hash
++     * @throws IllegalArgumentException if digest algorithm is not supported
+      * @throws UncheckedIOException if an I/O error occurs
+      * @throws RuntimeException if the algorithm is not available
+      */
+-    public static byte[] computeHash(Path file, String algorithm) {
++    private static byte[] computeHash(ModuleReader reader, String algorithm) {
++        MessageDigest md;
+         try {
+-            MessageDigest md = MessageDigest.getInstance(algorithm);
+-
+-            // Ideally we would just mmap the file but this consumes too much
+-            // memory when jlink is running concurrently on very large jmods
+-            try (FileChannel fc = FileChannel.open(file)) {
+-                ByteBuffer bb = ByteBuffer.allocate(32*1024);
+-                while (fc.read(bb) > 0) {
+-                    bb.flip();
+-                    md.update(bb);
+-                    assert bb.remaining() == 0;
+-                    bb.clear();
+-                }
+-            }
+-
+-            return md.digest();
++            md = MessageDigest.getInstance(algorithm);
+         } catch (NoSuchAlgorithmException e) {
+-            throw new RuntimeException(e);
++            throw new IllegalArgumentException(e);
++        }
++        try {
++            byte[] buf = new byte[32*1024];
++            reader.list().sorted().forEach(rn -> {
++                md.update(rn.getBytes(StandardCharsets.UTF_8));
++                try (InputStream in = reader.open(rn).orElseThrow(java.util.NoSuchElementException::new)) {
++                    int n;
++                    while ((n = in.read(buf)) > 0) {
++                        md.update(buf, 0, n);
++                    }
++                } catch (IOException ioe) {
++                    throw new UncheckedIOException(ioe);
++                }
++            });
+         } catch (IOException ioe) {
+             throw new UncheckedIOException(ioe);
+         }
++        return md.digest();
+     }
+ 
+     /**
+-     * Computes the hash for every entry in the given map, returning a
+-     * {@code ModuleHashes} to encapsulate the result. The map key is
+-     * the entry name, typically the module name. The map value is the file
+-     * path to the entry (module artifact).
++     * Computes a hash from the names and content of a module.
+      *
++     * @param supplier supplies the module reader to access the module content
++     * @param algorithm the name of the message digest algorithm to use
++     * @return the hash
++     * @throws IllegalArgumentException if digest algorithm is not supported
++     * @throws UncheckedIOException if an I/O error occurs
++     */
++    static byte[] computeHash(Supplier<ModuleReader> supplier, String algorithm) {
++        try (ModuleReader reader = supplier.get()) {
++            return computeHash(reader, algorithm);
++        } catch (IOException ioe) {
++            throw new UncheckedIOException(ioe);
++        }
++    }
++
++    /**
++     * Computes the hash from the names and content of a set of modules. Returns
++     * a {@code ModuleHashes} to encapsulate the result.
++     * @param mrefs the set of modules
++     * @param algorithm the name of the message digest algorithm to use
+      * @return ModuleHashes that encapsulates the hashes
++     * @throws IllegalArgumentException if digest algorithm is not supported
++     * @throws UncheckedIOException if an I/O error occurs
+      */
+-    public static ModuleHashes generate(Map<String, Path> map, String algorithm) {
++    static ModuleHashes generate(Set<ModuleReference> mrefs, String algorithm) {
+         Map<String, byte[]> nameToHash = new HashMap<>();
+-        for (Map.Entry<String, Path> entry: map.entrySet()) {
+-            String name = entry.getKey();
+-            Path path = entry.getValue();
+-            nameToHash.put(name, computeHash(path, algorithm));
++        for (ModuleReference mref : mrefs) {
++            try (ModuleReader reader = mref.open()) {
++                byte[] hash = computeHash(reader, algorithm);
++                nameToHash.put(mref.descriptor().name(), hash);
++            } catch (IOException ioe) {
++                throw new UncheckedIOException(ioe);
++            }
+         }
+         return new ModuleHashes(algorithm, nameToHash);
+     }
+ 
++    @Override
++    public int hashCode() {
++        int h = algorithm.hashCode();
++        for (Map.Entry<String, byte[]> e : nameToHash.entrySet()) {
++            h = h * 31 + e.getKey().hashCode();
++            h = h * 31 + Arrays.hashCode(e.getValue());
++        }
++        return h;
++    }
++
++    @Override
++    public boolean equals(Object obj) {
++        if (!(obj instanceof ModuleHashes))
++            return false;
++        ModuleHashes other = (ModuleHashes) obj;
++        if (!algorithm.equals(other.algorithm)
++                || nameToHash.size() != other.nameToHash.size())
++            return false;
++        for (Map.Entry<String, byte[]> e : nameToHash.entrySet()) {
++            String name = e.getKey();
++            byte[] hash = e.getValue();
++            if (!Arrays.equals(hash, other.nameToHash.get(name)))
++                return false;
++        }
++        return true;
++    }
++
++    @Override
++    public String toString() {
++        StringBuilder sb = new StringBuilder(algorithm);
++        sb.append(" ");
++        nameToHash.entrySet()
++                .stream()
++                .sorted(Map.Entry.comparingByKey())
++                .forEach(e -> {
++                    sb.append(e.getKey());
++                    sb.append("=");
++                    byte[] ba = e.getValue();
++                    for (byte b : ba) {
++                        sb.append(String.format("%02x", b & 0xff));
++                    }
++                });
++        return sb.toString();
++    }
++
+     /**
+      * This is used by jdk.internal.module.SystemModules class
+      * generated at link time.
+diff -ru orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleInfoExtender.java jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleInfoExtender.java
+--- orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleInfoExtender.java	1970-01-01 01:00:01.000000000 +0100
++++ jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleInfoExtender.java	2022-04-12 16:43:12.967868689 +0200
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2014, 2016, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2014, 2020, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+diff -ru orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleReferences.java jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleReferences.java
+--- orig/jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleReferences.java	1970-01-01 01:00:01.000000000 +0100
++++ jdk-3cc80be736f2/jdk/src/java.base/share/classes/jdk/internal/module/ModuleReferences.java	2022-04-12 16:43:12.971868797 +0200
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2015, 2016, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2015, 2020, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -95,7 +95,7 @@
+                                         Path file) {
+         URI uri = file.toUri();
+         Supplier<ModuleReader> supplier = () -> new JarModuleReader(file, uri);
+-        HashSupplier hasher = (a) -> ModuleHashes.computeHash(file, a);
++        HashSupplier hasher = (a) -> ModuleHashes.computeHash(supplier, a);
+         return newModule(attrs, uri, supplier, patcher, hasher);
+     }
+ 
+@@ -105,7 +105,7 @@
+     static ModuleReference newJModModule(ModuleInfo.Attributes attrs, Path file) {
+         URI uri = file.toUri();
+         Supplier<ModuleReader> supplier = () -> new JModModuleReader(file, uri);
+-        HashSupplier hasher = (a) -> ModuleHashes.computeHash(file, a);
++        HashSupplier hasher = (a) -> ModuleHashes.computeHash(supplier, a);
+         return newModule(attrs, uri, supplier, null, hasher);
+     }
+ 
