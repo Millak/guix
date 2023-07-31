@@ -1841,6 +1841,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-10-pointer-comparison.patch      \
   %D%/packages/patches/openjdk-10-setsignalhandler.patch        \
   %D%/packages/patches/openjdk-11-classlist-reproducibility.patch	\
+  %D%/packages/patches/openjdk-13-classlist-reproducibility.patch	\
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
   %D%/packages/patches/openjdk-21-fix-rpath.patch		\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\
