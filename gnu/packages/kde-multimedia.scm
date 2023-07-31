@@ -58,14 +58,14 @@
 (define-public audiocd-kio
   (package
     (name "audiocd-kio")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/audiocd-kio-" version ".tar.xz"))
        (sha256
-        (base32 "0d6pbsh1fbhwwr2c4kf9b17dhzzx2jsmgamawcp4kn7pw9i7i8ql"))))
+        (base32 "0kl0j5qy54q88cbclwqj0rn8hj3gzjhzk7bimjgw5w0xy3cw6kql"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
