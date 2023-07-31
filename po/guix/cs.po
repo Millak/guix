@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: guix 0.7-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-05-28 18:20+0000\n"
+"PO-Revision-Date: 2023-07-31 12:09+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Czech <https://translate.fedoraproject.org/projects/guix/guix/cs/>\n"
 "Language: cs\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 4.18.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -66,7 +66,7 @@ msgstr "Zkuste přidat @code{(use-service-modules ~a)}."
 #: gnu/packages.scm:102
 #, scheme-format
 msgid "~a: patch not found"
-msgstr "~a: záplata nenalezena~%"
+msgstr "~a: záplata nenalezena"
 
 #: gnu/packages.scm:488 gnu/packages.scm:529
 #, scheme-format
@@ -4093,7 +4093,7 @@ msgstr ""
 #: guix/scripts/package.scm:1045
 #, scheme-format
 msgid "nothing to do~%"
-msgstr "Není co dělat."
+msgstr "Není co dělat.~%"
 
 #: guix/scripts/package.scm:1067
 msgid "manage packages and profiles"
@@ -9584,7 +9584,7 @@ msgstr "~a: Není číslo~%"
 #: guix/scripts/refresh.scm:320
 #, scheme-format
 msgid "Available updaters:~%"
-msgstr "Dostupné aktualizace"
+msgstr "Dostupné aktualizace:~%"
 
 #. TRANSLATORS: The parenthetical expression here is rendered
 #. like "(42% coverage)" and denotes the fraction of packages

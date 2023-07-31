@@ -8,21 +8,22 @@
 # Vanhoorne Michael <michaeltjevanhoorne@gmail.com>, 2022.
 # Jens Maucher <jensmaucher@gmail.com>, 2023.
 # Mike Kevin van Leeuwen <mkvanleeuwen@gmail.com>, 2023.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-06-30 12:44+0200\n"
-"Last-Translator: Mike Kevin van Leeuwen <mkvanleeuwen@gmail.com>\n"
+"PO-Revision-Date: 2023-07-30 12:21+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Dutch <https://translate.fedoraproject.org/projects/guix/guix/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: gnu.scm:81
 #, scheme-format
