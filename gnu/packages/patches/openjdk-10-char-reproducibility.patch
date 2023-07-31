@@ -1,0 +1,12 @@
+Danny
+--- orig/jdk-6fa770f9f8ab/make/jdk/src/classes/build/tools/generatecharacter/GenerateCharacter.java	2022-04-13 19:24:10.211683257 +0200
++++ jdk-6fa770f9f8ab/make/jdk/src/classes/build/tools/generatecharacter/GenerateCharacter.java	2022-04-13 22:51:50.680487330 +0200
+@@ -693,7 +693,7 @@
+         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(theOutputFileName)));
+         out.println(commentStart +
+             " This file was generated AUTOMATICALLY from a template file " +
+-            new java.util.Date() + commentEnd);
++            (System.getenv("SOURCE_DATE_EPOCH") == null ? new java.util.Date() : new java.util.Date(1000 * Long.parseLong(System.getenv("SOURCE_DATE_EPOCH")))) + commentEnd);
+         int marklen = commandMarker.length();
+         LOOP: while(true) {
+             try {

@@ -1829,7 +1829,15 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-9-module-reproducibility.patch	\
   %D%/packages/patches/openjdk-9-module2-reproducibility.patch	\
   %D%/packages/patches/openjdk-9-module3-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-char-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-classlist-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-corba-reproducibility.patch	\
   %D%/packages/patches/openjdk-10-idlj-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-jar-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-jtask-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-module-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-module3-reproducibility.patch	\
+  %D%/packages/patches/openjdk-10-module4-reproducibility.patch	\
   %D%/packages/patches/openjdk-10-pointer-comparison.patch      \
   %D%/packages/patches/openjdk-10-setsignalhandler.patch        \
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
