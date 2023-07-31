@@ -1,0 +1,31 @@
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Wed, 18 Apr 2022 18:38:28 +0100
+Subject: Make classlist reproducible
+
+--- jdk-09/make/GenerateLinkOptData.gmk.orig	2022-04-05 10:05:35.892134188 +0200
++++ jdk-09/make/GenerateLinkOptData.gmk	2022-04-05 10:06:07.885003056 +0200
+@@ -61,11 +61,12 @@
+ 	$(call MakeDir, $(LINK_OPT_DIR))
+ 	$(call LogInfo, Generating $(patsubst $(OUTPUT_ROOT)/%, %, $@))
+ 	$(call LogInfo, Generating $(patsubst $(OUTPUT_ROOT)/%, %, $(JLI_TRACE_FILE)))
+-	$(FIXPATH) $(INTERIM_IMAGE_DIR)/bin/java -XX:DumpLoadedClassList=$@ \
++	$(FIXPATH) $(INTERIM_IMAGE_DIR)/bin/java -XX:DumpLoadedClassList=$@.tmp \
+ 	    -Djava.lang.invoke.MethodHandle.TRACE_RESOLVE=true \
+ 	    -cp $(SUPPORT_OUTPUTDIR)/classlist.jar \
+ 	    build.tools.classlist.HelloClasslist \
+ 	    $(LOG_DEBUG) 2>&1 > $(JLI_TRACE_FILE)
++	sort $@.tmp >$@
+ 
+ # The jli trace is created by the same recipe as classlist. By declaring these
+ # dependencies, make will correctly rebuild both jli trace and classlist
+--- jdk-09/langtools/make/gendata/Gendata-jdk.compiler.gmk.orig	2022-04-08 22:04:05.784424812 +0200
++++ jdk-09/langtools/make/gendata/Gendata-jdk.compiler.gmk	2022-04-08 22:09:36.333575143 +0200
+@@ -79,6 +79,8 @@
+ 	    $(CT_MODULESOURCEPATH) \
+ 	    $(CT_MODULES) \
+ 	    >$(@D)/9/system-modules
++	# Make files reproducible
++	find $(@D) -exec $(TOUCH) -h -c -t 197001010000.01 {} \;
+ 	$(TOUCH) $@
+ 
+ # Can't generate ct.sym directly into modules libs as the SetupJarArchive macro

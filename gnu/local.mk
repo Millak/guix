@@ -1823,6 +1823,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-currency-time-bomb2.patch	\
   %D%/packages/patches/openjdk-9-pointer-comparison.patch       \
   %D%/packages/patches/openjdk-9-setsignalhandler.patch         \
+  %D%/packages/patches/openjdk-9-classlist-reproducibility.patch	\
+  %D%/packages/patches/openjdk-9-idlj-reproducibility.patch	\
+  %D%/packages/patches/openjdk-9-jar-reproducibility.patch	\
+  %D%/packages/patches/openjdk-9-module-reproducibility.patch	\
+  %D%/packages/patches/openjdk-9-module2-reproducibility.patch	\
+  %D%/packages/patches/openjdk-9-module3-reproducibility.patch	\
   %D%/packages/patches/openjdk-10-idlj-reproducibility.patch	\
   %D%/packages/patches/openjdk-10-pointer-comparison.patch      \
   %D%/packages/patches/openjdk-10-setsignalhandler.patch        \

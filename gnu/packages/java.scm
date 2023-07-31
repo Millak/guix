@@ -886,9 +886,16 @@ new Date();"))
               (sha256
                (base32
                 "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))
-              (patches (search-patches "openjdk-9-pointer-comparison.patch"
-                                       "openjdk-9-setsignalhandler.patch"
-                                       "openjdk-currency-time-bomb.patch"))))
+              (patches
+               (search-patches "openjdk-9-pointer-comparison.patch"
+                               "openjdk-9-classlist-reproducibility.patch"
+                               "openjdk-currency-time-bomb.patch"
+                               "openjdk-9-jar-reproducibility.patch"
+                               "openjdk-9-module-reproducibility.patch"
+                               "openjdk-9-module2-reproducibility.patch"
+                               "openjdk-9-module3-reproducibility.patch"
+                               "openjdk-9-idlj-reproducibility.patch"
+                               "openjdk-9-setsignalhandler.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
@@ -899,7 +906,7 @@ new Date();"))
        ((guix build utils)
         (guix build gnu-build-system)
         (ice-9 popen))
-       #:tests? #f; require jtreg
+       #:tests? #f                      ; require jtreg
        #:make-flags '("all")
        #:disallowed-references ,(list (gexp-input icedtea-8)
                                       (gexp-input icedtea-8 "jdk"))
@@ -988,80 +995,80 @@ new Date();"))
                               file))))
                 (find-files "."
                             "\\.c$|\\.h$")))))
-           ;; By default OpenJDK only generates an empty keystore.  In order to
-           ;; be able to use certificates in Java programs we need to generate a
-           ;; keystore from a set of certificates.  For convenience we use the
-           ;; certificates from the nss-certs package.
-           (add-after 'install 'install-keystore
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (use-modules (ice-9 rdelim))
-               (let* ((keystore  "cacerts")
-                      (certs-dir (search-input-directory inputs
-                                                         "etc/ssl/certs"))
-                      (keytool   (string-append (assoc-ref outputs "jdk")
-                                                "/bin/keytool")))
-                 (define (extract-cert file target)
-                   (call-with-input-file file
-                     (lambda (in)
-                       (call-with-output-file target
-                         (lambda (out)
-                           (let loop ((line (read-line in 'concat))
-                                      (copying? #f))
-                             (cond
-                              ((eof-object? line) #t)
-                              ((string-prefix? "-----BEGIN" line)
-                               (display line out)
-                               (loop (read-line in 'concat) #t))
-                              ((string-prefix? "-----END" line)
-                               (display line out)
-                               #t)
-                              (else
-                               (when copying? (display line out))
-                               (loop (read-line in 'concat) copying?)))))))))
-                 (define (import-cert cert)
-                   (format #t "Importing certificate ~a\n" (basename cert))
-                   (let ((temp "tmpcert"))
-                     (extract-cert cert temp)
-                     (let ((port (open-pipe* OPEN_WRITE keytool
-                                             "-import"
-                                             "-alias" (basename cert)
-                                             "-keystore" keystore
-                                             "-storepass" "changeit"
-                                             "-file" temp)))
-                       (display "yes\n" port)
-                       (when (not (zero? (status:exit-val (close-pipe port))))
-                         (format #t "failed to import ~a\n" cert)))
-                     (delete-file temp)))
+         ;; By default OpenJDK only generates an empty keystore.  In order to
+         ;; be able to use certificates in Java programs we need to generate a
+         ;; keystore from a set of certificates.  For convenience we use the
+         ;; certificates from the nss-certs package.
+         (add-after 'install 'install-keystore
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (use-modules (ice-9 rdelim))
+             (let* ((keystore  "cacerts")
+                    (certs-dir (search-input-directory inputs
+                                                       "etc/ssl/certs"))
+                    (keytool   (string-append (assoc-ref outputs "jdk")
+                                              "/bin/keytool")))
+               (define (extract-cert file target)
+                 (call-with-input-file file
+                   (lambda (in)
+                     (call-with-output-file target
+                       (lambda (out)
+                         (let loop ((line (read-line in 'concat))
+                                    (copying? #f))
+                           (cond
+                            ((eof-object? line) #t)
+                            ((string-prefix? "-----BEGIN" line)
+                             (display line out)
+                             (loop (read-line in 'concat) #t))
+                            ((string-prefix? "-----END" line)
+                             (display line out)
+                             #t)
+                            (else
+                             (when copying? (display line out))
+                             (loop (read-line in 'concat) copying?)))))))))
+               (define (import-cert cert)
+                 (format #t "Importing certificate ~a\n" (basename cert))
+                 (let ((temp "tmpcert"))
+                   (extract-cert cert temp)
+                   (let ((port (open-pipe* OPEN_WRITE keytool
+                                           "-import"
+                                           "-alias" (basename cert)
+                                           "-keystore" keystore
+                                           "-storepass" "changeit"
+                                           "-file" temp)))
+                     (display "yes\n" port)
+                     (when (not (zero? (status:exit-val (close-pipe port))))
+                       (format #t "failed to import ~a\n" cert)))
+                   (delete-file temp)))
 
-                 ;; This is necessary because the certificate directory contains
-                 ;; files with non-ASCII characters in their names.
-                 (setlocale LC_ALL "C.UTF-8")
-                 (setenv "LC_ALL" "C.UTF-8")
+               ;; This is necessary because the certificate directory contains
+               ;; files with non-ASCII characters in their names.
+               (setlocale LC_ALL "C.UTF-8")
+               (setenv "LC_ALL" "C.UTF-8")
 
-                 (copy-file (string-append (assoc-ref outputs "out")
-                                           "/lib/security/cacerts")
-                            keystore)
-                 (chmod keystore #o644)
-                 (for-each import-cert (find-files certs-dir "\\.pem$"))
-                 (mkdir-p (string-append (assoc-ref outputs "out")
-                                         "/lib/security"))
-                 (mkdir-p (string-append (assoc-ref outputs "jdk")
-                                         "/lib/security"))
+               (copy-file (string-append (assoc-ref outputs "out")
+                                         "/lib/security/cacerts")
+                          keystore)
+               (chmod keystore #o644)
+               (for-each import-cert (find-files certs-dir "\\.pem$"))
+               (mkdir-p (string-append (assoc-ref outputs "out")
+                                       "/lib/security"))
+               (mkdir-p (string-append (assoc-ref outputs "jdk")
+                                       "/lib/security"))
 
-                 ;; The cacerts files we are going to overwrite are chmod'ed as
-                 ;; read-only (444) in icedtea-8 (which derives from this
-                 ;; package).  We have to change this so we can overwrite them.
-                 (chmod (string-append (assoc-ref outputs "out")
-                                       "/lib/security/" keystore) #o644)
-                 (chmod (string-append (assoc-ref outputs "jdk")
-                                       "/lib/security/" keystore) #o644)
+               ;; The cacerts files we are going to overwrite are chmod'ed as
+               ;; read-only (444) in icedtea-8 (which derives from this
+               ;; package).  We have to change this so we can overwrite them.
+               (chmod (string-append (assoc-ref outputs "out")
+                                     "/lib/security/" keystore) #o644)
+               (chmod (string-append (assoc-ref outputs "jdk")
+                                     "/lib/security/" keystore) #o644)
 
-                 (install-file keystore
-                               (string-append (assoc-ref outputs "out")
-                                              "/lib/security"))
-                 (install-file keystore
-                               (string-append (assoc-ref outputs "jdk")
-                                              "/lib/security")))))
+               (install-file keystore
+                             (string-append (assoc-ref outputs "out")
+                                            "/lib/security"))
+               (install-file keystore
+                             (string-append (assoc-ref outputs "jdk")
+                                            "/lib/security")))))
          ;; Some of the libraries in the lib/ folder link to libjvm.so.
          ;; But that shared object is located in the server/ folder, so it
          ;; cannot be found.  This phase creates a symbolic link in the
@@ -1094,48 +1101,96 @@ new Date();"))
                (copy-recursively (string-append images "/images/docs") doc))))
          (add-after 'install 'strip-zip-timestamps
            (lambda* (#:key outputs #:allow-other-keys)
-             (for-each (lambda (zip)
-                         (let ((dir (mkdtemp "zip-contents.XXXXXX")))
-                           (with-directory-excursion dir
-                             (invoke "unzip" zip))
-                           (delete-file zip)
-                           (for-each (lambda (file)
-                                       (let ((s (lstat file)))
-                                         (unless (eq? (stat:type s) 'symlink)
-                                           (format #t "reset ~a~%" file)
-                                           (utime file 0 0 0 0))))
-                                     (find-files dir #:directories? #t))
-                           (with-directory-excursion dir
-                             (let ((files (find-files "." ".*" #:directories? #t)))
-                               (apply invoke "zip" "-0" "-X" zip files)))))
-                       (find-files (assoc-ref outputs "doc") ".*.zip$")))))))
+             (for-each
+              (lambda (zip)
+                (let ((dir (mkdtemp "zip-contents.XXXXXX")))
+                  (with-directory-excursion dir
+                    ;; This is an exact copy of the implementation of invoke,
+                    ;; but this accepts exit code 1 as OK.
+                    (let ((code (system* "unzip" "--" zip)))
+                      ;; jmod files are zip files with an extra header in
+                      ;; front.  unzip will warn about that -- but otherwise
+                      ;; work.
+                      (when (> (status:exit-val code) 1) ; 1 is just a warning
+                        (raise
+                         (condition
+                          (&invoke-error
+                           (program "unzip")
+                           (arguments (list "--" zip))
+                           (exit-status (status:exit-val code))
+                           (term-signal (status:term-sig code))
+                           (stop-signal (status:stop-sig code))))))))
+                  (delete-file zip)
+                  (for-each (lambda (file)
+                              (let ((s (lstat file)))
+                                (format #t "reset ~a~%" file)
+                                (utime file 1 1 0 0
+                                       AT_SYMLINK_NOFOLLOW)))
+                            (find-files dir #:directories? #t))
+                  (with-directory-excursion dir
+                    (let ((files (cons "./META-INF/MANIFEST.MF"
+                                       (append
+                                        (find-files "./META-INF" ".*")
+                                        ;; for jmod:
+                                        (list "./classes/module-info.class")
+                                        (find-files "." ".*")))))
+                      (apply invoke "zip" "--symlinks" "-0" "-X" zip files)
+                      (when (string-suffix? ".jmod" zip)
+                        (let ((new-zip (string-append zip "n"))
+                              (contents (call-with-input-file zip
+                                          (@ (ice-9 binary-ports)
+                                             get-bytevector-all))))
+                          (call-with-output-file new-zip
+                            (lambda (output-port)
+                              ((@ (ice-9 binary-ports) put-bytevector)
+                               output-port
+                               #vu8(#x4a #x4d #x01 #x00)) ; JM
+                              ((@ (ice-9 binary-ports) put-bytevector)
+                               output-port
+                               contents)))
+                          (rename-file new-zip zip)))))))
+              (append (find-files (string-append
+                                   (assoc-ref outputs "doc")
+                                   "/api")
+                                  "\\.zip$")
+                      (find-files (assoc-ref outputs "doc") "src\\.zip$")
+                      (find-files (assoc-ref outputs "jdk") "src\\.zip$")
+                      (find-files (assoc-ref outputs "jdk") "\\.jmod$")
+                      (find-files (assoc-ref outputs "jdk") "\\.diz$")
+                      (find-files (assoc-ref outputs "out") "\\.diz$")
+
+                      (list (string-append (assoc-ref outputs "jdk")
+                                           "/lib/jrt-fs.jar"))
+                      (find-files (string-append (assoc-ref outputs "jdk")
+                                                 "/demo")
+                                  "\\.jar$"))))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("cups" ,cups)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("lcms" ,lcms)
-       ("libelf" ,libelf)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libice" ,libice)
-       ("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxrender" ,libxrender)
-       ("libxt" ,libxt)
-       ("libxtst" ,libxtst)))
+     (list alsa-lib
+           cups
+           fontconfig
+           freetype
+           giflib
+           lcms
+           libelf
+           libjpeg-turbo
+           libice
+           libpng
+           libx11
+           libxcomposite
+           libxi
+           libxinerama
+           libxrender
+           libxt
+           libxtst))
     (native-inputs
-     `(("icedtea-8" ,icedtea-8)
-       ("icedtea-8:jdk" ,icedtea-8 "jdk")
-       ;; XXX: The build system fails with newer versions of GNU Make.
-       ("make@4.2" ,gnu-make-4.2)
-       ("nss-certs" ,nss-certs)
-       ("unzip" ,unzip)
-       ("which" ,which)
-       ("zip" ,zip)))
+     (list icedtea-8
+           `(,icedtea-8 "jdk")
+           ;; XXX: The build system fails with newer versions of GNU Make.
+           gnu-make-4.2
+           nss-certs
+           unzip
+           which
+           zip))
     (home-page "https://openjdk.org/projects/jdk9/")
     (synopsis "Java development kit")
     (description
