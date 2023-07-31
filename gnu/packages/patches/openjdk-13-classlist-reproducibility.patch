@@ -1,0 +1,11 @@
+--- 6cllxkf0narh0b4wgx8npwjkznd7ifq0-openjdk-13.0.7-checkout/make/GenerateLinkOptData.gmk.orig	2022-04-04 17:20:33.012539984 +0200
++++ 6cllxkf0narh0b4wgx8npwjkznd7ifq0-openjdk-13.0.7-checkout/make/GenerateLinkOptData.gmk	2022-04-04 17:20:51.181032859 +0200
+@@ -78,7 +78,7 @@
+ 	        $(CAT) $(LINK_OPT_DIR)/stderr $(JLI_TRACE_FILE) ; \
+ 	        exit $$exitcode \
+ 	    )
+-	$(GREP) -v HelloClasslist $@.raw > $@
++	$(GREP) -v HelloClasslist $@.raw | sort > $@
+ 
+ # The jli trace is created by the same recipe as classlist. By declaring these
+ # dependencies, make will correctly rebuild both jli trace and classlist

@@ -1669,9 +1669,20 @@ blacklisted.certs.pem"
 (define-public openjdk13
   (make-openjdk openjdk12 "13.0.14"
                 "1v92i5rhahqkjw8mz09c9qasnxqc67ygy0y266kdmm534z0da755"
-  (source (origin
-            (inherit (package-source base))
-            (patches '())))))
+   (source (origin
+             (inherit (package-source base))
+             (patches (search-patches "openjdk-13-classlist-reproducibility.patch"
+                                      "openjdk-10-jtask-reproducibility.patch"))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments openjdk12)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (replace 'remove-timestamping
+             (lambda _
+               (substitute*
+                "src/hotspot/share/runtime/abstract_vm_version.cpp"
+                (("__DATE__") "")
+                (("__TIME__") ""))))))))))
 
 (define-public openjdk14
   (make-openjdk
