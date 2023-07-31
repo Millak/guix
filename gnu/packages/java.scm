@@ -1710,7 +1710,8 @@ blacklisted.certs.pem"
              (modules '())
              (snippet #f)
              (patches
-              (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
+              (search-patches "openjdk-15-jtask-reproducibility.patch"
+                              "openjdk-15-xcursor-no-dynamic.patch"))))
    (inputs
     (modify-inputs (package-inputs base)
       (append libxcursor)))             ;for our patch to work

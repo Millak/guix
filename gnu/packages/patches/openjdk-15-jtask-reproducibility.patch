@@ -1,0 +1,40 @@
+--- 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/src/jdk.jlink/share/classes/jdk/tools/jmod/JmodTask.java.orig	2022-04-04 10:57:40.346312924 +0200
++++ 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/src/jdk.jlink/share/classes/jdk/tools/jmod/JmodTask.java	2022-04-04 11:01:38.480751902 +0200
+@@ -82,6 +82,7 @@
+ import jdk.internal.module.ModuleTarget;
+ import jdk.internal.module.Resources;
+ import jdk.tools.jlink.internal.Utils;
++import java.util.TreeSet;
+ 
+ import static java.util.stream.Collectors.joining;
+ 
+@@ -750,6 +751,7 @@
+         void processSection(JmodOutputStream out, Section section, Path path)
+             throws IOException
+         {
++            TreeSet<Path> paths = new TreeSet<>();
+             Files.walkFileTree(path, Set.of(FileVisitOption.FOLLOW_LINKS),
+                 Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+                     @Override
+@@ -765,14 +767,18 @@
+                             if (out.contains(section, name)) {
+                                 warning("warn.ignore.duplicate.entry", name, section);
+                             } else {
+-                                try (InputStream in = Files.newInputStream(file)) {
+-                                    out.writeEntry(in, section, name);
+-                                }
++                                paths.add(file);
+                             }
+                         }
+                         return FileVisitResult.CONTINUE;
+                     }
+                 });
++
++            for (Path file : paths) {
++                try (InputStream in = Files.newInputStream(file)) {
++                    out.writeEntry(in, section, path.relativize(file).toString());
++                }
++            }
+         }
+ 
+         boolean matches(Path path, List<PathMatcher> matchers) {
