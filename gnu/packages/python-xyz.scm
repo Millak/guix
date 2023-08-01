@@ -99,7 +99,7 @@
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
@@ -5763,6 +5763,28 @@ structures.  In a way, @code{tree} generalizes the builtin @code{map} function
 which only supports flat sequences, and allows you to apply a function to each
 leaf preserving the overall structure.")
     (license license:asl2.0)))
+
+(define-public python-pyment
+  (package
+    (name "python-pyment")
+    (version "0.3.4")
+    (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/dadadel/pyment")
+           (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gbx9wmqsxdx85v5sg79lv2zxmy16j5dwi8bip07i1nyvzc5gvn0"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/dadadel/pyment/")
+    (synopsis "Convert Python docstrings automatically")
+    (description "Pyment is a command line tool and library that can be
+used to convert between several docstring styles.")
+    (license license:gpl3+)))
 
 (define-public python-docstring-parser
   (package
