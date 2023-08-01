@@ -1529,7 +1529,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-volumed-pulse
   (package
     (name "xfce4-volumed-pulse")
-    (version "0.2.3")
+    (version "0.2.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1537,7 +1537,7 @@ A plugin for the Xfce panel is also available.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1q639iwwj7q2plgz0wdgdbi5wkgaq177ca9rnnlrnbdmid5z5fqk"))))
+                "0ql3hlciffjs981jp21hg6phrk25crh64yc01fm0l75k4vvf66d0"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
