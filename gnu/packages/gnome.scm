@@ -4562,28 +4562,6 @@ editors, IDEs, etc.")
     (propagated-inputs (modify-inputs (package-propagated-inputs vte)
                          (replace "gtk+" gtk)))))
 
-(define-public vte-ng
-  (package
-    (inherit vte)
-    (name "vte-ng")
-    (version "0.59.0")
-    (home-page "https://github.com/thestinger/vte-ng")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03ffhjc0fq9p25y1b2c0a51jn7y2bc0acxsgymhcb3pyijc8ykjm"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-Ddocs=false")))
-  (synopsis "Enhanced VTE terminal widget")
-  (description
-   "VTE is a library (libvte) implementing a terminal emulator widget for
-GTK+, this fork provides additional functions exposed for keyboard text
-selection and URL hints.")))
-
 ;; Stable version for gtk2, required by gnurobots and lxterminal as of 2020-07.
 (define-public vte/gtk+-2
   (package (inherit vte)
