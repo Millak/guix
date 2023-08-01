@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,14 +32,14 @@
 (define-public dezyne
   (package
     (name "dezyne")
-    (version "2.17.3")
+    (version "2.17.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dezyne.org/download/dezyne/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x2aqfvbxhiwxj6vm17g7dkxwj8skcs9pg3a3l1x9pxy7v22wxd7"))))
+        (base32 "15jhi17f0aqnlznvpf6lkz2y837xkzf8chi9rhhb55920vqf6cgg"))))
     (inputs (list bash-minimal
                   guile-3.0-latest
                   guile-json-4
