@@ -11443,30 +11443,38 @@ Python style, together with a fast and comfortable execution environment.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "09yrpi9f86r9yvcm2dfjs5zy87c4j31bxama77kfd6y8yfrrjlai"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; For cluster execution Snakemake will call Python.  Since there is
-         ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
-         ;; fix this by calling the snakemake wrapper instead.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; For cluster execution Snakemake will call Python.  Since there is
+          ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+          ;; fix this by calling the snakemake wrapper instead.
 
-         ;; XXX: There is another instance of sys.executable on line 692, but
-         ;; it is not clear how to patch it.
-         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "snakemake/executors/__init__.py"
-               (("\\{sys.executable\\} -m snakemake")
-                (string-append (assoc-ref outputs "out")
-                               "/bin/snakemake")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               ;; This test attempts to change S3 buckets on AWS and fails
-               ;; because there are no AWS credentials.
-               (delete-file "tests/test_tibanna.py")
-               (invoke "pytest")))))))
+          ;; XXX: There is another instance of sys.executable on line 692, but
+          ;; it is not clear how to patch it.
+          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "snakemake/executors/__init__.py"
+                (("\\{sys.executable\\} -m snakemake")
+                 (string-append #$output "/bin/snakemake")))))
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(\\)")
+                 (format #f "version=~s" #$version)))
+              (substitute* '("snakemake/_version.py"
+                             "versioneer.py")
+                (("0\\+unknown") #$version))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                ;; This test attempts to change S3 buckets on AWS and fails
+                ;; because there are no AWS credentials.
+                (delete-file "tests/test_tibanna.py")
+                (invoke "pytest")))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
