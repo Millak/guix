@@ -64,9 +64,8 @@
                             "--enable-unicode-properties"
                             "--enable-pcre16"
                             "--enable-pcre32"
-                            ;; pcretest fails on powerpc32.
                             ;; riscv64-linux is an unsupported architecture.
-                            #$@(if (or (target-ppc32?) (target-riscv64?))
+                            #$@(if (target-riscv64?)
                                    #~()
                                    #~("--enable-jit")))
       #:phases
