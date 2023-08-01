@@ -152,6 +152,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages text-editors)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
@@ -439,14 +440,14 @@ features.")))
 (define-public librnd
   (package
     (name "librnd")
-    (version "4.0.0")
+    (version "4.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.repo.hu/projects/librnd/releases/"
                                   "librnd-" version ".tar.bz2"))
               (sha256
                (base32
-                "1fqh7gf9imhghlfajrsgzjx61mynfmdasciwpcajk7pn85d4ymql"))))
+                "0z578x3sd8yjfbhivy1hz4hlgiy43qq6x7mnby872plpm08vgqxz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -454,7 +455,7 @@ features.")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'cc-is-gcc
-            (lambda _ (setenv "CC" "gcc")))
+            (lambda _ (setenv "CC" #$(cc-for-target))))
           (replace 'configure
             ;; The configure script doesn't tolerate most of our configure flags.
             (lambda _
@@ -527,21 +528,21 @@ optimizer; and it can produce photorealistic and design review images.")
 (define-public pcb-rnd
   (package (inherit pcb)
     (name "pcb-rnd")
-    (version "3.1.0")
+    (version "3.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://repo.hu/projects/pcb-rnd/releases/"
                                   "pcb-rnd-" version ".tar.gz"))
               (sha256
                (base32
-                "0yw4sf4qrmmai48f3f5byn2fphc453myjszh3sy9z0dnfcz3x7fw"))))
+                "0szcsp2049wh3wslv7743wbjqllrmphi07yz0933sz4vf6f1c8dg"))))
     (arguments
      (list
       #:tests? #false                   ;no check target
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'cc-is-gcc
-            (lambda _ (setenv "CC" "gcc")))
+            (lambda _ (setenv "CC" #$(cc-for-target))))
           (replace 'configure
             ;; The configure script doesn't tolerate most of our configure flags.
             (lambda _
@@ -575,10 +576,11 @@ featuring various improvements and bug fixes.")))
                                        "fastcap-mulGlobal.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     ;; FIXME: with texlive-tiny citation references are rendered as question
-     ;; marks.  During the build warnings like these are printed:
-     ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line 3.
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts)))
+     ;; FIXME: with (texlive-updmap.cfg) citation references are rendered as
+     ;; question marks.  During the build warnings like these are printed:
+     ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line
+     ;; 3.
+     `(("texlive" ,(texlive-updmap.cfg))
        ("ghostscript" ,ghostscript)))
     (arguments
      `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")
@@ -1289,7 +1291,7 @@ with the kernel and various utilities such as per-cpu counters.")
 (define-public linsmith
   (package
     (name "linsmith")
-    (version "0.99.31")
+    (version "0.99.33")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1297,14 +1299,14 @@ with the kernel and various utilities such as per-cpu counters.")
                     version "/linsmith-" version ".tar.gz"))
               (sha256
                (base32
-                "13qj7n9826qc9shkkgd1p6vcpj78v4h9d67wbg45prg7rbnzkzds"))))
+                "1629p29casy9pgy8hzva1bmgrvh923qk01ls3anik6zqn6swkjfn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("CFLAGS=-fcommon")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gtk" ,gtk+-2)
-       ("libgnome" ,libgnomeui)))
+     (list pkg-config))
+    (inputs
+     (list gtk+-2 libgnomeui))
     (home-page "https://jcoppens.com/soft/linsmith/index.en.php")
     (synopsis "Smith Charting program")
     (description "LinSmith is a Smith Charting program, mainly designed for
@@ -2541,7 +2543,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.27.1")
+    (version "0.28.0")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2549,7 +2551,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1rh2hq050439azlglqb54cy3jc1ir5y1ps55as4d5j619a7mq9x0"))
+                "11pxl8q356f6q4cvadasg52js3k446l87hwmc87b1n9cy8sxcfvi"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
@@ -4228,3 +4230,31 @@ more.")
     ;; GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-or-later, LGPL-2.0-or-later,
     ;; LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT, NCSA.
     (license license:gpl3+)))
+
+(define-public python-asyncua
+  (package
+    (name "python-asyncua")
+    (version "1.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/FreeOpcUa/opcua-asyncio.git")
+                     (commit (string-append "v" version))
+                     (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bazk3k2dyzlrh7yxs4pc76m5ysm7riia3ncg7as3xr4y9dy29bx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-asyncio python-pytest-runner python-asynctest
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-aiofiles python-aiosqlite python-cryptography
+           python-importlib-metadata python-dateutil python-pytz
+           python-sortedcontainers))
+    (synopsis "OPC UA / IEC 62541 client and server library")
+    (description "This package provides an OPC UA / IEC 62541 client and
+server for Python and pypy3.")
+    (home-page "https://freeopcua.github.io/")
+    (license license:lgpl3+)))

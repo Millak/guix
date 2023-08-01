@@ -34,6 +34,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages augeas)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
@@ -138,7 +139,7 @@ fundamental object types for C.")
 (define-public sssd
   (package
     (name "sssd")
-    (version "2.8.1")
+    (version "2.9.1")
     (source
      (origin
        (method git-fetch)
@@ -147,7 +148,7 @@ fundamental object types for C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19vn2a1r33q6fnw7jmfv3s4kirnviz0rgq0w6wzx6h008iysidsd"))
+        (base32 "159hpd49nq3256j46lanbycx8hrj517s1pvxrflxsdqcdyix59rr"))
        (patches (search-patches "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -279,6 +280,7 @@ fundamental object types for C.")
     (native-inputs
      (list autoconf
            automake
+           bc ; for tests
            check ; for tests
            cmocka ; for tests
            docbook-xml

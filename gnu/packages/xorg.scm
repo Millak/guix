@@ -35,6 +35,7 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1161,6 +1162,22 @@ themselves.")
     (synopsis "Xorg PCI access library")
     (description "Xorg Generic PCI access library.")
     (license license:x11)))
+
+(define-public libpciaccess-0.17
+  (package
+    (inherit libpciaccess)
+    (name "libpciaccess")
+    (version "0.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://xorg/individual/lib/libpciaccess-"
+             version
+             ".tar.xz"))
+       (sha256
+        (base32
+         "0wsvv5d05maqbidvnavka7n0fnql55m4jix5wwlk14blr6ikna3l"))))))
 
 (define-public libpthread-stubs
   (package

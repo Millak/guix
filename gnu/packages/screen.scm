@@ -6,6 +6,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,7 +27,9 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -153,7 +156,7 @@ window manager as well as the Tmux terminal multiplexer.")
 (define-public reptyr
   (package
     (name "reptyr")
-    (version "0.7.0")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -162,18 +165,18 @@ window manager as well as the Tmux terminal multiplexer.")
              (commit (string-append "reptyr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hnijfz1ab34j2h2cxc3f43rmbclyihgn9x9wxa7jqqgb2xm71hj"))))
+        (base32 "03k95bf7b46g89j0hgfvra9d512z0ha7vw9358h9j67h9b5bylwf"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; no tests
-       #:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "BASHCOMPDIR=" (assoc-ref %outputs "out")
-                            "/etc/bash_completion.d"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list #:tests? #f                      ; no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   (string-append "BASHCOMPDIR=" #$output
+                                  "/etc/bash_completion.d"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))         ; no configure script
     (home-page "https://github.com/nelhage/reptyr")
     (synopsis "Tool for reparenting a running program to a new terminal")
     (description

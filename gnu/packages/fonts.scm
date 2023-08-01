@@ -1858,7 +1858,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.40.7")
+    (version "0.41.4")
     (source
      (origin
        (method url-fetch)
@@ -1866,7 +1866,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "01iqc93dmi48n4g3xf472602hxhf9zfwfawy7vhn4rf06yhndv4s"))))
+        (base32 "0rqw6wrr55alsld8a9vk5g6n7zyivfh2zpw4my72qz3nfp448fs2"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -3259,6 +3259,29 @@ Spleen also has support for Powerline symbols out of the box.")
 minor tweaks to improve readability (a matter of taste of course).
 Most characters are just 4px wide, which is brilliant for low dpi(90-120) displays.")
     (license license:silofl1.1)))
+
+(define-public font-tuffy
+  (package
+    (name "font-tuffy")
+    (version "20120614")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://tulrich.com/fonts/tuffy-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "02vf72bgrp30vrbfhxjw82s115z27dwfgnmmzfb0n9wfhxxfpyf6"))
+       (snippet '(delete-file "._Tuffy.otf"))))
+    (build-system font-build-system)
+    (home-page "http://tulrich.com/fonts/")
+    (synopsis "The Tuffy Truetype Font Family")
+    (description
+     "Thatcher Ulrich's first outline font design.  He started with the goal
++of producing a neutral, readable sans-serif text font.  There are lots of
++\"expressive\" fonts out there, but he wanted to start with something very
++plain and clean, something he might want to actually use.")
+    (license license:public-domain)))
 
 (define-public font-velvetyne-jgs
   ;; There are no releases nor tags.

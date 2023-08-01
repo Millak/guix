@@ -381,7 +381,7 @@ overlapping images, as well as some command line tools.")
            help2man
            imagemagick
            libxml2
-           texlive-tiny
+           (texlive-updmap.cfg)
            tidy-html
            transfig))
     (inputs
@@ -416,7 +416,7 @@ scene to produce an image that looks much like a tone-mapped image.")
 (define-public lensfun
   (package
     (name "lensfun")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method git-fetch)
@@ -425,7 +425,7 @@ scene to produce an image that looks much like a tone-mapped image.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pv2y9yqzkw70p501425mf9cqv6yy8ppw5ilkpbd9bw9nss1js76"))))
+        (base32 "1lwf3cwldvh9qfmh3w7nqqildfmxx2i5f5bn0vr8y6qc5kh7a1s9"))))
     (build-system cmake-build-system)
     (arguments
      `(,@(if (any (cute string-prefix? <> (or (%current-system)
@@ -459,7 +459,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.4.1")
+    (version "4.4.2")
     (source
      (origin
        (method url-fetch)
@@ -467,7 +467,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "038gdri1mcmq9mlaikq5x9xyrs20b99jpcchfspngnwa5s6x6hz0"))))
+        (base32 "167sdj8m3srj9h5hh9cf2kvfpp349sygkcdrfbjrqbnz9x1jh7f1"))))
     (build-system cmake-build-system)
     (arguments
      (list

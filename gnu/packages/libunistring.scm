@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -28,7 +28,6 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
-  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages base))
@@ -61,10 +60,7 @@
               (with-directory-excursion (string-append #$output "/lib")
                 (install-file "libunistring.a"
                               (string-append #$output:static "/lib"))
-                (delete-file "libunistring.a")))))
-      #:make-flags (if (target-hurd?)
-                       #~(list "XFAIL_TESTS=test-perror2 test-strerror_r")
-                       #~'())))
+                (delete-file "libunistring.a")))))))
    (synopsis "C library for manipulating Unicode strings")
    (description
     "GNU libunistring is a library providing functions to manipulate

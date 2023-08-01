@@ -34,8 +34,7 @@
             texlive-ref
             texlive-origin
             %texlive-tag
-            %texlive-revision
-            %texlive-date))
+            %texlive-revision))
 
 ;; Commentary:
 ;;
@@ -45,9 +44,8 @@
 
 ;; These variables specify the SVN tag and the matching SVN revision.  They
 ;; are taken from https://www.tug.org/svn/texlive/tags/
-(define %texlive-tag "texlive-2021.3")
-(define %texlive-revision 59745)
-(define %texlive-date "2021-06-28 21:59:21Z")
+(define %texlive-tag "texlive-2023.0")
+(define %texlive-revision 66594)
 
 (define (texlive-origin name version locations hash)
   "Return an <origin> object for a TeX Live package consisting of multiple
@@ -88,24 +86,24 @@ level package ID."
   (let ((tex-mod (resolve-interface '(gnu packages tex))))
     (module-ref tex-mod 'texlive-bin)))
 
-(define (default-texlive-latex-base)
-  "Return the default texlive-latex-base package."
+(define (texlive-latex-bin)
+  "Return the default texlive-latex-bin package."
   ;; Lazily resolve the binding to avoid a circular dependency.
   (let ((tex-mod (resolve-interface '(gnu packages tex))))
-    (module-ref tex-mod 'texlive-latex-base)))
+    (module-ref tex-mod 'texlive-latex-bin)))
 
 (define* (lower name
                 #:key
                 source inputs native-inputs outputs
                 system target
-                (texlive-latex-base (default-texlive-latex-base))
+                (texlive-latex-bin? #true)
                 (texlive-bin (default-texlive-bin))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
   (define private-keywords
     '(#:target #:inputs #:native-inputs
-      #:texlive-latex-base #:texlive-bin))
+      #:texlive-latex-bin? #:texlive-bin))
 
   (bag
     (name name)
@@ -118,8 +116,8 @@ level package ID."
                    ;; Keep the standard inputs of 'gnu-build-system'.
                    ,@(standard-packages)))
     (build-inputs `(("texlive-bin" ,texlive-bin)
-                    ,@(if texlive-latex-base
-                          `(("texlive-latex-base" ,texlive-latex-base))
+                    ,@(if texlive-latex-bin?
+                          `(("texlive-latex-bin" ,(texlive-latex-bin)))
                           '())
                     ,@native-inputs))
     (outputs outputs)
@@ -130,8 +128,9 @@ level package ID."
                         #:key
                         source
                         (tests? #f)
-                        tex-directory
                         (build-targets #f)
+                        (create-formats #f)
+                        (link-scripts #f)
                         (tex-engine #f)
 
                         ;; FIXME: This would normally default to "luatex" but
@@ -161,8 +160,9 @@ level package ID."
           #$(with-build-variables inputs outputs
               #~(texlive-build #:name #$name
                                #:source #+source
-                               #:tex-directory #$tex-directory
                                #:build-targets #$build-targets
+                               #:create-formats #$create-formats
+                               #:link-scripts #$link-scripts
                                #:tex-engine #$(if tex-engine
                                                   tex-engine
                                                   tex-format)

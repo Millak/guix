@@ -19,6 +19,7 @@
 (define-module (gnu tests gdm)
   #:use-module (gnu tests)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu services)
   #:use-module (gnu services desktop)
   #:use-module (gnu services xorg)
@@ -57,6 +58,7 @@
       #~(begin
           (use-modules (gnu build marionette)
                        (ice-9 format)
+                       (srfi srfi-26)
                        (srfi srfi-64))
 
           (let ((marionette (make-marionette (list #$vm)))
@@ -73,11 +75,19 @@
                   (start-service 'xorg-server))
                marionette))
 
-            (test-assert "gdm ready"
-              (wait-for-file "/var/run/gdm/gdm.pid" marionette))
+            (test-group "gdm ready"
+              (test-assert "PID file present"
+                (wait-for-file "/var/run/gdm/gdm.pid" marionette))
 
-            ;; waiting for gdm.pid is not enough, tests may still sporadically fail.
-            (sleep 1)
+              ;; Waiting for gdm.pid is not enough, tests may still sporadically
+              ;; fail; ensure that the login screen is up.
+              ;; XXX: GNU Ocrad works but with '--invert' only.
+              (test-assert "login screen up"
+                (wait-for-screen-text marionette
+                                      (cut string-contains <> "Guix")
+                                      #:ocr #$(file-append ocrad "/bin/ocrad")
+                                      #:ocr-arguments '("--invert")
+                                      #:timeout 120))) ;for slow systems
 
             (test-equal (string-append "session-type is " expected-session-type)
               expected-session-type

@@ -514,7 +514,7 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
 (define-public wsdd
   (package
     (name "wsdd")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -522,14 +522,28 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04an2w6hamnai668ag4vq8x0i09fsg2jrayb4a7ar0x6bn837k7m"))))
-    (build-system copy-build-system)
-    (inputs
-     `(("python" ,python)))
+        (base32 "16kk7x80jlargrvh643m23j277p0drs2yylqz54f9inf5ld5bxn5"))))
+    (build-system gnu-build-system)
     (arguments
-     '(#:install-plan
-       '(("src/wsdd.py" "bin/wsdd")
-         ("man/wsdd.1" "share/man/man1/"))))
+     (list
+      #:tests? #f                       ; no test suite, only examples
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (delete 'build)               ; nothing to build
+          (replace 'install
+            (lambda _
+              (with-directory-excursion "src"
+                (rename-file "wsdd.py" "wsdd")
+                (install-file "wsdd" (string-append #$output "/bin")))
+              (for-each
+               (lambda (file)
+                 (install-file file
+                               (string-append #$output "/share/man/man"
+                                              (string-take-right file 1))))
+               (find-files "man" "\\.[0-9]$")))))))
+    (inputs
+     (list python))
     (home-page "https://github.com/christgau/wsdd")
     (synopsis "Web Service Discovery host daemon")
     (description "This daemon allows (Samba) hosts to be found by Web

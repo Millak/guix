@@ -250,7 +250,7 @@ sets, and tools to deal with register databases.")
               ;; their references.
               ;; TODO: package edid-decode and add "bin/edid-decode" below:
               (define need-progs (list "sbin/dmidecode" "sbin/smartctl"
-                                       "sbin/lspci" "bin/lsusb"))
+                                       "bin/lspci" "bin/lsusb"))
               (wrap-script hw-probe
                 (list "PERL5LIB" 'prefix (list (getenv "PERL5LIB")))
                 (list "PATH" 'prefix
@@ -331,7 +331,7 @@ operability and find drivers.")
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "22.2")
+    (version "23.2")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -342,87 +342,77 @@ operability and find drivers.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lfzcyiipxwi8rh0aw5sy7n8x986b9f9pa9g048rxn6k7anfpxk7"))
+        (base32 "0d9nhhi64d3i9x1bh3ksj0h5z2p4pwa0z88bc0jra9s39nf6q230"))
        (modules
         '((guix build utils)))
        (snippet
-        `(begin
-           ;; Remove git2log program file.
-           (delete-file "git2log")
-           ;; Remove variables that depend on git2log.
-           (substitute* "Makefile"
-             (("GIT2LOG.*\\:=.*$") "")
-             (("GITDEPS.*\\:=.*$") "")
-             (("BRANCH.*\\:=.*$") ""))
-           ;; Create version file.
-           (call-with-output-file "VERSION"
-             (lambda (port)
-               (format port ,version)))))))
+        #~(begin
+            ;; Remove git2log program file.
+            (delete-file "git2log")
+            ;; Remove variables that depend on git2log.
+            (substitute* "Makefile"
+              (("GIT2LOG.*\\:=.*$") "")
+              (("GITDEPS.*\\:=.*$") "")
+              (("BRANCH.*\\:=.*$") ""))
+            ;; Create version file.
+            (call-with-output-file "VERSION"
+              (lambda (port) (format port #$version)))))))
     (build-system gnu-build-system)
     (outputs '("out" "lib" "doc"))
     (arguments
-     `(#:tests? #f                      ; no test-suite available
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (assoc-ref outputs "lib"))
-                    (doc (assoc-ref outputs "doc"))
-                    (incl-dir (string-append lib "/include"))
-                    (lib-dir (string-append lib "/lib"))
-                    (sbin-dir (string-append out "/sbin"))
-                    (share-dir (string-append out "/share"))
-                    (doc-dir (string-append doc "/share/doc")))
-               ;; Generate HTML documentation in the output "doc".
-               (mkdir-p doc-dir)
-               (substitute* "doc/libhd.doxy"
-                 (("OUTPUT_DIRECTORY.*=.*libhd")
-                  (string-append "OUTPUT_DIRECTORY = " doc-dir "/libhd")))
-               ;; Correct values of the version and install directories.
-               (substitute* "Makefile"
-                 (("VERSION.*\\:=.*$")
-                  (string-append "VERSION := " ,version "\n"))
-                 (("LIBDIR.*\\?=.*$")
-                  (string-append "LIBDIR ?= " lib-dir "\n"))
-                 (("/usr/include") incl-dir)
-                 (("/(usr|var)/(lib|lib64)") lib-dir)
-                 (("/usr/sbin") sbin-dir)
-                 (("/usr/share") share-dir)
-                 (("\\$\\(DESTDIR\\)/sbin ") ""))
-               ;; Add the "lib" output to the run-path.
-               (substitute* "Makefile.common"
-                 (("-Lsrc")
-                  (string-append "-Lsrc " "-Wl,-rpath=" lib-dir)))
-               ;; Correct program name of the lexical analyzer.
-               (substitute* "src/isdn/cdb/Makefile"
-                 (("lex isdn_cdb.lex") "flex isdn_cdb.lex"))
-               ;; Patch pkg-config file to point to the "lib" output.
-               (substitute* "hwinfo.pc.in"
-                 (("/usr") lib)))))
-         (delete 'configure)
-         (replace 'build
-           (lambda _
-             (setenv "CC" ,(cc-for-target))
-             (invoke "make" "shared")
-             (invoke "make" "doc")))
-         (add-after 'install 'install-manpages
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man-dir (string-append out "/share/man"))
-                    (man1-dir (string-append man-dir "/man1"))
-                    (man8-dir (string-append man-dir "/man8")))
-               (for-each
-                (lambda (x) (install-file x man1-dir))
-                (find-files "doc" "\\.1$"))
-               (for-each
-                (lambda (y) (install-file y man8-dir))
-                (find-files "doc" "\\.8$"))))))))
+     (list
+      #:tests? #f                       ; no test-suite available
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "LIBDIR=" #$output:lib "/lib")
+              (string-append "VERSION=" #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (let ((include (string-append #$output:lib "/include"))
+                    (lib (string-append #$output:lib "/lib"))
+                    (sbin (string-append #$output "/sbin"))
+                    (share (string-append #$output "/share"))
+                    (doc (string-append #$output:doc "/share/doc")))
+                ;; Generate HTML documentation in the "doc" output.
+                (mkdir-p doc)
+                (substitute* "doc/libhd.doxy"
+                  (("OUTPUT_DIRECTORY.*=.*libhd")
+                   (string-append "OUTPUT_DIRECTORY = " doc "/libhd")))
+                ;; Correct values of the version and install directories.
+                (substitute* "Makefile"
+                  (("/usr/include") include)
+                  (("/(usr|var)/(lib|lib64)") lib)
+                  (("/usr/sbin") sbin)
+                  (("/usr/share") share)
+                  (("\\$\\(DESTDIR\\)/sbin ") ""))
+                ;; Add the "lib" output to the run-path.
+                (substitute* "Makefile.common"
+                  (("-Lsrc")
+                   (string-append "-Lsrc " "-Wl,-rpath=" lib)))
+                ;; Correct program name of the lexical analyzer.
+                (substitute* "src/isdn/cdb/Makefile"
+                  (("lex isdn_cdb.lex") "flex isdn_cdb.lex"))
+                ;; Patch pkg-config file to point to the "lib" output.
+                (substitute* "hwinfo.pc.in"
+                  (("/usr") #$output:lib)))))
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "shared" make-flags)
+              (apply invoke "make" "doc" make-flags)))
+          (add-after 'install 'install-man-pages
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (install-file file (string-append #$output "/share/man/man"
+                                                   (string-take-right file 1))))
+               (find-files "doc" "\\.[0-9]$")))))))
     (native-inputs
      (list doxygen flex perl pkg-config))
     (inputs
-     `(("libx86emu" ,libx86emu)
-       ("util-linux:lib" ,util-linux "lib")))
+     (list libx86emu `(,util-linux "lib")))
     (synopsis "Hardware information tool")
     (description "HwInfo is used to probe for the hardware present in the system.
 It can be used to generate a system overview log which can be later used for
@@ -488,14 +478,14 @@ RGB animations.")
 (define-public ddcutil
   (package
     (name "ddcutil")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.ddcutil.com/tarballs/"
                            "ddcutil-" version ".tar.gz"))
        (sha256
-        (base32 "14svdjpw9xn1czl4vff4jg2i9bp83lxcbzxj7hxn63z3gzacaj4k"))))
+        (base32 "015l13j7fp9fmlc5d7m6nfjbzjbp8vc0g5py35ljw7li2xk16v60"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -598,8 +588,6 @@ human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
 
 (define-public h-client
-  ;; The Python 3 port hasn't yet been integrated into the main branch
-  ;; (currently lives in the 'python3-port' branch).
   (let ((commit "e6c78b16e034ccf78ae9cb4c29268c2f57a30bfc")
         (revision "1"))
     (package
@@ -609,7 +597,7 @@ human-readable format and checks if it conforms to the standards.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/h-client.git")
+               (url "https://git.savannah.gnu.org/git/h-client.git/")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -638,7 +626,7 @@ human-readable format and checks if it conforms to the standards.")
                   ;; Namespace GdkPixbuf not available".
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
                   `("PATH" = (,(dirname (search-input-file
-                                         inputs "sbin/lspci"))
+                                         inputs "bin/lspci"))
                               ,(dirname (search-input-file
                                          inputs "bin/lsusb"))))))))))
       (inputs
@@ -1399,7 +1387,7 @@ confused with the @code{cpuid} command line utility from package @code{cpuid}.")
 (define-public liblxi
   (package
     (name "liblxi")
-    (version "1.18")
+    (version "1.20")
     (source
      (origin
        (method git-fetch)
@@ -1408,19 +1396,20 @@ confused with the @code{cpuid} command line utility from package @code{cpuid}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0cbnnd5qmchlr586349j5y4qv5w3bw9nmpbd3k6sq9vwvqh5dmns"))))
+        (base32 "1cc95ggs64jqq9lk5c8fm4nk6fdnv1x7lr3k4znamj0vv6w22bcd"))))
     (build-system meson-build-system)
     (native-inputs
      (list cmake pkg-config))
     (inputs
      (list avahi libtirpc libxml2))
     (home-page "https://lxi-tools.github.io/")
-    (synopsis "LAN eXtensions for Instrumentation library")
+    (synopsis "@acronym{LXI, LAN eXtensions for Instrumentation} library")
     (description
-     "This package provides library for LAN eXtensions for Instrumentation
-based on the LXI Consortium standard which defines the communication protocols
-for modern instrumentation and data acquision systems using Ethernet.")
+     "This library offers a simple API for communicating with instruments
+compatible with the @acronym{LXI, LAN eXtensions for Instrumentation} standard
+that defines communication protocols for instrumentation and data acquisition
+systems using Ethernet.  Applications can use liblxi to discover instruments on
+your network, send SCPI commands, and receive responses.")
     (license license:bsd-3)))
 
 (define-public lxi-tools

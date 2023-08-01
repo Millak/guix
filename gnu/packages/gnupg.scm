@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,40 +95,42 @@
     (version "1.45")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnupg/libgpg-error/libgpg-error-"
-                          version ".tar.bz2"))
-      (sha256
-       (base32
-        "09haz1kk48b8q0hd58g98whylah0fp121yfgjms7pzsbzgj8w3sp"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnupg/libgpg-error/libgpg-error-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32
+         "09haz1kk48b8q0hd58g98whylah0fp121yfgjms7pzsbzgj8w3sp"))))
     (build-system gnu-build-system)
     (arguments
-     (if (%current-target-system)
-         `(#:modules ((guix build gnu-build-system)
-                      (guix build utils))
-           #:phases
-           (modify-phases %standard-phases
-             ;; If this is left out, some generated header
-             ;; files will be sprinkled with ‘\c’, which
-             ;; the compiler won't like.
-             (add-after 'unpack 'fix-gen-lock-obj.sh
-               (lambda _
-                 (substitute* "src/gen-lock-obj.sh"
-                   (("if test -n `echo -n`") "if ! test -n `echo -n`"))))
-             ;; When cross-compiling, some platform specific properties cannot
-             ;; be detected. Create a symlink to the appropriate platform
-             ;; file if required. Note that these platform files depend on
-             ;; both the operating system and architecture!
-             ;;
-             ;; See Cross-Compiling section at:
-             ;; https://github.com/gpg/libgpg-error/blob/master/README
-             (add-after 'unpack 'cross-symlinks
-               (lambda _
-                 (define (link triplet source)
-                   (symlink (string-append "lock-obj-pub." triplet ".h")
-                            (string-append "src/syscfg/lock-obj-pub."
-                                           source ".h")))
-                 ,(let* ((target (%current-target-system))
+     (cond
+      ((%current-target-system)
+       (list
+        #:modules '((guix build gnu-build-system)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; If this is left out, some generated header
+            ;; files will be sprinkled with ‘\c’, which
+            ;; the compiler won't like.
+            (add-after 'unpack 'fix-gen-lock-obj.sh
+              (lambda _
+                (substitute* "src/gen-lock-obj.sh"
+                  (("if test -n `echo -n`") "if ! test -n `echo -n`"))))
+            ;; When cross-compiling, some platform specific properties cannot
+            ;; be detected. Create a symlink to the appropriate platform
+            ;; file if required. Note that these platform files depend on
+            ;; both the operating system and architecture!
+            ;;
+            ;; See Cross-Compiling section at:
+            ;; https://github.com/gpg/libgpg-error/blob/master/README
+            (add-after 'unpack 'cross-symlinks
+              (lambda _
+                (define (link triplet source)
+                  (symlink (string-append "lock-obj-pub." triplet ".h")
+                           (string-append "src/syscfg/lock-obj-pub."
+                                          source ".h")))
+                #$(let* ((target (%current-target-system))
                          (architecture
                           (string-take target (string-index target #\-))))
                     (cond ((target-linux? target)
@@ -140,8 +143,19 @@
                              ;; configuration, as this is not correct for
                              ;; all architectures.
                              (_ #t)))
-                          (#t #t)))))))
-         '()))
+                          (#t #t))))))))
+      ((system-hurd?)
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'skip-tests
+              (lambda _
+                (substitute*
+                    "tests/t-syserror.c"
+                  (("(^| )main *\\(.*" all)
+                   (string-append all "{\n  exit (77);//"))))))))
+      (else
+       '())))
     (native-inputs (list gettext-minimal))
     (home-page "https://gnupg.org")
     (synopsis "Library of error values for GnuPG components")
@@ -190,7 +204,15 @@ Daemon and possibly more in the future.")
              ,@(if (%current-target-system)
                    ;; When cross-compiling, _gcry_mpih_lshift etc are undefined.
                    `("--disable-asm")
-                   '()))))
+                   '()))
+       ,@(if (system-hurd?)
+             (list
+              #:phases
+              #~(modify-phases %standard-phases
+                  (add-before 'configure 'setenv
+                    (lambda _
+                      (setenv "GCRYPT_NO_BENCHMARKS" "t")))))
+             '())))
     (outputs '("out" "debug"))
     (home-page "https://gnupg.org/")
     (synopsis "Cryptographic function library")

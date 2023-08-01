@@ -1436,51 +1436,6 @@ curated cell type labels, for use in procedures like automated annotation of
 single-cell data or deconvolution of bulk RNA-seq.")
     (license license:gpl3)))
 
-(define-public r-cellid
-  (package
-    (name "r-cellid")
-    (version "1.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "CelliD" version))
-              (sha256
-               (base32
-                "0vigvqjrlqbi5kviaj8qvyq3v8afgbc5pjrz7zmx2ckf4hdp0g03"))))
-    (properties `((upstream-name . "CelliD")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-data-table
-           r-biocparallel
-           r-fastmatch
-	   r-fgsea
-           r-ggplot2
-           r-glue
-           r-irlba
-           r-matrix
-           r-matrixstats
-           r-pbapply
-           r-rcpp
-           r-rcpparmadillo
-           r-reticulate
-           r-rtsne
-           r-seurat
-           r-stringr
-           r-tictoc
-	   r-singlecellexperiment
-           r-summarizedexperiment
-           r-umap))
-    (native-inputs (list r-knitr r-scater))
-    (home-page "https://bioconductor.org/packages/CelliD")
-    (synopsis
-     "Single cell gene signature extraction using multiple correspondence analysis")
-    (description
-     "CelliD is a clustering-free method for extracting per-cell gene
-signatures from scRNA-seq.  CelliD allows unbiased cell identity recognition
-across different donors, tissues-of-origin, model organisms and single-cell
-omics protocols.  The package can also be used to explore functional pathways
-enrichment in single cell data.")
-    (license license:gpl3)))
-
 (define-public r-champdata
   (package
     (name "r-champdata")
@@ -1775,56 +1730,6 @@ in Nature Genetics, January 2018.")
      "This package provides data from 6 samples across 2 groups from 450k
 methylation arrays.")
     (license license:artistic2.0)))
-
-(define-public r-missmethyl
-  (package
-    (name "r-missmethyl")
-    (version "1.34.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "missMethyl" version))
-              (sha256
-               (base32
-                "1jvrdr57mv93pcbyazcg1bcx1zd0kp72hi1if839gw54hk3igs3h"))))
-    (properties `((upstream-name . "missMethyl")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-annotationdbi
-           r-biasedurn
-           r-biobase
-           r-biocgenerics
-           r-genomicranges
-           r-go-db
-           r-illuminahumanmethylation450kanno-ilmn12-hg19
-           r-illuminahumanmethylation450kmanifest
-           r-illuminahumanmethylationepicanno-ilm10b4-hg19
-           r-illuminahumanmethylationepicmanifest
-           r-iranges
-           r-limma
-           r-methylumi
-           r-minfi
-           r-org-hs-eg-db
-           r-ruv
-           r-s4vectors
-           r-statmod
-           r-stringr
-           r-summarizedexperiment))
-    (native-inputs (list r-knitr))
-    (home-page "https://bioconductor.org/packages/missMethyl")
-    (synopsis "Analyzing Illumina HumanMethylation BeadChip data")
-    (description
-     "This is a package for normalization, testing for differential
-variability and differential methylation and gene set testing for data from
-Illumina's Infinium HumanMethylation arrays.  The normalization procedure is
-subset-quantile within-array normalization (SWAN), which allows Infinium I and
-II type probes on a single array to be normalized together.  The test for
-differential variability is based on an empirical Bayes version of Levene's
-test.  Differential methylation testing is performed using RUV, which can
-adjust for systematic errors of unknown origin in high-dimensional data by
-using negative control probes.  Gene ontology analysis is performed by taking
-into account the number of probes per gene on the array, as well as taking
-into account multi-gene associated probes.")
-    (license license:gpl2)))
 
 (define-public r-msdata
   (package
@@ -4220,6 +4125,51 @@ scRNA-seq data.  A flexible beta-binomial error model that accounts for
 stochastic dropout events as well as systematic allelic imbalance is used.")
     (license license:gpl3)))
 
+(define-public r-cellid
+  (package
+    (name "r-cellid")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "CelliD" version))
+              (sha256
+               (base32
+                "0vigvqjrlqbi5kviaj8qvyq3v8afgbc5pjrz7zmx2ckf4hdp0g03"))))
+    (properties `((upstream-name . "CelliD")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-data-table
+           r-biocparallel
+           r-fastmatch
+	   r-fgsea
+           r-ggplot2
+           r-glue
+           r-irlba
+           r-matrix
+           r-matrixstats
+           r-pbapply
+           r-rcpp
+           r-rcpparmadillo
+           r-reticulate
+           r-rtsne
+           r-seurat
+           r-stringr
+           r-tictoc
+	   r-singlecellexperiment
+           r-summarizedexperiment
+           r-umap))
+    (native-inputs (list r-knitr r-scater))
+    (home-page "https://bioconductor.org/packages/CelliD")
+    (synopsis
+     "Single cell gene signature extraction using multiple correspondence analysis")
+    (description
+     "CelliD is a clustering-free method for extracting per-cell gene
+signatures from scRNA-seq.  CelliD allows unbiased cell identity recognition
+across different donors, tissues-of-origin, model organisms and single-cell
+omics protocols.  The package can also be used to explore functional pathways
+enrichment in single cell data.")
+    (license license:gpl3)))
+
 (define-public r-coverageview
   (package
     (name "r-coverageview")
@@ -4773,6 +4723,77 @@ error rates and dispersion - and prior knowledge, e.g.  from variation data
 bases such as COSMIC.")
     (license license:gpl3)))
 
+(define-public r-degreport
+  (package
+    (name "r-degreport")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DEGreport" version))
+              (sha256
+               (base32
+                "15xm1l2qgsyzaw820a1fq5qdzh5pj4dmr1hx6s6b6wm2p02cvvai"))
+              (snippet
+               '(delete-file "docs/jquery.sticky-kit.min.js"))))
+    (properties `((upstream-name . "DEGreport")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "esbuild"
+                     (assoc-ref inputs "js-jquery-sticky-kit")
+                     "--minify"
+                     "--outfile=docs/jquery.sticky-kit.min.js"))))))
+    (propagated-inputs (list r-biobase
+                             r-biocgenerics
+                             r-broom
+                             r-circlize
+                             r-cluster
+                             r-complexheatmap
+                             r-consensusclusterplus
+                             r-cowplot
+                             r-deseq2
+                             r-dplyr
+                             r-edger
+                             r-ggdendro
+                             r-ggplot2
+                             r-ggrepel
+                             r-knitr
+                             r-logging
+                             r-magrittr
+                             r-psych
+                             r-rcolorbrewer
+                             r-reshape
+                             r-rlang
+                             r-s4vectors
+                             r-scales
+                             r-stringr
+                             r-summarizedexperiment
+                             r-tibble
+                             r-tidyr))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("js-jquery-sticky-kit"
+        ,(origin
+           (method url-fetch)
+           (uri "https://raw.githubusercontent.com/leafo/sticky-kit/\
+v1.1.2/jquery.sticky-kit.js")
+           (sha256
+            (base32
+             "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))))
+    (home-page "https://lpantano.github.io/DEGreport/")
+    (synopsis "Report of DEG analysis")
+    (description
+     "This is a package for creating na HTML report of differential expression
+analyses of count data.  It integrates some of the code mentioned in DESeq2
+and @code{edgeR} vignettes, and report a ranked list of genes according to the
+fold changes mean and variability for each selected gene.")
+    (license license:expat)))
+
 (define-public r-delayedarray
   (package
     (name "r-delayedarray")
@@ -5007,6 +5028,25 @@ shrinkage method for estimating the dispersion parameter from Gamma-Poisson or
 Beta-Binomial distributions.")
     ;; Any version of the GPL
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-dyndoc
+  (package
+    (name "r-dyndoc")
+    (version "1.78.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DynDoc" version))
+              (sha256
+               (base32
+                "16cb4pby6ja0xy8ygbgr6zfbyp4agyhlds5sayc5ryq50vafykah"))))
+    (properties `((upstream-name . "DynDoc")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/DynDoc")
+    (synopsis "Dynamic document tools")
+    (description
+     "This package provides a set of functions to create and interact with
+dynamic documents and vignettes.")
+    (license license:artistic2.0)))
 
 (define-public r-bluster
   (package
@@ -5366,6 +5406,37 @@ pre-calculated probe set quality scores that were used to define the
 mapping.")
     (license license:artistic2.0)))
 
+(define-public r-nebulosa
+  (package
+    (name "r-nebulosa")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Nebulosa" version))
+              (sha256
+               (base32
+                "0lqm9mfmaxdhhs9di2kjg2rixng78lrrikyp7blmpyqk4c41j3nh"))))
+    (properties `((upstream-name . "Nebulosa")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2
+                             r-ks
+                             r-matrix
+                             r-patchwork
+                             r-seurat
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/powellgenomicslab/Nebulosa")
+    (synopsis
+     "Single-cell data visualisation using kernel gene-weighted density estimation")
+    (description
+     "This package provides a enhanced visualization of single-cell data based
+on gene-weighted density estimation.  Nebulosa recovers the signal from
+dropped-out features and allows the inspection of the joint expression from
+multiple features (e.g. genes).  @code{Seurat} and @code{SingleCellExperiment}
+objects can be used within Nebulosa.")
+    (license license:gpl3)))
+
 ;; This is a CRAN package, but it depends on Bioconductor packages.
 (define-public r-nmf
   (package
@@ -5442,14 +5513,14 @@ analysis.")
 (define-public r-affycomp
   (package
     (name "r-affycomp")
-    (version "1.76.0")
+    (version "1.76.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affycomp" version))
        (sha256
         (base32
-         "1bsav6d3dhn2fs7gjd1jvrb448ckxw5l6ikrdv63cdnnjk0dxl62"))))
+         "0wccj8q8sl0zc68nr5qf1qih8awqf1h6bwi5hq9d7r59p4g4r9n1"))))
     (properties `((upstream-name . "affycomp")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase))
@@ -6677,6 +6748,34 @@ other types of genomic data that produce counts, including ChIP-seq, SAGE and
 CAGE.")
     (license license:gpl2+)))
 
+(define-public r-enhancedvolcano
+  (package
+    (name "r-enhancedvolcano")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "EnhancedVolcano" version))
+              (sha256
+               (base32
+                "1mcyhgdvfmkkh0rlhf51an7j1zi96lqdhifki2aqmlx0lqvg4qxq"))))
+    (properties `((upstream-name . "EnhancedVolcano")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-ggrepel))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/kevinblighe/EnhancedVolcano")
+    (synopsis
+     "Publication-ready volcano plots with enhanced coloring and labeling")
+    (description
+     "Volcano plots represent a useful way to visualise the results of
+differential expression analyses.  This package provides a highly-configurable
+function that produces publication-ready volcano plots.  EnhancedVolcano will
+attempt to fit as many point labels in the plot window as possible, thus
+avoiding clogging up the plot with labels that could not otherwise have been
+read.  Other functionality allows the user to identify up to 4 different types
+of attributes in the same plot space via color, shape, size, and shade
+parameter configurations.")
+    (license license:gpl3)))
+
 (define-public r-enmix
   (package
     (name "r-enmix")
@@ -6968,6 +7067,37 @@ junction detection, and working with the nucleotide content of the
 alignments.")
     (license license:artistic2.0)))
 
+(define-public r-genomicdatacommons
+  (package
+    (name "r-genomicdatacommons")
+    (version "1.24.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GenomicDataCommons" version))
+              (sha256
+               (base32
+                "0dgvhi6nbc1qvrdwww2r39gxd2xmbadvy03lxh5nny9pyhhdlz3l"))))
+    (properties `((upstream-name . "GenomicDataCommons")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-genomicranges
+                             r-httr
+                             r-iranges
+                             r-jsonlite
+                             r-magrittr
+                             r-rappdirs
+                             r-readr
+                             r-rlang
+                             r-tibble
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/GenomicDataCommons")
+    (synopsis "NIH/NCI genomic data commons access")
+    (description
+     "This package lets you programmatically access the NIH/NCI Genomic Data
+Commons RESTful service.")
+    (license license:artistic2.0)))
+
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
@@ -7098,6 +7228,38 @@ profiles and assignment of a status (gain, normal or loss) to each chromosomal
 regions identified.")
     (license license:gpl2)))
 
+(define-public r-globalancova
+  (package
+    (name "r-globalancova")
+    (version "4.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GlobalAncova" version))
+              (sha256
+               (base32
+                "1fld18rmi6rqm2nr549a4740w1iq3mf5df67v9ba6h42r4abs1ar"))))
+    (properties `((upstream-name . "GlobalAncova")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotate
+                             r-annotationdbi
+                             r-biobase
+                             r-corpcor
+                             r-dendextend
+                             r-globaltest
+                             r-gseabase
+                             r-vgam))
+    (home-page "https://bioconductor.org/packages/GlobalAncova")
+    (synopsis "Global test for groups of variables via model comparisons")
+    (description
+     "This package supports the computation of an F-test for the association
+between expression values and clinical entities.  In many cases a two way
+layout with gene and a dichotomous group as factors will be considered.
+However, adjustment for other covariates and the analysis of arbitrary
+clinical variables, interactions, gene co-expression, time series data and so
+on is also possible.  The test is carried out by comparison of corresponding
+linear models via the extra sum of squares principle.")
+    (license license:gpl2+)))
+
 (define-public r-globaltest
   (package
     (name "r-globaltest")
@@ -7183,6 +7345,46 @@ testing and other simple calculations.")
 Enrichment Analysis} (GSEA).")
     (license license:artistic2.0)))
 
+(define-public r-gsva
+  (package
+    (name "r-gsva")
+    (version "1.48.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GSVA" version))
+              (sha256
+               (base32
+                "1y0dz9ayyrz4ylppa8f4m4b20yajzdl1sz4wpz8kcsfhh71ii64y"))))
+    (properties `((upstream-name . "GSVA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase
+                             r-biocparallel
+                             r-biocsingular
+                             r-delayedarray
+                             r-delayedmatrixstats
+                             r-gseabase
+                             r-hdf5array
+                             r-iranges
+                             r-matrix
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-sparsematrixstats
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/rcastelo/GSVA")
+    (synopsis "Gene Set Variation Analysis for microarray and RNA-seq data")
+    (description
+     "Gene Set Variation Analysis (GSVA) is a non-parametric, unsupervised
+method for estimating variation of gene set enrichment through the samples of
+a expression data set.  GSVA performs a change in coordinate systems,
+transforming the data from a gene by sample matrix to a gene-set by sample
+matrix, thereby allowing the evaluation of pathway enrichment for each sample.
+This new matrix of GSVA enrichment scores facilitates applying standard
+analytical methods like functional enrichment, survival analysis, clustering,
+CNV-pathway analysis or cross-tissue pathway analysis, in a pathway-centric
+manner.")
+    (license license:gpl2+)))
+
 (define-public r-harshlight
   (package
     (name "r-harshlight")
@@ -7243,6 +7445,39 @@ matrix to solve the memory problem.")
     (synopsis "Human Protein Atlas in R")
     (description "This package provides a simple interface to and data from
 the Human Protein Atlas project.")
+    (license license:artistic2.0)))
+
+(define-public r-raggedexperiment
+  (package
+    (name "r-raggedexperiment")
+    (version "1.24.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "RaggedExperiment" version))
+              (sha256
+               (base32
+                "1xs7dz5mkh9zs078g2a0izij8vxrwhzh7gyjglp057gicsca0hal"))))
+    (properties `((upstream-name . "RaggedExperiment")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-iranges
+                             r-matrix
+                             r-matrixgenerics
+                             r-s4vectors
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/RaggedExperiment")
+    (synopsis "Representation of sparse experiments and assays across samples")
+    (description
+     "This package provides a flexible representation of copy number,
+mutation, and other data that fit into the ragged array schema for genomic
+location data.  The basic representation of such data provides a rectangular
+flat table interface to the user with range information in the rows and
+samples/specimen in the columns.  The @code{RaggedExperiment} class derives
+from a @code{GRangesList} representation and provides a semblance of a
+rectangular dataset.")
     (license license:artistic2.0)))
 
 (define-public r-rhtslib
@@ -7658,6 +7893,26 @@ genome bisulfite sequencing.  It also has functions to analyze base-pair
 resolution 5hmC data from experimental protocols such as oxBS-Seq and
 TAB-Seq.")
     (license license:artistic2.0)))
+
+(define-public r-mfuzz
+  (package
+    (name "r-mfuzz")
+    (version "2.60.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Mfuzz" version))
+              (sha256
+               (base32
+                "0rfna5ycwkx4xb2gv1wpfn7f7nz6f79w5nlkb7719l5730d81wnz"))))
+    (properties `((upstream-name . "Mfuzz")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-e1071 r-tkwidgets))
+    (home-page "http://mfuzz.sysbiolab.eu/")
+    (synopsis "Soft clustering of time series gene expression data")
+    (description
+     "This is a package for noise-robust soft clustering of gene expression
+time-series data (including a graphical user interface).")
+    (license license:gpl2)))
 
 (define-public r-mmuphin
   (package
@@ -8725,6 +8980,46 @@ tab-delimited (tabix) files.")
      "This package models a RESTful service as if it were a nested R list.")
     (license license:artistic2.0)))
 
+(define-public r-rtcgatoolbox
+  (package
+    (name "r-rtcgatoolbox")
+    (version "2.30.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "RTCGAToolbox" version))
+              (sha256
+               (base32
+                "03p5rgjzc1265q60jkvk92vhcib5wdnv6bz997r70q9c39y03wm5"))))
+    (properties `((upstream-name . "RTCGAToolbox")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-data-table
+                             r-delayedarray
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-httr
+                             r-raggedexperiment
+                             r-rcircos
+                             r-rcurl
+                             r-rjsonio
+                             r-rvest
+                             r-s4vectors
+                             r-stringr
+                             r-summarizedexperiment
+                             r-tcgautils))
+    (native-inputs (list r-knitr))
+    (home-page "http://mksamur.github.io/RTCGAToolbox/")
+    (synopsis "Export TCGA Firehose data")
+    (description
+     "Managing data from large scale projects such as The Cancer Genome
+Atlas (TCGA) for further analysis is an important and time consuming step for
+research projects.  Several efforts, such as Firehose project, make TCGA
+pre-processed data publicly available via web services and data portals but it
+requires managing, downloading and preparing the data for following steps.
+This package provides an extensible R based data client for Firehose
+pre-processed data.")
+    (license license:gpl2)))
+
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
@@ -9030,6 +9325,36 @@ facilitate unsupervised analysis of any high-dimensional data such as
 single-cell RNA-seq.")
     (license license:artistic2.0)))
 
+(define-public r-seqarray
+  (package
+    (name "r-seqarray")
+    (version "1.40.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "SeqArray" version))
+              (sha256
+               (base32
+                "1771vk23psjavvi1nf2z8i2xawygdh4amawlijnskci8y9w4x5dm"))))
+    (properties `((upstream-name . "SeqArray")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings
+                             r-gdsfmt
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-iranges
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zhengxwen/SeqArray")
+    (synopsis
+     "Data management of large-scale whole-genome sequence variant calls")
+    (description
+     "This package supports data management of large-scale whole-genome
+sequencing variant calls with thousands of individuals: genotypic data (e.g.,
+SNVs, indels and structural variation calls) and annotations in SeqArray GDS
+files are stored in an array-oriented and compressed manner, with efficient
+data access using the R programming language.")
+    (license license:gpl3)))
+
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
@@ -9187,6 +9512,101 @@ cut, for clustering similarity matrices of functional terms is implemented in
 this package.  It also provides functionalities for visualizing, summarizing
 and comparing the clusterings.")
     (license license:expat)))
+
+(define-public r-singscore
+  (package
+    (name "r-singscore")
+    (version "1.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "singscore" version))
+              (sha256
+               (base32
+                "1s1kyvkbfgwskf0hi4b44c2yx256rjp1yk9ijpld9qlm7z7pi67q"))))
+    (properties `((upstream-name . "singscore")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase
+                             r-biocparallel
+                             r-edger
+                             r-ggplot2
+                             r-ggrepel
+                             r-gseabase
+                             r-magrittr
+                             r-matrixstats
+                             r-plotly
+                             r-plyr
+                             r-rcolorbrewer
+                             r-reshape
+                             r-reshape2
+                             r-s4vectors
+                             r-summarizedexperiment
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://davislaboratory.github.io/singscore/")
+    (synopsis "Rank-based single-sample gene set scoring method")
+    (description
+     "This package provides a simple single-sample gene signature scoring
+method that uses rank-based statistics to analyze the sample's gene expression
+profile.  It scores the expression activities of gene sets at a single-sample
+level.")
+    (license license:gpl3)))
+
+(define-public r-tcgautils
+  (package
+    (name "r-tcgautils")
+    (version "1.20.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "TCGAutils" version))
+              (sha256
+               (base32
+                "0nnfrd5x3mii9adizvz79jinlxn2lhg4civ9v0wwygmdhk7rrm1n"))))
+    (properties `((upstream-name . "TCGAutils")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-biocgenerics
+                             r-genomeinfodb
+                             r-genomicdatacommons
+                             r-genomicfeatures
+                             r-genomicranges
+                             r-iranges
+                             r-multiassayexperiment
+                             r-raggedexperiment
+                             r-rvest
+                             r-s4vectors
+                             r-stringr
+                             r-summarizedexperiment
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/TCGAutils")
+    (synopsis "TCGA utility functions for data management")
+    (description
+     "This package provides a suite of helper functions for checking and
+manipulating TCGA data including data obtained from the @code{curatedTCGAData}
+experiment package.  These functions aim to simplify and make working with
+TCGA data more manageable.  Exported functions include those that import data
+from flat files into Bioconductor objects, convert row annotations, and
+identifier translation via the GDC API.")
+    (license license:artistic2.0)))
+
+(define-public r-tkwidgets
+  (package
+    (name "r-tkwidgets")
+    (version "1.78.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "tkWidgets" version))
+              (sha256
+               (base32
+                "1xp0gdfrhhfzfww4ig3y90f7334y24rhzrmlxmm4wav8slvcran2"))))
+    (properties `((upstream-name . "tkWidgets")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dyndoc r-widgettools))
+    (home-page "https://bioconductor.org/packages/tkWidgets")
+    (synopsis "R based tk widgets")
+    (description
+     "This package implements widgets to provide user interfaces.")
+    (license license:artistic2.0)))
 
 (define-public r-transcriptr
   (package
@@ -9365,6 +9785,37 @@ into features.  These features can be processed with any number of statistical
 tools either included in speaq or available elsewhere on CRAN.")
     (license license:asl2.0)))
 
+(define-public r-spectra
+  (package
+    (name "r-spectra")
+    (version "1.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Spectra" version))
+              (sha256
+               (base32
+                "0vq5ha5m1vny7nrhgfmmkjd30zv0xaignp1a1m0xj08lnhkkmd69"))))
+    (properties `((upstream-name . "Spectra")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-biocparallel
+                             r-fs
+                             r-iranges
+                             r-mscoreutils
+                             r-protgenerics
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RforMassSpectrometry/Spectra")
+    (synopsis "Spectra infrastructure for mass spectrometry data")
+    (description
+     "The Spectra package defines an efficient infrastructure for storing and
+handling mass spectrometry spectra and functionality to subset, process,
+visualize and compare spectra data.  It provides different
+implementations (backends) to store mass spectrometry data.  These comprise
+backends tuned for fast data access and processing and backends for very large
+data sets ensuring a small memory footprint.")
+    (license license:artistic2.0)))
+
 (define-public r-stager
   (package
     (name "r-stager")
@@ -9491,6 +9942,33 @@ involving two separate genomic loci encoded as GRanges objects.")
 represented by a matrix-like object of numeric or other mode.  The rows
 typically represent genomic ranges of interest and the columns represent
 samples.")
+    (license license:artistic2.0)))
+
+(define-public r-survcomp
+  (package
+    (name "r-survcomp")
+    (version "1.50.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "survcomp" version))
+              (sha256
+               (base32
+                "1va0ijx3qk3rjhzaflygfwlzn5a670y833qly8in8p5r3al9bdj6"))))
+    (properties `((upstream-name . "survcomp")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bootstrap
+                             r-ipred
+                             r-kernsmooth
+                             r-prodlim
+                             r-rmeta
+                             r-suppdists
+                             r-survival
+                             r-survivalroc))
+    (home-page "https://www.pmgenomics.ca/bhklab/")
+    (synopsis "Performance assessment and comparison for survival analysis")
+    (description
+     "This is a package for the assessment and comparison of the performance
+of risk prediction (survival) models.")
     (license license:artistic2.0)))
 
 (define-public r-sva
@@ -10009,6 +10487,41 @@ arrays (expression/SNP/tiling/exon) at probe-level.  It currently supports
 Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
     (license license:lgpl2.0+)))
 
+(define-public r-qfeatures
+  (package
+    (name "r-qfeatures")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "QFeatures" version))
+              (sha256
+               (base32
+                "1xnmd14nf4cqbfxkjsl6af312k7l27ars5g8qdnljylkn8kq276z"))))
+    (properties `((upstream-name . "QFeatures")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationfilter
+                             r-biobase
+                             r-biocgenerics
+                             r-igraph
+                             r-iranges
+                             r-lazyeval
+                             r-mscoreutils
+                             r-multiassayexperiment
+                             r-plotly
+                             r-protgenerics
+                             r-s4vectors
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RforMassSpectrometry/QFeatures")
+    (synopsis "Quantitative features for mass spectrometry data")
+    (description
+     "The QFeatures infrastructure enables the management and processing of
+quantitative features for high-throughput mass spectrometry assays.  It
+provides a familiar Bioconductor user experience to manages quantitative data
+across different assay levels (such as peptide spectrum matches, peptides and
+proteins) in a coherent and tractable format.")
+    (license license:artistic2.0)))
+
 (define-public r-quantsmooth
   (package
     (name "r-quantsmooth")
@@ -10413,6 +10926,36 @@ expressed genes in DNA microarray experiments.")
      "This package provides functions and datasets for maximum likelihood
 fitting of some classes of graphical Markov models.")
     (license license:gpl2+)))
+
+(define-public r-ggtreeextra
+  (package
+    (name "r-ggtreeextra")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ggtreeExtra" version))
+              (sha256
+               (base32
+                "19xikly6ksh03kgpz35wj2d2gdbpikhrk71ahj9ghhkmlwdyjbcr"))))
+    (properties `((upstream-name . "ggtreeExtra")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-ggnewscale
+                             r-ggplot2
+                             r-ggtree
+                             r-magrittr
+                             r-rlang
+                             r-tidytree))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/YuLab-SMU/ggtreeExtra/")
+    (synopsis
+     "Add geometric layers On circular or other layout tree of ggtree")
+    (description
+     "ggtreeExtra extends the method for mapping and visualizing associated
+data on phylogenetic tree using ggtree.  These associated data can be
+presented on the external panels to circular layout, fan layout, or other
+rectangular layout tree built by ggtree with the grammar of ggplot2.")
+    (license license:gpl3+)))
 
 ;; This is a CRAN package, but it depends on a bunch of Bioconductor packages.
 (define-public r-ggpicrust2
@@ -11126,6 +11669,40 @@ PLGEM has been shown to improve the detection of differentially expressed
 genes or proteins in these datasets.")
     (license license:gpl2)))
 
+(define-public r-plyranges
+  (package
+    (name "r-plyranges")
+    (version "1.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "plyranges" version))
+              (sha256
+               (base32
+                "1qv8snpcxpg16v5ji7sq3bnmgrgghz9h4mh246mcnnxfhi44b6nv"))))
+    (properties `((upstream-name . "plyranges")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-dplyr
+                             r-genomeinfodb
+                             r-genomicalignments
+                             r-genomicranges
+                             r-iranges
+                             r-magrittr
+                             r-rlang
+                             r-rsamtools
+                             r-rtracklayer
+                             r-s4vectors
+                             r-tidyselect))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/plyranges")
+    (synopsis "Fluent interface for manipulating GenomicRanges")
+    (description
+     "This package provides a dplyr-like interface for interacting with the
+common Bioconductor classes @code{Ranges} and @code{GenomicRanges}.  By
+providing a grammatical and consistent way of manipulating these classes their
+accessiblity for new Bioconductor users is hopefully increased.")
+    (license license:artistic2.0)))
+
 (define-public r-inspect
   (package
     (name "r-inspect")
@@ -11281,14 +11858,14 @@ multiplication.")
 (define-public r-treeio
   (package
     (name "r-treeio")
-    (version "1.24.1")
+    (version "1.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "treeio" version))
        (sha256
         (base32
-         "1jwjnwakinfqfx8ajbl58lqdhsq06a25phxy3vsprh1glj37smf7"))))
+         "0xjhyrqpr54aaj4han69ndkbmz5kwnf01adh80v2r8jc8jwdfy6m"))))
     (properties `((upstream-name . "treeio")))
     (build-system r-build-system)
     (propagated-inputs
@@ -11800,14 +12377,14 @@ independent of the p-value under the null hypothesis.")
 (define-public r-icobra
   (package
     (name "r-icobra")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "iCOBRA" version))
        (sha256
         (base32
-         "1dirwfmjl15lqh1dx1yhaqbfiz5iwzp03d3g64iy31nzi8sha4qq"))))
+         "120bcakhhl6xqsfclzgmn7rcxmld289bjl6j7nrli7aiq5ilz8h4"))))
     (properties `((upstream-name . "iCOBRA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -12588,6 +13165,56 @@ model.")
 methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-missmethyl
+  (package
+    (name "r-missmethyl")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "missMethyl" version))
+              (sha256
+               (base32
+                "1jvrdr57mv93pcbyazcg1bcx1zd0kp72hi1if839gw54hk3igs3h"))))
+    (properties `((upstream-name . "missMethyl")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-biasedurn
+           r-biobase
+           r-biocgenerics
+           r-genomicranges
+           r-go-db
+           r-illuminahumanmethylation450kanno-ilmn12-hg19
+           r-illuminahumanmethylation450kmanifest
+           r-illuminahumanmethylationepicanno-ilm10b4-hg19
+           r-illuminahumanmethylationepicmanifest
+           r-iranges
+           r-limma
+           r-methylumi
+           r-minfi
+           r-org-hs-eg-db
+           r-ruv
+           r-s4vectors
+           r-statmod
+           r-stringr
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/missMethyl")
+    (synopsis "Analyzing Illumina HumanMethylation BeadChip data")
+    (description
+     "This is a package for normalization, testing for differential
+variability and differential methylation and gene set testing for data from
+Illumina's Infinium HumanMethylation arrays.  The normalization procedure is
+subset-quantile within-array normalization (SWAN), which allows Infinium I and
+II type probes on a single array to be normalized together.  The test for
+differential variability is based on an empirical Bayes version of Levene's
+test.  Differential methylation testing is performed using RUV, which can
+adjust for systematic errors of unknown origin in high-dimensional data by
+using negative control probes.  Gene ontology analysis is performed by taking
+into account the number of probes per gene on the array, as well as taking
+into account multi-gene associated probes.")
+    (license license:gpl2)))
+
 (define-public r-methylumi
   (package
     (name "r-methylumi")
@@ -12991,14 +13618,14 @@ information about samples and features can be added to the plot.")
 (define-public r-gosemsim
   (package
     (name "r-gosemsim")
-    (version "2.26.0")
+    (version "2.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GOSemSim" version))
        (sha256
         (base32
-         "1pg86z4vbrp59kpq7zpscnjw9cgfkdqjrdp9zjvdf3xghgjvwl9a"))))
+         "15z7wqnp0s8fiysl3qc76pjaj3xik2br2mz2z3nmf28vxig69mx9"))))
     (properties `((upstream-name . "GOSemSim")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13211,14 +13838,14 @@ All the visualization methods are developed based on ggplot2 graphics.")
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
-    (version "4.8.1")
+    (version "4.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "clusterProfiler" version))
        (sha256
         (base32
-         "1vcqzk5a2y3g2vv5vlpvcpd45xdq6rs5djnrdkww536cwkas9zvy"))))
+         "0iijby2j9i6sbdc3iwhqqb8xlz25k3dpiyq91p7yybggpr2p1nw4"))))
     (properties
      `((upstream-name . "clusterProfiler")))
     (build-system r-build-system)
@@ -15511,14 +16138,14 @@ interact with gated cytometry data.")
 (define-public r-flowcore
   (package
     (name "r-flowcore")
-    (version "2.12.0")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowCore" version))
        (sha256
         (base32
-         "1zkv4nwc6vg0jd4rh8mswdhr9cbq7ll98424hl5vs9hklal6kw8d"))))
+         "09jirhhf1qfanyhbq1ybmw6smv8163b7cqgj0qw69grvs8bb0b6m"))))
     (properties `((upstream-name . "flowCore")))
     (build-system r-build-system)
     (propagated-inputs
@@ -16841,6 +17468,37 @@ non-parametric testing for statistical significance in Ct values between
 features (e.g.  genes, microRNAs).")
     (license license:artistic2.0)))
 
+(define-public r-ucell
+  (package
+    (name "r-ucell")
+    (version "2.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "UCell" version))
+              (sha256
+               (base32
+                "01qcwmiqri4xvwr3j4k1g062rfj6bbc0bvh0ifq1jq2xrm1azw9y"))))
+    (properties `((upstream-name . "UCell")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocneighbors
+                             r-biocparallel
+                             r-data-table
+                             r-matrix
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/carmonalab/UCell")
+    (synopsis "Rank-based signature enrichment analysis for single-cell data")
+    (description
+     "UCell is a package for evaluating gene signatures in single-cell datasets.
+UCell signature scores, based on the Mann-Whitney U statistic, are robust to
+dataset size and heterogeneity, and their calculation demands less computing
+time and memory than other available methods, enabling the processing of large
+datasets in a few minutes even on machines with limited computing power.
+UCell can be applied to any single-cell data matrix, and includes functions to
+directly interact with SingleCellExperiment and Seurat objects.")
+    (license license:gpl3)))
+
 (define-public r-unifiedwmwqpcr
   (package
     (name "r-unifiedwmwqpcr")
@@ -17777,14 +18435,14 @@ also known as views, in a controlled vocabulary.")
 (define-public r-experimenthub
   (package
     (name "r-experimenthub")
-    (version "2.8.0")
+    (version "2.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ExperimentHub" version))
        (sha256
         (base32
-         "0n55p4n2aadxh182lxxms3bk4bpajamivvqj06v09q2n9xnhjs7k"))))
+         "1md6lan98h95jv776zyvl5im39gz4h6fdxw571vfahgr4b2nxvm4"))))
     (properties `((upstream-name . "ExperimentHub")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18782,6 +19440,39 @@ variety of commonly used matrix types, including sparse and HDF5-backed
 matrices.")
     (license license:gpl3)))
 
+(define-public r-beadarray
+  (package
+    (name "r-beadarray")
+    (version "2.50.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "beadarray" version))
+              (sha256
+               (base32
+                "0rd41193rq6v4a97ibp0l2bz140nsv91plhn7iim8d8n9hgxqhjp"))))
+    (properties `((upstream-name . "beadarray")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-beaddatapackr
+                             r-biobase
+                             r-biocgenerics
+                             r-genomicranges
+                             r-ggplot2
+                             r-hexbin
+                             r-illuminaio
+                             r-iranges
+                             r-limma
+                             r-reshape2))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/beadarray")
+    (synopsis
+     "Quality assessment and low-level analysis for Illumina BeadArray data")
+    (description
+     "The package is able to read bead-level data (raw TIFFs and text files)
+output by BeadScan as well as bead-summary data from BeadStudio.  Methods for
+quality assessment and low-level analysis are provided.")
+    (license license:expat)))
+
 (define-public r-beadarraysnp
   (package
     (name "r-beadarraysnp")
@@ -18800,6 +19491,26 @@ matrices.")
     (description
      "This package is importing data from Illumina SNP experiments and it
 performs copy number calculations and reports.")
+    (license license:gpl2)))
+
+(define-public r-beaddatapackr
+  (package
+    (name "r-beaddatapackr")
+    (version "1.52.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BeadDataPackR" version))
+              (sha256
+               (base32
+                "0hm4brxg2rxazdcnhjiz6f4di2q8wssrrp35m79vm93sac9w42y3"))))
+    (properties `((upstream-name . "BeadDataPackR")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/BeadDataPackR")
+    (synopsis "Compression of Illumina BeadArray data")
+    (description
+     "This package provides functionality for the compression and
+decompression of raw bead-level data from the Illumina BeadArray platform.")
     (license license:gpl2)))
 
 ;; This package includes files that have been taken from kentutils.  Some
@@ -19216,6 +19927,38 @@ variable and significantly correlated genes.")
 operations on sparse matrices.  Currently, the optimizations are limited to
 data in the column sparse format.")
     (license license:expat)))
+
+(define-public r-spatialexperiment
+  (package
+    (name "r-spatialexperiment")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "SpatialExperiment" version))
+              (sha256
+               (base32
+                "18fcfyjvp9nzadlicsnz62wva8ik0z6jqg1b906avm2vk6rbxw70"))))
+    (properties `((upstream-name . "SpatialExperiment")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocfilecache
+                             r-biocgenerics
+                             r-dropletutils
+                             r-magick
+                             r-rjson
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/drighelli/SpatialExperiment")
+    (synopsis "S4 class for spatially resolved -omics data")
+    (description
+     "This package defines an S4 class for storing data from spatial -omics
+experiments.  The class extends SingleCellExperiment to support storage and
+retrieval of additional information from spot-based and molecule-based
+platforms, including spatial coordinates, images, and image metadata.  A
+specialized constructor function is included for data from the 10x Genomics
+Visium platform.")
+    (license license:gpl3)))
 
 (define-public r-delayedmatrixstats
   (package
@@ -19751,6 +20494,37 @@ with your data.")
 EMBL-EBI GWAS catalog.")
     (license license:artistic2.0)))
 
+(define-public r-gwastools
+  (package
+    (name "r-gwastools")
+    (version "1.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GWASTools" version))
+              (sha256
+               (base32
+                "1g86xg2d9wi6xijhc89zxhbw190aviw9nkwvbwgz85jf71wf34hv"))))
+    (properties `((upstream-name . "GWASTools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase
+                             r-data-table
+                             r-dbi
+                             r-dnacopy
+                             r-gdsfmt
+                             r-gwasexacthw
+                             r-lmtest
+                             r-logistf
+                             r-quantsmooth
+                             r-rsqlite
+                             r-sandwich
+                             r-survival))
+    (home-page "https://github.com/smgogarten/GWASTools")
+    (synopsis "Tools for Genome Wide Association Studies")
+    (description
+     "This package provides classes for storing very large GWAS data sets and
+annotation, and functions for GWAS data cleaning and analysis.")
+    (license license:artistic2.0)))
+
 (define-public r-kegggraph
   (package
     (name "r-kegggraph")
@@ -19956,6 +20730,41 @@ aCGH data.  snapCGH also includes plotting functions for visualising raw and
 segmented data for individual and multiple arrays.")
     ;; Expanded from GPL
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-snprelate
+  (package
+    (name "r-snprelate")
+    (version "1.34.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "SNPRelate" version))
+              (sha256
+               (base32
+                "0js932qvhlwmnrr2jfvsch2zm6w6a1z5wydns3r1bw24r817dlgh"))))
+    (properties `((upstream-name . "SNPRelate")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-gdsfmt))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zhengxwen/SNPRelate")
+    (synopsis
+     "Toolset for relatedness and Principal Component Analysis of SNP data")
+    (description
+     "Genome-wide association studies (GWAS) are widely used to investigate
+the genetic basis of diseases and traits, but they pose many computational
+challenges.  The R package SNPRelate provides a binary format for
+single-nucleotide polymorphism (SNP) data in GWAS utilizing CoreArray Genomic
+Data Structure (GDS) data files.  The GDS format offers the efficient
+operations specifically designed for integers with two bits, since a SNP could
+occupy only two bits.  SNPRelate is also designed to accelerate two key
+computations on SNP data using parallel computing for multi-core symmetric
+multiprocessing computer architectures: Principal Component Analysis (PCA) and
+relatedness analysis using Identity-By-Descent measures.  The SNP GDS format
+is also used by the GWASTools package with the support of S4 classes and
+generic functions.  The extended GDS format is implemented in the SeqArray
+package to support the storage of single nucleotide variations (SNVs),
+insertion/deletion polymorphism (indel) and structural variation calls in
+whole-genome and whole-exome variant data.")
+    (license license:gpl3)))
 
 (define-public r-snpstats
   (package

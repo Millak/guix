@@ -471,7 +471,7 @@ applications menu, workspace switcher and more.")
 (define-public xfce4-clipman-plugin
   (package
     (name "xfce4-clipman-plugin")
-    (version "1.6.3")
+    (version "1.6.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -479,7 +479,7 @@ applications menu, workspace switcher and more.")
                                   "xfce4-clipman-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "044s9hwl9pnygmfc5lk3ndf4ibjq829zpv4qxsf9bz0pcabiy771"))))
+                "1v5c1z154a46426198m3pl0fyrlsgfiqy4x9rvzcwzlp6lg5iplz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -682,7 +682,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.18.2")
+    (version "4.18.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -690,7 +690,7 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "08jgvhxhh95rcgpvsfqn1rv7i45zj37zyhcpnkpmgbpshw83cqa6"))
+                "18giyc190i7b3nc3l745p6fqpnqivwxm0yc7l0whfa03wndykf9d"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1529,7 +1529,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-volumed-pulse
   (package
     (name "xfce4-volumed-pulse")
-    (version "0.2.3")
+    (version "0.2.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1537,7 +1537,7 @@ A plugin for the Xfce panel is also available.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1q639iwwj7q2plgz0wdgdbi5wkgaq177ca9rnnlrnbdmid5z5fqk"))))
+                "0ql3hlciffjs981jp21hg6phrk25crh64yc01fm0l75k4vvf66d0"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1553,7 +1553,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-cpugraph-plugin
   (package
    (name "xfce4-cpugraph-plugin")
-   (version "1.2.7")
+   (version "1.2.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1562,7 +1562,7 @@ A plugin for the Xfce panel is also available.")
                                   "/xfce4-cpugraph-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "01bl6glkwfvqvxm3sp3y4mb8szx7bnqnjns59sb8cwgdg3i539k8"))))
+                "1gylfmpn36cm1b1kz0x8smy5hixzlhmdg5i53cj5fzgk4773id5z"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -2089,7 +2089,7 @@ period.")
 (define-public xfce4-verve-plugin
   (package
    (name "xfce4-verve-plugin")
-   (version "2.0.1")
+   (version "2.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -2098,12 +2098,12 @@ period.")
                                   "/xfce4-verve-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "09gqp0jb5ccjh7ny798n5cy9skdx3hpis4kgvjpl4vidnrg5xnpb"))))
+                "17p0kxnzx4ks3rs281x5pvwksl1gh2mg7h7mkccjmkzr3cgi5gz1"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
     (inputs
-     (list libxfce4ui xfce4-panel))
+     (list libxfce4ui pcre2 xfce4-panel))
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-verve-plugin")
     (synopsis "Command line for the Xfce panel")

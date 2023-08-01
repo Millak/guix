@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 John D. Boy <jboy@bius.moe>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
@@ -570,7 +570,14 @@ Python 3.3 and later, rather than on Python 2.")
                     (manpages (assoc-ref inputs "git-manpages")))
                (mkdir-p man)
                (with-directory-excursion man
-                 (invoke "tar" "xvf" manpages))))))))
+                 (invoke "tar" "xvf" manpages)))))
+         ,@(if (system-hurd?)
+               '((add-after 'unpack 'delete-tests/hurd
+                   (lambda _
+                     (delete-file "t/t0052-simple-ipc.sh")
+                     (delete-file "t/t5562-http-backend-content-length.sh")
+                     (delete-file "t/t9902-completion.sh"))))
+               '()))))
 
     (native-search-paths
      ;; For HTTPS access, Git needs a single-file certificate bundle, specified
@@ -1512,7 +1519,7 @@ also walk each side of a merge and test those changes individually.")
 wrappers, to be used for optional gitolite extensions."
   (package
     (name "gitolite")
-    (version "3.6.12")
+    (version "3.6.13")
     (source
      (origin
        (method git-fetch)
@@ -1521,10 +1528,10 @@ wrappers, to be used for optional gitolite extensions."
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05xw1pmagvkrbzga5pgl3xk9qyc6b5x73f842454f3w9ijspa8zy"))))
+        (base32 "0lp4hi8pfg7k0fk0l8wzs8hxp1aspzv78nkafdbbq8m9lzwnwl7x"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f ; no tests
+     (list #:tests? #f                  ; no tests
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
@@ -1690,7 +1697,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit") ;formerly known as python-pre-commit
-    (version "3.3.1")
+    (version "3.3.3")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1699,7 +1706,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cssp1p8xmidiimcjfp799zlldbr6id8ar0sf5rs0dd44ns1j3yr"))
+        (base32 "1spkg3ld3s6l7wz24lcywlf1z2ywp751bcdlxjfdsln76bi9ylp8"))
        (modules '((guix build utils)))
        (snippet '(substitute* "setup.cfg"
                    (("virtualenv>=20.10.0") ;our virtualenv (20.3.1) is fine

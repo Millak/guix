@@ -434,36 +434,27 @@ sys_enable_guix_daemon()
                 _msg "${PAS}enabled Guix daemon via upstart"
             ;;
         systemd)
-            { # systemd .mount units must be named after the target directory.
-              # Here we assume a hard-coded name of /gnu/store.
-              # XXX Work around <https://issues.guix.gnu.org/41356> until next release.
-              if [ -f ~root/.config/guix/current/lib/systemd/system/gnu-store.mount ]; then
-                  cp ~root/.config/guix/current/lib/systemd/system/gnu-store.mount \
-                     /etc/systemd/system/;
-                  chmod 664 /etc/systemd/system/gnu-store.mount;
-                  systemctl daemon-reload &&
-                      systemctl enable gnu-store.mount;
-              fi
+            { install_unit()
+              {
+                  local dest="/etc/systemd/system/$1"
+                  rm -f "$dest"
+                  cp ~root/.config/guix/current/lib/systemd/system/"$1" "$dest"
+                  chmod 664 "$dest"
+                  systemctl daemon-reload
+                  systemctl enable "$1"
+              }
 
-              cp ~root/.config/guix/current/lib/systemd/system/guix-daemon.service \
-                 /etc/systemd/system/;
-              chmod 664 /etc/systemd/system/guix-daemon.service;
-
-              # Work around <https://bugs.gnu.org/36074>, present in 1.0.1.
-              sed -i /etc/systemd/system/guix-daemon.service \
-                  -e "s/GUIX_LOCPATH='/'GUIX_LOCPATH=/";
-
-              # Work around <https://bugs.gnu.org/35671>, present in 1.0.1.
-              if ! grep en_US /etc/systemd/system/guix-daemon.service >/dev/null;
-              then sed -i /etc/systemd/system/guix-daemon.service \
-                       -e 's/^Environment=\(.*\)$/Environment=\1 LC_ALL=en_US.UTF-8';
-              fi;
+              install_unit guix-daemon.service
 
               configure_substitute_discovery \
                   /etc/systemd/system/guix-daemon.service
 
+              # Install after guix-daemon.service to avoid a harmless warning.
+              # systemd .mount units must be named after the target directory.
+              # Here we assume a hard-coded name of /gnu/store.
+              install_unit gnu-store.mount
+
               systemctl daemon-reload &&
-                  systemctl enable guix-daemon &&
                   systemctl start  guix-daemon; } &&
                 _msg "${PAS}enabled Guix daemon via systemd"
             ;;
@@ -590,7 +581,8 @@ sys_create_shell_completion()
 
 sys_customize_bashrc()
 {
-    prompt_yes_no "Customize users Bash shell prompt for Guix?" || return
+    prompt_yes_no "Customize users Bash shell prompt for Guix?" || return 0
+
     for bashrc in /home/*/.bashrc /root/.bashrc; do
         test -f "$bashrc" || continue
         grep -Fq '$GUIX_ENVIRONMENT' "$bashrc" && continue
@@ -609,15 +601,26 @@ fi
 
 sys_maybe_setup_selinux()
 {
-    if [ -f /sys/fs/selinux/policy ]
+    if ! [ -f /sys/fs/selinux/policy ]
     then
-	prompt_yes_no "Install SELinux policy required to run guix-daemon?" \
-	    || return
-
-	local var_guix=/var/guix/profiles/per-user/root/current-guix
-	semodule -i "${var_guix}/share/selinux/guix-daemon.cil"
-	restorecon -R /gnu /var/guix
+	return
     fi
+
+    local c
+    for c in semodule restorecon
+    do
+        if ! command -v "$c" &>/dev/null
+	then
+	    return
+	fi
+    done
+
+    prompt_yes_no "Install SELinux policy that might be required to run guix-daemon?" \
+	|| return 0
+
+    local var_guix=/var/guix/profiles/per-user/root/current-guix
+    semodule -i "${var_guix}/share/selinux/guix-daemon.cil"
+    restorecon -R /gnu /var/guix
 }
 
 welcome()

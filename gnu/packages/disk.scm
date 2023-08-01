@@ -3,8 +3,8 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2016, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2019-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -69,6 +69,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
@@ -244,27 +245,36 @@ tmpfs/ramfs filesystems.")
 (define-public parted
   (package
     (name "parted")
-    (version "3.5")
+    (version "3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/parted/parted-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "18h51i3x5cbqhlj5rm23m9sfw63gaaby5czln5w6qpqj3ifdsf29"))))
+                "04p6b4rygrfd1jrskwrx3bn2icajg1mvbfhyc0c9l3ya7kixnhrv"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'fix-locales-and-python
-             (lambda _
-               (substitute* "tests/t0251-gpt-unicode.sh"
-                 (("C.UTF-8") "en_US.utf8")) ;not in Glibc locales
-               (substitute* "tests/msdos-overlap"
-                 (("/usr/bin/python") (which "python"))))))))
+     (list
+      #:configure-flags (if (target-hurd?)
+                            #~'("--disable-device-mapper")
+                            #~'())
+      #:tests? (not (or (target-hurd?)
+                        (%current-target-system)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-locales-and-python
+            (lambda _
+              (substitute* "tests/t0251-gpt-unicode.sh"
+                (("C.UTF-8") "en_US.utf8")) ;not in Glibc locales
+              (substitute* "tests/msdos-overlap"
+                (("/usr/bin/python") (which "python"))))))))
     (inputs
-     (list lvm2 readline
-           `(,util-linux "lib")))
+     `(,@(if (target-hurd?)
+             (list hurd-minimal)
+             (list lvm2))
+       ,readline
+       (,util-linux "lib")))
     (native-inputs
      (list gettext-minimal
 

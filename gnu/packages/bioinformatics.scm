@@ -1254,7 +1254,9 @@ libblasr_gtest_dep = cpp.find_library('gtest_main', dirs : '~a')\n"
      (list boost hdf5 htslib pbbam zlib))
     (native-inputs
      (list googletest pkg-config))
-    (home-page "https://github.com/PacificBiosciences/blasr_libcpp")
+    (home-page
+     (string-append "https://web.archive.org/web/20201106122415/"
+                    "https://github.com/PacificBiosciences/blasr_libcpp"))
     (synopsis "Library for analyzing PacBio genomic sequences")
     (description
      "This package provides three libraries used by applications for analyzing
@@ -1296,7 +1298,8 @@ cpp.find_library('hdf5_cpp', dirs : '~a'), "
      (list boost blasr-libcpp hdf5 pbbam zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "https://github.com/PacificBiosciences/blasr")
+    (home-page (string-append "https://web.archive.org/web/20210813124135/"
+                              "https://github.com/PacificBiosciences/blasr"))
     (synopsis "PacBio long read aligner")
     (description
      "Blasr is a genomic sequence aligner for processing PacBio long reads.")
@@ -1408,11 +1411,12 @@ Format (GFF) with Biopython integration.")
     (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
 
 (define-public python-bcbio-gff/biopython-1.73
-  (package
-    (inherit python-bcbio-gff)
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-bcbio-gff)
-       (replace "python-biopython" python-biopython-1.73)))))
+  (hidden-package
+   (package
+     (inherit python-bcbio-gff)
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-bcbio-gff)
+        (replace "python-biopython" python-biopython-1.73))))))
 
 ;; Note: the name on PyPi is "biofluff".
 (define-public python-biofluff
@@ -1676,11 +1680,11 @@ and sequence consensus.")
 
 (define-public python-decoupler-py
   ;; This latest commit fixes a bug in test_omnip.py.
-  (let ((commit "b84c524ec4a9280a56c0db963e2c7b010316ce8f")
+  (let ((commit "459b235348ddd9135217a3722d9dd1caa9a14ace")
         (revision "1"))
     (package
       (name "python-decoupler-py")
-      (version (git-version "1.3.1" revision commit))
+      (version (git-version "1.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1689,7 +1693,7 @@ and sequence consensus.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0d74yr5jqc52vcxaca84kxqw7m5rbazpmvnrcp2y4xxrj6yr1sfc"))))
+                  "1c0xk006iilyffdaqar2d05qdhik22fbkny387zx0bndkgqifxhl"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -1700,6 +1704,10 @@ and sequence consensus.")
                               " and not test_show_resources"
                               " and not test_get_dorothea"
                               " and not test_get_progeny"
+                              " and not test_get_ksn_omnipath"
+                              ;; XXX module 'omnipath.interactions' has no
+                              ;; attribute 'CollecTRI'
+                              " and not test_get_collectri"
                               ;; XXX This one fails because the "texts" list
                               ;; is empty, so there are no texts to adjust.
                               ;; It is not clear whether this a compatibility
@@ -1858,6 +1866,61 @@ to produce high quality figures that can be used in publications.")
 protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
+
+(define-public python-liana-py
+  (package
+    (name "python-liana-py")
+    (version "0.1.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/saezlab/liana-py")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00lqrmi38wmdpjlcafgmrnkwsbp0yvm2rya6qs8y6jfizww9ff8i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests require internet access.
+             (string-append "not test_generate_lr_resource"
+                            " and not test_generate_nondefault_lr_resource"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable directory to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs (list python-anndata
+                             python-cell2cell
+                             python-decoupler-py
+                             python-hypothesis
+                             python-ipykernel
+                             python-ipython
+                             python-mofax
+                             python-mudata
+                             python-nbconvert
+                             python-nbsphinx
+                             python-numpydoc
+                             python-omnipath
+                             python-pandas
+                             python-plotnine
+                             python-pypandoc
+                             python-scipy
+                             python-requests
+                             python-scanpy
+                             python-statsmodels
+                             python-tqdm
+                             tzdata))
+    (native-inputs
+     (list python-black python-pytest python-pytest-cov python-numpy))
+    (home-page "https://github.com/saezlab/liana-py")
+    (synopsis "LIANA is a ligand-receptor analysis framework")
+    (description "This is a Ligand-Receptor inference framework.  The
+framework enables the use of any LR method with any resources.")
+    (license license:gpl3+)))
 
 (define-public python-logomaker
   (package
@@ -3347,7 +3410,9 @@ and more accurate.  BWA-MEM also has better performance than BWA-backtrack for
                  (("inline int map") "int map"))))))))
     (inputs
      (list gdsl zlib perl))
-    (home-page "http://bwa-pssm.binf.ku.dk/")
+    ;; https://bwa-pssm.binf.ku.dk is down, and all Web Archived copies are
+    ;; blank (they actually have "display:none" for some nefarious reason).
+    (home-page "https://github.com/pkerpedjiev/bwa-pssm")
     (synopsis "Burrows-Wheeler transform-based probabilistic short read mapper")
     (description
      "BWA-PSSM is a probabilistic short genomic sequence read aligner based on
@@ -4759,17 +4824,15 @@ data and settings.")
      (list boost cairo rmath-standalone))
     (native-inputs
      (list (texlive-updmap.cfg
-            (list texlive-cm
-                  texlive-amsfonts
-                  texlive-doi
-                  texlive-fonts-ec
-                  texlive-latex-examplep
-                  texlive-hyperref
+            (list texlive-doi
+                  texlive-examplep
+                  texlive-forloop
+                  texlive-listofitems
                   texlive-ms
-                  texlive-latex-natbib
-                  texlive-bibtex        ;style files used by natbib
+                  texlive-natbib
                   texlive-pgf           ;tikz
-                  texlive-latex-verbatimbox))
+                  texlive-readarray
+                  texlive-verbatimbox))
            imagemagick))
     (home-page "https://dorina.mdc-berlin.de/public/rajewsky/discrover/")
     (synopsis "Discover discriminative nucleotide sequence motifs")
@@ -4992,6 +5055,54 @@ software to answer ad hoc questions.")
            go-golang-org-rainycape-unidecode
            go-golang-org-x-image
            go-golang-org-x-text))))
+
+(define-public python-baltica
+  (package
+    (name "python-baltica")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dieterich-lab/Baltica")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "001ac03v9pbqqzf9pv7v8gf0296ksa4f0v3wdmpa6m9701skqi4r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; The tests need to be run from elsewhere...
+               (mkdir-p "/tmp/test")
+               (copy-recursively ".tests" "/tmp/test")
+               (with-directory-excursion "/tmp/test"
+                 (invoke "pytest" "-v" "--doctest-modules"))))))))
+    (propagated-inputs
+     (list gunicorn
+           python-anndata
+           python-click
+           python-flask
+           python-flask-wtf
+           python-h5py
+           python-numpy
+           python-psutil
+           python-pysam
+           python-pyyaml
+           python-scipy
+           snakemake-7))
+    (native-inputs (list python-cython python-pyfakefs python-pytest))
+    (home-page "https://github.com/dieterich-lab/Baltica")
+    (synopsis "Integrated splice junction usage analysis")
+    (description
+     "This framework facilitates the execution of @dfn{differential junction
+usage} (DJU) methods. Additionally, it enables the integration of results from
+multiple DJU methods.")
+    (license license:expat)))
 
 (define-public python-bamnostic
   (package
@@ -7273,7 +7384,9 @@ program for nucleotide and protein sequences.")
                   "1hkw21rq1mwf7xp0rmbb2gqc0i6p11108m69i7mr7xcjl268pxnb"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:make-flags (list "CFLAGS=-O2 -g -fcommon")))
+       `(#:tests? ,(not (or (target-riscv64?)   ;XXX: stuck on riscv64-linux
+                            (%current-target-system)))
+         #:make-flags (list "CFLAGS=-O2 -g -fcommon")))
       (inputs
        ;; XXX: TODO: Enable Lua and Guile bindings.
        ;; https://github.com/tjunier/newick_utils/issues/13
@@ -8707,7 +8820,7 @@ unique transcripts.")
      (list ngs-sdk
            ncbi-vdb
            file
-           fuse
+           fuse-2
            hdf5-1.10
            libxml2
            zlib
@@ -9826,6 +9939,14 @@ differently labelled data.")
         (base32 "04kr1b28p5j7h48g32cldkg87xcmxnmd4kspygkfs7a4amihpi66"))))
     (properties `((upstream-name . "Pando")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'loosen-requirements
+           (lambda _
+             (substitute* "DESCRIPTION"
+               ((" \\(==.*,") ",")))))))
     (propagated-inputs
      (list r-bayestestr
            r-foreach
@@ -12088,16 +12209,15 @@ programs for inferring phylogenies (evolutionary trees).")
      (list automake
            autoconf
            openmpi
-           (texlive-updmap.cfg (list texlive-amsfonts
-                                     texlive-caption
-                                     texlive-cite
-                                     texlive-fancyvrb
-                                     texlive-fonts-ec
-                                     texlive-graphics
-                                     texlive-grfext
-                                     texlive-hyperref
-                                     texlive-latex-psfrag
-                                     texlive-xcolor))))
+           (texlive-updmap.cfg
+            (list texlive-caption
+                  texlive-cite
+                  texlive-fancyvrb
+                  texlive-infwarerr
+                  texlive-kvoptions
+                  texlive-pdftexcmds
+                  texlive-psfrag
+                  texlive-xcolor))))
     (home-page "https://github.com/stephaneguindon/phyml")
     (synopsis "Programs for working on SAM/BAM files")
     (description
@@ -17051,32 +17171,33 @@ to an artifact/contaminant file.")
                   (delete-file-recursively "third-party")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("OPENMP=t")
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'fix-zlib-include
-           (lambda _
-             (substitute* "src/binarySequences.c"
-               (("../third-party/zlib-1.2.3/zlib.h") "zlib.h"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/velvet")))
-               (mkdir-p bin)
-               (mkdir-p doc)
-               (install-file "velveth" bin)
-               (install-file "velvetg" bin)
-               (install-file "Manual.pdf" doc)
-               (install-file "Columbus_manual.pdf" doc)))))))
+     (list
+      #:make-flags #~(list "OPENMP=t")
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'fix-zlib-include
+            (lambda _
+              (substitute* "src/binarySequences.c"
+                (("../third-party/zlib-1.2.3/zlib.h") "zlib.h"))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (doc (string-append #$output "/share/doc/velvet")))
+                (mkdir-p bin)
+                (mkdir-p doc)
+                (install-file "velveth" bin)
+                (install-file "velvetg" bin)
+                (install-file "Manual.pdf" doc)
+                (install-file "Columbus_manual.pdf" doc)))))))
     (inputs
      (list openmpi zlib))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-graphics
-                                             texlive-fonts-ec
-                                             texlive-hyperref)))))
+     (list (texlive-updmap.cfg
+            (list texlive-infwarerr
+                  texlive-kvoptions
+                  texlive-pdftexcmds))))
     (home-page "https://www.ebi.ac.uk/~zerbino/velvet/")
     (synopsis "Nucleic acid sequence assembler for very short reads")
     (description

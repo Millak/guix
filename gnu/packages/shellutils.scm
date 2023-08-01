@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -482,7 +483,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.32.2")
+    (version "2.32.3")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -491,7 +492,7 @@ are already there.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "17nn4qg1fj4i9rh1gdpbddn2nky71h9dkxyz5a4jsdq25bsx0ps2"))))
+               "1hyl67n7na19zm3ksiiyva4228alx0jfh9l3v1mxszn9prwgcfjc"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/direnv/direnv"

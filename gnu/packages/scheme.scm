@@ -191,8 +191,9 @@
        ("autoconf" ,autoconf)
        ("automake" ,automake)
        ("libtool" ,libtool)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-tex-texinfo
-                                             texlive-epsf)))
+       ("texlive" ,(texlive-updmap.cfg
+                    (list texlive-epsf
+                          texlive-texinfo)))
        ("texinfo" ,texinfo)
        ("ghostscript" ,ghostscript)
        ("m4" ,m4)))

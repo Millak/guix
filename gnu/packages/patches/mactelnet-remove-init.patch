@@ -1,0 +1,98 @@
+From ca2dff0b97df0ceb8f6357de3a4375ebc09646dd Mon Sep 17 00:00:00 2001
+Message-Id: <ca2dff0b97df0ceb8f6357de3a4375ebc09646dd.1688572750.git.mirai@makinata.eu>
+From: Bruno Victal <mirai@makinata.eu>
+Date: Wed, 5 Jul 2023 16:43:31 +0100
+Subject: [PATCH] Skip installing init file.
+
+The file refers to hardcoded paths.
+---
+ Makefile.am             |  2 +-
+ config/Makefile.am      |  5 -----
+ config/mactelnetd.init  | 21 ---------------------
+ config/mactelnetd.users | 12 ------------
+ configure.ac            |  2 +-
+ 5 files changed, 2 insertions(+), 40 deletions(-)
+ delete mode 100644 config/Makefile.am
+ delete mode 100644 config/mactelnetd.init
+ delete mode 100644 config/mactelnetd.users
+
+diff --git a/Makefile.am b/Makefile.am
+index 4e67178..264d8ea 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,5 +1,5 @@
+ AUTOMAKE_OPTIONS = foreign
+-SUBDIRS = src doc config po
++SUBDIRS = src doc po
+ 
+ CFLAGS = --pedantic -Wall -std=c99 -O3 
+ LDFLAGS =
+diff --git a/config/Makefile.am b/config/Makefile.am
+deleted file mode 100644
+index 574a2e0..0000000
+--- a/config/Makefile.am
++++ /dev/null
+@@ -1,5 +0,0 @@
+-dist_sysconf_DATA = mactelnetd.users
+-
+-install-exec-hook:
+-	       chmod 600 $(DESTDIR)$(sysconfdir)/mactelnetd.users
+-				 chown root $(DESTDIR)$(sysconfdir)/mactelnetd.users
+diff --git a/config/mactelnetd.init b/config/mactelnetd.init
+deleted file mode 100644
+index b7ddddf..0000000
+--- a/config/mactelnetd.init
++++ /dev/null
+@@ -1,21 +0,0 @@
+-# mactelnetd - MAC-Telnet server
+-#
+-# The MAC-Telnet server provides telnet access via MAC addresses.
+-#
+-# Ubuntu upstart config:
+-
+-description	"MAC-Telnet server"
+-
+-start on filesystem
+-stop on runlevel [!2345]
+-
+-respawn
+-respawn limit 10 5
+-umask 022
+-
+-pre-start script
+-    test -O /etc/mactelnetd.users || { stop; exit 0; }
+-    test -x /usr/sbin/mactelnetd || { stop; exit 0; }
+-end script
+-
+-exec /usr/sbin/mactelnetd -f
+diff --git a/config/mactelnetd.users b/config/mactelnetd.users
+deleted file mode 100644
+index c140e36..0000000
+--- a/config/mactelnetd.users
++++ /dev/null
+@@ -1,12 +0,0 @@
+-# Users file for MAC-Telnetd
+-#
+-####################################################################
+-# WARNING: This file has passwords written in plain-text.          #
+-#          Make sure this file is owned and only readable by root. #
+-####################################################################
+-#
+-# Each line consists of a username and a password seperated by :.
+-# Usernames must be existing users from passwd.
+-#
+-# Format:
+-#username:password
+diff --git a/configure.ac b/configure.ac
+index c0fdda4..9d2f7d7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -34,4 +34,4 @@ AC_FUNC_MALLOC
+ AC_FUNC_STRNLEN
+ AC_CHECK_FUNCS([alarm bzero clock_gettime getpass gettimeofday inet_ntoa memset select setenv setlocale socket strcasecmp strerror strncasecmp sysinfo uname])
+ 
+-AC_OUTPUT(Makefile src/Makefile doc/Makefile config/Makefile po/Makefile.in)
++AC_OUTPUT(Makefile src/Makefile doc/Makefile po/Makefile.in)
+-- 
+2.40.1
+

@@ -3,6 +3,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,9 +21,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages adns)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages m4)
@@ -76,18 +79,69 @@ scripts.")
                 "1kxviskwsaa7dcgscvssxa8ps88pdq7kq4z93gxvz7sam2l54z8s"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'filter-live-tests
-           (lambda _
-             ;; Filter tests that require internet access.
-             (setenv "GTEST_FILTER" "-*.Live*:*.FamilyV4*"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'filter-live-tests
+            (lambda _
+              ;; Filter tests that require internet access.
+              (setenv "GTEST_FILTER" "-*.Live*:*.FamilyV4*")))
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'skip-tests
+                      (lambda _
+                        (substitute* "test/ares-test-main.cc"
+                          (("(^| )main *\\(.*" all)
+                           (string-append all "  exit (77);\n")))))
+                    (add-after 'filter-live-tests 'filter-hurd-tests
+                      (lambda _
+                        (setenv "GTEST_FILTER"
+                                (string-append
+                                 (getenv "GTEST_FILTER")
+                                 ":.*Basic/2"
+                                 ":.*CancelImmediate/2"
+                                 ":.*CancelImmediateGetHostByAddr/2"
+                                 ":.*CancelLater/1"
+                                 ":.*FamilyUnspecified/2"
+                                 ":.*FamilyV6/2"
+                                 ":.*GetAddrInfoParallelLookups/1"
+                                 ":.*GetHostByAddrDestroy/2"
+                                 ":.*GetHostByNameCNAMENoData/2"
+                                 ":.*GetHostByNameDestroyAbsolute/2"
+                                 ":.*GetHostByNameDestroyRelative/2"
+                                 ":.*GetHostByNameParallelLookups/1"
+                                 ":.*HostAlias/2"
+                                 ":.*HostAliasMissing/2"
+                                 ":.*HostAliasMissingFile/2"
+                                 ":.*NotImplResponse/2"
+                                 ":.*RefusedResponse/2"
+                                 ":.*Resend/1"
+                                 ":.*RetryWithoutEDNS/2"
+                                 ":.*SearchDomains/2"
+                                 ":.*SearchDomainsBare/2"
+                                 ":.*SearchDomainsServFailOnAAAA/2"
+                                 ":.*SearchDomainsWithResentReply/1"
+                                 ":.*SearchHighNdots/2"
+                                 ":.*SearchNoDataThenFail/2"
+                                 ":.*SearchNoDataThenNoDataBare/2"
+                                 ":.*SearchNoDataThenSuccess/2"
+                                 ":.*ServFailResponse/2"
+                                 ":.*SimpleQuery/2"
+                                 ":.*SockCallback/2"
+                                 ":.*SockConfigureCallback/2"
+                                 ":.*SortListV4/2"
+                                 ":.*SortListV6/2"
+                                 ":.*ThirdServer/2"
+                                 ":.*TruncationRetry/1"
+                                 ":.*UnspecifiedFamilyCname6A4/2"
+                                 ":.*UnspecifiedFamilyV4/2"
+                                 ":.*UnspecifiedFamilyV6/2")))))
+                 #~()))))
     (native-inputs
      (list pkg-config))
     (home-page "https://c-ares.haxx.se/")
     (synopsis "C library for asynchronous DNS requests")
     (description
-      "C-ares is a C library that performs DNS requests and name resolution
+     "C-ares is a C library that performs DNS requests and name resolution
 asynchronously.  It is intended for applications which need to perform DNS
 queries without blocking, or need to perform multiple DNS queries in parallel.
 The primary examples of such applications are servers which communicate with

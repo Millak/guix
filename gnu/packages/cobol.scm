@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,7 +33,7 @@
 (define-public gnucobol
   (package
     (name "gnucobol")
-    (version "3.1.2")
+    (version "3.2")
     (source
       (origin
         (method url-fetch)
@@ -42,7 +42,7 @@
                version ".tar.xz"))
         (sha256
          (base32
-          "0x15ybfm63g7c9340fc6712h9v59spnbyaz4rf85pmnp3zbhaw2r"))))
+          "1qifkkrmscc5csri1l4rm9pbik74c3pc5za1rzx7jizddks8md1v"))))
     (arguments
      (list
        #:configure-flags

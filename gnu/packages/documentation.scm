@@ -12,6 +12,7 @@
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.counoyer@gmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix deprecation)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -224,7 +226,15 @@ markup) can be customized and extended by the user.")
               (let ((/bin/sh (search-input-file inputs "/bin/sh")))
                 (substitute* "src/portable.cpp"
                   (("/bin/sh")
-                   /bin/sh))))))))
+                   /bin/sh)))))
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'apply-patch
+                      (lambda _
+                        (let ((patch-file
+                               #$(local-file
+                                  (search-patch "doxygen-hurd.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i" patch-file)))))
+                 #~()))))
     (synopsis "Generate documentation from annotated sources")
     (description "Doxygen is the de facto standard tool for generating
 documentation from annotated C++ sources, but it also supports other popular

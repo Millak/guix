@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,19 +24,20 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (gnu packages crypto))
 
 (define-public libbsd
   (package
     (name "libbsd")
-    (version "0.11.6")
+    (version "0.11.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://libbsd.freedesktop.org/releases/"
                                   "libbsd-" version ".tar.xz"))
               (sha256
                (base32
-                "1pxmk42brddk43bj8lp4a64f9iwhc5ii91y6w7k97xpaf8qqzcqr"))))
+                "0q82iaynmal3dn132jgjq21p27x3zn8zks88cg02bgzbb5h1ialv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--disable-static")
@@ -64,7 +66,15 @@
                             ;; build container.
                             (substitute* "test/Makefile"
                               (("pwcache\\$\\(EXEEXT\\) ")
-                               "")))))))
+                               ""))))
+                        #$@(if (system-hurd?)
+                               #~((add-after 'unpack 'skip-tests
+                                  (lambda _
+                                    (substitute* "test/explicit_bzero.c"
+                                      (("(^| )main *\\(.*" all)
+                                       (string-append all
+                                                      "{\n  exit (77);//"))))))
+                               #~()))))
     (inputs
      (list libmd))
     (synopsis "Utility functions from BSD systems")

@@ -432,10 +432,13 @@ will be used in description and synopsis."
    "0.20.0"))
 
 (define-public tree-sitter-json
-  (tree-sitter-grammar
-   "json" "JSON"
-   "06pjh31bv9ja9hlnykk257a6zh8bsxg2fqa54al7qk1r4n9ksnff"
-   "0.19.0"))
+  ;; Not tagged
+  (let ((commit "5d992d9dd42d533aa25618b3a0588f4375adf9f3"))
+    (tree-sitter-grammar
+     "json" "JSON"
+     "08kxzqyyl900al8mc0bwigxlkzsh2f14qzjyb5ki7506myxlmnql"
+     "0.20.0"
+     #:commit commit)))
 
 (define-public tree-sitter-julia
   (tree-sitter-grammar

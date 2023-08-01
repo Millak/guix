@@ -9,7 +9,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,9 +89,12 @@ Consortium standard (ICC), approved as ISO 15076-1.")
     (native-inputs
      (list help2man))
     (arguments
-     '(#:configure-flags '("--disable-static"
-                           ;; Tests require a relocatable build.
-                           "--enable-relocatable")))
+     (list #:configure-flags ''("--disable-static"
+                                 ;; Tests require a relocatable build.
+                                 "--enable-relocatable")
+           ;; --enable-relocate is broken on the Hurd
+           #:tests? (not (or (target-hurd?)
+                             (%current-target-system)))))
     (outputs '("out" "debug"))
     (home-page "https://github.com/rrthomas/libpaper")
     (synopsis "Library for handling paper sizes")
@@ -145,6 +148,7 @@ printing, and psresize, for adjusting page sizes.")
   (package
     (name "ghostscript")
     (version "9.56.1")
+    (replacement ghostscript/fixed)
     (source
      (origin
        (method url-fetch)
@@ -198,6 +202,16 @@ printing, and psresize, for adjusting page sizes.")
                      '()))
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'patch-leptonica
+                      (lambda _
+                        (let ((patch-file
+                               #$(local-file
+                                  (search-patch
+                                   "ghostscript-leptonica-hurd.patch"))))
+                          (with-directory-excursion "leptonica"
+                            (invoke "patch" "--force" "-p1" "-i" patch-file))))))
+                 #~())
           (add-before 'configure 'create-output-directory
             (lambda _
               ;; The configure script refuses to function if the directory
@@ -265,6 +279,12 @@ capabilities of the PostScript language.  It supports a wide variety of
 output file formats and printers.")
     (home-page "https://www.ghostscript.com/")
     (license license:agpl3+)))
+
+(define ghostscript/fixed
+  (package-with-patches
+   ghostscript
+   (search-patches "ghostscript-CVE-2023-36664.patch"
+                   "ghostscript-CVE-2023-36664-fixup.patch")))
 
 (define-public ghostscript/x
   (package/inherit ghostscript

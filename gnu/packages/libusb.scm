@@ -274,14 +274,14 @@ wrapper for accessing libusb-1.0.")
 (define-public python-pyusb
   (package
     (name "python-pyusb")
-    (version "1.0.2")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyusb" version))
        (sha256
         (base32
-         "0qkk2jn270jwwl1x26hmdhb14m9kkbrzzwzizdjcl1a29b6756sf"))))
+         "1fg7knfzybzija2b01pzrzhzsj989scl12sb2ra4f503l8279k54"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -302,6 +302,9 @@ wrapper for accessing libusb-1.0.")
                                    "^libusb-.*\\.so\\..*"))
                  "\"")))
              #t)))))
+
+    (native-inputs
+     (list python-setuptools-scm))
     (inputs
      (list libusb))
     (home-page "https://pyusb.github.io/pyusb/")
@@ -520,7 +523,7 @@ music and video to the device.")
                (base32
                 "11wdv44qwia77sh38n36809ysaib52rwd4fvqwb5ybsbz4p70l1m"))))
     (inputs
-     (list fuse libimobiledevice))
+     (list fuse-2 libimobiledevice))
     (native-inputs
      (list pkg-config))
     (build-system gnu-build-system)

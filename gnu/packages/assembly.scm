@@ -186,14 +186,14 @@ speed on x86, NEON on ARM, etc.).")
 (define-public fasm
   (package
     (name "fasm")
-    (version "1.73.30")
+    (version "1.73.31")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://flatassembler.net/fasm-"
                            version ".tgz"))
        (sha256
-        (base32 "00giqb94z8cxhv20yiyk8axkd2kzjcg1c0841yzbn7c8lm8m06bm"))))
+        (base32 "1qqg1czr9dr73l4gwrwim85mjs65al7vv8b292jipywimhhwnf4g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests exist
@@ -346,7 +346,7 @@ package for the Game Boy and Game Boy Color.  It consists of:
 (define-public wla-dx
   (package
     (name "wla-dx")
-    (version "10.1")
+    (version "10.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -355,20 +355,21 @@ package for the Game Boy and Game Boy Color.  It consists of:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nh2k2xn5fj389gq68f3fxgrxakgn8c6dw2ffqay86s3706hac9w"))))
+                "1h6apmhaks4772s2cja34ck488p8yhb3nscbxjw5061ml2046zqq"))))
     (build-system cmake-build-system)
     (native-inputs (list python-sphinx)) ; to generate man pages
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'copy-tests-to-build-directory
-           (lambda _
-             (copy-recursively "../source/tests" "tests")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (let ((sh (which "sh")))
-               (when tests?
-                 (invoke sh "../source/run_tests.sh"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'copy-tests-to-build-directory
+            (lambda _
+              (copy-recursively "../source/tests" "tests")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (let ((sh (which "sh")))
+                (when tests?
+                  (invoke sh "../source/run_tests.sh"))))))))
     (home-page "https://github.com/vhelin/wla-dx")
     (synopsis "Assemblers for various processors")
     (description "WLA DX is a set of tools to assemble assembly files to
@@ -395,21 +396,23 @@ Supported architectures are:
 (define-public xa
   (package
     (name "xa")
-    (version "2.3.12")
+    (version "2.3.14")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.floodgap.com/retrotech/xa"
                                   "/dists/xa-" version ".tar.gz"))
               (sha256
                (base32
-                "0107zdwc2rzlp26pyx7gns4lqmiyg68nmpgwrg36yrrd04v1bzgq"))))
+                "0bph41aglxl07rnggrir2dl1x97f52hm0bl51d0vklyqvfyvm6qv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f   ; TODO: custom test harness, not sure how it works
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))            ; no "configure" script
-       #:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))))
+     (list
+      #:tests? #f           ; TODO: custom test harness, not sure how it works
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))          ; no "configure" script
+      #:make-flags
+      #~(list (string-append "DESTDIR=" #$output)))) ; no $prefix support
     (native-inputs (list perl))
     (home-page "https://www.floodgap.com/retrotech/xa/")
     (synopsis "Two-pass portable cross-assembler")

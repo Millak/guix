@@ -176,14 +176,14 @@ large and/or frequently changing (network) environment.")
 (define-public bindfs
   (package
     (name "bindfs")
-    (version "1.15.1")
+    (version "1.17.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://bindfs.org/downloads/bindfs-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1av8dj9i1g0105fs5r9srqqsp7yahlhwc0yl8i1szyfdls23bp84"))))
+                "1k1xkyjk8ms11djbhlmykkzfbcids6ls5vpq7rhdnazcladszm3g"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX: The tests have no hope of passing until there is a "nogroup"
@@ -198,7 +198,7 @@ large and/or frequently changing (network) environment.")
        ;; ("which" ,which)
      (list pkg-config))
     (inputs
-     (list fuse))
+     (list fuse-2))
     (home-page "https://bindfs.org")
     (synopsis "Bind mount a directory and alter permission bits")
     (description
@@ -275,7 +275,7 @@ unmaintained---to use the @code{inotify} API instead of the deprecated
     (arguments
      '(#:configure-flags '("--enable-library" "--enable-fuse")))
     (native-inputs (list pkg-config))
-    (inputs (list xz fuse))
+    (inputs (list xz fuse-2))
     (synopsis "Virtual file system that allows browsing of compressed files")
     (description
      "AVFS is a FUSE-based filesystem that allows browsing of compressed
@@ -296,7 +296,7 @@ Example file names:
 
 @code{emacs-dired-hacks} has @code{dired-avfs} module which enables seamless
 integration with @code{avfs}.")
-    (home-page "http://avf.sourceforge.net/")
+    (home-page "https://avf.sourceforge.net")
     (license license:gpl2+)))
 
 (define-public davfs2
@@ -565,7 +565,7 @@ AES-GCM implementation.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse glib libgphoto2))
+     (list fuse-2 glib libgphoto2))
     (synopsis "Virtual file system for libgphoto2 using FUSE")
     (description "GPhotoFS is a FUSE file system module to mount your camera as
 a file system on Linux.  This allow using your camera with any tool able to read
@@ -574,8 +574,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "46a6b9210c927ab46fd1227cb6f641be0b4a7505")
-        (revision "16"))
+  (let ((commit "c8bec83e307f28751c433ba1d3f648429fb5a34c")
+        (revision "17"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -587,7 +587,7 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0jblpwz8mxrx0pa2gc5bwj60qjj2c0zmd8r06f2bhgzs75avpkj3"))))
+          (base32 "0b1avy5mw3r3ppfs3n9cq4zb74yl45nd5l69r6hi27z9q5bc3nv8"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
@@ -596,45 +596,49 @@ from a mounted file system.")
                      "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
                      (string-append "CC=" #$(cc-for-target))
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                     (string-append "PYTEST_CMD="
-                                    #$(this-package-native-input "python-pytest")
-                                    "/bin/pytest")
-                     (string-append "PYTEST_ARGS=-k '"
-                                    ;; These fail (‘invalid argument’) on
-                                    ;; kernels with a previous bcachefs version.
-                                    "not test_format and "
-                                    "not test_fsck and "
-                                    "not test_list and "
-                                    "not test_list_inodes and "
-                                    "not test_list_dirent"
-                                    "'"))
+                     ;; ‘This will be less of an option in the future, as more
+                     ;; code gets rewritten in Rust.’
+                     "NO_RUST=better")
              #:phases
              #~(modify-phases %standard-phases
                  (delete 'configure)    ; no configure script
-                 (add-after 'install 'promote-mount.bcachefs.sh
-                   ;; XXX The (optional) ‘mount.bcachefs’ requires rust:cargo.
-                   ;; This shell alternative does the job well enough for now.
+                 (replace 'check
+                   ;; The test suite is moribund upstream (‘never been useful’),
+                   ;; but let's keep running it as a sanity check until then.
+                   (lambda* (#:key tests? make-flags #:allow-other-keys)
+                     (when tests?
+                       ;; We must manually build the test_helper first.
+                       (apply invoke "make" "tests" make-flags)
+                       (invoke (string-append
+                                #$(this-package-native-input "python-pytest")
+                                "/bin/pytest") "-k"
+                                ;; These fail (‘invalid argument’) on kernels
+                                ;; with a previous bcachefs version.
+                                (string-append "not test_format and "
+                                               "not test_fsck and "
+                                               "not test_list and "
+                                               "not test_list_inodes and "
+                                               "not test_list_dirent")))))
+                 (add-after 'install 'patch-shell-wrappers
+                   ;; These are overcomplicated wrappers that invoke readlink(1)
+                   ;; to exec the appropriate bcachefs(8) subcommand.  We can
+                   ;; simply patch in the latter file name directly, and do.
                    (lambda _
-                     (with-directory-excursion (string-append #$output "/sbin")
-                       (rename-file "mount.bcachefs.sh" "mount.bcachefs")
-                       ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
-                       (wrap-program "mount.bcachefs"
-                         `("PATH" ":" prefix
-                           ,(list (string-append #$output            "/sbin")
-                                  (string-append #$coreutils-minimal "/bin")
-                                  (string-append #$gawk              "/bin")
-                                  (string-append #$util-linux        "/bin"))))))))))
+                     (let ((sbin/ (string-append #$output "/sbin/")))
+                       (substitute* (find-files sbin/ (lambda (file stat)
+                                                        (not (elf-file? file))))
+                         (("SDIR=.*") "")
+                         (("\\$\\{SDIR.*}/") sbin/))))))))
       (native-inputs
-       (append
-         (list pkg-config
-               ;; For tests.
-               python-pytest)
-         (if (member (%current-system) (package-supported-systems valgrind))
-           (list valgrind)
-           '())
-         ;; For generating documentation with rst2man.
-         (list python
-               python-docutils)))
+       (cons* pkg-config
+              ;; For generating documentation with rst2man.
+              python
+              python-docutils
+              ;; For tests.
+              python-pytest
+              (if (member (%current-system) (package-supported-systems valgrind))
+                  (list valgrind)
+                  '())))
       (inputs
        (list eudev
              keyutils
@@ -645,11 +649,7 @@ from a mounted file system.")
              `(,util-linux "lib")
              lz4
              zlib
-             `(,zstd "lib")
-             ;; Only for mount.bcachefs.sh.
-             coreutils-minimal
-             gawk
-             util-linux))
+             `(,zstd "lib")))
       (home-page "https://bcachefs.org/")
       (synopsis "Tools to create and manage bcachefs file systems")
       (description
@@ -673,17 +673,7 @@ performance and other characteristics.")
      (substitute-keyword-arguments (package-arguments bcachefs-tools)
        ((#:make-flags make-flags)
         #~(append #$make-flags
-              (list "LDFLAGS=-static")))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'skip-shared-library
-              (lambda _
-                (substitute* "Makefile"
-                  ;; Building the shared library with ‘-static’ obviously fails…
-                  (("^((all|install):.*)\\blib\\b(.*)" _ prefix suffix)
-                   (string-append prefix suffix "\n"))
-                  ;; …as does installing a now non-existent file.
-                  ((".*\\$\\(INSTALL\\).* lib.*") ""))))))))
+                  (list "LDFLAGS=-static")))))
     (inputs (modify-inputs (package-inputs bcachefs-tools)
               (prepend `(,eudev "static")
                        `(,keyutils "static")
@@ -766,7 +756,7 @@ Extensible File Allocation Table} file systems.  Included are
     (native-inputs
      (list asciidoc docbook-xml libxml2 libxslt pkg-config))
     (inputs
-     (list fuse gnutls))
+     (list fuse-2 gnutls))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -931,7 +921,7 @@ files mistakenly overwritten or destroyed just a few seconds ago.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fuse attr))
+     (list fuse-2 attr))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (delete 'configure))  ; no configure script
@@ -993,7 +983,7 @@ non-determinism in the build process.")
        ("cmocka" ,cmocka)))
     (inputs
      `(("acl" ,acl)
-       ("fuse" ,fuse)
+       ("fuse" ,fuse-2)
        ("openssl" ,openssl)
        ("liburcu" ,liburcu)
        ("libuuid" ,util-linux "lib")
@@ -1022,8 +1012,12 @@ All of this is accomplished without a centralized metadata server.")
        (uri (string-append "mirror://sourceforge/curlftpfs/curlftpfs/" version
                            "/curlftpfs-" version ".tar.gz"))
        (sha256
-        (base32
-         "0n397hmv21jsr1j7zx3m21i7ryscdhkdsyqpvvns12q7qwwlgd2f"))))
+        (base32 "0n397hmv21jsr1j7zx3m21i7ryscdhkdsyqpvvns12q7qwwlgd2f"))
+       (patches
+        (search-patches "curlftpfs-fix-error-closing-file.patch"
+                        "curlftpfs-fix-file-names.patch"
+                        "curlftpfs-fix-memory-leak.patch"
+                        "curlftpfs-fix-no_verify_hostname.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1036,7 +1030,7 @@ All of this is accomplished without a centralized metadata server.")
               (("4426192") "12814800"))
              #t)))))
     (inputs
-     (list curl glib fuse))
+     (list curl glib fuse-2))
     (native-inputs
      (list pkg-config))
     (home-page "https://curlftpfs.sourceforge.net/")
@@ -1164,9 +1158,8 @@ network.  LIBNFS offers three different APIs, for different use :
                    ))))
 
 (define-public apfs-fuse
-  ;; Later versions require FUSE 3.
-  (let ((commit "7b89418e8dc27103d3c4f8fa348086ffcd634c17")
-        (revision "1"))
+  (let ((commit "66b86bd525e8cb90f9012543be89b1f092b75cf3")
+        (revision "2"))
     (package
       (name "apfs-fuse")
       (version (git-version "0.0.0" revision commit))
@@ -1177,14 +1170,11 @@ network.  LIBNFS offers three different APIs, for different use :
                        (recursive? #t) ; for lzfse
                        (commit commit)))
          (sha256
-          (base32
-           "0x2siy3cmnm9wsdfazg3xc8r3kbg73gijmnn1vjw33pp71ckylxr"))
+          (base32 "0f63slyzv8fbgshpzrx2g01x9h73g5yvh5kis4yazl19fjm2b05r"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
        `(#:tests? #f ; No test suite
-         #:configure-flags
-         '("-DUSE_FUSE3=OFF") ; FUSE 3 is not packaged yet.
          #:phases
          (modify-phases %standard-phases
            ;; No 'install' target in CMakeLists.txt
@@ -1198,9 +1188,7 @@ network.  LIBNFS offers three different APIs, for different use :
                  (install-file "apfs-dump" bin)
                  (install-file "apfs-dump-quick" bin)
                  (install-file "apfs-fuse" bin)
-                 (install-file "libapfs.a" lib)
-                 (install-file "../source/README.md" doc)
-                 #t))))))
+                 (install-file "../source/README.md" doc)))))))
       (inputs
        (list bzip2 fuse zlib))
       (synopsis "Read-only FUSE driver for the APFS file system")
@@ -1213,8 +1201,8 @@ APFS.")
 
 (define-public xfstests
   ;; The last release (1.1.0) is from 2011.
-  (let ((revision "1")
-        (commit "bae1d15f6421cbe99b3e2e134c39d50248e7c261"))
+  (let ((revision "2")
+        (commit "87f90a2dae7a4adb7a0a314e27abae9aa1de78fb"))
     (package
       (name "xfstests")
       (version (git-version "1.1.0" revision commit))
@@ -1226,7 +1214,7 @@ APFS.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "01y7dx5sx1xg3dycqlp2b6azclz3xcnx7vdy2rr6zmf210501xd9"))))
+          (base32 "11p690k7h4f00bd14r60xa8sw34x14bh5rfd6x7j8gbkpsgsidli"))))
       (build-system gnu-build-system)
       (arguments
        `(#:phases
@@ -1620,7 +1608,7 @@ On Guix System, you will need to invoke the included shell scripts as
                (("/sbin") "$(EXEC_PREFIX)/sbin")
                (("chown") "true")  ; disallowed in the build environment
                (("strip") "true")) ; breaks cross-compilation
-             ;; These were copied from the fuse package.
+             ;; These were copied from the fuse-2 package.
              (substitute* '("libfuse/lib/mount_util.c"
                             "libfuse/util/mount_util.c")
                (("/bin/(u?)mount" _ maybe-u)
@@ -1698,13 +1686,13 @@ compatible directories.")
 (define-public python-dropbox
   (package
     (name "python-dropbox")
-    (version "11.36.0")
+    (version "11.36.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dropbox" version))
         (sha256
-         (base32 "0iwbi1qdw9qr7isa37yys582am59k80dqrwvm6s0afdwv0ifa343"))
+         (base32 "00650gk8557x3f38nd8a1mdby7v1l8l4l72aq48qpiw6shb3v3fl"))
         (snippet
          '(begin
             (use-modules (guix build utils))
@@ -1782,9 +1770,8 @@ local file system using FUSE.")
     (license license:bsd-3)))
 
 (define-public rewritefs
-  (let ((revision "0")
-        ;; This is the last commit supporting our fuse@2.
-        (commit "31e2810b596028a12e49a08664567755f4b387b2"))
+  (let ((revision "1")
+        (commit "3a56de8b5a2d44968b8bc3885c7d661d46367306"))
     (package
       (name "rewritefs")
       (version (git-version "0.0.0" revision commit))
@@ -1796,24 +1783,27 @@ local file system using FUSE.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0k1aas2bdq2l3a6q3fvmngpakcxiws8qny2w6z7ffngyqxh33fv7"))))
+          (base32 "1w2rik0lhqm3wr68x51zs45gqfx79l7fi4p0sqznlfq7sz5s8xxn"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules ((srfi srfi-26)
-                    ,@%gnu-build-system-modules)
-         #:make-flags
-         (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-         #:test-target "test"
-         #:tests? #f                   ; all require a kernel with FUSE loaded
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (add-after 'install 'install-examples
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (doc (string-append out "/share/doc/" ,name "-" ,version)))
-                 (for-each (cut install-file <> (string-append doc "/examples"))
-                           (find-files "." "^config\\."))))))))
+       (list
+        #:modules
+        '((guix build gnu-build-system)
+          (guix build utils)
+          (srfi srfi-26))
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output))
+        #:test-target "test"
+        #:tests? #f                    ; all require a kernel with FUSE loaded
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ; no configure script
+            (add-after 'install 'install-examples
+              (lambda _
+                (let ((doc (string-append #$output "/share/doc/"
+                                          #$name "-" #$version)))
+                  (for-each (cut install-file <> (string-append doc "/examples"))
+                            (find-files "." "^config\\."))))))))
       (native-inputs
        (list pkg-config))
       (inputs
@@ -1845,7 +1835,7 @@ the XDG directory specification from @file{~/.@var{name}} to
         (base32 "03aw8pw8694jyrzpnbry05rk9718sqw66kiyq878bbb679gl7224"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
-    (inputs (list attr fuse xz zlib `(,zstd "lib")))
+    (inputs (list attr fuse-2 xz zlib `(,zstd "lib")))
     (home-page "https://github.com/vasi/squashfuse")
     (synopsis "Fuse filesystem to mount squashfs archives")
     (description
@@ -1941,7 +1931,7 @@ and rewritable media that wears out (DVD/CD-RW).")
     (native-inputs
      (list automake autoconf libtool pkg-config))
     (inputs
-     (list fuse-3))
+     (list fuse))
     (home-page "https://github.com/containers/fuse-overlayfs")
     (synopsis "FUSE implementation of overlayfs")
     (description "This package provides an implementation of overlay+shiftfs
@@ -2062,7 +2052,7 @@ spend on disk between being written and being deduplicated.")
       boost
       double-conversion
       fmt
-      fuse-3
+      fuse
       gflags
       jemalloc
       libarchive

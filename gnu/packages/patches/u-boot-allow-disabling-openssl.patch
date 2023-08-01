@@ -128,29 +128,28 @@ index 94b7685392..eec599b0ee 100644
  	datai = 0;
  	for (cfgi = 0; cfgi < cfgn; cfgi++) {
  		e = &image_cfg[cfgi];
-@@ -1552,9 +1568,11 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
+@@ -1624,10 +1640,12 @@ static void *image_create_v1(size_t *dataoff, struct image_tool_params *params,
  					      &datai, delay);
  	}
  
 +#if defined(CONFIG_KWB_SECURE)
- 	if (secure_hdr && add_secure_header_v1(params, ptr, payloadsz + headersz,
- 					       headersz, image, secure_hdr))
+ 	if (secure_hdr && add_secure_header_v1(params, ptr + *dataoff, payloadsz,
+ 					       image, headersz, secure_hdr))
  		return NULL;
 +#endif
  
- 	*imagesz = headersz;
+ 	/* Calculate and set the header checksum */
+ 	main_hdr->checksum = image_checksum8(main_hdr, headersz);
  
 --- a/tools/image-host.c
 +++ b/tools/image-host.c
-@@ -14,10 +14,12 @@
+@@ -14,8 +14,10 @@
  #include <image.h>
  #include <version.h>
  
 +#ifdef CONFIG_FIT_PRELOAD
  #include <openssl/pem.h>
  #include <openssl/evp.h>
- 
- #define IMAGE_PRE_LOAD_PATH                             "/image/pre-load/sig"
 +#endif
  
  /**

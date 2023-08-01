@@ -9,7 +9,7 @@
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2022 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2022, 2023 André A. Gomes <andremegafone@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -696,29 +696,31 @@ testing.  It is an extension of the library written by Chris Riesbeck.")
 (define-public sbcl-lisp-unit2
   ;; There is a cyclical dependency between symbol-munger and lisp-unit2.
   ;; See https://github.com/AccelerationNet/symbol-munger/issues/4
-  (package
-    (name "sbcl-lisp-unit2")
-    (version "0.9.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AccelerationNet/lisp-unit2")
-             (commit version)))
-       (file-name (git-file-name "cl-lisp-unit2" version))
-       (sha256
-        (base32 "0dnq0qvbsn7ciknvmwzfjnimlzq1gdkv5xd87agmhxm1cpm1ksz0"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list sbcl-alexandria sbcl-cl-interpol sbcl-iterate
-           sbcl-symbol-munger))
-    (synopsis "Test Framework for Common Lisp")
-    (description
-     "LISP-UNIT2 is a Common Lisp library that supports unit testing in the
+  (let ((commit "b5aa17b298cf2f669f4c0262c471e1ee4ab4699a")
+        (revision "0"))
+    (package
+      (name "sbcl-lisp-unit2")
+      (version (git-version "0.9.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/AccelerationNet/lisp-unit2")
+               (commit commit)))
+         (file-name (git-file-name "cl-lisp-unit2" version))
+         (sha256
+          (base32 "140nn22n1xv3qaash3x6h2h7xmys44s3f42b7bakfhpc4qlx0b69"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria sbcl-cl-interpol sbcl-iterate
+             sbcl-symbol-munger))
+      (synopsis "Test Framework for Common Lisp")
+      (description
+       "LISP-UNIT2 is a Common Lisp library that supports unit testing in the
 style of JUnit for Java.  It is a new version of the lisp-unit library written
 by Chris Riesbeck.")
-    (home-page "https://github.com/AccelerationNet/lisp-unit2")
-    (license license:expat)))
+      (home-page "https://github.com/AccelerationNet/lisp-unit2")
+      (license license:expat))))
 
 (define-public cl-lisp-unit2
   (sbcl-package->cl-source-package sbcl-lisp-unit2))

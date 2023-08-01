@@ -19,7 +19,8 @@
 (define-module (gnu system accounts)
   #:use-module (guix records)
   #:use-module (ice-9 match)
-  #:export (user-account
+  #:export (<user-account>
+            user-account
             user-account?
             user-account-name
             user-account-password

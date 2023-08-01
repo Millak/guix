@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -554,6 +554,12 @@ symmetries written in C.  Spglib can be used to:
                                     (assoc-ref inputs "libxml2")
                                     "/include/libxml2:"
                                     (getenv "CPLUS_INCLUDE_PATH")))))
+         ;; Prevent deleting the leading / in the __init__.py path in the
+         ;; launch script.
+         (add-after 'unpack 'disable-unchroot
+           (lambda _
+             (substitute* "setup.py"
+               (("self\\.unchroot") ""))))
          ;; The setup.py script does not support one of the Python build
          ;; system's default flags, "--single-version-externally-managed".
          (replace 'install
@@ -572,8 +578,7 @@ symmetries written in C.  Spglib can be used to:
            python-pyqt
            glm
            netcdf))
-    (native-inputs
-     (list catch2 python-setuptools))
+    (native-inputs (list catch2))
     (home-page "https://pymol.org")
     (synopsis "Molecular visualization system")
     (description "PyMOL is a capable molecular viewer and renderer.  It can be
@@ -899,9 +904,9 @@ emphasis on quality rather than speed.")
     (inputs (list openblas))
     (native-inputs
      (list gfortran
-           (texlive-updmap.cfg (list texlive-fonts-ec
-                                     texlive-graphics
-                                     texlive-latex-geometry))))
+           (texlive-updmap.cfg
+            (list texlive-epstopdf
+                  texlive-latexmk))))
     (home-page "https://github.com/greglandrum/yaehmop")
     (synopsis "Perform extended Hückel calculations")
     (description "@acronym{YAeHMOP, Yet Another extended Hueckel Molecular

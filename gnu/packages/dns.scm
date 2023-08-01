@@ -513,51 +513,52 @@ the two.")
 (define-public nsd
   (package
     (name "nsd")
-    (version "4.6.1")
+    (version "4.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.nlnetlabs.nl/downloads/nsd/nsd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0ym2fgkjar94y99lyvp93p7jpj33ysprvqd7py28xxn37shs6q1z"))))
+        (base32 "057jxhhyggqhy4swwqlwf1lflc96cfqpm200l1gr3lls557a9b4g"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-pie"             ; fully benefit from ASLR
-             "--enable-ratelimit"
-             "--enable-recvmmsg"
-             "--enable-relro-now"       ; protect GOT and .dtor areas
-             "--disable-radix-tree"
-             (string-append "--with-libevent="
-                            (assoc-ref %build-inputs "libevent"))
-             (string-append "--with-ssl="
-                            (assoc-ref %build-inputs "openssl"))
-             "--with-configdir=/etc"
-             "--with-nsd_conf_file=/etc/nsd/nsd.conf"
-             "--with-logfile=/var/log/nsd.log"
-             "--with-pidfile=/var/db/nsd/nsd.pid"
-             "--with-dbfile=/var/db/nsd/nsd.db"
-             "--with-zonesdir=/etc/nsd"
-             "--with-xfrdfile=/var/db/nsd/xfrd.state"
-             "--with-zonelistfile=/var/db/nsd/zone.list")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-installation-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               ;; The ‘make install’ target tries to create the parent
-               ;; directories of run-time things like ‘pidfile’ above, and
-               ;; useless empty directories like 'configdir'.  Remove such
-               ;; '$(INSTALL)' lines and install the example configuration file
-               ;; in an appropriate location.
-               (substitute* "Makefile.in"
-                 ((".*INSTALL.*\\$\\((config|pid|xfr|db)dir" command)
-                  (string-append "#" command))
-                 (("\\$\\(nsdconfigfile\\)\\.sample" file-name)
-                  (string-append doc "/examples/" file-name)))))))
-       #:tests? #f))                    ; no tests
+     (list
+      #:configure-flags
+      #~(list "--enable-pie"            ; fully benefit from tasty ASLR
+              "--enable-ratelimit"
+              "--enable-recvmmsg"
+              "--enable-relro-now"      ; protect GOT and .dtor areas
+              "--disable-radix-tree"
+              (string-append "--with-libevent="
+                             #$(this-package-input "libevent"))
+              (string-append "--with-ssl="
+                             #$(this-package-input "openssl"))
+              "--with-configdir=/etc"
+              "--with-nsd_conf_file=/etc/nsd/nsd.conf"
+              "--with-logfile=/var/log/nsd.log"
+              "--with-pidfile=/var/db/nsd/nsd.pid"
+              "--with-dbfile=/var/db/nsd/nsd.db"
+              "--with-zonesdir=/etc/nsd"
+              "--with-xfrdfile=/var/db/nsd/xfrd.state"
+              "--with-zonelistfile=/var/db/nsd/zone.list")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-installation-paths
+            (lambda _
+              (let ((doc (string-append #$output "/share/doc/"
+                                        #$name "-" #$version)))
+                ;; The ‘make install’ target tries to create the parent
+                ;; directories of run-time things like ‘pidfile’ above, and
+                ;; useless empty directories like 'configdir'.  Remove such
+                ;; '$(INSTALL)' lines and install the example configuration file
+                ;; in an appropriate location.
+                (substitute* "Makefile.in"
+                  ((".*INSTALL.*\\$\\((config|pid|xfr|db)dir" command)
+                   (string-append "#" command))
+                  (("\\$\\(nsdconfigfile\\)\\.sample" file-name)
+                   (string-append doc "/examples/" file-name)))))))
+      #:tests? #f))                    ; no tests
     (inputs
      (list libevent openssl))
     (home-page "https://www.nlnetlabs.nl/projects/nsd/about/")
@@ -635,14 +636,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.17.0")
+    (version "1.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0h8k5yh49vasyzwkm3n1xsidxr7xybqwkvg4cq6937qxi7brbg6w"))))
+        (base32 "1x55f5aqlzynpy24ryf1rsmdy8m8iyi19n7k03k889g1rk78ah7f"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -677,8 +678,7 @@ BIND and djbdns---whilst using relatively little memory.")
                  (("^PYTHON_SITE_PKG=.*$")
                   (string-append
                    "PYTHON_SITE_PKG="
-                   pyout "/lib/python-" ver "/site-packages\n"))))
-             #t))
+                   pyout "/lib/python-" ver "/site-packages\n"))))))
          (add-before 'check 'fix-missing-nss-for-tests
            ;; Unfortunately, the package's unittests involve some checks
            ;; looking up protocols and services which are not provided
@@ -779,8 +779,7 @@ struct servent *getservbyport(int port, const char *proto) {
                ;; The preload library only affects the unittests.
                (substitute* "Makefile"
                  (("./unittest")
-                  "LD_PRELOAD=/tmp/nss_preload.so ./unittest")))
-             #t)))))
+                  "LD_PRELOAD=/tmp/nss_preload.so ./unittest"))))))))
     (home-page "https://www.unbound.net")
     (synopsis "Validating, recursive, and caching DNS resolver")
     (description
@@ -794,16 +793,16 @@ served by AS112.  Stub and forward zones are supported.")
 (define-public yadifa
   (package
     (name "yadifa")
-    (version "2.5.3")
+    (version "2.6.4")
     (source
-     (let ((build "10333"))
+     (let ((build "10892"))
        (origin
          (method url-fetch)
          (uri
           (string-append "https://www.yadifa.eu/sites/default/files/releases/"
                          "yadifa-" version "-" build ".tar.gz"))
          (sha256
-          (base32 "1mwy6sfnlaslx26f3kpj9alh8i8y8bf1nbnsdd5j04hjsbavd07p")))))
+          (base32 "0wdm0gc01bhd04p3jqxy3y8lgx5v8wlm8saiy35llna5ssi77fyq")))))
     (build-system gnu-build-system)
     (native-inputs
      (list which))
@@ -812,6 +811,12 @@ served by AS112.  Stub and forward zones are supported.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'unhard-code
+           (lambda _
+             (substitute* (list "lib/dnslg/Makefile.in"
+                                "lib/dnsdb/Makefile.in"
+                                "lib/dnscore/Makefile.in")
+               (("/usr/bin/(install)" _ command) command))))
          (add-before 'configure 'omit-example-configurations
            (lambda _
              (substitute* "Makefile.in"
@@ -840,7 +845,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.2.7")
+    (version "3.2.9")
     (source
      (origin
        (method git-fetch)
@@ -849,7 +854,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zrx5ih8wy0l9dka7ql9v32z6z8bxcdsfs1zmjn052xrzb01qjkw"))
+        (base32 "1kxmplngnlpd6j9nbzq1c1z02ipd38ypnppy7frg5crn83phfbxm"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -865,79 +870,77 @@ Extensions} (DNSSEC).")
     (build-system gnu-build-system)
     (outputs (list "out" "doc" "lib" "tools"))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--docdir=" (assoc-ref %outputs "doc")
-                            "/share/" ,name "-" ,version)
-             (string-append "--infodir=" (assoc-ref %outputs "doc")
-                            "/share/info")
-             (string-append "--libdir=" (assoc-ref %outputs "lib") "/lib")
-             "--sysconfdir=/etc"
-             "--localstatedir=/var"
-             "--disable-static"         ; static libraries are built by default
-             "--enable-dnstap"          ; let tools read/write capture files
-             "--enable-fastparser"      ; disabled by default when .git/ exists
-             "--enable-xdp=yes"
-             "--with-module-dnstap=yes") ; detailed query capturing & logging
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'link-missing-libbpf-dependency
-           ;; Linking against -lbpf later would fail to find -lz: libbpf.pc has
-           ;; zlib in its Requires.private (not Requires) field.  Add it here.
-           (lambda _
-             (substitute* "configure.ac"
-               (("enable_xdp=yes" match)
-                (string-append match "\nlibbpf_LIBS=\"$libbpf_LIBS -lz\"")))))
-         (add-before 'bootstrap 'update-parser
-           (lambda _
-             (with-directory-excursion "src"
-               (invoke "sh" "../scripts/update-parser.sh"))))
-         (add-before 'configure 'disable-directory-pre-creation
-           (lambda _
-             ;; Don't install empty directories like ‘/etc’ outside the store.
-             ;; This is needed even when using ‘make config_dir=... install’.
-             (substitute* "src/Makefile.in" (("\\$\\(INSTALL\\) -d") "true"))))
-         (add-after 'build 'build-info
-           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-             (apply invoke "make" "info"
-                    `(,@(if parallel-build?
-                            `("-j" ,(number->string (parallel-job-count)))
-                            '())
-                      ,@make-flags))))
-         (replace 'install
-           (lambda* (#:key make-flags outputs parallel-build? #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version))
-                    (etc (string-append doc "/examples/etc")))
-               (apply invoke "make" "install"
-                      (string-append "config_dir=" etc)
-                      `(,@(if parallel-build?
-                              `("-j" ,(number->string (parallel-job-count)))
-                              '())
-                        ,@make-flags)))))
-         (add-after 'install 'install-info
-           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-             (apply invoke "make" "install-info"
-                    `(,@(if parallel-build?
-                            `("-j" ,(number->string (parallel-job-count)))
-                            '())
-                      ,@make-flags))))
-         (add-after 'install 'break-circular-:lib->:out-reference
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (assoc-ref outputs "lib")))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("(prefix=).*" _ assign)
-                              (string-append assign lib "\n"))))
-                         (find-files lib "\\.pc$")))))
-         (add-after 'install 'split-:tools
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (tools (assoc-ref outputs "tools")))
-               (mkdir-p (string-append tools "/share/man"))
-               (rename-file (string-append out   "/bin")
-                            (string-append tools "/bin"))
-               (rename-file (string-append out   "/share/man/man1")
-                            (string-append tools "/share/man/man1"))))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--docdir=" #$output:doc
+                             "/share/" #$name "-" #$version)
+              (string-append "--infodir=" #$output:doc "/share/info")
+              (string-append "--libdir=" #$output:lib "/lib")
+              "--sysconfdir=/etc"
+              "--localstatedir=/var"
+              "--disable-static"       ; static libraries are built by default
+              "--enable-dnstap"        ; let tools read/write capture files
+              "--enable-fastparser"    ; disabled by default when .git/ exists
+              "--enable-xdp=yes"
+              "--with-module-dnstap=yes") ; detailed query capturing & logging
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'link-missing-libbpf-dependency
+            ;; Linking against -lbpf later would fail to find -lz: libbpf.pc has
+            ;; zlib in its Requires.private (not Requires) field.  Add it here.
+            (lambda _
+              (substitute* "configure.ac"
+                (("enable_xdp=yes" match)
+                 (string-append match "\nlibbpf_LIBS=\"$libbpf_LIBS -lz\"")))))
+          (add-before 'bootstrap 'update-parser
+            (lambda _
+              (with-directory-excursion "src"
+                (invoke "sh" "../scripts/update-parser.sh"))))
+          (add-before 'configure 'disable-directory-pre-creation
+            (lambda _
+              ;; Don't install empty directories like ‘/etc’ outside the store.
+              ;; This is needed even when using ‘make config_dir=... install’.
+              (substitute* "src/Makefile.in" (("\\$\\(INSTALL\\) -d") "true"))))
+          (add-after 'build 'build-info
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make" "info"
+                     `(,@(if parallel-build?
+                             `("-j" ,(number->string (parallel-job-count)))
+                             '())
+                       ,@make-flags))))
+          (replace 'install
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (let* ((doc (string-append #$output "/share/doc/"
+                                         #$name "-" #$version))
+                     (etc (string-append doc "/examples/etc")))
+                (apply invoke "make" "install"
+                       (string-append "config_dir=" etc)
+                       `(,@(if parallel-build?
+                               `("-j" ,(number->string (parallel-job-count)))
+                               '())
+                         ,@make-flags)))))
+          (add-after 'install 'install-info
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make" "install-info"
+                     `(,@(if parallel-build?
+                             `("-j" ,(number->string (parallel-job-count)))
+                             '())
+                       ,@make-flags))))
+          (add-after 'install 'break-circular-:lib->:out-reference
+            (lambda _
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("(prefix=).*" _ assign)
+                             (string-append assign #$output:lib "\n"))))
+                        (find-files #$output:lib "\\.pc$"))))
+          (add-after 'install 'split:tools
+            (lambda _
+              (define (move source target file)
+                (mkdir-p (dirname (string-append target "/" file)))
+                (rename-file (string-append source "/" file)
+                             (string-append target "/" file)))
+              (move #$output #$output:tools "bin")
+              (move #$output #$output:tools "share/man/man1"))))))
     (native-inputs
      (list autoconf
            automake

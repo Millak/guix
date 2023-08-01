@@ -3486,7 +3486,7 @@ the following features:
                            texinfo
                            texi2html
                            (texlive-updmap.cfg (list texlive-epsf
-                                                     texlive-tex-texinfo))
+                                                     texlive-texinfo))
                            imagemagick))
       (propagated-inputs (list libx11 libxpm libjpeg-turbo))
       (home-page "http://xforms-toolkit.org/")

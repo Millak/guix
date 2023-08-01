@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
 ;;; Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2019, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -60,6 +60,7 @@
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -260,6 +261,39 @@ student to write code, the program offers an intuitive interface with
 interactive dialogs to guide them.")
    (license license:gpl3+)
    (home-page "https://www.gnu.org/software/c-graph/")))
+
+(define-public calc
+  (package
+    (name "calc")
+    (version "2.14.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "1swalx3cxjcx4aprnchb2jf0wig89ggvxjzzzx488r115w58lxnr"))))
+    (build-system gnu-build-system)
+    (inputs (list readline))
+    (native-inputs (list util-linux)) ; for col
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-before 'build 'patch-makefile
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("^PREFIX= /usr/local")
+                               (string-append "PREFIX=" #$output))
+                              (("=\\s?/usr")
+                               "= ${PREFIX}")))))))
+    (synopsis "Arbitrary precision console calculator")
+    (description
+     "Calc is an arbitrary precision arithmetic system that uses a C-like
+language.  It can be used as a calculator, an algorithm prototyper and as
+a mathematical research tool, and it comes with built in mathematical and
+programmatic functions.")
+    (home-page "http://www.isthe.com/chongo/tech/comp/calc/")
+    (license license:lgpl2.1)))
 
 (define-public coda
   (package
@@ -814,7 +848,7 @@ LP/MIP solver is included in the package.")
      (list (@ (gnu packages base) which))) ; for the tests
     (inputs
      (list glpk gmp))
-    (home-page "http://www.4ti2.de/")
+    (home-page "https://4ti2.github.io")
     (synopsis "Mathematical tool suite for problems on linear spaces")
     (description
      "4ti2 implements algorithms for solving algebraic, geometric and
@@ -829,29 +863,30 @@ integer programming problems and computes Markov bases for statistics.")
     (version "0.94m")
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/cddlib/cddlib")
-            (commit version)))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32
-        "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cddlib/cddlib")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
     (build-system gnu-build-system)
     (inputs
      (list gmp))
-    (native-inputs (list autoconf
-                         automake
-                         libtool
-                         texlive-amsfonts
-                         texlive-dvips-l3backend
-                         texlive-graphics
-                         texlive-latex-l3backend
-                         texlive-tiny))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           (texlive-updmap.cfg
+            (list texlive-amsfonts
+                  texlive-graphics
+                  texlive-l3backend
+                  texlive-l3backend))))
     (arguments
      (list #:configure-flags
-             #~(list (string-append "--docdir=" #$output
-                                    "/share/doc/" #$name "-" #$version))))
+           #~(list (string-append "--docdir=" #$output
+                                  "/share/doc/" #$name "-" #$version))))
     (home-page "https://www.inf.ethz.ch/personal/fukudak/cdd_home/index.html")
     (synopsis "Library for convex hulls and extreme rays of polyhedra")
     (description
@@ -973,7 +1008,7 @@ halfspaces) or by their double description with both representations.")
 (define-public arpack-ng
   (package
     (name "arpack-ng")
-    (version "3.8.0")
+    (version "3.9.0")
     (home-page "https://github.com/opencollab/arpack-ng")
     (source (origin
               (method git-fetch)
@@ -981,10 +1016,11 @@ halfspaces) or by their double description with both representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l7as5z6xvbxly8alam9s4kws70952qq35a6vkljzayi4b9gbklx"))))
-    (build-system gnu-build-system)
+                "09smxilyn8v9xs3kpx3nlj2s7ql3v8z40mpc09kccbb6smyd35iv"))
+              (patches (search-patches "arpack-ng-propagate-rng-state.patch"))))
+    (build-system cmake-build-system)
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list pkg-config))
     (inputs
      (list eigen lapack gfortran))
     (synopsis "Fortran subroutines for solving eigenvalue problems")
@@ -998,16 +1034,16 @@ large scale eigenvalue problems.")
   (package (inherit arpack-ng)
     (name "arpack-ng-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ,@(package-inputs arpack-ng)))
+     (modify-inputs (package-inputs arpack-ng)
+       (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments arpack-ng)
-       ((#:configure-flags _ '())
-        ''("--enable-mpi"))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'mpi-setup
-             ,%openmpi-setup)))))
+       ((#:configure-flags _ #~())
+        #~'("-DMPI=ON"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              #$%openmpi-setup)))))
     (synopsis "Fortran subroutines for solving eigenvalue problems with MPI")))
 
 (define-public lapack
@@ -1236,7 +1272,7 @@ in the terminal or with an external viewer.")
         (base32 "1kzmj4yyxvlxqzqbrw6sx6dnvhj1zzqnciyb8ryzy6mdrb3pj4lk"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config texlive-tiny))
+     (list pkg-config (texlive-updmap.cfg)))
     (inputs
      (list cairo gd lua pango readline))
     (arguments
@@ -1946,7 +1982,7 @@ the resulting text.")
     ;; FIXME: Even though the fonts are available dvips complains:
     ;; "Font cmmi10 not found; characters will be left blank."
     (native-inputs
-     `(("texlive" ,texlive-tiny)
+     `(("texlive" ,(texlive-updmap.cfg))
        ("ghostscript" ,ghostscript)
        ("doxygen" ,doxygen)))
     (home-page "https://itpp.sourceforge.net")
@@ -4491,14 +4527,14 @@ full text searching.")
 (define-public armadillo
   (package
     (name "armadillo")
-    (version "9.100.5")
+    (version "12.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/arma/armadillo-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ka1vd9fcmvp12qkcm4888dkfqwnalvv00x04wy29f3nx3qwczby"))))
+                "15zkvjbdxiiazhvh0g6y0ig9pgc4rvwnzplmnkx9dffz4xfn69w1"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f))          ; no test target
     (inputs
@@ -5776,49 +5812,44 @@ set.")
            python
            python-breathe
            python-sphinx
-           (texlive-updmap.cfg (list texlive-adjustbox
-                                     texlive-alphalph
-                                     texlive-amsfonts
-                                     texlive-bibtex
-                                     texlive-capt-of
-                                     texlive-caption
-                                     texlive-cm
-                                     texlive-courier
-                                     texlive-enumitem
-                                     texlive-etoolbox
-                                     texlive-fancyhdr
-                                     texlive-fancyvrb
-                                     texlive-helvetic
-                                     texlive-jknappen
-                                     texlive-sectsty
-                                     texlive-tex-gyre
-                                     texlive-wasy
-                                     texlive-xcolor
-                                     texlive-xypic
-                                     texlive-generic-listofitems
-                                     texlive-latex-cmap
-                                     texlive-latex-colortbl
-                                     texlive-latex-etoc
-                                     texlive-latex-float
-                                     texlive-latex-fncychap
-                                     texlive-latex-framed
-                                     texlive-latex-geometry
-                                     texlive-latex-hanging
-                                     texlive-hyperref
-                                     texlive-latex-multirow
-                                     texlive-latex-natbib
-                                     texlive-latex-needspace
-                                     texlive-latex-newunicodechar
-                                     texlive-latex-parskip
-                                     texlive-latex-stackengine
-                                     texlive-latex-tabulary
-                                     texlive-latex-tocloft
-                                     texlive-latex-upquote
-                                     texlive-latex-varwidth
-                                     texlive-titlesec
-                                     texlive-ulem
-                                     texlive-wasysym
-                                     texlive-wrapfig))))
+           (texlive-updmap.cfg
+            (list texlive-adjustbox
+                  texlive-alphalph
+                  texlive-capt-of
+                  texlive-caption
+                  texlive-cmap
+                  texlive-courier
+                  texlive-enumitem
+                  texlive-etoc
+                  texlive-etoolbox
+                  texlive-fancyvrb
+                  texlive-float
+                  texlive-fncychap
+                  texlive-framed
+                  texlive-hanging
+                  texlive-helvetic
+                  texlive-jknapltx
+                  texlive-latexmk
+                  texlive-listofitems
+                  texlive-multirow
+                  texlive-natbib
+                  texlive-needspace
+                  texlive-newunicodechar
+                  texlive-parskip
+                  texlive-sectsty
+                  texlive-stackengine
+                  texlive-tabulary
+                  texlive-tex-gyre
+                  texlive-titlesec
+                  texlive-tocloft
+                  texlive-ulem
+                  texlive-upquote
+                  texlive-varwidth
+                  texlive-wasy
+                  texlive-wasysym
+                  texlive-wrapfig
+                  texlive-xcolor
+                  texlive-xypic))))
     (inputs
      (list openblas lapack))
     (arguments
@@ -5935,45 +5966,45 @@ supports compressed MAT files, as well as newer (version 7.3) MAT files.")
 (define-public vc
   (package
     (name "vc")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
-      (origin (method url-fetch)
-              (uri (string-append "https://github.com/VcDevel/Vc/releases/"
-                                  "download/" version "/Vc-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0lirdqzcxys9walz04bllsphydynk7973aimd5k1h1qbwi8z3lsh"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/VcDevel/Vc/releases/"
+                           "download/" version "/Vc-" version ".tar.gz"))
+       (sha256
+        (base32 "0zq37r8yisd4dwlb024l10wk2yq9kisa4xm79ia1ggrz7w2s13lq"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       '("-DBUILD_TESTING=ON"
-         ;; By default, Vc will optimize for the CPU of the build machine.
-         ;; Setting this to "none" makes it create portable binaries.  See
-         ;; "cmake/OptimizeForArchitecture.cmake".
-         "-DTARGET_ARCHITECTURE=none")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'copy-testdata
-                    (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                      (let ((testdata (assoc-ref (or native-inputs inputs)
-                                                 "testdata")))
-                        (copy-recursively testdata "tests/testdata")
-                        #t))))))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_TESTING=ON"
+              ;; By default, Vc will optimize for the CPU of the build machine.
+              ;; Setting this to "none" makes it create portable binaries.  See
+              ;; "cmake/OptimizeForArchitecture.cmake".
+              "-DTARGET_ARCHITECTURE=none")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-testdata
+            (lambda _
+              (copy-recursively #$(this-package-native-input "testdata")
+                                "tests/testdata"))))))
     (native-inputs
      `(("virtest" ,virtest)
 
        ;; This is a submodule in the git project, but not part of the
        ;; released sources.  See the git branch for the commit to take.
-       ("testdata" ,(let ((commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3"))
-                      (origin
-                        (method git-fetch)
-                        (uri (git-reference
-                              (url "https://github.com/VcDevel/vc-testdata")
-                              (commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3")))
-                        (file-name (git-file-name "vc-testdata"
-                                                  (string-take commit 7)))
-                        (sha256
-                         (base32
-                          "1hkhqib03qlcq412ym2dciynfxcdr2ygqhnplz4l1vissr1wnqn2")))))))
+       ("testdata"
+        ,(let ((commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/VcDevel/vc-testdata")
+                   (commit "9ada1f34d6a41f1b5553d6223f277eae72c039d3")))
+             (file-name (git-file-name "vc-testdata" (string-take commit 7)))
+             (sha256
+              (base32
+               "1hkhqib03qlcq412ym2dciynfxcdr2ygqhnplz4l1vissr1wnqn2")))))))
     (synopsis "SIMD vector classes for C++")
     (description "Vc provides portable, zero-overhead C++ types for explicitly
 data-parallel programming.  It is a library designed to ease explicit
@@ -6132,7 +6163,7 @@ find_package(louvain_communities)")
    (inputs (list btor2tools
                  boost cryptominisat louvain-community sqlite))
    (native-inputs (list googletest pkg-config python-wrapper))
-   (home-page "http://boolector.github.io/")
+   (home-page "https://boolector.github.io")
    (synopsis "Bitvector-based theory solver")
    (description "Boolector is a @acronym{SMT, satisfiability modulo theories}
 solver for the theories of fixed-size bit-vectors, arrays and uninterpreted
@@ -7685,7 +7716,7 @@ optimized algorithms and implementation.")
     (version "1.9.9")
     (source (origin
              (method url-fetch)
-             (uri (string-append "http://fmv.jku.at/aiger/aiger-"
+             (uri (string-append "https://fmv.jku.at/aiger/aiger-"
                                  version ".tar.gz"))
              (sha256
                (base32
@@ -7724,7 +7755,7 @@ optimized algorithms and implementation.")
                      (for-each (lambda (f) (install-file f incl))
                                (find-files "." "\\.h$"))))))))
     (inputs (list gzip))
-    (home-page "http://fmv.jku.at/aiger")
+    (home-page "https://fmv.jku.at/aiger")
     (synopsis "Utilities for And-Inverter Graphs")
     (description "AIGER is a format, library and set of utilities for
 @acronym{AIG, And-Inverter Graphs}s.  The focus is on conversion utilities and a
@@ -7756,7 +7787,7 @@ generic reader and writer API.")
                 (lambda* (#:key tests? #:allow-other-keys)
                   (when tests?
                     (invoke "sh" "test/runtests.sh")))))))
-   (home-page "http://boolector.github.io/")
+   (home-page "https://boolector.github.io")
    (synopsis "Parser for BTOR2 format")
    (description "This package provides a parser for the BTOR2 format used by
 Boolector.")
@@ -8174,6 +8205,8 @@ of C, Java, or Ada programs.")
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; no test target in Makefile
+       #:configure-flags
+       (list "--enable-verbosemake")    ; to aid debugging
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'export-shell
@@ -8181,7 +8214,7 @@ of C, Java, or Ada programs.")
              (setenv "CONFIG_SHELL"
                      (search-input-file inputs "/bin/sh")))))))
     (inputs
-     (list gmp))
+     (list gmp zlib))
     (propagated-inputs
      (list ocaml-biniou
            ocaml-easy-format

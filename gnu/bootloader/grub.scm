@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Stefan <stefan-guix@vodafonemail.de>
@@ -404,17 +404,23 @@ when booting a root file system on a Btrfs subvolume."
                     #$linux (string-join (list #$@arguments))
                     #$initrd)))
        (multiboot-kernel
-        (let ((kernel (menu-entry-multiboot-kernel entry))
-              (arguments (menu-entry-multiboot-arguments entry))
-              (modules (menu-entry-multiboot-modules entry))
-              (root-index 1))            ; XXX EFI will need root-index 2
+        (let* ((kernel (menu-entry-multiboot-kernel entry))
+               (arguments (menu-entry-multiboot-arguments entry))
+               ;; Choose between device names as understood by Mach's built-in
+               ;; IDE driver ("hdX") and those understood by rumpdisk ("wdX"
+               ;; in the "noide" case).
+               (disk (if (member "noide" arguments) "w" "h"))
+               (modules (menu-entry-multiboot-modules entry))
+               (root-index 1))          ; XXX EFI will need root-index 2
           #~(format port "
 menuentry ~s {
-  multiboot ~a root=device:hd0s~a~a~a
+  multiboot ~a root=part:~a:device:~ad0~a~a
 }~%"
                     #$label
                     #$kernel
-                    #$root-index (string-join (list #$@arguments) " " 'prefix)
+                    #$root-index
+                    #$disk
+                    (string-join (list #$@arguments) " " 'prefix)
                     (string-join (map string-join '#$modules)
                                  "\n  module " 'prefix))))
        (chain-loader

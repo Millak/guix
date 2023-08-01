@@ -2022,6 +2022,29 @@ automatically enabled and disabled on hotplug.  Kanshi can be used with
 Wayland compositors supporting the wlr-output-management protocol.")
     (license license:expat))) ; MIT license
 
+(define-public wdisplays
+  (package
+    (name "wdisplays")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artizirk/wdisplays.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06ydcmfdics2qqjb14p767xs8khd86nancdd9z8j11h2gpvwznvn"))))
+    (build-system meson-build-system)
+    (inputs (list gtk+ libepoxy wayland))
+    (native-inputs (list `(,glib "bin") pkg-config))
+    (home-page "https://github.com/artizirk/wdisplays")
+    (synopsis "Configuring displays in Wayland compositors")
+    (description "@command{wdisplays} is a graphical application for
+configuring displays in Wayland compositors that implements the
+wlr-output-management-unstable-v1 protocol.")
+    (license license:gpl3+)))
+
 (define-public stumpwm
   (package
     (name "stumpwm")
@@ -2815,7 +2838,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "2.1.2")
+    (version "2.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2824,11 +2847,11 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09ky8wili3ym8qi4dasckdcdcvn4g6ak08dg0yccnwmnlwxiyps6"))))
+                "0yhn77hdy7c80hd6r8nmvs206pmp76bx4zr94imfvgs8fh5gb8cy"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-Dxwayland=true")
+      #:configure-flags #~(list "-Dxwayland=true" "-Dman-pages=true")
       ;; XXX: Running cagebreak tests need more tools, such as: clang-format,
       ;; shellcheck, git, gnupg ...
       #:tests? #f
@@ -2839,7 +2862,7 @@ shows a notification for the user on the screen.")
               (substitute* '("cagebreak.c" "meson.build")
                 (("/etc/") (string-append #$output "/etc/"))
                 (("/usr/share/") (string-append #$output "/usr/share/"))))))))
-    (native-inputs (list pandoc pkg-config))
+    (native-inputs (list pkg-config scdoc))
     (inputs (list libevdev pango wlroots))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
@@ -2876,7 +2899,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.6.3")
+    (version "0.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2885,7 +2908,7 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zbgj8r8ppvqnz2imh6f825f2lvsqpiqfa0r5g5r4nsvadiipivp"))))
+                "00ajr7s8qywdfa9vhlfc02p1wwdcqaaa09pm1im9w6mrvb904lzh"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))

@@ -379,22 +379,16 @@ graphs in Graphviz's DOT language, written in pure Python.")
                         ;; (see:
                         ;; https://github.com/kjellmf/dot2tex/issues/94).
                         "-k" "not test_semicolon")))))))
-    (native-inputs (list python-pytest))
+    (native-inputs
+     (list python-pytest
+           (texlive-updmap.cfg
+            (list texlive-pgf
+                  texlive-preview
+                  texlive-pstricks
+                  texlive-xcolor
+                  texlive-xkeyval))))
     (inputs (list graphviz))
-    (propagated-inputs
-     (list python-pyparsing
-           ;; These TeX dependencies are propagated to make it easier to build
-           ;; the resulting generated TeX files, which \usepackage them.
-           texlive-bin
-           texlive-amsmath
-           texlive-graphics
-           texlive-latex-geometry
-           texlive-latex-base
-           texlive-latex-preview
-           texlive-latex-xkeyval
-           texlive-pgf
-           texlive-pstricks
-           texlive-xcolor))
+    (propagated-inputs (list python-pyparsing))
     (home-page "https://github.com/kjellmf/dot2tex")
     (synopsis "Graphviz to LaTeX converter")
     (description

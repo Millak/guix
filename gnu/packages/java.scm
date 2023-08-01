@@ -884,6 +884,18 @@ new Date();"))
 
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-aarch64?)
+               `((add-after 'unpack 'patch-for-aarch64
+                   (lambda _
+                     (substitute* "hotspot/src/cpu/aarch64/vm/interp_masm_aarch64.hpp"
+                       ;; This line is duplicated, so remove both occurrences,
+                       ;; then add back one occurrence by substituting a
+                       ;; comment that occurs once.
+                       (("using MacroAssembler::call_VM_leaf_base;") "")
+                       (("Interpreter specific version of call_VM_base")
+                        "Interpreter specific version of call_VM_base
+  using MacroAssembler::call_VM_leaf_base;")))))
+               '())
          (add-after 'patch-source-shebangs 'fix-java-shebangs
            (lambda _
              ;; This file was "fixed" by patch-source-shebangs, but it requires
@@ -1553,6 +1565,15 @@ blacklisted.certs.pem"
                (base32
                 "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk17)
+       ((#:configure-flags configure-flags)
+        #~(append #$configure-flags
+                  (list "--with-jvm-features=shenandoahgc"
+                        "--enable-cds=yes"
+                        "--with-vendor-name=JetBrains s.r.o"
+                        "--with-vendor-url=https://www.jetbrains.com/"
+                        "--with-vendor-bug-url=https://youtrack.jetbrains.com/issues/JBR")))))
     (synopsis "JetBrains Java Runtime")
     (description "This package provides a Java runtime environment for
 and Java development kit.  It supports enhanced class redefinition (DCEVM),

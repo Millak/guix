@@ -39,8 +39,10 @@
 (define-module (guix licenses)
   #:use-module (srfi srfi-9)
   #:export (license? license-name license-uri license-comment
+            afl2.1
             agpl1 agpl3 agpl3+
             apsl2
+            arphic-1999
             asl1.1 asl2.0
             boost1.0
             bsd-0 bsd-1 bsd-2 bsd-3 bsd-4
@@ -171,6 +173,11 @@ cases, reduces to #t at macro-expansion time."
 
 (begin-license-definitions license?
 
+(define afl2.1
+  (license "AFL 2.1"
+           "https://spdx.org/licenses/AFL-2.1.html"
+           "https://www.gnu.org/licenses/license-list#AcademicFreeLicense"))
+
 (define agpl1
   (license "AGPL 1"
            "https://gnu.org/licenses/agpl.html"
@@ -190,6 +197,14 @@ cases, reduces to #t at macro-expansion time."
   (license "APSL 2.0"
            "https://directory.fsf.org/wiki/License:APSL-2.0"
            "https://www.gnu.org/licenses/license-list.html#apsl2"))
+
+;; This is a copyleft free software license, incompatible with the GPL.  Its
+;; normal use is for fonts, and in that use, the incompatibility does not
+;; cause a problem.
+(define arphic-1999
+  (license "Arphic Public License"
+           "https://directory.fsf.org/wiki/License:Arphic-PL"
+           "https://www.gnu.org/licenses/license-list.html#Arphic"))
 
 (define asl1.1
   (license "ASL 1.1"

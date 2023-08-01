@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -105,7 +105,7 @@ Return the value associated with OPTION, or #f on failure."
 
   ;; TODO: Set the 'gnu.translator' extended attribute for passive translator
   ;; settings?
-  )
+  (mkdir-p (scope "servers/bus/pci")))
 
 (define (passive-translator-xattr? file-name)
   "Return true if FILE-NAME has an extended @code{gnu.translator} attribute
@@ -183,7 +183,8 @@ set."
        (mkdir-p dir))))
 
   (define servers
-    '(("servers/crash-dump-core" ("/hurd/crash" "--dump-core"))
+    '(("servers/bus/pci"         ("/hurd/pci-arbiter"))
+      ("servers/crash-dump-core" ("/hurd/crash" "--dump-core"))
       ("servers/crash-kill"      ("/hurd/crash" "--kill"))
       ("servers/crash-suspend"   ("/hurd/crash" "--suspend"))
       ("servers/password"        ("/hurd/password"))
@@ -213,6 +214,15 @@ set."
       ;; 'fd_to_filename' in libc expects it.
       ("dev/fd"      ("/hurd/magic"    "--directory" "fd")  #o555)
 
+      ("dev/rumpdisk" ("/hurd/rumpdisk")                    #o660)
+      ("dev/netdde"  ("/hurd/netdde")                       #o660)
+      ("dev/eth0"    ("/hurd/devnode" "--master-device=/dev/net"
+                      "eth0")
+                                                            #o660)
+      ("dev/eth1"    ("/hurd/devnode" "--master-device=/dev/net"
+                      "eth1")
+                                                            #o660)
+
       ;; Create a number of ttys; syslogd writes to tty12 by default.
       ;; FIXME: Creating /dev/tty12 leads the console client to switch to
       ;; tty12 when syslogd starts, which is confusing for users.  Thus, do
@@ -236,7 +246,22 @@ set."
                            ("/hurd/term" ,(string-append "/dev/ttyp" n)
                             "pty-slave" ,(string-append "/dev/ptyp" n))
                            #o666))))
-                    (iota 10 0))))
+                    (iota 10 0))
+      ,@(append-map (lambda (n)
+                      (let* ((n (number->string n))
+                             (drive (string-append "dev/wd" n))
+                             (disk (string-append "@/dev/disk:wd" n)))
+                        `((,drive ("/hurd/storeio" ,disk) #o600)
+                          ,@(map (lambda (p)
+                                   (let ((p (number->string p)))
+                                     `(,(string-append drive "s" p)
+                                       ("/hurd/storeio"
+                                        "--store-type=typed"
+                                        ,(string-append
+                                          "part:" p ":device:" disk))
+                                       #o660)))
+                                 (iota 4 1)))))
+                    (iota 4 0))))
 
   (for-each scope-set-translator servers)
   (mkdir* "dev/vcs/1")
@@ -249,6 +274,10 @@ set."
   (false-if-EEXIST (symlink "/dev/fd/1" (scope "dev/stdout")))
   (false-if-EEXIST (symlink "/dev/fd/2" (scope "dev/stderr")))
   (false-if-EEXIST (symlink "crash-dump-core" (scope "servers/crash")))
+  (false-if-EEXIST (symlink "/dev/rumpdisk" (scope "dev/disk")))
+  (false-if-EEXIST (symlink "/dev/netdde" (scope "dev/net")))
+  (false-if-EEXIST (symlink "/servers/socket/2" (scope "servers/socket/inet")))
+  (false-if-EEXIST (symlink "/servers/socket/26" (scope "servers/socket/inet6")))
 
   ;; Make sure /etc/mtab is a symlink to /proc/mounts.
   (false-if-exception (delete-file (scope "etc/mtab")))

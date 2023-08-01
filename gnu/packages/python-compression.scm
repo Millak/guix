@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
@@ -562,18 +562,40 @@ provided.")
 (define-public python-pyzstd
   (package
     (name "python-pyzstd")
-    (version "0.15.3")
+    (version "0.15.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyzstd" version))
        (sha256
-        (base32
-         "0wkli2i4my79l43b996bdga0fac8s8nfd1zjyzl46lwmsfsxlkmc"))))
+        (base32 "1iycfmif15v1jhv0gsza1hyd1hn3sz0vn9s1y79abzv8axndxzfb"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove a bundled copy of the zstd sources.
+           (delete-file-recursively "zstd")))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--dynamic-link-zstd")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            ;; The python-build-system's phase doesn't honour configure-flags.
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "python" "./setup.py" "build"
+                     configure-flags)))
+          (replace 'check
+            ;; The python-build-system's phase doesn't honour configure-flags.
+            (lambda* (#:key tests? test-target configure-flags
+                      #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" "./setup.py" test-target
+                       configure-flags)))))))
+    (inputs (list `(,zstd "lib")))
     (home-page "https://github.com/animalize/pyzstd")
     (synopsis "Zstandard bindings for Python")
-    (description "This package provides Python bindings to the
-Zstandard (zstd)
+    (description "This package provides Python bindings to the Zstandard (zstd)
 compression library.  The API is similar to Python's bz2/lzma/zlib module.")
     (license license:bsd-3)))

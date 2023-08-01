@@ -514,14 +514,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.23.3")
+    (version "3.23.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "1dh7gqhzv03a6j1kbkiaksy9a752k90xwqi5x0hqvn5ilac0l9p4"))
+                "1j6bjn4zplxl7w15xrc1v5l3p9a0x0345756ahvgq8mi97bmx3pn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -860,9 +860,9 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
   (package
     (name "epson-inkjet-printer-escpr")
     (version "1.7.24")
-    ;; XXX: This currently works.  But it will break as soon as a newer
-    ;; version is available since the URLs for older versions are not
-    ;; preserved.  An alternative source will be added as soon as
+    ;; XXX: This currently works.  But it will break as soon as a newer version
+    ;; is available since the URLs for older versions are not preserved.  Since
+    ;; 1.8.0, source tarballs have been discontinued and only a ‘source RPM’ is
     ;; available.
     (source
      (origin

@@ -16,6 +16,8 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,6 +125,16 @@ Type1, CID, CFF, Windows FON/FNT, X11 PCF, and others.  It supports high-speed
 anti-aliased glyph bitmap generation with 256 gray levels.")
     (license license:freetype)          ; some files have other licenses
     (home-page "https://freetype.org/")))
+
+;; TODO: Make this change directly in freetype in the next large rebuild cycle
+;; and remove this package.
+(define-public freetype-with-brotli
+  (package
+    (inherit freetype)
+    (name "freetype-with-brotli")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs freetype)
+       (prepend brotli)))))
 
 (define-public opentype-sanitizer
   (package
@@ -415,13 +427,13 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
 (define-public python-compreffor
   (package
     (name "python-compreffor")
-    (version "0.5.2")
+    (version "0.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "compreffor" version))
        (sha256
-        (base32 "0r6vlxrm73j719f5q3n6sy737p2424n7qam52am83p55j0fb9h5f"))))
+        (base32 "05gpszc8xh6wn3mdra05d6yz6ns624y67m9xs4vv8gh68m0aasrh"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -436,8 +448,8 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
                          python-setuptools-scm))
     (propagated-inputs (list python-fonttools-minimal))
     (home-page "https://github.com/googlefonts/compreffor")
-    (synopsis "Compact Font Format (CFF) subroutinizer for fontTools")
-    (description "This package provides a Compact Font Format (CFF)
+    (synopsis "@acronym{CFF, Compact Font Format} subroutinizer for fontTools")
+    (description "This package provides a @acronym{CFF, Compact Font Format}
 subroutinizer for fontTools.")
     (license license:asl2.0)))
 
@@ -1358,6 +1370,25 @@ applications should be.")
     (list python python-fonttools-minimal))
    (inputs
     (list freetype))
+   (arguments
+    (if (system-hurd?)
+        (list
+         #:phases
+         #~(modify-phases %standard-phases
+             (replace 'check
+               ;; cmake-build-system ignores #:make-flags for make check
+               (lambda* (#:key test-target tests? parallel-tests?
+                         #:allow-other-keys)
+                 (if tests?
+                     (let ((jobs (if parallel-tests?
+                                     (number->string (parallel-job-count))
+                                     "1")))
+                       (invoke "make"
+                               (string-append
+                                "ARGS=-j " jobs " --exclude-regex ^awamicmp3$")
+                               test-target))
+                     (format #t "test suite not run~%"))))))
+        '()))
    (synopsis "Reimplementation of the SIL Graphite text processing engine")
    (description
     "Graphite2 is a reimplementation of the SIL Graphite text processing
@@ -1503,37 +1534,65 @@ definitions.")
              ("python"          ,python)
              ("zlib"            ,zlib)))
    (arguments
-    '(#:configure-flags '(;; TODO: Provide GTK+ for the Wayland-friendly GDK
-                          ;; backend, instead of the legacy X11 backend.
-                          ;; Currently it introduces a circular dependency.
-                          "-DENABLE_X11=ON")
+    (list
+     #:configure-flags #~'( ;; TODO: Provide GTK+ for the Wayland-friendly GDK
+                           ;; backend, instead of the legacy X11 backend.
+                           ;; Currently it introduces a circular dependency.
+                           "-DENABLE_X11=ON")
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'do-not-override-RPATH
-          (lambda _
-            ;; Do not attempt to set a default RPATH, as our ld-wrapper
-            ;; already does the right thing.
-            (substitute* "CMakeLists.txt"
-              (("^set_default_rpath\\(\\)")
-               ""))
-            #t))
-        (add-after 'install 'set-library-path
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out"))
-                  (potrace (dirname
-                            (search-input-file inputs "bin/potrace"))))
-              (wrap-program (string-append out "/bin/fontforge")
-                ;; Fontforge dynamically opens libraries.
-                `("LD_LIBRARY_PATH" ":" prefix
-                  ,(map (lambda (input)
-                          (string-append (assoc-ref inputs input)
-                                         "/lib"))
-                        '("libtiff" "libjpeg" "libpng" "libungif"
-                          "libxml2" "zlib" "libspiro" "freetype"
-                          "pango" "cairo" "fontconfig")))
-                ;; Checks for potrace program at runtime
-                `("PATH" ":" prefix (,potrace)))
-              #t))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-override-RPATH
+            (lambda _
+              ;; Do not attempt to set a default RPATH, as our ld-wrapper
+              ;; already does the right thing.
+              (substitute* "CMakeLists.txt"
+                (("^set_default_rpath\\(\\)")
+                 ""))
+              #t))
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'apply-hurd-patch
+                      (lambda _
+                        (let ((patch-file
+                               #$(local-file
+                                  (search-patch "fontforge-hurd.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i" patch-file)))))
+                 #~())
+          #$@(if (system-hurd?)
+                 #~((replace 'check
+                      ;; cmake-build-system ignores #:make-flags for make check
+                      (lambda* (#:key test-target tests? parallel-tests?
+                                #:allow-other-keys)
+                        (let ((skip '("test0001_py" "test0001_pyhook")))
+                          (if tests?
+                              (let ((jobs
+                                     (if parallel-tests?
+                                         (number->string (parallel-job-count))
+                                         "1")))
+                                (invoke "make"
+                                        (string-append "ARGS=-j " jobs
+                                                       " --exclude-regex ^"
+                                                       (string-join skip "\\|")
+                                                       "$")
+                                        test-target))
+                              (format #t "test suite not run~%"))))))
+                 #~())
+          (add-after 'install 'set-library-path
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (potrace (dirname
+                              (search-input-file inputs "bin/potrace"))))
+                (wrap-program (string-append out "/bin/fontforge")
+                  ;; Fontforge dynamically opens libraries.
+                  `("LD_LIBRARY_PATH" ":" prefix
+                    ,(map (lambda (input)
+                            (string-append (assoc-ref inputs input)
+                                           "/lib"))
+                          '("libtiff" "libjpeg" "libpng" "libungif"
+                            "libxml2" "zlib" "libspiro" "freetype"
+                            "pango" "cairo" "fontconfig")))
+                  ;; Checks for potrace program at runtime
+                  `("PATH" ":" prefix (,potrace)))
+                #t))))))
    (synopsis "Outline font editor")
    (description
     "FontForge allows you to create and modify postscript, truetype and
@@ -1559,10 +1618,10 @@ generate bitmaps.")
     (arguments
      (substitute-keyword-arguments (package-arguments fontforge)
        ((#:configure-flags _)
-        ''())
+        #~'())
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'do-not-override-RPATH)))))
+        #~(modify-phases #$phases
+            (delete 'do-not-override-RPATH)))))
     (inputs
      (modify-inputs (package-inputs fontforge)
        (prepend libuninameslist)

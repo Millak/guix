@@ -374,7 +374,9 @@ return #f and #f."
   (define (key->file key)
     (string-append (%profile-cache-directory) "/" key))
 
-  (let loop ((opts opts)
+  ;; A given key such as 'system might appear more than once in OPTS, so
+  ;; process it backwards so the last occurrence "wins".
+  (let loop ((opts (reverse opts))
              (system (%current-system))
              (file #f)
              (specs '()))

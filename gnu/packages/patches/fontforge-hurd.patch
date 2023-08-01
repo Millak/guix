@@ -1,0 +1,82 @@
+Upstream status: Taken from upstream.
+
+From dca87c025665f0f010f906a4eba96da9794a4d04 Mon Sep 17 00:00:00 2001
+From: Anthony Fok <foka@debian.org>
+Date: Thu, 16 Jun 2022 02:40:23 -0600
+Subject: [PATCH] Define PATH_MAX and MAXPATHLEN for GNU/Hurd compatibility
+
+Special thanks to @henrich, @ucko and @kilobyte for reporting the issue
+and offering suggestions on a fix.
+
+See also https://bugs.debian.org/877795
+
+Fixes #3119
+---
+ inc/basics.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/inc/basics.h b/inc/basics.h
+index b8d65823b..14590c5b1 100644
+--- a/inc/basics.h
++++ b/inc/basics.h
+@@ -123,5 +123,13 @@ static inline int imax(int a, int b)
+ 			last = newitem;		       \
+ 		    }
+ 
++#ifdef __GNU__
++# ifndef PATH_MAX
++#  define PATH_MAX 4096
++# endif
++# ifndef MAXPATHLEN
++#  define MAXPATHLEN 4096
++# endif
++#endif
+ 
+ #endif /* FONTFORGE_BASICS_H */
+-- 
+2.40.1
+
+From e0480f143f27f8f2686b5b14d7d302fe22f35002 Mon Sep 17 00:00:00 2001
+From: Anthony Fok <foka@debian.org>
+Date: Thu, 16 Jun 2022 03:06:56 -0600
+Subject: [PATCH] Undefine "extended" macro temporarily on GNU Hurd
+
+GNU Mach microkernel header files (gnumach-dev 1.8+git20201129) added to
+struct i386_xfp_save in /usr/include/i386-gnu/include/mach/i386/fp_reg.h
+a new "extended" field which happens to collide with the macro definition
+"#define extended double" in FontForge, leading to FTBFS on GNU Hurd.
+
+This issue may be circumvented by temporarily undefining the "extended"
+macro before loading `<gio/gio.h>` and friends, and redefining the
+"extended" macro right after.
+---
+ inc/ffglib.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/inc/ffglib.h b/inc/ffglib.h
+index f3419f0ab..25fe9ebde 100644
+--- a/inc/ffglib.h
++++ b/inc/ffglib.h
+@@ -26,11 +26,19 @@
+ #define GMenuItem GMenuItem_GIO
+ #define GTimer GTimer_GTK
+ 
++#ifdef __GNU__
++# undef extended
++#endif
++
+ #include <gio/gio.h>
+ #include <glib-object.h>
+ #include <glib.h>
+ #include <glib/gstdio.h>
+ 
++#ifdef __GNU__
++# define extended	double
++#endif
++
+ #undef GList
+ #undef GMenuItem
+ #undef GTimer
+-- 
+2.40.1
+

@@ -24,7 +24,7 @@
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2021 Lars-Dominik Braun <lars@6xq.net>
@@ -1660,7 +1660,9 @@ or junctions, and always follows hard links.")
              "HAVE_LZMA=0"
              ;; Not currently detected, but be explicit & avoid surprises later.
              "HAVE_LZ4=0"
-             "HAVE_ZLIB=0")))
+             "HAVE_ZLIB=0")
+       #:tests? ,(not (or (target-hurd?)
+                          (%current-target-system)))))
     (home-page "https://facebook.github.io/zstd/")
     (synopsis "Zstandard real-time compression algorithm")
     (description "Zstandard (@command{zstd}) is a lossless compression algorithm
@@ -2361,7 +2363,7 @@ reading from and writing to ZIP archives.")
 (define-public zchunk
   (package
     (name "zchunk")
-    (version "1.2.2")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2370,22 +2372,23 @@ reading from and writing to ZIP archives.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0q0avb0397xkmidl8rxasfywp0r7w3awk6271pa2d9xl9p1n82zy"))))
+                "19rw870150w1c730wzg2pn68ixmscq8cwa3vricqhwxs5l63r5wr"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "src/zck_gen_zdict.c"
-                        (("/usr/bin/zstd")
-                         (string-append (assoc-ref inputs "zstd")
-                                        "/bin/zstd"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/zck_gen_zdict.c"
+                (("/usr/(bin/zstd)" _ file)
+                 (string-append (search-input-file inputs file)))))))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list curl zstd))
     (propagated-inputs
-     `(("zstd:lib" ,zstd "lib")))       ;in Requires.private of zck.pc
+     (list `(,zstd "lib")))             ; in Requires.private of zck.pc
     (home-page "https://github.com/zchunk/zchunk")
     (synopsis "Compressed file format for efficient deltas")
     (description "The zchunk compressed file format allows splitting a file
@@ -2412,32 +2415,25 @@ To download a zchunk file.
 (define-public zutils
   (package
     (name "zutils")
-    (version "1.10")
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/zutils/zutils-" version ".tar.lz"))
        (sha256
-        (base32 "15dimqp8zlqaaa2l46r22srp1py38mlmn69ph1j5fmrd54w43m0d"))))
+        (base32 "1vl8mhvsl0zlh34hwhc05vj33a2xfr0w7i978hcwaw8wn1w59bkq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--sysconfdir=/etc")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'disable-failing-tests
-           ;; XXX https://lists.nongnu.org/archive/html/zutils-bug/2020-07/msg00005.html
-           (lambda _
-             (substitute* "testsuite/check.sh"
-               (("\"\\$\\{ZGREP\\}\" -N -L \"GNU\"") "true")
-               (("\"\\$\\{ZGREP\\}\" -N -L \"nx_pattern\"") "false"))
-             #t))
-         (replace 'install
-          (lambda* (#:key make-flags outputs #:allow-other-keys)
-            (apply invoke "make" "install"
-                   (string-append "sysconfdir=" (assoc-ref outputs "out")
-                                  "/etc")
-                   make-flags))))))
+     (list
+      #:configure-flags
+      #~(list "--sysconfdir=/etc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "install"
+                     (string-append "sysconfdir=" #$output "/etc")
+                     make-flags))))))
     (native-inputs
      ;; Needed to extract the source tarball and run the test suite.
      (list lzip))
@@ -2539,7 +2535,7 @@ file compression algorithm.")
 (define-public xarchiver
   (package
     (name "xarchiver")
-    (version "0.5.4.20")
+    (version "0.5.4.21")
     (source
      (origin
        (method git-fetch)
@@ -2548,7 +2544,7 @@ file compression algorithm.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bgc8r2ii96ghslfscpjhswjgscvw65h2rjr0zvfqn8saqh1ydrv"))))
+        (base32 "0m3vq1mh2vg5r7vhnwjkfhix6i2cm15z82xsi6zaqvc4zkswb2m5"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal intltool libxslt pkg-config))

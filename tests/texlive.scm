@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,7 +32,155 @@
 (test-begin "texlive")
 
 (define %fake-tlpdb
-  '(("stricttex"
+  '(("12many"
+     . ((name
+         . "12many")
+        (catalogue
+         . "one2many")
+        (shortdesc
+         . "Generalising mathematical index sets")
+        (longdesc
+         . "In the discrete branches of mathematics...")
+        (docfiles
+         . ("texmf-dist/doc/latex/12many/12many.pdf"
+            "texmf-dist/doc/latex/12many/README"))
+        (srcfiles
+         . ("texmf-dist/source/latex/12many/12many.dtx"
+            "texmf-dist/source/latex/12many/12many.ins"))
+        (runfiles
+         . ("texmf-dist/tex/latex/12many/12many.sty"))
+        (catalogue-license . "lppl")))
+    ("adforn"
+     (name . "adforn")
+     (shortdesc . "OrnementsADF font with TeX/LaTeX support")
+     (longdesc . "The bundle provides the Ornements ADF font...")
+     (execute "addMap OrnementsADF.map")
+     (docfiles
+      "texmf-dist/doc/fonts/adforn/COPYING"
+      "texmf-dist/doc/fonts/adforn/NOTICE"
+      "texmf-dist/doc/fonts/adforn/README"
+      "texmf-dist/doc/fonts/adforn/adforn.pdf")
+     (runfiles
+      "texmf-dist/fonts/afm/arkandis/adforn/OrnementsADF.afm"
+      "texmf-dist/fonts/enc/dvips/adforn/OrnementsADF.enc"
+      "texmf-dist/fonts/map/dvips/adforn/OrnementsADF.map"
+      "texmf-dist/fonts/tfm/arkandis/adforn/OrnementsADF.tfm"
+      "texmf-dist/fonts/type1/arkandis/adforn/OrnementsADF.pfb"
+      "texmf-dist/tex/latex/adforn/adforn.sty"
+      "texmf-dist/tex/latex/adforn/uornementsadf.fd")
+     (catalogue-license . "lppl gpl2"))
+    ("authorindex"
+     (name . "authorindex")
+     (shortdesc . "Index citations by author names")
+     (longdesc . "This package allows the user to...")
+     (depend "authorindex.ARCH")
+     (docfiles "texmf-dist/doc/latex/authorindex/COPYING")
+     (runfiles
+      "texmf-dist/scripts/authorindex/authorindex"
+      "texmf-dist/tex/latex/authorindex/authorindex.sty")
+     (catalogue-license . "lppl"))
+    ("authorindex.x86_64-linux"
+     (name . "authorindex.x86_64-linux")
+     (binfiles "bin/amd64-netbsd/authorindex"))
+    ("chs-physics-report"
+     . ((name . "ch-physics-report")
+        (shortdesc . "Physics lab reports...")
+        (longdesc . "This package may...")
+        (docfiles
+         .
+         ("texmf-dist/doc/latex/chs-physics-report/README.txt"
+          "texmf-dist/doc/latex/chs-physics-report/chs-physics-report.pdf"))
+        (runfiles
+         .
+         ("texmf-dist/tex/latex/chs-physics-report/chs-physics-report.sty"))
+        (catalogue-license . "pd cc-by-sa-3")))
+    ("collection-basic"
+     (name . "collection-basic")
+     (shortdesc . "Essential programs and files")
+     (longdesc . "These files are regarded as basic...")
+     (depend "amsfonts" "hyph-utf8" "hyphen-base" "texlive-common"
+             "texlive.infra" "tlshell"))
+    ("collection-texworks"
+     (name . "collection-texworks")
+     (shortdesc . "TeXworks editor...")
+     (longdesc . "See http...")
+     (depend "texworks" "collection-basic"))
+    ("cyrillic-bin"
+     (name . "cyrillic-bin")
+     (shortdesc . "Cyrillic bibtex and makeindex")
+     (depend "cyrillic-bin.ARCH")
+     (docfiles
+      "texmf-dist/doc/man/man1/rubibtex.1"
+      "texmf-dist/doc/man/man1/rubibtex.man1.pdf")
+     (runfiles
+      "texmf-dist/scripts/texlive-extra/rumakeindex.sh"
+      "texmf-dist/scripts/texlive-extra/rubibtex.sh"))
+    ("cyrillic-bin.x86_64-linux"
+     (name . "cyrillic-bin.x86_64-linux")
+     (shortdesc . "x86_64-linux files of cyrillic-bin")
+     (binfiles
+      "bin/x86_64-linux/rubibtex"
+      "bin/x86_64-linux/rumakeindex"))
+    ("example"
+     . ((name . "example")
+        (shortdesc . "Typeset examples...")
+        (longdesc . "The package makes it easier...")
+        (runfiles
+         .
+         ("texmf-dist/tex/latex/example/example.sty"))
+        (catalogue-license . "gpl")))
+    ("lollipop"
+     (name . "lollipop")
+     (shortdesc . "TeX made easy")
+     (longdesc . "Lollipop is TeX made easy...")
+     (execute "AddFormat name=lollipop engine=tex options=\"lollipop.ini\"...")
+     (docfiles
+      "texmf-dist/doc/otherformats/lollipop/README"
+      "texmf-dist/doc/otherformats/lollipop/manual/address.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/appendix.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/btxmac.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/comm.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/comment.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/example.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/extern.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/head.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/list.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/lollipop-manual.bib"
+      "texmf-dist/doc/otherformats/lollipop/manual/lollipop-manual.pdf")
+     (runfiles
+      "texmf-dist/tex/lollipop/lollipop-define.tex"
+      "texmf-dist/tex/lollipop/lollipop-document.tex"
+      "texmf-dist/tex/lollipop/lollipop-float.tex"
+      "texmf-dist/tex/lollipop/lollipop-fontdefs.tex"
+      "texmf-dist/tex/lollipop/lollipop-fonts.tex"
+      "texmf-dist/tex/lollipop/lollipop-heading.tex"
+      "texmf-dist/tex/lollipop/lollipop-lists.tex"
+      "texmf-dist/tex/lollipop/lollipop-output.tex"
+      "texmf-dist/tex/lollipop/lollipop-plain.tex"
+      "texmf-dist/tex/lollipop/lollipop-text.tex"
+      "texmf-dist/tex/lollipop/lollipop-tools.tex"
+      "texmf-dist/tex/lollipop/lollipop.ini"
+      "texmf-dist/tex/lollipop/lollipop.tex")
+     (catalogue-license . "gpl3"))
+    ("pax"
+     (name . "pax")
+     (shortdesc . "Extract and reinsert PDF...")
+     (longdesc . "If PDF files are...")
+     (depend "pax.ARCH")
+     (docfiles
+      "texmf-dist/doc/latex/pax/README")
+     (srcfiles
+      "texmf-dist/source/latex/pax/Makefile"
+      "texmf-dist/source/latex/pax/build.xml")
+     (runfiles
+      "texmf-dist/scripts/pax/pdfannotextractor.pl")
+     (catalogue-license . "lppl gpl"))
+    ("pax.x86_64-linux"
+     (name . "pax.x86_64-linux")
+     (shortdesc . "x86_64-linux files of pax")
+     (binfiles
+      "bin/x86_64-linux/pdfannotextractor"))
+    ("stricttex"
      . ((name
          . "stricttex")
         (shortdesc
@@ -50,6 +199,13 @@ stuff like \\newcommand\\pi'12{\\pi '_{12}}.")
          . ("texmf-dist/tex/lualatex/stricttex/stricttex.lua"
             "texmf-dist/tex/lualatex/stricttex/stricttex.sty"))
         (catalogue-license . "lppl1.3c")))
+    ("tex"
+     (name . "tex")
+     (shortdesc . "A sophisticated typesetting engine")
+     (longdesc . "TeX is a typesetting system that incorporates...")
+     (depend "cm" "hyphen-base" "tex.ARCH")
+     (docfiles "texmf-dist/doc/man/man1/tex.1")
+     (catalogue-license . "knuth"))
     ("texsis"
      . ((name
          . "texsis")
@@ -69,7 +225,7 @@ theorems and proofs, centered or non-justified text, and listing computer
 code; Specialized macros for easily constructing ruled tables. TeXsis was
 originally developed for physicists, but others may also find it useful. It is
 completely compatible with Plain TeX.")
-        (depend . ("cm" "hyphen-base" "knuth-lib" "plain" "tex"))
+        (depend . ("tex" "plain" "knuth-lib" "hyphen-base" "cm"))
         (docfiles
          . ("texmf-dist/doc/man/man1/texsis.1"
             "texmf-dist/doc/man/man1/texsis.man1.pdf"
@@ -156,7 +312,58 @@ completely compatible with Plain TeX.")
             "texmf-dist/tex/texsis/base/thesis.txs"
             "texmf-dist/tex/texsis/base/twin.txs"
             "texmf-dist/tex/texsis/config/texsis.ini"))
-        (catalogue-license . "lppl")))))
+        (catalogue-license . "lppl")))
+    ("trsym"
+     (name . "trsym")
+     (shortdesc . "Symbols for transformations")
+     (longdesc . "The bundle provides Metafont...")
+     (docfiles "texmf-dist/doc/latex/trsym/README"
+               "texmf-dist/doc/latex/trsym/manifest.txt"
+               "texmf-dist/doc/latex/trsym/trsym.pdf")
+     (srcfiles "texmf-dist/source/latex/trsym/trsym.dtx"
+               "texmf-dist/source/latex/trsym/trsym.ins")
+     (runfiles "texmf-dist/fonts/source/public/trsym/trsy.mf"
+               "texmf-dist/fonts/source/public/trsym/trsy10.mf"
+               "texmf-dist/fonts/source/public/trsym/trsy12.mf"
+               "texmf-dist/fonts/tfm/public/trsym/trsy10.tfm"
+               "texmf-dist/fonts/tfm/public/trsym/trsy12.tfm"
+               "texmf-dist/tex/latex/trsym/trsym.sty"
+               "texmf-dist/tex/latex/trsym/utrsy.fd")
+     (catalogue-license . "lppl"))))
+
+(test-assert "texlive->guix-package, no docfiles"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "example"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-example")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "tex/latex/example/")
+                         ('base32 (? string? hash))))
+               ('build-system 'texlive-build-system)
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
 
 (test-assert "texlive->guix-package"
   ;; Replace network resources with sample data.
@@ -174,27 +381,417 @@ completely compatible with Plain TeX.")
                                              #:package-database
                                              (lambda _ %fake-tlpdb))))
           (match result
-            (`(package
-                (inherit (simple-texlive-package
-                          "texlive-texsis"
-                          (list "bibtex/bst/texsis/"
-                                "doc/man/man1/"
+            (('package
+               ('name "texlive-texsis")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "bibtex/bst/texsis/"
+                                "doc/man/man1/texsis.1"
+                                "doc/man/man1/texsis.man1.pdf"
                                 "doc/otherformats/texsis/base/"
                                 "tex/texsis/base/"
                                 "tex/texsis/config/")
-                          (base32 ,(? string? hash))
-                          #:trivial? #t))
-                (version ,_)
-                (propagated-inputs
-                 (list texlive-cm
-                       texlive-hyphen-base
-                       texlive-knuth-lib
-                       texlive-plain
-                       texlive-tex))
-                (home-page ,(? string?))
-                (synopsis ,(? string?))
-                (description ,(? string?))
-                (license lppl))
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('propagated-inputs
+                ('list 'texlive-cm
+                       'texlive-hyphen-base
+                       'texlive-knuth-lib
+                       'texlive-plain
+                       'texlive-tex))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license 'lppl))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with METAFONT files"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "trsym"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name _)
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system _)
+               ('native-inputs
+                ('list 'texlive-metafont))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with catalogue entry, no inputs"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "12many"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-12many")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "doc/latex/12many/"
+                                "source/latex/12many/"
+                                "tex/latex/12many/")
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('home-page "https://ctan.org/pkg/one2many")
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license 'lppl))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, multiple licenses"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "chs-physics-report"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-chs-physics-report")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "doc/latex/chs-physics-report/"
+                                "tex/latex/chs-physics-report/")
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license ('list 'public-domain 'cc-by-sa3.0)))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, meta-package"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "collection-texworks"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-collection-texworks")
+               ('version _)
+               ('source #f)
+               ('build-system 'trivial-build-system)
+               ('arguments
+                ('list '#:builder ('gexp ('mkdir ('ungexp 'output)))))
+               ('propagated-inputs
+                ('list 'texlive-collection-basic 'texlive-texworks))
+               ('home-page "https://www.tug.org/texlive/")
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license
+                ('license:fsf-free "https://www.tug.org/texlive/copying.html")))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with TeX format"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "lollipop"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-lollipop")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "doc/otherformats/lollipop/"
+                                "tex/lollipop/")
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('arguments ('list '#:create-formats ('gexp ('list "lollipop"))))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license 'gpl3))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, execute but no TeX format"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "adforn"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-adforn")
+               ('version _)
+               ('source _)
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, translate dependencies"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "collection-basic"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-collection-basic")
+               ('version _)
+               ('source _)
+               ('build-system 'trivial-build-system)
+               ('arguments
+                ('list '#:builder ('gexp ('mkdir ('ungexp 'output)))))
+               ('propagated-inputs
+                ('list 'texlive-amsfonts 'texlive-hyphen-complete))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, lonely `hyphen-base' dependency and ARCH"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "tex"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-tex")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('arguments ('list '#:texlive-latex-bin? #f))
+               ('propagated-inputs
+                ('list 'texlive-cm 'texlive-hyphen-base))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, single script, no extension"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "authorindex"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-authorindex")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('arguments
+                ('list '#:link-scripts ('gexp ('list "authorindex"))))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, multiple scripts, with extensions"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "cyrillic-bin"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-cyrillic-bin")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('arguments
+                ('list '#:link-scripts
+                       ('gexp ('list "rubibtex.sh" "rumakeindex.sh"))))
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, script with associated input"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "pax"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-pax")
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system 'texlive-build-system)
+               ('arguments
+                ('list '#:link-scripts ('gexp ('list "pdfannotextractor.pl"))))
+               ('inputs
+                ('list 'perl))
+               ('home-page _)
+               ('synopsis _)
+               ('description _)
+               ('license _))
              #true)
             (_
              (begin

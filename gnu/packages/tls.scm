@@ -470,6 +470,13 @@ OpenSSL for TARGET."
                                 #$(target->openssl-target
                                    (%current-target-system))))))
                  #~())
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'patch-configure
+                      (lambda _
+                        (substitute* "config"
+                          (("case \"\\$GUESSOS\" in.*" all)
+                           (string-append all "hurd-x86*) OUT=hurd-x86;;\n"))))))
+                 #~())
           (replace 'configure
             (lambda* (#:key configure-flags #:allow-other-keys)
               ;; It's not a shebang so patch-source-shebangs misses it.
@@ -585,7 +592,15 @@ OpenSSL for TARGET."
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (setenv "HASHBANGPERL"
                         (search-input-file (or native-inputs inputs)
-                                           "/bin/perl"))))))))
+                                           "/bin/perl"))))
+            #$@(if (target-hurd?)
+                   #~((delete 'patch-configure))
+                   #~())))
+       ((#:configure-flags flags #~'())
+        (if (system-hurd?)
+            #~(append #$flags '("hurd-x86")) ;must not be used when
+                                             ;cross-compiling!
+            flags))))
     (license license:asl2.0)))
 
 (define-public openssl openssl-3.0)

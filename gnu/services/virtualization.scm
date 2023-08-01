@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
 ;;; Copyright © 2018, 2020-2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2021, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
@@ -1106,7 +1106,7 @@ that will be listening to receive secret keys on port 1004, TCP."
   (disk-size   hurd-vm-configuration-disk-size          ;number or 'guess
                (default 'guess))
   (memory-size hurd-vm-configuration-memory-size        ;number
-               (default 512))
+               (default 2048))
   (options     hurd-vm-configuration-options            ;list of string
                (default `("--snapshot")))
   (id          hurd-vm-configuration-id                 ;#f or integer [1..]

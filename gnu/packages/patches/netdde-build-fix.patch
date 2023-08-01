@@ -1,0 +1,28 @@
+Upstream status: Presented upstream.
+
+    https://lists.gnu.org/archive/html/bug-hurd/2023-05//msg00449.html
+
+From b0a7e4f2706bea8d1c80d5af7a095941f9635033 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Fri, 26 May 2023 17:39:17 +0200
+Subject: [PATCH] Update for .../rumpdisk: Fix race condition in bootstrap
+
+---
+ machdev.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/machdev.c b/machdev.c
+index dda5eb8ba..1a6811072 100644
+--- a/machdev.c
++++ b/machdev.c
+@@ -18,5 +18,6 @@ void machdev_run1 (void *arg)
+ 
+ void machdev_run2(void)
+ {
+-	machdev_trivfs_server(bootstrap);
++	machdev_trivfs_server_startup(bootstrap);
++	machdev_trivfs_server_loop(NULL);
+ }
+-- 
+2.40.1
+

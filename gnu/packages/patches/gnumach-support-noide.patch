@@ -1,0 +1,25 @@
+Upstream status: Taken from Debian/upsream.
+
+    https://salsa.debian.org/hurd-team/gnumach/-/blob/master/debian/patches/90_noide.patch
+
+This supports using `noide' on the gnumach command line, disabling
+gnumach IDE support and thus forcing use of rumdisk.
+
+---
+ linux/dev/glue/block.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- a/linux/dev/glue/block.c
++++ b/linux/dev/glue/block.c
+@@ -207,7 +207,10 @@ int
+ blk_dev_init ()
+ {
+ #ifdef CONFIG_BLK_DEV_IDE
+-  ide_init ();
++  extern char *kernel_cmdline;
++  if (strncmp(kernel_cmdline, "noide", 5) &&
++      !strstr(kernel_cmdline, " noide"))
++    ide_init ();
+ #endif
+ #ifdef CONFIG_BLK_DEV_FD
+   floppy_init ();

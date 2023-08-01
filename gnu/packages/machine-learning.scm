@@ -1159,7 +1159,7 @@ with a single function call.")
 (define-public rxcpp
   (package
     (name "rxcpp")
-    (version "4.1.0")
+    (version "4.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1167,7 +1167,7 @@ with a single function call.")
              (url "https://github.com/ReactiveX/RxCpp")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1rdpa3jlc181jd08nk437aar085h28i45s6nzrv65apb3xyyz0ij"))
+        (base32 "1blyjjw6szd74pckdc15ham9i48xf0vwwz5nhl9vyjfq8z7w3piy"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1994,6 +1994,39 @@ interactive learning.")
 optimization over awkward search spaces, which may include real-valued,
 discrete, and conditional dimensions.")
     (license license:bsd-3)))
+
+(define-public python-deepxde
+  (package
+    (name "python-deepxde")
+    (version "1.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "DeepXDE" version))
+              (sha256
+               (base32
+                "07bz3d7d698l0fhznw5l8p16b22d4ly7xq99vrgv48c722qr2r5b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f                  ; there are no tests
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'sanity-check 'writable-home
+                          ;; sanity-check writes ~/.deepxde/config.json to set
+                          ;; the default backend.
+                          (lambda _
+                            (setenv "HOME" "/tmp"))))))
+    ;; DeepXDE supported backends are TensorFlow (v1 and v2), PyTorch, JAX and
+    ;; PaddlePaddle.  We test with PyTorch because we have it up to date.
+    (native-inputs (list python-pytorch python-setuptools-scm))
+    (propagated-inputs (list python-matplotlib python-numpy
+                             python-scikit-learn python-scikit-optimize
+                             python-scipy))
+    (home-page "https://deepxde.readthedocs.io/en/latest/")
+    (synopsis "Library for scientific machine learning")
+    (description "DeepXDE is a library for scientific machine learning and
+physics-informed learning.  It includes implementations for the PINN
+(physics-informed neural networks), DeepONet (deep operator network) and
+MFNN (multifidelity neural network) algorithms.")
+    (license license:lgpl2.1+)))
 
 ;; There have been no proper releases yet.
 (define-public kaldi

@@ -441,6 +441,9 @@ actual compiler."
       #~(begin
           (use-modules (ice-9 match))
 
+          (define psabi #$(gcc-architecture->micro-architecture-level
+                            micro-architecture))
+
           (define* (search-next command
                                 #:optional
                                 (path (string-split (getenv "PATH")
@@ -469,10 +472,25 @@ actual compiler."
              (match (search-next (basename command))
                (#f (exit 127))
                (next
-                (apply execl next
+                 (if (and (search-next "go")
+                          (string=? next (search-next "go")))
+                   (cond
+                     ((string-prefix? "arm" psabi)
+                      (setenv "GOARM" (string-take-right psabi 1)))
+                     ((string-prefix? "powerpc" psabi)
+                      (setenv "GOPPC64" psabi))
+                     ((string-prefix? "x86_64" psabi)
+                      (setenv "GOAMD" (string-take-right psabi 2)))
+                     (else #t))
+                   '())
+                (apply
+                  execl next
                        (append (cons next arguments)
+                         (if (and (search-next "go")
+                                  (string=? next (search-next "go")))
+                           '()
                            (list (string-append "-march="
-                                                #$micro-architecture))))))))))
+                                                #$micro-architecture)))))))))))
 
     (define program
       (program-file (string-append "tuning-compiler-wrapper-" micro-architecture)
@@ -489,7 +507,8 @@ actual compiler."
                          (for-each (lambda (program)
                                      (symlink #$program
                                               (string-append bin "/" program)))
-                                   '("cc" "gcc" "clang" "g++" "c++" "clang++")))))))
+                                   '("cc" "gcc" "clang" "g++" "c++" "clang++"
+                                     "go")))))))
 
 (define (build-system-with-tuning-compiler bs micro-architecture)
   "Return a variant of BS, a build system, that ensures that the compiler that
@@ -564,27 +583,6 @@ micro-architectures:
 
       (bag
         (inherit lowered)
-        (arguments
-          (substitute-keyword-arguments (bag-arguments lowered)
-          ;; We add the tuning parameter after the default GO flags are set.
-          ((#:phases phases '%standard-phases)
-             #~(modify-phases #$phases
-                 (add-after 'setup-go-environment 'set-microarchitecture
-                   (lambda _
-                     (cond
-                       ((string-prefix? "arm" #$psabi)
-                        (setenv "GOARM" (string-take-right #$psabi 1))
-                        (format #t "Setting GOARM to ~s."
-                                (getenv "GOARM")))
-                       ((string-prefix? "powerpc" #$psabi)
-                        (setenv "GOPPC64" #$psabi)
-                        (format #t "Setting GOPPC64 to ~s."
-                                (getenv "GOPPC64")))
-                       ((string-prefix? "x86_64" #$psabi)
-                        (setenv "GOAMD" (string-take-right #$psabi 2))
-                        (format #t "Setting GOAMD to ~s.\n"
-                                (getenv "GOAMD")))
-                       (else #t))))))))
         (build-inputs
          ;; Arrange so that the compiler wrapper comes first in $PATH.
          `(("tuning-compiler" ,(tuning-compiler micro-architecture))

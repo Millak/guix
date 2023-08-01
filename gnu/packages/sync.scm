@@ -546,7 +546,7 @@ written in @command{scsh}.  It makes use of @command{unison} and
              acl
              libselinux
              eudev
-             fuse
+             fuse-2
              openssl
              zlib))
       (synopsis "File synchronization and backup system")

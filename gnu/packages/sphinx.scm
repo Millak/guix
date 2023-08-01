@@ -10,7 +10,7 @@
 ;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -109,28 +109,27 @@
            texlive-amsmath
            texlive-capt-of
            texlive-carlisle             ;remreset
+           texlive-cmap
            texlive-etoolbox
-           texlive-ltxcmds
-           texlive-hyperref
-           texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
-           texlive-latex-cmap
            texlive-fancyhdr
            texlive-fancyvrb
-           texlive-latex-float
-           texlive-latex-fncychap
-           texlive-latex-framed
-           texlive-latex-geometry
-           texlive-graphics                       ;graphicx, color
+           texlive-float
+           texlive-fncychap
+           texlive-framed
+           texlive-geometry
+           texlive-hyperref
            texlive-kvoptions
-           texlive-latex-needspace
-           texlive-latex-parskip
-           texlive-latex-preview
-           texlive-latex-tabulary
-           texlive-titlesec
-           texlive-tools                          ;multicol, longtable
-           texlive-latex-upquote
-           texlive-latex-varwidth
+           texlive-latex-bin
+           texlive-ltxcmds
+           texlive-needspace
            texlive-oberdiek             ;hypcap
+           texlive-parskip
+           texlive-preview
+           texlive-tabulary
+           texlive-titlesec
+           texlive-tools                ;multicol, longtable
+           texlive-upquote
+           texlive-varwidth
            texlive-wrapfig
            texlive-xcolor))
     (native-inputs

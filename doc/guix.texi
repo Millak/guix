@@ -5776,7 +5776,7 @@ a package collection.  This involves the following steps:
 
 @enumerate
 @item
-Channels live in a Git repository so the first step, when creating a
+A channel lives in a Git repository so the first step, when creating a
 channel, is to create its repository:
 
 @example
@@ -5790,7 +5790,7 @@ The next step is to create files containing package modules
 (@pxref{Package Modules}), each of which will contain one or more
 package definitions (@pxref{Defining Packages}).  A channel can provide
 things other than packages, such as build systems or services; we're
-using packages as most common use case.
+using packages as it's the most common use case.
 
 For example, Alice might want to provide a module called @code{(alice
 packages greetings)} that will provide her favorite ``hello world''
@@ -5815,7 +5815,7 @@ that.
 @item
 With this first module in place, the next step is to test the packages
 it provides.  This can be done with @command{guix build}, which needs to
-be fold to look for modules in the Git checkout.  For example, assuming
+be told to look for modules in the Git checkout.  For example, assuming
 @code{(alice packages greetings)} provides a package called
 @code{hi-from-alice}, Alice will run this command from the Git checkout:
 
@@ -5856,7 +5856,7 @@ example, @code{(alice packages greetings)} will automatically be found
 by the @command{guix} command.
 @end enumerate
 
-Voilà!  
+Voilà!
 
 @c What follows stems from discussions at
 @c <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=22629#134> as well as
@@ -10001,17 +10001,30 @@ used to build TeX packages in batch mode with a specified engine.  The
 build system sets the @env{TEXINPUTS} variable to find all TeX source
 files in the inputs.
 
-By default it runs @code{luatex} on all files ending on @code{ins}.  A
-different engine and format can be specified with the
-@code{#:tex-format} argument.  Different build targets can be specified
-with the @code{#:build-targets} argument, which expects a list of file
-names.  The build system adds only @code{texlive-bin} and
-@code{texlive-latex-base} (both from @code{(gnu packages tex}) to the
-inputs.  Both can be overridden with the arguments @code{#:texlive-bin}
-and @code{#:texlive-latex-base}, respectively.
+By default it tries to run @code{luatex} on all @file{.ins} files, and
+if it fails to find any, on all @file{.dtx} files.  A different engine
+and format can be specified with, respectively, the @code{#:tex-engine}
+and @code{#:tex-format} arguments.  Different build targets can be
+specified with the @code{#:build-targets} argument, which expects a list
+of file names.
 
-The @code{#:tex-directory} parameter tells the build system where to
-install the built files under the texmf tree.
+It also generates font metrics (i.e., @file{.tfm} files) out of Metafont
+files whenever possible.  Likewise, it can also create TeX formats
+(i.e., @file{.fmt} files) listed in the @code{#:create-formats}
+argument, and generate a symbolic link from @file{bin/} directory to any
+script located in located in @file{texmf-dist/scripts/}, provided its
+file name is listed in @code{#:link-scripts} argument.
+
+The build system adds @code{texlive-bin} from @code{(gnu packages tex)}
+to the native inputs.  It can be overridden with the
+@code{#:texlive-bin} argument.
+
+The package @code{texlive-latex-bin}, from the same module, contains
+most of the tools for building TeX Live packages; for convenience, it is
+also added by default to the native inputs.  However, this can be
+troublesome when building a dependency of @code{texlive-latex-bin}
+itself.  In this particular situation, the @code{#:texlive-latex-bin?}
+argument should be set to @code{#f}.
 @end defvar
 
 @defvar ruby-build-system
@@ -14075,9 +14088,10 @@ TeX packages that are part of the @uref{https://www.tug.org/texlive/,
 TeX Live distribution}.
 
 Information about the package is obtained from the TeX Live package
-database, a plain text file that is included in the @code{texlive-bin}
-package.  The source code is downloaded from possibly multiple locations
-in the SVN repository of the Tex Live project.
+database, a plain text file that is included in the
+@code{texlive-scripts} package.  The source code is downloaded from
+possibly multiple locations in the SVN repository of the Tex Live
+project.
 
 The command command below imports metadata for the @code{fontspec}
 TeX package:
@@ -32938,12 +32952,25 @@ The IP addresses to be assigned to the above interface.
 @item @code{port} (default: @code{51820})
 The port on which to listen for incoming connections.
 
-@item @code{dns} (default: @code{#f})
+@item @code{dns} (default: @code{'())})
 The DNS server(s) to announce to VPN clients via DHCP.
 
+@item @code{monitor-ips?} (default: @code{#f})
+@cindex Dynamic IP, with Wireguard
+@cindex dyndns, usage with Wireguard
+Whether to monitor the resolved Internet addresses (IPs) of the
+endpoints of the configured peers, resetting the peer endpoints using an
+IP address that no longer correspond to their freshly resolved host
+name.  Set this to @code{#t} if one or more endpoints use host names
+provided by a dynamic DNS service to keep the sessions alive.
+
+@item @code{monitor-ips-internal} (default: @code{'(next-minute (range 0 60 5))})
+The time interval at which the IP monitoring job should run, provided as
+an mcron time specification (@pxref{Guile Syntax,,,mcron}).
+
 @item @code{private-key} (default: @code{"/etc/wireguard/private.key"})
-The private key file for the interface.  It is automatically generated if
-the file does not exist.
+The private key file for the interface.  It is automatically generated
+if the file does not exist.
 
 @item @code{peers} (default: @code{'()})
 The authorized peers on this interface.  This is a list of
@@ -34214,36 +34241,57 @@ The Music Player Daemon (MPD) is a service that can play music while
 being controlled from the local machine or over the network by a variety
 of clients.
 
-The following example shows how one might run @code{mpd} as user
-@code{"bob"} on port @code{6666}.  It uses pulseaudio for output.
+The following example shows the simplest configuration to locally
+expose, via PulseAudio, a music collection kept at @file{/srv/music},
+with @command{mpd} running as the default @samp{mpd} user.  This user
+will spawn its own PulseAudio daemon, which may compete for the sound
+card access with that of your own user.  In this configuration, you may
+have to stop the playback of your user audio applications to hear MPD's
+output and vice-versa.
 
 @lisp
 (service mpd-service-type
          (mpd-configuration
-          (user "bob")
-          (port "6666")))
+          (music-directory "/srv/music")))
 @end lisp
+
+@quotation Important
+The music directory must be readable to the MPD user, by default,
+@samp{mpd}.  Permission problems will be reported via @samp{Permission
+denied} errors in the MPD logs, which appear in @file{/var/log/messages}
+by default.
+@end quotation
+
+Most MPD clients will trigger a database update upon connecting, but you
+can also use the @code{update} action do to so:
+
+@example
+herd update mpd
+@end example
+
+All the MPD configuration fields are documented below, and a more
+complex example follows.
 
 @defvar mpd-service-type
 The service type for @command{mpd}
 @end defvar
 
+@c %start of fragment
 @deftp {Data Type} mpd-configuration
-Data type representing the configuration of @command{mpd}.
+Available @code{mpd-configuration} fields are:
 
 @table @asis
 @item @code{package} (default: @code{mpd}) (type: file-like)
 The MPD package.
 
-@item @code{user} (default: @code{%mpd-user}) (type: user-account)
+@item @code{user} (type: user-account)
 The user to run mpd as.
 
-The default @code{%mpd-user} is a system user with the name ``mpd'',
-who is a part of the group @var{group} (see below).
-@item @code{group} (default: @code{%mpd-group}) (type: user-group)
+@item @code{group} (type: user-group)
 The group to run mpd as.
 
 The default @code{%mpd-group} is a system group with name ``mpd''.
+
 @item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
 A list of symbols naming Shepherd services that this service
 will depend on.
@@ -34251,24 +34299,31 @@ will depend on.
 @item @code{environment-variables} (default: @code{'("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")}) (type: list-of-strings)
 A list of strings specifying environment variables.
 
-@item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
-The location of the log file.  Set to @code{syslog} to use the local
-syslog daemon or @code{%unset-value} to omit this directive from the
-configuration file.
+@item @code{log-file} (type: maybe-string)
+The location of the log file.  Unless specified, logs are sent to the
+local syslog daemon.  Alternatively, a log file name can be specified,
+for example @file{/var/log/mpd.log}.
 
 @item @code{log-level} (type: maybe-string)
-Suppress any messages below this threshold.  Available values:
-@code{notice}, @code{info}, @code{verbose}, @code{warning} and
-@code{error}.
+Supress any messages below this threshold.  The available values, in
+decreasing order of verbosity, are: @code{verbose}, @code{info},
+@code{notice}, @code{warning} and @code{error}.
 
 @item @code{music-directory} (type: maybe-string)
+The directory to scan for music files.
+
+@item @code{music-dir} (type: maybe-string)
 The directory to scan for music files.
 
 @item @code{playlist-directory} (type: maybe-string)
 The directory to store playlists.
 
+@item @code{playlist-dir} (type: maybe-string)
+The directory to store playlists.
+
 @item @code{db-file} (type: maybe-string)
-The location of the music database.
+The location of the music database.  When left unspecified,
+@file{~/.cache/db} is used.
 
 @item @code{state-file} (type: maybe-string)
 The location of the file that stores current MPD's state.
@@ -34276,15 +34331,19 @@ The location of the file that stores current MPD's state.
 @item @code{sticker-file} (type: maybe-string)
 The location of the sticker database.
 
-@item @code{default-port} (default: @code{6600}) (type: maybe-integer)
+@item @code{default-port} (default: @code{6600}) (type: maybe-port)
 The default port to run mpd on.
 
 @item @code{endpoints} (type: maybe-list-of-strings)
-The addresses that mpd will bind to.  A port different from @var{default-port}
-may be specified, e.g. @code{localhost:6602} and IPv6 addresses must be
-enclosed in square brackets when a different port is used.
-To use a Unix domain socket, an absolute path or a path starting with @code{~}
-can be specified here.
+The addresses that mpd will bind to.  A port different from
+@var{default-port} may be specified, e.g.  @code{localhost:6602} and
+IPv6 addresses must be enclosed in square brackets when a different port
+is used.  To use a Unix domain socket, an absolute path or a path
+starting with @code{~} can be specified here.
+
+@item @code{address} (type: maybe-string)
+The address that mpd will bind to.  To use a Unix domain socket, an
+absolute path can be specified here.
 
 @item @code{database} (type: maybe-mpd-plugin)
 MPD database plugin configuration.
@@ -34300,6 +34359,10 @@ List of MPD input plugin configurations.
 
 @item @code{archive-plugins} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD archive plugin configurations.
+
+@item @code{auto-update?} (type: maybe-boolean)
+Whether to automatically update the music database when files are
+changed in the @var{music-directory}.
 
 @item @code{input-cache-size} (type: maybe-string)
 MPD input cache size.
@@ -34326,6 +34389,7 @@ appended to the configuration.
 
 @end table
 @end deftp
+@c %end of fragment
 
 @deftp {Data Type} mpd-plugin
 Data type representing a @command{mpd} plugin.
@@ -34365,8 +34429,9 @@ Partitions} for available options.
 @end table
 @end deftp
 
+@c %start of fragment
 @deftp {Data Type} mpd-output
-Data type representing a @command{mpd} audio output.
+Available @code{mpd-output} fields are:
 
 @table @asis
 @item @code{name} (default: @code{"MPD"}) (type: string)
@@ -34393,15 +34458,16 @@ is only useful for output plugins that can receive tags, for example the
 
 @item @code{always-on?} (default: @code{#f}) (type: boolean)
 If set to @code{#t}, then MPD attempts to keep this audio output always
-open.  This may be useful for streaming servers, when you don?t want to
+open.  This may be useful for streaming servers, when you don’t want to
 disconnect all listeners even when playback is accidentally stopped.
 
-@item @code{mixer-type} (default: @code{"none"}) (type: string)
+@item @code{mixer-type} (type: maybe-string)
 This field accepts a string that specifies which mixer should be used
 for this audio output: the @code{hardware} mixer, the @code{software}
 mixer, the @code{null} mixer (allows setting the volume, but with no
 effect; this can be used as a trick to implement an external mixer
-External Mixer) or no mixer (@code{none}).
+External Mixer) or no mixer (@code{none}).  When left unspecified, a
+@code{hardware} mixer is used for devices that support it.
 
 @item @code{replay-gain-handler} (type: maybe-string)
 This field accepts a string that specifies how
@@ -34416,6 +34482,7 @@ appended to the audio output configuration.
 
 @end table
 @end deftp
+@c %end of fragment
 
 The following example shows a configuration of @command{mpd} that
 configures some of its plugins and provides a HTTP audio streaming output.
@@ -34513,11 +34580,10 @@ HTTP port to listen on.
 How much detail to include in logs, possible values: @code{0} to
 @code{7}.
 
-@item @code{log-to} (default: @code{"/var/log/mympd/log"}) (type: string-or-symbol)
-Where to send logs.  By default, the service logs to
-@file{/var/log/mympd.log}.  The alternative is @code{'syslog}, which
-sends output to the running syslog service under the @samp{daemon}
-facility.
+@item @code{log-to} (type: maybe-string)
+Where to send logs.  Unless specified, the service logs to the local
+syslog service under the @samp{daemon} facility.  Alternatively, a log
+file name can be specified, for example @file{/var/log/mympd.log}.
 
 @item @code{lualibs} (default: @code{"all"}) (type: maybe-string)
 See
@@ -35159,9 +35225,9 @@ Its value must be a @code{virtlog-configuration}.
 @end lisp
 @end defvar
 
-@deftypevar {@code{libvirt} parameter} package libvirt
+@deftypevr {@code{libvirt} parameter} package libvirt
 Libvirt package.
-@end deftypevar
+@end deftypevr
 
 @deftypevr {@code{virtlog-configuration} parameter} integer log-level
 Logging level.  4 errors, 3 warnings, 2 information, 1 debug.
@@ -40078,7 +40144,29 @@ For example:
 @item @code{multiboot-arguments} (default: @code{'()})
 The list of extra command-line arguments for the multiboot-kernel.
 
-@item @code{multiboot-modules} (default: @code{'()})
+For example, when running in QEMU it can be useful to use a text-based
+console (use options @option{--nographic} @option{--serial mon:stdio}):
+
+@lisp
+'("console=com0")
+@end lisp
+
+To use the new and still experimental
+@uref{https://darnassus.sceen.net/~hurd-web/rump_kernel/, rumpdisk
+user-level disk driver} instead of GNU@tie{}Mach's in-kernel IDE driver,
+set @code{kernel-arguments} to:
+
+@lisp
+'("noide")
+@end lisp
+
+Of course, these options can be combined:
+
+@lisp
+'("console=com0" "noide")
+@end lisp
+
++@item @code{multiboot-modules} (default: @code{'()})
 The list of commands for loading Multiboot modules.  For example:
 
 @lisp
@@ -45371,14 +45459,19 @@ single @TeX{} Live package} (more than 7,000 of them), but it is huge
 (more than 4@tie{}GiB for a single package!).
 
 @item
-The ``modular'' @code{texlive-} packages: you install
-@code{texlive-base}, which provides core functionality and the main
+The ``modular'' @samp{texlive-} packages: you start off with
+a combination of @TeX{} Live @dfn{collections} and
+@dfn{schemes}---``meta-packages'' such as
+@code{texlive-collection-fontsrecommended}, or
+@code{texlive-collection-context}, that provide the set of packages
+needed in this particular domain, schemes being the name for collections
+of such collections.  This grants you core functionality and the main
 commands---@command{pdflatex}, @command{dvips}, @command{luatex},
-@command{mf}, etc.---together with individual packages that provide just
-the features you need---@code{texlive-listings} for the
-@code{listings} package, @code{texlive-hyperref} for @code{hyperref},
-@code{texlive-beamer} for Beamer, @code{texlive-pgf} for PGF/TikZ,
-and so on.
+@command{mf}, etc.  You can then complete your selection with additional
+collections or individual packages that provide just the features you
+need---@code{texlive-listings} for the @code{listings} package,
+@code{texlive-beamer} for Beamer, @code{texlive-pgf} for PGF/TikZ, and
+so on.
 @end itemize
 
 We recommend using the modular package set because it is much less
@@ -45386,29 +45479,29 @@ resource-hungry.  To build your documents, you would use commands such
 as:
 
 @example
-guix shell texlive-base texlive-wrapfig \
-  texlive-hyperref texlive-cm-super -- pdflatex doc.tex
+guix shell texlive-scheme-basic texlive-cm-super -- pdflatex doc.tex
 @end example
 
 You can quickly end up with unreasonably long command lines though.  The
-solution is to instead write a manifest, for example like this one:
+solution is to instead write a manifest, for example like this one,
+which would probably be a reasonable starting point for a French
+@LaTeX{} user:
 
 @lisp
 (specifications->manifest
  '("rubber"
 
-   "texlive-base"
-   "texlive-wrapfig"
+   "texlive-scheme-basic"
+   "texlive-collection-latexrecommended"
+   "texlive-collection-fontsrecommended"
 
-   "texlive-microtype"
-   "texlive-listings" "texlive-hyperref"
+   "texlive-babel-french"
 
    ;; PGF/TikZ
    "texlive-pgf"
 
-   ;; Additional fonts.
-   "texlive-cm-super" "texlive-amsfonts"
-   "texlive-times" "texlive-helvetic" "texlive-courier"))
+   ;; Additional font.
+   "texlive-kpfonts"))
 @end lisp
 
 You can then pass it to any command with the @option{-m} option:
@@ -45417,12 +45510,9 @@ You can then pass it to any command with the @option{-m} option:
 guix shell -m manifest.scm -- pdflatex doc.tex
 @end example
 
-@xref{Writing Manifests}, for more on
-manifests.  In the future, we plan to provide packages for @TeX{} Live
-@dfn{collections}---``meta-packages'' such as @code{fontsrecommended},
-@code{humanities}, or @code{langarabic} that provide the set of packages
-needed in this particular domain.  That will allow you to list fewer
-packages.
+@xref{Writing Manifests}, for more on manifests.  In the future, we plan
+to provide more collections and schemes.  That will allow you to list
+fewer packages.
 
 The main difficulty here is that using the modular package set forces
 you to select precisely the packages that you need.  You can use
@@ -45458,7 +45548,7 @@ you can search the @TeX{} Live package database using the @command{tlmgr}
 command:
 
 @example
-$ guix shell texlive-base -- tlmgr info phvr7t
+$ guix shell texlive-bin -- tlmgr info phvr7t
 tlmgr: cannot find package phvr7t, searching for other matches:
 
 Packages containing `phvr7t' in their title/description:

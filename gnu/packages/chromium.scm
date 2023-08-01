@@ -584,7 +584,7 @@
               "ffmpeg_branding=\"Chrome\""
 
               ;; WebRTC stuff.
-              "rtc_use_h264=false"      ;XXX needs bundled openh264
+              "rtc_use_h264=true"
               "rtc_use_pipewire=true"
               "rtc_link_pipewire=true"
               ;; Don't use bundled sources.

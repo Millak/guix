@@ -534,38 +534,30 @@ the in DocBook SGML DTDs.")
     (build-system python-build-system)
     ;; TODO: Add xfig/transfig for fig2dev utility
     (inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                             texlive-latex-anysize
-                                             texlive-latex-appendix
-                                             texlive-latex-bookmark
-                                             texlive-latex-changebar
-                                             texlive-latex-colortbl
-                                             texlive-latex-fancybox
-                                             texlive-fancyhdr
+     `(("texlive" ,(texlive-updmap.cfg (list texlive-anysize
+                                             texlive-appendix
+                                             texlive-changebar
+                                             texlive-fancybox
                                              texlive-fancyvrb
-                                             texlive-latex-float
-                                             texlive-latex-footmisc
-                                             texlive-hyperref
-                                             texlive-latex-jknapltx
+                                             texlive-float
+                                             texlive-footmisc
+                                             texlive-jknapltx
                                              texlive-listings
-                                             texlive-latex-multirow
-                                             texlive-latex-overpic
+                                             texlive-multirow
+                                             texlive-overpic
                                              texlive-pdfpages
                                              texlive-refcount
+                                             texlive-rsfs
+                                             texlive-stmaryrd
                                              texlive-subfigure
                                              texlive-titlesec
-                                             texlive-wasysym
-
-                                             texlive-fonts-rsfs
-                                             texlive-stmaryrd
-
-                                             texlive-iftex)))
+                                             texlive-wasysym)))
        ("imagemagick" ,imagemagick)     ;for convert
        ("inkscape" ,inkscape/stable)    ;for svg conversion
        ("docbook" ,docbook-xml)
        ("libxslt" ,libxslt)))           ;for xsltproc
     (arguments
-     `(;; Using setuptools causes an invalid "package_base" path in
+     `( ;; Using setuptools causes an invalid "package_base" path in
        ;; out/bin/.dblatex-real due to a missing leading '/'.  This is caused
        ;; by dblatex's setup.py stripping the root path when creating the
        ;; script.  (dblatex's setup.py still uses distutils and thus has to

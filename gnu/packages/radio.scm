@@ -272,6 +272,57 @@ To install the rtl-sdr udev rules, you must extend 'udev-service-type' with
 this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
       (license license:gpl2+))))
 
+(define-public airspy
+  (let ((commit "6f92f47146aa8a8fce59b60927cf8c53da6851b3")
+        (revision "1"))
+    (package
+      (name "airspy")
+      (version (git-version "1.0.10" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/airspy/airspyone_host")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0y2yz8agp4v36z1766hi92msgs35yvy32brfcscijxdkgswdgbkd"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list libusb))
+      (arguments
+       (list #:configure-flags #~(list "-DINSTALL_UDEV_RULES=ON")
+             #:tests? #f ; No tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda _
+                     (substitute* "airspy-tools/CMakeLists.txt"
+                       (("DESTINATION \"/etc/udev/")
+                        (string-append "DESTINATION \""
+                                       #$output
+                                       "/lib/udev/")))))
+                 (add-after 'fix-paths 'fix-udev-rules
+                   (lambda _
+                     (substitute* "airspy-tools/52-airspy.rules"
+                       ;; The plugdev group does not exist; use dialout as in
+                       ;; the hackrf package.
+                       (("GROUP=\"plugdev\"")
+                        "GROUP=\"dialout\"")))))))
+      (home-page "https://github.com/airspy/airspyone_host")
+      (synopsis "Software defined radio driver for Airspy")
+      (description
+       "This package provides the driver and utilities for controlling the
+Airspy Software Defined Radio (SDR) over USB.
+
+To install the airspy udev rules, you must extend @code{udev-service-type}
+with this package.  E.g.: @code{(udev-rules-service 'airspy airspy)}")
+      (license (list license:bsd-3
+                     license:expat
+                     license:gpl2+)))))
+
 (define-public airspyhf
   (let ((commit "40836c59d35d989fe00ac12ef774df736a36c6e4")
         (revision "1"))
@@ -348,6 +399,30 @@ with this package.  E.g.: @code{(udev-rules-service 'airspyhf airspyhf)}")
      "SoapySDR is a library designed to support several kinds of software
 defined radio hardware devices with a common API.")
     (license license:boost1.0)))
+
+(define-public soapyairspy
+  (package
+    (name "soapyairspy")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pothosware/SoapyAirspy")
+             (commit (string-append "soapy-airspy-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g23yybnmq0pg2m8m7dbhif8lw0hdsmnnjym93fdyxfk5iln7fsc"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list airspy soapysdr))
+    (arguments
+     (list #:tests? #f))  ; No test suite
+    (home-page "https://github.com/pothosware/SoapyAirspy/wiki")
+    (synopsis "SoapySDR Airspy module")
+    (description "This package provides Airspy devices support to the
+SoapySDR library.")
+    (license license:expat)))
 
 (define-public soapyairspyhf
   (package
@@ -709,10 +784,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            python-pyzmq
            python-scipy
            python-sphinx
-           (texlive-updmap.cfg (list texlive-amsfonts
-                                     texlive-amsmath
-                                     ;; TODO: Add newunicodechar.
-                                     texlive-graphics))
+           (texlive-updmap.cfg (list texlive-newunicodechar))
            xorg-server-for-tests))
     (inputs
      (list alsa-lib
@@ -866,7 +938,8 @@ environment.")
       (native-inputs
        (list doxygen pkg-config pybind11 python-mako python-six))
       (inputs
-       (list airspyhf
+       (list airspy
+             airspyhf
              boost
              fftwf
              gmp
@@ -919,10 +992,7 @@ to access different radio hardware.")
        ("doxygen" ,doxygen)
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-amsmath
-                                        ;; TODO: Add newunicodechar.
-                                        texlive-graphics)))))
+       ("texlive" ,(texlive-updmap.cfg (list texlive-newunicodechar)))))
     (inputs
      (list fftwf))
     (arguments
@@ -1303,7 +1373,7 @@ for correctness.")
 (define-public hackrf
   (package
     (name "hackrf")
-    (version "2022.09.1")
+    (version "2023.01.1")
     (source
      (origin
        (method git-fetch)
@@ -1312,7 +1382,7 @@ for correctness.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m9j160q5zb3jimszv1lb6j76zf5lwijvpfl1k28d832rh847vvk"))))
+        (base32 "0ybgppwy09j9rmfhh84072li698k64w84q5hjrayc73avc495x6f"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
@@ -2167,7 +2237,8 @@ receiver.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list alsa-lib
+     (list airspy
+           alsa-lib
            faad2
            fftwf
            lame
@@ -2179,12 +2250,14 @@ receiver.")
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
+           qtquickcontrols-5
            qtquickcontrols2-5
            soapysdr))
     (arguments
-     `(#:configure-flags '("-DRTLSDR=ON"
-                           "-DSOAPYSDR=ON")
-       #:tests? #f))
+     (list #:configure-flags #~(list "-DAIRSPY=ON"
+                                     "-DRTLSDR=ON"
+                                     "-DSOAPYSDR=ON")
+           #:tests? #f))
     (home-page "https://www.welle.io/")
     (synopsis "DAB and DAB+ software radio")
     (description
@@ -2440,7 +2513,8 @@ voice formats.")
     (native-inputs
      (list doxygen graphviz pkg-config))
     (inputs
-     (list airspyhf
+     (list airspy
+           airspyhf
            alsa-lib
            aptdec
            boost
@@ -2531,7 +2605,8 @@ various hardware.")
       (native-inputs
        (list pkg-config))
       (inputs
-       (list airspyhf
+       (list airspy
+             airspyhf
              alsa-lib
              codec2
              fftwf
@@ -2548,8 +2623,7 @@ various hardware.")
              (list zstd "lib")))
       (arguments
        (list #:tests? #f ; No test suite.
-             #:configure-flags #~(list "-DOPT_BUILD_AIRSPY_SOURCE=OFF"
-                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+             #:configure-flags #~(list "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
                                        "-DOPT_BUILD_M17_DECODER=ON")
              #:phases
              #~(modify-phases %standard-phases

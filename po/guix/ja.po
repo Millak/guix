@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-06-30 09:22+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2023-07-21 05:22+0000\n"
+"Last-Translator: ROCKTAKEY <rocktakey@gmail.com>\n"
 "Language-Team: Japanese <https://translate.fedoraproject.org/projects/guix/guix/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -133,8 +133,7 @@ msgid ""
 "file, when available."
 msgstr ""
 "ビルドしたときに利用したチャンネルや設定ファイルといった\n"
-"システムの出自の情報があれば、\n"
-"それをシステム自身に保存します。"
+"システムの出自の情報があれば、それをシステム自身に保存します。"
 
 #: gnu/services.scm:649
 msgid ""
@@ -1077,8 +1076,7 @@ msgid ""
 "environment, and its configuration file, when available."
 msgstr ""
 "ビルドしたときに利用したチャンネルや設定ファイルといった\n"
-"ホーム環境の出自の情報があれば、\n"
-"それをホーム環境自身に保存します。"
+"ホーム環境の出自の情報があれば、それをホーム環境自身に保存します。"
 
 #: gnu/home/services/desktop.scm:187
 msgid ""
@@ -5070,7 +5068,7 @@ msgstr "最新リビジョンのGuixをpullします"
 #, scheme-format
 msgid "Building from this channel:~%"
 msgid_plural "Building from these channels:~%"
-msgstr[0] "次のチャンネルからビルドします:~%"
+msgstr[0] "次のチャンネルを元にビルドします:~%"
 
 #: guix/scripts/substitute.scm:83
 #, scheme-format
@@ -5245,7 +5243,7 @@ msgstr ""
 #: guix/scripts/system.scm:258
 #, scheme-format
 msgid "bootloader successfully installed on~{ ~a~}~%"
-msgstr ""
+msgstr "ブートローダは~{ ~a~}に正常にインストールされました~%"
 
 #: guix/scripts/system.scm:281
 #, scheme-format
@@ -5426,7 +5424,7 @@ msgstr ""
 #: guix/scripts/system.scm:768 guix/scripts/system.scm:880
 #, scheme-format
 msgid "bootloader successfully installed on '~a'~%"
-msgstr ""
+msgstr "ブートローダは'~a'に正常にインストールされました~%"
 
 #: guix/scripts/system.scm:873
 #, scheme-format
@@ -5443,7 +5441,7 @@ msgstr ""
 
 #: guix/scripts/system.scm:887
 msgid "Run 'herd status' to view the list of services on your system.\n"
-msgstr ""
+msgstr "システムに登録されたサービスの一覧を見るには、'herd status'を実行してください。\n"
 
 #: guix/scripts/system.scm:891
 #, scheme-format
@@ -7068,7 +7066,7 @@ msgstr[1] ""
 #: guix/gnu-maintenance.scm:757
 #, scheme-format
 msgid "Updating to a specific version is not yet implemented for ~a, sorry."
-msgstr ""
+msgstr "申し訳ありませんが、~aにおける指定バージョンへのアップデートはまだ実装されていません。"
 
 #: guix/gnu-maintenance.scm:882
 msgid "Updater for GNU packages"
@@ -7742,8 +7740,7 @@ msgstr ""
 #, scheme-format
 msgid "The following derivation would be built:~%"
 msgid_plural "The following derivations would be built:~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下の導出子をビルドするでしょう:~%"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -7756,8 +7753,7 @@ msgstr ""
 #, scheme-format
 msgid "~:[The following file would be downloaded:~%~;~]"
 msgid_plural "~:[The following files would be downloaded:~%~;~]"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "~:[以下のファイルをダウンロードするでしょう:~%~;~]"
 
 #: guix/ui.scm:1097
 #, scheme-format
@@ -7789,8 +7785,7 @@ msgstr[1] ""
 #, scheme-format
 msgid "The following derivation will be built:~%"
 msgid_plural "The following derivations will be built:~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下の導出子をビルドします:~%"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -7803,8 +7798,7 @@ msgstr ""
 #, scheme-format
 msgid "~:[The following file will be downloaded:~%~;~]"
 msgid_plural "~:[The following files will be downloaded:~%~;~]"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "~:[以下のファイルをダウンロードします:~%~;~]"
 
 #: guix/ui.scm:1157
 #, scheme-format
@@ -7829,8 +7823,7 @@ msgstr ""
 #: guix/ui.scm:1178
 msgid "~:[~h item will be downloaded~%~;~]"
 msgid_plural "~:[~h items will be downloaded~%~;~]"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "~:[~h項目をダウンロードします~%~;~]"
 
 #: guix/ui.scm:1297
 msgid "(dependencies or package changed)"
@@ -7840,29 +7833,25 @@ msgstr ""
 #, scheme-format
 msgid "The following package would be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be removed:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下のパッケージを取り除くでしょう: ~%~{~a~%~}~%"
 
 #: guix/ui.scm:1321
 #, scheme-format
 msgid "The following package will be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be removed:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下のパッケージを取り除きます: ~%~{~a~%~}~%"
 
 #: guix/ui.scm:1334
 #, scheme-format
 msgid "The following package would be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be downgraded:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下のパッケージをダウングレードするでしょう:~%~{~a~%~}~%"
 
 #: guix/ui.scm:1339
 #, scheme-format
 msgid "The following package will be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be downgraded:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下のパッケージをダウングレードします:~%~{~a~%~}~%"
 
 #: guix/ui.scm:1352
 #, scheme-format
@@ -7880,15 +7869,13 @@ msgstr[0] "以下のパッケージをアップグレードします: ~%~{~a~%~}
 #, scheme-format
 msgid "The following package would be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be installed:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下のパッケージをインストールするでしょう:~%~{~a~%~}~%"
 
 #: guix/ui.scm:1373
 #, scheme-format
 msgid "The following package will be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be installed:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下のパッケージをインストールします:~%~{~a~%~}~%"
 
 #: guix/ui.scm:1491
 #, scheme-format
@@ -8029,15 +8016,15 @@ msgstr ""
 
 #: guix/status.scm:386
 msgid "building directory of Info manuals..."
-msgstr ""
+msgstr "Infoマニュアルのディレクトリをビルドしています…"
 
 #: guix/status.scm:388
 msgid "building GHC package cache..."
-msgstr ""
+msgstr "GHCパッケージのキャッシュをビルドしています…"
 
 #: guix/status.scm:390
 msgid "building CA certificate bundle..."
-msgstr ""
+msgstr "CA証明書バンドルを構築しています…"
 
 #: guix/status.scm:392
 msgid "listing Emacs sub-directories..."
@@ -8057,31 +8044,31 @@ msgstr ""
 
 #: guix/status.scm:400
 msgid "building cache files for GTK+ input methods..."
-msgstr ""
+msgstr "GTK+入力メソッド用のキャッシュファイルを構築しています…"
 
 #: guix/status.scm:402
 msgid "building XDG desktop file cache..."
-msgstr ""
+msgstr "XDGのデスクトップファイルのキャッシュを構築しています…"
 
 #: guix/status.scm:404
 msgid "building XDG MIME database..."
-msgstr ""
+msgstr "XDGのMIMEデータベースを構築しています…"
 
 #: guix/status.scm:406
 msgid "building fonts directory..."
-msgstr ""
+msgstr "フォントのディレクトリを構築しています…"
 
 #: guix/status.scm:408
 msgid "building TeX Live font maps..."
-msgstr ""
+msgstr "TeX Liveのフォントマップを構築しています…"
 
 #: guix/status.scm:410
 msgid "building database for manual pages..."
-msgstr ""
+msgstr "マニュアルページ用のデータベースを構築しています…"
 
 #: guix/status.scm:412
 msgid "building package cache..."
-msgstr ""
+msgstr "パッケージのキャッシュを構築しています…"
 
 #: guix/status.scm:497
 #, scheme-format
@@ -8094,8 +8081,7 @@ msgstr[1] ""
 #, scheme-format
 msgid "building profile with ~a package..."
 msgid_plural "building profile with ~a packages..."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "~a個のパッケージで構成されるプロファイルを構築しています…"
 
 #: guix/status.scm:516
 #, scheme-format
@@ -8105,7 +8091,7 @@ msgstr ""
 #: guix/status.scm:519
 #, scheme-format
 msgid "building ~a..."
-msgstr ""
+msgstr "~aを構築しています…"
 
 #: guix/status.scm:524
 #, scheme-format
@@ -8116,8 +8102,7 @@ msgstr ""
 #, scheme-format
 msgid "The following build is still in progress:~%~{  ~a~%~}~%"
 msgid_plural "The following builds are still in progress:~%~{  ~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下のビルドはまだ実行中です:~%~{  ~a~%~}~%"
 
 #: guix/status.scm:536
 #, scheme-format
@@ -8321,7 +8306,7 @@ msgstr ""
 #: guix/channels.scm:540
 #, scheme-format
 msgid "Updating channel '~a' from Git repository at '~a'...~%"
-msgstr ""
+msgstr "チャンネル'~a'を、'~a'にあるGitリポジトリに基づいて更新しています…~%"
 
 #: guix/channels.scm:561
 #, scheme-format
@@ -8505,11 +8490,11 @@ msgstr ""
 
 #: guix/git.scm:146
 msgid "receiving objects"
-msgstr ""
+msgstr "オブジェクトを受信しています"
 
 #: guix/git.scm:148
 msgid "indexing objects"
-msgstr ""
+msgstr "オブジェクトにインデックスを付けています"
 
 #: guix/git.scm:318
 #, scheme-format
@@ -9762,7 +9747,7 @@ msgstr ""
 #: guix/scripts/refresh.scm:369
 #, scheme-format
 msgid "~a: updating from version ~a to version ~a...~%"
-msgstr ""
+msgstr "~a: バージョン~aからバージョン~aへ更新しています…~%"
 
 #: guix/scripts/refresh.scm:374
 #, scheme-format
@@ -9815,13 +9800,12 @@ msgstr ""
 #, scheme-format
 msgid "Building the following ~d package would ensure ~d dependent packages are rebuilt: ~{~a~^ ~}~%"
 msgid_plural "Building the following ~d packages would ensure ~d dependent packages are rebuilt: ~{~a~^ ~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "以下の~d個のパッケージを構築する場合、それらに依存する~d個のパッケージも再構築されるでしょう: ~{~a~^ ~}~%"
 
 #: guix/scripts/refresh.scm:504
 #, scheme-format
 msgid "~a depends on the following ~d packages: ~{~a~^ ~}~%."
-msgstr ""
+msgstr "~aは以下の~d個のパッケージに依存しています: ~{~a~^ ~}~%。"
 
 #: guix/scripts/refresh.scm:508
 #, scheme-format

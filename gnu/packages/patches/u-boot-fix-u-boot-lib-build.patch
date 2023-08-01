@@ -1,0 +1,24 @@
+Submitted upstream (see:
+https://lists.denx.de/pipermail/u-boot/2023-July/521984.html)
+
+diff --git a/tools/u_boot_pylib/pyproject.toml b/tools/u_boot_pylib/pyproject.toml
+index 3f33caf6f8..037c5d629e 100644
+--- a/tools/u_boot_pylib/pyproject.toml
++++ b/tools/u_boot_pylib/pyproject.toml
+@@ -9,7 +9,7 @@ authors = [
+   { name="Simon Glass", email="sjg@chromium.org" },
+ ]
+ description = "U-Boot python library"
+-readme = "README.md"
++readme = "README.rst"
+ requires-python = ">=3.7"
+ classifiers = [
+     "Programming Language :: Python :: 3",
+@@ -20,3 +20,7 @@ classifiers = [
+ [project.urls]
+ "Homepage" = "https://u-boot.readthedocs.io"
+ "Bug Tracker" = "https://source.denx.de/groups/u-boot/-/issues"
++
++[tool.setuptools.packages.find]
++where = [".."]
++include = ["u_boot_pylib*"]

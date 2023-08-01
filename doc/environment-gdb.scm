@@ -9,4 +9,4 @@
 (package
   (inherit gdb)
   (native-inputs (modify-inputs (package-native-inputs gdb)
-                   (prepend autoconf-2.64 automake texinfo))))
+                   (prepend autoconf-2.69 automake texinfo))))

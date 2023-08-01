@@ -262,34 +262,31 @@ try agda-prelude instead.")
   ;; Upstream's HEAD follows the latest Agda release, but they don't release
   ;; until a newer Agda release comes up, so their releases are always one
   ;; version late.
-  (let* ((revision "1")
-         (commit "814d54b08b360b8e80828065f54b80e3a98a0092"))
-    (package
-      (name "agda-cubical")
-      (version (git-version "0.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/agda/cubical.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0d25gb1qzpx539k62qjsjq4xmzp34qk7n3hmd9y6v8slhrrxw312"))))
-      (build-system agda-build-system)
-      (arguments
-       (list
-        #:gnu-and-haskell? #t
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'build
-              (lambda _
-                (invoke "make"))))))
-      (synopsis "Standard library for Cubical Agda")
-      (description "A standard library for Cubical Agda, comparable to
+  (package
+    (name "agda-cubical")
+    (version "0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agda/cubical.git")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0yfg7gr55n08ly1qgzpcp16s15k1abycppbcdi9lzg1hjryqxcg3"))))
+    (build-system agda-build-system)
+    (arguments
+     (list
+      #:gnu-and-haskell? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (invoke "make"))))))
+    (synopsis "Standard library for Cubical Agda")
+    (description "A standard library for Cubical Agda, comparable to
 agda-stdlib but using cubical methods.")
-      (home-page "https://github.com/agda/cubical")
-      (license license:expat))))
+    (home-page "https://github.com/agda/cubical")
+    (license license:expat)))
 
 (define-public agda-1lab
   ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.3,

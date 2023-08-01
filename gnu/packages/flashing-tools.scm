@@ -46,13 +46,16 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages pciutils)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages libftdi)
@@ -475,30 +478,58 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
 (define-public srecord
   (package
     (name "srecord")
-    (version "1.64")
+    (version "1.65.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/srecord/srecord/"
-                           version "/srecord-" version ".tar.gz"))
+                           (version-major+minor version) "/"
+                           "srecord-" version "-Source.tar.gz"))
        (sha256
-        (base32
-         "1qk75q0k5vzmm3932q9hqz2gp8n9rrdfjacsswxc02656f3l3929"))))
-    (build-system gnu-build-system)
+        (base32 "0i3n6g8i28xx8761nadm6p2nf9y31bywx0isyi0h9rawy5yd1hw1"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Fix building without Git.  Upstream tries to allow it but is buggy.
+           (substitute* "etc/configure.cmake"
+             (("\\(GIT_SHA1\\)") "(FALSE)"))
+           ;; It also tries to install the entire RUNTIME_DEPENDENCY_SET of
+           ;; each executable: libm, libc, libstc++ & more!  Get the cluehammer.
+           (substitute* "etc/packaging.cmake"
+             ((".*# Find standard library DLL.*" match)
+              "ENDFUNCTION()\n\nFUNCTION(WTF no)\n"))
+           ;; Now stop it from deliberately clobbering -DCMAKE_INSTALL_PREFIX.
+           (substitute* "CMakeLists.txt"
+             (("set\\(CMAKE_INSTALL_PREFIX") "#"))))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "SH="
-                            (assoc-ref %build-inputs "bash")
-                            "/bin/bash"))))
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'make-tests-executable
+            (lambda _
+              (for-each
+               (cut chmod <> #o755)
+               ;; We're in a parallel build directory to the sources and tests.
+               (find-files ".." "\\.sh$")))))))
     (inputs
      (list boost libgcrypt))
     (native-inputs
-     (list bison
-           diffutils
-           ghostscript
+     (list doxygen
+           ghostscript                ; for ps2pdf
+           graphviz                   ; the build scripts call this ‘doxygen’…
            groff
-           libtool
-           which))
+           psutils
+           ;; For the tests.
+           diffutils
+           which
+           ;; XXX Work around Guix's currently-broken psutils package.  Remove
+           ;; both and maybe (gnu packages perl) when core-updates is merged.
+           perl
+           perl-ipc-run3))
     (home-page "https://srecord.sourceforge.net/")
     (synopsis "Tools for EPROM files")
     (description "The SRecord package is a collection of powerful tools for

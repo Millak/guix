@@ -228,7 +228,8 @@ options like '--recursive'."
     (let* ((input->package (match-lambda
                              ((name (? package? package) _ ...) package)
                              (_ #f)))
-           (final-inputs   (map input->package %final-inputs))
+           (final-inputs   (map input->package
+                                (%final-inputs (%current-system))))
            (core           (append final-inputs
                                    (append-map (compose (cut filter-map input->package <>)
                                                         package-transitive-inputs)
@@ -590,7 +591,8 @@ all are dependent packages: ~{~a~^ ~}~%")
                                   (string-append (config-directory)
                                                  "/upstream/trustedkeys.kbx"))))
                 (let* ((spec-line
-                        (compose location->string
+                        (compose (cut string-trim-right <> char-set:digit)
+                                 location->string
                                  package-location
                                  update-spec-package))
                        ;; Sort the specs so that we update packages from the

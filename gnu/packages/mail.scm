@@ -830,44 +830,47 @@ Extension (MIME).")
     (version "0.3.11")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://pldaniels.com/altermime/altermime-"
+              (uri (string-append "https://pldaniels.com/altermime/altermime-"
                                   version ".tar.gz"))
               (sha256
                (base32
                 "15zxg6spcmd35r6xbidq2fgcg2nzyv1sbbqds08lzll70mqx4pj7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "CC=gcc"
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'fix-bugs
-           (lambda _
-             (substitute* "MIME_headers.c"
-               (("hinfo->filename, sizeof\\(hinfo->name\\)")
-                "hinfo->filename, sizeof(hinfo->filename)")
-               (("memset\\(hinfo->defects, 0, _MIMEH_DEFECT_ARRAY_SIZE\\);")
-                "memset(hinfo->defects, 0, sizeof(hinfo->defects));"))
-             (substitute* "pldstr.c"
-               (("if \\(\\(st->start\\)&&\\(st->start != '\\\\0'\\)\\)")
-                "if ((st->start)&&(*st->start != '\\0'))"))
-             (substitute* "qpe.c"
-               (("if \\(lineend != '\\\\0'\\)")
-                "if (*lineend != '\\0')"))
-             #t))
-         (add-after 'unpack 'install-to-prefix
-           (lambda _
-             (substitute* "Makefile"
-               (("/usr/local") "${PREFIX}")
-               (("cp altermime.*") "install -D -t ${PREFIX}/bin altermime\n"))
-             #t))
-         (add-after 'unpack 'disable-Werror
-           (lambda _
-             (substitute* "Makefile"
-               (("-Werror") ""))
-             #t)))))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:tests? #f                       ; there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'fix-bugs
+            (lambda _
+              (substitute* "MIME_headers.c"
+                (("hinfo->filename, sizeof\\(hinfo->name\\)")
+                 "hinfo->filename, sizeof(hinfo->filename)")
+                (("memset\\(hinfo->defects, 0, _MIMEH_DEFECT_ARRAY_SIZE\\);")
+                 "memset(hinfo->defects, 0, sizeof(hinfo->defects));"))
+              (substitute* "pldstr.c"
+                (("if \\(\\(st->start\\)&&\\(st->start != '\\\\0'\\)\\)")
+                 "if ((st->start)&&(*st->start != '\\0'))"))
+              (substitute* "qpe.c"
+                (("if \\(lineend != '\\\\0'\\)")
+                 "if (*lineend != '\\0')"))))
+          (add-after 'unpack 'install-to-prefix
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr/local") "${PREFIX}")
+                (("cp altermime.*") "install -D -t ${PREFIX}/bin altermime\n"))))
+          (add-after 'unpack 'disable-Werror
+            (lambda _
+              (substitute* "Makefile"
+                (("-Werror") ""))))
+          (add-after 'unpack 'do-not-strip
+            (lambda _
+              (substitute* "Makefile"
+                (("\\bstrip\\b") "true")))))))
     (home-page "https://pldaniels.com/altermime/")
     (synopsis "Modify MIME-encoded messages")
     (description
@@ -2712,7 +2715,7 @@ Authentication-Results header seen in the wild.")
 (define-public perl-mail-dkim
   (package
     (name "perl-mail-dkim")
-    (version "1.20220520")
+    (version "1.20230630")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2721,18 +2724,22 @@ Authentication-Results header seen in the wild.")
                      ".tar.gz"))
               (sha256
                (base32
-                "0iiny8s1a60pksxzlpkk9b6x6z907m4pdxjbsaih1bdz9g4bii4a"))))
+                "1m6ka1smkcmv682pgqh7npg4fzdfcn1654bs068sqhqgl29rm80g"))))
     (build-system perl-build-system)
     (propagated-inputs
-     (list perl-crypt-openssl-rsa perl-mail-authenticationresults
-           perl-mailtools perl-net-dns))
+     (list perl-crypt-openssl-rsa
+           perl-cryptx
+           perl-mail-authenticationresults
+           perl-mailtools
+           perl-net-dns))
     (native-inputs
-     (list perl-net-dns-resolver-mock perl-test-requiresinternet
+     (list perl-net-dns-resolver-mock
+           perl-test-requiresinternet
            perl-yaml-libyaml))
     (home-page "https://metacpan.org/release/Mail-DKIM")
     (synopsis "Signs/verifies Internet mail with DKIM/DomainKey signatures")
-    (description "Mail::DKIM is a Perl module that implements the new Domain
-Keys Identified Mail (DKIM) standard, and the older Yahoo! DomainKeys standard,
+    (description "Mail::DKIM is a Perl module that implements the @acronym{DKIM,
+Domain Keys Identified Mail} standard, and the older Yahoo! DomainKeys standard,
 both of which sign and verify emails using digital signatures and DNS records.
 Mail-DKIM can be used by any Perl program that wants to provide support for
 DKIM and/or DomainKeys.")
@@ -2773,6 +2780,7 @@ DKIM and/or DomainKeys.")
                (wrap.pl (list "/bin/dkimproxy.in"
                               "/bin/dkimproxy.out")
                         (list "perl-crypt-openssl-rsa"
+                              "perl-cryptx"
                               "perl-io-socket-inet6"
                               "perl-mailtools"
                               "perl-mail-authenticationresults"
@@ -2782,6 +2790,7 @@ DKIM and/or DomainKeys.")
                               "perl-socket6"))
                (wrap.pl (list "/bin/dkim_responder.pl")
                         (list "perl-crypt-openssl-rsa"
+                              "perl-cryptx"
                               "perl-mail-dkim"
                               "perl-mailtools"
                               "perl-mime-tools"
@@ -2790,6 +2799,7 @@ DKIM and/or DomainKeys.")
     (inputs
      (list perl
            perl-crypt-openssl-rsa
+           perl-cryptx
            perl-io-socket-inet6
            perl-mailtools
            perl-mail-authenticationresults
@@ -3794,7 +3804,7 @@ operators and scripters.")
        ;; the patched version, and so do we to not break expectations.
        ;; http://alpine.freeiz.com/alpine/readme/README.patches
        (uri (git-reference
-             (url "http://repo.or.cz/alpine.git")
+             (url "https://repo.or.cz/alpine.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -4027,13 +4037,13 @@ servers.  The 4rev1 and 4 versions of IMAP are supported.")
 (define-public urlscan
   (package
     (name "urlscan")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urlscan" version))
         (sha256
-         (base32 "0rxqdrss34rgnfmbn8ab976dchjbz72wp4ywqrdib119a5xnhqzh"))))
+         (base32 "0zrh2c8p70fq9y7afmpbsirz22nq2qhnks5c5zfmgnm2b9p9iv70"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ; No tests.
@@ -4156,7 +4166,7 @@ It is a replacement for the @command{urlview} program.")
 (define-public ytnef
   (package
     (name "ytnef")
-    (version "2.0")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4165,7 +4175,7 @@ It is a replacement for the @command{urlview} program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pk7jp8yc91nahcb7659khwdid0ibfi7n0135kwfnasak8gr75rz"))))
+                "0rwgr98jn86d37xmgj57pl488kw62q7vq8jjicbbqkxl6vjgh1li"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -4538,7 +4548,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "3.4")
+    (version "3.5")
     (source
      (origin
        (method git-fetch)
@@ -4546,7 +4556,7 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "0jgmi8wqzsnwvfj6w4njzhxhcawbafsdxjkx1ym8r2jx8k4hwhi8"))
+        (base32 "1d45vhs66r6ig5mvmx52i7c2b638y2zc7wgv3lx0pq7dqgjxxsyz"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments

@@ -1,0 +1,41 @@
+Upstream status: taken from upstream.
+
+From a2b0f721d077fdc5c9decb21b975b58fb51a3e8f Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Mon, 22 May 2023 19:21:47 +0200
+Subject: [PATCH] rumpdisk: Do not assume FHS /usr/lib, fixes Guix cross-build.
+
+---
+ rumpdisk/Makefile | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/rumpdisk/Makefile b/rumpdisk/Makefile
+index 60a209b3..b59aaf9a 100644
+--- a/rumpdisk/Makefile
++++ b/rumpdisk/Makefile
+@@ -1,5 +1,5 @@
+ #
+-#   Copyright (C) 2019 Free Software Foundation, Inc.
++#   Copyright (C) 2019, 2023 Free Software Foundation, Inc.
+ #
+ #   This program is free software; you can redistribute it and/or
+ #   modify it under the terms of the GNU General Public License as
+@@ -15,7 +15,6 @@
+ #   along with this program; if not, write to the Free Software
+ #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+-RUMPPATH=/usr/lib
+ RUMPLIBS=rump rumpuser rumpdev rumpdev_disk rumpdev_pci rumpvfs rumpdev_ahcisata rumpdev_piixide rumpdev_ata
+ RUMPEXTRA=rumpdev_scsipi
+ 
+@@ -38,6 +37,6 @@ target = rumpdisk
+ OBJS = $(SRCS:.c=.o)
+ HURDLIBS = machdev ports trivfs shouldbeinlibc iohelp ihash fshelp
+ LDLIBS += -lpthread -lpciaccess -ldl
+-LDLIBS += -Wl,--whole-archive $(RUMPLIBS:%=$(RUMPPATH)/lib%_pic.a) -Wl,--no-whole-archive $(RUMPEXTRA:%=$(RUMPPATH)/lib%_pic.a)
++LDLIBS += -Wl,--whole-archive $(RUMPLIBS:%=-l%_pic) -Wl,--no-whole-archive $(RUMPEXTRA:%=-l%_pic)
+ 
+ include ../Makeconf
+-- 
+2.40.1
+

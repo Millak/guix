@@ -137,7 +137,8 @@
               (wait-for-screen-text marionette
                                     (cut string-contains <> "Log In")
                                     #:ocr #$(file-append tesseract-ocr
-                                                         "/bin/tesseract")))
+                                                         "/bin/tesseract")
+                                    #:timeout 60)) ;for slow systems
 
             (test-assert "can connect to TCP port 5900 on IPv4"
               (wait-for-tcp-port 5900 marionette))

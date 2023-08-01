@@ -2073,7 +2073,7 @@ trading, and risk management in real-life.")
      (list gsl gtk+ ncurses))
     (native-inputs
      (list pkg-config texinfo
-           (texlive-updmap.cfg (list texlive-epsf texlive-tex-texinfo))))
+           (texlive-updmap.cfg (list texlive-epsf texlive-texinfo))))
     (home-page "https://anthonybradford.github.io/optionmatrix/")
     (synopsis "Financial derivative calculator")
     (description

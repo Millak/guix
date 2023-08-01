@@ -1506,14 +1506,14 @@ quality and performance.")
 (define-public libva
   (package
     (name "libva")
-    (version "2.18.0")
+    (version "2.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/intel/libva/releases/download/"
                            version "/libva-" version ".tar.bz2"))
        (sha256
-        (base32 "10j9rm6ajgp3fda7pwl058lchdip0wq20bvydil28ff2l3mpwmx3"))))
+        (base32 "0x113spshsjcqh4pk8rkqq4r8vxf1nm83ym6ppp7zpsrsncfffwn"))))
     (build-system gnu-build-system)
     (native-inputs
      (list config pkg-config))
@@ -2099,7 +2099,7 @@ streaming protocols.")
 (define-public mplayer
   (package
     (name "mplayer")
-    (version "1.4")
+    (version "1.5")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -2107,80 +2107,82 @@ streaming protocols.")
                    version ".tar.xz"))
              (sha256
               (base32
-               "0j5mflr0wnklxsvnpmxvk704hscyn2785hvvihj2i3a7b3anwnc2"))))
+               "11dzrdb74ayvivcid3giqncrfm98hi4aqvg3kjrwji6bnddxa335"))))
     (build-system gnu-build-system)
-    ;; FIXME: Add additional inputs once available.
-    (native-inputs
-     (list pkg-config yasm))
-    (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("cdparanoia" ,cdparanoia)
-       ("ffmpeg" ,ffmpeg-4)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("lame" ,lame)
-       ("libass" ,libass)
-       ("libdvdcss" ,libdvdcss)
-       ("libdvdnav" ,libdvdnav)         ; ignored without libdvdread
-       ("libdvdread" ,libdvdread)       ; ignored without libdvdnav
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmpeg2" ,libmpeg2)
-       ("libmpg123" ,mpg123)            ; audio codec for MP3
-       ("libpng" ,libpng)
-       ("libtheora" ,libtheora)
-       ("libvdpau" ,libvdpau)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libx264" ,libx264)
-       ("libxinerama" ,libxinerama)
-       ("libxv" ,libxv)
-       ("libxxf86dga" ,libxxf86dga)
-       ("mesa" ,mesa)
-       ("opus" ,opus)
-       ("perl" ,perl)
-       ("pulseaudio" ,pulseaudio)
-       ("python" ,python-wrapper)
-       ("sdl" ,sdl)
-       ("speex" ,speex)
-       ("zlib" ,zlib)))
     (arguments
-     `(#:tests? #f                      ; no test target
-       #:phases
-       (modify-phases %standard-phases
-        (replace 'configure
-          ;; configure does not work followed by "SHELL=..." and
-          ;; "CONFIG_SHELL=..."; set environment variables instead
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out"))
-                  (libx11 (assoc-ref inputs "libx11")))
+     (list
+      #:tests? #f                       ; no test target
+      #:configure-flags
+      #~(list (string-append "--prefix=" #$output)
+              "--disable-ffmpeg_a"      ; disables bundled ffmpeg
+              "--disable-iwmmxt"
+              (string-append "--extra-cflags=-I"
+                             #$(this-package-input "libx11")
+                             "/include") ; to detect libx11
+
+              ;; Enable runtime cpu detection where supported,
+              ;; and choose a suitable target.
+              #$@(match (or (%current-target-system)
+                            (%current-system))
+                   ("x86_64-linux"
+                    '("--enable-runtime-cpudetection"
+                      "--target=x86_64-linux"))
+                   ("i686-linux"
+                    '("--enable-runtime-cpudetection"
+                      "--target=i686-linux"))
+                   ("mips64el-linux"
+                    '("--target=mips3-linux"))
+                   (_ (list (string-append
+                             "--target="
+                             (or (%current-target-system)
+                                 (nix-system->gnu-triplet
+                                  (%current-system))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; configure does not work followed by "SHELL=..." and
+            ;; "CONFIG_SHELL=..."; set environment variables instead
+            (lambda* (#:key (configure-flags '()) #:allow-other-keys)
               (substitute* "configure"
                 (("#! /bin/sh") (string-append "#!" (which "sh"))))
               (setenv "SHELL" (which "bash"))
               (setenv "CONFIG_SHELL" (which "bash"))
-              (invoke "./configure"
-                      (string-append "--extra-cflags=-I"
-                                     libx11 "/include") ; to detect libx11
-                      "--disable-ffmpeg_a" ; disables bundled ffmpeg
-                      (string-append "--prefix=" out)
-                      ;; Enable runtime cpu detection where supported,
-                      ;; and choose a suitable target.
-                      ,@(match (or (%current-target-system)
-                                   (%current-system))
-                          ("x86_64-linux"
-                           '("--enable-runtime-cpudetection"
-                             "--target=x86_64-linux"))
-                          ("i686-linux"
-                           '("--enable-runtime-cpudetection"
-                             "--target=i686-linux"))
-                          ("mips64el-linux"
-                           '("--target=mips3-linux"))
-                          (_ (list (string-append
-                                    "--target="
-                                    (or (%current-target-system)
-                                        (nix-system->gnu-triplet
-                                         (%current-system)))))))
-                      "--disable-iwmmxt")))))))
+              (apply invoke "./configure" configure-flags))))))
+    ;; FIXME: Add additional inputs once available.
+    (native-inputs
+     (list pkg-config yasm))
+    (inputs
+     (list alsa-lib
+           cdparanoia
+           ffmpeg-4
+           fontconfig
+           freetype
+           giflib
+           lame
+           libass
+           libdvdcss
+           libdvdnav                    ; ignored without libdvdread
+           libdvdread                   ; ignored without libdvdnav
+           libjpeg-turbo
+           libmpeg2
+           mpg123                       ; audio codec for MP3
+           libpng
+           libtheora
+           libvdpau
+           libvorbis
+           libx11
+           libx264
+           libxinerama
+           libxv
+           libxxf86dga
+           mesa
+           opus
+           perl
+           pulseaudio
+           python-wrapper
+           sdl
+           speex
+           zlib))
     (home-page "https://www.mplayerhq.hu")
     (synopsis "Audio and video player")
     (description "MPlayer is a movie player.  It plays most MPEG/VOB, AVI,
@@ -2192,7 +2194,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.35.1")
+    (version "0.36.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2200,7 +2202,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1lzaijqddr4ir9nb27cv9ki20b0k5jns2k47v4xvmi30v1gi71ha"))))
+               (base32 "1ri06h7pv6hrxmxxc618n9hymlgr0gfx38bqq5dcszdgnlashsgk"))))
     (build-system waf-build-system)
     (arguments
      (list
@@ -2209,7 +2211,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
           (add-after 'unpack 'patch-file-names
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "player/lua/ytdl_hook.lua"
-		(("\"yt-dlp\",")
+                (("\"yt-dlp\",")
                  (string-append
                   "\"" (search-input-file inputs "bin/yt-dlp") "\",")))))
           (add-before 'configure 'build-reproducibly
@@ -2338,7 +2340,7 @@ the last played position, etc.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.25.1")
+    (version "1.25.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mikf/gallery-dl"
@@ -2346,7 +2348,7 @@ the last played position, etc.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1zhcd5qnnlmr0qp72rj4bfw0lz4gz1bl65wfn7w21c2xr36nbkxs"))))
+                "0dshv4j2gmvd2grwcvp1vsrqsji05r13jvw0cqi9srl66kvqbbga"))))
     (build-system python-build-system)
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")
@@ -3272,7 +3274,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.16.0")
+    (version "7.18.0")
     (source
      (origin
        (method git-fetch)
@@ -3281,7 +3283,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aas3zjc9xh7sn01xv67fa26bzlz9sapbgzsplmikwc9lwfl5pqi"))))
+        (base32 "1b79wcf4l099w6bp4jlhgdwnbaydkrp8rj1hflggihzn3awcrayy"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4777,7 +4779,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4786,7 +4788,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10s76x4hwm4ccxdy8cv1nks028hldjmx25yy42fnjc4vscy7yd8a"))
+                "1hx2y9lvca7fzmy3996z08bzy65z1b0ip9d4jnnwd0wamwv4c4bb"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
@@ -4794,8 +4796,7 @@ create smoother and stable videos.")
                             (("(SET\\(PYTHON_MODULE_PATH.*)\\)" _ set)
                              (string-append set " CACHE PATH "
                                             "\"Python bindings directory\")")))
-                          (delete-file-recursively "thirdparty")
-                          #t))))
+                          (delete-file-recursively "thirdparty")))))
     (build-system cmake-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -4841,7 +4842,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
 (define-public openshot
   (package
     (name "openshot")
-    (version "3.1.0")
+    (version "3.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4850,7 +4851,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m1mq8kws00mwijx8j5gqharkw63jqyywbnzsswgcxlhmsyv3k4v"))
+                "11wmcipcx5icjcw4vaai5z06p8xj1j39dwl6kkjn5db2y00gak4h"))
        (modules '((guix build utils)))
        (snippet
         '(begin

@@ -33,7 +33,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
-;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2022, 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
@@ -2559,6 +2559,25 @@ non-standard variants of @code{crypt}, the various building blocks
 used in @code{crypt} are also supplied separately.")
     ;; Files in the 'fcrypt' directory are covered by a BSD licence.
     (license (list license:perl-license license:bsd-3))))
+
+(define-public perl-cryptx
+  (package
+  (name "perl-cryptx")
+  (version "0.078")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (string-append "mirror://cpan/authors/id/M/MI/MIK/CryptX-"
+                         version ".tar.gz"))
+     (sha256
+      (base32 "1gdw33k8h7izjfb4zy9j1qfq4ffbqzpvhcf9ncy79mgp8890n5lk"))))
+  (build-system perl-build-system)
+  (home-page "https://metacpan.org/release/CryptX")
+  (synopsis "Self-contained cryptographic toolkit based on LibTomCrypt")
+  (description
+   "These self-contained Perl modules provide cryptography based on the
+LibTomCrypt library.")
+  (license license:perl-license)))
 
 (define-public perl-cwd-guard
   (package
@@ -6034,6 +6053,28 @@ installed.")
 or JSON::XS is already loaded, in which case it uses that module.  Otherwise
 it tries to load Cpanel::JSON::XS, then JSON::XS, then JSON::PP in order, and
 either uses the first module it finds or throws an error.")
+    (license (package-license perl))))
+
+(define-public perl-json-parse
+  (package
+    (name "perl-json-parse")
+    (version "0.62")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/B/BK/BKB/JSON-Parse-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1nb6zxf6p42dmdmdv4c8x0dnra2sdxq21n6nvl0p8jcjjc7ihwv2"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/JSON-Parse")
+    (synopsis "Perl Module for parsing JSON")
+    (description "@code{JSON::Parse} is a module for parsing JSON.  It offers
+@code{parse_json} which takes a string containing JSON and returns an
+equivalent Perl structure, @code{valid_json} which returns true or false
+depending on whether the JSON is correct or not, @code{assert_valid_json}
+which produces a descriptive fatal error if the JSON is invalid, and so on.")
     (license (package-license perl))))
 
 (define-public perl-json-xs
@@ -9607,6 +9648,30 @@ which it is called.")
 @code{median()}, @code{mean()}, @code{variance()} and @code{stddev()}.")
     (license license:lgpl2.0)))
 
+(define-public perl-statistics-distributions
+  (package
+    (name "perl-statistics-distributions")
+    (version "1.02")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MI/MIKEK/Statistics-Distributions-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "1j1kswl98f4i9dn176f9aa3y9bissx2sscga5jm3gjl4pxm3k7zr"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/pod/Statistics::Distributions")
+    (synopsis "Calculating some values of common statistical distributions")
+    (description
+     "@code{Statistics::Distributions} calculates percentage points (5
+significant digits) of the u (standard normal) distribution, the student's t
+distribution, the chi-square distribution and the F distribution.  It can also
+calculate the upper probability (5 significant digits) of the u (standard
+normal), the chi-square, the t and the F distribution.")
+    (license license:perl-license)))
+
 (define-public perl-statistics-pca
   (package
     (name "perl-statistics-pca")
@@ -10608,6 +10673,46 @@ used to justify strings to various alignment styles.")
     (description "The Text::Balanced module can be used to extract delimited
 text sequences from strings.")
     (license (package-license perl))))
+
+(define-public perl-text-bibtex
+  (package
+    (name "perl-text-bibtex")
+    (version "0.88")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/A/AM/AMBS/Text-BibTeX-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "0b7lmjvfmypps1nw6nsdikgaakm0n0g4186glaqazg5xd1p5h55h"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'add-output-directory-to-rpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "inc/MyBuilder.pm"
+               (("-Lbtparse" line)
+                (string-append "-Wl,-rpath="
+                               (assoc-ref outputs "out") "/lib " line)))
+             #t))
+         (add-after 'unpack 'install-libraries-to-/lib
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "Build.PL"
+               (("lib64") "lib"))
+             #t)))))
+    (native-inputs
+     (list perl-capture-tiny perl-config-autoconf perl-extutils-libbuilder
+           perl-module-build))
+    (home-page "https://metacpan.org/release/Text-BibTeX")
+    (synopsis "Interface to read and parse BibTeX files")
+    (description "@code{Text::BibTeX} is a Perl library for reading, parsing,
+and processing BibTeX files.  @code{Text::BibTeX} gives you access to the data
+at many different levels: you may work with BibTeX entries as simple field to
+string mappings, or get at the original form of the data as a list of simple
+values (strings, macros, or numbers) pasted together.")
+    (license license:perl-license)))
 
 (define-public perl-text-charwidth
   (package

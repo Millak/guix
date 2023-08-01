@@ -2,6 +2,7 @@
 ;;; Copyright © 2012, 2013, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,7 +24,8 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix utils))
 
 (define-public m4
   (package
@@ -54,6 +56,14 @@
             (substitute* "tests/test-execute.sh"
               (("4 5 6")
                "4 6"))))
+        ,@(if (target-hurd?)
+              '((add-after 'unpack 'skip-stack-overflow-tests
+                  (lambda _
+                    (substitute* '("tests/test-sigsegv-catch-stackoverflow1.c"
+                                   "tests/test-sigsegv-catch-stackoverflow2.c")
+                      (("(^| )main *\\(.*" all)
+                       (string-append all "{\n  exit (77);//"))))))
+              '())
         (add-after 'unpack 'configure-shell
           (lambda* (#:key native-inputs inputs #:allow-other-keys)
             (let ((/bin/sh (search-input-file (or native-inputs inputs)

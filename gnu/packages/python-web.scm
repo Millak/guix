@@ -778,6 +778,34 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 emit information from within their applications to the AWS X-Ray service.")
     (license license:asl2.0)))
 
+(define-public python-ovh
+  (package
+    (name "python-ovh")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ovh" version))
+              (sha256
+               (base32
+                "0ygniv12lixh9rvnjcd01gzbzk2b5xwcg2a59b7964a77dd9p3qh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; XXX: tests require networking
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-black
+                         python-coverage
+                         python-flake8
+                         python-isort
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-sphinx
+                         python-wheel))
+    (home-page "https://api.ovh.com")
+    (synopsis "Interact with OVHcloud APIs")
+    (description "This package provides the official module to perform HTTP requests
+to the OVHcloud APIs.")
+    (license license:bsd-3)))
+
 (define-public python-cbor2
   (package
     (name "python-cbor2")
@@ -1804,6 +1832,36 @@ is Python’s.")
 service.")
     (license license:expat)))
 
+(define-public python-openai
+  (package
+    (name "python-openai")
+    (version "0.27.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "openai" version))
+              (sha256
+               (base32
+                "0dlmxnib71fih9xzmd3v41alwv4qb8qrxixsrrsf5vmigmf0k0r4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These require internet access and an openai API key.
+      '(list "--ignore=openai/tests/asyncio/test_endpoints.py"
+             "--ignore=openai/tests/test_endpoints.py"
+             "-k" "not test_requestor_cycle_sessions\
+ and not test_requestor_sets_request_id\
+ and not test_file_cli")))
+    (propagated-inputs (list python-aiohttp python-requests python-tqdm
+                             python-typing-extensions))
+    (native-inputs (list python-black python-pytest python-pytest-asyncio
+                         python-pytest-mock))
+    (home-page "https://github.com/openai/openai-python")
+    (synopsis "Python client library for the OpenAI API")
+    (description "This package provides a Python client library for the
+OpenAI API.")
+    (license license:expat)))
+
 (define-public python-openapi-schema-validator
   (package
     (name "python-openapi-schema-validator")
@@ -2200,7 +2258,7 @@ RFC6455, regardless of your programming paradigm.")
 (define-public hypercorn
   (package
     (name "hypercorn")
-    (version "0.14.3")
+    (version "0.14.4")
     (source (origin
               (method git-fetch) ;PyPI does not have tests
               (uri (git-reference
@@ -2209,7 +2267,7 @@ RFC6455, regardless of your programming paradigm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hkph0sdr94hxmrq1grnh842snm561sw4az5q6a3ba9hqnrl890h"))))
+                "0zyf5b8959sd12ycmqzvsb8746i3gn76rz55gxvix5cwj672m7yx"))))
     (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
     (propagated-inputs
@@ -8510,6 +8568,35 @@ starlette.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-fastapi)
        (replace "python-starlette" python-starlette-for-fastapi-0.88)))))
+
+(define-public python-fastapi-csrf-protect
+  (package
+    (name "python-fastapi-csrf-protect")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aekasitt/fastapi-csrf-protect")
+                    ;; This commit corresponds to version 0.3.1
+                    (commit "536acd651d0d3f9862a0b753ba64dd2d187f8655")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zlwa0fplmcihylyvakskwkbkl2cq291fmys5x6wrpfdbjrqbgbj"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-fastapi python-itsdangerous
+           python-pydantic))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/aekasitt/fastapi-csrf-protect")
+    (synopsis "Cross-Site Request Forgery (XSRF) protection")
+    (description
+     "This package provides a stateless implementation of @dfn{Cross-Site
+Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
+pattern.")
+    (license license:expat)))
 
 (define-public python-pyactiveresource
   (package

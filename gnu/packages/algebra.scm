@@ -236,8 +236,7 @@ the real span of the lattice.")
                (base32
                 "03swii601kxnphl6v7wv0rh2xn4rz6xbljzvfw5v9py6w3z5nm63"))))
     (build-system gnu-build-system)
-    (native-inputs (list (texlive-updmap.cfg
-                          (list texlive-amsfonts))))
+    (native-inputs (list (texlive-updmap.cfg)))
     (inputs (list gmp libx11 perl readline))
     (arguments
      '(#:make-flags '("all")
@@ -406,7 +405,7 @@ precision.")
            hevea
            python-wrapper
            readline
-           texlive-tiny))
+           (texlive-updmap.cfg)))
     (home-page "https://www-fourier.ujf-grenoble.fr/~parisse/giac.html")
     (synopsis "Computer algebra system")
     (description
@@ -1190,7 +1189,7 @@ features, and more.")
 (define-public xtensor
   (package
     (name "xtensor")
-    (version "0.24.0")
+    (version "0.24.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1198,7 +1197,7 @@ features, and more.")
                     (commit version)))
               (sha256
                (base32
-                "14fpzwdq26p2fqdrmc78hny9pp09k9c53jnwlh7f8x54ikzm23c2"))
+                "0gf5m5p61981pv7yh5425lcv8dci948ri37hn1zlli7xg54x0g3i"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs

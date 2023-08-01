@@ -10,7 +10,7 @@
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
@@ -2726,7 +2726,7 @@ to CONFIG."
   (match (static-networking-addresses config)
     ((and addresses (first _ ...))
      `("--ipv6" "/servers/socket/26"
-       "--interface" ,(network-address-device first)
+       "--interface" ,(string-append "/dev/" (network-address-device first))
        ,@(append-map (lambda (address)
                        `(,(if (network-address-ipv6? address)
                               "--address6"
@@ -2769,7 +2769,10 @@ to CONFIG."
                            (format #t "starting '~a~{ ~s~}'~%"
                                    #$(file-append hurd "/hurd/pfinet")
                                    options)
-                           (apply invoke #$(file-append hurd "/bin/settrans") "-fac"
+                           (apply invoke #$(file-append hurd "/bin/settrans")
+                                  "--active"
+                                  "--create"
+                                  "--keep-active"
                                   "/servers/socket/2"
                                   #$(file-append hurd "/hurd/pfinet")
                                   options)))))))

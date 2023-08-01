@@ -216,7 +216,7 @@ communication, encryption, decryption, signatures, etc.")
 (define-public signify
   (package
     (name "signify")
-    (version "30")
+    (version "31")
     (home-page "https://github.com/aperezdc/signify")
     (source (origin
               (method url-fetch)
@@ -224,17 +224,18 @@ communication, encryption, decryption, signatures, etc.")
                                   "/download/v" version "/signify-" version ".tar.xz"))
               (sha256
                (base32
-                "11l67j04gyxnlw6zrzsygqs5cgsc1sww1rh0apl05yay131hd17n"))))
+                "0x1bipfphnyvf2kl7n9q4gawaglma79368vb8whama6lxsggsm8i"))))
     (build-system gnu-build-system)
     ;; TODO Build with libwaive (described in README.md), to implement something
     ;; like OpenBSD's pledge().
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -332,7 +333,7 @@ OpenBSD tool of the same name.")
        ("googletest-source" ,(package-source googletest))
        ("perl" ,perl)))
     (inputs
-     (list attr fuse openssl-1.1 tinyxml2))
+     (list attr fuse-2 openssl-1.1 tinyxml2))
     (arguments
      `(#:configure-flags (list "-DUSE_INTERNAL_TINYXML=OFF")
        #:phases
@@ -1210,7 +1211,7 @@ Features:
      (list pkg-config))
     (inputs
      (list nettle libxml2))
-    (home-page "http://stoken.sf.net")
+    (home-page "https://stoken.sf.net")
     (synopsis "Software Token for cryptographic authentication")
     (description
      "@code{stoken} is a token code generator compatible with RSA SecurID
@@ -1478,7 +1479,7 @@ non-encrypted files.")
 (define-public cryfs
   (package
     (name "cryfs")
-    (version "0.11.3")
+    (version "0.11.4")
     (source
      (origin
        (method url-fetch)
@@ -1486,7 +1487,7 @@ non-encrypted files.")
              "https://github.com/cryfs/cryfs/releases/download/"
              version "/cryfs-" version ".tar.xz"))
        (sha256
-        (base32 "1h41dhdfk2nll0vx5i66mgrdalv6kccwq5yx99gridywxw6qxxhq"))))
+        (base32 "0a48qijfrd02ianp19x3kz24w1pgigmlxdr5nks0gag7z5b2s7m7"))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((guix build cmake-build-system)
@@ -1513,14 +1514,7 @@ non-encrypted files.")
              (when tests?
                (substitute* "CMakeLists.txt"
                  (("option.BUILD_TESTING .build test cases. OFF.")
-                  "option(BUILD_TESTING \"build test cases\" ON)")))
-             ;; work around a missing import fixed upstream in boost 1.78
-             ;; See https://github.com/boostorg/process/issues/213
-             (substitute* (find-files "." "subprocess.cpp$")
-               (("#include <boost/process.hpp>.*" line)
-                (string-append
-                 "#include <algorithm>\n"
-                 line)))))
+                  "option(BUILD_TESTING \"build test cases\" ON)")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -1538,7 +1532,7 @@ non-encrypted files.")
     (native-inputs
      (list pkg-config python-wrapper))
     (inputs
-     (list boost curl fuse range-v3 spdlog))
+     (list boost curl fuse-2 range-v3 spdlog))
     (home-page "https://www.cryfs.org/")
     (synopsis "Encrypted FUSE filesystem for the cloud")
     (description "CryFS encrypts your files, so you can safely store them anywhere.
@@ -1675,7 +1669,7 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
 (define-public libxcrypt
   (package
     (name "libxcrypt")
-    (version "4.4.33")
+    (version "4.4.36")
     (source
      (origin
        (method git-fetch)
@@ -1684,7 +1678,7 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "174k5cj95617akg6pplv371mpd35j9q8il245f2zcpq76yz4qydl"))))
+        (base32 "1yhpjjjv38y14nrj15bkndq824v42plndgi3k8mmc04grj1fbnjf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf

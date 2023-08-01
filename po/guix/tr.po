@@ -2,23 +2,24 @@
 # Copyright (C) 2021 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
 # Muha Aliss <muhaaliss@gmail.com>, 2021.
-# MY NAME <wonasal634@iconzap.com>, 2022.
+# MY NAME <wonasal634@iconzap.com>, 2022, 2023.
 # solymr f <onurfidangul@gmail.com>, 2023.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-05-17 15:21+0000\n"
-"Last-Translator: solymr f <onurfidangul@gmail.com>\n"
+"PO-Revision-Date: 2023-07-31 12:53+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/guix/guix/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -99,7 +100,7 @@ msgstr "Bu basit bir servis."
 #: gnu/services.scm:341
 #, scheme-format
 msgid "modify-services: service '~a' not found in service list"
-msgstr ""
+msgstr "servisleri değiştir: servis listesinde '~a' servisi bulunamadı"
 
 #: gnu/services.scm:422
 #, fuzzy
@@ -227,7 +228,7 @@ msgstr "'~a' türünde hizmet bulunamadı"
 #: gnu/system.scm:217
 #, scheme-format
 msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
-msgstr ""
+msgstr "'hosts-file' alanı kullanımdan kaldırıldı, lütfen bunun yerine 'hosts-service-type' kullanın~%"
 
 #: gnu/system.scm:397
 #, scheme-format
@@ -269,7 +270,7 @@ msgstr ""
 #: gnu/system.scm:1155
 #, scheme-format
 msgid "using a string for file '~a' is deprecated; use 'plain-file' instead~%"
-msgstr ""
+msgstr "'~a' dosyası için bir dize kullanmak kullanımdan kaldırılmıştır; bunun yerine 'düz dosya' kullanın~%"
 
 #: gnu/system.scm:1171
 #, scheme-format
@@ -279,7 +280,7 @@ msgstr "'~a' için bir monadik değer kullanılması kullanımdan kaldırılmı�
 #: gnu/system.scm:1217
 #, scheme-format
 msgid "representing setuid programs with file-like objects is deprecated; use 'setuid-program' instead~%"
-msgstr ""
+msgstr "setuid programlarının dosya benzeri nesnelerle temsil edilmesi kullanımdan kaldırılmıştır; bunun yerine 'setuid-program' kullanın~%"
 
 #: gnu/system.scm:1319
 msgid "missing root file system"
@@ -295,6 +296,8 @@ msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
 msgstr ""
+"Verilen dosyaya göre @file{/etc/fstab} dosyasını doldurun\n"
+"sistem nesneleri."
 
 #: gnu/services/base.scm:357
 msgid ""
@@ -324,13 +327,11 @@ msgstr ""
 #: gnu/services/base.scm:713
 #, scheme-format
 msgid "host name '~a' contains invalid characters"
-msgstr ""
+msgstr "'~a' ana bilgisayar adı geçersiz karakterler içeriyor"
 
 #: gnu/services/base.scm:763
-#, fuzzy
-#| msgid "Populate the @file{/etc} directory."
 msgid "Populate the @file{/etc/hosts} file."
-msgstr "@file{/etc}'deki dizini doldur."
+msgstr "@file{/etc/hosts} dosyasını doldurun."
 
 #: gnu/services/base.scm:780
 msgid "Initialize the machine's host name."
@@ -338,7 +339,7 @@ msgstr ""
 
 #: gnu/services/base.scm:811
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
-msgstr ""
+msgstr "Linux sanal terminallerinin UTF-8 modunda çalıştığından emin olun."
 
 #: gnu/services/base.scm:870
 msgid ""
@@ -369,6 +370,8 @@ msgid ""
 "Provide console login using the @command{agetty}\n"
 "program."
 msgstr ""
+"@command{agetty} programını kullanarak konsol girişi \n"
+"sağlayın."
 
 #: gnu/services/base.scm:1263
 msgid ""
@@ -385,17 +388,19 @@ msgstr ""
 
 #: gnu/services/base.scm:1572
 msgid "Service syslog has been asked to reload its settings file."
-msgstr ""
+msgstr "Hizmet sistem günlüğünden ayarlar dosyasını yeniden yüklemesi istendi."
 
 #: gnu/services/base.scm:1574
 msgid "Service syslog is not running."
-msgstr ""
+msgstr "Hizmet sistem günlüğü çalışmıyor."
 
 #: gnu/services/base.scm:1591
 msgid ""
 "Run the syslog daemon, @command{syslogd}, which is\n"
 "responsible for logging system messages."
 msgstr ""
+"@command{syslogd} syslog daemon'unu çalıştırın.\n"
+"sistem mesajlarının kaydedilmesinden sorumludur."
 
 #: gnu/services/base.scm:1630
 #, scheme-format
@@ -405,7 +410,7 @@ msgstr ""
 #: gnu/services/base.scm:1640
 #, scheme-format
 msgid "invalid input for 'pam-limits-service-type'~%"
-msgstr ""
+msgstr "\"pam-limits-service-type\"~% için geçersiz girdi"
 
 #: gnu/services/base.scm:1649
 msgid ""
@@ -433,11 +438,11 @@ msgstr ""
 
 #: gnu/services/base.scm:2407
 msgid "This service adds udev rules."
-msgstr ""
+msgstr "Bu hizmet, udev kurallarını ekler."
 
 #: gnu/services/base.scm:2497
 msgid "Turn on the virtual memory swap area."
-msgstr ""
+msgstr "Sanal bellek takas alanını etkinleştirin."
 
 #: gnu/services/base.scm:2539
 msgid ""
@@ -456,22 +461,22 @@ msgstr ""
 #: gnu/services/base.scm:2637
 #, scheme-format
 msgid "address '~a' lacks a network mask"
-msgstr ""
+msgstr "'~a' adresinde ağ maskesi eksik"
 
 #: gnu/services/base.scm:2643
 #, scheme-format
 msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
-msgstr ""
+msgstr "24 bitlik bir ağ maskesi için @samp{\"~a/24\"} yazın."
 
 #: gnu/services/base.scm:2724
 #, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
-msgstr ""
+msgstr "ağ bağlantıları şu anda GNU/Hurd~% üzerinde göz ardı ediliyor"
 
 #: gnu/services/base.scm:2749
 #, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr ""
+msgstr "'~a'~% için ağ rotası yok sayılıyor"
 
 #: gnu/services/base.scm:2938
 msgid ""
@@ -492,7 +497,7 @@ msgstr ""
 #: gnu/services/certbot.scm:159
 #, scheme-format
 msgid "~a may need to be run~%"
-msgstr ""
+msgstr "~a'nın çalıştırılması gerekebilir~%"
 
 #: gnu/services/certbot.scm:213
 msgid ""
@@ -504,7 +509,7 @@ msgstr ""
 #: gnu/services/configuration.scm:101
 #, scheme-format
 msgid "invalid value ~s for field '~a'"
-msgstr ""
+msgstr "'~a' alanı için geçersiz değer ~s"
 
 #: gnu/services/configuration.scm:216
 #, scheme-format
@@ -519,12 +524,12 @@ msgstr ""
 #: gnu/services/file-sharing.scm:74
 #, scheme-format
 msgid "salt value must be a string of ~d characters"
-msgstr ""
+msgstr "saf değeri ~d karakterlik bir dizi olmalıdır"
 
 #: gnu/services/file-sharing.scm:670
 #, scheme-format
 msgid "Wait period expired; killing transmission-daemon (pid ~a).~%"
-msgstr ""
+msgstr "Bekleme süresi doldu; iletim-daemon programı (pid ~a).~% öldürülüyor"
 
 #: gnu/services/file-sharing.scm:673
 msgid ""
@@ -538,11 +543,11 @@ msgstr ""
 
 #: gnu/services/file-sharing.scm:689
 msgid "Service transmission-daemon is not running."
-msgstr ""
+msgstr "Servis iletim-daemon'u programı çalışmıyor."
 
 #: gnu/services/file-sharing.scm:793
 msgid "Share files using the BitTorrent protocol."
-msgstr ""
+msgstr "BitTorrent protokolünü kullanarak dosyaları paylaşın."
 
 #: gnu/services/networking.scm:297
 msgid "Add a list of known Facebook hosts to @file{/etc/hosts}"
@@ -612,7 +617,7 @@ msgstr ""
 #: gnu/services/networking.scm:1164
 #, scheme-format
 msgid "the 'iwd?' field is deprecated, please use 'shepherd-requirement' field instead~%"
-msgstr ""
+msgstr "\"iwd?\" alan kullanımdan kaldırıldı, lütfen bunun yerine 'shepherd-requirement' alanını kullanın~%"
 
 #: gnu/services/networking.scm:1312
 msgid ""
@@ -620,12 +625,18 @@ msgid ""
 "NetworkManager}, a network management daemon that aims to simplify wired and\n"
 "wireless networking."
 msgstr ""
+"@uref{https://wiki.gnome.org/Projects/NetworkManager'ı çalıştırın,\n"
+"NetworkManager},\n"
+"kablolu ve kablosuz ağları basitleştirmeyi amaçlayan bir ağ yönetimi arka\n"
+"plan programı."
 
 #: gnu/services/networking.scm:1396
 msgid ""
 "Run @url{https://01.org/connman,Connman},\n"
 "a network connection manager."
 msgstr ""
+"@url{https://01.org/connman,Connman} komutunu çalıştırın,\n"
+"bir ağ bağlantı yöneticisi."
 
 #: gnu/services/networking.scm:1418
 msgid ""
@@ -633,6 +644,9 @@ msgid ""
 "ModemManager}, a modem management daemon that aims to simplify dialup\n"
 "networking."
 msgstr ""
+"@uref{https://wiki.gnome.org/Projects/ModemManager'ı çalıştırın,\n"
+"ModemManager}, çevirmeli bağlantıyı basitleştirmeyi amaçlayan bir modem yönetimi arka plan programı\n"
+"ağ."
 
 #: gnu/services/networking.scm:1509
 msgid ""
@@ -650,16 +664,20 @@ msgid ""
 "Run the WPA Supplicant daemon, a service that\n"
 "implements authentication, key negotiation and more for wireless networks."
 msgstr ""
+"Bir hizmet olan WPA Supplicant arka plan programını çalıştırın.\n"
+"kablosuz ağlar için kimlik doğrulama, anahtar anlaşması ve daha fazlasını uygular."
 
 #: gnu/services/networking.scm:1647
 msgid ""
 "Run the @uref{https://w1.fi/hostapd/, hostapd} daemon for Wi-Fi access\n"
 "points and authentication servers."
 msgstr ""
+"Wi-Fi erişimi için @uref{https://w1.fi/hostapd/, hostapd} arka plan programını çalıştırın\n"
+"noktalar ve doğrulama sunucuları."
 
 #: gnu/services/networking.scm:1681
 msgid "Run hostapd to simulate WiFi connectivity."
-msgstr ""
+msgstr "WiFi bağlantısını simüle etmek için hostapd'yi çalıştırın."
 
 #: gnu/services/networking.scm:1738
 msgid ""
@@ -670,11 +688,11 @@ msgstr ""
 
 #: gnu/services/networking.scm:1784
 msgid "Run @command{iptables-restore}, setting up the specified rules."
-msgstr ""
+msgstr "@command{iptables-restore} komutunu çalıştırın ve belirtilen kuralları ayarlayın."
 
 #: gnu/services/networking.scm:1853
 msgid "Run @command{nft}, setting up the specified ruleset."
-msgstr ""
+msgstr "@command{nft} komutunu çalıştırın, belirtilen kural setini ayarlayın."
 
 #: gnu/services/networking.scm:1960
 msgid ""
@@ -687,6 +705,8 @@ msgid ""
 "Connect to the Yggdrasil mesh network.\n"
 "See @command{yggdrasil -genconf} for config options."
 msgstr ""
+"Yggdrasil örgü ağına bağlanın.\n"
+"Yapılandırma seçenekleri için @command{yggdrasil -genconf} kullanın."
 
 #: gnu/services/networking.scm:2204
 msgid ""
@@ -699,6 +719,8 @@ msgid ""
 "Run @uref{https://www.keepalived.org/, Keepalived}\n"
 "routing software."
 msgstr ""
+"@uref{https://www.keepalived.org/, Keepalived} komutunu çalıştırın\n"
+"yönlendirme yazılımı."
 
 #: gnu/services/shepherd.scm:147
 msgid ""
@@ -706,6 +728,9 @@ msgid ""
 "process.  The Shepherd takes care of managing services such as daemons by\n"
 "ensuring they are started and stopped in the right order."
 msgstr ""
+"GNU Shepherd'ı PID 1 --- yani işletim sisteminin ilk işlemi olarak çalıştırın.\n"
+"Shepherd, daemon gibi servislerin yönetilmesiyle ilgilenir.\n"
+"doğru sırada başlatılmasını ve durdurulmasını sağlamak."
 
 #: gnu/services/shepherd.scm:239
 #, scheme-format
@@ -715,7 +740,7 @@ msgstr "'~a' hizmeti birden fazla kez sağlandı"
 #: gnu/services/shepherd.scm:254
 #, scheme-format
 msgid "service '~a' requires '~a', which is not provided by any service"
-msgstr ""
+msgstr "'~a' servisi herhangi bir servis tarafından sağlanmayan '~a' gerektirir"
 
 #: gnu/services/shepherd.scm:637
 msgid ""
@@ -725,6 +750,11 @@ msgid ""
 "seconds after @code{SIGTERM} has been sent are terminated with\n"
 "@code{SIGKILL}."
 msgstr ""
+"@code{user-processes} hizmeti şunlardan sorumludur:\n"
+"kök dosya sisteminin yeniden bağlanabilmesi için tüm işlemleri sonlandırmak\n"
+"salt okunur, yeniden başlatmadan/durdurmadan hemen önce. İşlemler birkaç dakika sonra hala çalışıyor\n"
+"@code{SIGTERM} gönderildikten sonraki saniyeler ile sonlandırılır\n"
+"@kod{SIGKILL}."
 
 #: gnu/services/samba.scm:161
 msgid ""
@@ -734,16 +764,23 @@ msgid ""
 "into Active Directory environments.  It can function both as a domain\n"
 "controller or as a regular domain member."
 msgstr ""
+"SMB/CIFS protokolünü kullanan tüm istemciler için bir ağ dosyası ve yazdırma hizmeti olan \n"
+"@uref{https://www.samba.org/, Samba}'yı çalıştırın.\n"
+"Samba, Linux/Unix Sunucularını ve Masaüstlerini Active Directory ortamlarına sorunsuz bir şekilde entegre etmek için önemli bir bileşendir. \n"
+"Hem etki alanı denetleyicisi hem de normal\n"
+" etki alanı üyesi olarak işlev görebilir."
 
 #: gnu/services/samba.scm:266
 msgid "Web Service Discovery Daemon"
-msgstr ""
+msgstr "Web Hizmeti Keşif Daemon'u"
 
 #: gnu/services/version-control.scm:178
 msgid ""
 "Expose Git repositories over the insecure @code{git://} TCP-based\n"
 "protocol."
 msgstr ""
+"Git depolarını, güvensiz @code{git://} TCP tabanlı protokol üzerinden kullanıma \n"
+"sunun."
 
 #: gnu/services/version-control.scm:416
 msgid ""
@@ -758,6 +795,8 @@ msgid ""
 "Run Gitile, a small Git forge.  Expose public repositories\n"
 "on the web."
 msgstr ""
+"Küçük bir Git forge olan Gitile'ı çalıştırın. Web'deki\n"
+"genel depoları açığa çıkarın."
 
 #: gnu/home/services.scm:144
 msgid ""
@@ -787,7 +826,7 @@ msgstr "Ortam değişkenlerini ayarlayın."
 #: gnu/home/services.scm:314
 #, scheme-format
 msgid "duplicate '~a' entry for files/"
-msgstr ""
+msgstr "dosyalar/ için yinelenen '~a' girişi"
 
 #: gnu/home/services.scm:341
 #, scheme-format
@@ -795,6 +834,8 @@ msgid ""
 "Files that will be put in\n"
 "@file{~/.guix-home/files}, and further processed during activation."
 msgstr ""
+"@file{~/.guix-home/files} içine konulacak ve \n"
+"aktivasyon sırasında daha fazla işlenecek dosyalar."
 
 #: gnu/home/services.scm:362
 #, scheme-format
@@ -802,6 +843,8 @@ msgid ""
 "Files that will be put in\n"
 "@file{~/.guix-home/files/.config}, and further processed during activation."
 msgstr ""
+"@file{~/.guix-home/files/.config} içine konulacak ve \n"
+"etkinleştirme sırasında daha fazla işlenecek dosyalar."
 
 #: gnu/home/services.scm:383
 #, scheme-format
@@ -810,6 +853,9 @@ msgid ""
 "@file{~/.guix-home/files/.local/share}, and further processed during\n"
 "activation."
 msgstr ""
+"@file{~/.guix-home/files/.local/share} içine konulacak ve \n"
+"aktivasyon sırasında daha fazla işlenecek \n"
+"dosyalar."
 
 #. TRANSLATORS: 'on-first-login' is the name of a service and
 #. shouldn't be translated
@@ -831,6 +877,8 @@ msgid ""
 "Run gexps on first user login.  Can be\n"
 "extended with one gexp."
 msgstr ""
+"İlk kullanıcı girişinde gexps çalıştırın. \n"
+"One gexp ile genişletilebilir."
 
 #: gnu/home/services.scm:503
 msgid ""
@@ -887,16 +935,21 @@ msgid ""
 "environment itself: the channels used when building the home\n"
 "environment, and its configuration file, when available."
 msgstr ""
+"Ev ortamıyla ilgili kaynak bilgilerini ev ortamının kendisinde saklayın:\n"
+" ev ortamı oluşturulurken kullanılan kanallar \n"
+"ve varsa yapılandırma dosyası."
 
 #: gnu/home/services/desktop.scm:187
 msgid ""
 "Run Redshift, a program that adjusts the color temperature of display\n"
 "according to time of day."
 msgstr ""
+"Ekranın renk sıcaklığını günün saatine göre ayarlayan \n"
+"bir program olan Redshift'i çalıştırın."
 
 #: gnu/home/services/desktop.scm:237
 msgid "Run the session-specific D-Bus inter-process message bus."
-msgstr ""
+msgstr "Oturuma özgü D-Bus işlemler arası mesaj veri yolunu çalıştırın."
 
 #: gnu/home/services/desktop.scm:280
 msgid ""
@@ -927,17 +980,19 @@ msgstr ""
 
 #: gnu/home/services/guix.scm:44
 msgid "Manages the per-user Guix channels specification."
-msgstr ""
+msgstr "Kullanıcı başına Guix kanal spesifikasyonunu yönetir."
 
 #: gnu/home/services/mcron.scm:131
 msgid "Install and configure the GNU mcron cron job manager."
-msgstr ""
+msgstr "GNU mcron cron görev yöneticisini yükleyin ve yapılandırın."
 
 #: gnu/home/services/media.scm:67
 msgid ""
 "Install and configure the Kodi media center so that it runs as a Shepherd\n"
 "service."
 msgstr ""
+"Kodi medya merkezini bir Shepherd servisi olacak şekilde kurun ve \n"
+"yapılandırın."
 
 #: gnu/home/services/messaging.scm:65
 msgid ""
@@ -947,7 +1002,7 @@ msgstr ""
 
 #: gnu/home/services/pm.scm:145
 msgid "Run batsignal, a battery watching and notification daemon."
-msgstr ""
+msgstr "Bir pil izleme ve bildirim daemon'u olan batsignal'ı çalıştırın."
 
 #: gnu/home/services/shells.scm:110
 #, scheme-format
@@ -959,19 +1014,19 @@ msgstr ""
 
 #: gnu/home/services/shells.scm:304
 msgid "Install and configure Zsh."
-msgstr ""
+msgstr "Zsh'yi yükleyin ve yapılandırın."
 
 #: gnu/home/services/shells.scm:494
 msgid "Install and configure GNU Bash."
-msgstr ""
+msgstr "GNU Bash'i yükleyin ve yapılandırın."
 
 #: gnu/home/services/shells.scm:626
 msgid "Install and configure Fish, the friendly interactive shell."
-msgstr ""
+msgstr "Kullanıcı dostu etkileşimli kabuk olan Fish'i yükleyin ve yapılandırın."
 
 #: gnu/home/services/shepherd.scm:169
 msgid "Configure and install userland Shepherd."
-msgstr ""
+msgstr "Kullanıcı alanı Shepherd'ı yapılandırın ve kurun."
 
 #: gnu/home/services/sound.scm:114
 msgid ""
@@ -986,24 +1041,22 @@ msgid ""
 msgstr ""
 
 #: gnu/home/services/ssh.scm:110
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "~s: invalid address family value"
-msgstr "~a: geçersiz yerel ayar adı"
+msgstr "~s: Geçersiz adres ailesi değeri"
 
 #: gnu/home/services/ssh.scm:288
 msgid "define either 'name' or 'match-criteria', not both"
-msgstr ""
+msgstr "ya \"ad\" ya da \"eşleşme ölçütü\" tanımlayın, ikisini birden değil"
 
 #: gnu/home/services/ssh.scm:295
 msgid "define either 'name' or 'match-criteria' once"
-msgstr ""
+msgstr "'ad' veya 'eşleşme ölçütlerini' bir kez tanımlayın"
 
 #: gnu/home/services/ssh.scm:336
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "~s: invalid 'add-keys-to-agent' value"
-msgstr "~a: geçersiz yerel ayar adı"
+msgstr "~s: geçersiz 'agent-keys-to-agent' değeri"
 
 #: gnu/home/services/ssh.scm:407
 #, scheme-format
@@ -1015,12 +1068,12 @@ msgstr ""
 
 #: gnu/home/services/ssh.scm:461
 msgid "Install and configure @command{ssh-agent} as a Shepherd service."
-msgstr ""
+msgstr "@command{ssh-agent}'ı bir Shepherd hizmeti olarak yükleyin ve yapılandırın."
 
 #: gnu/home/services/symlink-manager.scm:106
 #, scheme-format
 msgid "Backing up ~a..."
-msgstr ""
+msgstr "~a yedekleniyor..."
 
 #: gnu/home/services/symlink-manager.scm:109
 #: gnu/home/services/symlink-manager.scm:138
@@ -1106,7 +1159,7 @@ msgstr ""
 #: gnu/home/services/xdg.scm:323
 #, scheme-format
 msgid "The value of an XDG MIME entry must be a list, string or symbol, was given ~a"
-msgstr ""
+msgstr "Bir XDG MIME girişinin değeri bir liste, dize veya sembol olmalıdır, ~a verildi"
 
 #: gnu/home/services/xdg.scm:374
 #, scheme-format
@@ -1115,7 +1168,7 @@ msgstr ""
 
 #: gnu/home/services/xdg.scm:525
 msgid "Configure XDG MIME applications, and XDG desktop entries."
-msgstr ""
+msgstr "XDG MIME uygulamalarını ve XDG masaüstü girdilerini yapılandırın."
 
 #: gnu/system/file-systems.scm:137
 #, scheme-format
@@ -1126,15 +1179,15 @@ msgstr[1] "geçersiz dosya sistemi bağlama işaretleri:~{ ~s~}~%"
 
 #: gnu/system/file-systems.scm:658
 msgid "The store is on a Btrfs subvolume, but the subvolume name is unknown."
-msgstr ""
+msgstr "Depo bir Btrfs alt biriminde, ancak alt birimin adı bilinmiyor."
 
 #: gnu/system/file-systems.scm:662
 msgid "Use the @code{subvol} Btrfs file system option."
-msgstr ""
+msgstr "@code{subvol} Btrfs dosya sistemi seçeneğini kullanın."
 
 #: gnu/system/image.scm:317
 msgid "image lacks a partition with the 'boot' flag"
-msgstr ""
+msgstr "görüntüde 'boot' bayrağı olan bir bölüm yok"
 
 #: gnu/system/image.scm:361
 #, scheme-format
@@ -1147,10 +1200,9 @@ msgid "unsupported partition type: ~a"
 msgstr "desteklenmeyen bölüm türü: ~a"
 
 #: gnu/system/image.scm:979
-#, fuzzy, scheme-format
-#| msgid "unsupported image type: ~a"
+#, scheme-format
 msgid "~a: unsupported image format"
-msgstr "desteklenmeyen resim türü: ~a"
+msgstr "~a: desteklenmeyen resim formatı"
 
 #: gnu/system/image.scm:1009
 #, scheme-format
@@ -3350,27 +3402,27 @@ msgstr ""
 #: guix/lint.scm:455
 #, scheme-format
 msgid "invalid description: ~s"
-msgstr ""
+msgstr "geçersiz açıklama: ~s"
 
 #: guix/lint.scm:526
 #, scheme-format
 msgid "'~a' should probably be a native input"
-msgstr ""
+msgstr "'~a' muhtemelen yerel bir girdi olmalıdır"
 
 #: guix/lint.scm:540
 #, scheme-format
 msgid "'~a' should probably not be an input at all"
-msgstr ""
+msgstr "'~a' muhtemelen bir girdi olmamalıdır"
 
 #: guix/lint.scm:551
 #, scheme-format
 msgid "label '~a' does not match package name '~a'"
-msgstr ""
+msgstr "'~a' etiketi, '~a' paket adıyla eşleşmiyor"
 
 #: guix/lint.scm:581
 #, scheme-format
 msgid "\"bash-minimal\" should be in 'inputs' when '~a' is used"
-msgstr ""
+msgstr "\"~a\" kullanıldığında \"bash-minimal\", \"girdiler\"de olmalıdır"
 
 #: guix/lint.scm:632
 msgid "no period allowed at the end of the synopsis"
@@ -3382,7 +3434,7 @@ msgstr ""
 
 #: guix/lint.scm:655
 msgid "synopsis should be less than 80 characters long"
-msgstr ""
+msgstr "özet 80 karakterden kısa olmalıdır"
 
 #: guix/lint.scm:664
 msgid "synopsis should start with an upper-case letter or digit"
@@ -9197,71 +9249,71 @@ msgstr ""
 #: guix/scripts/offload.scm:654
 #, scheme-format
 msgid "'~a' is running GNU Guile ~a~%"
-msgstr ""
+msgstr "~a', GNU Guile ~a~% çalıştırıyor"
 
 #: guix/scripts/offload.scm:661
 #, scheme-format
 msgid "failed to run 'guix repl' on '~a'~%"
-msgstr ""
+msgstr "'~a'~% üzerinde 'guix repl' çalıştırılamadı"
 
 #: guix/scripts/offload.scm:668
 #, scheme-format
 msgid "(guix) module not usable on remote host '~a'"
-msgstr ""
+msgstr "(guix) modülü '~a' uzak ana bilgisayarında kullanılamıyor"
 
 #: guix/scripts/offload.scm:678
 #, scheme-format
 msgid "Guix is usable on '~a' (test returned ~s)~%"
-msgstr ""
+msgstr "Guix '~a' üzerinde kullanılabilir (test sonucu ~s)~%"
 
 #: guix/scripts/offload.scm:681
 #, scheme-format
 msgid "failed to talk to guix-daemon on '~a' (test returned ~s)~%"
-msgstr ""
+msgstr "'~a' üzerinde guix-daemon ile konuşamadı (test ~s sonucunu verdi)~%"
 
 #: guix/scripts/offload.scm:701
 #, scheme-format
 msgid "'~a' successfully imported '~a'~%"
-msgstr ""
+msgstr "'~a', başarıyla içe aktarıldı '~a'~%"
 
 #: guix/scripts/offload.scm:703
 #, scheme-format
 msgid "'~a' was not properly imported on '~a'~%"
-msgstr ""
+msgstr "'~a', '~a'~% üzerinde doğru şekilde içe aktarılmadı"
 
 #: guix/scripts/offload.scm:713
 #, scheme-format
 msgid "successfully imported '~a' from '~a'~%"
-msgstr ""
+msgstr "'~a', '~a'~% kaynağından başarıyla içe aktarıldı"
 
 #: guix/scripts/offload.scm:715
 #, scheme-format
 msgid "failed to import '~a' from '~a'~%"
-msgstr ""
+msgstr "'~a', '~a'~% kaynağından içe aktarılamadı"
 
 #: guix/scripts/offload.scm:735
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "testing ~a build machines defined in '~a'...~%"
-msgstr ""
+msgstr "'~a'...~% içinde tanımlanan ~a derleme makinelerinin test edilmesi"
 
 #: guix/scripts/offload.scm:759
 #, scheme-format
 msgid "getting status of ~a build machines defined in '~a'...~%"
-msgstr ""
+msgstr "'~a'...~% içinde tanımlanan ~a yapı makinelerinin durumu alınıyor"
 
 #: guix/scripts/offload.scm:777
 #, scheme-format
 msgid "machine '~a' is ~a seconds behind~%"
-msgstr ""
+msgstr "'~a' makinesi ~a saniye geride~%"
 
 #: guix/scripts/offload.scm:805
 msgid "set up and operate build offloading"
-msgstr ""
+msgstr "yapı boşaltmayı kurun ve çalıştırın"
 
 #: guix/scripts/offload.scm:842
 #, scheme-format
 msgid "invalid request line: ~s~%"
-msgstr ""
+msgstr "geçersiz istek satırı: ~s~%"
 
 #: guix/scripts/offload.scm:871
 #, scheme-format
@@ -9276,46 +9328,47 @@ msgid ""
 "\n"
 "This tool is meant to be used internally by 'guix-daemon'.\n"
 msgstr ""
+"\n"
+"Bu aracın 'guix-daemon' tarafından dahili olarak kullanılması amaçlanmaktadır.\n"
 
 #: guix/scripts/offload.scm:880
 #, scheme-format
 msgid "invalid arguments: ~{~s ~}~%"
-msgstr ""
+msgstr "geçersiz argümanlar: ~{~s ~}~%"
 
 #: guix/scripts/perform-download.scm:60
 #, scheme-format
 msgid "~a: missing URL~%"
-msgstr ""
+msgstr "~a: eksik URL~%"
 
 #: guix/scripts/perform-download.scm:68
 #, scheme-format
 msgid "~a is not a fixed-output derivation~%"
-msgstr ""
+msgstr "~a sabit çıkışlı bir türev değildir~%"
 
 #: guix/scripts/perform-download.scm:97
 #, scheme-format
 msgid "refusing to run with elevated privileges (UID ~a)~%"
-msgstr ""
+msgstr "yükseltilmiş ayrıcalıklarla çalışmayı reddetme (UID ~a)~%"
 
 #: guix/scripts/perform-download.scm:102
 msgid "perform download described by fixed-output derivations"
-msgstr ""
+msgstr "sabit çıktı türevleri tarafından açıklanan indirmeyi gerçekleştirin"
 
 #: guix/scripts/perform-download.scm:134
 #, scheme-format
 msgid "fixed-output derivation and output file name expected~%"
-msgstr ""
+msgstr "sabit çıktı türevi ve çıktı dosyası adı bekleniyor~%"
 
 #: guix/scripts/refresh.scm:89
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "invalid module: ~a~%"
-msgstr "~a: geçersiz yerel ayar adı"
+msgstr "geçersiz modül: ~a~%"
 
 #: guix/scripts/refresh.scm:92
 #, scheme-format
 msgid "~a: invalid selection; expected `core', `non-core' or `module:NAME'~%"
-msgstr ""
+msgstr "~a: geçersiz seçim; beklenen \"çekirdek\", \"çekirdek olmayan\" veya \"modül:NAME\"~%"
 
 #: guix/scripts/refresh.scm:150
 msgid ""
@@ -9360,6 +9413,8 @@ msgid ""
 "\n"
 "      --list-updaters    list available updaters and exit"
 msgstr ""
+"\n"
+"      …--list-updater…kullanılabilir güncelleyicileri listele ve çık"
 
 #: guix/scripts/refresh.scm:172
 msgid ""
@@ -9401,12 +9456,12 @@ msgstr ""
 #: guix/scripts/refresh.scm:316
 #, scheme-format
 msgid "~a: no such updater~%"
-msgstr ""
+msgstr "~a: böyle bir güncelleyici yok~%"
 
 #: guix/scripts/refresh.scm:320
 #, scheme-format
 msgid "Available updaters:~%"
-msgstr ""
+msgstr "Mevcut güncelleyiciler:~%"
 
 #. TRANSLATORS: The parenthetical expression here is rendered
 #. like "(42% coverage)" and denotes the fraction of packages
@@ -9414,116 +9469,125 @@ msgstr ""
 #: guix/scripts/refresh.scm:332
 #, scheme-format
 msgid "  - ~a: ~a (~2,1f% coverage)~%"
-msgstr ""
+msgstr "  …  - ~a: ~a (%~2,1f kapsama)~%"
 
 #: guix/scripts/refresh.scm:341
 #, scheme-format
 msgid "~2,1f% of the packages are covered by these updaters.~%"
-msgstr ""
+msgstr "Paketlerin %~2,1f'si bu güncelleyiciler tarafından kapsanıyor.~%"
 
 #: guix/scripts/refresh.scm:347
 #, scheme-format
 msgid "no updater for ~a~%"
-msgstr ""
+msgstr "~a~% için güncelleyici yok"
 
 #: guix/scripts/refresh.scm:369
 #, scheme-format
 msgid "~a: updating from version ~a to version ~a...~%"
-msgstr ""
+msgstr "~a: ~a sürümünden ~a...~% sürümüne güncelleme"
 
 #: guix/scripts/refresh.scm:374
 #, scheme-format
 msgid "~a: version ~a could not be downloaded and authenticated; not updating~%"
-msgstr ""
+msgstr "~a: ~a sürümü indirilemedi ve doğrulanamadı; güncellenmiyor~%"
 
 #: guix/scripts/refresh.scm:396
 #, scheme-format
 msgid "~a would be upgraded from ~a to ~a~%"
-msgstr ""
+msgstr "~a, ~a'dan ~a~%'ye yükseltilecek"
 
 #: guix/scripts/refresh.scm:402
 #, scheme-format
 msgid "~a is already the latest version of ~a~%"
-msgstr ""
+msgstr "~a zaten ~a~%'nin en son sürümüdür"
 
 #: guix/scripts/refresh.scm:408
 #, scheme-format
 msgid "~a would be downgraded from ~a to ~a~%"
-msgstr ""
+msgstr "~a, ~a'dan ~a~%'ye düşürülür"
 
 #: guix/scripts/refresh.scm:414
 #, scheme-format
 msgid "~a is greater than the latest known version of ~a (~a)~%"
-msgstr ""
+msgstr "~a, bilinen en son ~a (~a)~% sürümünden daha büyüktür"
 
 #: guix/scripts/refresh.scm:425
-#, fuzzy, scheme-format
-#| msgid "could not determine latest upstream release of '~a'~%"
+#, scheme-format
 msgid "'~a' updater failed to find version ~a of '~a'~%"
-msgstr "'~a'~% için en son yukarı akış sürümünü belirleyemedi"
+msgstr "'~a' güncelleyici, '~a''nin ~a sürümünü bulamadı~%"
 
 #: guix/scripts/refresh.scm:430
 #, scheme-format
 msgid "'~a' updater failed to determine available releases for ~a~%"
-msgstr ""
+msgstr "'~a' güncelleyici ~a~% için kullanılabilir sürümleri belirleyemedi"
 
 #: guix/scripts/refresh.scm:469
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "No dependents other than itself: ~{~a~}~%"
 msgid_plural "No dependents other than themselves: ~{~a~^ ~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kendisinden başka bağımlı yok: ~{~a~}~%"
+msgstr[1] "Kendilerinden başka bağımlı yok: ~{~a~^ ~}~%"
 
 #: guix/scripts/refresh.scm:476
 #, scheme-format
 msgid "A single dependent package: ~a~%"
-msgstr ""
+msgstr "Tek bir bağımlı paket: ~a~%"
 
 #: guix/scripts/refresh.scm:480
 #, scheme-format
 msgid "Building the following ~d package would ensure ~d dependent packages are rebuilt: ~{~a~^ ~}~%"
 msgid_plural "Building the following ~d packages would ensure ~d dependent packages are rebuilt: ~{~a~^ ~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aşağıdaki ~d paketini oluşturmak, ~d bağımlı paketin yeniden oluşturulmasını sağlar: ~{~a~^ ~}~%"
+msgstr[1] "Aşağıdaki ~d paketlerin oluşturulması, ~d bağımlı paketlerın yeniden oluşturulmasını sağlar: ~{~a~^ ~}~%"
 
 #: guix/scripts/refresh.scm:504
 #, scheme-format
 msgid "~a depends on the following ~d packages: ~{~a~^ ~}~%."
-msgstr ""
+msgstr "~a, aşağıdaki ~d paketlere bağlıdır: ~{~a~^ ~}~%."
 
 #: guix/scripts/refresh.scm:508
 #, scheme-format
 msgid "The following ~d packages all are dependent packages: ~{~a~^ ~}~%"
-msgstr ""
+msgstr "Aşağıdaki ~d paketlerin tümü bağımlı paketlerdir: ~{~a~^ ~}~%"
 
 #: guix/scripts/refresh.scm:538
 msgid "update existing package definitions"
-msgstr ""
+msgstr "mevcut paket tanımlarını güncelleme"
 
 #: guix/scripts/repl.scm:75
+#, fuzzy
 msgid ""
 "Usage: guix repl [OPTIONS...] [-- FILE ARGS...]\n"
 "In the Guix execution environment, run FILE as a Guile script with\n"
 "command-line arguments ARGS.  If no FILE is given, start a Guile REPL.\n"
 msgstr ""
+"Kullanım: guix repl [SEÇENEKLER...] [-- DOSYA ARGS...]\n"
+"Guix yürütme ortamında, FILE'ı Guile komut dosyası olarak çalıştırın.\n"
+"komut satırı bağımsız değişkenleri ARGS. DOSYA verilmezse, bir Guile REPL başlatın.\n"
 
 #: guix/scripts/repl.scm:78
 msgid ""
 "\n"
 "      --list-types       display REPL types and exit"
 msgstr ""
+"\n"
+"      --list-types       REPL türlerini göster ve çık"
 
 #: guix/scripts/repl.scm:80
 msgid ""
 "\n"
 "  -t, --type=TYPE        start a REPL of the given TYPE"
 msgstr ""
+"\n"
+"  -t, --type=TYPE        verilen TÜRDE bir REPL başlat"
 
 #: guix/scripts/repl.scm:82
 msgid ""
 "\n"
 "      --listen=ENDPOINT  listen to ENDPOINT instead of standard input"
 msgstr ""
+"\n"
+"      …-listen=ENDPOINT…standart girdi yerine ENDPOINT'i dinleyin"
 
 #: guix/scripts/repl.scm:84
 #, scheme-format
@@ -9531,6 +9595,8 @@ msgid ""
 "\n"
 "  -q                     inhibit loading of ~/.guile"
 msgstr ""
+"\n"
+"  -q                     ~/.guile yüklemesini engelle"
 
 #: guix/scripts/repl.scm:87
 msgid ""
@@ -9541,36 +9607,36 @@ msgstr ""
 #: guix/scripts/repl.scm:116
 #, scheme-format
 msgid "~A: invalid listen specification~%"
-msgstr ""
+msgstr "~A: geçersiz dinleme özelliği~%"
 
 #: guix/scripts/repl.scm:127
 #, scheme-format
 msgid "~A: unsupported protocol family~%"
-msgstr ""
+msgstr "~A: desteklenmeyen protokol ailesi~%"
 
 #: guix/scripts/repl.scm:135
 #, scheme-format
 msgid "accepted connection~%"
-msgstr ""
+msgstr "kabul edilen bağlantı~%"
 
 #: guix/scripts/repl.scm:136
 #, scheme-format
 msgid "accepted connection from ~a~%"
-msgstr ""
+msgstr "~a~%'den kabul edilen bağlantı"
 
 #: guix/scripts/repl.scm:147
 #, scheme-format
 msgid "connection closed~%"
-msgstr ""
+msgstr "bağlantı kapatıldı~%"
 
 #: guix/scripts/repl.scm:153
 msgid "read-eval-print loop (REPL) for interactive programming"
-msgstr ""
+msgstr "Etkileşimli programlama için okuma-değerlendirme-yazdırma döngüsü (REPL)"
 
 #: guix/scripts/repl.scm:221
 #, scheme-format
 msgid "~a: unknown type of REPL~%"
-msgstr ""
+msgstr "~a: bilinmeyen REPL türü~%"
 
 #: guix/scripts/shell.scm:55
 msgid ""
@@ -9624,12 +9690,12 @@ msgstr ""
 #: guix/scripts/shell.scm:300
 #, scheme-format
 msgid "loading environment from '~a'...~%"
-msgstr ""
+msgstr "'~a'...~% kaynağından ortam yükleniyor"
 
 #: guix/scripts/shell.scm:306
 #, scheme-format
 msgid "not loading '~a' because not authorized to do so~%"
-msgstr ""
+msgstr "Yetkisi olmadığı için '~a' yüklenmiyor~%"
 
 #: guix/scripts/shell.scm:308
 #, scheme-format
@@ -9642,6 +9708,13 @@ msgid ""
 "echo ~a >> ~a\n"
 "@end example\n"
 msgstr ""
+"Otomatik yüklemeye izin vermek için\n"
+"@file{~a}, @command{guix shell}'i çalıştırırken, açıkça yetkilendirmeniz gerekir.\n"
+"dizin, şöyle:\n"
+"\n"
+"@example\n"
+"echo ~a >> ~a\n"
+"@end example\n"
 
 #: guix/scripts/shell.scm:500
 msgid ""
@@ -9649,10 +9722,13 @@ msgid ""
 ";; You can store it in a file that you may then pass to any 'guix' command\n"
 ";; that accepts a '--manifest' (or '-m') option.\n"
 msgstr ""
+";; Aşağıdakiler, verdiğiniz komut satırına eşdeğer bir \"manifest\"tir.\n"
+";; Daha sonra herhangi bir 'guix' komutuna iletebileceğiniz bir dosyada saklayabilirsiniz.\n"
+";; '--manifest' (veya '-m') seçeneğini kabul eden.\n"
 
 #: guix/scripts/shell.scm:540
 msgid "spawn one-off software environments"
-msgstr ""
+msgstr "tek seferlik yazılım ortamları oluşturmak"
 
 #: guix/scripts/shell.scm:567
 msgid ""
@@ -9663,80 +9739,82 @@ msgstr ""
 #: guix/scripts/style.scm:75
 #, scheme-format
 msgid "~a: complex expression, bailing out~%"
-msgstr ""
+msgstr "~a: karmaşık ifade, kurtarma~%"
 
 #: guix/scripts/style.scm:93
 #, scheme-format
 msgid "~a: input label '~a' does not match package name, bailing out~%"
-msgstr ""
+msgstr "~a: giriş etiketi '~a' paket adıyla eşleşmiyor, kurtarma işlemi yapılıyor~%"
 
 #: guix/scripts/style.scm:98
 #, scheme-format
 msgid "~a: non-trivial input, bailing out~%"
-msgstr ""
+msgstr "~a: önemsiz olmayan girdi, kurtarma~%"
 
 #: guix/scripts/style.scm:122
 #, scheme-format
 msgid "~a: input expression is too short~%"
-msgstr ""
+msgstr "~a: giriş ifadesi çok kısa~%"
 
 #: guix/scripts/style.scm:214
 #, scheme-format
 msgid "~a: unsupported input style, bailing out~%"
-msgstr ""
+msgstr "~a: desteklenmeyen giriş stili, kurtarma işlemi yapılıyor~%"
 
 #: guix/scripts/style.scm:226
 #, scheme-format
 msgid "would be edited~%"
-msgstr ""
+msgstr "Düzenlenecek ~%"
 
 #: guix/scripts/style.scm:438
-#, fuzzy, scheme-format
-#| msgid "unsupported image type: ~a"
+#, scheme-format
 msgid "unsupported argument style; bailing out~%"
-msgstr "desteklenmeyen resim türü: ~a"
+msgstr "desteklenmeyen argüman tarzı; kurtarılıyor~%"
 
 #: guix/scripts/style.scm:444
 #, scheme-format
 msgid "unsupported argument field; bailing out~%"
-msgstr ""
+msgstr "desteklenmeyen argüman alanı; kurtarılıyor~%"
 
 #: guix/scripts/style.scm:468
 #, scheme-format
 msgid "no definition location for package ~a~%"
-msgstr ""
+msgstr "~a~% paketi için tanım yeri yok"
 
 #: guix/scripts/style.scm:536
 #, scheme-format
 msgid "~a: unknown styling~%"
-msgstr ""
+msgstr "~a: bilinmeyen stil~%"
 
 #: guix/scripts/style.scm:543
 #, scheme-format
 msgid "~a: invalid input simplification policy~%"
-msgstr ""
+msgstr "~a: geçersiz giriş basitleştirme politikası~%"
 
 #: guix/scripts/style.scm:561
 msgid "Available styling rules:\n"
-msgstr ""
+msgstr "Mevcut stil kuralları:\n"
 
 #: guix/scripts/style.scm:562
 msgid "- format: Format the given package definition(s)\n"
-msgstr ""
+msgstr "- format: Verilen paket tanımlarını formatlayın\n"
 
 #: guix/scripts/style.scm:563
 msgid "- inputs: Rewrite package inputs to the “new style”\n"
-msgstr ""
+msgstr "- girdiler: Paket girdilerini \"yeni stil\" olarak yeniden yazın\n"
 
 #: guix/scripts/style.scm:564
+#, fuzzy
 msgid "- arguments: Rewrite package arguments to G-expressions\n"
-msgstr ""
+msgstr "- argümanlar: Paket argümanlarını G-ifadelerine yeniden yazın\n"
 
 #: guix/scripts/style.scm:567
 msgid ""
 "Usage: guix style [OPTION]... [PACKAGE]...\n"
 "Update package definitions to the latest style.\n"
 msgstr ""
+"Kullanım: guix stili [SEÇENEK]... [PAKET]...\n"
+"Paket tanımlarını en son stile güncelleyin.\n"
 
 #: guix/scripts/style.scm:569
 msgid ""
@@ -9787,80 +9865,81 @@ msgstr ""
 #: guix/scripts/system/reconfigure.scm:377
 #, scheme-format
 msgid "cannot determine provenance for current system~%"
-msgstr ""
+msgstr "mevcut sistem için kaynak belirlenemiyor~%"
 
 #: guix/scripts/system/reconfigure.scm:379
 #, scheme-format
 msgid "cannot determine provenance of ~a~%"
-msgstr ""
+msgstr "~a~% kaynağını belirleyemiyor"
 
 #: nix/nix-daemon/guix-daemon.cc:66
 msgid "guix-daemon -- perform derivation builds and store accesses"
-msgstr ""
+msgstr "guix-daemon -- perform derlemeleri gerçekleştirir ve erişimleri depolar"
 
 #: nix/nix-daemon/guix-daemon.cc:68
 msgid "This program is a daemon meant to run in the background.  It serves requests sent over a Unix-domain socket.  It accesses the store, and builds derivations on behalf of its clients."
-msgstr ""
+msgstr "Bu program, arka planda çalışması amaçlanan bir daemon programıdır. Bir Unix-domain soketi üzerinden gönderilen isteklere hizmet eder. Mağazaya erişir ve müşterileri adına türevler oluşturur."
 
 #: nix/nix-daemon/guix-daemon.cc:96
 msgid "SYSTEM"
-msgstr ""
+msgstr "SİSTEM"
 
 #: nix/nix-daemon/guix-daemon.cc:97
 msgid "assume SYSTEM as the current system type"
-msgstr ""
+msgstr "SYSTEM'i mevcut sistem tipi olarak kabul edin"
 
 #: nix/nix-daemon/guix-daemon.cc:98 nix/nix-daemon/guix-daemon.cc:101
 msgid "N"
-msgstr ""
+msgstr "N"
 
 #: nix/nix-daemon/guix-daemon.cc:99
+#, fuzzy
 msgid "use N CPU cores to build each derivation; 0 means as many as available"
-msgstr ""
+msgstr "her bir türevi oluşturmak için N CPU çekirdeği kullanın; 0, mevcut olduğu kadar çok anlamına gelir"
 
 #: nix/nix-daemon/guix-daemon.cc:102
 msgid "allow at most N build jobs"
-msgstr ""
+msgstr "en fazla N derleme işine izin ver"
 
 #: nix/nix-daemon/guix-daemon.cc:103 nix/nix-daemon/guix-daemon.cc:105
 msgid "SECONDS"
-msgstr ""
+msgstr "SANİYE"
 
 #: nix/nix-daemon/guix-daemon.cc:104
 msgid "mark builds as failed after SECONDS of activity"
-msgstr ""
+msgstr "SANİYELER süren etkinlikten sonra derlemeleri başarısız olarak işaretle"
 
 #: nix/nix-daemon/guix-daemon.cc:106
 msgid "mark builds as failed after SECONDS of silence"
-msgstr ""
+msgstr "SANİYLER süren sessizlikten sonra derlemeleri başarısız olarak işaretle"
 
 #: nix/nix-daemon/guix-daemon.cc:108
 msgid "disable chroot builds"
-msgstr ""
+msgstr "chroot yapılarını devre dışı bırak"
 
 #: nix/nix-daemon/guix-daemon.cc:109
 msgid "DIR"
-msgstr ""
+msgstr "DIR"
 
 #: nix/nix-daemon/guix-daemon.cc:110
 msgid "add DIR to the build chroot"
-msgstr ""
+msgstr "yapı chroot'una DIR ekleyin"
 
 #: nix/nix-daemon/guix-daemon.cc:111
 msgid "GROUP"
-msgstr ""
+msgstr "GRUP"
 
 #: nix/nix-daemon/guix-daemon.cc:112
 msgid "perform builds as a user of GROUP"
-msgstr ""
+msgstr "GROUP kullanıcısı olarak derlemeler gerçekleştirin"
 
 #: nix/nix-daemon/guix-daemon.cc:114
 msgid "do not use substitutes"
-msgstr ""
+msgstr "ikame kullanmayın"
 
 #: nix/nix-daemon/guix-daemon.cc:115
 msgid "URLS"
-msgstr ""
+msgstr "URL'LER"
 
 #: nix/nix-daemon/guix-daemon.cc:116
 msgid "use URLS as the default list of substitute providers"
@@ -9868,23 +9947,23 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:118 nix/nix-daemon/guix-daemon.cc:121
 msgid "do not attempt to offload builds"
-msgstr ""
+msgstr "derlemeleri boşaltmaya çalışmayın"
 
 #: nix/nix-daemon/guix-daemon.cc:123
 msgid "cache build failures"
-msgstr ""
+msgstr "önbellek oluşturma hataları"
 
 #: nix/nix-daemon/guix-daemon.cc:125
 msgid "build each derivation N times in a row"
-msgstr ""
+msgstr "her türevi arka arkaya N kez oluştur"
 
 #: nix/nix-daemon/guix-daemon.cc:127
 msgid "do not keep build logs"
-msgstr ""
+msgstr "yapı günlükleri tutma"
 
 #: nix/nix-daemon/guix-daemon.cc:130
 msgid "disable compression of the build logs"
-msgstr ""
+msgstr "derleme günlüklerinin sıkıştırılmasını devre dışı bırak"
 
 #: nix/nix-daemon/guix-daemon.cc:132
 msgid "use the specified compression type for build logs"
@@ -9900,7 +9979,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:149
 msgid "impersonate Linux 2.6"
-msgstr ""
+msgstr "Linux 2.6'yı taklit et"
 
 #: nix/nix-daemon/guix-daemon.cc:153
 msgid "tell whether the GC must keep outputs of live derivations"
@@ -9908,19 +9987,19 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:156
 msgid "tell whether the GC must keep derivations corresponding to live outputs"
-msgstr ""
+msgstr "GC'nin canlı çıktılara karşılık gelen türevleri tutması gerekip gerekmediğini söyle"
 
 #: nix/nix-daemon/guix-daemon.cc:159
 msgid "SOCKET"
-msgstr ""
+msgstr "SOKET"
 
 #: nix/nix-daemon/guix-daemon.cc:160
 msgid "listen for connections on SOCKET"
-msgstr ""
+msgstr "SOCKET üzerindeki bağlantıları dinle"
 
 #: nix/nix-daemon/guix-daemon.cc:162
 msgid "produce debugging output"
-msgstr ""
+msgstr "hata ayıklama çıktısı oluştur"
 
 #: nix/nix-daemon/guix-daemon.cc:529
 msgid "socket-activated with %1% socket"

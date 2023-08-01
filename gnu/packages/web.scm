@@ -4824,8 +4824,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "68850065d79ba05dad7201c3ed22f5e2e32680b7")
-        (revision "41"))
+  (let ((commit "1c7539418743e0dfe3a9cad22c414fd732daef8f")
+        (revision "42"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4837,64 +4837,63 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0y7a9jbbkzhlhmn639kgmzlkw927w4nrsafm1sj51mrblr5qk4lq"))))
+                  "1gp4mhjssxky0jjjz916rfgz4w2f327wfd5ixb6lb00ydlfh5mws"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:modules ((guix build utils)
+       (list
+        #:modules '((guix build utils)
                     (guix build gnu-build-system)
                     (ice-9 ftw)
                     (ice-9 match)
                     (ice-9 rdelim)
                     (ice-9 popen))
-         #:test-target "check-with-tmp-database"
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'build 'set-GUILE_AUTO_COMPILE
-             (lambda _
-               ;; To avoid warnings relating to 'guild'.
-               (setenv "GUILE_AUTO_COMPILE" "0")
-               #t))
-           (add-after 'install 'wrap-executable
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (guile (assoc-ref inputs "guile"))
-                      (guile-effective-version
-                       (read-line
-                        (open-pipe* OPEN_READ
-                                    (string-append guile "/bin/guile")
-                                    "-c" "(display (effective-version))")))
-                      (scm (string-append out "/share/guile/site/"
-                                          guile-effective-version))
-                      (go  (string-append out "/lib/guile/"
-                                          guile-effective-version
-                                          "/site-ccache")))
-                 (for-each
-                  (lambda (file)
-                    (simple-format (current-error-port)
-                                   "wrapping: ~A\n"
-                                   (string-append bin "/" file))
-                    (wrap-program (string-append bin "/" file)
-                      `("PATH" ":" prefix
-                        ,(cons*
-                          bin
-                          (map (lambda (input)
-                                 (string-append
-                                  (assoc-ref inputs input)
-                                  "/bin"))
-                               '("ephemeralpg"
-                                 "util-linux"
-                                 "postgresql"))))
-                      `("GUILE_LOAD_PATH" ":" prefix
-                        (,scm ,(getenv "GUILE_LOAD_PATH")))
-                      `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                        (,go ,(getenv "GUILE_LOAD_COMPILED_PATH")))))
-                  (scandir bin
-                           (match-lambda
-                             ((or "." "..") #f)
-                             (_ #t))))
-                 #t)))
-           (delete 'strip))))           ; As the .go files aren't compatible
+        #:test-target "check-with-tmp-database"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-GUILE_AUTO_COMPILE
+              (lambda _
+                ;; To avoid warnings relating to 'guild'.
+                (setenv "GUILE_AUTO_COMPILE" "0")))
+            (add-after 'install 'wrap-executable
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (bin (string-append out "/bin"))
+                       (guile (assoc-ref inputs "guile"))
+                       (guile-effective-version
+                        (read-line
+                         (open-pipe* OPEN_READ
+                                     (string-append guile "/bin/guile")
+                                     "-c" "(display (effective-version))")))
+                       (scm (string-append out "/share/guile/site/"
+                                           guile-effective-version))
+                       (go  (string-append out "/lib/guile/"
+                                           guile-effective-version
+                                           "/site-ccache")))
+                  (for-each
+                   (lambda (file)
+                     (simple-format (current-error-port)
+                                    "wrapping: ~A\n"
+                                    (string-append bin "/" file))
+                     (wrap-program (string-append bin "/" file)
+                       `("PATH" ":" prefix
+                         ,(cons*
+                           bin
+                           (map (lambda (input)
+                                  (string-append
+                                   (assoc-ref inputs input)
+                                   "/bin"))
+                                '("ephemeralpg"
+                                  "util-linux"
+                                  "postgresql"))))
+                       `("GUILE_LOAD_PATH" ":" prefix
+                         (,scm ,(getenv "GUILE_LOAD_PATH")))
+                       `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                         (,go ,(getenv "GUILE_LOAD_COMPILED_PATH")))))
+                   (scandir bin
+                            (match-lambda
+                              ((or "." "..") #f)
+                              (_ #t)))))))
+            (delete 'strip))))          ; As the .go files aren't compatible
       (inputs
        (list ephemeralpg
              util-linux
@@ -5959,6 +5958,14 @@ on the fly.")
      `(#:phases (modify-phases %standard-phases
                   (add-before 'check 'pre-check
                     (lambda _
+                      ;; Our grep is compiled without perl regexp support. So,
+                      ;; rewrite the grep command to not use it. \t tab
+                      ;; characters are supported only in perl regexps. So,
+                      ;; put in literal tabs using printf instead.
+                      (substitute* "src/tests/test32-proxy-authority.sh"
+                        (("grep -Pq") "grep -q")
+                        (("extension:\\\\tdefault")
+                         "extension:$(printf '\\011')default"))
                       ;; Most tests attempts to access hitch-tls.org which is
                       ;; unavailable in the build container.  Run them against
                       ;; a dummy local web server instead.
@@ -5976,8 +5983,7 @@ on the fly.")
                       ;; process has shut down.
                       (substitute* "src/tests/hitch_test.sh"
                         (("kill -0 \"\\$HITCH_PID\"")
-                         "$(ps -p $HITCH_PID -o state= | grep -qv '^Z$')"))
-                      #t)))))
+                         "$(ps -p $HITCH_PID -o state= | grep -qv '^Z$')")))))))
     (native-inputs
      (list pkg-config
 

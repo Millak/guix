@@ -5,7 +5,7 @@
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -40,6 +40,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -66,6 +67,9 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-check)
+  #:use-module (gnu packages haskell-crypto)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
   #:use-module (gnu packages man)
@@ -92,6 +96,50 @@
   #:use-module (gnu packages web)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
+
+(define-public glirc
+  (package
+  (name "glirc")
+  (version "2.39.0.1")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "glirc" version))
+     (sha256
+      (base32 "0jaywb43jfv6kzyz540k02mxdgw1shc6hn7kia21alssszkilh4r"))))
+  (build-system haskell-build-system)
+  (native-inputs
+   (list ghc-hunit))
+  (inputs
+   (list ghc-async
+         ghc-attoparsec
+         ghc-base64-bytestring
+         ghc-config-schema
+         ghc-config-value
+         ghc-curve25519
+         ghc-free
+         ghc-githash
+         ghc-hashable
+         ghc-hookup
+         ghc-hsopenssl
+         ghc-irc-core
+         ghc-kan-extensions
+         ghc-lens
+         ghc-network
+         ghc-psqueues
+         ghc-random
+         ghc-regex-tdfa
+         ghc-split
+         ghc-unordered-containers
+         ghc-vector
+         ghc-vty))
+  (home-page "https://github.com/glguy/irc-core")
+  (synopsis "Console IRC client")
+  (description
+   "Glirc is a console IRC client with an emphasis on providing dynamic views
+into the model of your IRC connections.  All views and transformation are
+dynamic and don't change the underlying model.")
+  (license license:isc)))
 
 (define-public quassel
   (package
@@ -198,14 +246,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.0.0")
+    (version "4.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ya0hacbyvhdy43hqrvphj3y7v6s312wbrsf2yns14ikbzhmxmsv"))))
+                "0g026j47140h8kqyh3l0367fq9194wdx8q7f4na0kj14s3h8wr0f"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs

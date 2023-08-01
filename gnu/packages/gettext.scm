@@ -133,10 +133,7 @@
                        #t)))))
 
        ;; When tests fail, we want to know the details.
-       #:make-flags #~'("VERBOSE=yes"
-                        #$@(if (target-hurd?)
-                               '("XFAIL_TESTS=test-perror2")
-                               '()))))
+       #:make-flags #~'("VERBOSE=yes")))
     (home-page "https://www.gnu.org/software/gettext/")
     (synopsis
      "Tools and documentation for translation (used to build other packages)")
@@ -240,14 +237,14 @@ from Markdown files.")
 (define-public po4a
   (package
     (name "po4a")
-    (version "0.68")
+    (version "0.69")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mquinson/po4a/releases/download/v"
                                   version "/po4a-" version ".tar.gz"))
               (sha256
                (base32
-                "045i8izp2dqmkdzvnxyy5sy27ffrwl85dk8n6cmg1804ikk28qdg"))))
+                "15llrfdp4ilbrxy65hmmxka86xj0mrbqfiyzv715wrk16vqszm3w"))))
     (build-system perl-build-system)
     (arguments
      (list
@@ -282,7 +279,14 @@ from Markdown files.")
           (add-before 'check 'disable-failing-tests
             (lambda _
               ;; FIXME: fails despite of importing SGMLS
-              (delete-file "t/fmt-sgml.t"))))))
+              (delete-file "t/fmt-sgml.t")))
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'skip-tests/hurd
+                      (lambda _
+                        (delete-file "t/cfg-multi.t")
+                        (delete-file "t/cfg-single.t")
+                        (delete-file "t/cfg-split.t"))))
+                 #~()))))
     (native-inputs
      (list gettext-minimal
            perl-module-build
@@ -292,7 +296,7 @@ from Markdown files.")
            ;; For tests.
            docbook-xml-4.1.2
            perl-test-pod
-           texlive-tiny))
+           (texlive-updmap.cfg)))
     (inputs
      (list bash-minimal
            perl-gettext

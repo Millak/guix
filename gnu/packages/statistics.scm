@@ -211,7 +211,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.3.0")
+    (version "4.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -219,7 +219,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "02d6lrb0008wr9ikcas0h5xrk7i074ddwzzp4083czgjdj5w9p25"))))
+                "16dswjcymzr2mj1vjwqdyjaa9d4isa1p6c9viihnyg02y4jbzl4d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -244,7 +244,15 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                (substitute* "src/scripts/R.sh.in"
                  (("uname") uname-bin))
                (substitute* "src/unix/sys-std.c"
-                 (("rm -Rf ") (string-append rm-bin " -Rf "))))))
+                 (("rm -Rf ") (string-append rm-bin " -Rf ")))
+               (substitute* "src/library/parallel/R/detectCores.R"
+                 (("'grep")
+                  (string-append "'"
+                                 (search-input-file inputs "/bin/grep")))
+                 (("\\| wc -l")
+                  (string-append "| "
+                                 (search-input-file inputs "/bin/wc")
+                                 " -l"))))))
          (add-after 'unpack 'patch-tests
            (lambda _
              ;; This is needed because R is run during the check phase and
@@ -380,20 +388,11 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
            perl
            pkg-config
            texinfo                      ; for building HTML manuals
-           (texlive-updmap.cfg (list texlive-ae
-                                     texlive-inconsolata
-                                     texlive-fonts-ec
-                                     texlive-grfext
-                                     texlive-amsfonts
-                                     texlive-latex-base
-                                     texlive-fancyvrb
-                                     texlive-graphics
-                                     texlive-hyperref
-                                     texlive-oberdiek
-                                     texlive-tools
-                                     texlive-latex-upquote
-                                     texlive-url
-                                     texlive-latex-xkeyval))
+           (texlive-updmap.cfg
+            (list texlive-fancyvrb
+                  texlive-inconsolata
+                  texlive-upquote
+                  texlive-xkeyval))
            tzdata-for-tests
            xz))
     (inputs
@@ -401,6 +400,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
            curl
            openblas
            gfortran
+           grep
            icu4c
            libjpeg-turbo
            libpng
@@ -711,13 +711,13 @@ nonlinear mixed-effects models.")
 (define-public r-mgcv
   (package
    (name "r-mgcv")
-   (version "1.8-42")
+   (version "1.9-0")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "mgcv" version))
      (sha256
-      (base32 "1ixn5pgc3qriy5nfd264dz7l126xg4k4zidgkqag41mdcj5w6zq8"))))
+      (base32 "0w1v0hdswb332xz3br1fcgacib7ddr4hb96cmlycxcpqq5w01cdj"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-matrix r-nlme))
@@ -2129,7 +2129,7 @@ machine learning, computer vision, and high-dimensional statistics.")
 (define-public python-arviz
   (package
     (name "python-arviz")
-    (version "0.15.1")
+    (version "0.16.1")
     (source (origin
               (method git-fetch)        ; PyPI misses some test files
               (uri (git-reference
@@ -2138,7 +2138,7 @@ machine learning, computer vision, and high-dimensional statistics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nqr4v927r9kc50z7rwlk2m8nw3dnnmmwmwcfijzd93gbg53wc4f"))))
+                "19phaqbpls82300z7ghicrldjxyjq4ilmmwsmd9zkl8c7ld5cb4j"))))
     (build-system pyproject-build-system)
     (arguments
      ;; FIXME: matplotlib tests fail because of the "--save" test flag.
@@ -2177,7 +2177,7 @@ comparison and diagnostics.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.5.0")
+    (version "5.6.1")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -2186,7 +2186,7 @@ comparison and diagnostics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "077xigv3lfcn9fqc14rsnam4v95fmqk2wpzfrgj08vg8m7f69wdj"))))
+                "0in5lw55camvgd6b4hiw4gr11bdy96jc74z1gvsd0xj7cfxvc043"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; tests are too computationally intensive
@@ -2670,14 +2670,17 @@ collation, and NAMESPACE files.")
 (define-public r-openssl
   (package
     (name "r-openssl")
-    (version "2.0.6")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openssl" version))
        (sha256
         (base32
-         "1wxkq613054ic0w58a41fyr7bp7f939vhsgj6hbhs3r72qm07wvp"))))
+         "0fg5avcrjjn7sv6rzbp19y6jwjjr77xpldxg4xssp5s1p832wnk2"))))
+    (properties
+     `((upstream-name . "openssl")
+       (updater-extra-inputs . ("openssl"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -2689,7 +2692,7 @@ collation, and NAMESPACE files.")
                (("PKG_LIBS=\"\\$\\{PKG_LIBS_VERSIONED\\}\"")
                 "PKG_LIBS=\"${PKG_LIBS}\"")))))))
     (inputs
-     (list openssl))
+     (list openssl zlib))
     (native-inputs
      (list pkg-config r-knitr))
     (propagated-inputs
@@ -4825,9 +4828,8 @@ from within R.")
      (list hevea
            perl
            swig
-           ;;texlive-aeguill    ;;FIXME: package me!
-           texlive-base
-           texlive-jknappen))
+           (texlive-updmap.cfg
+            (list texlive-aeguill texlive-jknapltx))))
     (propagated-inputs
      (list r-lattice
            r-matrix))
@@ -5583,14 +5585,14 @@ data for species delimitation, nearest neighbor based noise detection.")
 (define-public r-deoptimr
   (package
     (name "r-deoptimr")
-    (version "1.0-14")
+    (version "1.1-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DEoptimR" version))
        (sha256
         (base32
-         "0d2ij0ncwjp9kh5bv7nvha8p1g73y620pw62c1q5chvjpjvxshfp"))))
+         "15nnix9k5x6hixfk1pvmkq1bmi3nbw4mf16ng5b7b8qakj8h8h8n"))))
     (properties `((upstream-name . "DEoptimR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
@@ -5892,14 +5894,14 @@ metrics for evaluating models.")
 (define-public r-matrixmodels
   (package
     (name "r-matrixmodels")
-    (version "0.5-1")
+    (version "0.5-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MatrixModels" version))
        (sha256
         (base32
-         "1a9ywhv1yklfcp0jgirkih3ib5scs61hkscmyddwfh5blpgmpi9z"))))
+         "0ap3mfzb2psjwlksfjzs2ycl5598bllwzx5hfmf9db4yjsydn1hw"))))
     (properties `((upstream-name . "MatrixModels")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6871,14 +6873,14 @@ mediation and estimating power.")
 (define-public r-clubsandwich
   (package
     (name "r-clubsandwich")
-    (version "0.5.8")
+    (version "0.5.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clubSandwich" version))
        (sha256
         (base32
-         "1y894n35l4lzqm15ifxjnpnh95dldsfivv4098571yqf1z4a253q"))))
+         "0r43qyff1v986snvnynsj02kp50npyi1qln1gwgpl3n1syngzcn8"))))
     (properties `((upstream-name . "clubSandwich")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6909,14 +6911,14 @@ Methods are provided for a variety of fitted models, including @code{lm()} and
 (define-public r-puniform
   (package
     (name "r-puniform")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "puniform" version))
        (sha256
         (base32
-         "1zw8qbqnyhyvzrw6izrqgnmbawcqg2jdhcb8lxs1rd8y7cn4v4wj"))))
+         "1rfd7d14an28hba1rhldxn418qagnlk8ngvimb86i3774ll9blvi"))))
     (properties `((upstream-name . "puniform")))
     (build-system r-build-system)
     (propagated-inputs

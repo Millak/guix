@@ -10,7 +10,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <jannek@gnu.org>
+;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <jannek@gnu.org>
 ;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
@@ -1244,7 +1244,7 @@ deprecated; use 'setuid-program' instead~%"))
                (file-append sudo "/bin/sudo")
                (file-append sudo "/bin/sudoedit")
                (file-append fuse "/bin/fusermount")
-               (file-append fuse-3 "/bin/fusermount3")
+               (file-append fuse "/bin/fusermount3")
 
                ;; To allow mounts with the "user" option, "mount" and "umount" must
                ;; be setuid-root.
@@ -1486,16 +1486,28 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
 
 (define (hurd-multiboot-modules os)
   (let* ((hurd (operating-system-hurd os))
+         (pci-arbiter-command
+          (list (file-append hurd "/hurd/pci-arbiter.static")
+                "pci-arbiter"
+                "--host-priv-port='${host-port}'"
+                "--device-master-port='${device-port}'"
+                "--next-task='${disk-task}'"
+                "'$(pci-task=task-create)'"
+                "'$(task-resume)'"))
+         (rumpdisk-command
+          (list (file-append hurd "/hurd/rumpdisk.static")
+                "rumpdisk"
+                "--next-task='${fs-task}'"
+                "'$(disk-task=task-create)'"))
          (root-file-system-command
           (list (file-append hurd "/hurd/ext2fs.static")
                 "ext2fs"
                 "--multiboot-command-line='${kernel-command-line}'"
-                "--host-priv-port='${host-port}'"
-                "--device-master-port='${device-port}'"
                 "--exec-server-task='${exec-task}'"
                 "--store-type=typed"
                 "--x-xattr-translator-records"
-                "'${root}'" "'$(task-create)'" "'$(task-resume)'"))
+                "'${root}'"
+                "'$(fs-task=task-create)'"))
          (target (%current-target-system))
          (libc (if target
                    (with-parameters ((%current-target-system #f))
@@ -1512,7 +1524,10 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
           ;;       (file-append hurd "/hurd/exec") "'$(exec-task=task-create)'")
           (list (file-append hurd "/hurd/exec.static") "exec"
                 "'$(exec-task=task-create)'")))
-    (list root-file-system-command exec-server-command)))
+    (list pci-arbiter-command
+          rumpdisk-command
+          root-file-system-command
+          exec-server-command)))
 
 (define* (operating-system-boot-parameters os root-device
                                            #:key system-kernel-arguments?)

@@ -44,6 +44,7 @@
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -811,6 +812,41 @@ and it supports a very flexible form of test discovery.")
      "doctest is a single-header testing framework for C++11 and later.  It
 has been designed to be fast, light and unintrusive.")
     (license license:expat)))
+
+(define-public python-gixy
+  ;; The 0.1.20 release is missing some important fixes.
+  ;; XXX: Commit 'e9008dcbd11f43ccac109b0cf2bf98a94e76b449' breaks tests
+  ;; since it improperly removes an import.
+  (let ((commit "303eb6887ddecab18138b6e427b04ae77c41d2f1")
+        (revision "0")
+        (base-version "0.1.20"))
+    (package
+      (name "python-gixy")
+      (version (git-version base-version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/yandex/gixy")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gymjcnvjx9snyrzdbmjnk93ibb161q72xam29vnl3yyac4r1330"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-nose))
+      (propagated-inputs
+       (list python-cached-property python-configargparse
+             python-jinja2 python-six
+             ;; XXX: gixy is incompatible with pyparsing >= 3.x.
+             ;; See <https://github.com/yandex/gixy/pull/132> and
+             ;; <https://github.com/yandex/gixy/pull/122>.
+             python-pyparsing-2.4.7))
+      (home-page "https://github.com/yandex/gixy")
+      (synopsis "Static NGINX configuration analyzer")
+      (description "Gixy is a static analyzer whose main goal is to help
+prevent common NGINX misconfigurations.  It provides the @command{gixy}
+command.")
+      (license license:mpl2.0))))
 
 (define-public go-github.com-smartystreets-gunit
   (package

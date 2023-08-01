@@ -1271,8 +1271,11 @@ interactive environment for the functional language Haskell.")
            ;; next rebuild. Note that they are required for GHC 8.10 and 9.2.
            #$@(if (string-prefix? "i686" (or (%current-target-system)
                                              (%current-system)))
-               #~((add-after 'skip-failing-tests-i686 'skip-failing-tests-i686-cuirass
+               #~((add-after 'skip-failing-tests-i686 'skip-more-failing-tests-i686
                     (lambda _
+                      (substitute* '("testsuite/tests/profiling/should_run/all.T")
+                        (("test\\('T11627a', \\[ ")
+                         "test('T11627a', [ when(arch('i386'), skip), "))
                       (substitute* '("testsuite/driver/testlib.py")
                         ((".*changes being made to the file will invalidate the code signature.*")
                          "")

@@ -38,16 +38,12 @@
     (build-system copy-build-system)
     (native-inputs
      (list (texlive-updmap.cfg
-            (list
-             texlive-caption
-             texlive-endnotes
-             texlive-fonts-ec
-             texlive-helvetic
-             texlive-hyperref
-             texlive-latex-fncychap
-             texlive-latex-geometry
-             texlive-latex-ucs
-             texlive-times))))
+            (list texlive-caption
+                  texlive-endnotes
+                  texlive-fncychap
+                  texlive-helvetic
+                  texlive-times
+                  texlive-ucs))))
     (arguments
      (list
       #:install-plan #~'(("faif-2.0.pdf" "share/doc/faif/"))

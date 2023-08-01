@@ -926,6 +926,27 @@ differential abundance analysis of zero-inflated high-dimensional
 compositional data.")
     (license license:gpl3)))
 
+(define-public r-gwasexacthw
+  (package
+    (name "r-gwasexacthw")
+    (version "1.01")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "GWASExactHW" version))
+              (sha256
+               (base32
+                "19qmk8h7kxmn9kzw0x4xns5p3qqz27xkqq4q6zmh4jzizd0fsl78"))))
+    (properties `((upstream-name . "GWASExactHW")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=GWASExactHW")
+    (synopsis
+     "Exact Hardy-Weinburg testing for Genome Wide Association Studies")
+    (description
+     "This package contains a function to do exact Hardy-Weinburg
+testing (using Fisher's test) for SNP genotypes as typically obtained in a
+@dfn{Genome Wide Association Study} (GWAS).")
+    (license license:gpl3)))
+
 (define-public r-gwidgets2
   (package
     (name "r-gwidgets2")
@@ -1230,6 +1251,31 @@ quickly isolate key differences makes understanding test failures much
 easier.")
     (license license:expat)))
 
+(define-public r-wheatmap
+  (package
+    (name "r-wheatmap")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "wheatmap" version))
+              (sha256
+               (base32
+                "064idlrnb85xxav39gp3n854fic6514khvazrf5d0x48crpzyvdp"))))
+    (properties `((upstream-name . "wheatmap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-colorspace r-rcolorbrewer))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zwdzwd/wheatmap")
+    (synopsis "Incrementally build complex plots using natural semantics")
+    (description
+     "This package lets you build complex plots, heatmaps in particular, using
+natural semantics.  Bigger plots can be assembled using directives such as
+@code{LeftOf}, @code{RightOf}, @code{TopOf}, and @code{Beneath} and more.
+Other features include clustering, dendrograms and integration with ggplot2
+generated grid objects.  This package is particularly designed for
+bioinformaticians to assemble complex plots for publication.")
+    (license license:gpl3)))
+
 (define-public r-rticles
   (package
     (name "r-rticles")
@@ -1255,13 +1301,13 @@ for authoring journal articles and conference submissions.")
 (define-public r-babelwhale
   (package
     (name "r-babelwhale")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "babelwhale" version))
        (sha256
-        (base32 "01l8vwyz3bx0iks6cjs5y9ifdsnc1p1yqp4i0kzqd1gjhycizv6y"))))
+        (base32 "0m5q83ykz5w1fsjsk2vyrnv21cg4n075kbvfvw4k22c61p78shdl"))))
     (properties `((upstream-name . "babelwhale")))
     (build-system r-build-system)
     (propagated-inputs
@@ -1871,14 +1917,14 @@ variables.")
 (define-public r-ggpp
   (package
     (name "r-ggpp")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpp" version))
        (sha256
         (base32
-         "0w93427hyiihddsdr6q962gfl01b06yxchi3x3dinfb8mf1m5qmk"))))
+         "1shcjplw2w8jbfbp0flpxhb7jfy7v79vhjv1qlh6lmam2fziydcc"))))
     (properties `((upstream-name . "ggpp")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3387,6 +3433,40 @@ model fitting and error handling.")
 into a pipeline of data manipulation and visualisation.")
     (license license:gpl3)))
 
+(define-public r-morpho
+  (package
+    (name "r-morpho")
+    (version "2.11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "Morpho" version))
+              (sha256
+               (base32
+                "1c69n9284chygd375gkir4nk5bjglamhfyk2lz4z3kzy3z25qw50"))))
+    (properties `((upstream-name . "Morpho")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bezier
+                             r-colorramps
+                             r-doparallel
+                             r-foreach
+                             r-jsonlite
+                             r-mass
+                             r-matrix
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rgl
+                             r-rvcg
+                             r-sf))
+    (home-page "https://github.com/zarquon42b/Morpho")
+    (synopsis
+     "Calculations and visualizations related to geometric morphometrics")
+    (description
+     "This package provides a toolset for Geometric Morphometrics and mesh
+processing.  This includes (among other stuff) mesh deformations based on
+reference points, permutation tests, detection of outliers, processing of
+sliding semi-landmarks and semi-automated surface landmark placement.")
+    (license license:gpl2)))
+
 (define-public r-hgnchelper
   (package
     (name "r-hgnchelper")
@@ -3997,14 +4077,14 @@ conditionals and comparisons, and more.")
 (define-public r-sass
   (package
     (name "r-sass")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sass" version))
        (sha256
         (base32
-         "06f0279ljg6mbcimmfx4rp18zxb9yc24sdp2yxwfxzdp17kjrs1f"))))
+         "1vp9qnhkvz4shhvwrwbwcy1xnrgry0rmqxsg96ggv90m6sv0hyki"))))
     (properties `((upstream-name . "sass")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5013,13 +5093,13 @@ coordinates.")
 (define-public r-gensa
   (package
     (name "r-gensa")
-    (version "1.1.8")
+    (version "1.1.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "GenSA" version))
               (sha256
                (base32
-                "05m2xjaf4202jzzn5l7i7k80kzr8vihv7jpw99c9ic5n3ra8fpip"))))
+                "10qm0467r2rbcck1w7dijng5j676314vsyxsr0p8l843xz7s66rq"))))
     (properties `((upstream-name . "GenSA")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=GenSA")
@@ -5616,13 +5696,13 @@ factorization and divisive clustering for large sparse and dense matrices.")
 (define-public r-rcppspdlog
   (package
     (name "r-rcppspdlog")
-    (version "0.0.13")
+    (version "0.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppSpdlog" version))
        (sha256
-        (base32 "1149kh047301hrp15479ikcmrix968pwqw3jza7mp7bsxhrjrp3k"))))
+        (base32 "1n63mz2rr63kz3v7mg6n4cvw2lrw1ffk7xvln1j1005argvzvd4c"))))
     (properties `((upstream-name . "RcppSpdlog")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
@@ -5881,18 +5961,19 @@ graphics packages that comes with the base installation.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.13.3")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "15vs8b2jxap5ya59n6pdby1p89hd0y0b4say72q6icxsjzzj979z"))))
+                "0x5dpph62s7dwfs0y4gd73zzbil9cr1y5q8mpn9m7z2gdr67wk1c"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-clipr
            r-curl
+           r-dplyr
            r-httr
            r-jqr
            r-jsonlite
@@ -7987,6 +8068,28 @@ can be computed between character vectors while taking proper care of encoding
 or between integer vectors representing generic sequences.")
     (license license:gpl3+)))
 
+(define-public r-uchardet
+  (package
+    (name "r-uchardet")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "uchardet" version))
+              (sha256
+               (base32
+                "0m3xy807smqdxhkhd9cwrcf3ljlyvfmnkd7831qzpgcadam2jcdj"))))
+    (properties `((upstream-name . "uchardet")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://artemklevtsov.gitlab.io/uchardet")
+    (synopsis "Universal character encoding detector")
+    (description
+     "This package provides R bindings to the uchardet encoding detector
+library from Mozilla.  It takes a sequence of bytes in an unknown character
+encoding without any additional information, and attempts to get the encoding
+of the text.  All return names of the encodings are iconv-compatible.")
+    (license license:gpl2)))
+
 (define-public r-ucminf
   (package
     (name "r-ucminf")
@@ -8561,6 +8664,29 @@ processing is complete data may be written to a VCF file.  It also may be
 converted into other popular R objects.  This package provides a link between
 VCF data and familiar R software.")
    (license license:gpl3)))
+
+(define-public r-rvcg
+  (package
+    (name "r-rvcg")
+    (version "0.22.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "Rvcg" version))
+              (sha256
+               (base32
+                "16rr2kqw7lqb7m01pwn496zf2nr25gm6wcncz44kszjzzmv2xanv"))))
+    (properties `((upstream-name . "Rvcg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppeigen))
+    (home-page "https://github.com/zarquon42b/Rvcg")
+    (synopsis "Manipulations of triangular meshes based on the VCGLIB API")
+    (description
+     "This is a package for operations on triangular meshes based on VCGLIB.
+This package integrates nicely with the R-package rgl to render the meshes
+processed by Rvcg.  The Visualization and Computer Graphics Library (VCG for
+short) is a library for manipulation, processing and displaying with OpenGL of
+triangle and tetrahedral meshes.")
+    (license license:gpl2+)))
 
 (define-public r-ica
   (package
@@ -11224,6 +11350,28 @@ package covers Models, Completions, Chat, Edits, Images, Embeddings, Audio,
 Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
     (license license:expat)))
 
+(define-public r-operator-tools
+  (package
+    (name "r-operator-tools")
+    (version "1.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "operator.tools" version))
+              (sha256
+               (base32
+                "1v4dg7xhz24dnp0zxn815x1405ig64ibii6y40la1gvmzcc41dz5"))))
+    (properties `((upstream-name . "operator.tools")))
+    (build-system r-build-system)
+    (home-page "https://github.com/decisionpatterns/operator.tools")
+    (synopsis "Utilities for working with R's operators")
+    (description
+     "This package provides a collection of utilities that allow programming
+with R's operators.  Routines allow classifying operators, translating to and
+from an operator and its underlying function, and inverting some
+operators (e.g. comparison operators), etc.  All methods can be extended to
+custom infix operators.")
+    (license license:gpl2)))
+
 (define-public r-openxlsx
   (package
     (name "r-openxlsx")
@@ -13274,14 +13422,14 @@ the work.")
 (define-public r-doby
   (package
     (name "r-doby")
-    (version "4.6.16")
+    (version "4.6.17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doBy" version))
        (sha256
         (base32
-         "1rxvxhb572n29mbvkh6xmi7cnwc6c8g2xzw1wp10nfr9gnspx4ym"))))
+         "02jb1z19rsmbvzwapgfx7m8lfnlcx9dqf6gkr9fmgcl77d5992n5"))))
     (properties `((upstream-name . "doBy")))
     (build-system r-build-system)
     (propagated-inputs
@@ -16571,13 +16719,13 @@ address a bug.")
 (define-public r-rcppalgos
   (package
     (name "r-rcppalgos")
-    (version "2.7.2")
+    (version "2.8.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppAlgos" version))
               (sha256
                (base32
-                "1wfwwbv9wrs2vbk0c36zcwcl9yyzz2h1mw36mpq7lz56xxhy0wf5"))))
+                "1f9wxwqzv03bgr22s3hnj7mg9qlbap1dsg6vj1blgjl6xpfvz5bn"))))
     (properties `((upstream-name . "RcppAlgos")))
     (build-system r-build-system)
     (inputs (list gmp))
@@ -17547,13 +17695,13 @@ maps.")
 (define-public r-tidytree
   (package
     (name "r-tidytree")
-    (version "0.4.2")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidytree" version))
        (sha256
-        (base32 "0phmvbpsxx85fvw4000d160qh8njrgmzpr3ja0gy59dgv1k1m0yb"))))
+        (base32 "196c7j3pgapwh8j8jdhsz078wl24xcf5jkrbbsr2s7xg32j0lmi1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
@@ -19377,16 +19525,47 @@ hierarchic loggers, multiple handlers per logger, level based filtering, space
 handling in messages and custom formatting.")
     (license license:gpl3)))
 
+(define-public r-logistf
+  (package
+    (name "r-logistf")
+    (version "1.25.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "logistf" version))
+              (sha256
+               (base32
+                "0w78jsynw5jh3l9r3ssjs8rza6givgrxzwnb5jwazcm8637d6gix"))))
+    (properties `((upstream-name . "logistf")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-formula-tools r-matrix r-mgcv r-mice))
+    (home-page
+     "https://cemsiis.meduniwien.ac.at/en/kb/science-research\
+/software/statistical-software/firth-correction/")
+    (synopsis "Firth's bias-reduced logistic regression")
+    (description
+     "Fit a logistic regression model using Firth's bias reduction method,
+equivalent to penalization of the log-likelihood by the Jeffreys prior.
+Confidence intervals for regression coefficients can be computed by penalized
+profile likelihood.  Firth's method was proposed as ideal solution to the
+problem of separation in logistic regression, see Heinze and Schemper (2002)
+<doi:10.1002/sim.1047>.  If needed, the bias reduction can be turned off such
+that ordinary maximum likelihood logistic regression is obtained.  Two new
+modifications of Firth's method, FLIC and FLAC, lead to unbiased predictions
+and are now available in the package as well, see Puhr et al (2017)
+<doi:10.1002/sim.7273>.")
+    ;; Any version of the GPL
+    (license license:gpl3+)))
+
 (define-public r-longdat
   (package
     (name "r-longdat")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "LongDat" version))
               (sha256
                (base32
-                "1k8rl6jv4xzsm620wf373ds6l8fbb5ff07rgbp0bgqrymvwdf1jc"))))
+                "1rzkb7byd32jqvhf75zyvy0dlkq79aicz8j0x7lk821qiq4dfv6l"))))
     (properties `((upstream-name . "LongDat")))
     (build-system r-build-system)
     (propagated-inputs (list r-bestnormalize
@@ -21189,6 +21368,28 @@ The bedr package's API enhances access to these tools as well as offers
 additional utilities for genomic regions processing.")
     (license license:gpl2)))
 
+(define-public r-setrng
+  (package
+    (name "r-setrng")
+    (version "2022.4-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "setRNG" version))
+              (sha256
+               (base32
+                "09089vr5x8snwxh38kdhgpjl3jl7zrk056f6f9a2jg5lsrmnxh31"))))
+    (properties `((upstream-name . "setRNG")))
+    (build-system r-build-system)
+    (home-page "https://distr.r-forge.r-project.org/")
+    (synopsis "Set (normal) random number generator and seed")
+    (description
+     "This package provides utilities to help set and record the setting of
+the seed and the uniform and normal generators used when a random experiment
+is run.  The utilities can be used in other functions that do random
+experiments to simplify recording and/or setting all the necessary information
+for reproducibility.  See the vignette and reference manual for examples.")
+    (license license:gpl2)))
+
 (define-public r-sets
   (package
     (name "r-sets")
@@ -21606,17 +21807,25 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.0-13")
+    (version "1.0-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "11lcc57vqip1zj8hi09mnisl9jiqqxwx6b06jl752dayxi2109br"))))
+         "1xrrqd91601lcd83zzwksb4ampy1j8vf8f6941csk89psm45clwb"))))
     (build-system r-build-system)
     (inputs
-     (list gdal geos proj sqlite))
+     (list curl
+           gdal
+           geos
+           openssh
+           openssl
+           pcre2
+           proj
+           sqlite
+           zlib))
     (propagated-inputs
      (list r-classint
            r-dbi
@@ -24044,13 +24253,13 @@ code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
 (define-public r-sccore
   (package
     (name "r-sccore")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sccore" version))
        (sha256
-        (base32 "1bvqbqh8pkiljy7s3mc67wsr1jlxb19rhd95160xparmrbffpxqb"))))
+        (base32 "11l7xl1ylzmda4i2p1b08a43pvciin2i2sas2n3cj1gmamflkji3"))))
     (properties `((upstream-name . "sccore")))
     (build-system r-build-system)
     (propagated-inputs
@@ -27288,14 +27497,14 @@ transcription, ...")
 (define-public r-seewave
   (package
     (name "r-seewave")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "seewave" version))
        (sha256
         (base32
-         "0bi1l47l3846c18k6h2vrv0xp9xh00n544a578jrndahzrj1hfwl"))))
+         "0whfanh3949162575ddw5y6s5ydq9v24l929gwdd1jv16xzlnp9h"))))
     (properties `((upstream-name . "seewave")))
     (build-system r-build-system)
     (inputs
@@ -29550,6 +29759,30 @@ formattable data frames are printed with multiple types of formatting in HTML
 to improve the readability of data presented in tabular form rendered in web
 pages.")
     (license license:expat)))
+
+(define-public r-formula-tools
+  (package
+    (name "r-formula-tools")
+    (version "1.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "formula.tools" version))
+              (sha256
+               (base32
+                "15d3ikfmsh9zszfgfkrxb3jkipl41inm7n6bhs73kwlnklnygq2g"))))
+    (properties `((upstream-name . "formula.tools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-operator-tools))
+    (home-page "https://github.com/decisionpatterns/formula.tools")
+    (synopsis
+     "Utilities for manipulating formulas, calls, assignments and other R objects")
+    (description
+     "These utilities facilitate the programmatic manipulations of formulas,
+expressions, calls, assignments and other R language objects.  These objects
+all share the same structure: a left-hand side, operator and right-hand side.
+This packages provides methods for accessing and modifying this structures as
+well as extracting and replacing names and symbols from these objects.")
+    (license license:gpl2)))
 
 (define-public r-xmisc
   (package
@@ -36170,40 +36403,40 @@ package online.")
     (name "r-prereg")
     (version "0.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "prereg" version))
-        (sha256
-          (base32
-            "039nrl5cirsx1ysh214dr6xnn1h6h3f90im6k9dgmzfksxdqigpw"))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "prereg" version))
+       (sha256
+        (base32
+         "039nrl5cirsx1ysh214dr6xnn1h6h3f90im6k9dgmzfksxdqigpw"))))
     (properties `((upstream-name . "prereg")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-rmarkdown
-            ;; The package provides a custom LaTex template in
-            ;; inst/rmd/prereg_form.tex, which depends on these packages:
-            texlive-amsmath
-            texlive-booktabs
-            texlive-etoolbox
-            texlive-iftex
-            texlive-fancyhdr
-            texlive-fancyvrb
-            texlive-latex-geometry
-            texlive-graphics
-            texlive-latex-threeparttable
-            texlive-titlesec
-            texlive-latex-upquote
-            texlive-listings
-            texlive-polyglossia
-            texlive-titling
-            texlive-tools
-            texlive-ulem
-            (texlive-updmap.cfg (list texlive-amsfonts texlive-lm))))
+     (list r-rmarkdown
+           ;; The package provides a custom LaTex template in
+           ;; inst/rmd/prereg_form.tex, which depends on these packages:
+           texlive-amsmath
+           texlive-booktabs
+           texlive-etoolbox
+           texlive-fancyhdr
+           texlive-fancyvrb
+           texlive-geometry
+           texlive-graphics
+           texlive-iftex
+           texlive-listings
+           texlive-polyglossia
+           texlive-threeparttable
+           texlive-titlesec
+           texlive-titling
+           texlive-tools
+           texlive-ulem
+           texlive-upquote
+           (texlive-updmap.cfg (list texlive-lm))))
     (home-page "https://github.com/crsh/prereg")
     (synopsis
-      "R Markdown Templates to preregister Scientific Studies")
+     "R Markdown Templates to preregister Scientific Studies")
     (description
-      "This package provides a collection of templates to author
+     "This package provides a collection of templates to author
 preregistration documents for scientific studies in PDF format.")
     (license license:gpl3)))
 
@@ -36800,14 +37033,14 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
 (define-public r-stars
   (package
     (name "r-stars")
-    (version "0.6-1")
+    (version "0.6-2")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "stars" version))
         (sha256
           (base32
-            "19q44bs2w12lyim8gzfpgxfkp2cdf29cav4cv74vzsxrv8xdny0z"))))
+            "0prip06c28d72wa7h8h8p2y7rw7jnh2h2yhnygbaipc8cbzlvi7x"))))
     (properties `((upstream-name . "stars")))
     (build-system r-build-system)
     (propagated-inputs
@@ -39211,14 +39444,14 @@ be efficient and easy to use.")
 (define-public r-ggh4x
   (package
     (name "r-ggh4x")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggh4x" version))
        (sha256
         (base32
-         "15b2agnk5dsinrxkbq5bmqgckssvlrkwarj2pi7xi8lxsqqrpw3w"))))
+         "0xj4nlxrpmwzdlj4q3vnhwy7gd1634ff7yjsnaf609ap0q23mxb1"))))
     (properties `((upstream-name . "ggh4x")))
     (build-system r-build-system)
     (propagated-inputs

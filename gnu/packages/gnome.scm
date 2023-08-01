@@ -2610,13 +2610,15 @@ forgotten when the session ends.")
 (define-public evince
   (package
     (name "evince")
-    (version "44.1")
-    (source (origin
-              (method url-fetch)
-              (uri "mirror://gnome/sources/evince/44/evince-44.1.tar.xz")
-              (sha256
-               (base32
-                "0523lzk7xpfr6gir8nx80fmp1lhajm837hilmgn8zczz2nxx7bqm"))))
+    (version "44.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/evince/"
+                           (version-major version) "/"
+                           "evince-" version ".tar.xz"))
+       (sha256
+        (base32 "08inp13kksa027ij9ai10734jxdn1y7s0skbgzsyk9j739ca32rv"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -4560,28 +4562,6 @@ editors, IDEs, etc.")
     (propagated-inputs (modify-inputs (package-propagated-inputs vte)
                          (replace "gtk+" gtk)))))
 
-(define-public vte-ng
-  (package
-    (inherit vte)
-    (name "vte-ng")
-    (version "0.59.0")
-    (home-page "https://github.com/thestinger/vte-ng")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03ffhjc0fq9p25y1b2c0a51jn7y2bc0acxsgymhcb3pyijc8ykjm"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-Ddocs=false")))
-  (synopsis "Enhanced VTE terminal widget")
-  (description
-   "VTE is a library (libvte) implementing a terminal emulator widget for
-GTK+, this fork provides additional functions exposed for keyboard text
-selection and URL hints.")))
-
 ;; Stable version for gtk2, required by gnurobots and lxterminal as of 2020-07.
 (define-public vte/gtk+-2
   (package (inherit vte)
@@ -5354,8 +5334,9 @@ floating in an ocean using only your brain and a little bit of luck.")
                (("meson.add_install_script" &) (string-append "# " &)))
              #t)))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config))
     (inputs
      (list gtk+
            glib ; for gio
@@ -6182,9 +6163,10 @@ throughout GNOME for API documentation).")
     (license license:gpl2+)))
 
 (define-public devhelp-with-libsoup2
-  (package/inherit devhelp
-    (inputs (modify-inputs (package-inputs devhelp)
-              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
+  (hidden-package
+   (package/inherit devhelp
+     (inputs (modify-inputs (package-inputs devhelp)
+               (replace "webkitgtk" webkitgtk-with-libsoup2))))))
 
 (define-public cogl
   (package
@@ -7004,7 +6986,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
            docbook-xsl
            dbus
            elogind
-           fuse-3
+           fuse
            gcr
            glib
            gnome-online-accounts
@@ -7813,7 +7795,10 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0h1ak3201mdc2qbf67fhcn801ddp33hm0f0c52zis1l7s6ipyb62"))))
+                "0h1ak3201mdc2qbf67fhcn801ddp33hm0f0c52zis1l7s6ipyb62"))
+              ;; TODO: Remove on update as this was merged upstream.  See
+              ;; <https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3047>.
+              (patches (search-patches "mutter-fix-inverted-test.patch"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -8712,7 +8697,7 @@ the available networks and allows users to easily switch between them.")
 (define-public libxml++
   (package
     (name "libxml++")
-    (version "5.0.2")
+    (version "5.0.3")
     (source
      (origin
        (method git-fetch)
@@ -8721,7 +8706,7 @@ the available networks and allows users to easily switch between them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13jlhz57yjxapplflm8aarczxv6ll3d336y1446mr5n4ylkcc1xz"))))
+        (base32 "07h11vl0rv8b0w31as5xiirpx17lprkx7fimphy3f5mkwhz8njba"))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list libxml2))                    ;required by .pc file

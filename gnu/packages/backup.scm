@@ -391,7 +391,7 @@ list and implement the backup strategy.")
 (define-public snapraid
   (package
     (name "snapraid")
-    (version "12.0")
+    (version "12.2")
     (source
      (origin
        (method git-fetch)
@@ -400,7 +400,7 @@ list and implement the backup strategy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k8pynafkx8bhnqnjhc3jsds5p40sflz4drm88i6dg6ifv35mhh9"))))
+        (base32 "0xgvyhyyl2v6azxwzqbpgyln4r2dw34xa8z09116vpkgdgivh36z"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -480,14 +480,14 @@ errors.")
 (define-public rdiff-backup
   (package
     (name "rdiff-backup")
-    (version "2.2.4")
+    (version "2.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/rdiff-backup/rdiff-backup/releases/"
                            "download/v" version "/rdiff-backup-" version ".tar.gz"))
        (sha256
-        (base32 "1xfvy1xql8zl7rprnaxwya8bp9g7rg8v5pwhr93svhj2594m30cl"))))
+        (base32 "13m0kq9y6rzgaq0zlzh7qhi789qmbzp3dnc7y57fmhsfg1mq5ql6"))))
     (build-system python-build-system)
     (native-inputs
      (list python-setuptools-scm))
@@ -634,13 +634,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "11b7jqv9sw22a9512b270d12k3mrcgmmcaimh6bgm5iwcgw1h973"))
+        (base32 "1a2d6z2ln476l0fcnkl4rpciij5b2lql44b71aivg0cy8vlm9gd4"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -768,14 +768,14 @@ backups on untrusted computers.")
 (define-public wimlib
   (package
     (name "wimlib")
-    (version "1.13.5")
+    (version "1.14.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://wimlib.net/downloads/"
                                   "wimlib-" version ".tar.gz"))
               (sha256
                (base32
-                "08z3xxm5hq1n4wmyhgz14p1cv0w2lx610vn8nhfwpds4n7lwkz1j"))))
+                "0hkgcf3v3hmwck02s0623brdx1ijvk1la0h5mgly1whnaqviajj9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

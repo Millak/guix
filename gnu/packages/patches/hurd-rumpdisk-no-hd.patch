@@ -1,0 +1,26 @@
+This avoids rumpdisk crash when booting without "noide".
+
+Upstream status: Taken from Debian Salsa package git
+
+    https://salsa.debian.org/hurd-team/hurd/-/blob/f40ff84260b5a98bea949013415a1c92c127a43e/debian/patches/rumpdisk-no-hd
+
+Index: hurd-debian/rumpdisk/block-rump.c
+===================================================================
+--- hurd-debian.orig/rumpdisk/block-rump.c
++++ hurd-debian/rumpdisk/block-rump.c
+@@ -143,7 +143,6 @@ rumpdisk_device_init (void)
+     {
+       device_t device;
+ 
+-#if 0
+       if (! device_open (device_master, D_READ, "hd0", &device)
+        || ! device_open (device_master, D_READ, "hd1", &device)
+        || ! device_open (device_master, D_READ, "hd3", &device)
+@@ -154,7 +153,6 @@ rumpdisk_device_init (void)
+ 	  disabled = 1;
+ 	  return;
+ 	}
+-#endif
+ 
+       if (! device_open (device_master, D_READ, "sd0", &device)
+        || ! device_open (device_master, D_READ, "sd1", &device)

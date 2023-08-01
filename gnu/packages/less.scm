@@ -63,7 +63,7 @@ text editors.")
 (define-public lesspipe
   (package
     (name "lesspipe")
-    (version "2.07")
+    (version "2.08")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -72,7 +72,7 @@ text editors.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xci0c575hklb5y6vybvb48938fslb9zw3mlisvspx1p3fplyzrg"))))
+                "00kswzbyys4j5l10y3c3cinrgf0mkzjn1ilqdvs1mkbxlzk33pwc"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -112,7 +112,7 @@ text editors.")
                    (string-append file " -")))))))))
     (inputs
      (list file
-           ncurses  ;; for tput
+           ncurses                      ; for tput
            perl-archive-zip))
     (native-inputs (list perl))
     (home-page "https://github.com/wofr06/lesspipe")

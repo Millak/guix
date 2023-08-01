@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -194,15 +195,21 @@ such as mate-panel and xfce4-panel.")
                        (assoc-ref %outputs "doc")
                        "/share/gtk-doc/html"))))
     (native-inputs
-     `(("gobject-introspection" ,gobject-introspection)
+     `(,@(if (target-hurd?)
+             '()
+             `(("gobject-introspection" ,gobject-introspection)))
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)))
     (inputs
      `(("bash-minimal" ,bash-minimal)   ;for glib-or-gtk-wrap
-       ("drm" ,libdrm)
+       ,@(if (target-hurd?)
+             '()
+             `(("drm" ,libdrm)))
        ("ghostscript" ,ghostscript)
        ("libspectre" ,libspectre)
-       ("poppler" ,poppler)))
+       ,@(if (target-hurd?)
+             '()
+             `(("poppler" ,poppler)))))
     (propagated-inputs
      `( ;; ("cogl" ,cogl)
        ;; ("directfb" ,directfb)
@@ -269,11 +276,13 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
      ;; There are all in the Requires or Requires.private field of '.pc'.
      (list glib graphite2 icu4c))
     (native-inputs
-     (list `(,glib "bin")               ;for glib-mkenums
-           gobject-introspection
-           pkg-config
-           python-wrapper
-           which))
+     (append (list `(,glib "bin"))      ;for glib-mkenums
+             (if (target-hurd?)
+                 '()
+                 (list gobject-introspection))
+             (list pkg-config
+                   python-wrapper
+                   which)))
     (arguments
      (list #:configure-flags
            #~(list "--with-graphite2"
@@ -285,20 +294,6 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))
     (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
-
-
-(define-public harfbuzz-5
-  (package
-    (inherit harfbuzz)
-    (version "5.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
-                                  "/releases/download/" version "/harfbuzz-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0ka3nkk2lks2lgakq02vyibwdziv11dkpa2brkx230asnyby0v2a"))))))
 
 (define-public libdatrie
   (package
@@ -406,12 +401,15 @@ applications.")
      (list bash-minimal
            zlib))
     (native-inputs
-     (list `(,glib "bin")               ;glib-mkenums, etc.
-           gobject-introspection        ;g-ir-compiler, etc.
-           help2man
-           perl
-           pkg-config
-           python-wrapper))
+     (append (list `(,glib "bin"))      ;glib-mkenums, etc.
+             (if (target-hurd?)
+                 '()
+                 (list gobject-introspection)) ;g-ir-compiler, etc.
+             (list
+              help2man
+              perl
+              pkg-config
+              python-wrapper)))
     (synopsis "Text and font handling library")
     (description "Pango is a library for laying out and rendering of text, with
 an emphasis on internationalization.  Pango can be used anywhere that text
@@ -2402,17 +2400,20 @@ does not deal with windowing system surfaces, drawing, scene graphs, or input.")
 (define-public spread-sheet-widget
   (package
     (name "spread-sheet-widget")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://alpha.gnu.org/gnu/ssw/"
                            "spread-sheet-widget-" version ".tar.gz"))
        (sha256
-        (base32 "09rzgp7gabnzab460x874a1ibgyjiibpwzsz5srn9zs6jv2jdxjb"))))
+        (base32 "0jwmx5i02jwmkp6gci2mapqglh2g3a0092wns185hfygiwlxi2c5"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (native-inputs
-     (list `(,glib "bin") ; for glib-genmarshal, etc.
+     (list `(,glib "bin")               ; for glib-genmarshal, etc.
            pkg-config))
     ;; In 'Requires' of spread-sheet-widget.pc.
     (propagated-inputs

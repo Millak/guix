@@ -468,7 +468,7 @@ directory.")
 (define-public sdl2-image
   (package (inherit sdl-image)
     (name "sdl2-image")
-    (version "2.6.2")
+    (version "2.6.3")
     (source
      (origin
        (method url-fetch)
@@ -476,7 +476,7 @@ directory.")
         (string-append "https://www.libsdl.org/projects/SDL_image/release/"
                        "SDL2_image-" version ".tar.gz"))
        (sha256
-        (base32 "0xs7h5cp0sz082rn1bqjqbrgwjhwcskz9i6ikiisq2yhv2s5yda8"))))
+        (base32 "0b1i6r46pzvyp924pwn74d78gvkyif15ghbxkfp8yz0xpzjrn74k"))))
     (propagated-inputs
      (propagated-inputs-with-sdl2 sdl-image))
     (properties '((upstream-name . "SDL2_image")))))
@@ -484,7 +484,7 @@ directory.")
 (define-public sdl2-mixer
   (package (inherit sdl-mixer)
     (name "sdl2-mixer")
-    (version "2.6.2")
+    (version "2.6.3")
     (source
      (origin
        (method url-fetch)
@@ -494,10 +494,9 @@ directory.")
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Remove bundled libraries.
-                   (delete-file-recursively "external")
-                   #t))
+                   (delete-file-recursively "external")))
        (sha256
-        (base32 "0wd35a9fcj1bv534k9cr4jdk076dpiqq0ayk6cybmv3d6q8aiplc"))))
+        (base32 "13zadq6lmzdglvp0arl7x5y7zihv31vr4pisgrhwwj468xmahsvs"))))
     (arguments
      (list #:tests? #f                     ;no tests
            #:configure-flags
@@ -544,7 +543,7 @@ directory.")
 (define-public sdl2-ttf
   (package (inherit sdl-ttf)
     (name "sdl2-ttf")
-    (version "2.20.1")
+    (version "2.20.2")
     (source (origin
              (method url-fetch)
              (uri
@@ -556,7 +555,7 @@ directory.")
               '(delete-file-recursively "external"))
              (sha256
               (base32
-               "0mqcgpcvzp927xv1gs51f2wqly9k9f8nxfxi69lxlfncyd8svkbq"))))
+               "0lr0l8c19fg6anq2cp6xppv65ys3pyk9qjicg881nll76kcixiwx"))))
     (arguments
      (list #:configure-flags #~'("--enable-freetype-builtin=no"
                                  "--enable-harfbuzz-builtin=no")))

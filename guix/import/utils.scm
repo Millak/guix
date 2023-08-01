@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
@@ -179,6 +179,7 @@ thrown."
     ("AGPL-3.0"                   . license:agpl3)
     ("AGPL-3.0-only"              . license:agpl3)
     ("AGPL-3.0-or-later"          . license:agpl3+)
+    ("Arphic-1999"                . license:arphic-1999)
     ("Apache-1.1"                 . license:asl1.1)
     ("Apache-2.0"                 . license:asl2.0)
     ("APSL-2.0"                   . license:apsl2)
@@ -335,14 +336,21 @@ LENGTH characters."
                    (cut string-trim-both <> #\')
                    ;; Escape single @ to prevent it from being understood as
                    ;; invalid Texinfo syntax.
-                   (cut regexp-substitute/global #f "@" <> 'pre "@@" 'post)))))
+                   (cut regexp-substitute/global #f "@" <> 'pre "@@" 'post)
+                   ;; Wrap camelCase or PascalCase words in @code{...}.
+                   (lambda (word)
+                     (let ((pattern (make-regexp "([A-Z][a-z]+[A-Z]|[a-z]+[A-Z])")))
+                       (match (list-matches pattern word)
+                         (() word)
+                         (_ (string-append "@code{" word "}")))))))))
          (words
           (string-tokenize (string-trim-both description)
                            (char-set-complement
                             (char-set #\space #\newline))))
          (new-words
           (match words
-            (((and (or "A" "Functions" "Methods") first) . rest)
+            (((and (or "A" "Classes" "Functions" "Methods" "Tools")
+                   first) . rest)
              (cons* "This" "package" "provides"
                     (string-downcase first) rest))
             (((and (or "Contains"
@@ -436,10 +444,7 @@ APPEND-VERSION?/string is a string, append this string."
   (match guix-package
     ((or
       ('package ('name name) ('version version) . rest)
-      ('package ('inherit ('simple-texlive-package name . _))
-                ('version version) . rest)
       ('let _ ('package ('name name) ('version version) . rest)))
-
      `(define-public ,(string->symbol
                        (cond
                         ((string? append-version?/string)

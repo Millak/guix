@@ -59,6 +59,7 @@
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,6 +114,7 @@
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
@@ -370,14 +372,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.10
   (package
     (inherit shepherd-0.9)
-    (version "0.10.1")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))
+                "0v9ld9gbqdp5ya380fbkdsxa0iqr90gi6yk004ccz3n792nq6wlj"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
                      (replace "guile-fibers" guile-fibers-1.3)))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
@@ -1958,7 +1960,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.13p2")
+    (version "1.9.14p1")
     (source (origin
               (method url-fetch)
               (uri
@@ -1968,7 +1970,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "0kapjhgyzaqk2nfzzz04ss9x6cy61s79afd3vhgkn0y1wkyh886z"))
+                "1bwg2bn1sbc6l2gx2r9vfqyf8dyvgp7nad0wj3p5gn095vpza6z9"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1987,9 +1989,9 @@ system administrator.")
 
              ;; 'visudo.c' expects _PATH_MV to be defined, but glibc doesn't
              ;; provide it.
-             (string-append "CPPFLAGS=-D_PATH_MV='\""
+             (string-append "CPPFLAGS=-D_PATH_MV=\\\""
                             (assoc-ref %build-inputs "coreutils")
-                            "/bin/mv\"'"))
+                            "/bin/mv\\\""))
 
        ;; Avoid non-determinism; see <http://bugs.gnu.org/21918>.
        #:parallel-build? #f
@@ -2452,13 +2454,13 @@ development, not the kernel implementation of ACPI.")
 (define-public s-tui
   (package
     (name "s-tui")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "s-tui" version))
        (sha256
-        (base32 "1l2ik5iwmb8vxa2aqdy62zfy3zfzbpq5a0pgpka2vvlw9ivpqy5p"))))
+        (base32 "1vf9gpfk9x6sqpz7n420ijkn3ykws8g9b77kmbmlrjsm76dnp1dj"))))
     (build-system python-build-system)
     (inputs
      (list python-psutil python-urwid))
@@ -2472,14 +2474,14 @@ utilization, temperature and power.")
 (define-public stress
   (package
     (name "stress")
-    (version "1.0.5")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://debian/pool/main/s/stress/stress_"
                                   version ".orig.tar.gz"))
               (sha256
                (base32
-                "09shpd85g8dvpiw0mnwykss676g0s7lbi8ab37xjinb5lfff960p"))))
+                "1cg0mklfrwfyzwqkzidd0151r8n2jgbiiqz1v0p3w4q62mkmdand"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
@@ -2978,7 +2980,7 @@ modules and plugins that extend Ansible.")
     (inputs
      (list ansible
            encfs
-           fuse
+           fuse-2
            util-linux ;; for umount
            findutils
            gnupg
@@ -4217,7 +4219,7 @@ hard-coded.")
 (define-public thermald
   (package
     (name "thermald")
-    (version "2.5.2")
+    (version "2.5.3")
     (source
      (origin
       (method git-fetch)
@@ -4226,7 +4228,7 @@ hard-coded.")
              (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "08w0lanhk2rncvshrvxrpm84y9f9x7aa63vxi7fg6329c94cf78k"))))
+       (base32 "0hpk7pjlrnj62m5zdmih7gf3nihhyphyslh5xakdjb64cvx5z25d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -4406,7 +4408,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.25-1")
+      (version "3.3.28-1")
       (source
        (origin
          (method git-fetch)
@@ -4415,7 +4417,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "0mak2f06xzalccgaij9fsi20600sg05v0pmg0blvy6hvq5kh97k3"))))
+          (base32 "0h00dasmw3crci8kwpa503jljy3c5r2fsdhpbbczhsgznhlr8pbi"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
@@ -4826,7 +4828,7 @@ LUKS volumes encrypted with the user's log-in password.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.23.2")
+    (version "1.23.3")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -4836,7 +4838,7 @@ LUKS volumes encrypted with the user's log-in password.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17g2q0h3jwzfm80ldl8inpyh5y0qzzmgvyg10gkk1rp8i34wfgly"))))
+        (base32 "02rylrh2dr593xf2l865lvvxnsb9337nd4fiqbahfyz4cbqgzq3x"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -5852,3 +5854,49 @@ file or files to several hosts.")
     (description "This package provides a graphical disk usage analyzer in
 text mode.")
     (license license:asl2.0)))
+
+(define-public mactelnet
+  (package
+    (name "mactelnet")
+    (version "0.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/haakonnessjoen/MAC-Telnet")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1z63dz22crrvrm0sh2cwpyqb7wqd9m45m6f2641mwmyp6hcpf4k4"))
+              (patches (search-patches "mactelnet-remove-init.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file "src/utlist.h")
+                   (substitute* (find-files "src/" "\\.c$")
+                     (("\"utlist\\.h\"") "<utlist.h>"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f))  ; no tests
+    (native-inputs (list autoconf automake gettext-minimal))
+    (inputs (list uthash))
+    (synopsis "MAC-Telnet utilities for communicating with RouterOS devices")
+    (description "This package provides an implementation of the MAC-Telnet protocol
+used by RouterOS devices.  It provides the following commands:
+@table @command
+@item{macping}
+Ping RouterOS devices or @command{mactelnetd} hosts.
+@item{mactelnetd}
+MAC-Telnet daemon.
+@item{mactelnet}
+MAC-Telnet client.
+@item{mndp}
+Discover other RouterOS devices or @command{mactelnetd} hosts.
+@end table")
+    (home-page "https://lunatic.no/2010/10/routeros-mac-telnet-application-for-linux-users/")
+    (license
+     (list license:gpl2+
+           ;; Note: applies to src/md5.{c,h}
+           ;; This file is likely to be gone in the next release.
+           license:zlib))))

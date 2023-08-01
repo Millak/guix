@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>.
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,13 +105,14 @@
               (operating-system os)
               (memory-size 1024)))
 
+  (define ocr (file-append ocrad "/bin/ocrad"))
+
   (define test
     (with-imported-modules (source-module-closure
                             '((gnu build marionette)
                               (guix build utils)))
       #~(begin
           (use-modules (gnu build marionette)
-                       (guix build utils)
                        (srfi srfi-26)
                        (srfi srfi-64))
 
@@ -141,54 +143,60 @@
               ;; check it here.
               (marionette-eval
                '(begin
+                  (use-modules (guix build utils))
                   ;; Check that DCONF_PROFILE is set...
                   (invoke "/bin/sh" "-lc" "\
 pgrep gdm | head -n1 | xargs -I{} grep -Fq DCONF_PROFILE /proc/{}/environ")
 
-                  ;; ... and that
+                  ;; ... and that 'sleep-inactive-ac-type' is unset.
                   (invoke "/bin/sh" "-lc" "\
 sudo -E -u gdm env DCONF_PROFILE=/etc/dconf/profile/gdm dbus-run-session \
 gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type \
 | grep -Fq nothing"))
                marionette))
 
-            (test-assert "vnc lands on the gdm login screen"
+            (test-group "vnc lands on the gdm login screen"
               ;; This test runs vncviewer on the local VM and verifies that it
               ;; manages to access the GDM login screen (via XDMCP).
-              (begin
-                (define (ratpoison-abort)
-                  (marionette-control "sendkey ctrl-g" marionette))
+              (define (ratpoison-abort)
+                (marionette-control "sendkey ctrl-g" marionette))
 
-                (define (ratpoison-help)
-                  (marionette-control "sendkey ctrl-t" marionette)
-                  (marionette-type "?" marionette)
-                  (sleep 1))            ;wait for help screen to appear
+              (define (ratpoison-help)
+                (marionette-control "sendkey ctrl-t" marionette)
+                (marionette-type "?" marionette)
+                (sleep 1))              ;wait for help screen to appear
 
-                (define (ratpoison-exec command)
-                  (marionette-control "sendkey ctrl-t" marionette)
-                  (marionette-type "!" marionette)
-                  (marionette-type (string-append command "\n") marionette))
+              (define (ratpoison-exec command)
+                (marionette-control "sendkey ctrl-t" marionette)
+                (marionette-type "!" marionette)
+                (marionette-type (string-append command "\n") marionette))
 
-                ;; Wait until the ratpoison help screen can be displayed; this
-                ;; means the window manager is ready.
+              ;; Wait until the ratpoison help screen can be displayed; this
+              ;; means the window manager is ready.
+              ;; XXX: The letters are half of the height preferred by
+              ;; GNU Ocrad, scale it by 2.
+              (test-assert "window manager is ready"
                 (wait-for-screen-text marionette
                                       (cut string-contains <> "key bindings")
-                                      #:ocr #$(file-append tesseract-ocr
-                                                           "/bin/tesseract")
+                                      #:ocr #$ocr
+                                      #:ocr-arguments '("--scale=2")
                                       #:pre-action ratpoison-help
-                                      #:post-action ratpoison-abort)
+                                      #:post-action ratpoison-abort))
 
-                ;; Run vncviewer and expect the GDM login screen (accessed via
-                ;; XDMCP).  This can take a while to appear on slower machines.
-                (ratpoison-exec "vncviewer localhost:5905")
-                ;; XXX: tesseract narrowly recognizes "Guix" as "uix" from the
-                ;; background image; ocrad fares worst.  Sadly, 'Username' is
-                ;; not recognized at all.
+              ;; Run vncviewer and expect the GDM login screen (accessed via
+              ;; XDMCP).  This can take a while to appear on slower machines.
+              (ratpoison-exec "vncviewer localhost:5905")
+
+              (test-assert "GDM login screen ready"
+                ;; XXX: The '--invert' argument as the sole option to GNU
+                ;; Ocrad is required for it to recognize "Guix" from the
+                ;; background image.  'Username' from the UI would be a better
+                ;; choice but is not recognized at all.
                 (wait-for-screen-text marionette
-                                      (cut string-contains <> "uix")
-                                      #:ocr #$(file-append tesseract-ocr
-                                                           "/bin/tesseract")
-                                      #:timeout 120)))
+                                      (cut string-contains <> "Guix")
+                                      #:ocr #$ocr
+                                      #:ocr-arguments '("--invert")
+                                      #:timeout 120))) ;for slow systems
 
             (test-end)))))
 
