@@ -5056,6 +5056,54 @@ software to answer ad hoc questions.")
            go-golang-org-x-image
            go-golang-org-x-text))))
 
+(define-public python-baltica
+  (package
+    (name "python-baltica")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dieterich-lab/Baltica")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "001ac03v9pbqqzf9pv7v8gf0296ksa4f0v3wdmpa6m9701skqi4r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; The tests need to be run from elsewhere...
+               (mkdir-p "/tmp/test")
+               (copy-recursively ".tests" "/tmp/test")
+               (with-directory-excursion "/tmp/test"
+                 (invoke "pytest" "-v" "--doctest-modules"))))))))
+    (propagated-inputs
+     (list gunicorn
+           python-anndata
+           python-click
+           python-flask
+           python-flask-wtf
+           python-h5py
+           python-numpy
+           python-psutil
+           python-pysam
+           python-pyyaml
+           python-scipy
+           snakemake-7))
+    (native-inputs (list python-cython python-pyfakefs python-pytest))
+    (home-page "https://github.com/dieterich-lab/Baltica")
+    (synopsis "Integrated splice junction usage analysis")
+    (description
+     "This framework facilitates the execution of @dfn{differential junction
+usage} (DJU) methods. Additionally, it enables the integration of results from
+multiple DJU methods.")
+    (license license:expat)))
+
 (define-public python-bamnostic
   (package
     (name "python-bamnostic")
