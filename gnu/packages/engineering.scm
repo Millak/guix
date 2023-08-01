@@ -152,6 +152,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages text-editors)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
@@ -4229,3 +4230,31 @@ more.")
     ;; GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-or-later, LGPL-2.0-or-later,
     ;; LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT, NCSA.
     (license license:gpl3+)))
+
+(define-public python-asyncua
+  (package
+    (name "python-asyncua")
+    (version "1.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/FreeOpcUa/opcua-asyncio.git")
+                     (commit (string-append "v" version))
+                     (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bazk3k2dyzlrh7yxs4pc76m5ysm7riia3ncg7as3xr4y9dy29bx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-asyncio python-pytest-runner python-asynctest
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-aiofiles python-aiosqlite python-cryptography
+           python-importlib-metadata python-dateutil python-pytz
+           python-sortedcontainers))
+    (synopsis "OPC UA / IEC 62541 client and server library")
+    (description "This package provides an OPC UA / IEC 62541 client and
+server for Python and pypy3.")
+    (home-page "https://freeopcua.github.io/")
+    (license license:lgpl3+)))
