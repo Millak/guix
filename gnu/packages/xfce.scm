@@ -2089,7 +2089,7 @@ period.")
 (define-public xfce4-verve-plugin
   (package
    (name "xfce4-verve-plugin")
-   (version "2.0.1")
+   (version "2.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -2098,12 +2098,12 @@ period.")
                                   "/xfce4-verve-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "09gqp0jb5ccjh7ny798n5cy9skdx3hpis4kgvjpl4vidnrg5xnpb"))))
+                "17p0kxnzx4ks3rs281x5pvwksl1gh2mg7h7mkccjmkzr3cgi5gz1"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
     (inputs
-     (list libxfce4ui xfce4-panel))
+     (list libxfce4ui pcre2 xfce4-panel))
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-verve-plugin")
     (synopsis "Command line for the Xfce panel")
