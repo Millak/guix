@@ -682,7 +682,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.18.2")
+    (version "4.18.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -690,7 +690,7 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "08jgvhxhh95rcgpvsfqn1rv7i45zj37zyhcpnkpmgbpshw83cqa6"))
+                "18giyc190i7b3nc3l745p6fqpnqivwxm0yc7l0whfa03wndykf9d"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
