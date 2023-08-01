@@ -408,15 +408,11 @@ svga,swrast,virgl")))
                                    ;; This is probably a big-endian test failure.
                                    "src/gallium/targets/osmesa/meson.build")
                       (("if with_tests") "if not with_tests"))
-                    (substitute* "src/util/tests/format/meson.build"
-                      ;; This is definately an endian-ness test failure.
-                      (("'u_format_test', ") ""))
-                    ;; It is only this portion of the test which fails.
-                    (substitute* "src/mesa/main/tests/meson.build"
-                      ((".*mesa_formats.*") ""))
                     ;; This test times out and receives SIGTERM.
                     (substitute* "src/amd/common/meson.build"
-                      (("and not with_platform_windows") "and with_platform_windows"))))
+                      (("and not with_platform_windows") "and with_platform_windows"))
+                    (substitute* "src/compiler/nir/meson.build"
+                      ((".*loop_unroll_tests.*") ""))))
                  ("i686-linux"
                   ;; This test is known to fail on i686 (see:
                   ;; https://gitlab.freedesktop.org/mesa/mesa/-/issues/4091).
