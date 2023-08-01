@@ -692,6 +692,35 @@ computer's hardware.")
 the schedule and venue information.")
     (license license:gpl3+)))
 
+(define-public kpipewire
+  (package
+    (name "kpipewire")
+    (version "5.27.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "12rjwkk272r9r583vgxb64p5nylkcqsfyvbn0lpa6ap8q2zm7mky"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (propagated-inputs (list libepoxy pipewire qtbase-5 qtdeclarative-5))
+    (inputs (list ffmpeg
+                  kcoreaddons
+                  ki18n
+                  kwayland
+                  plasma-wayland-protocols
+                  qtwayland-5
+                  wayland
+                  wayland-protocols))
+    (home-page "https://invent.kde.org/plasma/kpipewire")
+    (synopsis "Components relating to pipewire use in Plasma")
+    (description "This package offers a set of convenient classes to use
+PipeWire in Qt projects.")
+    ;; LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+    (license (list license:lgpl2.1 license:lgpl3))))
+
 (define-public kscreen
   (package
     (name "kscreen")
