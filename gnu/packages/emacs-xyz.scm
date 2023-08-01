@@ -30332,7 +30332,6 @@ JavaScript.")
           (base32 "0cbchri4117wjcnlk3npi4x1sfx248vck1q61cis8drrrz4c8jyp"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
-      (arguments (list #:emacs emacs-next))
       (propagated-inputs
        (list emacs-dash
              emacs-s
