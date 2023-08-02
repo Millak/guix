@@ -78587,6 +78587,28 @@ for locating fonts.")
     (description "This package provides proc-macros for zbus.")
     (license license:expat)))
 
+(define-public rust-zbus-names-2
+  (package
+    (name "rust-zbus-names")
+    (version "2.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zbus-names" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1adl0acl39flk4jnrv7axg29kpwm7cy15w2wf0yy59mxdmvvp07v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-zvariant" ,rust-zvariant-3))))
+    (home-page "https://github.com/dbus2/zbus/")
+    (synopsis "Collection of D-Bus bus names types")
+    (description "This package provides a collection of D-Bus bus names types.")
+    (license license:expat)))
+
 (define-public rust-zerocopy-0.6
   (package
     (name "rust-zerocopy")
