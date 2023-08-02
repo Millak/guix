@@ -4250,6 +4250,30 @@ library for Rust.")
      "This is a Rust library for parsing and generating ASN.1 data (DER only).")
     (license license:bsd-3)))
 
+(define-public rust-asn1-rs-derive-0.4
+  (package
+    (name "rust-asn1-rs-derive")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1-rs-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0v7fgmnzk7jjxv51grhwzcx5bf167nlqwk3vcmq7xblf5s4karbj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-synstructure" ,rust-synstructure-0.12))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Derive macros for the `asn1-rs` crate")
+    (description
+     "This package provides derive macros for the @code{asn1-rs} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-asn1-rs-impl-0.1
   (package
     (name "rust-asn1-rs-impl")
