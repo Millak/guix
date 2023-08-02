@@ -67406,6 +67406,42 @@ logging and/or tracing infrastructure before running tests.")
 strategies in proptest.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-test-with-0.8
+  (package
+    (name "rust-test-with")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "test-with" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1vaqbyixd8li4jb9akvrbc6yfm0kl435byggg0kghrdl32hpn6ay"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byte-unit" ,rust-byte-unit-4)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-ping" ,rust-ping-0.4)
+        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-sysinfo" ,rust-sysinfo-0.27)
+        ("rust-users" ,rust-users-0.11))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
+    (home-page "https://github.com/yanganto/test-with")
+    (synopsis "Run test with conditions")
+    (description
+     "This package provides a lib to help you run test with conditions in Rust.")
+    (license license:expat)))
+
 (define-public rust-tester-0.9
   (package
     (name "rust-tester")
