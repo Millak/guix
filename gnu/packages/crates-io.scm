@@ -20938,14 +20938,14 @@ easy.")
 (define-public rust-easy-parallel-3
   (package
     (name "rust-easy-parallel")
-    (version "3.1.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "easy-parallel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x28z540fc4g8fqm1sbpqbpdfbi40mkas4xr57s3yn0jjbbszm0x"))))
+        (base32 "00g0fvbjkdbqm6z5xcx3b1wzi8rlrhqb840ybavgijhg74iljq64"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/stjepang/easy-parallel")
     (synopsis "Run closures in parallel")
