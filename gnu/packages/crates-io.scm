@@ -5002,19 +5002,23 @@ that expires at a point in time.")
 (define-public rust-async-lock-2
   (package
     (name "rust-async-lock")
-    (version "2.3.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-lock" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yrvnshs94aiimvprqkhcg1z7x9abzsja8f4ifcakr5x6abn15hr"))))
+        (base32 "1mrd4kai92fcgl9974dpmibiq6ja9drz41v3crvv0c27a8kzf97s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-event-listener" ,rust-event-listener-2))))
+     `(#:cargo-inputs
+       (("rust-event-listener" ,rust-event-listener-2))
+       #:cargo-development-inputs
+       (("rust-async-channel" ,rust-async-channel-1)
+        ("rust-fastrand" ,rust-fastrand-1)
+        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/stjepang/async-lock")
     (synopsis "Async synchronization primitives")
     (description "This package provides Async synchronization primitives.")
