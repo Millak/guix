@@ -46873,6 +46873,29 @@ function data structures.")
      "This package provides a crate for safe and ergonomic pin-projection.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ping-0.4
+  (package
+    (name "rust-ping")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ping" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0h8iyphd5c6k609635ja813isyplnzrlz8hgp0pfrb2v39xahw33"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Tests require network access.
+       #:cargo-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-socket2" ,rust-socket2-0.4)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/aisk/ping")
+    (synopsis "ICMP library for Rust")
+    (description "This package provides an ICMP library for Rust.")
+    (license license:expat)))
+
 (define-public rust-pin-project-0.4
   (package
     (inherit rust-pin-project-1)
