@@ -453,12 +453,13 @@ and every application benefits from this.")
                (symlink (string-append gpgme "/lib/libgpgme.la")
                         "src/libgpgme.la"))
              (chdir "lang/qt"))))))
+    (propagated-inputs (list gpgme))    ;required by QGpgmeConfig.cmake
     (native-inputs
      (modify-inputs (package-native-inputs gpgme)
        (prepend pkg-config)))
     (inputs
      (modify-inputs (package-inputs gpgme)
-       (prepend gpgme qtbase-5)))
+       (prepend qtbase-5)))
     (synopsis "Qt API bindings for gpgme")
     (description "QGpgme provides a very high level Qt API around GpgMEpp.
 
