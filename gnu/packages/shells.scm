@@ -788,26 +788,24 @@ The OpenBSD Korn Shell is a cleaned up and enhanced ksh.")
 (define-public loksh
   (package
     (name "loksh")
-    (version "6.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dimkr/loksh")
-             (commit version)
-             ;; Include the ‘lolibc’ submodule, a static compatibility library
-             ;; created for and currently used only by loksh.
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0x33plxqhh5202hgqidgccz5hpg8d2q71ylgnm437g60mfi9z0px"))))
+    (version "7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dimkr/loksh")
+                    (commit version)
+                    ;; Include the ‘lolibc’ submodule, a static compatibility library
+                    ;; created for and currently used only by loksh.
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1miydvb79wagckchinp189l8i81f08lqajg5jngn77m4x4gwjf3n"))))
     (build-system meson-build-system)
-    (inputs
-     (list ncurses))
-    (native-inputs
-     (list pkg-config))
+    (inputs (list ncurses))
+    (native-inputs (list pkg-config))
     (arguments
-     `(#:tests? #f))                    ; no tests included
+     `(#:tests? #f)) ;no tests included
     (home-page "https://github.com/dimkr/loksh")
     (synopsis "Korn Shell from OpenBSD")
     (description
