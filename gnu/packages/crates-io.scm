@@ -18844,8 +18844,41 @@ targets")
      "This crate provides a macro to encode DER oids at compile time.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-der-parser-8
+  (package
+    (name "rust-der-parser")
+    (version "8.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "der-parser" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07mnz9y395zyxwj7nam2dbzkqdngfraxp2i7y2714dxmpbxpdmnv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-asn1-rs" ,rust-asn1-rs-0.5)
+        ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+        ("rust-displaydoc" ,rust-displaydoc-0.2)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rusticata-macros" ,rust-rusticata-macros-4))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-test-case" ,rust-test-case-3))))
+    (home-page "https://github.com/rusticata/der-parser")
+    (synopsis "BER/DER parser written in pure Rust")
+    (description "This crate provides a parser for Basic Encoding Rules (BER
+[X.690]) and Distinguished Encoding Rules(DER [X.690]), implemented with the
+@code{nom} parser combinator framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-der-parser-6
   (package
+    (inherit rust-der-parser-8)
     (name "rust-der-parser")
     (version "6.0.0")
     (source
@@ -18855,7 +18888,6 @@ targets")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0gn465dncghmj52k8dlkl71wkmlz5zc6jfjgj9ra2knf22ryy1wq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -18869,13 +18901,7 @@ targets")
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.3)
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
-        ("rust-test-case" ,rust-test-case-1))))
-    (home-page "https://github.com/rusticata/der-parser")
-    (synopsis "BER/DER parser written in pure Rust")
-    (description "This crate provides a parser for Basic Encoding Rules (BER
-[X.690]) and Distinguished Encoding Rules(DER [X.690]), implemented with the
-@code{nom} parser combinator framework.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-test-case" ,rust-test-case-1))))))
 
 (define-public rust-derivative-2
   (package
