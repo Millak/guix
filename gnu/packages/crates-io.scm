@@ -72294,6 +72294,36 @@ the Trust-DNS client to use rustls for TLS.")
      "Test harness for ui tests of compiler diagnostics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-trybuild2-1
+  (package
+    (name "rust-trybuild2")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "trybuild2" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0z5nv6skmzz4d74sbrsrd7smyhs76sh8dwz4pd1kbvjpzq2l3v8i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-basic-toml" ,rust-basic-toml-0.1)
+        ("rust-dissimilar" ,rust-dissimilar-1)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-termcolor" ,rust-termcolor-1))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))
+    (home-page "https://github.com/GuillaumeGomez/trybuild2")
+    (synopsis "Test harness for ui tests of compiler diagnostics")
+    (description
+     "This package provides a test harness for ui tests of compiler diagnostics
+(with support for inline tests).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-trycmd-0.14
   (package
     (name "rust-trycmd")
