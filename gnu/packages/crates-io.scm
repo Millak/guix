@@ -24098,6 +24098,29 @@ custom fixed-size hash types.")
 enumeration-based bit flags in rust.")
     (license license:asl2.0)))
 
+(define-public rust-flaky-test-0.1
+  (package
+    (name "rust-flaky-test")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "flaky-test" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "14yvm0knhcx0xfwlykir2v198x5bpwf333yrdl2mmkv8n5gdx727"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/denoland/flaky_test")
+    (synopsis "Atttribute macro for running a flaky test multiple times")
+    (description "This package provides an atttribute macro for running a flaky
+test multiple times.")
+    (license license:expat)))
+
 (define-public rust-flame-0.2
   (package
     (name "rust-flame")
