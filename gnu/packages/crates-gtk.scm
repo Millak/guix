@@ -1234,8 +1234,43 @@
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-glib-macros-0.17
+  (package
+    (name "rust-glib-macros")
+    (version "0.17.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "glib-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09nyh22nryip4i22mdrixzl4q0r5h5lxcn40mgqr30rk6y9wg9gc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-heck" ,rust-heck-0.4)
+        ("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-glib" ,rust-glib-0.17)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-trybuild2" ,rust-trybuild2-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GLib library, proc macros crate")
+    (description "Rust bindings for the GLib library, proc macros crate.")
+    (license license:expat)))
+
 (define-public rust-glib-macros-0.15
   (package
+    (inherit rust-glib-macros-0.17)
     (name "rust-glib-macros")
     (version "0.15.11")
     (source
@@ -1245,7 +1280,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0r3cr0c79rs91z0sps089nsf8ppnm8agp48qwwqlkc32lqqq39i5"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; XXX: Circular dependency on rust-glib??
        #:tests? #f
@@ -1256,11 +1290,7 @@
         ("rust-proc-macro-error" ,rust-proc-macro-error-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GLib library, proc macros crate")
-    (description "Rust bindings for the GLib library, proc macros crate.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-glib-macros-0.14
   (package
