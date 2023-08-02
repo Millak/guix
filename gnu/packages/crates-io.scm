@@ -41358,8 +41358,32 @@ notification library.")
      `(#:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-ntest-0.9
+  (package
+    (name "rust-ntest")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ntest" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04pmi0y7rzpkngv7lqw48c2831bn15lg8nkgj9z30i9xnz9cd3ns"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ntest-test-cases" ,rust-ntest-test-cases-0.9)
+        ("rust-ntest-timeout" ,rust-ntest-timeout-0.9))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/becheran/ntest")
+    (synopsis "Testing framework for Rust")
+    (description "This package provides a testing framework for Rust which
+enhances the built-in library with some useful features.")
+    (license license:expat)))
+
 (define-public rust-ntest-0.8
   (package
+    (inherit rust-ntest-0.9)
     (name "rust-ntest")
     (version "0.8.1")
     (source
@@ -41370,14 +41394,13 @@ notification library.")
        (sha256
         (base32
          "1yyih3b0bcr9gj11m9xj330as2sjihblkmb2bmv10lp38q5m0rg8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ntest-proc-macro-helper" ,rust-ntest-proc-macro-helper-0.8)
         ("rust-ntest-test-cases" ,rust-ntest-test-cases-0.8)
         ("rust-ntest-timeout" ,rust-ntest-timeout-0.8))
        #:cargo-development-inputs
-       (("rust-tokio" ,rust-tokio-1))))
+       (("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-ntest-test-cases-0.9
   (package
