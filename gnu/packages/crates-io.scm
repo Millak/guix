@@ -41378,23 +41378,18 @@ notification library.")
         ("rust-ntest-timeout" ,rust-ntest-timeout-0.8))
        #:cargo-development-inputs
        (("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/becheran/ntest")
-    (synopsis "Testing framework for Rust")
-    (description "This package provides a testing framework for Rust which
-enhances the built-in library with some useful features.")
-    (license license:expat)))
 
-(define-public rust-ntest-test-cases-0.8
+(define-public rust-ntest-test-cases-0.9
   (package
     (name "rust-ntest-test-cases")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ntest_test_cases" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "03ip2dpi7fd2wyz99yd17w302nci3b05slbl3rr6dfs2683ayz3g"))))
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ntest-test-cases" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08ifw9zhm1l93wh24k8zrk25sj3k9vpw29sfwq4lsvwwf6z36zdy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -41405,6 +41400,24 @@ enhances the built-in library with some useful features.")
     (synopsis "Test cases for ntest framework")
     (description "This package provides test cases for ntest framework.")
     (license license:expat)))
+
+(define-public rust-ntest-test-cases-0.8
+  (package
+    (inherit rust-ntest-test-cases-0.9)
+    (name "rust-ntest-test-cases")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ntest_test_cases" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03ip2dpi7fd2wyz99yd17w302nci3b05slbl3rr6dfs2683ayz3g"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-ntest-timeout-0.8
   (package
