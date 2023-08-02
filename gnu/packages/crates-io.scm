@@ -13834,8 +13834,37 @@ capabilities, for example to find out about its colored console abilities.")
        (sha256
         (base32 "1isbqpyiwblp0rglnaqzai5hav23095s82mwgi09v3xcck4rq5dd"))))))
 
+(define-public rust-concurrent-queue-2
+  (package
+    (name "rust-concurrent-queue")
+    (version "2.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "concurrent-queue" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0z0bnpgcblhrms6gph7x78yplj3qmlr5mvl38v9641zsxiqngv32"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-loom" ,rust-loom-0.5)
+        ("rust-portable-atomic" ,rust-portable-atomic-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-easy-parallel" ,rust-easy-parallel-3)
+        ("rust-fastrand" ,rust-fastrand-1))))
+    (home-page "https://github.com/smol-rs/concurrent-queue")
+    (synopsis "Concurrent multi-producer multi-consumer queue")
+    (description
+     "This package provides a concurrent multi-producer multi-consumer
+queue.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-concurrent-queue-1
   (package
+    (inherit rust-concurrent-queue-2)
     (name "rust-concurrent-queue")
     (version "1.2.2")
     (source
@@ -13845,19 +13874,12 @@ capabilities, for example to find out about its colored console abilities.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "18w6hblcjjk9d0my3657ra1zdj79gwfjmzvc0b3985g01dahgv9h"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cache-padded" ,rust-cache-padded-1))
        #:cargo-development-inputs
        (("rust-easy-parallel" ,rust-easy-parallel-3)
-        ("rust-fastrand" ,rust-fastrand-1))))
-    (home-page "https://github.com/stjepang/concurrent-queue")
-    (synopsis "Concurrent multi-producer multi-consumer queue")
-    (description
-     "This package provides a concurrent multi-producer multi-consumer
-queue.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-fastrand" ,rust-fastrand-1))))))
 
 (define-public rust-config-0.11
   (package
