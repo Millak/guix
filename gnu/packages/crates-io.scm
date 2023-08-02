@@ -70593,17 +70593,17 @@ parser.")
 (define-public rust-tonic-0.6
   (package
     (name "rust-tonic")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "tonic" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1yjsnfkkq3c7xcyxkid0zgpm8w774qqdny0im6fr0s1drxwkn814"))))
+          (base32 "02jxiy0n2mw2c1fchykj3m18wp986685bji26px0z9qhkmjg827z"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
+      `(#:tests? #f     ; unresolved import `crate::codec::compression`
         #:cargo-inputs
         (("rust-async-stream" ,rust-async-stream-0.3)
          ("rust-async-trait" ,rust-async-trait-0.1)
@@ -70631,7 +70631,15 @@ parser.")
          ("rust-tower-service" ,rust-tower-service-0.3)
          ("rust-tracing" ,rust-tracing-0.1)
          ("rust-tracing-futures" ,rust-tracing-futures-0.2)
-         ("rust-webpki-roots" ,rust-webpki-roots-0.21))))
+         ("rust-webpki-roots" ,rust-webpki-roots-0.21))
+        #:cargo-development-inputs
+        (("rust-bencher" ,rust-bencher-0.1)
+         ("rust-quickcheck" ,rust-quickcheck-1)
+         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
+         ("rust-rand" ,rust-rand-0.8)
+         ("rust-static-assertions" ,rust-static-assertions-1)
+         ("rust-tokio" ,rust-tokio-1)
+         ("rust-tower" ,rust-tower-0.4))))
     (home-page "https://github.com/hyperium/tonic")
     (synopsis "gRPC over HTTP/2 implementation for Rust")
     (description
