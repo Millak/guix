@@ -76124,25 +76124,41 @@ executable.")
        #:cargo-development-inputs
        (("rust-tempdir" ,rust-tempdir-0.3))))))
 
-(define-public rust-whoami-0.8
+(define-public rust-whoami-1
   (package
     (name "rust-whoami")
-    (version "0.8.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "whoami" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0z18m6w2q8a6rivd61sh3f00pdhyvxiwycs2j5088gvgdxb5bfqq"))))
+    (version "1.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "whoami" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0l6ca9pl92wmngsn1dh9ih716v216nmn2zvcn94k04x9p1b3gz12"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/libcala/whoami")
+    (arguments
+     `(#:cargo-inputs
+       (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/ardaku/whoami/blob/stable/CHANGELOG.md")
     (synopsis "Retrieve the current user and environment")
     (description
      "This package provides simple functions to retrieve the current user and
 environment.")
-    (license (list license:expat license:boost1.0))))
+    (license (list license:asl2.0 license:boost1.0 license:expat))))
+
+(define-public rust-whoami-0.8
+  (package
+    (inherit rust-whoami-1)
+    (name "rust-whoami")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "whoami" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0z18m6w2q8a6rivd61sh3f00pdhyvxiwycs2j5088gvgdxb5bfqq"))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-wide-0.7
   (package
