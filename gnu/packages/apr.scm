@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,8 @@
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages perl)
@@ -46,9 +49,23 @@
      ;; Sometimes we end up with two processes concurrently trying to make
      ;; 'libmod_test.la': <http://hydra.gnu.org/build/60266/nixlog/2/raw>.
      ;; Thus, build sequentially.
-     '(#:parallel-build? #f
-       #:parallel-tests? #f))
+     `(#:parallel-build? #f
+       #:parallel-tests? #f
+       ,@(if (target-ppc32?)
+           `(#:phases
+             (modify-phases %standard-phases
+               (add-after 'unpack 'patch-sources
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                   (invoke "patch" "-p1" "--force" "--input"
+                           (assoc-ref (or native-inputs inputs)
+                                      "atomics-patch"))))))
+           '())))
     (inputs (list perl libltdl))
+    (native-inputs
+     `(,@(if (target-ppc32?)
+           `(("atomics-patch"
+              ,(local-file (search-patch "apr-fix-atomics.patch"))))
+           '())))
     (home-page "https://apr.apache.org/")
     (synopsis "The Apache Portable Runtime Library")
     (description
