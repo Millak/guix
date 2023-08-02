@@ -22826,14 +22826,14 @@ ecosystem.")
 (define-public rust-event-listener-2
   (package
     (name "rust-event-listener")
-    (version "2.5.1")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "event-listener" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ndyp41pb2cx7gxijqh4ymnc47nyrvhvir7rvjlw6x09ayb10lzp"))))
+        (base32 "1q4w3pndc518crld6zsqvvpy9lkzwahp2zgza9kbzmmqh9gif1h2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
