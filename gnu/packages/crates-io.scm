@@ -67251,8 +67251,35 @@ into mod, giving clear and readable test results.")
        (("rust-insta" ,rust-insta-0.12)
         ("rust-lazy-static" ,rust-lazy-static-1))))))
 
+(define-public rust-test-case-macros-3
+  (package
+    (name "rust-test-case-macros")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "test-case-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "014l5wafp069d251c62flwyai8nv75vpjlmib2xc2m3a3i5s9fgf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-test-case-core" ,rust-test-case-core-3))))
+    (home-page "https://github.com/frondeus/test-case")
+    (synopsis "Macros for the test-case crate")
+    (description
+     "This package provides #[test_case(...)] procedural macro attribute for
+generating parametrized test cases easily.")
+    (license license:expat)))
+
 (define-public rust-test-case-macros-2
   (package
+    (inherit rust-test-case-macros-3)
     (name "rust-test-case-macros")
     (version "2.2.2")
     (source (origin
@@ -67261,20 +67288,13 @@ into mod, giving clear and readable test results.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "09jvbfvz48v6ya3i25gp3lbr6ym1fz7qyp3l6bcdslwkw7v7nnz4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-proc-macro-error" ,rust-proc-macro-error-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/frondeus/test-case")
-    (synopsis "Macros for the test-case crate")
-    (description
-     "This package provides #[test_case(...)] procedural macro attribute for
-generating parametrized test cases easily.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-test-cert-gen-0.7
   (package
