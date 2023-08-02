@@ -98,19 +98,14 @@
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
-    (version "29.0.92")
+    (version "29.1")
     (source (origin
-              ;; TODO: Restore url-fetch when serving 29.1
-              ;; (method url-fetch)
-              ;; (uri (string-append "mirror://gnu/emacs/emacs-"
-              ;;                     version ".tar.xz"))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.savannah.gnu.org/git/emacs.git/")
-                    (commit (string-append "emacs-" version))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/emacs/emacs-"
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "1h3p325859svcy43iv7wr27dp68049j9d44jq5akcynqdkxz4jjn"))
+                "009f7q08vg919b90k2jrsznq73s3n224avz80dd2y7i3rjjq3y6j"))
               (patches (search-patches "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
