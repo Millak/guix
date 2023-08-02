@@ -74740,6 +74740,27 @@ hardware registers.")
     (description "This package provdies virtio socket support for Rust.")
     (license license:asl2.0)))
 
+(define-public rust-vsock-0.2
+  (package
+    (inherit rust-vsock-0.3)
+    (name "rust-vsock")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "vsock" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cy1gpiahygfzxms4z170qj672c7n8cjvd8a9hkxzr9w5gp7a9p3"))))
+    (arguments
+     `(#:tests? #f      ; Tests not runnable from the build environment.
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-nix" ,rust-nix-0.23))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.10))))))
+
 (define-public rust-vswhom-0.1
   (package
     (name "rust-vswhom")
