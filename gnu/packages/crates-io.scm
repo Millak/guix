@@ -71003,22 +71003,22 @@ with @code{serde}.")
 (define-public rust-tracing-subscriber-0.3
   (package
     (name "rust-tracing-subscriber")
-    (version "0.3.5")
+    (version "0.3.17")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "tracing-subscriber" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "157mz6q0ljpragrj4hsv5rchyabsbfc7r0sb0g5rik142jlbz0ax"))))
+          (base32 "0xvwfpmb943hdy4gzyn7a2azgigf30mfd1kx10gyh5gr6yy539ih"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
+      `(#:tests? #f     ; use of undeclared crate or module `tracing_mock`
         #:cargo-inputs
-        (("rust-ansi-term" ,rust-ansi-term-0.12)
-         ("rust-lazy-static" ,rust-lazy-static-1)
-         ("rust-matchers" ,rust-matchers-0.1)
-         ("rust-parking-lot" ,rust-parking-lot-0.11)
+        (("rust-matchers" ,rust-matchers-0.1)
+         ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.46)
+         ("rust-once-cell" ,rust-once-cell-1)
+         ("rust-parking-lot" ,rust-parking-lot-0.12)
          ("rust-regex" ,rust-regex-1)
          ("rust-serde" ,rust-serde-1)
          ("rust-serde-json" ,rust-serde-json-1)
@@ -71029,7 +71029,18 @@ with @code{serde}.")
          ("rust-tracing" ,rust-tracing-0.1)
          ("rust-tracing-core" ,rust-tracing-core-0.1)
          ("rust-tracing-log" ,rust-tracing-log-0.1)
-         ("rust-tracing-serde" ,rust-tracing-serde-0.1))))
+         ("rust-tracing-serde" ,rust-tracing-serde-0.1)
+         ("rust-valuable" ,rust-valuable-0.1)
+         ("rust-valuable-serde" ,rust-valuable-serde-0.1))
+        #:cargo-development-inputs
+        (("rust-criterion" ,rust-criterion-0.3)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-regex" ,rust-regex-1)
+         ("rust-time" ,rust-time-0.3)
+         ("rust-tokio" ,rust-tokio-1)
+         ("rust-tracing" ,rust-tracing-0.1)
+         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
+         ("rust-tracing-log" ,rust-tracing-log-0.1))))
     (home-page "https://tokio.rs")
     (synopsis "Implement and compose tracing subscribers")
     (description
