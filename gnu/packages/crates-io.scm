@@ -41323,8 +41323,28 @@ notification library.")
      "This crate provides a Rust interface and bindings for Notmuch.")
     (license license:gpl3+)))
 
+(define-public rust-ntapi-0.4
+  (package
+    (name "rust-ntapi")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ntapi" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1r38zhbwdvkis2mzs6671cm1p6djgsl49i7bwxzrvhwicdf8k8z8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/MSxDOS/ntapi")
+    (synopsis "FFI bindings for Native API")
+    (description "FFI bindings for Native API")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ntapi-0.3
   (package
+    (inherit rust-ntapi-0.4)
     (name "rust-ntapi")
     (version "0.3.6")
     (source
@@ -41334,14 +41354,9 @@ notification library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0i5daj9sr8wyi5jkpwpybln2jqpn59z0mqfc0dpdidipwh1bjsrz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "")
-    (synopsis "FFI bindings for Native API")
-    (description "FFI bindings for Native API")
-    (license (list license:asl2.0 license:expat))))
+       (("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-ntest-0.8
   (package
