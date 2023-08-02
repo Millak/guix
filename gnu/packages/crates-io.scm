@@ -4250,6 +4250,42 @@ library for Rust.")
      "This is a Rust library for parsing and generating ASN.1 data (DER only).")
     (license license:bsd-3)))
 
+(define-public rust-asn1-rs-0.5
+  (package
+    (name "rust-asn1-rs")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1w7zq0392qs7kkv0nzw50bfqvq7q9zxv48fsp3sxyl83mzfxavvz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-asn1-rs-derive" ,rust-asn1-rs-derive-0.4)
+        ("rust-asn1-rs-impl" ,rust-asn1-rs-impl-0.1)
+        ("rust-bitvec" ,rust-bitvec-1)
+        ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+        ("rust-displaydoc" ,rust-displaydoc-0.2)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs
+       (("rust-colored" ,rust-colored-2)
+        ("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-oid-registry" ,rust-oid-registry-0.6)
+        ("rust-pem" ,rust-pem-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Parser/encoder for ASN.1 BER/DER data")
+    (description "Parser/encoder for ASN.1 BER/DER data")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-asn1-rs-derive-0.4
   (package
     (name "rust-asn1-rs-derive")
