@@ -79001,6 +79001,47 @@ compression library.")
 in Pure Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-zvariant-3
+  (package
+    (name "rust-zvariant")
+    (version "3.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zvariant" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "131kaczf10psc8clzlndcc52dym5vi4g22kqf0qwaq6rw2z93cj4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-enumflags2" ,rust-enumflags2-0.7)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-url" ,rust-url-2)
+        ("rust-uuid" ,rust-uuid-1)
+        ("rust-zvariant-derive" ,rust-zvariant-derive-3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-repr" ,rust-serde-repr-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://github.com/dbus2/zbus/")
+    (synopsis "D-Bus & GVariant encoding & decoding")
+    (description "D-Bus & GVariant encoding & decoding")
+    (license license:expat)))
+
 (define-public rust-zvariant-derive-3
   (package
     (name "rust-zvariant-derive")
