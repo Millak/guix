@@ -57950,14 +57950,14 @@ SECG elliptic curve group secp256k1 and related utilities.")
 (define-public rust-security-framework-2
   (package
     (name "rust-security-framework")
-    (version "2.0.0")
+    (version "2.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0scc4vj2mw9k6qpxp26zx8gnqnmw79nwayja91x030457hp9qxf1"))))
+        (base32 "1pplxk15s5yxvi2m1sz5xfmjibp96cscdcl432w9jzbk0frlzdh5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;missing files
@@ -57966,10 +57966,15 @@ SECG elliptic curve group secp256k1 and related utilities.")
         ("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
         ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-security-framework-sys" ,rust-security-framework-sys-2))
        #:cargo-development-inputs
-       (("rust-hex" ,rust-hex-0.4)
-        ("rust-tempdir" ,rust-tempdir-0.3))))
+       (("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-tempdir" ,rust-tempdir-0.3)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-x509-parser" ,rust-x509-parser-0.15))))
     (home-page "https://lib.rs/crates/security_framework")
     (synopsis "@code{Security.framework} bindings for macOS and iOS")
     (description "This package provides @code{Security.framework} bindings for
