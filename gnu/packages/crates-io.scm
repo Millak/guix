@@ -43552,6 +43552,31 @@ PartialOrd types, like floats.")
 insertion order across all keys and values.")
     (license license:expat)))
 
+(define-public rust-ordered-stream-0.1
+  (package
+    (name "rust-ordered-stream")
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ordered-stream" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "140c0h0ap30mcfhdk2xy1q9iqyb450wh11dglshh2y6vmjyj82in"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3))))
+    (home-page "https://github.com/danieldg/ordered-stream")
+    (synopsis "Streams that are ordered relative to external events")
+    (description "This package provides streams that are ordered relative to
+external events in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ordermap-0.3
   (package
     (name "rust-ordermap")
