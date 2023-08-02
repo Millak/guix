@@ -57871,6 +57871,41 @@ well as the Elliptic-Curve-Point-to-Octet-String encoding.")
     (description "This package provides low-level bindings to libseccomp.")
     (license license:lgpl2.1)))
 
+(define-public rust-secret-service-3
+  (package
+    (name "rust-secret-service")
+    (version "3.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "secret-service" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15cddmlbbmahlzq9ib39i1yy7x83cvrxjxrgz0v3bh189nnsb8ax"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Build needs to decide on a crypto backend.
+       #:cargo-inputs
+       (("rust-aes" ,rust-aes-0.7)
+        ("rust-block-modes" ,rust-block-modes-0.8)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-generic-array" ,rust-generic-array-0.14)
+        ("rust-hkdf" ,rust-hkdf-0.12)
+        ("rust-num" ,rust-num-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-zbus" ,rust-zbus-3))
+       #:cargo-development-inputs
+       (("rust-test-with" ,rust-test-with-0.8)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/hwchen/secret-service-rs.git")
+    (synopsis "Library to interface with Secret Service API")
+    (description "Library to interface with Secret Service API.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-section-testing-0.0
   (package
     (name "rust-section-testing")
