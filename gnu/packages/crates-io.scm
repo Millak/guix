@@ -70929,7 +70929,7 @@ automatically instrumenting functions.")
 (define-public rust-tracing-log-0.1
   (package
     (name "rust-tracing-log")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
@@ -70938,16 +70938,19 @@ automatically instrumenting functions.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1qv1cwvdqrgvizkszbff4fvkw0m3nn5yz68r3yaw2hcflivk94m6"))))
+         "08prnkxq8yas6jvvjnvyx5v3hwblas5527wxxgbiw2yis8rsvpbq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
+       (("rust-ahash" ,rust-ahash-0.7)
+        ("rust-env-logger" ,rust-env-logger-0.7)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
+        ("rust-lru" ,rust-lru-0.7)
         ("rust-tracing-core" ,rust-tracing-core-0.1))
        #:cargo-development-inputs
-       (("rust-tracing" ,rust-tracing-0.1))))
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-tracing" ,rust-tracing-0.1))))
     (home-page "https://tokio.rs")
     (synopsis
      "Provides compatibility between tracing the log crates")
