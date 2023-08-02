@@ -33402,6 +33402,39 @@ keccak-f and keccak-p variants.")
 kernel32.")
     (license license:expat)))
 
+(define-public rust-keyring-2
+  (package
+    (name "rust-keyring")
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "keyring" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "14i4qxz6kpy1ijkx1gwig494f3bq54kwxldjf459w508plls2jcm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests need a TTY.
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-linux-keyutils" ,rust-linux-keyutils-0.2)
+        ("rust-secret-service" ,rust-secret-service-3)
+        ("rust-security-framework" ,rust-security-framework-2)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rpassword" ,rust-rpassword-7)
+        ("rust-whoami" ,rust-whoami-1))))
+    (home-page "https://github.com/hwchen/keyring-rs")
+    (synopsis "Cross-platform library for managing passwords/credentials")
+    (description "This package provides a cross-platform library for managing
+passwords/credentials.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-khronos-api-3
   (package
     (name "rust-khronos-api")
