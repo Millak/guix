@@ -70975,19 +70975,21 @@ with tracing (optional, enabled by the env-logger feature).
 (define-public rust-tracing-serde-0.1
   (package
     (name "rust-tracing-serde")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing-serde" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12xjirg0b3cparjdhkd9pksrmv33gz7rdm4gfkvgk15v3x2flrgv"))))
+        (base32 "1qfr0va69djvxqvjrx4vqq7p6myy414lx4w1f6amcn0hfwqj2sxw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
-        ("rust-tracing-core" ,rust-tracing-core-0.1))
+        ("rust-tracing-core" ,rust-tracing-core-0.1)
+        ("rust-valuable" ,rust-valuable-0.1)
+        ("rust-valuable-serde" ,rust-valuable-serde-0.1))
        #:cargo-development-inputs
        (("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://tokio.rs")
