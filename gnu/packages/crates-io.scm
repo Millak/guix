@@ -22165,6 +22165,29 @@ convert enum to u8 slice ref.")
     (description "Provide useful impls on numerical enums")
     (license license:bsd-3)))
 
+(define-public rust-enumflags2-derive-0.7
+  (package
+    (name "rust-enumflags2-derive")
+    (version "0.7.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enumflags2-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0iapq76azgkqxby4v117a3jssa9rz7n18vla4i09grc3gngiz6jy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/meithecatte/enumflags2")
+    (synopsis "Internal crate for enumflags2")
+    (description
+     "This package provides internal implementations for enumflags2.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-enumset-1
   (package
     (name "rust-enumset")
