@@ -35391,6 +35391,33 @@ in plain text.  It is smart about where a link ends, such as with trailing
 punctuation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-linux-keyutils-0.2
+  (package
+    (name "rust-linux-keyutils")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "linux-keyutils" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jxq2bsrr80diyh8h4a0ls6yaljhyvj6ha2qmfshn7fxyrkvn9rz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/landhb/linux-keyutils")
+    (synopsis "Rust interface to the Linux key-management facility")
+    (description
+     "This package provides a rust interface to the Linux key-management
+facility.  Provides a safe interface around the raw system calls allowing
+user-space programs to perform key manipulation.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-linux-raw-sys-0.3
   (package
     (name "rust-linux-raw-sys")
