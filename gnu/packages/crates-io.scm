@@ -67167,8 +67167,40 @@ return values to @code{std::io::Result} to indicate success or failure.")
 streams.")
     (license license:expat)))
 
+(define-public rust-test-case-3
+  (package
+    (name "rust-test-case")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "test-case" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pr53g4x6gykfj4hvffivyd0aa0hj9pbfr87y8908sskvrxnw79a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Not all test files included.
+       #:cargo-inputs
+       (("rust-regex" ,rust-regex-1)
+        ("rust-test-case-macros" ,rust-test-case-macros-3))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/frondeus/test-case")
+    (synopsis "Procedural macro attribute for parametrized test cases")
+    (description
+     "This crate provides @code{#[test_case]} procedural macro attribute that
+generates multiple parametrized tests using one body with different input
+parameters.  A test is generated for each data set passed in test_case
+attribute.  Under the hood, all test cases that share same body are grouped
+into mod, giving clear and readable test results.")
+    (license license:expat)))
+
 (define-public rust-test-case-2
   (package
+    (inherit rust-test-case-3)
     (name "rust-test-case")
     (version "2.2.2")
     (source (origin
@@ -67182,7 +67214,6 @@ streams.")
                '(begin (substitute* "Cargo.toml"
                          (("=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)" _ version)
                           (string-append "^" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
        #:cargo-inputs
@@ -67195,16 +67226,7 @@ streams.")
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-regex" ,rust-regex-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8))))
-    (home-page "https://github.com/frondeus/test-case")
-    (synopsis "Procedural macro attribute for parametrized test cases")
-    (description
-     "This crate provides @code{#[test_case]} procedural macro attribute that
-generates multiple parametrized tests using one body with different input
-parameters.  A test is generated for each data set passed in test_case
-attribute.  Under the hood, all test cases that share same body are grouped
-into mod, giving clear and readable test results.")
-    (license license:expat)))
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8))))))
 
 (define-public rust-test-case-1
   (package
