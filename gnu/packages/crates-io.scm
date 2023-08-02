@@ -58086,14 +58086,14 @@ macOS and iOS.")
 (define-public rust-security-framework-sys-2
   (package
     (name "rust-security-framework-sys")
-    (version "2.0.0")
+    (version "2.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12v7wpf7cbc92xza4lf3w12411wzrkkvlbjgrhrid9yj4rg9v6zr"))))
+        (base32 "0yhciwlsy9dh0ps1gw3197kvyqx1bvc4knrhiznhid6kax196cp9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
