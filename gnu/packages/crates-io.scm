@@ -74355,6 +74355,33 @@ crate.")
 un-typed structured data across trait-object boundaries.")
     (license license:expat)))
 
+(define-public rust-valuable-serde-0.1
+  (package
+    (name "rust-valuable-serde")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "valuable-serde" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01q9ifpd1mk1ic2g8lagp35djzb8i7cm8skk4rkf5ayd63zwz1aj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-valuable" ,rust-valuable-0.1))
+       #:cargo-development-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-valuable" ,rust-valuable-0.1))))
+    (home-page "https://github.com/tokio-rs/valuable")
+    (synopsis "`serde::Serialize` implementation for `Valuable` types")
+    (description "This package provides a @code{serde::Serialize} implementation
+for @code{Valuable} types.")
+    (license license:expat)))
+
 (define-public rust-value-bag-1
   (package
     (name "rust-value-bag")
