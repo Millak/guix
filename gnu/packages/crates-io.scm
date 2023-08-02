@@ -20212,6 +20212,38 @@ Central Dispatch.")
          "019nzy993hxaiazcdnayx3csv2iki34i535asw11ki96hakkrs84"))))
     (arguments '(#:tests? #f))))  ; Tests only run on Mac.
 
+(define-public rust-displaydoc-0.2
+  (package
+    (name "rust-displaydoc")
+    (version "0.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "displaydoc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0p8pyg10csc782qlwx3znr6qx46ni96m1qh597kmyrf6s3s8axa8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/yaahc/displaydoc")
+    (synopsis
+     "Derive macro for implementing the display Trait via a doc comment")
+    (description
+     "This package provides a derive macro for implementing the display Trait
+via a doc comment and string interpolation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dissimilar-1
   (package
     (name "rust-dissimilar")
