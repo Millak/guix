@@ -78555,6 +78555,38 @@ for locating fonts.")
     (description "This package provides an implementation of zbase32.")
     (license license:lgpl3+)))
 
+(define-public rust-zbus-macros-3
+  (package
+    (name "rust-zbus-macros")
+    (version "3.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zbus-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1y4cw7x8hrpz9xd43spd0vzvfbm1991bik1yb2873py0j0p2ljb6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests need a running dbus instance.
+       #:cargo-inputs
+       (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-async-io" ,rust-async-io-1)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dbus2/zbus/")
+    (synopsis "proc-macros for zbus")
+    (description "This package provides proc-macros for zbus.")
+    (license license:expat)))
+
 (define-public rust-zerocopy-0.6
   (package
     (name "rust-zerocopy")
