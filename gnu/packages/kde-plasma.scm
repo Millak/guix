@@ -830,14 +830,14 @@ the running system.")
 (define-public latte-dock
   (package
     (name "latte-dock")
-    (version "0.10.8")
+    (version "0.10.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/latte-dock/"
                                   "latte-dock-" version ".tar.xz"))
               (sha256
                (base32
-                "0ali9i0y0y1c5mdaps5ybhk4nqvzzs5jq27wj8rg8xxqjyfvbah0"))))
+                "0zj818wpxdiqpzivvwrgbzj26lcmmv49zw8206v4shcms1afbl9j"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtbase-5
