@@ -31563,19 +31563,49 @@ deordinalize, demodulize, foreign key, and pluralize/singularize are supported
 as both traits and pure functions acting on String types.")
     (license license:bsd-2)))
 
-(define-public rust-inotify-0.9
+(define-public rust-inotify-0.10
   (package
     (name "rust-inotify")
-    (version "0.9.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "inotify" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1cs3xlkq3fnfca3mimvifazp01ayscinm07v38ifw0xin5f4fcdh"))))
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "inotify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1k2m6a95827yspax1icmwiz4szr7c01w3dnn2b2bil4hfvcnilgx"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-inotify-sys" ,rust-inotify-sys-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/hannobraun/inotify")
+    (synopsis "Idiomatic wrapper for inotify")
+    (description "This package provides an idiomatic wrapper for inotify
+written in Rust.")
+    (license license:isc)))
+
+(define-public rust-inotify-0.9
+  (package
+    (inherit rust-inotify-0.10)
+    (name "rust-inotify")
+    (version "0.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "inotify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1cs3xlkq3fnfca3mimvifazp01ayscinm07v38ifw0xin5f4fcdh"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -31587,12 +31617,7 @@ as both traits and pure functions acting on String types.")
        #:cargo-development-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/inotify-rs/inotify")
-    (synopsis "Idiomatic wrapper for inotify")
-    (description "This package provides an idiomatic wrapper for inotify
-written in Rust.")
-    (license license:isc)))
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-inotify-0.8
   (package
