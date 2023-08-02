@@ -79031,6 +79031,28 @@ in Pure Rust.")
     (description "D-Bus & GVariant encoding & decoding")
     (license license:expat)))
 
+(define-public rust-zvariant-utils-1
+  (package
+    (name "rust-zvariant-utils")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zvariant-utils" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "00625h3240rixvfhq6yhws1d4bwf3vrf74v8s69b97aq27cg0d3j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/dbus2/zbus/")
+    (synopsis "Utilities used internally by the zvariant crate")
+    (description "Various utilities used internally by the zvariant crate.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
