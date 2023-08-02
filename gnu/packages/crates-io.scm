@@ -25610,14 +25610,14 @@ for the @code{futures-rs} library.")
 (define-public rust-futures-lite-1
   (package
     (name "rust-futures-lite")
-    (version "1.11.3")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-lite" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ywmyvpy4f348jri8rxhpj59a7bvy12pspm59x5207fys061sj5l"))))
+        (base32 "1kkbqhaib68nzmys2dc8j9fl2bwzf2s91jfk13lb2q3nwhfdbaa9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
