@@ -67251,6 +67251,32 @@ into mod, giving clear and readable test results.")
        (("rust-insta" ,rust-insta-0.12)
         ("rust-lazy-static" ,rust-lazy-static-1))))))
 
+(define-public rust-test-case-core-3
+  (package
+    (name "rust-test-case-core")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "test-case-core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1vhckjjw4w1kaanhgy6bw8kdr8ligr68bz5nfbvr8xz2s7ar80yi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/frondeus/test-case")
+    (synopsis "Core functionality for the test-case crate")
+    (description
+     "This package provides core functionality for parsing #[test_case(...)]
+procedural macro attribute for generating parametrized test cases easily")
+    (license license:expat)))
+
 (define-public rust-test-case-macros-3
   (package
     (name "rust-test-case-macros")
