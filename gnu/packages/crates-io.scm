@@ -19152,8 +19152,36 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
        (sha256
         (base32 "1rp0z4k0j5ip0bx6dssg97l4q6bakhf6lm5h1lpr3p3kwjsi585i"))))))
 
+(define-public rust-derive-builder-0.12
+  (package
+    (name "rust-derive-builder")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "derive-builder" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1y4p569zcvpmly5s5hmjp9h83drxvdp6kj6bb61h225mhj3pfrwd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.12))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
+    (synopsis "Builder pattern for arbitrary structs")
+    (description "Rust macro to automatically implement the builder pattern
+for arbitrary structs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-builder-0.11
   (package
+    (inherit rust-derive-builder-0.12)
     (name "rust-derive-builder")
     (version "0.11.2")
     (source
@@ -19163,16 +19191,10 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "18q4jx8zvg2pkx2d1nmlklx8m48bwrghyg8rdg1irdwkw5xxyynh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.11))))
-    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
-    (synopsis "Builder pattern for arbitrary structs")
-    (description "Rust macro to automatically implement the builder pattern
-for arbitrary structs.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.11))))))
 
 (define-public rust-derive-builder-0.10
   (package
