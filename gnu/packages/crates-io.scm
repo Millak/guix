@@ -25893,6 +25893,27 @@ and removes almost all unsafe code from it.")
 implementations.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-futures-micro-0.5
+  (package
+    (name "rust-futures-micro")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "futures-micro" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09n8d1qnpk6mjpnv338wkbgyppvd4aygfddwlwb8pmlk6m5jcq5l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Uses unstable features.
+       #:cargo-inputs (("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs (("rust-futures-lite" ,rust-futures-lite-0.1))))
+    (home-page "https://github.com/irrustible/futures-micro")
+    (synopsis "Minimal, no_std compatible async prelude")
+    (description "Minimal, no_std compatible async prelude.")
+    (license license:asl2.0)))
+
 (define-public rust-futures-preview-0.3
   (package
     (name "rust-futures-preview")
