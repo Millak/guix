@@ -49881,7 +49881,7 @@ name.")
 (define-public rust-psl-types-2
   (package
     (name "rust-psl-types")
-    (version "2.0.7")
+    (version "2.0.11")
     (source
      (origin
        (method url-fetch)
@@ -49889,9 +49889,8 @@ name.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0kqssn9wgqpl1m26ynv7cvxanfhyjvssi2a3jc2nzpbw7q3ricv6"))))
+         "1b3cz1q07iy744a39smykra2j83nv8vmni6la37wnx3ax17jkjrk"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/addr-rs/psl-types")
     (synopsis "Common types for the public suffix implementation crates")
     (description "This package provides common types for the public suffix
