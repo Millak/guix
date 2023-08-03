@@ -5248,6 +5248,32 @@ primitives:
      "Async networking primitives for TCP/UDP/Unix communication")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-async-oneshot-0.5
+  (package
+    (name "rust-async-oneshot")
+    (version "0.5.9")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "async-oneshot" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qslzzfz3j0fb4lvsmq5nx6lkjfbdq5sjmsl7xgj0hym08mdwixf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Uses unstable features.
+       #:cargo-inputs
+       (("rust-futures-micro" ,rust-futures-micro-0.5))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-waker-fn" ,rust-waker-fn-1))))
+    (home-page "https://github.com/irrustible/async-oneshot")
+    (synopsis "Async-aware oneshot channel")
+    (description "This package provides a fast, small, full-featured,
+async-aware oneshot channel.")
+    (license license:mpl2.0)))
+
 (define-public rust-async-process-1
   (package
     (name "rust-async-process")
