@@ -31232,19 +31232,18 @@ let} expressions.")
 (define-public rust-ignore-0.4
   (package
     (name "rust-ignore")
-    (version "0.4.18")
+    (version "0.4.20")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ignore" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07bmnv96msggqb040z6xqp1p7s8ys0f97b731hp6mybkjc9ingvi"))))
+        (base32 "14kl9fv83klbnjxdv0y8lpwlj3gkypxf3vbrmm29m2jkmcyqgryv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-globset" ,rust-globset-0.4)
+       (("rust-globset" ,rust-globset-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-memchr" ,rust-memchr-2)
