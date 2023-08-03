@@ -50006,7 +50006,7 @@ configuration file and/or environment variables.")
 (define-public rust-publicsuffix-2
   (package
     (name "rust-publicsuffix")
-    (version "2.1.1")
+    (version "2.2.3")
     (source
      (origin
        (method url-fetch)
@@ -50014,16 +50014,17 @@ configuration file and/or environment variables.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1q9kbcqh9pa06p3kq7d3ksbnqjhs88v5wk5qg89wrgkbmpnp4a99"))))
+         "0mvls29klp6xk16n8114sr1llhahy6fy8qi9kbwzf6mflnyw3a4n"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-hashbrown" ,rust-hashbrown-0.11)
-        ("rust-idna" ,rust-idna-0.2)
+     `(#:cargo-inputs
+       (("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-idna" ,rust-idna-0.3)
         ("rust-psl-types" ,rust-psl-types-2)
-        ("rust-unicase" ,rust-unicase-2))))
+        ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rspec" ,rust-rspec-1))))
     (home-page "https://github.com/rushmorem/publicsuffix")
     (synopsis "Domain name parsing and email address validation")
     (description "This package provides robust domain name parsing and RFC
