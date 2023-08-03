@@ -9087,6 +9087,27 @@ UTF-8.")
         ("rust-ucd-parse" ,rust-ucd-parse-0.1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
+(define-public rust-buf-min-0.7
+  (package
+    (name "rust-buf-min")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "buf-min" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "146wb3p4n62jbka6ym7sagziydcbixwhamw0cknl49w4ys66km92"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-ntex-bytes" ,rust-ntex-bytes-0.1))))
+    (home-page "https://github.com/botika/buf-min")
+    (synopsis "Minimal utf-8 safe buffer traits")
+    (description "This package provides mminimal utf-8 safe buffer traits.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-buf-redux-0.8
   (package
     (name "rust-buf-redux")
