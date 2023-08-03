@@ -10636,7 +10636,7 @@ the library crate of Cargo.")
 (define-public rust-cargo-metadata-0.15
   (package
     (name "rust-cargo-metadata")
-    (version "0.15.0")
+    (version "0.15.5")
     (source
      (origin
        (method url-fetch)
@@ -10645,24 +10645,18 @@ the library crate of Cargo.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0dpcddizs4zhbvbsv3kxx9p0qppidxh05jz7dlf45f5rsm9pbfrs"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Allow older versions of the serde crates.
-           (substitute* "Cargo.toml"
-             (("1.0.136") "1.0.133")
-             (("1.0.79") "1.0.74"))))))
+         "1lsmvfznc6vlizxvjm5rvi8m6iyj0ldjhbh80h6bymdp08vl969g"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all tests included.
        #:cargo-inputs
        (("rust-camino" ,rust-camino-1)
         ("rust-cargo-platform" ,rust-cargo-platform-0.1)
-        ("rust-derive-builder" ,rust-derive-builder-0.11)
+        ("rust-derive-builder" ,rust-derive-builder-0.12)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://github.com/oli-obk/cargo_metadata")
     (synopsis "Structured access to the output of `cargo metadata`")
     (description
