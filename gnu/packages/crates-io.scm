@@ -76722,8 +76722,43 @@ Verification.")
                  (lambda _
                    (invoke "python" "make_curve25519_tables.py")))))))))))
 
+(define-public rust-webpki-roots-0.25
+  (package
+    (name "rust-webpki-roots")
+    (version "0.25.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "webpki-roots" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15piy0vccppqb74li32gnn9l5a4ysxzwh8bp3qv6z8rhr2hyvin9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; This test wants network access.
+             "--skip=generated_code_is_fresh")
+       #:cargo-development-inputs
+       (("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-ring" ,rust-ring-0.16)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
+        ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs
+     (list perl pkg-config))
+    (inputs
+     (list openssl))
+    (home-page "https://github.com/rustls/webpki-roots")
+    (synopsis "Mozilla's CA root certificates for use with webpki")
+    (description "This package provides Mozilla's CA root certificates for use
+with webpki.")
+    (license license:mpl2.0)))
+
 (define-public rust-webpki-roots-0.22
   (package
+    (inherit rust-webpki-roots-0.25)
     (name "rust-webpki-roots")
     (version "0.22.2")
     (source
@@ -76733,17 +76768,9 @@ Verification.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jbll0ys9jakrvv3l1i216bbgj7jbxr7ad2dihw28xcm7s8fnb2m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-webpki" ,rust-webpki-0.22))))
-    (native-inputs
-     (list perl))
-    (home-page "https://github.com/rustls/webpki-roots")
-    (synopsis "Mozilla's CA root certificates for use with webpki")
-    (description "This package provides Mozilla's CA root certificates for use
-with webpki.")
-    (license license:mpl2.0)))
+       (("rust-webpki" ,rust-webpki-0.22))))))
 
 (define-public rust-webpki-roots-0.21
   (package
