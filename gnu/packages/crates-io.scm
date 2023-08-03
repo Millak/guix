@@ -14549,22 +14549,22 @@ semantics than those provided by @code{as} or @code{From}/@code{Into}.")
     (description "Convert strings into any case.")
     (license license:expat)))
 
-(define-public rust-cookie-0.16
+(define-public rust-cookie-0.17
   (package
     (name "rust-cookie")
-    (version "0.16.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cookie" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1yriqbf77iigrnp2gmf6m1r296bndv051dc1qc39w3bis1bwsng8"))))
+    (version "0.17.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cookie" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "096c52jg9iq4lfcps2psncswv33fc30mmnaa2sbzzcfcw71kgyvy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aes-gcm" ,rust-aes-gcm-0.10)
-        ("rust-base64" ,rust-base64-0.20)
+        ("rust-base64" ,rust-base64-0.21)
         ("rust-hkdf" ,rust-hkdf-0.12)
         ("rust-hmac" ,rust-hmac-0.12)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
@@ -14581,6 +14581,31 @@ semantics than those provided by @code{as} or @code{From}/@code{Into}.")
 It supports signed and private (encrypted + signed) jars.")
     ;; The user can choose either license.
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-cookie-0.16
+  (package
+    (inherit rust-cookie-0.17)
+    (name "rust-cookie")
+    (version "0.16.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cookie" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yriqbf77iigrnp2gmf6m1r296bndv051dc1qc39w3bis1bwsng8"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes-gcm" ,rust-aes-gcm-0.10)
+        ("rust-base64" ,rust-base64-0.20)
+        ("rust-hkdf" ,rust-hkdf-0.12)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-version-check" ,rust-version-check-0.9))))))
 
 (define-public rust-cookie-0.15
   (package
