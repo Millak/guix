@@ -1515,6 +1515,10 @@ basic input/output.")
                (mkdir-p man)
                (copy-file "extra/alacritty.man"
                           (string-append man "/alacritty.1"))
+               ;; Install example configuration.
+               (install-file "alacritty.yml"
+                             (string-append share "/doc/alacritty-"
+                                            ,(package-version this-package) "/example"))
                ;; Install desktop file.
                (install-file "extra/linux/Alacritty.desktop"
                              (string-append share "/applications"))
