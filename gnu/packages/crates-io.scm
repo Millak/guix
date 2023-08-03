@@ -31584,19 +31584,22 @@ or numerical index.  A corresponding hash set type is also provided.")
   (package
     (inherit rust-indexmap-2)
     (name "rust-indexmap")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indexmap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16dkr2h5p379jcr8rnb420396yvzid2myirc2w70zcf43yffg18q"))))
+        (base32 "16dxmy7yvk51wvnih3a3im6fp5lmx0wx76i03n06wyak6cwhw1xx"))))
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-autocfg" ,rust-autocfg-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.12)
         ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-rustc-rayon" ,rust-rustc-rayon-0.4)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustc-rayon" ,rust-rustc-rayon-0.5)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-fnv" ,rust-fnv-1)
