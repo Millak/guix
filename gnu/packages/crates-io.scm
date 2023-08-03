@@ -27850,7 +27850,7 @@ shell style patterns.")
 (define-public rust-globset-0.4
   (package
     (name "rust-globset")
-    (version "0.4.7")
+    (version "0.4.12")
     (source
      (origin
        (method url-fetch)
@@ -27858,12 +27858,12 @@ shell style patterns.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ca96s29s7aqpkm04z4babyk8xqn1w7slpdrlldgnkz6l2gipz7h"))))
+        (base32 "01phmxrkr9d7lhh84b6nylgjb3r21ssfddxvm23ihz3hw3cbpa5c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-aho-corasick" ,rust-aho-corasick-0.7)
-        ("rust-bstr" ,rust-bstr-0.2)
+       (("rust-aho-corasick" ,rust-aho-corasick-1)
+        ("rust-bstr" ,rust-bstr-1)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-regex" ,rust-regex-1)
