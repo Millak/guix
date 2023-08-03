@@ -14908,19 +14908,47 @@ in @code{no_std}.  Alloc support is optional.")
        #:cargo-development-inputs
        (("rust-version-check" ,rust-version-check-0.9))))))
 
+(define-public rust-cookie-store-0.19
+  (package
+    (name "rust-cookie-store")
+    (version "0.19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cookie-store" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19vy19rvp3a68sgxkrv6bxxlrr2ggqp0176yqb3zhmi0g4sqz8fm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cookie" ,rust-cookie-0.16)
+        ("rust-idna" ,rust-idna-0.3)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-publicsuffix" ,rust-publicsuffix-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/pfernie/cookie_store")
+    (synopsis "Cookie storage and retrieval")
+    (description "This package implements cookie storage and retrieval.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cookie-store-0.16
   (package
+    (inherit rust-cookie-store-0.19)
     (name "rust-cookie-store")
     (version "0.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cookie-store" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kfrmxx9mi55dgbj8qgd8qbahvi1yjqwk05v0jm5y7zld6inljrf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cookie" ,rust-cookie-0.16)
@@ -14931,11 +14959,7 @@ in @code{no_std}.  Alloc support is optional.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-time" ,rust-time-0.3)
-        ("rust-url" ,rust-url-2))))
-    (home-page "https://github.com/pfernie/cookie_store")
-    (synopsis "Cookie storage and retrieval")
-    (description "This package implements cookie storage and retrieval.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-cookie-store-0.15
   (package
