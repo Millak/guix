@@ -58591,6 +58591,33 @@ macOS and iOS.")
        #:cargo-development-inputs
        (("rust-phf-codegen" ,rust-phf-codegen-0.8))))))
 
+(define-public rust-self-cell-1
+  (package
+    (name "rust-self-cell")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "self-cell" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1djgfccbfhj2zv7xmqc2nxwn41g1swyrxg1d488pirj3am8rwc2c"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)" _ version)
+                          (string-append "^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rustversion" ,rust-rustversion-1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/Voultapher/self_cell")
+    (synopsis "Self-referential structs in stable Rust")
+    (description
+     "This package provides safe-to-use proc-macro-free self-referential structs
+in stable Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-semver-1
   (package
     (name "rust-semver")
