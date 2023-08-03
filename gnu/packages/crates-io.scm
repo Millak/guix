@@ -56873,6 +56873,25 @@ PEM-encodings commonly used to store keys and certificates at rest.")
     (description "Web PKI X.509 Certificate Verification.")
     (license license:isc)))
 
+(define-public rust-rustls-webpki-0.100
+  (package
+    (inherit rust-rustls-webpki-0.101)
+    (name "rust-rustls-webpki")
+    (version "0.100.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustls-webpki" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sxlgpcczd1wihmnbgv5qz00jim32dap5wzq2rwcm39xxpapq86n"))))
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-ring" ,rust-ring-0.16)
+        ("rust-untrusted" ,rust-untrusted-0.7))
+       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.13))))))
+
 (define-public rust-rusttype-0.9
   (package
     (name "rust-rusttype")
