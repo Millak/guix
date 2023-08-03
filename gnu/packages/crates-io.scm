@@ -19266,8 +19266,35 @@ for arbitrary structs.")
          ("rust-skeptic" ,rust-skeptic-0.13)
          ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-derive-builder-core-0.12
+  (package
+    (name "rust-derive-builder-core")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "derive-builder-core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "03vvmw3mfg370swq0dh2h5kcjjb8va2m4asqgp9wfyy4l08xq6y1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-darling" ,rust-darling-0.14)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
+    (synopsis "Internal helper library for @code{rust-derive-builder}")
+    (description
+     "Internal helper library for @code{rust-derive-builder}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-builder-core-0.11
   (package
+    (inherit rust-derive-builder-core-0.12)
     (name "rust-derive-builder-core")
     (version "0.11.2")
     (source
@@ -19277,19 +19304,13 @@ for arbitrary structs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1i5gmf5lglbg7agj1khc6k9swf1clfs5fg6w0icw1w91m77x948z"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-darling" ,rust-darling-0.14)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
-    (synopsis "Internal helper library for @code{rust-derive-builder}")
-    (description
-     "Internal helper library for @code{rust-derive-builder}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-derive-builder-core-0.10
   (package
