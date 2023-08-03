@@ -76756,6 +76756,21 @@ Verification.")
 with webpki.")
     (license license:mpl2.0)))
 
+(define-public rust-webpki-roots-0.23
+  (package
+    (inherit rust-webpki-roots-0.25)
+    (name "rust-webpki-roots")
+    (version "0.23.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "webpki-roots" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0f4k8nng542iilxbibh1nhrdf5wbyi9is4fr219zzrc6hgw5hc5h"))))
+    (arguments
+     `(#:cargo-inputs (("rust-rustls-webpki" ,rust-rustls-webpki-0.100))))))
+
 (define-public rust-webpki-roots-0.22
   (package
     (inherit rust-webpki-roots-0.25)
