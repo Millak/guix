@@ -41772,6 +41772,31 @@ framework.")
 macros used in ntest.")
     (license license:expat)))
 
+(define-public rust-ntex-bytes-0.1
+  (package
+    (name "rust-ntex-bytes")
+    (version "0.1.19")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ntex-bytes" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0kpj93rkm9xknhkk31n21d7dwdx0y4jwc1y3nvnh1kx2l8p7razm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut off the dependency tree of ntex here.
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-simdutf8" ,rust-simdutf8-0.1))))
+    (home-page "https://github.com/ntex-rs")
+    (synopsis "Types and traits for working with bytes (bytes crate fork)")
+    (description "Types and traits for working with bytes (bytes crate fork)")
+    (license license:expat)))
+
 (define-public rust-nu-ansi-term-0.46
   (package
     (name "rust-nu-ansi-term")
