@@ -74719,23 +74719,29 @@ comparable to calling @code{unwrap_err()}.")
 (define-public rust-ureq-2
   (package
     (name "rust-ureq")
-    (version "2.4.0")
+    (version "2.6.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ureq" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1m8nzx683iph4zfpfg2xmkkbwmgf1i403lnbhxqk4gbsj8pzm6ck"))))
+                "0vf412wyfk1wpaknqiq2v7y5zy9djammgvgkmcx8zxhl2gfk32rk"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ;tests fail
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; These tests want network access.
+             "--skip=test::range::read_range_rustls"
+             "--skip=tests::connect_http_google"
+             "--skip=tests::connect_https_google_rustls"
+             "--skip=tls_client_certificate"
+             "--skip=middleware::Middleware")
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.13)
         ("rust-brotli-decompressor" ,rust-brotli-decompressor-2)
-        ("rust-chunked-transfer" ,rust-chunked-transfer-1)
-        ("rust-cookie" ,rust-cookie-0.15)
-        ("rust-cookie-store" ,rust-cookie-store-0.15)
+        ("rust-cookie" ,rust-cookie-0.16)
+        ("rust-cookie-store" ,rust-cookie-store-0.19)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-log" ,rust-log-0.4)
@@ -74750,10 +74756,11 @@ comparable to calling @code{unwrap_err()}.")
         ("rust-webpki" ,rust-webpki-0.22)
         ("rust-webpki-roots" ,rust-webpki-roots-0.22))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.9)
+       (("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-rustls" ,rust-rustls-0.20)
-        ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-serde" ,rust-serde-1))))
+    (native-inputs (list perl))
     (home-page "https://github.com/algesten/ureq")
     (synopsis "Simple, safe HTTP client")
     (description "This package provides minimal request library in Rust.")
