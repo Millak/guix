@@ -46296,31 +46296,51 @@ procedural macros for rust-peg.  To use rust-peg, see the peg package.")
 runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
     (license license:expat)))
 
-(define-public rust-pem-1
+(define-public rust-pem-2
   (package
     (name "rust-pem")
-    (version "1.1.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pem" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1f184b7vs5kgwglfsy9adqqy7625jsq8jj1lsxah9abn78kmr0x8"))))
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06j4vmzkfg5jh9ykc5bdvydishqkbb4sf64fa528wg6zbi0zw4vb"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:cargo-inputs
-        (("rust-base64" ,rust-base64-0.13)
-         ("rust-serde" ,rust-serde-1))
-        #:cargo-development-inputs
-        (("rust-criterion" ,rust-criterion-0.3)
-         ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/jcreekmore/pem-rs")
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/jcreekmore/pem-rs.git")
     (synopsis "Parse and encode PEM-encoded data")
     (description
      "This package provides a Rust library for parsing and encoding
 PEM-encoded data.")
     (license license:expat)))
+
+(define-public rust-pem-1
+  (package
+    (inherit rust-pem-2)
+    (name "rust-pem")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1f184b7vs5kgwglfsy9adqqy7625jsq8jj1lsxah9abn78kmr0x8"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-pem-0.8
   (package
