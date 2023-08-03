@@ -37704,6 +37704,24 @@ file IO.")
        (sha256
         (base32 "0nmymqy9q62x577ydja0ysfyir7h5qa0n5fwcnvchfhhlsi0rdyr"))))))
 
+(define-public rust-memo-map-0.3
+  (package
+    (name "rust-memo-map")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "memo-map" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0h0c80ilf74872nfn1dx65zdj60cxcczrbks113l9kk0jp07dhmf"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/mitsuhiko/memo-map")
+    (synopsis "Synchronized map for memoization")
+    (description "This package provides a crate implementing a synchronized map
+for memoization.")
+    (license license:asl2.0)))
+
 (define-public rust-memoffset-0.9
   (package
     (name "rust-memoffset")
