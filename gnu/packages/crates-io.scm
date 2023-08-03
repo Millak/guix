@@ -56804,14 +56804,14 @@ native certificate store.")
 (define-public rust-rustls-pemfile-1
   (package
     (name "rust-rustls-pemfile")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pemfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16x5jhja8z0j5hcrlaqqz5qnyg9qgv8qqffwbdil6fl0b1nvb56i"))))
+        (base32 "1cplx6hgkr32nq31p3613b2sj7csrrq3zp6znx9vc1qx9c4qff9d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
