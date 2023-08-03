@@ -79422,8 +79422,32 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-yasna-0.5
+  (package
+    (name "rust-yasna")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "yasna" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ka4ixrplnrfqyl1kymdj8cwpdp2k0kdr73b57hilcn1kiab6yz1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bit-vec" ,rust-bit-vec-0.6)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/qnighy/yasna.rs")
+    (synopsis "ASN.1 library for Rust")
+    (description "ASN.1 library for Rust")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-yasna-0.4
   (package
+    (inherit rust-yasna-0.5)
     (name "rust-yasna")
     (version "0.4.0")
     (source (origin
@@ -79432,18 +79456,13 @@ library.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "0xgsvxqnycdakh6j3hg4dk3mylrpnba50w0d36vg5k311sfs4qp2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bit-vec" ,rust-bit-vec-0.6)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-num-bigint" ,rust-num-bigint-0.4))
        #:cargo-development-inputs
-       (("rust-num-traits" ,rust-num-traits-0.2))))
-    (home-page "https://github.com/qnighy/yasna.rs")
-    (synopsis "ASN.1 library for Rust")
-    (description "ASN.1 library for Rust")
-    (license (list license:expat license:asl2.0))))
+       (("rust-num-traits" ,rust-num-traits-0.2))))))
 
 (define-public rust-yeslogic-fontconfig-sys-3
   (package
