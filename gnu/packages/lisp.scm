@@ -17,7 +17,7 @@
 ;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
@@ -25,6 +25,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Andrew Kravchuk <awkravchuk@gmail.com.
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -379,6 +380,10 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
                                                  (or (%current-system)
                                                      (%current-target-system)))
                                  '("CFLAGS=-falign-functions=4")
+                                 '())
+                           ,@(if (target-x86-64?)
+                                 '("--enable-portability"
+                                   "--with-threads=POSIX_THREADS")
                                  '())
                             "--with-dynamic-ffi"
                             "--with-dynamic-modules"
