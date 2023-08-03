@@ -1470,7 +1470,7 @@ JSON for post-processing
 (define-public ack
   (package
     (name "ack")
-    (version "3.5.0")
+    (version "3.7.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -1479,7 +1479,7 @@ JSON for post-processing
                 (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "00131vqjbzcn6w22m0h3j6x9kp59dimfnnqhpmi78vbcj0jws1dv"))))
+               (base32 "0xrbgjj3nys4158nskd0npqf825xlrqa2x3fqcfz0nnxai2jzbck"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases
