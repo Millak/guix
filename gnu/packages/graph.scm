@@ -57,6 +57,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -624,7 +625,7 @@ transformed into common image formats for display or printing.")
 (define-public python-graph-tool
   (package
     (name "python-graph-tool")
-    (version "2.46")
+    (version "2.57")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -632,7 +633,7 @@ transformed into common image formats for display or printing.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0x9jgnq9xcja3q954y7nhdzd374p4h203pymxh51b6lqqbq0hm9h"))))
+                "0wmvzx509lvigja6cfxh45r4b7wns64vmik0x4rz4y4fnxrhw2m2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules (,@%gnu-build-system-modules
@@ -656,7 +657,11 @@ transformed into common image formats for display or printing.")
            python-wrapper
            sparsehash))
     (propagated-inputs
-     (list python-matplotlib python-numpy python-pycairo python-scipy))
+     (list python-matplotlib
+           python-numpy
+           python-pycairo
+           python-scipy
+           python-zstandard))
     (synopsis "Manipulate and analyze graphs with Python efficiently")
     (description "Graph-tool is an efficient Python module for manipulation
 and statistical analysis of graphs (a.k.a. networks).  Contrary to most other
