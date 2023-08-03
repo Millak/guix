@@ -52922,8 +52922,51 @@ Rust.")
     (description "This package provides core APIs for Rayon.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-rcgen-0.11
+  (package
+    (name "rust-rcgen")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rcgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0xl91nlp4ld00gl01pfv00a3agaip980wwc7r6184kfd1p0gnm29"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Don't use a vendored botan.
+                  (substitute* "Cargo.toml"
+                    ((".*vendored.*") ""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-pem" ,rust-pem-2)
+        ("rust-ring" ,rust-ring-0.16)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-x509-parser" ,rust-x509-parser-0.15)
+        ("rust-yasna" ,rust-yasna-0.5)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-botan" ,rust-botan-0.10)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rsa" ,rust-rsa-0.9)
+        ("rust-webpki" ,rust-webpki-0.22)
+        ("rust-x509-parser" ,rust-x509-parser-0.15))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list botan openssl perl))
+    (home-page "https://github.com/est31/rcgen")
+    (synopsis "Rust X.509 certificate generator")
+    (description "Rust X.509 certificate generator")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rcgen-0.8
   (package
+    (inherit rust-rcgen-0.11)
     (name "rust-rcgen")
     (version "0.8.14")
     (source (origin
@@ -52938,7 +52981,6 @@ Rust.")
                   ;; Don't use a vendored botan.
                   (substitute* "Cargo.toml"
                     ((".*vendored.*") ""))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
@@ -52953,15 +52995,7 @@ Rust.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rsa" ,rust-rsa-0.5)
         ("rust-webpki" ,rust-webpki-0.22)
-        ("rust-x509-parser" ,rust-x509-parser-0.12))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list botan openssl))
-    (home-page "https://github.com/est31/rcgen")
-    (synopsis "Rust X.509 certificate generator")
-    (description "Rust X.509 certificate generator")
-    (license (list license:expat license:asl2.0))))
+        ("rust-x509-parser" ,rust-x509-parser-0.12))))))
 
 (define-public rust-rctree-0.4
   (package
