@@ -56842,6 +56842,37 @@ PEM-encodings commonly used to store keys and certificates at rest.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3))))))
 
+(define-public rust-rustls-webpki-0.101
+  (package
+    (name "rust-rustls-webpki")
+    (version "0.101.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustls-webpki" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ngs6y42k47jr14kka9w92hwyjsq3gm0j45nf8gsg05dfgyj4dsi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-ring" ,rust-ring-0.16)
+        ("rust-untrusted" ,rust-untrusted-0.7))
+       #:cargo-development-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-bencher" ,rust-bencher-0.1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rcgen" ,rust-rcgen-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs
+     (list perl))
+    (home-page "https://github.com/rustls/webpki")
+    (synopsis "Web PKI X.509 Certificate Verification")
+    (description "Web PKI X.509 Certificate Verification.")
+    (license license:isc)))
+
 (define-public rust-rusttype-0.9
   (package
     (name "rust-rusttype")
