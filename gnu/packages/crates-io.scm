@@ -74809,6 +74809,25 @@ first byte.")
 a part of rav1e.")
     (license license:bsd-2)))
 
+(define-public rust-v-htmlescape-0.15
+  (package
+    (name "rust-v-htmlescape")
+    (version "0.15.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "v-htmlescape" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "135inp4x7cc32k0hzrymlz1baf0rj0ah5h82nrpa9w0hqpxmg0jf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-buf-min" ,rust-buf-min-0.7))))
+    (home-page "https://github.com/botika/v_escape")
+    (synopsis "Simd optimized HTML escaping code")
+    (description "This package provides simd optimized HTML escaping code.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-valuable-derive-0.1
   (package
     (name "rust-valuable-derive")
