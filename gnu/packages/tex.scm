@@ -1907,6 +1907,28 @@ in-line BNF expressions using math mode.")
 of mathematical disciplines.")
     (license license:lppl1.3+)))
 
+(define-public texlive-basque-book
+  (package
+    (name "texlive-basque-book")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/basque-book/"
+                   "source/latex/basque-book/"
+                   "tex/latex/basque-book/")
+             (base32
+              "16jgn4pxqbmq2dx5gfyy4p04ykaijkjyy9banp3l3a6ykm2xn8w7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/basque-book")
+    (synopsis "Class for book-type documents written in Basque")
+    (description
+     "The class is derived from the LaTeX @code{book} class.  The extensions
+solve grammatical and numeration issues that occur when book-type documents
+are written in Basque.  The class is useful for writing books, PhD and Master
+Theses, etc., in Basque.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-begriff
   (package
     (name "texlive-begriff")
