@@ -5253,6 +5253,25 @@ designing fonts, but does offer advice about understanding errors in other
 people's fonts.")
     (license license:public-domain)))
 
+(define-public texlive-metapost-examples
+  (package
+    (name "texlive-metapost-examples")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/metapost-examples/")
+             (base32
+              "1rslyjnw27b5br17cbf6mjjkcgyr49yav4kw12spm3vdwyzb7gxr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metapost-examples")
+    (synopsis "Example drawings using MetaPost")
+    (description
+     "This package provides a few (hundred) example pictures drawn with MetaPost,
+ranging from very simple (lines and circles) to rather intricate (uncommon
+geometric transformations, fractals, bitmap, etc).")
+    (license license:gpl1+)))
+
 (define-public texlive-mgltex
   (package
     (name "texlive-mgltex")
