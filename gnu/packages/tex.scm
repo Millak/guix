@@ -16460,6 +16460,27 @@ aesthetics and traditions of Arabic typesetting, and adapting it to the era of
 digital typesetting, in a publicly available form.")
     (license license:silofl1.1)))
 
+(define-public texlive-amiweb2c-guide
+  (package
+    (name "texlive-amiweb2c-guide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amiweb2c-guide/")
+             (base32
+              "0cxwsx49p3c162ysv0ydyxdncfg8ij9sx2x7c4pvzb0yidvad01c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amiweb2c-guide")
+    (synopsis "How to install AmiWeb2c")
+    (description
+     "This is a guide for the installation of (La)TeX with the Amiga port of
+Web2C named AmiWeb2C in the version 2.1 on an emulated Amiga 4000 computer
+running Workbench 3.1.  Furthermore the installation of an ARexx server for
+calling LaTeX from an editor is described and some tips for the installation
+of new fonts are given.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amsfonts
   (package
     (name "texlive-amsfonts")
