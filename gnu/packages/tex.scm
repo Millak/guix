@@ -1451,6 +1451,33 @@ geometry remains.  This nevertheless allows the drawing of a much broader
 class of commutative diagrams and alike.")
     (license license:lppl1.3c)))
 
+(define-public texlive-amscls-doc
+  (package
+    (name "texlive-amscls-doc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amscls-doc/")
+             (base32
+              "0allim05cp20zhn480df2mivd3p9gnc069d7hbjlzv660bw7mapx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amscls-doc")
+    (synopsis "User documentation for AMS document classes")
+    (description
+     "This collection comprises a set of four manuals, or Author Handbooks,
+each documenting the use of a class of publications based on one of the AMS
+document classes @code{amsart}, @code{amsbook}, @code{amsproc} and one hybrid,
+as well as a guide to the generation of the four manuals from a coordinated
+set of LaTeX source files.  The Handbooks comprise the user documentation for
+the pertinent document classes.  As the source for the Handbooks consists of
+a large number of files, and the intended output is multiple different
+documents, the principles underlying this collection can be used as a model
+for similar projects.  The manual @emph{Compiling the AMS Author Handbooks}
+provides information about the structure of and interaction between the
+various components.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amstex
   (package
     (name "texlive-amstex")
