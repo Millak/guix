@@ -20659,6 +20659,27 @@ shortcuts are defined, as well as translations to Norsk of standard LaTeX
 names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-scottish
+  (package
+    (name "texlive-babel-scottish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-scottish/"
+                   "source/generic/babel-scottish/"
+                   "tex/generic/babel-scottish/")
+             (base32
+              "0wnrahbjkqrgxr4ra2lpnj5yiygbd8pyivcndzax1r7x2ci0f805")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-scottish")
+    (synopsis "Babel support for Scottish Gaelic")
+    (description
+     "The package provides the language definition file for support of Gaidhlig
+(Scottish Gaelic) in Babel.  Some shortcuts are defined, as well as
+translations of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-slovak
   (package
     (name "texlive-babel-slovak")
