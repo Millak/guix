@@ -19077,6 +19077,27 @@ Portuguese and Brazilian Portuguese in Babel.  Some shortcuts are defined, as
 well as translations to Portuguese of standard LaTeX names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-slovak
+  (package
+    (name "texlive-babel-slovak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-slovak/"
+                   "source/generic/babel-slovak/"
+                   "tex/generic/babel-slovak/")
+             (base32
+              "16w95j3ckvjvmwccx2qvf7lq3b3zvnlf7ygm35i8xq22f3lm2a9k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-slovak")
+    (synopsis "Babel support for typesetting Slovak")
+    (description
+     "The package provides the language definition file for support of Slovak
+in Babel, including Slovak variants of LaTeX built-in-names.  Shortcuts are
+also defined.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-spanish
   (package
     (name "texlive-babel-spanish")
