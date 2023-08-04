@@ -8483,6 +8483,25 @@ EPS files and @command{psfrag} substitution definition files, and produces PDF
 and EPS files with the substitutions included.")
     (license license:gpl3+)))
 
+(define-public texlive-gentle
+  (package
+    (name "texlive-gentle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/gentle/")
+             (base32
+              "1l5fyfdbkpqlgpgi1hrnn2sz8hchlnp7z5s5584czafvs10jg6vx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gentle")
+    (synopsis "Gentle introduction to TeX")
+    (description
+     "The @emph{Gentle Introduction} is the longest-established comprehensive
+tutorial on the use of plain TeX.")
+    (license
+     (license:fsf-free "file://share/texmf-dist/doc/plain/gentle/gentle.tex"))))
+
 (define-public texlive-getoptk
   (package
     (name "texlive-getoptk")
