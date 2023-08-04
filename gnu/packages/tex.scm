@@ -18455,6 +18455,25 @@ Texinfo source.  This is a collaborative development, and details of getting
 involved are to be found on the package home page.")
     (license license:fdl1.1+)))
 
+(define-public texlive-latex4wp
+  (package
+    (name "texlive-latex4wp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex4wp/")
+             (base32
+              "0xyk6w8jmmcsccbd9q4ikblfq6nacjjyrmf58ddjxkb6v0lzndph")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex4wp")
+    (synopsis "LaTeX guide specifically designed for word processor users")
+    (description
+     "@emph{LaTeX for Word Processor Users} is a guide that helps converting
+knowledge and techniques of word processing into the LaTeX typesetting
+environment.  It aims at helping such users use LaTeX instead.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
