@@ -10613,6 +10613,24 @@ from Adobe's basic set.")
 documentation from TeX files.  It is part of the LaTeX base.")
     (license license:lppl1.3+)))
 
+(define-public texlive-undergradmath
+  (package
+    (name "texlive-undergradmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/undergradmath/")
+             (base32
+              "1z8my3fwqc8rfc1843j7lcmfka2023z9k0js4ygh1m8kilc2nrr7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/undergradmath")
+    (synopsis "LaTeX Math for undergraduates cheat sheet")
+    (description
+     "This is a cheat sheet for writing mathematics with LaTeX.  It is aimed
+at US undergraduates.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-underscore
   (package
     (name "texlive-underscore")
