@@ -5167,6 +5167,28 @@ business of book design.  It is an extended version of what used to be the
 first part of the @code{memoir} users manual.")
     (license license:lppl1.3+)))
 
+(define-public texlive-memoirchapterstyles
+  (package
+    (name "texlive-memoirchapterstyles")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/memoirchapterstyles/")
+             (base32
+              "0jxd7sbh5vc3j5d5jd3zmyg58kwhy550l5z8q14b4msm00fp6z0a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/memoirchapterstyles")
+    (synopsis "Chapter styles in @code{memoir} class")
+    (description
+     "This package provides a showcase of chapter styles available to users of
+@code{memoir}: the six provided in the class itself, plus many from
+elsewhere (by the present author and others).  The package's resources apply
+only to @code{memoir}, but the package draws from a number of sources relating
+to standard classes, including the @code{fncychap} package, and Vincent
+Zoonekynd's tutorial on headings.")
+    (license license:lppl)))
+
 (define-public texlive-memorygraphs
   (package
     (name "texlive-memorygraphs")
