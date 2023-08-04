@@ -4261,6 +4261,23 @@ existing SIunits set.")
 when using for open intervals.")
     (license license:lppl1.3+)))
 
+(define-public texlive-impatient
+  (package
+    (name "texlive-impatient")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/impatient/")
+             (base32
+              "03cjl3lg7k7p4h8drw7vcbw6ymgmm2clv6sgfs3hdixs8dmab1b2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/impatient")
+    (synopsis "@emph{TeX for the Impatient} book")
+    (description
+     "@emph{TeX for the Impatient} is a book on TeX, Plain TeX and Eplain.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-includernw
   (package
     (name "texlive-includernw")
