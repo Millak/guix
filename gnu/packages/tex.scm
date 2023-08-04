@@ -25414,6 +25414,25 @@ according to the natural width of the widest cell in the column.")
 in LaTeX, and thus mainly about BibTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tds
+  (package
+    (name "texlive-tds")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tds/" "doc/info/tds.info")
+             (base32
+              "04lhavbayyisxxqfm1vpfq38xx1xwkn136hdnjaa3szky2xyn3yh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tds")
+    (synopsis "TeX Directory Structure standard")
+    (description
+     "This package defines a structure for placement of TeX-related files on
+an hierarchical file system, in a way that is well-defined, and is readily
+implementable.")
+    (license license:fdl1.1+)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
