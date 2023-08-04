@@ -7671,6 +7671,27 @@ Books included are:
 @end itemize")
     (license license:fdl1.3+)))
 
+(define-public texlive-docsurvey
+  (package
+    (name "texlive-docsurvey")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/docsurvey/")
+             (base32
+              "0f2kzmmpm7qwci04krmnz5impfwwmy2wwanmgq05878w8xbcqjj6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/docsurvey")
+    (synopsis "Survey of LaTeX documentation")
+    (description
+     "This package provides a survey of programming-related documentation for
+LaTeX.  Included are references to printed and electronic books and manuals,
+symbol lists, FAQs, the LaTeX source code, CTAN and distributions,
+programming-related packages, users groups and online communities, and
+information on creating packages and documentation.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dtl
   (package
     (name "texlive-dtl")
