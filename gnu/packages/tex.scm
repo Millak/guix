@@ -20701,6 +20701,27 @@ in Babel, including Slovak variants of LaTeX built-in-names.  Shortcuts are
 also defined.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-slovenian
+  (package
+    (name "texlive-babel-slovenian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-slovenian/"
+                   "source/generic/babel-slovenian/"
+                   "tex/generic/babel-slovenian/")
+             (base32
+              "08bf1732vsa148km0vkfj6k1cg3j3yrhkzsvnhv283bbr1wqprz6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-slovenian")
+    (synopsis "Babel support for typesetting Slovenian")
+    (description
+     "The package provides the language definition file for support of
+Slovenian in Babel.  Several shortcuts are defined, as well as translations to
+Slovenian of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-spanish
   (package
     (name "texlive-babel-spanish")
