@@ -4957,6 +4957,24 @@ LaTeX2e}.}")
 Introduction to LaTeX2e}.")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-estonian
+  (package
+    (name "texlive-lshort-estonian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-estonian/")
+             (base32
+              "0dfwp7kkynpskb345i3yz7h5pvc8iljqg3q6l546vrwla0bmb95c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-estonian")
+    (synopsis "Estonian introduction to LaTeX")
+    (description
+     "This is the Estonian translation of @emph{(No So) Short Introduction to
+LaTeX2e}.")
+    (license license:gpl2)))
+
 (define-public texlive-lshort-english
   (package
     (name "texlive-lshort-english")
