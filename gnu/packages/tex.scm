@@ -23571,6 +23571,25 @@ definition, or to define space-stripped macros.")
 and books created by Edward Tufte.")
     (license license:asl2.0)))
 
+(define-public texlive-turkmen
+  (package
+    (name "texlive-turkmen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/turkmen/" "source/latex/turkmen/"
+                   "tex/latex/turkmen/")
+             (base32
+              "0jgz9vkqpp853pxvhknafrwpl41h04j7fr1gfjrzqzcrdq7d855i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/turkmen")
+    (synopsis "Babel support for Turkmen")
+    (description
+     "The package provides support for Turkmen in Babel, but integration with
+Babel is not available.")
+    (license license:lppl)))
+
 (define-public texlive-ucharclasses
   (package
     (name "texlive-ucharclasses")
