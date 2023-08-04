@@ -25509,6 +25509,24 @@ LaTeX (and its friends like ConTeXt, MetaPost, Metafont, etc.) using
 DocBook/XML source format.")
     (license license:fdl1.2+)))
 
+(define-public texlive-tex-vpat
+  (package
+    (name "texlive-tex-vpat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tex-vpat/")
+             (base32
+              "16nfvhzzg46vk6pqli6spxq9y9r0manqd5b7b4k6r9lssdqxf8ld")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-vpat")
+    (synopsis "TeX accessibility conformance report")
+    (description
+     "This package provides the TeX accessibility conformance report based on
+ITI VPAT(R) guidelines.")
+    (license license:cc-by3.0)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
