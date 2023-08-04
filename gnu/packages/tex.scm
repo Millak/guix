@@ -25669,6 +25669,25 @@ LaTeX Companion} book, together with necessary supporting files.")
 necessary supporting files.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tlmgrbasics
+  (package
+    (name "texlive-tlmgrbasics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/tlmgrbasics/")
+             (base32
+              "0zychfw7zvx7pj8zp89zg0rjablm8p6ja2nibbdbgvan0gfc1m97")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tlmgrbasics")
+    (synopsis "Simplified documentation for @command{tlmgr}")
+    (description
+     "This package provides simplified documentation for @command{tlmgr}, the
+TeX Live manager.  It describes the most commonly-used actions and options in
+a convenient format.")
+    (license license:gpl2+)))
+
 (define-public texlive-txfonts
   (package
     (name "texlive-txfonts")
