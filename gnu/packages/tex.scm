@@ -4615,6 +4615,26 @@ using TikZ.  Though similar to the @code{karnaugh} macros, it provides
 a key-value system to customize Karnaugh maps and a proper LaTeX package.")
     (license license:lppl1.2+)))
 
+(define-public texlive-kaytannollista-latexia
+  (package
+    (name "texlive-kaytannollista-latexia")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kaytannollista-latexia/")
+             (base32
+              "12ysr2501m77zjljpi30cxw45drn2hw552yk9asksvrbvavjphm0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kaytannollista-latexia")
+    (synopsis "Practical manual for LaTeX (Finnish)")
+    (description
+     "@emph{Kaytannollista Latexia} is a practical manual for LaTeX written in
+the Finnish language.  The manual covers most of the topics that a typical
+document author needs.  So it can be a useful guide for beginners as well as
+a reference manual for advanced users.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-knuth-errata
   (package
     (name "texlive-knuth-errata")
