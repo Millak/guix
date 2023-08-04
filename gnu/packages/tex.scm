@@ -20212,6 +20212,26 @@ rules of its own; this package provides an appropriate selection of French and
 British typographic rules.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-croatian
+  (package
+    (name "texlive-babel-croatian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-croatian/"
+                   "source/generic/babel-croatian/"
+                   "tex/generic/babel-croatian/")
+             (base32
+              "1r3cccrc2i57sza8qc24hxm2p6igvhbkr8a6lnsrcrhbji2smi07")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-croatian")
+    (synopsis "Babel contributed support for Croatian")
+    (description
+     "The package establishes Croatian conventions in a document (or a subset
+of the conventions, if Croatian is not the main language of the document).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-english
   (package
     (name "texlive-babel-english")
