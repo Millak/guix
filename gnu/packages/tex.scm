@@ -20384,6 +20384,27 @@ Icelandic in Babel.  Some shortcuts are defined, as well as translations to
 Icelandic of standard LaTeX names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-irish
+  (package
+    (name "texlive-babel-irish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-irish/"
+                   "source/generic/babel-irish/"
+                   "tex/generic/babel-irish/")
+             (base32
+              "0j78inzjbv653gla11g3rzmn0b5fvzbkmppmhbgq9qi8102p7k55")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-irish")
+    (synopsis "Babel support for Irish")
+    (description
+     "The package provides the language definition file for support of Irish
+Gaelic in Babel.  The principal content is translations to Irish of standard
+LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-italian
   (package
     (name "texlive-babel-italian")
