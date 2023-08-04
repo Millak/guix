@@ -20171,6 +20171,26 @@ Babel system).")
     (description "The package establishes Basque conventions in a document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-bosnian
+  (package
+    (name "texlive-babel-bosnian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-bosnian/"
+                   "source/generic/babel-bosnian/"
+                   "tex/generic/babel-bosnian/")
+             (base32
+              "097j3cwq29x17hc6wbdj2m4h7m2yv47i1m2irqxkrjvywq0b5bqd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-bosnian")
+    (synopsis "Babel contrib support for Bosnian")
+    (description
+     "The package provides a language definition file that enables support of
+Bosnian with Babel.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-english
   (package
     (name "texlive-babel-english")
