@@ -20762,6 +20762,25 @@ provided for those who wish to typeset Spanish as written in Mexico.")
      "The package provides the language definition file for Swedish.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-turkish
+  (package
+    (name "texlive-babel-turkish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-turkish/"
+                   "source/generic/babel-turkish/"
+                   "tex/generic/babel-turkish/")
+             (base32
+              "0q88q0kfa4jjd4m51mvj798scxr5c5l7bjp9sfv8s5pq3ym19bq0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-turkish")
+    (synopsis "Babel support for Turkish documents")
+    (description
+     "The package provides support, within Babel, of the Turkish language.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cyrillic-bin
   (package
     (name "texlive-cyrillic-bin")
