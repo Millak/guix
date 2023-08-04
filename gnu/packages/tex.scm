@@ -22456,6 +22456,24 @@ technical report, in XeLaTeX.  This simple template that can be further
 customized or extended, with numerous examples.")
     (license license:public-domain)))
 
+(define-public texlive-simplified-latex
+  (package
+    (name "texlive-simplified-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simplified-latex/")
+             (base32
+              "1cgf1p7p2ikda1nb0c2vhhx7ai6rd973pz6a00pr9yanxsvghp6d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simplified-latex")
+    (synopsis "Simplified introduction to LaTeX")
+    (description
+     "This package provides an accessible introduction to LaTeX for the
+beginner.")
+    (license license:lppl)))
+
 (define-public texlive-slideshow
   (package
     (name "texlive-slideshow")
