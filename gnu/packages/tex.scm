@@ -14669,6 +14669,29 @@ steps can be customized in various ways.")
 example to be used in educational material.")
     (license license:lppl1.3+)))
 
+(define-public texlive-rojud
+  (package
+    (name "texlive-rojud")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/rojud/" "fonts/map/dvips/rojud/"
+                   "fonts/tfm/public/rojud/"
+                   "fonts/type1/public/rojud/"
+                   "tex/latex/rojud/")
+             (base32
+              "0vq5m755wa5j9y072gmyf7pl7cisxh029b5j8rm46kqllfpaz4zj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rojud")
+    (synopsis "Font with the images of the counties of Romania")
+    (description
+     "This package provides a Type 1 font with images of the 42 counties of Romania,
+constructed using a general method which is described in detail in the
+documentation.  The package name is an abbreviation of @emph{judetele
+Romaniei} (i.e., counties of Romania).")
+    (license license:lppl)))
+
 (define-public texlive-rviewport
   (package
     (name "texlive-rviewport")
