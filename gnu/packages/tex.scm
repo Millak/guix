@@ -20592,6 +20592,27 @@ Portuguese and Brazilian Portuguese in Babel.  Some shortcuts are defined, as
 well as translations to Portuguese of standard LaTeX names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-romanian
+  (package
+    (name "texlive-babel-romanian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-romanian/"
+                   "source/generic/babel-romanian/"
+                   "tex/generic/babel-romanian/")
+             (base32
+              "0yyzcw7pm0b7fmxwn3j677g066dlmkmpa1flrivkqzbcn4mykwir")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-romanian")
+    (synopsis "Babel support for Romanian")
+    (description
+     "The package provides the language definition file for support of
+Romanian in Babel.  Translations to Romanian of standard LaTeX names are
+provided.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-slovak
   (package
     (name "texlive-babel-slovak")
