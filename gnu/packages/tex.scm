@@ -13808,6 +13808,25 @@ modifies @code{\\plot} to use a rule instead of dots if the line segment is
 horizontal or vertical.")
     (license license:lppl)))
 
+(define-public texlive-pictexsum
+  (package
+    (name "texlive-pictexsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pictexsum/")
+             (base32
+              "00yd0945qiss5jizkxncg8a9bdsld7mkhaipi92bbn1ghqicsw5a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pictexsum")
+    (synopsis "Summary of PicTeX commands")
+    (description
+     "The document summarises the commands of PicTeX.  While it is no
+substitute for the PicTeX manual itself, the document is a useful aide-memoire
+for those who have read the manual.")
+    (license license:bsd-2)))
+
 (define-public texlive-pinlabel
   (package
     (name "texlive-pinlabel")
