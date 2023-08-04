@@ -4043,6 +4043,24 @@ Currently two steps of symmetry reduction are supported.")
 processed files, as well as solutions to the exercices.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-happy4th
+  (package
+    (name "texlive-happy4th")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/happy4th/")
+             (base32
+              "1x950scxbvcgwycpakflpklc775pknjab620g099dnsfrpb76f4a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/happy4th")
+    (synopsis "Firework display in obfuscated TeX")
+    (description
+     "The output PDF file gives an amusing display, as the reader pages
+through it.")
+    (license license:public-domain)))
+
 (define-public texlive-helmholtz-ellis-ji-notation
   (package
     (name "texlive-helmholtz-ellis-ji-notation")
