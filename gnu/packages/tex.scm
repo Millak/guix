@@ -1969,6 +1969,24 @@ issues of numbers in Basque.")
 @emph{Begriffschrift}.")
     (license license:gpl3+)))
 
+(define-public texlive-bib-fr
+  (package
+    (name "texlive-bib-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/bib-fr/" "doc/bibtex/bib-fr/")
+             (base32
+              "11af1p52vr16l5gf69ql2zz0328yqd75nbcvik7b0g05pbqc12nv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bib-fr")
+    (synopsis "French translation of classical BibTeX styles")
+    (description
+     "These files are French translations of the classical BibTeX style
+files.")
+    (license license:lppl)))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
