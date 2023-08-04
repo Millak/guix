@@ -6908,6 +6908,26 @@ settings.")
     (description "This package provides MetaPost macros for Venn diagrams.")
     (license license:lppl)))
 
+(define-public texlive-vlna
+  (package
+    (name "texlive-vlna")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/vlna.1"
+                   "doc/man/man1/vlna.man1.pdf" "doc/vlna/")
+             (base32
+              "0nfb7mj6y9d4n89z59ppi96grfylwky97mxcv9rjflr5kpqlpga2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vlna")
+    (synopsis "Add @samp{~} after non-syllabic preposition, for Czech/Slovak")
+    (description
+     "This package provides a preprocessor for TeX source implementing the
+Czech/Slovak typographical rule forbidding a non-syllabic preposition alone at
+the end of a line.")
+    (license license:knuth)))
+
 (define-public texlive-witharrows
   (package
     (name "texlive-witharrows")
