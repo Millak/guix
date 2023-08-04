@@ -25396,6 +25396,24 @@ according to the natural width of the widest cell in the column.")
 
 (define-deprecated-package texlive-latex-tabulary texlive-tabulary)
 
+(define-public texlive-tamethebeast
+  (package
+    (name "texlive-tamethebeast")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/bibtex/tamethebeast/")
+             (base32
+              "13shw7hcimckn7pp8pj0cr1zsi1wq6r400x1v6akpmwwjxkw09g5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tamethebeast")
+    (synopsis "Manual about bibliographies and especially BibTeX")
+    (description
+     "This package is an as complete as possible manual about bibliographies
+in LaTeX, and thus mainly about BibTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
