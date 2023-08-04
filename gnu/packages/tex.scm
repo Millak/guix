@@ -11783,6 +11783,57 @@ Bulletin (@emph{Zpravodaj Ceskoslovenskeho sdruzeni uzivatelu TeXu}).  You can
 see the structure of a document by looking at the source file of the manual.")
     (license license:lppl1.3c)))
 
+(define-public texlive-cslatex
+  (package
+    (name "texlive-cslatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/cslatex.1"
+                   "doc/man/man1/cslatex.man1.pdf"
+                   "doc/man/man1/pdfcslatex.1"
+                   "doc/man/man1/pdfcslatex.man1.pdf"
+                   "source/cslatex/base/"
+                   "source/cslatex/cspsfonts/"
+                   "tex/cslatex/base/"
+                   "tex/cslatex/cspsfonts/")
+             (base32
+              "1px1b4zicvdzs5br22c8ksna7imb9m7bv9c3q55a705cqfawd97h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:create-formats #~(list "cslatex" "pdfcslatex")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            ;; This phase is necessary because the build phase is reluctant to
+            ;; generate "hyphen.cfg" since there is another one among the
+            ;; inputs already.
+            (lambda _
+              (substitute* "source/cslatex/base/cslatex.ins"
+                (("\\keepsilent\n" all)
+                 (string-append all "\\askforoverwritefalse\n"))))))))
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-cm
+           texlive-csplain
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyphen-base
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/cslatex")
+    (synopsis "LaTeX support for Czech/Slovak typesetting")
+    (description
+     "This package provides LaTeX support for Czech and Slovak typesetting.")
+    (license license:gpl3+)))
+
 (define-public texlive-cweb
   (package
     (name "texlive-cweb")
