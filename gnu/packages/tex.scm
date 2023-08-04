@@ -8351,6 +8351,28 @@ Math mode always uses CM fonts.  A command for producing doubled-spaced
 documents is also provided.")
     (license license:lppl)))
 
+(define-public texlive-fontinstallationguide
+  (package
+    (name "texlive-fontinstallationguide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fontinstallationguide/")
+             (base32
+              "1i6im0nckcr9fzs0kc54dvcj3jvjz2j8jd55xgjm0r569qjj1hi5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontinstallationguide")
+    (synopsis "Font installation guide")
+    (description
+     "This guide discusses the most common scenarios you are likely to
+encounter when installing Type 1 PostScript fonts.  While the individual tools
+employed in the installation process are documented well, the actual
+difficulty most users are facing when trying to install new fonts is
+understanding how to put all the pieces together.  This is what this guide is
+about.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-fontools
   (package
     (name "texlive-fontools")
