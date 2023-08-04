@@ -4289,6 +4289,27 @@ adds a collection of useful @acronym{HEP, High Energy Physics} units to the
 existing SIunits set.")
     (license license:lppl)))
 
+(define-public texlive-hrlatex
+  (package
+    (name "texlive-hrlatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hrlatex/" "source/latex/hrlatex/"
+                   "tex/latex/hrlatex/")
+             (base32
+              "16npkf18gy8clwkzvm0qysfv90wb6979cppj5rykn1x0icsvw2ix")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hrlatex")
+    (synopsis "LaTeX support for Croatian documents")
+    (description
+     "This package simplifies creation of new documents for the (average)
+Croatian user.  As an example, a class file @code{hrdipl.cls} (designed for
+the graduation thesis at the University of Zagreb) and sample thesis documents
+are included.")
+    (license license:lppl)))
+
 (define-public texlive-ibrackets
   (package
     (name "texlive-ibrackets")
