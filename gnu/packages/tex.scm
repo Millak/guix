@@ -11834,6 +11834,23 @@ see the structure of a document by looking at the source file of the manual.")
      "This package provides LaTeX support for Czech and Slovak typesetting.")
     (license license:gpl3+)))
 
+(define-public texlive-cstex
+  (package
+    (name "texlive-cstex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/cstex/")
+             (base32
+              "1vsbq9a31ymvrj0bx48n93chyqmma3q7b49k7dmhb0hkic6h73aj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cstex")
+    (synopsis "Support for Czech/Slovak languages")
+    (description
+     "CSTeX is a Czech and Slovak languages distribution of Plain and LaTeX.")
+    (license license:gpl2)))
+
 (define-public texlive-cweb
   (package
     (name "texlive-cweb")
