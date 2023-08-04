@@ -5772,6 +5772,24 @@ customized by means of different @code{\\pascal} macro options or the
 @code{\\pascalset} macro.")
     (license license:lppl1.3c)))
 
+(define-public texlive-patgen2-tutorial
+  (package
+    (name "texlive-patgen2-tutorial")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/patgen2-tutorial/")
+             (base32
+              "016bx1rp8kpvlywg0yafhbbhlzw4zxdcbdrd5525vffn6fyp9fi3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/patgen2-tutorial")
+    (synopsis "Tutorial on the use of Patgen 2")
+    (description
+     "This document describes the use of Patgen 2 to create hyphenation
+patterns for wide ranges of languages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-perfectcut
   (package
     (name "texlive-perfectcut")
