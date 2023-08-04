@@ -1478,6 +1478,29 @@ provides information about the structure of and interaction between the
 various components.")
     (license license:lppl1.3c)))
 
+(define-public texlive-amslatex-primer
+  (package
+    (name "texlive-amslatex-primer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amslatex-primer/")
+             (base32
+              "1kzayyh1bycmq43s2xn81jf05r18azidbk3gv6igf2vaq37fmxil")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amslatex-primer")
+    (synopsis "Getting up and running with AMS-LaTeX")
+    (description
+     "The document aims to get you up and running with AMS-LaTeX as quickly as
+possible.  These instructions are not a substitute for the full documentation,
+but they may get you started quickly enough so that you will only need to
+refer to the main documentation occasionally.  In addition to AMS-LaTeX out of
+the box, the document contains a section describing how to draw commutative
+diagrams using Xy-pic and a section describing how to use @code{amsrefs} to
+create a bibliography.")
+    (license license:lppl)))
+
 (define-public texlive-amstex
   (package
     (name "texlive-amstex")
