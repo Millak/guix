@@ -25632,6 +25632,24 @@ based on a range of published books and theses, together with the LaTeX code
 used to create them.")
     (license license:lppl)))
 
+(define-public texlive-tlc2
+  (package
+    (name "texlive-tlc2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tlc2/")
+             (base32
+              "1ysb233rjb8gpl9s35qql1dny5rj6fn8ssy2dqdqsn5xj9pdasyy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tlc2-examples")
+    (synopsis "Examples from @emph{The LaTeX Companion}, second edition")
+    (description
+     "This package provides the source of the examples printed in @emph{The
+LaTeX Companion} book, together with necessary supporting files.")
+    (license license:lppl)))
+
 (define-public texlive-txfonts
   (package
     (name "texlive-txfonts")
