@@ -4995,6 +4995,24 @@ be updated.  This translation has, in its turn, been translated into several
 other languages; see the @code{lshort} catalogue entry for the current list.")
     (license license:gpl2)))
 
+(define-public texlive-lshort-finnish
+  (package
+    (name "texlive-lshort-finnish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-finnish/")
+             (base32
+              "06madlm869kmwxprmy2c78ma4s8zk8mclzmd4xdl0r4mlhk4vdsl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-finnish")
+    (synopsis "Finnish introduction to LaTeX")
+    (description
+     "This is the Finnish translation of @emph{(No So) Short Introduction to
+LaTeX2e}, with added coverage of Finnish typesetting rules.")
+    (license license:public-domain)))
+
 (define-public texlive-lshort-slovak
   (package
     (name "texlive-lshort-slovak")
