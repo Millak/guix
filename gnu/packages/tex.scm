@@ -5148,6 +5148,25 @@ to languages and computational complexity usually needed for Membrane
 Computing research.")
     (license license:lppl1.3+)))
 
+(define-public texlive-memdesign
+  (package
+    (name "texlive-memdesign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/memdesign/")
+             (base32
+              "0aij1b7l1kb2x44qn33m39k0kbhdrclmr25nmvzfn6yw42lh9fz7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/memdesign")
+    (synopsis "Notes on book design")
+    (description
+     "@emph{A Few Notes on Book Design} provides an introduction to the
+business of book design.  It is an extended version of what used to be the
+first part of the @code{memoir} users manual.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-memorygraphs
   (package
     (name "texlive-memorygraphs")
