@@ -8578,6 +8578,22 @@ area.")
     ;; file, without limitation."
     (license (license:fsf-free "file://doc/plain/figflow/README"))))
 
+(define-public texlive-finbib
+  (package
+    (name "texlive-finbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/finbib/")
+             (base32
+              "1dr1ivhfb83ky3q82dzzv5vvc8bl84iq7am0p1rc8fjlbj95i4wm")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/finplain")
+    (synopsis "Finnish version of @file{plain.bst}")
+    (description "This package provides a Finnish version of
+@file{plain.bst}.")
+    (license license:knuth)))
+
 (define-public texlive-findhyph
   (package
     (name "texlive-findhyph")
