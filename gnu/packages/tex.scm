@@ -3992,6 +3992,25 @@ package.  Its main features are:
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-gloss-occitan
+  (package
+    (name "texlive-gloss-occitan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gloss-occitan/"
+                   "source/latex/gloss-occitan/")
+             (base32
+              "0h9w7gk7klwhackx30c7wa2xv23jy2r75zvgs22crhv40h8blj3f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gloss-occitan")
+    (synopsis "Polyglossia support for Occitan")
+    (description
+     "This package provides Occitan language description file for
+Polyglossia.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gotoh
   (package
     (name "texlive-gotoh")
