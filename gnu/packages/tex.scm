@@ -1622,6 +1622,24 @@ makes the compileable source code as well as the compiled PDF file accessible
 to everyone.")
     (license license:lppl1.2+)))
 
+(define-public texlive-apprends-latex
+  (package
+    (name "texlive-apprends-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/apprends-latex/")
+             (base32
+              "1xzy7svb2xz6bdfg0f1r3whwda118pl7qdwygx1l7h4d1vqm2rcq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apprends-latex")
+    (synopsis "@emph{Apprends LaTeX!} book")
+    (description
+     "@emph{Apprends LaTeX!} (``Learn LaTeX'', in English) is French
+documentation for LaTeX beginners.")
+    (license license:lppl)))
+
 (define-public texlive-apxproof
   (package
     (name "texlive-apxproof")
