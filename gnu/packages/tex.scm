@@ -4310,6 +4310,26 @@ the graduation thesis at the University of Zagreb) and sample thesis documents
 are included.")
     (license license:lppl)))
 
+(define-public texlive-huaz
+  (package
+    (name "texlive-huaz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/huaz/" "tex/latex/huaz/")
+             (base32
+              "103wnzw8401d1ckc31y6ga75bph0ls71hxs0hdkszw719ghm7vjr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/huaz")
+    (synopsis "Automatic Hungarian definite articles")
+    (description
+     "In Hungarian there are two definite articles, @samp{a} and @samp{az},
+which are determined by the pronunciation of the subsequent word.  The
+@code{huaz} package helps the user to insert automatically the correct
+definite article for cross-references and other commands containing text.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ibrackets
   (package
     (name "texlive-ibrackets")
