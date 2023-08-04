@@ -25490,6 +25490,25 @@ gives a summary of plain TeX macros.")
 the macro packages LaTeX and ConTeXt.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tex-refs
+  (package
+    (name "texlive-tex-refs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tex-refs/")
+             (base32
+              "1w7hcd3qsdhmb2siakjg2hm3h6kxa90ncsaif9spr4xkxs03ib6l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-references")
+    (synopsis "References for TeX and Friends")
+    (description
+     "This is an ongoing project with the aim of providing a help file for
+LaTeX (and its friends like ConTeXt, MetaPost, Metafont, etc.) using
+DocBook/XML source format.")
+    (license license:fdl1.2+)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
