@@ -18435,6 +18435,26 @@ version is provided in legal format.")
 LaTeX Web Companion} book, together with necessary supporting files.")
     (license license:lppl)))
 
+(define-public texlive-latex2e-help-texinfo
+  (package
+    (name "texlive-latex2e-help-texinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/latex2e.info"
+                   "doc/latex/latex2e-help-texinfo/")
+             (base32
+              "0rk69n89hl67qfbi5mmb4msaibychsk9a83dx593170ayiir6s6g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex2e-help-texinfo")
+    (synopsis "Unofficial reference manual covering LaTeX2e")
+    (description
+     "This is an unofficial reference manual for LaTeX.  It is provided as
+Texinfo source.  This is a collaborative development, and details of getting
+involved are to be found on the package home page.")
+    (license license:fdl1.1+)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
