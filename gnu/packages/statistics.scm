@@ -2234,6 +2234,32 @@ modeling focusing on advanced Markov chain Monte Carlo (MCMC) and variational
 inference (VI) algorithms.")
     (license license:asl2.0)))
 
+(define-public python-chaospy
+  (package
+    (name "python-chaospy")
+    (version "4.3.13")
+    (source (origin ;; PyPI misses Pytest fixtures.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jonathf/chaospy")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bn4jmwygs5h0dskbniivj20qblgm75pyi9hcjf47r25kawd730m"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata python-numpoly
+                             python-numpy python-scipy))
+    (native-inputs (list python-pytest python-scikit-learn))
+    (home-page "https://chaospy.readthedocs.io/en/master/")
+    (synopsis "Numerical tool for performing uncertainty quantification")
+    (description "Chaospy is a numerical toolbox for performing uncertainty
+quantification using polynomial chaos expansions, advanced Monte Carlo
+methods implemented in Python.  It also include a full suite of tools for
+doing low-discrepancy sampling, quadrature creation, polynomial manipulations,
+and a lot more.")
+    (license license:expat)))
+
 (define-public python-patsy
   (package
     (name "python-patsy")
