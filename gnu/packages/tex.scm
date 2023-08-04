@@ -4939,6 +4939,24 @@ Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
 LaTeX2e}.}")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-dutch
+  (package
+    (name "texlive-lshort-dutch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-dutch/")
+             (base32
+              "160r060gmw6f6lgbnyvfxafjpqvyr4jwd56ddkjfm3ir2bfl973d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-dutch")
+    (synopsis "Introduction to LaTeX in Dutch")
+    (description
+     "This is the Dutch (Nederlands) translation of the @emph{(No So) Short
+Introduction to LaTeX2e}.")
+    (license license:gpl3+)))
+
 (define-public texlive-lshort-english
   (package
     (name "texlive-lshort-english")
