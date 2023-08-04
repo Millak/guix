@@ -20635,6 +20635,30 @@ provided.")
 Romansh either with Babel or with Polyglossia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-samin
+  (package
+    (name "texlive-babel-samin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-samin/"
+                   "source/generic/babel-samin/"
+                   "tex/generic/babel-samin/")
+             (base32
+              "17ackyknv665jzcd9ywf54lnmdnl1qgnhdlwybwsjj6m86y71mjl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-samin")
+    (synopsis "Babel support for Samin")
+    (description
+     "The package provides the language definition file for support of North
+Sami in Babel.  Several Sami dialects/languages are spoken in Finland, Norway,
+Sweden and on the Kola Peninsula of Russia.  Not all use the same alphabet,
+and no attempt is made to support any other than North Sami here.  Some
+shortcuts are defined, as well as translations to Norsk of standard LaTeX
+names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-slovak
   (package
     (name "texlive-babel-slovak")
