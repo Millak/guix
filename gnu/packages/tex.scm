@@ -1929,6 +1929,28 @@ are written in Basque.  The class is useful for writing books, PhD and Master
 Theses, etc., in Basque.")
     (license license:lppl1.2+)))
 
+(define-public texlive-basque-date
+  (package
+    (name "texlive-basque-date")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/basque-date/"
+                   "source/latex/basque-date/"
+                   "tex/latex/basque-date/")
+             (base32
+              "0n1nc2nrwl3ajk1n7xbnf49mvg8dlqlyndsyywgs46dnv55b7gs5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/basque-date")
+    (synopsis "Print the date in Basque")
+    (description
+     "The package provides two LaTeX commands to print the current date in
+Basque according to the correct forms ruled by The Basque Language Academy
+(Euskaltzaindia).  The commands automatically solve the complex declination
+issues of numbers in Basque.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-begriff
   (package
     (name "texlive-begriff")
