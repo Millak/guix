@@ -4520,6 +4520,35 @@ Typesetting series of books, for the Computer Modern fonts, and for TeX,
 Metafont and related programs.")
     (license license:knuth)))
 
+(define-public texlive-knuth-hint
+  (package
+    (name "texlive-knuth-hint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/knuth-hint/")
+             (base32
+              "13ka3b636vwgwz29bl9mh40incldq6mk6cr6q3by01xj12za41kw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/knuth-hint")
+    (synopsis "HINT collection of typeset C/WEB sources in TeX Live")
+    (description
+     "The @code{knuth-hint} package contains the large collection of HINT
+documents for many of the CWEB amd WEB sources of programs in the TeX Live
+distribution (and, for technical reasons, PDF documents for CTWILL and XeTeX).
+Each program is presented in its original form as written by the respective
+authors, and in the changed form as used in TeX Live.  Care has been taken to
+keep the section numbering intact, so that you can study the codes and the
+changes in parallel.
+
+Also included are the errata for Donald Knuth's @emph{Computers &
+Typesetting}.  HINT is the dynamic document format created by Martin Ruckert's
+HiTeX engine.  The HINT files can be viewed with the @code{hintview}
+application.  The @code{knuth-hint} package is a showcase of HiTeX's
+capabilities.")
+    (license (list license:public-domain license:knuth))))
+
 (define-public texlive-kvmap
   (package
     (name "texlive-kvmap")
