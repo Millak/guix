@@ -20781,6 +20781,25 @@ provided for those who wish to typeset Spanish as written in Mexico.")
      "The package provides support, within Babel, of the Turkish language.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-welsh
+  (package
+    (name "texlive-babel-welsh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-welsh/"
+                   "source/generic/babel-welsh/"
+                   "tex/generic/babel-welsh/")
+             (base32
+              "0qba526ralldh4y6w0pzdw2vb2ng31mw416qzn0zzjp8sppc3hyw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-welsh")
+    (synopsis "Babel support for Welsh")
+    (description
+     "The package provides the language definition file for Welsh.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cyrillic-bin
   (package
     (name "texlive-cyrillic-bin")
