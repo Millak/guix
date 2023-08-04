@@ -20191,6 +20191,27 @@ Babel system).")
 Bosnian with Babel.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-breton
+  (package
+    (name "texlive-babel-breton")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-breton/"
+                   "source/generic/babel-breton/"
+                   "tex/generic/babel-breton/")
+             (base32
+              "0hvb2qjin8jx4lmw3w2y04jnnnc6w0033kjhgflfyp309dmvhzhl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-breton")
+    (synopsis "Babel contributed support for Breton")
+    (description
+     "Breton (being, principally, a spoken language) does not have typographic
+rules of its own; this package provides an appropriate selection of French and
+British typographic rules.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-english
   (package
     (name "texlive-babel-english")
