@@ -1987,6 +1987,26 @@ issues of numbers in Basque.")
 files.")
     (license license:lppl)))
 
+(define-public texlive-bibleref-french
+  (package
+    (name "texlive-bibleref-french")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibleref-french/"
+                   "source/latex/bibleref-french/"
+                   "tex/latex/bibleref-french/")
+             (base32
+              "12y9xdsz0swh3rndmzk7ch9fbszbhcp0ixb21jyy36xnb3x80wa5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibleref-french")
+    (synopsis "French translations for @code{bibleref}")
+    (description
+     "The package provides translations and alternative typesetting
+conventions for use of @code{bibleref} in French.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
