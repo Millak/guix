@@ -31239,6 +31239,90 @@ for manipulation of PostScript and other image formats.")
      "This collection of packages provides support for Czech and Slovak.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langenglish
+  (package
+    (name "texlive-collection-langenglish")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-amiweb2c-guide
+           texlive-amscls-doc
+           texlive-amslatex-primer
+           texlive-around-the-bend
+           texlive-ascii-chart
+           texlive-biblatex-cheatsheet
+           texlive-collection-basic
+           texlive-components
+           texlive-comprehensive
+           texlive-dickimaw
+           texlive-docsurvey
+           texlive-dtxtut
+           texlive-first-latex-doc
+           texlive-fontinstallationguide
+           texlive-forest-quickstart
+           texlive-gentle
+           texlive-guide-to-latex
+           texlive-happy4th
+           texlive-hyphen-complete
+           texlive-impatient
+           texlive-intro-scientific
+           texlive-knuth-errata
+           texlive-knuth-hint
+           texlive-knuth-pdf
+           texlive-l2tabu-english
+           texlive-latex-brochure
+           texlive-latex-course
+           texlive-latex-doc-ptr
+           texlive-latex-for-undergraduates
+           texlive-latex-graphics-companion
+           texlive-latex-refsheet
+           texlive-latex-veryshortguide
+           texlive-latex-web-companion
+           texlive-latex2e-help-texinfo
+           texlive-latex4wp
+           texlive-latexcheat
+           texlive-latexcourse-rug
+           texlive-latexfileinfo-pkgs
+           texlive-lshort-english
+           texlive-macros2e
+           texlive-math-into-latex-4
+           texlive-maths-symbols
+           texlive-memdesign
+           texlive-memoirchapterstyles
+           texlive-metafont-beginners
+           texlive-metapost-examples
+           texlive-patgen2-tutorial
+           texlive-pictexsum
+           texlive-plain-doc
+           texlive-short-math-guide
+           texlive-simplified-latex
+           texlive-svg-inkscape
+           texlive-tamethebeast
+           texlive-tds
+           texlive-tex-font-errors-cheatsheet
+           texlive-tex-nutshell
+           texlive-tex-overview
+           texlive-tex-refs
+           texlive-tex-vpat
+           texlive-texbytopic
+           texlive-texonly
+           texlive-titlepages
+           texlive-tlc2
+           texlive-tlc3-examples
+           texlive-tlmgrbasics
+           texlive-undergradmath
+           texlive-visualfaq
+           ;; texlive-webguide XXX: No license?
+           texlive-xetexref
+           texlive-yet-another-guide-latex2e))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for, and documentation in, English")
+    (description
+     "These packages provide support for, and documentation in, English.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
