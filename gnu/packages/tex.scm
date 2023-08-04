@@ -23105,6 +23105,24 @@ texts), using XeTeX.  It enhances the existing support, in XeTeX, providing
 features that provide quality typesetting.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xetexref
+  (package
+    (name "texlive-xetexref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/xetexref/")
+             (base32
+              "0d6xwyd09rrmd0pjvrdha05l1qldppd2k7wcpyfb475pd9q05r5r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetexref")
+    (synopsis "Reference documentation of XeTeX")
+    (description
+     "The package comprises reference documentation for XeTeX detailing its
+extended features.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xevlna
   (package
     (name "texlive-xevlna")
