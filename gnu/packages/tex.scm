@@ -20470,6 +20470,26 @@ also defines several useful shorthands as well as some modifiers for
 typographical fine-tuning.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-latvian
+  (package
+    (name "texlive-babel-latvian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-latvian/"
+                   "source/generic/babel-latvian/"
+                   "tex/generic/babel-latvian/")
+             (base32
+              "1a605a9ksibxf8kbrqa2bmk24j9wmgzpz5f12jwcym02jm66sw82")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-latvian")
+    (synopsis "Babel support for Latvian")
+    (description
+     "The package provides the language definition file for support of Latvian
+in Babel.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-portuges
   (package
     (name "texlive-babel-portuges")
