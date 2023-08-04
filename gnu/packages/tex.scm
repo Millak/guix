@@ -2168,6 +2168,24 @@ convert atomic numbers to element symbols or element names and vice versa.")
 characters.")
     (license license:gpl3+)))
 
+(define-public texlive-booktabs-fr
+  (package
+    (name "texlive-booktabs-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/booktabs-fr/")
+             (base32
+              "1xkqh6r2q835xaa92b24fzf61jsm85280570hivvwnch96i4fnh3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/booktabs-fr")
+    (synopsis "French translation of @code{booktabs} documentation")
+    (description
+     "This package provides a French translation of @code{booktabs}
+documentation.")
+    (license license:lppl)))
+
 (define-public texlive-borceux
   (package
     (name "texlive-borceux")
