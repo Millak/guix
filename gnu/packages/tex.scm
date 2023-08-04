@@ -20363,6 +20363,27 @@ German.")
 Magyar (Hungarian) with Babel.")
     (license license:lppl)))
 
+(define-public texlive-babel-icelandic
+  (package
+    (name "texlive-babel-icelandic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-icelandic/"
+                   "source/generic/babel-icelandic/"
+                   "tex/generic/babel-icelandic/")
+             (base32
+              "1cz6q6mn34h19k1rd2c5pfw3s6allqcbsvm0pyriinnylpx9i44d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-icelandic")
+    (synopsis "Babel support for Icelandic")
+    (description
+     "The package provides the language definition file for support of
+Icelandic in Babel.  Some shortcuts are defined, as well as translations to
+Icelandic of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-italian
   (package
     (name "texlive-babel-italian")
