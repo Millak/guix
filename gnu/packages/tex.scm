@@ -4512,11 +4512,29 @@ Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/lshort-czech")
-    (synopsis "Czech translation of the @emph{Short Introduction to LaTeX2e}")
+    (synopsis "Czech translation to LaTeX")
     (description
      "This is the Czech translation of a @emph{(Not So) Short Introduction to
 LaTeX2e}.}")
     (license license:gpl3+)))
+
+(define-public texlive-lshort-slovak
+  (package
+    (name "texlive-lshort-slovak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-slovak/")
+             (base32
+              "0b5gn95i32dyn8r7v2cdcz759fllp3b0zwx17adjs282n06vfymq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-slovak")
+    (synopsis "Slovak introduction to LaTeX")
+    (description
+     "This package provides a Slovak translation of Oetiker's @emph{(Not So)
+Short Introduction to LaTeX2e}.")
+    (license license:lppl)))
 
 (define-public texlive-lstbayes
   (package
