@@ -29346,6 +29346,27 @@ not (yet) be used with other packages, since the implementation might
 change.")
     (license license:lppl1.3+)))
 
+(define-public texlive-yet-another-guide-latex2e
+  (package
+    (name "texlive-yet-another-guide-latex2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yet-another-guide-latex2e/")
+             (base32
+              "1bxpk66cfmqc6g0d29vvfd4d6y83nhdxsb9gsfwqbh38yr6rlq1b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yet-another-guide-latex2e")
+    (synopsis "Short guide to using LaTeX2e to typeset high quality documents")
+    (description
+     "This document is a short guide to using LaTeX2e to typeset high quality
+documents.  It focuses on users of Windows and guides the reader through
+installation, some of LaTeX's conventions, and creating the front matter, body
+and end matter.  The appendices contain a list of useful facilities not
+otherwise covered in this document and a list of helpful resources.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-pstricks
   (package
     (name "texlive-pstricks")
