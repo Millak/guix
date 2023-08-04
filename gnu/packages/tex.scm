@@ -19203,6 +19203,31 @@ Computer Modern.")
 string between different encodings.  Both LaTeX and plain-TeX are supported.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-svg-inkscape
+  (package
+    (name "texlive-svg-inkscape")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/svg-inkscape/")
+             (base32
+              "1gw3jp7wph0ys6372z2rgjwlpmmawdax7xpgrp4hzg5hxz748pn5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/svg-inkscape")
+    (synopsis "How to include an SVG image in LaTeX using Inkscape")
+    (description
+     "The document demonstrates the use of SVG images in LaTeX documents.
+Using the @samp{PDF+LaTeX output} option of Inkscape, it is possible to
+include SVG in documents, in which LaTeX typesets the text.  This results in
+uniform text style throughout the document, including text in images;
+moreover, LaTeX commands may be used in the image's text, providing such
+things as mathematics and references.
+
+The document also describes how to automate the conversion from SVG to
+@samp{PDF+LaTeX} using Inkscape.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-svn-prov
   (package
     (name "texlive-svn-prov")
