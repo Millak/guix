@@ -16955,6 +16955,27 @@ able to use them originally in a school setting such as on worksheets.")
 diagrams for lectures or assignment sheets.")
     (license license:lppl)))
 
+(define-public texlive-visualfaq
+  (package
+    (name "texlive-visualfaq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/visualfaq/")
+             (base32
+              "0fjx5y95n8bhsnwsw34sazbgygznvw76z01rrxmn1bp8za7751n0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/visualfaq")
+    (synopsis "Visual LaTeX FAQ")
+    (description
+     "Having trouble finding the answer to a LaTeX question?  The @emph{Visual
+LaTeX FAQ} is a search interface that presents over a hundred typeset samples
+of frequently requested document formatting.  Simply click on a hyperlinked
+piece of text and the @emph{Visual LaTeX FAQ} will send your web browser to
+the appropriate page in the TeX FAQ.")
+    (license license:lppl)))
+
 (define-public texlive-visualpstricks
   (package
     (name "texlive-visualpstricks")
