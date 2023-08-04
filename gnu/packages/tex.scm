@@ -7735,6 +7735,25 @@ which is readily readable by humans.  The DTL bundle contains an assembler
 LaTeX source (.dtx) file.")
     (license license:gpl3+)))
 
+(define-public texlive-dtxtut
+  (package
+    (name "texlive-dtxtut")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dtxtut/")
+             (base32
+              "1szg0xvwm0jbzs8waillijzrff4kv04a73gsqh9c12ap427xfryr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dtxtut")
+    (synopsis "Tutorial on writing @file{.dtx} and @file{.ins} files")
+    (description
+     "This tutorial is intended for advanced LaTeX2e users who want to learn
+how to create @file{.ins} and @file{.dtx} files for distributing their
+homebrewed classes and package files.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dvi2tty
   (package
     (name "texlive-dvi2tty")
