@@ -4501,6 +4501,25 @@ using TikZ.  Though similar to the @code{karnaugh} macros, it provides
 a key-value system to customize Karnaugh maps and a proper LaTeX package.")
     (license license:lppl1.2+)))
 
+(define-public texlive-knuth-errata
+  (package
+    (name "texlive-knuth-errata")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/knuth-errata/")
+             (base32
+              "0rcyw7dqcwlnf9q421k017hrx5c0d9rra6rcr3n6wqmhxmdy5mn9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/knuth-errata")
+    (synopsis "Knuth's published errata")
+    (description
+     "These files record details of problems reported in Knuth's Computers and
+Typesetting series of books, for the Computer Modern fonts, and for TeX,
+Metafont and related programs.")
+    (license license:knuth)))
+
 (define-public texlive-kvmap
   (package
     (name "texlive-kvmap")
