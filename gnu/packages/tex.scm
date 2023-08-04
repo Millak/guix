@@ -18474,6 +18474,25 @@ knowledge and techniques of word processing into the LaTeX typesetting
 environment.  It aims at helping such users use LaTeX instead.")
     (license license:fdl1.3+)))
 
+(define-public texlive-latexcheat
+  (package
+    (name "texlive-latexcheat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexcheat/")
+             (base32
+              "1383rsi21ma0291asi779bjr33m7fii019di8gv8kxwgci692fz0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexcheat")
+    (synopsis "LaTeX cheat sheet")
+    (description
+     "This package provides a LaTeX reference sheet for writing scientific
+papers.  Unlike many other such sheets, this sheet does not focus on
+typesetting mathematics, though it does list some symbols.")
+    (license license:lppl)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
