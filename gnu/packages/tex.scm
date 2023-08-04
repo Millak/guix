@@ -32131,6 +32131,69 @@ for manipulation of PostScript and other image formats.")
      "These packages provide support for, and documentation in, English.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langeuropean
+  (package
+    (name "texlive-collection-langeuropean")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-armtex
+           texlive-babel-albanian
+           texlive-babel-bosnian
+           texlive-babel-breton
+           texlive-babel-croatian
+           texlive-babel-danish
+           texlive-babel-dutch
+           texlive-babel-estonian
+           texlive-babel-finnish
+           texlive-babel-friulan
+           texlive-babel-hungarian
+           texlive-babel-icelandic
+           texlive-babel-irish
+           texlive-babel-kurmanji
+           texlive-babel-latin
+           texlive-babel-latvian
+           texlive-babel-lithuanian
+           texlive-babel-macedonian
+           texlive-babel-norsk
+           texlive-babel-occitan
+           texlive-babel-piedmontese
+           texlive-babel-romanian
+           texlive-babel-romansh
+           texlive-babel-samin
+           texlive-babel-scottish
+           texlive-babel-slovenian
+           texlive-babel-swedish
+           texlive-babel-turkish
+           texlive-babel-welsh
+           texlive-collection-basic
+           texlive-finbib
+           texlive-gloss-occitan
+           texlive-hrlatex
+           texlive-huaz
+           texlive-hulipsum
+           texlive-hyphen-complete
+           texlive-kaytannollista-latexia
+           texlive-lithuanian
+           texlive-lshort-dutch
+           texlive-lshort-estonian
+           texlive-lshort-finnish
+           texlive-lshort-slovenian
+           texlive-lshort-turkish
+           texlive-nevelok
+           texlive-rojud
+           texlive-swebib
+           texlive-turkmen))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for a some European languages")
+    (description
+     "This collection provides support for a number of European languages;
+others (Greek, German, French, ...)  have their own collections, depending
+simply on the size of the support.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
