@@ -7644,6 +7644,33 @@ code navigation, and related functionality to any text editor that speaks the
 LSP protocol.")
     (license (list license:gpl3+ license:lppl1.3+ license:fdl1.3+))))
 
+(define-public texlive-dickimaw
+  (package
+    (name "texlive-dickimaw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dickimaw/")
+             (base32
+              "1mxjqn4lblnpbmad3jk453lyx1qzcmrddis59j3jsgc5sp929w4k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dickimaw")
+    (synopsis "Books and tutorials from the @emph{Dickimaw LaTeX Series}")
+    (description
+     "The package provides some of the books and tutorials that form part of
+the @code{Dickimaw LaTeX Series}.  Only the A4 PDF of each book is detailed
+here.  Other formats, such as HTML or screen optimized PDF, are available from
+the package home page.
+
+Books included are:
+@itemize
+@item @emph{LaTeX for Complete Novices},
+@item @emph{Using LaTeX to Write a PhD thesis},
+@item @emph{Creating a LaTeX minimal example}.
+@end itemize")
+    (license license:fdl1.3+)))
+
 (define-public texlive-dtl
   (package
     (name "texlive-dtl")
