@@ -18417,6 +18417,24 @@ version of the document is provided in the distribution, as PDF.  An analogous
 version is provided in legal format.")
     (license license:lppl1.3+)))
 
+(define-public texlive-latex-web-companion
+  (package
+    (name "texlive-latex-web-companion")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-web-companion/")
+             (base32
+              "0v018lwf88z3qmzyqpyvfql7dbwk5a9r0wj3jfjc9cp2ksl8zf8f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lwc-examples")
+    (synopsis "Examples from @emph{The LaTeX Web Companion}")
+    (description
+     "This package contains the source of the examples printed in @emph{The
+LaTeX Web Companion} book, together with necessary supporting files.")
+    (license license:lppl)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
