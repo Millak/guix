@@ -18302,6 +18302,26 @@ as an interesting showcase of what LaTeX can do.  The flyer is designed for
 printing, double-sided, on A3 paper, which would then be folded once.")
     (license license:lppl)))
 
+(define-public texlive-latex-course
+  (package
+    (name "texlive-latex-course")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-course/")
+             (base32
+              "0z6q95l2vvxrspc04ki9wnrzhz76nynb5ai6969pgw6ihl68384f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-course")
+    (synopsis "LaTeX course as a projected presentation")
+    (description
+     "This package provides a brief Beamer-based slide presentation on LaTeX,
+based on Rupprecht's LaTeX 2.09 course, which the author has translated to
+English and taken to LaTeX2e and Beamer.  Additional material was taken from
+the @emph{Short Introduction to LaTeX}.")
+    (license license:gpl3+)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
