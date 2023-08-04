@@ -117,6 +117,7 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages java)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-apps)
@@ -2734,6 +2735,53 @@ conflicts when running on a `foreign distribution'.")
     ;; CVE-2021-21361 is related to the gradle-vagrant-plugin
     (properties '((lint-hidden-cve . ("CVE-2021-21361"))))
     (license license:bsd-3)))
+
+(define-public vagrant-vai
+  (package
+    (name "vagrant-vai")
+    (version "0.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vai" version))
+              (sha256
+               (base32
+                "041bi8hk03ybhacqzhw153j3knqhwvxn8aczzq6nikmpklcs4m4a"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests involve running vagrant and downloading a box
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-plugin.json
+            (lambda _
+              (let* ((plugins.d (string-append
+                                 #$output "/share/vagrant-plugins/plugins.d"))
+                     (plugin.json (string-append
+                                   plugins.d "/" #$name ".json")))
+                (mkdir-p plugins.d)
+                #$(with-extensions (list guile-json-4)
+                    #~(begin
+                        (use-modules (json))
+                        (call-with-output-file plugin.json
+                          (lambda (port)
+                            (scm->json
+                             '(("vai" ;; #$name
+                                .
+                                (("ruby_version"
+                                  . #$(package-version (this-package-input "ruby")))
+                                 ("vagrant_version"
+                                  . #$(package-version (this-package-input "vagrant")))
+                                 ("gem_version" .  "")
+                                 ("require" . "")
+                                 ("installed_gem_version" . #$version)
+                                 ("sources" . #()))))
+                             port)))))))))))
+    (inputs (list ruby vagrant))
+    (synopsis "Vagrant provisioning plugin to output an Ansible inventory")
+    (description "This plugin creates an Ansible inventory file containing the
+created virtual machines and the respective ssh-parameters.")
+    (home-page "https://github.com/MatthewMi11er/vai")
+    (license license:expat)))
 
 (define-public python-vagrant
   (package
