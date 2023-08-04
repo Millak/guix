@@ -4330,6 +4330,30 @@ which are determined by the pronunciation of the subsequent word.  The
 definite article for cross-references and other commands containing text.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hulipsum
+  (package
+    (name "texlive-hulipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hulipsum/"
+                   "source/latex/hulipsum/"
+                   "tex/latex/hulipsum/")
+             (base32
+              "1w62vawh2l49bgm7ivprmz61b71qsf38xdsrq6x2dc2ywzvs4z2f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hulipsum")
+    (synopsis "Hungarian dummy text (Lorum ipse)")
+    (description
+     "Lorem ipsum is an improper Latin filler dummy text, cf.@: the
+@code{lipsum} package.  It is commonly used for demonstrating the textual
+elements of a document template.  Lorum ipse is a Hungarian variation of Lorem
+ipsum. (Lorum is a Hungarian card game, and ipse is a Hungarian slang word
+meaning bloke.)  With this package you can typeset 150 paragraphs of Lorum
+ipse.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ibrackets
   (package
     (name "texlive-ibrackets")
