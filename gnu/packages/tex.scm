@@ -22374,6 +22374,28 @@ circles (useful for visually demonstrating the nature of fractions) in
 MetaPost.")
     (license license:lppl1.3+)))
 
+(define-public texlive-short-math-guide
+  (package
+    (name "texlive-short-math-guide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/short-math-guide/")
+             (base32
+              "1wjcjgw0xk4zx57f364cpl57qpxj3lq4lahlkbk6iiin1h9v2prf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/short-math-guide")
+    (synopsis "Guide to typeset mathematical notation with LaTeX")
+    (description
+     "@emph{The Short Math Guide} is intended to be a concise introduction to
+the use of the facilities provided by @code{amsmath} and various other LaTeX
+packages for typesetting mathematical notation.  Originally created by Michael
+Downes of the American Mathematical Society based only on @code{amsmath}, it
+has been brought up to date with references to related packages and other
+useful information.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-showexpl
   (package
     (name "texlive-showexpl")
