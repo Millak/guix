@@ -1639,6 +1639,25 @@ on indirect resources, such as log file analysis.  Arara requires a Java
 virtual machine.")
     (license license:bsd-3)))
 
+(define-public texlive-around-the-bend
+  (package
+    (name "texlive-around-the-bend")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/around-the-bend/")
+             (base32
+              "00nc6kx4ylz9g6vmjlgyjvmy1ls86pjblbcpm5z40wh5xl7l184f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/around-the-bend")
+    (synopsis "Typeset exercises in TeX, with answers")
+    (description
+     "This is a typeset version of the files of the @code{aro-bend}, plus
+three extra questions (with their answers) that Michael Downes didn't manage
+to get onto CTAN.")
+    (license license:lppl)))
+
 (define-public texlive-autoaligne
   (package
     (name "texlive-autoaligne")
