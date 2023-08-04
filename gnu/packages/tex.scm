@@ -5031,6 +5031,24 @@ LaTeX2e}, with added coverage of Finnish typesetting rules.")
 Short Introduction to LaTeX2e}.")
     (license license:lppl)))
 
+(define-public texlive-lshort-slovenian
+  (package
+    (name "texlive-lshort-slovenian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-slovenian/")
+             (base32
+              "0cwjg0z5vr4x93bz1khwl27rk8k7kpjm978iyzn6w7gx3wi87zr0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-slovenian")
+    (synopsis "Slovenian introduction to LaTeX")
+    (description
+     "This package provides a Slovenian translation of the @emph{(Not So)
+Short Introduction to LaTeX2e}.")
+    (license license:gpl3+)))
+
 (define-public texlive-lstbayes
   (package
     (name "texlive-lstbayes")
