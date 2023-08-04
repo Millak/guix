@@ -8442,6 +8442,25 @@ generates a VF file and a TFM file; @command{vftovp} takes a VF file and a TFM
 file and generates a VPL file.")
     (license license:knuth)))
 
+(define-public texlive-forest-quickstart
+  (package
+    (name "texlive-forest-quickstart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/forest-quickstart/")
+             (base32
+              "1bjy0bfkb90nv2dbdw8hdrm3dvm1v0r0m7a0l44ckw48vnc6amvk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/forest-quickstart")
+    (synopsis "Quickstart Guide for Linguists package @code{forest}")
+    (description
+     "@code{forest} is a PGF/TikZ-based package for drawing linguistic (and
+other kinds of) trees.  This manual provides a quickstart guide for linguists
+with just the essential things that you need to get started.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-fragmaster
   (package
     (name "texlive-fragmaster")
