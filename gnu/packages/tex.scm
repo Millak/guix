@@ -25452,6 +25452,26 @@ integrating fonts, and explains how some of the most common font-related error
 messages occur.  Also, hints are given on how to address those.")
     (license license:lppl)))
 
+(define-public texlive-tex-nutshell
+  (package
+    (name "texlive-tex-nutshell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/tex-nutshell/")
+             (base32
+              "1pc9hx4fzk0k6lwab6galf7gxm55x4z250dymsmbz4fan76xk51x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-nutshell")
+    (synopsis "Short document about TeX principles")
+    (description
+     "This document is meant for users who are looking for information about
+the basics of TeX.  Its main goal is its brevity.  The pure TeX features are
+described, no features provided by macro extensions.  Only the last section
+gives a summary of plain TeX macros.")
+    (license license:public-domain)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
