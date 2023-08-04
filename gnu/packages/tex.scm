@@ -25613,6 +25613,25 @@ package @code{thumbpdf.sty} to automatically include the thumbnails.  This
 arrangement works with both plain TeX and LaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-titlepages
+  (package
+    (name "texlive-titlepages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/titlepages/")
+             (base32
+              "17ib7rpb2dhb2m724x66fdzddv8cqd808wxy5kkvx0vb3rl27hyh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/titlepages")
+    (synopsis "Sample titlepages, and how to code them")
+    (description
+     "The document provides examples of over two dozen title page designs
+based on a range of published books and theses, together with the LaTeX code
+used to create them.")
+    (license license:lppl)))
+
 (define-public texlive-txfonts
   (package
     (name "texlive-txfonts")
