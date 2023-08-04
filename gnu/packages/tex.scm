@@ -8226,6 +8226,25 @@ enough context to enable you to find the hyphenated word that's being
 referenced.")
     (license license:gpl2)))
 
+(define-public texlive-first-latex-doc
+  (package
+    (name "texlive-first-latex-doc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/first-latex-doc/")
+             (base32
+              "13ngk5pia5vbrbb4jrrlq1lmyja08m7cy4ydcjasxha8kns001ss")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/first-latex-doc")
+    (synopsis "Document for absolute LaTeX beginners")
+    (description
+     "The document leads a reader, who knows nothing about LaTeX, through the
+production of a two page document.  The user who has completed that first
+document, and wants to carry on, will find recommendations for tutorials.")
+    (license license:public-domain)))
+
 (define-public texlive-fixpdfmag
   (package
     (name "texlive-fixpdfmag")
