@@ -25527,6 +25527,26 @@ DocBook/XML source format.")
 ITI VPAT(R) guidelines.")
     (license license:cc-by3.0)))
 
+(define-public texlive-texbytopic
+  (package
+    (name "texlive-texbytopic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/texbytopic/")
+             (base32
+              "0pnh1hsd6k434c8i1xdjq3ywrwylmryrsl86d6h7i1cnmzz4pwlx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texbytopic")
+    (synopsis "@emph{TeX by Topic} book")
+    (description
+     "@emph{TeX by Topic} is a book originally published by Addison-Wesley.
+It describes itself as ``a TeXnician's reference'', and covers the way
+TeX (the engine) works in as much detail as most ordinary TeX programmers will
+ever need to know.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
