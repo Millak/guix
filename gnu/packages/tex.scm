@@ -11714,6 +11714,26 @@ originals.")
 
 (define-deprecated-package texlive-fonts-cm-super texlive-cm-super)
 
+(define-public texlive-cnbwp
+  (package
+    (name "texlive-cnbwp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/cnbwp/" "doc/latex/cnbwp/"
+                   "makeindex/cnbwp/" "tex/latex/cnbwp/")
+             (base32
+              "13i5nvdnvq5f7rx0w63q8j1km7bfq1rs7kr49hsabz5v0z0v90xc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cnbwp")
+    (synopsis "Typeset working papers of the Czech National Bank")
+    (description
+     "The package supports proper formatting of Working Papers of the Czech
+National Bank (WP CNB).  The package was developed for CNB but it is also
+intended for authors from outside CNB.")
+    (license license:lppl)))
+
 (define-public texlive-courier
   (package
     (name "texlive-courier")
