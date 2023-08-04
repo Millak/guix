@@ -18322,6 +18322,25 @@ English and taken to LaTeX2e and Beamer.  Additional material was taken from
 the @emph{Short Introduction to LaTeX}.")
     (license license:gpl3+)))
 
+(define-public texlive-latex-doc-ptr
+  (package
+    (name "texlive-latex-doc-ptr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-doc-ptr/")
+             (base32
+              "0mamlfnxzi4lwh5cpss8zcfr64jdnf6vnj9fp48accrqdj2rpfs2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-doc-ptr")
+    (synopsis "Direction-finder for LaTeX resources available online")
+    (description
+     "This package provides a brief set of recommendations for users who need
+online documentation of LaTeX.  The document supports the need for
+documentation of LaTeX itself, in distributions.")
+    (license license:public-domain)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
