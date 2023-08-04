@@ -11762,6 +11762,27 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
+(define-public texlive-csbulletin
+  (package
+    (name "texlive-csbulletin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/csbulletin/"
+                   "tex/latex/csbulletin/")
+             (base32
+              "15zjwwjdxs0avb5y4g29nyvhafrv2s8pgqihhi2kb72y8wzj9cdz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/csbulletin")
+    (synopsis
+     "LaTeX class for articles submitted to the CSTUG Bulletin (@emph{Zpravodaj})")
+    (description
+     "The package provides the class for articles for the CSTUG
+Bulletin (@emph{Zpravodaj Ceskoslovenskeho sdruzeni uzivatelu TeXu}).  You can
+see the structure of a document by looking at the source file of the manual.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-cweb
   (package
     (name "texlive-cweb")
