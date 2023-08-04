@@ -20490,6 +20490,27 @@ typographical fine-tuning.")
 in Babel.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-lithuanian
+  (package
+    (name "texlive-babel-lithuanian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-lithuanian/"
+                   "source/generic/babel-lithuanian/"
+                   "tex/generic/babel-lithuanian/")
+             (base32
+              "08ifkjb61m9nx3wn8hvca9vfrzlmxpwvrh21hq1rh6dwmqli11j6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-lithuanian")
+    (synopsis "Babel support for documents written in Lithuanian")
+    (description
+     "Babel support material for documents written in Lithuanian moved from
+the @code{lithuanian} package into a new package @code{babel-lithuanian} to
+match Babel support for other languages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-portuges
   (package
     (name "texlive-babel-portuges")
