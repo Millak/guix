@@ -25433,6 +25433,25 @@ an hierarchical file system, in a way that is well-defined, and is readily
 implementable.")
     (license license:fdl1.1+)))
 
+(define-public texlive-tex-font-errors-cheatsheet
+  (package
+    (name "texlive-tex-font-errors-cheatsheet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tex-font-errors-cheatsheet/")
+             (base32
+              "0pfd5qphmizhxb2p4gg6809xcx1rlfkwqa6vs4f74457chcwljwn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-font-errors-cheatsheet")
+    (synopsis "Cheat sheet outlining the most common TeX font errors")
+    (description
+     "This is a compact three-pages document highlighting the TeX flow of
+integrating fonts, and explains how some of the most common font-related error
+messages occur.  Also, hints are given on how to address those.")
+    (license license:lppl)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
