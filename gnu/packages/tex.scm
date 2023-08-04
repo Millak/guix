@@ -20613,6 +20613,28 @@ Romanian in Babel.  Translations to Romanian of standard LaTeX names are
 provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-romansh
+  (package
+    (name "texlive-babel-romansh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-romansh/"
+                   "source/generic/babel-romansh/"
+                   "tex/generic/babel-romansh/")
+             (base32
+              "08lc76yglblidg24s5ap9j0xmzbxgsfwcf9f6g1m4bwbqwkh089x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list (texlive-updmap.cfg (list texlive-hypdoc))))
+    (home-page "https://ctan.org/pkg/babel-romansh")
+    (synopsis "Babel and Polyglossia support for the Romansh language")
+    (description
+     "The package provides a language description file that enables support of
+Romansh either with Babel or with Polyglossia.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-slovak
   (package
     (name "texlive-babel-slovak")
