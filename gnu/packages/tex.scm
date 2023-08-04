@@ -4833,6 +4833,27 @@ Short Introduction to LaTeX2e}.")
 several languages not included in that package: BUGS, JAGS, and Stan.")
     (license license:lppl1.3+)))
 
+(define-public texlive-macros2e
+  (package
+    (name "texlive-macros2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/macros2e/" "tex/latex/macros2e/")
+             (base32
+              "0vdw389gvwmpqs7ykm3vlyqbpwm45mgqasmqyxm7q9jgay3dn2iz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/macros2e")
+    (synopsis "List of internal LaTeX2e macros")
+    (description
+     "This document lists the internal macros defined by the LaTeX2e base files,
+which can also be useful to package authors.  The macros are hyper-linked to
+their description in @code{source2e}.  For this to work both PDFs must be
+inside the same directory.  This document is not yet complete in content and
+format and may miss some macros.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mathcommand
   (package
     (name "texlive-mathcommand")
