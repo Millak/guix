@@ -18512,6 +18512,29 @@ the author has give several times at the Rijksuniversiteit
 Groningen (Netherlands).")
     (license license:fdl1.1+)))
 
+(define-public texlive-latexfileinfo-pkgs
+  (package
+    (name "texlive-latexfileinfo-pkgs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexfileinfo-pkgs/"
+                   "source/latex/latexfileinfo-pkgs/"
+                   "tex/latex/latexfileinfo-pkgs/")
+             (base32
+              "08afjj6im3bdxv3j0z6kg8yw0pyjl5164fqn0sx084zbdfwdfrqn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexfileinfo-pkgs")
+    (synopsis "Comparison of packages showing LaTeX file information")
+    (description
+     "The package provides an HTML file that lists and compares CTAN packages
+that display LaTeX source file information from @code{\\ProvidesClass},
+@code{\\ProvidesFile}, and @code{\\ProvidesPackage} commands in the LaTeX
+file.  Five packages of the author's, and several other packages are
+discussed; revision control systems are mentioned briefly.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
