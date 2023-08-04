@@ -5049,6 +5049,24 @@ Short Introduction to LaTeX2e}.")
 Short Introduction to LaTeX2e}.")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-turkish
+  (package
+    (name "texlive-lshort-turkish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-turkish/")
+             (base32
+              "00r6pv4z4933jw072djdasd2wp5j05wghln62ga4g6y6jblf6zks")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-turkish")
+    (synopsis "Turkish introduction to LaTeX")
+    (description
+     "This package provides a Turkish translation of Oetiker's @emph{(Not so)
+short introduction to LaTeX2e}.")
+    (license license:public-domain)))
+
 (define-public texlive-lstbayes
   (package
     (name "texlive-lstbayes")
