@@ -5233,6 +5233,26 @@ decorate those diagrams, for instance to annotate the diagram, to add crashes
 to the processes, checkpoints, ...")
     (license license:lppl1.3+)))
 
+(define-public texlive-metafont-beginners
+  (package
+    (name "texlive-metafont-beginners")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/metafont-beginners/")
+             (base32
+              "12hhvlnvh8dj1396242m6yi0341cina7sxrv7pwzqxzzahwdvmgm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metafont-beginners")
+    (synopsis "Introductory tutorial for Metafont")
+    (description
+     "This package provides an old introduction to the use of Metafont, that
+has stood the test of time.  It focuses on using the program, rather than
+designing fonts, but does offer advice about understanding errors in other
+people's fonts.")
+    (license license:public-domain)))
+
 (define-public texlive-mgltex
   (package
     (name "texlive-mgltex")
