@@ -15001,6 +15001,26 @@ possible what is going wrong.")
 partitions, permutations, braids, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-swebib
+  (package
+    (name "texlive-swebib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/swebib/" "doc/latex/swebib/")
+             (base32
+              "0bw7ls5gbi31gr9h4mqv2blva1skqymprp350n9wm086kgyv4s8h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/swebib")
+    (synopsis "Swedish bibliography styles")
+    (description
+     "The bundle contains Swedish versions of the standard bibliography
+styles, and of the style @code{plainnat}.  The styles should be functionally
+equivalent to the corresponding original styles, apart from the Swedish
+translations.  The styles do not implement Swedish collation.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-swimgraf
   (package
     (name "texlive-swimgraf")
