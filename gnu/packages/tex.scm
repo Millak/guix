@@ -18493,6 +18493,25 @@ papers.  Unlike many other such sheets, this sheet does not focus on
 typesetting mathematics, though it does list some symbols.")
     (license license:lppl)))
 
+(define-public texlive-latexcourse-rug
+  (package
+    (name "texlive-latexcourse-rug")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexcourse-rug/")
+             (base32
+              "027siznmshk60flxgra7dgzvwbmgwvckwb6r257b91x3rm77anv5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexcourse-rug")
+    (synopsis "LaTeX course book")
+    (description
+     "The package provides the book and practice files for a LaTeX course that
+the author has give several times at the Rijksuniversiteit
+Groningen (Netherlands).")
+    (license license:fdl1.1+)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
