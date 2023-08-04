@@ -4500,6 +4500,24 @@ from use of the package are in the format used in the textbook @emph{Language,
 Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lshort-czech
+  (package
+    (name "texlive-lshort-czech")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-czech/")
+             (base32
+              "0ar9qa0cg0mjv6ydgx1phaa1qpiy25s3jciznbylgi5xprvnnfa9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-czech")
+    (synopsis "Czech translation of the @emph{Short Introduction to LaTeX2e}")
+    (description
+     "This is the Czech translation of a @emph{(Not So) Short Introduction to
+LaTeX2e}.}")
+    (license license:gpl3+)))
+
 (define-public texlive-lstbayes
   (package
     (name "texlive-lstbayes")
