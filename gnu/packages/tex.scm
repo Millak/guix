@@ -4024,6 +4024,25 @@ Afterwards all necessary dimensions are calculated and the scheme is drawn.
 Currently two steps of symmetry reduction are supported.")
     (license license:lppl)))
 
+(define-public texlive-guide-to-latex
+  (package
+    (name "texlive-guide-to-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/guide-to-latex/")
+             (base32
+              "1wc5pclv27af2zr6kjjahjzxxlab31d8970jvxr9lxiqllvkxyab")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/guide-to-latex")
+    (synopsis "Examples and more from @emph{Guide to LaTeX}, by Kopka and Daly")
+    (description
+     "This package contains material presented in the book @emph{Guide to LaTeX},
+4th edition, by Helmut Kopka and Patrick W. Daly as code, sample figures,
+processed files, as well as solutions to the exercices.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-helmholtz-ellis-ji-notation
   (package
     (name "texlive-helmholtz-ellis-ji-notation")
