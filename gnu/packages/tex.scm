@@ -4794,6 +4794,36 @@ simple roots of any complex simple Lie algebra.  It uses the Dynkin diagrams
 package @code{dynkin-diagrams}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lithuanian
+  (package
+    (name "texlive-lithuanian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lithuanian/"
+                   "fonts/enc/dvips/lithuanian/"
+                   "fonts/map/dvips/lithuanian/"
+                   "fonts/tfm/public/lithuanian/"
+                   "tex/latex/lithuanian/")
+             (base32
+              "1iq06vlryl4fj2mzkmmphw9ihm0y7wmi5k8wxniaciw5mm5vrw7x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lithuanian")
+    (synopsis "Lithuanian language support")
+    (description
+     "This language support package provides:
+
+@itemize
+@item extra 8-bit encoding L7x used by @code{fontenc}: @file{l7xenc.def},
+@file{l7xenc.dfu}, @file{l7xenc.sty};
+@item Lithuanian TeX support for URW family Type1 fonts: map, fd, tfm with L7x
+encoding;
+@item extra code page definitions used by @code{inputenc}: @file{cp775.def}
+and @file{latin7.def}.
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-logicproof
   (package
     (name "texlive-logicproof")
