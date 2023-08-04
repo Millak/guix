@@ -20448,6 +20448,28 @@ a Latin-based alphabet.  The @code{arabxetex} package offers support for
 Kurdish written in Arabic script.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-latin
+  (package
+    (name "texlive-babel-latin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-latin/"
+                   "source/generic/babel-latin/"
+                   "tex/generic/babel-latin/")
+             (base32
+              "1ykiny7rcz5czsadxfxl53403ixkyxi67dqlphqaxkvvm2k61kpb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-latin")
+    (synopsis "Babel support for Latin")
+    (description
+     "The Babel-latin package provides the Babel languages @code{latin},
+ @code{classiclatin}, @code{medievallatin}, and @code{ecclesiasticlatin}.  It
+also defines several useful shorthands as well as some modifiers for
+typographical fine-tuning.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-portuges
   (package
     (name "texlive-babel-portuges")
