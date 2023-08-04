@@ -13885,6 +13885,26 @@ using TikZ.")
 arts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-plain-doc
+  (package
+    (name "texlive-plain-doc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/plain-doc/")
+             (base32
+              "062d6hg4npy57307avvyd2sdxnmyrh5ia2rdb17p6cx555k8zxwq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/csname-doc")
+    (synopsis "List of Plain TeX control sequence names")
+    (description
+     "The document constitutes a list of every control sequence
+name (@dfn{csname}) described in the TeXbook, together with an indication of
+whether the csname is a primitive TeX command, or is defined in
+@file{plain.tex}.")
+    (license license:public-domain)))
+
 (define-public texlive-pmgraph
   (package
     (name "texlive-pmgraph")
