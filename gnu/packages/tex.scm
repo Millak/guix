@@ -4319,6 +4319,27 @@ The package also supports fence scaling and ensures that the enclosing fences
 will end up having the proper closing and opening types.")
     (license license:lppl1.3+)))
 
+(define-public texlive-intro-scientific
+  (package
+    (name "texlive-intro-scientific")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/intro-scientific/")
+             (base32
+              "0bzgi3zg0lm6zwjnac90ihaqwcvhindfdphjijv7mh11ii0qxlmf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/intro-scientific")
+    (synopsis "Introducing scientific/mathematical documents using LaTeX")
+    (description
+     "@emph{Writing Scientific Documents Using LaTeX} is an article
+introducing the use of LaTeX in typesetting scientific documents.  It covers
+the basics of creating a new LaTeX document, special typesetting
+considerations, mathematical typesetting and graphics.  It also touches on
+bibliographic data and BibTeX.")
+    (license license:lppl)))
+
 (define-public texlive-ionumbers
   (package
     (name "texlive-ionumbers")
