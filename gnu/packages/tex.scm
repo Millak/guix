@@ -4599,6 +4599,25 @@ It provides a tabular-like input syntax and support for drawing bundles
 (implicants) around adjacent values.")
     (license license:lppl1.3c)))
 
+(define-public texlive-l2tabu-english
+  (package
+    (name "texlive-l2tabu-english")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l2tabu-english/")
+             (base32
+              "0dqmdr3lffhiaq7pg5pn6ia46miwq4nh5vimhd0qbf936amiv1mm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/l2tabu-english")
+    (synopsis "English translation of @emph{Obsolete packages and commands}")
+    (description
+     "This package provides an English translation of the @emph{l2tabu}
+practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
+and commands.")
+    (license license:fdl1.2+)))
+
 (define-public texlive-letterswitharrows
   (package
     (name "texlive-letterswitharrows")
