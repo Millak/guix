@@ -1602,6 +1602,26 @@ Operands may be numbers with arbitrary numbers of digits; scientific notation
 is allowed.  The expression scanner is also provided.")
     (license license:public-domain)))
 
+(define-public texlive-apprendre-a-programmer-en-tex
+  (package
+    (name "texlive-apprendre-a-programmer-en-tex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/apprendre-a-programmer-en-tex/")
+             (base32
+              "05779lk9v849k712wfjv0mhyzahwpl4n892ydamfdc5yg05bsnyv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apprendre-a-programmer-en-tex")
+    (synopsis "@emph{Apprendre à programmer en TeX} book")
+    (description
+     "This book explains the basic concepts required for programming in TeX
+and explains the programming methods, providing many examples.  The package
+makes the compileable source code as well as the compiled PDF file accessible
+to everyone.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-apxproof
   (package
     (name "texlive-apxproof")
