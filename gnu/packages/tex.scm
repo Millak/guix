@@ -25650,6 +25650,25 @@ used to create them.")
 LaTeX Companion} book, together with necessary supporting files.")
     (license license:lppl)))
 
+(define-public texlive-tlc3-examples
+  (package
+    (name "texlive-tlc3-examples")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tlc3-examples/")
+             (base32
+              "01ny6r3ycji0af0cdywn2fmxd0fyz3y7afdnn983a5gy1j9rza7v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tlc3-examples")
+    (synopsis "All examples from @emph{The LaTeX Companion}, third edition")
+    (description
+     "This package provides the PDFsand sources for all examples from
+@emph{The LaTeX Companion}, third edition (Parts I+II), together with
+necessary supporting files.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-txfonts
   (package
     (name "texlive-txfonts")
