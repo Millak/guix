@@ -5773,6 +5773,24 @@ physics at the University of Wurzburg as a collection of macros and predefined
 environments for quickly creating nice mathematical documents.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nevelok
+  (package
+    (name "texlive-nevelok")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nevelok/" "source/latex/nevelok/"
+                   "tex/latex/nevelok/")
+             (base32
+              "02g60npy2hp181vnzpna7h2544y7bnbi9y6srpm7kjmd6immm7qn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nevelok")
+    (synopsis "LaTeX package for automatic definite articles for Hungarian")
+    (description
+     "This LaTeX package provides automatic definite articles for Hungarian.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-nicematrix
   (package
     (name "texlive-nicematrix")
