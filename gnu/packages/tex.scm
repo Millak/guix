@@ -25472,6 +25472,24 @@ described, no features provided by macro extensions.  Only the last section
 gives a summary of plain TeX macros.")
     (license license:public-domain)))
 
+(define-public texlive-tex-overview
+  (package
+    (name "texlive-tex-overview")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tex-overview/")
+             (base32
+              "1agfya9rwvyjvip0alvibimz75jivpf19hp4jvlv7z0n9m26m9jd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-overview")
+    (synopsis "Overview of the development of TeX")
+    (description
+     "The document gives a short overview of TeX and its children, as well as
+the macro packages LaTeX and ConTeXt.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
