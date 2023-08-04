@@ -1539,6 +1539,29 @@ is the historical basis of @code{amslatex}, which should now be used to
 prepare submissions for the AMS.")
     (license license:lppl)))
 
+(define-public texlive-annee-scolaire
+  (package
+    (name "texlive-annee-scolaire")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/annee-scolaire/"
+                   "source/latex/annee-scolaire/"
+                   "tex/latex/annee-scolaire/")
+             (base32
+              "1nwm67p4s822d7r4kr3rbvnm9vlkvzjbikqy8hq2fqsc9bdx34ib")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/annee-scolaire")
+    (synopsis "Automatically typeset the academic year (French way)")
+    (description
+     "This package provides a macro @code{\\anneescolaire} to automatically
+write the academic year in the French way, according to the date of
+compilation, two other macros to obtain the first and the second calendar year
+of the academic year, a macro to be redefined to change the presentation of
+the years.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-annotate-equations
   (package
     (name "texlive-annotate-equations")
