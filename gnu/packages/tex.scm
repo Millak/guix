@@ -7417,6 +7417,26 @@ files for changes (using an external program).")
 may encounter.")
     (license license:gpl3+)))
 
+(define-public texlive-comprehensive
+  (package
+    (name "texlive-comprehensive")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/comprehensive/")
+             (base32
+              "1pa76hkxfmms5h6y6zyg4l5wrspprhnycfdigby8302srx676vhi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/comprehensive")
+    (synopsis "Symbols accessible from LaTeX")
+    (description
+     "This package document the symbols accessible from LaTeX.  Over 18000
+symbols are listed as a set of tables.  The tables of symbols are ordered in
+a logical way (the document begins with a frequently requested symbols list),
+the aim being to make the document a convenient way of looking up symbols.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ctan-o-mat
   (package
     (name "texlive-ctan-o-mat")
