@@ -1658,6 +1658,24 @@ three extra questions (with their answers) that Michael Downes didn't manage
 to get onto CTAN.")
     (license license:lppl)))
 
+(define-public texlive-ascii-chart
+  (package
+    (name "texlive-ascii-chart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/ascii-chart/")
+             (base32
+              "1m2x7iwz80plq6hbhp9xia6bp8wbi03iifs0pkr7ji3gn8hqgh1r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ascii-chart")
+    (synopsis "ASCII wall chart")
+    (description
+     "This package contains an ASCII wall chart.  The document may be
+converted between Plain TeX and LaTeX by a simple editing action.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-autoaligne
   (package
     (name "texlive-autoaligne")
