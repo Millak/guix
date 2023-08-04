@@ -20133,6 +20133,26 @@ The OPmac macros can generate a bibliography without any external program.")
 right-aligned table and (multiple-)figure floats, with footnotes.")
     (license license:lppl)))
 
+(define-public texlive-babel-albanian
+  (package
+    (name "texlive-babel-albanian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-albanian/"
+                   "source/generic/babel-albanian/"
+                   "tex/generic/babel-albanian/")
+             (base32
+              "1sgyxj2f2w5fb22ys0idcfy10m1wbz3mk3rkpvv7cwa0v3a0arhl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-albanian")
+    (synopsis "Support for Albanian within Babel")
+    (description
+     "The package provides support for typesetting Albanian (as part of the
+Babel system).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-basque
   (package
     (name "texlive-babel-basque")
