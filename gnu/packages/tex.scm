@@ -29879,6 +29879,34 @@ manipulation, mft, fontinst, etc.  Manipulating OpenType, TrueType, Type 1,and
 for manipulation of PostScript and other image formats.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langczechslovak
+  (package
+    (name "texlive-collection-langczechslovak")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-babel-czech
+           texlive-babel-slovak
+           texlive-cnbwp
+           texlive-collection-basic
+           texlive-collection-latex
+           texlive-cs
+           texlive-csbulletin
+           texlive-cslatex
+           texlive-csplain
+           texlive-cstex
+           texlive-hyphen-complete
+           texlive-lshort-czech
+           texlive-lshort-slovak
+           texlive-vlna))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Czech and Slovak")
+    (description
+     "This collection of packages provides support for Czech and Slovak.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
