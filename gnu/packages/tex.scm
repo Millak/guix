@@ -18341,6 +18341,25 @@ online documentation of LaTeX.  The document supports the need for
 documentation of LaTeX itself, in distributions.")
     (license license:public-domain)))
 
+(define-public texlive-latex-for-undergraduates
+  (package
+    (name "texlive-latex-for-undergraduates")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-for-undergraduates/")
+             (base32
+              "0krj27gmra2mpriircasv32snk80z9ap85h76n0bgy4wjqyblyp0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-for-undergraduates")
+    (synopsis "Tutorial aimed at introducing undergraduate students to LaTeX")
+    (description
+     "This package provides a tutorial aimed at introducing undergraduate
+students to LaTeX, including an introduction to LaTeX Workshop in Visual
+Studio Code and an example package of user-defined LaTeX commands.")
+    (license license:public-domain)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
