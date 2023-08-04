@@ -4854,6 +4854,24 @@ inside the same directory.  This document is not yet complete in content and
 format and may miss some macros.")
     (license license:lppl1.3c)))
 
+(define-public texlive-math-into-latex-4
+  (package
+    (name "texlive-math-into-latex-4")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/math-into-latex-4/")
+             (base32
+              "0k11j92h9hpxnyciczknhl83b05avc0rqdnwn82ssqi1k3qixibd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/math-into-latex-4")
+    (synopsis "Samples from @emph{(More) Math into LaTeX}, 4th Edition")
+    (description
+     "This package contains samples for the book @emph{(More) Math into LaTeX},
+4th edition.")
+    (license license:public-domain)))
+
 (define-public texlive-mathcommand
   (package
     (name "texlive-mathcommand")
