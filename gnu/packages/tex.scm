@@ -18397,6 +18397,26 @@ document classes (@code{scrartcl}, @code{scrreprt}, @code{scrbook}) and all
 the packages needed for a thesis in natural sciences.")
     (license license:lppl1.3c)))
 
+(define-public texlive-latex-veryshortguide
+  (package
+    (name "texlive-latex-veryshortguide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-veryshortguide/")
+             (base32
+              "17i8zmr7mjfrx911psdy9cbn05c5inn4ixqmnjkpr9sbgsninyc4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-veryshortguide")
+    (synopsis "The Very Short Guide to LaTeX")
+    (description
+     "This is a 4-page reminder of what LaTeX does.  It is designed for
+printing on A4 paper, double-sided, and folding once to A5.  Such an imposed
+version of the document is provided in the distribution, as PDF.  An analogous
+version is provided in legal format.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
