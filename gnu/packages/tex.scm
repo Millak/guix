@@ -5025,6 +5025,25 @@ only unify typesetting of math formulae but also allow to easily adapt
 notation if a user prefers to.  The semantic layer is split into topics.")
     (license license:expat)))
 
+(define-public texlive-maths-symbols
+  (package
+    (name "texlive-maths-symbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/maths-symbols/")
+             (base32
+              "0z83qf1rz84cr0b1zvwlacf24pc5r8dn1cxiiyl0xrqncl3279ka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/maths-symbols")
+    (synopsis "Summary of mathematical symbols available in LaTeX")
+    (description
+     "This package provides a predecessor of the comprehensive symbols list,
+covering mathematical symbols available in standard @code{LaTeX} (including
+the AMS symbols, if available at compile time).")
+    (license license:lppl1.2+)))
+
 (define-public texlive-matlab-prettifier
   (package
     (name "texlive-matlab-prettifier")
