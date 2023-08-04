@@ -20511,6 +20511,26 @@ the @code{lithuanian} package into a new package @code{babel-lithuanian} to
 match Babel support for other languages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-macedonian
+  (package
+    (name "texlive-babel-macedonian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-macedonian/"
+                   "source/generic/babel-macedonian/"
+                   "tex/generic/babel-macedonian/")
+             (base32
+              "0fps3nlbr4j2vy8pww4xkp2xsxiclzal4ifcpc1a0dsc4blll5nr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-macedonian")
+    (synopsis "Babel module to support Macedonian Cyrillic")
+    (description
+     "The package provides support for Macedonian documents written in
+Cyrillic, in Babel.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-portuges
   (package
     (name "texlive-babel-portuges")
