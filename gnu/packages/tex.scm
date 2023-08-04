@@ -7173,6 +7173,22 @@ multiple flavours for putting labels inside or outside nodes), and a debugging
 mode to avoid getting lost in big diagrams.")
     (license license:expat)))
 
+(define-public texlive-biblatex-cheatsheet
+  (package
+    (name "texlive-biblatex-cheatsheet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-cheatsheet/")
+             (base32
+              "0y2ry2q1kvpy8dqglqdfq3rc849hmbni0k78wr1xnjbpd102l3k9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-cheatsheet")
+    (synopsis "BibLaTeX and Biber cheat sheet")
+    (description "This package provides a BibLaTeX and Biber cheat sheet.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibtex8
   (package
     (name "texlive-bibtex8")
