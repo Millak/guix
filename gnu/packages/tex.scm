@@ -20550,6 +20550,27 @@ Cyrillic, in Babel.")
 Babel, with usage instructions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-piedmontese
+  (package
+    (name "texlive-babel-piedmontese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-piedmontese/"
+                   "source/generic/babel-piedmontese/"
+                   "tex/generic/babel-piedmontese/")
+             (base32
+              "04hig8rd6nxwwz1zjskpmap00gixmb63qh08p5fxqc6mb4bdh78b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-piedmontese")
+    (synopsis "Babel support for Piedmontese")
+    (description
+     "The package provides the language definition file for support of
+Piedmontese in Babel.  Some shortcuts are defined, as well as translations to
+Piedmontese of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-portuges
   (package
     (name "texlive-babel-portuges")
