@@ -18378,6 +18378,25 @@ Studio Code and an example package of user-defined LaTeX commands.")
 LaTeX Graphics Companion} book, together with necessary supporting files.")
     (license license:lppl)))
 
+(define-public texlive-latex-refsheet
+  (package
+    (name "texlive-latex-refsheet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-refsheet/")
+             (base32
+              "169h1syday30qiw032k14fhxikdwszggvqz8b9ga4i9wwxf1vh4m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-refsheet")
+    (synopsis "LaTeX reference sheet for a thesis with KOMA-Script")
+    (description
+     "This LaTeX reference sheet is for writing a thesis using the KOMA-Script
+document classes (@code{scrartcl}, @code{scrreprt}, @code{scrbook}) and all
+the packages needed for a thesis in natural sciences.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
