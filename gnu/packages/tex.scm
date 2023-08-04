@@ -7399,6 +7399,24 @@ a corresponding option is set.  Furthermore, @command{cluttex} can watch input
 files for changes (using an external program).")
     (license license:gpl3+)))
 
+(define-public texlive-components
+  (package
+    (name "texlive-components")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/components/")
+             (base32
+              "04yg9hq0wcyi1ag9y9m2fnf5h3n4fdykiwljgpw0kyc73bfyhq1m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/components")
+    (synopsis "Introduction to TeX components and files")
+    (description
+     "This package is an introduction to the components and files users of TeX
+may encounter.")
+    (license license:gpl3+)))
+
 (define-public texlive-ctan-o-mat
   (package
     (name "texlive-ctan-o-mat")
