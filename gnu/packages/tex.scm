@@ -20424,6 +20424,30 @@ LaTeX names.")
 Babel.")
     (license license:lppl1.3c)))
 
+(define-public texlive-babel-kurmanji
+  (package
+    (name "texlive-babel-kurmanji")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-kurmanji/"
+                   "source/generic/babel-kurmanji/"
+                   "tex/generic/babel-kurmanji/")
+             (base32
+              "021dzdjhiymsvqxc1cq409vkm7390lrr691snydr9xr35x0k3wr1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-kurmanji")
+    (synopsis "Babel support for Kurmanji")
+    (description
+     "The package provides the language definition file for support of
+Kurmanji in Babel.  Kurmanji belongs to the family of Kurdish languages.  Some
+shortcuts are defined, as well as translations to Kurmanji of standard LaTeX
+names.  Note that the package is dealing with Northern Kurdish, written using
+a Latin-based alphabet.  The @code{arabxetex} package offers support for
+Kurdish written in Arabic script.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-portuges
   (package
     (name "texlive-babel-portuges")
