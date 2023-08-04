@@ -18283,6 +18283,25 @@ LaTeX document authors to store XMP metadata in their documents as well.  It
 is compatible with pdfLaTeX, XeLaTeX, LaTeX+dvipdfm, and LaTeX+dvips+ps2pdf.")
     (license license:lppl1.3c)))
 
+(define-public texlive-latex-brochure
+  (package
+    (name "texlive-latex-brochure")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-brochure/")
+             (base32
+              "0xba20sy8q10ac9hxwnz9axh853hrj06vp7mfn12ajax31miznmy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-brochure")
+    (synopsis "Publicity flyer for LaTeX")
+    (description
+     "The document is designed as a publicity flyer for LaTeX, but also serves
+as an interesting showcase of what LaTeX can do.  The flyer is designed for
+printing, double-sided, on A3 paper, which would then be folded once.")
+    (license license:lppl)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
