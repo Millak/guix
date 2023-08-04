@@ -20531,6 +20531,25 @@ match Babel support for other languages.")
 Cyrillic, in Babel.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-occitan
+  (package
+    (name "texlive-babel-occitan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-occitan/"
+                   "source/generic/babel-occitan/"
+                   "tex/generic/babel-occitan/")
+             (base32
+              "0apg6i95lhhlwwci3mm8gqrs5x5qchxkc9w615cj083bvsri8vnk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-occitan")
+    (synopsis "Babel support for Occitan")
+    (description "This package provides Occitan language description file for
+Babel, with usage instructions.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-portuges
   (package
     (name "texlive-babel-portuges")
