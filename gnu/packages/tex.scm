@@ -1639,6 +1639,36 @@ on indirect resources, such as log file analysis.  Arara requires a Java
 virtual machine.")
     (license license:bsd-3)))
 
+(define-public texlive-armtex
+  (package
+    (name "texlive-armtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/armenian/"
+                   "fonts/afm/public/armenian/"
+                   "fonts/map/dvips/armenian/"
+                   "fonts/source/public/armenian/"
+                   "fonts/tfm/public/armenian/"
+                   "fonts/type1/public/armenian/"
+                   "tex/latex/armenian/"
+                   "tex/plain/armenian/")
+             (base32
+              "161c66av2zkxp9r32dr449sa9crmyjkjijrvx5a56avkyyr1s0kp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/armtex")
+    (synopsis "System for writing in Armenian with TeX and LaTeX")
+    (description
+     "ArmTeX is a system for typesetting Armenian text with Plain TeX or LaTeX(2e).
+It may be used with input: from a standard Latin keyboard without any special
+encoding or support for Armenian letters, from any keyboard which uses an
+encoding that has Armenian letters in the second half (characters 128-255) of
+the extended ASCII table (for example ArmSCII8 Armenian standard), or from an
+Armenian keyboard using UTF-8 encoding.")
+    (license license:lppl)))
+
 (define-public texlive-around-the-bend
   (package
     (name "texlive-around-the-bend")
