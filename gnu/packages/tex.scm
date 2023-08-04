@@ -25547,6 +25547,24 @@ TeX (the engine) works in as much detail as most ordinary TeX programmers will
 ever need to know.")
     (license license:fdl1.3+)))
 
+(define-public texlive-texonly
+  (package
+    (name "texlive-texonly")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/texonly/")
+             (base32
+              "0h40f8hj03ha0ilpj2fx5kzzvdv0yplmr4528s2rmmy62l9kgdkd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texonly")
+    (synopsis "Sample document in Plain TeX")
+    (description
+     "This package provides a file written with TeX, not using any packages,
+to be compiled with TeX or pdfTeX only, not with LaTeX and al.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-threeparttable
   (package
     (name "texlive-threeparttable")
