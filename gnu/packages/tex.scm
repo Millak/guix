@@ -18360,6 +18360,24 @@ students to LaTeX, including an introduction to LaTeX Workshop in Visual
 Studio Code and an example package of user-defined LaTeX commands.")
     (license license:public-domain)))
 
+(define-public texlive-latex-graphics-companion
+  (package
+    (name "texlive-latex-graphics-companion")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-graphics-companion/")
+             (base32
+              "01zs32gck1sl9zlbhghyjmjwxyvw0jha5vl2hd10knyrb3z4dhxc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lgc-examples")
+    (synopsis "Examples from @emph{The LaTeX Graphics Companion}")
+    (description
+     "This package contains the source of the examples printed in @emph{The
+LaTeX Graphics Companion} book, together with necessary supporting files.")
+    (license license:lppl)))
+
 (define-public texlive-oberdiek
   (package
     (name "texlive-oberdiek")
