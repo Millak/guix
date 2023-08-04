@@ -20256,6 +20256,27 @@ Canadian and USA text.")
 
 (define-deprecated-package texlive-generic-babel-english texlive-babel-english)
 
+(define-public texlive-babel-estonian
+  (package
+    (name "texlive-babel-estonian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-estonian/"
+                   "source/generic/babel-estonian/"
+                   "tex/generic/babel-estonian/")
+             (base32
+              "0pi4rmbwjg8mrxi9y6jhczfv6nbrb25n025sx56yn36f579rwwiy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-estonian")
+    (synopsis "Babel support for Estonian")
+    (description
+     "The package provides the language definition file for support of
+Estonian in Babel.  Some shortcuts are defined, as well as translations to
+Estonian of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-french
   (package
     (name "texlive-babel-french")
