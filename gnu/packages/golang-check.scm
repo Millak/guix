@@ -638,6 +638,44 @@ Gomega matcher library.")
 framework.")
     (license license:expat)))
 
+(define-public go-github-com-pkg-profile
+  (package
+    (name "go-github-com-pkg-profile")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/profile")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ifr9gnycjwh7dbvsb5vgs9kzlr548cb4m45zvl8i8lgd3qhppy1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Unit tests failing, see
+      ;; <https://github.com/pkg/profile/issues/68>.
+      #:tests? #f
+      #:import-path "github.com/pkg/profile"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; profile drops a cpu.pprof file inside its source directory
+          ;; after tests which makes it unreproducible so we remove it.
+          (add-after 'check 'delete-test-file
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (delete-file (string-append "src/" import-path
+                                            "/cpu.pprof"))))))))
+    (propagated-inputs
+     (list go-github-com-felixge-fgprof))
+    (home-page "https://github.com/pkg/profile")
+    (synopsis "Simple profiling for Go")
+    (description
+     "Profile provides a simple way to manage runtime/pprof profiling of your
+Go application.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-prashantv-gostub
   (package
     (name "go-github-com-prashantv-gostub")
