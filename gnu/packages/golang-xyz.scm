@@ -922,6 +922,34 @@ gist (https://gist.github.com/kballard/272720).")
     (description "This package provides functionality to generate Go code.")
     (license license:expat)))
 
+(define-public go-github-com-dbaggerman-cuba
+  (package
+    (name "go-github-com-dbaggerman-cuba")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dbaggerman/cuba")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sbria32fh2bzc8agnm9p5id5z15mrqj4fyxhnkq05bh2qjkrwc7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dbaggerman/cuba"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-karrick-godirwalk))
+    (home-page "https://github.com/dbaggerman/cuba")
+    (synopsis "Goroutine parallelism library")
+    (description
+     "This package provides a library for Goroutines that helps to implement
+more complicated parallel cases.")
+    (license license:expat)))
+
 (define-public go-github-com-dimchansky-utfbom
   (package
     (name "go-github-com-dimchansky-utfbom")
