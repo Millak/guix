@@ -1845,6 +1845,30 @@ Domain Name Service}.  The API follows the less-is-more principle, by
 presenting a small interface.")
     (license license:bsd-3)))
 
+(define-public go-github-com-modern-go-concurrent
+  (package
+    (name "go-github-com-modern-go-concurrent")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/modern-go/concurrent")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s0fxccsyb8icjmiym5k7prcqx36hvgdwl588y0491gi18k5i4zs"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/modern-go/concurrent"))
+    (home-page "https://github.com/modern-go/concurrent")
+    (synopsis "Concurrency utilities for Go")
+    (description
+     "A Go library providing various concurrency utilities including a backport
+of @code{sync.Map} to Go versions below 1.9 and a cancellable Goroutine with
+explicit ownership.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mreiferson-go-options
   (package
     (name "go-github-com-mreiferson-go-options")
