@@ -1546,6 +1546,29 @@ ABI}.")
 customized globally.")
     (license license:expat)))
 
+(define-public go-github-com-karrick-godirwalk
+  (package
+    (name "go-github-com-karrick-godirwalk")
+    (version "1.17.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/karrick/godirwalk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jyvai5vpmx86l71hg9j6lxc2b4v32ajvcmjlz40zimfb9ip11q9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/karrick/godirwalk"))
+    (home-page "https://github.com/karrick/godirwalk")
+    (synopsis "Fast directory traversal library for Go")
+    (description
+     "This package provides functions to read and traverse directory trees.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-kballard-go-shellquote
   ;; No release, see <https://github.com/kballard/go-shellquote/issues/13>.
   (let ((commit "95032a82bc518f77982ea72343cc1ade730072f0")
