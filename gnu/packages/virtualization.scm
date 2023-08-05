@@ -2736,6 +2736,56 @@ conflicts when running on a `foreign distribution'.")
     (properties '((lint-hidden-cve . ("CVE-2021-21361"))))
     (license license:bsd-3)))
 
+(define-public vagrant-cachier
+  (package
+    (name "vagrant-cachier")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant-cachier" version))
+              (sha256
+               (base32
+                "0v11nf2d2y2knwm4zackd5ap8h2927n8rc1q73b6ii4hndv98fh9"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f ; neither gem nor source actually has tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-plugin.json
+            (lambda _
+              (let* ((plugins.d (string-append
+                                 #$output "/share/vagrant-plugins/plugins.d"))
+                     (plugin.json (string-append
+                                   plugins.d "/" #$name ".json")))
+                (mkdir-p plugins.d)
+                #$(with-extensions (list guile-json-4)
+                    #~(begin
+                        (use-modules (json))
+                        (call-with-output-file plugin.json
+                          (lambda (port)
+                            (scm->json
+                             '((#$name
+                                .
+                                (("ruby_version"
+                                  . #$(package-version (this-package-input "ruby")))
+                                 ("vagrant_version"
+                                  . #$(package-version (this-package-input "vagrant")))
+                                 ("gem_version" .  "")
+                                 ("require" . "")
+                                 ("installed_gem_version" . #$version)
+                                 ("sources" . #()))))
+                             port)))))))))))
+    (inputs (list ruby vagrant))
+    (synopsis "Share a common package cache among similar VM instances")
+    (description "This package provides a Vagrant plugin that helps you reduce
+the amount of coffee you drink while waiting for boxes to be provisioned by
+sharing a common package cache among similar VM instances.  Kinda like
+vagrant-apt_cache or this magical snippet but targeting multiple package
+managers and Linux distros.")
+    (home-page "https://github.com/fgrehm/vagrant-cachier")
+    (license license:expat)))
+
 (define-public vagrant-vai
   (package
     (name "vagrant-vai")
