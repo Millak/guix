@@ -37363,11 +37363,11 @@ with popups, which also work in the terminal.")
 
 (define-public emacs-corfu-doc-terminal
   ;; Upstream does not tag releases, version taken from package header.
-  (let ((commit "d8945c64b52d76e864b767b3048674f222daf80b")
+  (let ((commit "be9fd5cd6c293dea862f1a1877378f1391e6a7e5")
         (revision "0"))
     (package
       (name "emacs-corfu-doc-terminal")
-      (version (git-version "0.5" revision commit))
+      (version (git-version "0.9" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -37377,7 +37377,7 @@ with popups, which also work in the terminal.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0j0dd8np5x93wic22bc5i9h7bq2gj700n4fh11dzzgsj14lv2r5k"))))
+          (base32 "0vx5r9v2gx747zsz4x1dgrkvl1iya9pcgvcbghc0pwjs3jfi6r0k"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-corfu emacs-corfu-doc emacs-corfu-terminal emacs-popon))
