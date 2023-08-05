@@ -635,6 +635,34 @@ similar to Go's standard library @code{json} and @code{xml} package.")
 levels that works by wrapping the standard @code{log} library.")
     (license license:expat)))
 
+(define-public go-github-com-chzyer-readline
+  (package
+    (name "go-github-com-chzyer-readline")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chzyer/readline")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1msh9qcm7l1idpmfj4nradyprsr86yhk9ch42yxz7xsrybmrs0pb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/chzyer/readline"))
+    (native-inputs
+     (list go-github-com-chzyer-test))
+    (propagated-inputs
+     (list go-github-com-chzyer-logex
+           go-golang-org-x-sys))
+    (home-page "https://github.com/chzyer/readline")
+    (synopsis "Pure Go readline library")
+    (description
+     "Readline is a pure Go implementation of a GNU-Readline like library.")
+    (license license:expat)))
+
 (define-public go-github-com-coocood-freecache
   (package
     (name "go-github-com-coocood-freecache")
