@@ -1,8 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022, 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
+;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -266,8 +267,8 @@
       "193m2gkvipijqbfd6a8mhg9nd63wlnshzgspk3pip57vk21l709z"))))
 
 (define-public webrtc-for-telegram-desktop
-  (let ((commit "5098730b9eb6173f0b52068fe2555b7c1015123a")
-        (revision "328"))
+  (let ((commit "0532942ac6176a66ef184fb728a4cbb02958fc0b")
+        (revision "389"))
     (hidden-package
      (package
        (name "webrtc-for-telegram-desktop")
@@ -283,14 +284,18 @@
           (file-name
            (git-file-name name version))
           (sha256
-           (base32 "1lk54zlrff59rj5k9dylsgz4sdds4728psrk8m3v9qn5y8d6z8qy"))
+           (base32 "0fary99yl1ddk5zjpfy0pyb5brd268j41plcnvv9qjyf0wj9hf2k"))
+          (patches
+           (search-patches
+            ;; https://github.com/desktop-app/tg_owt/pull/123
+            "webrtc-for-telegram-desktop-unbundle-libsrtp.patch"))
           (modules '((guix build utils)
                      (ice-9 ftw)
                      (srfi srfi-1)))
           (snippet
            #~(begin
                (let ((keep
-                      '("libsrtp" "rnnoise"
+                      '("rnnoise"
                         ;; Not available in Guix.
                         "pffft")))
                  (with-directory-excursion "src/third_party"
@@ -325,6 +330,7 @@
               libdrm
               libglvnd
               libjpeg-turbo
+              libsrtp
               libvpx
               libxcomposite
               libxdamage
