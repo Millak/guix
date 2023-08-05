@@ -11929,34 +11929,34 @@ Scalable Vector Graphics files.")
   (sbcl-package->cl-source-package sbcl-cl-svg))
 
 (define-public sbcl-nodgui
-  (let ((commit "4a9c2e7714b278fbe97d198c56f54ea87290001d")
-        (revision "1"))
+  (let ((commit "b1d15fa9cca8550926f7823dbdd8be3b34387f1a")
+        (revision "2"))
     (package
       (name "sbcl-nodgui")
-      (version (git-version "0.1.1" revision commit))
+      (version (git-version "0.4.8.5" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://notabug.org/cage/nodgui.git")
+               (url "https://codeberg.org/cage/nodgui.git")
                (commit commit)))
-         (file-name (git-file-name "nodgui" version))
+         (file-name (git-file-name "cl-nodgui" version))
          (sha256
-          (base32 "1vgzzw459h32v2mi41cia6i940jqmvxlc8w3xj3516hbc2mqkaib"))))
+          (base32 "1gsxg8igiavs8fr39vgw8ypa42wjqaq9sszwqiifpm7yvq54lls7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("alexandria" ,sbcl-alexandria)
          ("bordeaux-threads" ,sbcl-bordeaux-threads)
          ("cl-colors2" ,sbcl-cl-colors2)
+         ("cl-esrap" ,sbcl-esrap)
          ("cl-jpeg" ,sbcl-cl-jpeg)
-         ("cl-lex" ,sbcl-cl-lex)
          ("cl-ppcre-unicode" ,sbcl-cl-ppcre-unicode)
          ("cl-unicode" ,sbcl-cl-unicode)
-         ("cl-yacc" ,sbcl-cl-yacc)
          ("clunit2" ,sbcl-clunit2)
          ("named-readtables" ,sbcl-named-readtables)
          ("parse-number" ,sbcl-parse-number)
-         ("tk" ,tk)))
+         ("tk" ,tk)
+         ("tklib" ,tklib)))
       (arguments
        `(#:phases (modify-phases %standard-phases
                     (add-after 'unpack 'fix-paths
