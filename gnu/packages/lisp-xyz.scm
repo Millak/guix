@@ -24,7 +24,7 @@
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021, 2022, 2023 André A. Gomes <andremegafone@gmail.com>
-;;; Copyright © 2021, 2022 Cage <cage-dev@twistfold.it>
+;;; Copyright © 2021, 2022, 2023 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -18552,8 +18552,8 @@ HTML documents.")
   (sbcl-package->cl-source-package sbcl-cl-html-diff))
 
 (define-public sbcl-tooter
-  (let ((commit "ec97bee3431c55913078e532daae81eb0fd90372")
-        (revision "3"))
+  (let ((commit "2e1b22f0993419c1e7e6d10ead45d7bcafb5b6cb")
+        (revision "4"))
     (package
       (name "sbcl-tooter")
       (version (git-version "1.0.0" revision commit))
@@ -18563,9 +18563,9 @@ HTML documents.")
          (uri (git-reference
                (url "https://github.com/Shinmera/tooter")
                (commit commit)))
-         (file-name (git-file-name "tooter" version))
+         (file-name (git-file-name "cl-tooter" version))
          (sha256
-          (base32 "02vpjaq38d6laaqmsana9f13c38xzr0xwy05fcfkmzdhh0kllpkv"))))
+          (base32 "02ys58gzasvk7r84jmz6k522qcw2hkbgv8p0ax5i8dggjhr04cz2"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-ppcre sbcl-documentation-utils sbcl-drakma
