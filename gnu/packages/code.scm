@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -45,6 +46,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system go)
   #:use-module (gnu packages)
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
@@ -59,7 +61,10 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages linux)
@@ -378,6 +383,41 @@ base, cloc can compute differences in blank, comment, and source lines.
 cloc contains code from David Wheeler's SLOCCount.  Compared to SLOCCount,
 cloc can handle a greater variety of programming languages.")
     (license license:gpl2+)))
+
+(define-public scc
+  (package
+    (name "scc")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/boyter/scc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rkkfg6jimlc2rkajk6ypd5v0m3zai25ga5idz2pmkmzakv82n21"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/boyter/scc"))
+    (native-inputs
+     (list go-github-com-dbaggerman-cuba
+           go-github-com-json-iterator-go
+           go-github-com-mattn-go-runewidth
+           go-github-com-minio-blake2b-simd
+           go-github-com-spf13-cobra
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/boyter/scc")
+    (synopsis "Fast code counter written in Go")
+    (description
+     "@command{scc} provides a lines-of-code counter similar to tools like
+@command{cloc} and @command{sloccount}.  It aims to be fast as possible while
+supporting @acronym{COCOMO,Constructive Cost Model} calculation and code
+complexity estimation.")
+    (license license:expat)))
 
 (define-public the-silver-searcher
   (package
