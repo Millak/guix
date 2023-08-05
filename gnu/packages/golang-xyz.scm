@@ -17,6 +17,7 @@
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
@@ -606,6 +607,33 @@ similar to Go's standard library @code{json} and @code{xml} package.")
     (description
      "This package is a Go library that draws progress bars on the terminal.")
     (license license:bsd-3)))
+
+(define-public go-github-com-chzyer-logex
+  (package
+    (name "go-github-com-chzyer-logex")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chzyer/logex")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c9yr3r7dl3lcs22cvmh9iknihi9568wzmdywmc2irkjdrn8bpxw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; See <https://github.com/chzyer/logex/issues/4> and
+      ;; <https://github.com/chzyer/logex/pull/7>.
+      #:tests? #f
+      #:import-path "github.com/chzyer/logex"))
+    (home-page "https://github.com/chzyer/logex")
+    (synopsis "Golang log library")
+    (description
+     "This package provides a Golang log library supporting tracing and log
+levels that works by wrapping the standard @code{log} library.")
+    (license license:expat)))
 
 (define-public go-github-com-coocood-freecache
   (package
