@@ -11755,8 +11755,8 @@ be used with @code{cl-yacc}.")
   (sbcl-package->ecl-package sbcl-cl-lex))
 
 (define-public sbcl-cl-colors2
-  (let ((commit "cc03badf5f69be65ae7e13c2f9a7c16838ab8241")
-        (revision "3"))
+  (let ((commit "7a1410765e5186625df19a875cebba685e9e51bd")
+        (revision "4"))
     (package
       (name "sbcl-cl-colors2")
       (version (git-version "0.5.4" revision commit))
@@ -11764,11 +11764,11 @@ be used with @code{cl-yacc}.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://notabug.org/cage/cl-colors2.git")
+               (url "https://codeberg.org/cage/cl-colors2.git")
                (commit commit)))
          (file-name (git-file-name "cl-colors2" version))
          (sha256
-          (base32 "1l7sl7nnvq13xmss9wwkhcq123bsylskxjrijwfkqp6sm02gbd15"))))
+          (base32 "1xk3wshp21v193wbj1gs0czxaci00wwm957vmqi2dvlv0wgb2hfr"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-clunit2))
@@ -11784,7 +11784,7 @@ be used with @code{cl-yacc}.")
 @item Function printing colors to HEX, RGB, RGBA, and HSL.
 @item Predefined colors from X11, SVG, and GDK.
 @end itemize\n")
-      (home-page "https://notabug.org/cage/cl-colors2")
+      (home-page "https://codeberg.org/cage/cl-colors2")
       (license license:boost1.0))))
 
 (define-public cl-colors2
