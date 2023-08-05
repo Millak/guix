@@ -191,6 +191,42 @@ style).
 @end itemize")
     (license license:isc)))
 
+(define-public go-github-com-felixge-fgprof
+  (package
+    (name "go-github-com-felixge-fgprof")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/felixge/fgprof")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00h4kphvmbcdgad0wmqbaclc4a1pipdb55ay41mwh6cnkdjjvhp0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/felixge/fgprof"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-pprof))
+    (home-page "https://github.com/felixge/fgprof")
+    (synopsis "Sampling profiler for Golang")
+    (description
+     "@code{fgprof} is a sampling Go profiler providing analyze On-CPU as well
+as @url{http://www.brendangregg.com/offcpuanalysis.html, Off-CPU} (e.g. I/O)
+time together.
+
+Go's builtin sampling CPU profiler can only show On-CPU time, but it's better
+than fgprof at that.  Go also includes tracing profilers that can analyze I/O,
+but they can't be combined with the CPU profiler.
+
+fgprof is designed for analyzing applications with mixed I/O and CPU
+workloads.  This kind of profiling is also known as wall-clock profiling.")
+    (license license:expat)))
+
 (define-public go-github-com-frankban-quicktest
   (package
     (name "go-github-com-frankban-quicktest")
