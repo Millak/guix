@@ -37,7 +37,8 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages qt))
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages xiph))
 
 (define-public ktuberling
   (package
@@ -300,7 +301,15 @@ This package is part of the KDE games module.")
              (substitute* "src/mjresource.py"
                (("'share', 'kmahjongglib'" all)
                 (string-append "'" (assoc-ref inputs "libkmahjongg")
-                               "/share', 'kmahjongglib'")))))
+                               "/share', 'kmahjongglib'")))
+             (substitute* "src/sound.py"
+               (("oggBinary = 'ogg123'")
+                (format #f "oggBinary = '~a'"
+                        (search-input-file inputs "bin/ogg123"))))
+             (substitute* "src/common.py"
+               (("interpreterName = 'python3'")
+                (format #f "interpreterName = '~a'"
+                        (search-input-file inputs "bin/python3"))))))
          (add-after 'qt-wrap 'wrap
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -327,7 +336,8 @@ This package is part of the KDE games module.")
            python-qtpy
            python-zope-interface
            qtbase-5
-           qtsvg-5))
+           qtsvg-5
+           vorbis-tools))
     (home-page "https://apps.kde.org/kajongg/")
     (synopsis "Classical Mah Jongg game for 4 players")
     (description "Kajongg is the ancient Chinese board game for 4 players.
