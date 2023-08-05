@@ -18719,20 +18719,20 @@ dynamically.")
   (sbcl-package->cl-source-package sbcl-sxql-composer))
 
 (define-public sbcl-cl-i18n
-  (let ((commit "66b02dc2cff3ab97f924329aaf965807fe18aa20")
-        (revision "2"))
+  (let ((commit "acb162a12dac50fc46d83da8934fce85d19e31c4")
+        (revision "3"))
     (package
       (name "sbcl-cl-i18n")
-      (version (git-version "0.5.3" revision commit))
+      (version (git-version "0.5.5" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://notabug.org/cage/cl-i18n")
+               (url "https://codeberg.org/cage/cl-i18n")
                (commit commit)))
          (file-name (git-file-name "cl-i18n" version))
          (sha256
-          (base32 "06ij1wxancsym87gg63nvjh7vfzjipi1f02h4fb2ypip60vw06lc"))))
+          (base32 "1y29cirmlyc406a45sdx39spvnjzbs772c977075ccicz46qaxz7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-babel sbcl-cl-ppcre-unicode))
@@ -18740,7 +18740,7 @@ dynamically.")
       (description
        "This is a Gettext-style internationalisation framework for Common
 Lisp.")
-      (home-page "https://notabug.org/cage/cl-i18n")
+      (home-page "https://codeberg.org/cage/cl-i18n")
       (license license:llgpl))))
 
 (define-public ecl-cl-i18n
