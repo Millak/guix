@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
@@ -121,6 +122,36 @@
 - because testing panics is ugly.
 @end itemize\n")
       (license license:expat))))
+
+(define-public go-github-com-chzyer-test
+  (package
+    (name "go-github-com-chzyer-test")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chzyer/test")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1axdlcnx2qjsn5wsr2pr1m0w0a8k4nk5kkrngh742fgh81vzzy8s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests relating to a in-memory disk fail due to a Segfault see
+      ;; <https://github.com/chzyer/test/issues/4>.
+      #:tests? #f
+      #:import-path "github.com/chzyer/test"))
+    (propagated-inputs
+     (list go-github-com-chzyer-logex))
+    (home-page "https://github.com/chzyer/test")
+    (synopsis "Testing library for Go")
+    ;; Description is not provided, see
+    ;; <https://github.com/chzyer/test/issues/3>.
+    (description
+     "A testing library for Go programs.")
+    (license license:expat)))
 
 (define-public go-github-com-davecgh-go-spew
   (package
