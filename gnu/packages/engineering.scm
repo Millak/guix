@@ -1557,6 +1557,27 @@ send break and throttle transmission speed.")
     (home-page "https://github.com/wentasah/sterm")
     (license license:gpl3+)))
 
+(define-public libmodbus
+  (package
+    (name "libmodbus")
+    (version "3.1.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stephane/libmodbus")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nbpk1n56kclab8fl32dxi46v2bwax3gfk1zkc796srm7vj42sbv"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (synopsis "Library for the Modbus protocol")
+    (description "@code{libmodbus} is a library to send/receive data with a
+device which respects the Modbus protocol.  This library can use a serial port
+or an Ethernet connection.")
+    (home-page "https://libmodbus.org/")
+    (license license:lgpl2.1+)))
 (define-public harminv
   (package
     (name "harminv")
