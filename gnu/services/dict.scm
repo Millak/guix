@@ -73,12 +73,24 @@
   (complex?    dicod-database-complex?       (default #f))
   (options     dicod-database-options        (default '())))
 
+(define %dicod-gcide-index
+  ;; The GCIDE pre-built index.  The Dico 'gcide' module can build it lazily;
+  ;; do it upfront so there's no need for a writable directory at run-time.
+  (computed-file "dicod-gcide-index"
+                 (with-imported-modules '((guix build utils))
+                   #~(begin
+                       (use-modules (guix build utils))
+                       (mkdir #$output)
+                       (invoke #+(file-append dico "/libexec/idxgcide")
+                               #+(file-append gcide "/share/gcide")
+                               #$output)))))
+
 (define %dicod-database:gcide
   (dicod-database
    (name "gcide")
    (handler "gcide")
    (options (list #~(string-append "dbdir=" #$gcide "/share/gcide")
-                  "idxdir=/var/run/dicod"))))
+                  #~(string-append "idxdir=" #$%dicod-gcide-index)))))
 
 (define %dicod-accounts
   (list (user-group
@@ -137,14 +149,6 @@ database {
 
   (apply mixed-text-file "dicod.conf" (configuration->text config)))
 
-(define %dicod-activation
-  #~(begin
-      (use-modules (guix build utils))
-      (let ((user   (getpwnam "dicod"))
-            (rundir "/var/run/dicod"))
-        (mkdir-p rundir)
-        (chown rundir (passwd:uid user) (passwd:gid user)))))
-
 (define (dicod-shepherd-service config)
   (let* ((dicod.conf (dicod-configuration-file config))
          (interfaces (dicod-configuration-interfaces config))
@@ -153,10 +157,6 @@ database {
                                    "/bin/dicod")
                       #:name "dicod"
                       #:mappings (list (file-system-mapping
-                                        (source "/var/run/dicod")
-                                        (target source)
-                                        (writable? #t))
-                                       (file-system-mapping
                                         (source "/dev/log")
                                         (target source))
                                        (file-system-mapping
@@ -187,8 +187,6 @@ database {
    (extensions
     (list (service-extension account-service-type
                              (const %dicod-accounts))
-          (service-extension activation-service-type
-                             (const %dicod-activation))
           (service-extension shepherd-root-service-type
                              dicod-shepherd-service)))
    (default-value (dicod-configuration))
