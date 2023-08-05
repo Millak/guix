@@ -319,6 +319,57 @@ also update a file with new \"golden\" output that is deemed correct.")
 values for the purpose of fuzz testing.")
       (license license:asl2.0))))
 
+;; XXX: Placing to (gnu package profiling) creates some failing cycles.
+(define-public go-github-com-google-pprof
+  (package
+    (name "go-github-com-google-pprof")
+    (version "0.0.0-20240402174815-29b9bb013b0f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/pprof")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09l37q5dql0q0zj8amlnrynajfvp1vrp846q5vgiwsbwz9b78f18"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/pprof"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; To make this package smaller to use as a library where just
+          ;; source is required.
+          (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-chzyer-readline
+           go-github-com-ianlancetaylor-demangle
+           go-golang-org-x-sys))
+    (home-page "https://github.com/google/pprof")
+    (synopsis "Visualization and analysis of profiling data")
+    (description
+     "@code{pprof} is a tool for visualization and analysis of profiling data.
+
+It reads a collection of profiling samples in profile.proto format and
+generates reports to visualize and help analyze the data.  It can generate
+both text and graphical reports (through the use of the dot visualization
+package).")
+    (license (list
+              ;; For go code: LICENSE
+              license:asl2.0
+              ;; For svgpan: third_party/svgpan/LICENSE
+              ;; original source <https://code.google.com/archive/p/svgpan/>.
+              license:bsd-3
+              ;; For d3flamegraph: third_party/d3flamegraph/D3_LICENSE
+              ;;
+              ;; Bundle of d3-flame-graph and d3-selection JavaScript library
+              ;; (NPM) <https://www.npmjs.com/package/d3-flame-graph> and
+              ;; <https://www.npmjs.com/package/d3-selection>.
+              license:asl2.0 ; for bundle and d3-flame-graph
+              license:isc    ; for d3-selection
+              ))))
+
 (define-public go-github-com-hexops-gotextdiff
   (package
     (name "go-github-com-hexops-gotextdiff")
@@ -950,6 +1001,20 @@ thoroughly
     (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
     (description "This package turns unkeyed struct literals (@code{T{1, 2,
 3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
+
+(define-public go-pprof
+  (package
+    (inherit go-github-com-google-pprof)
+    (name "go-pprof")
+    (arguments
+     (list
+      #:install-source? #f
+      #:go go-1.19
+      #:import-path "github.com/google/pprof"))
+    (description
+     (string-append (package-description go-github-com-google-pprof)
+                    "  This package provides an command line interface (CLI)
+tool."))))
 
 (define-public go-staticcheck
   (package
