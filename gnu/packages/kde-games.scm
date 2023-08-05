@@ -27,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system qt)
+  #:use-module (guix gexp)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gl)
@@ -184,6 +185,24 @@ This package is part of the KDE games module.")
       (sha256
        (base32 "1a0c0q34h5yxwx76y6934ibn6hm1ip1hc2xvl11q1kaazq0alca3"))))
     (build-system qt-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tileset-dir
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Add "$out/share" to XDG_DATA_DIRS so that the default tileset
+              ;; is always available.
+              (substitute* "src/kmahjonggtileset.cpp"
+                (("_inited = true;")
+                 (format #f "QByteArray x = qgetenv(\"XDG_DATA_DIRS\");
+if (!x.isEmpty()) {
+  QString datadirs = QString::fromLocal8Bit(x) + QLatin1String(\":~a\");
+  qputenv(\"XDG_DATA_DIRS\", datadirs.toLocal8Bit());
+}
+_inited = true;"
+                         (string-append
+                          (assoc-ref outputs "out") "/share")))))))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
