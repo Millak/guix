@@ -1190,14 +1190,14 @@ and high-availability (HA).")
 (define-public postgresql-15
   (package
     (name "postgresql")
-    (version "15.3")
+    (version "15.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0cnrk5jrwfqkcx8mlg761s60ninqrsxpzasf7xfbzzq03y4x9izz"))
+                "1yf8cfg9j2pfxh5lxfaq1ifbvrcvv2g5vjxnadk36ds4vi5mmv5s"))
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
