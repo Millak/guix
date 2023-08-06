@@ -4563,17 +4563,17 @@ on RFC 3501 and original @code{imaplib} module.")
      '(#:configure-flags '("-DENABLE_LUAJIT=ON"
                            "-DLOCAL_CONFDIR=/etc/rspamd")))
     (inputs
-     (list openssl
+     (list file
            glib
-           ragel
-           luajit
-           sqlite
-           file
            icu4c
+           libsodium
+           luajit
+           openssl
            pcre2
-           zlib
            perl
-           libsodium))
+           ragel
+           sqlite
+           zlib))
     (native-inputs
      (list pkg-config))
     (synopsis "Spam filtering system")
