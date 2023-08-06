@@ -2095,7 +2095,7 @@ cssutils not receiving updates as of 1.0.2.")
 (define-public python-cssselect
   (package
     (name "python-cssselect")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               ;; The PyPI release does not contain tests.
               (method git-fetch)
@@ -2105,13 +2105,8 @@ cssutils not receiving updates as of 1.0.2.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xslrnhbrmgakp4xg6k26qffay3kqffp3a2z2sk27c65rwxa79kc"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
+                "1x4nrvb1p1byi1whmspik7lbh303akdlh762dayfxam3hycsh5kk"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-lxml python-pytest))
     (home-page "https://github.com/scrapy/cssselect")
