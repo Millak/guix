@@ -8065,36 +8065,29 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.7.1")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Scrapy" version))
        (sha256
-        (base32 "0kpi3hg2ycs6s8cg41r2zc1axd0rpnps8bnzg7wisjyjaf1l1yih"))))
-    (build-system python-build-system)
+        (base32 "03yil4hjn14amx5jnvjfahmm78qqax2664z30xxn0dxmzdspimli"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"
-                       "-n" (number->string (parallel-job-count))
-                       ;; These tests fail when run in parallel (see:
-                       ;; https://github.com/scrapy/scrapy/issues/5502).
-                       "--ignore" "tests/test_engine.py"
-                       "--ignore" "tests/test_engine_stop_download_bytes.py"
-                       "--ignore" "tests/test_engine_stop_download_headers.py"
-                       ;; This test require network access.
-                       "--ignore" "tests/test_command_check.py"
-                       "-k"
-                       (string-append
-                        ;; The followin tests fail for unknown reasons.
-                        "not test_server_set_cookie_domain_suffix_public_private"
-                        " and not test_user_set_cookie_domain_suffix_public_private"
-                        " and not test_pformat")
-                       "tests")))))))
+     (list #:test-flags
+           ;; Tests fail with DNS lookup or need a display.
+           #~(list "-k" (string-append
+                         "not " (string-join
+                                 (list "test_SCRAPY_CHECK_set"
+                                       "test_check_all_default_contracts"
+                                       "test_check_cb_kwargs_contract"
+                                       "test_check_returns_items_contract"
+                                       "test_check_returns_requests_contract"
+                                       "test_check_scrapes_contract"
+                                       "test_pformat"
+                                       "test_pformat_old_windows"
+                                       "test_pformat_windows")
+                                 " and not ")))))
     (propagated-inputs
      (list python-botocore              ; Optional: For S3FeedStorage class.
            python-cryptography
