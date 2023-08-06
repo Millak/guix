@@ -80,6 +80,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -9672,6 +9673,28 @@ source projects must be able to link to it.")
 and delete boxes, versions, and providers on HashiCorp's Vagrant Cloud.")
     (home-page "https://github.com/hashicorp/vagrant_cloud")
     (license license:asl2.0)))
+
+(define-public ruby-libvirt
+  (package
+    (name "ruby-libvirt")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "ruby-libvirt" version))
+              (sha256
+               (base32
+                "0v6vj5vs9v01zr00bflqpfczhwcyc6jdf8k2dqn42lq6d87si77d"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; tests require access to libvirt socket
+    (native-inputs (list pkg-config))
+    (inputs (list libvirt))
+    (synopsis "Ruby bindings for libvirt")
+    (description "This package provides Ruby language binding for libvirt's
+native C API.")
+    (home-page "https://ruby.libvirt.org/")
+    (license license:lgpl2.1+)))
 
 (define-public ruby-pry-byebug
   (package
