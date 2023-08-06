@@ -38,14 +38,14 @@
 (define-public mc
   (package
     (name "mc")
-    (version "4.8.29")
+    (version "4.8.30")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://ftp.osuosl.org/pub/midnightcommander/mc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "1m0aai4paxpcf3lw1dd94zyxc7wd0ysmfwpibg50q62q9yws7n01"))))
+       (base32 "1py7jm620lsas7rcv5j69608gdshmp25d9gx958hr5sb2jr3rg2y"))))
     (build-system gnu-build-system)
     (native-inputs (list perl pkg-config))
     (inputs (list aspell
