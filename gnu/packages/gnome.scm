@@ -384,7 +384,6 @@ services.")
 (define-public libcloudproviders
   (package/inherit libcloudproviders-minimal
     (name "libcloudproviders")
-    (version "0.3.1")
     (outputs (cons "doc" (package-outputs libcloudproviders-minimal)))
     (arguments
      (substitute-keyword-arguments (package-arguments libcloudproviders-minimal)
