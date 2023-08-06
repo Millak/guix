@@ -450,6 +450,7 @@ Home Services
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Networking: Networking Home Services.  Networking services.
 * Miscellaneous: Miscellaneous Home Services.  More services.
 
 Platforms
@@ -21304,6 +21305,8 @@ client.
 @end table
 @end deftp
 
+@cindex Syncthing, file synchronization service
+@cindex backup service, Syncthing
 The @code{(gnu services syncthing)} module provides the following services:
 @cindex syncthing
 
@@ -21321,7 +21324,14 @@ syncthing} daemon, The value for this service type is a
          (syncthing-configuration (user "alice")))
 @end lisp
 
+@quotation Note
+This service is also available for Guix Home, where it runs directly
+with your user privileges (@pxref{Networking Home Services,
+@code{home-syncthing-service-type}}).
+@end quotation
+
 See below for details about @code{syncthing-configuration}.
+@end defvar
 
 @deftp {Data Type} syncthing-configuration
 Data type representing the configuration for @code{syncthing-service-type}.
@@ -21351,7 +21361,6 @@ directory is @file{$HOME} of the specified Syncthing @code{user}.
 
 @end table
 @end deftp
-@end defvar
 
 Furthermore, @code{(gnu services ssh)} provides the following services.
 @cindex SSH
@@ -42979,6 +42988,7 @@ services)}.
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Networking: Networking Home Services.  Networking services.
 * Miscellaneous: Miscellaneous Home Services.  More services.
 @end menu
 @c In addition to that Home Services can provide
@@ -44568,6 +44578,45 @@ kodi} for more information.
 
 @end table
 @end deftp
+
+@node Networking Home Services
+@subsection Networking Home Services
+
+This section lists services somewhat networking-related that you may use
+with Guix Home.
+
+@cindex Syncthing, file synchronization service
+@cindex backup service, Syncthing
+The @code{(gnu home services syncthing)} module provides a service to
+set up the @uref{Syncthing, https://syncthing.net} continuous file
+backup service.
+
+@defvar home-syncthing-service-type
+This is the service type for the @command{syncthing} daemon; it is the
+Home counterpart of the @code{syncthing-service-type} system service
+(@pxref{Networking Services, @code{syncthing-service-type}}).  The value
+for this service type is a @command{syncthing-configuration}.
+
+Here is how you would set it up with the default configuration:
+
+@lisp
+(service home-syncthing-service-type)
+@end lisp
+
+For a custom configuration, wrap you @code{syncthing-configuration} in
+@code{for-home}, as in this example:
+
+@lisp
+(service home-syncthing-service-type
+         (for-home
+          (syncthing-configuration (logflags 5))))
+@end lisp
+
+For details about @code{syncthing-configuration}, check out the
+documentation of the system service (@pxref{Networking Services,
+@code{syncthing-service-type}}).
+@end defvar
+
 
 @node Miscellaneous Home Services
 @subsection Miscellaneous Home Services
