@@ -32,6 +32,7 @@
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix packages))
 
@@ -47,6 +48,46 @@
       (sha256
        (base32 "1py7jm620lsas7rcv5j69608gdshmp25d9gx958hr5sb2jr3rg2y"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--with-screen=ncurses"
+              "--enable-aspell")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-FHS-file-names
+            (lambda _
+              ;; Patch files to refer to executables in the store or $PATH.
+              (substitute* "misc/mcedit.menu.in"
+                (("#! /bin/sh") (string-append "#!" (which "sh")))
+                (("/bin/bash") (which "bash")))
+              (substitute* "misc/ext.d/misc.sh.in"
+                (("/bin/cat") "cat"))
+              (substitute* (list "lib/utilunix.c"
+                                 "src/usermenu.c"
+                                 "src/vfs/fish/fish.c"
+                                 "tests/src/vfs/extfs/helpers-list/Makefile.in")
+                (("/bin/sh") (which "sh")))
+              (substitute* "src/filemanager/ext.c"
+                (("/bin/rm") "rm")
+                (("/bin/sh") (which "sh")))
+
+              ;; There are other /bin/<shell>s hard-coded in this file, but they
+              ;; are never tried after bash (mc's first choice) is found.
+              (substitute* "lib/shell.c"
+                (("/bin/bash") (which "bash")))))
+          (add-before 'check 'fix-tests
+            (lambda _
+              ;; Don't expect a UID or GID of ‘0’ in the build environment.
+              (with-directory-excursion "tests/src/vfs/extfs/helpers-list/data"
+                (substitute* (list "rpm.custom.output"
+                                   "rpm.glib.output")
+                  (("      0        0") "<<uid>>  <<gid>>")))
+              ;; XXX ERROR:mc_realpath.c:99:realpath_test: assertion failed
+              ;; (resolved_path == data->expected_string): ("" == "/usr/bin")
+              (substitute* "tests/lib/mc_realpath.c"
+                (("/usr/bin") "/")
+                (("usr/bin") "/")))))))
     (native-inputs (list perl pkg-config))
     (inputs (list aspell
                   check
@@ -55,46 +96,6 @@
                   libssh2
                   ncurses
                   unzip))
-    (arguments
-     `(#:configure-flags
-       '("--with-screen=ncurses" "--enable-aspell")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'patch-FHS-file-names
-           (lambda _
-             ;; Patch files to refer to executables in the store or $PATH.
-             (substitute* "misc/mcedit.menu.in"
-               (("#! /bin/sh") (string-append "#!" (which "sh")))
-               (("/bin/bash") (which "bash")))
-             (substitute* "misc/ext.d/misc.sh.in"
-               (("/bin/cat") "cat"))
-             (substitute* (list "lib/utilunix.c"
-                                "src/usermenu.c"
-                                "src/vfs/fish/fish.c"
-                                "tests/src/vfs/extfs/helpers-list/Makefile.in")
-               (("/bin/sh") (which "sh")))
-             (substitute* "src/filemanager/ext.c"
-               (("/bin/rm") "rm")
-               (("/bin/sh") (which "sh")))
-
-             ;; There are other /bin/<shell>s hard-coded in this file, but they
-             ;; are never tried after bash (mc's first choice) is found.
-             (substitute* "lib/shell.c"
-               (("/bin/bash") (which "bash")))
-             #t))
-         (add-before 'check 'fix-tests
-           (lambda _
-             ;; Don't expect a UID or GID of ‘0’ in the build environment.
-             (with-directory-excursion "tests/src/vfs/extfs/helpers-list/data"
-               (substitute* (list "rpm.custom.output"
-                                  "rpm.glib.output")
-                 (("      0        0") "<<uid>>  <<gid>>")))
-             ;; XXX ERROR:mc_realpath.c:99:realpath_test: assertion failed
-             ;; (resolved_path == data->expected_string): ("" == "/usr/bin")
-             (substitute* "tests/lib/mc_realpath.c"
-               (("/usr/bin") "/")
-               (("usr/bin") "/"))
-             #t)))))
     (home-page "https://www.midnight-commander.org")
     (properties
       `((release-monitoring-url . "https://ftp.osuosl.org/pub/midnightcommander/")))
