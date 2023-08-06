@@ -61,8 +61,6 @@
               (substitute* "misc/mcedit.menu.in"
                 (("#! /bin/sh") (string-append "#!" (which "sh")))
                 (("/bin/bash") (which "bash")))
-              (substitute* "misc/ext.d/misc.sh.in"
-                (("/bin/cat") "cat"))
               (substitute* (list "lib/utilunix.c"
                                  "src/usermenu.c"
                                  "src/vfs/fish/fish.c"
