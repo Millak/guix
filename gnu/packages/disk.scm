@@ -1176,7 +1176,6 @@ LVM D-Bus API).")
      (list elfutils
            glib
            json-glib
-           libelf
            python-wrapper
            `(,util-linux "lib")))
     (home-page "https://rmlint.rtfd.org")
