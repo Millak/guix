@@ -1278,14 +1278,14 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-13)
     (name "postgresql")
-    (version "11.20")
+    (version "11.21")
     (source (origin
               (inherit (package-source postgresql-13))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kmcnnc2nwjxv042b8bxbdxdgfksxvgmfhh4999rhzjays18hz1x"))))
+                "0l7qrwzwyiy5dwg6j7nnd9mq245sycc4gcv6a6r7gpfmf5s87c07"))))
     (native-inputs
      (modify-inputs (package-native-inputs postgresql-13)
        (replace "docbook-xml" docbook-xml-4.2)))))
