@@ -8039,21 +8039,22 @@ by asyncio.")
 (define-public python-parsel
   (package
     (name "python-parsel")
-    (version "1.6.0")
+    (version "1.8.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "parsel" version))
         (sha256
-          (base32 "0yawf9r3r863lwxj0n89i7h3n8xjbsl5b7n6xg76r68scl5yzvvh"))))
-    (build-system python-build-system)
+          (base32 "0f8yh30y3961a7kqwcnp4j3s7044ilakykiavc0skwdkr5l8xwmg"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
       (list python-cssselect
+            python-jmespath
             python-lxml
-            python-six
+            python-typing-extensions
             python-w3lib))
     (native-inputs
-      (list python-pytest python-pytest-runner))
+      (list python-psutil python-pytest))
     (home-page "https://github.com/scrapy/parsel")
     (synopsis "Extract data from HTML and XML using XPath and CSS selectors")
     (description "Parsel is a library to extract and remove data from
