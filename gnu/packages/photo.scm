@@ -629,41 +629,39 @@ such as Batch image processing.")
         (base32 "1pdmgxjdb3xlcqsaz7l8qzj5f7g7nwzhsrgid8929bm36d49cgc7"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'build-with-meson-0.60
-           ;; Work around ‘ERROR: Function does not take positional arguments.’.
-           (lambda _
-             (substitute* "src/meson.build"
-               (("^i18n\\.merge_file.*" match)
-                (string-append match "  data_dirs:")))))
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t))
-         (add-after 'install 'wrap-gi-python
-           ;; Make GTK find files needed by plugins.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                   (python-path       (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/entangle")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path))))
-             #t)))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-with-meson-0.60
+            ;; Work around ‘ERROR: Function does not take positional arguments.’.
+            (lambda _
+              (substitute* "src/meson.build"
+                (("^i18n\\.merge_file.*" match)
+                 (string-append match "  data_dirs:")))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'install 'wrap-gi-python
+            ;; Make GTK find files needed by plugins.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                    (python-path     (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (string-append #$output "/bin/entangle")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (native-inputs
-     `(("cmake" ,cmake)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
-       ("itstool" ,itstool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
+     (list cmake
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gtk-doc
+           itstool
+           libxml2
+           perl
+           pkg-config))
     (inputs
      (list gdk-pixbuf
            gexiv2
