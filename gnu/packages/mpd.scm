@@ -629,8 +629,16 @@ mpdevil loads all tags and covers on demand.")
     (arguments
      (list
       #:configure-flags
-      #~(list "-DMYMPD_STRIP_BINARY=OFF")  ; handled by 'strip phase
-      #:tests? #f)) ; no test target
+      #~(list "-DMYMPD_BUILD_TESTING=ON"
+              ;; Handled by 'strip' phase.
+              "-DMYMPD_STRIP_BINARY=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The following test requires network connectivity.
+                (invoke "ctest" "--exclude-regex" "test_http_client")))))))
     (native-inputs (list jq perl pkg-config))
     (inputs (list flac libid3tag lua openssl pcre2))
     (home-page "https://jcorporation.github.io/")
