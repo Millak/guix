@@ -1265,14 +1265,14 @@ pictures, sounds, or video.")
 (define-public postgresql-13
   (package
     (inherit postgresql-14)
-    (version "13.11")
+    (version "13.12")
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1yqbwnzgdgaim476smwkdj2jd6j92x9xqm2f1mknnmh3f9jgz4j9"))))))
+                "12r1kwjaclq2qn4qg3k6j0asrs4r0k0g1fkdpb3pnjsiwg7fv88d"))))))
 
 (define-public postgresql-11
   (package
