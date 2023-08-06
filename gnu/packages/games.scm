@@ -1172,26 +1172,25 @@ allows users to brew while offline.")
         (base32 "14996kbrwdrd0gpz19il2i4p650qdhjw8v8ka3aigk6pl4kda3sq"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-binary
-           (lambda _
-             ;; Set Lua module paths and default MIDI soundfont on startup.
-             (let* ((out (assoc-ref %outputs "out"))
-                    (fluid (assoc-ref %build-inputs "fluid-3"))
-                    (lua-version ,(version-major+minor (package-version lua)))
-                    (lua-cpath
-                     (map (lambda (lib)
-                            (string-append
-                             (assoc-ref %build-inputs (string-append "lua-" lib))
-                             "/lib/lua/" lua-version "/?.so"))
-                          '("filesystem" "lpeg"))))
-               (wrap-program (string-append out "/bin/corsix-th")
-                 `("LUA_CPATH" ";" = ,lua-cpath)
-                 `("SDL_SOUNDFONTS" ":" suffix
-                   (,(string-append fluid "/share/soundfonts/FluidR3Mono_GM.sf3")))))
-             #t)))
-       #:tests? #f)) ; TODO need busted package to run tests
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-binary
+            (lambda _
+              ;; Set Lua module paths and default MIDI soundfont on startup.
+              (let* ((fluid #$(this-package-input "fluid-3"))
+                     (lua-version #$(version-major+minor (package-version lua)))
+                     (lua-cpath
+                      (map (lambda (lib)
+                             (string-append
+                              (assoc-ref %build-inputs (string-append "lua-" lib))
+                              "/lib/lua/" lua-version "/?.so"))
+                           '("filesystem" "lpeg"))))
+                (wrap-program (string-append #$output "/bin/corsix-th")
+                  `("LUA_CPATH" ";" = ,lua-cpath)
+                  `("SDL_SOUNDFONTS" ":" suffix
+                    (,(string-append fluid "/share/soundfonts/FluidR3Mono_GM.sf3"))))))))
+      #:tests? #f)) ; TODO need busted package to run tests
     ;; Omit Lua-Socket dependency to disable automatic updates.
     (inputs
      (list ffmpeg
