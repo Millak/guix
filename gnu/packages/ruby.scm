@@ -90,6 +90,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages serialization)
   #:use-module (guix packages)
@@ -9782,6 +9783,32 @@ services library.")
 a number of providers in the @code{fog} gem.  @code{fog} is a Ruby cloud
 services library.")
     (home-page "https://github.com/fog/fog-xml")
+    (license license:expat)))
+
+(define-public ruby-fog-libvirt
+  (package
+    (name "ruby-fog-libvirt")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)        ; for tests
+              (uri (git-reference
+                    (url "https://github.com/fog/fog-libvirt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b1qafb0l24anmr8fviwhp9vj14g0fic0mkg9n1i11h68zhqkj2v"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-minitest-stub-const ruby-mocha ruby-net-ssh
+                         ruby-netrc ruby-octokit ruby-pry ruby-rubocop
+                         ruby-shindo ruby-simplecov ruby-yard ))
+    (propagated-inputs (list ruby-fog-core ruby-fog-json ruby-fog-xml
+                             ruby-json ruby-libvirt))
+    (synopsis "Ruby libvirt provider, either standalone or as a module for
+@code{fog}")
+    (description "This library can be used as a module for @code{fog} or as
+standalone libvirt provider.  @code{fog} is a Ruby cloud services library.")
+    (home-page "https://github.com/fog/fog-libvirt")
     (license license:expat)))
 
 (define-public ruby-pry-byebug
