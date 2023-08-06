@@ -450,6 +450,7 @@ Home Services
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Miscellaneous: Miscellaneous Home Services.  More services.
 
 Platforms
 
@@ -39082,6 +39083,12 @@ implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
 You can add @command{open localhost} to your @file{~/.dico} file to make
 @code{localhost} the default server for @command{dico} client
 (@pxref{Initialization File,,, dico, GNU Dico Manual}).
+
+@quotation Note
+This service is also available for Guix Home, where it runs directly
+with your user privileges (@pxref{Miscellaneous Home Services,
+@code{home-dicod-service-type}}).
+@end quotation
 @end defvar
 
 @deftp {Data Type} dicod-configuration
@@ -42972,6 +42979,7 @@ services)}.
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Miscellaneous: Miscellaneous Home Services.  More services.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -44560,6 +44568,43 @@ kodi} for more information.
 
 @end table
 @end deftp
+
+@node Miscellaneous Home Services
+@subsection Miscellaneous Home Services
+
+This section lists Home services that lack a better place.
+
+@subsubheading Dictionary Service
+
+@cindex dictionary service, for Home
+The @code{(gnu home services dict)} module provides the following service:
+
+@defvar home-dicod-service-type
+This is the type of the service that runs the @command{dicod} daemon, an
+implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
+
+You can add @command{open localhost} to your @file{~/.dico} file to make
+@code{localhost} the default server for @command{dico} client
+(@pxref{Initialization File,,, dico, GNU Dico Manual}).
+@end defvar
+
+This service is a direct mapping of the @code{dicod-service-type} system
+service (@pxref{Miscellaneous Services, Dictionary Service}).  You can
+use it like this:
+
+@lisp
+(service home-dicod-service-type)
+@end lisp
+
+You may specify a custom configuration by providing a
+@code{dicod-configuration} record, exactly like for
+@code{dicod-service-type}, but wrapping it in @code{for-home}:
+
+@lisp
+(service home-dicod-service-type
+         (for-home
+          (dicod-configuration @dots{})))
+@end lisp
 
 @node Invoking guix home
 @section Invoking @command{guix home}

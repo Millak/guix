@@ -56,7 +56,9 @@
   (handlers    dicod-configuration-handlers       ;list of <dicod-handler>
                (default '()))
   (databases   dicod-configuration-databases      ;list of <dicod-database>
-               (default (list %dicod-database:gcide))))
+               (default (list %dicod-database:gcide)))
+  (home-service? dicod-configuration-home-service? ;boolean
+                 (default for-home?) (innate)))
 
 (define-record-type* <dicod-handler>
   dicod-handler make-dicod-handler
@@ -152,20 +154,26 @@ database {
 (define (dicod-shepherd-service config)
   (let* ((dicod.conf (dicod-configuration-file config))
          (interfaces (dicod-configuration-interfaces config))
+         (home-service? (dicod-configuration-home-service? config))
+         (mappings  `(,@(if home-service?
+                            '()
+                            (list (file-system-mapping
+                                   (source "/dev/log")
+                                   (target source))))
+                      ,(file-system-mapping
+                        (source dicod.conf)
+                        (target source))))
          (dicod      (least-authority-wrapper
                       (file-append (dicod-configuration-dico config)
                                    "/bin/dicod")
                       #:name "dicod"
-                      #:mappings (list (file-system-mapping
-                                        (source "/dev/log")
-                                        (target source))
-                                       (file-system-mapping
-                                        (source dicod.conf)
-                                        (target source)))
+                      #:mappings mappings
                       #:namespaces (delq 'net %namespaces))))
     (list (shepherd-service
            (provision '(dicod))
-           (requirement '(user-processes))
+           (requirement (if home-service?
+                            '()
+                            '(user-processes)))
            (documentation "Run the dicod daemon.")
            (start #~(make-inetd-constructor
                      (list #$dicod "--inetd" "--foreground"
@@ -176,7 +184,8 @@ database {
                               (car (getaddrinfo interface "dict")))))
                           '#$interfaces)
                      #:requirements '#$requirement
-                     #:user "dicod" #:group "dicod"
+                     #:user #$(and (not home-service?) "dicod")
+                     #:group #$(and (not home-service?) "dicod")
                      #:service-name-stem "dicod"))
            (stop #~(make-inetd-destructor))
            (actions (list (shepherd-configuration-action dicod.conf)))))))
