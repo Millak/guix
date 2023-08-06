@@ -7752,25 +7752,17 @@ GCS, Azure Blob Storage, gzip, bz2, etc.)")
 (define-public python-w3lib
   (package
     (name "python-w3lib")
-    (version "1.22.0")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "w3lib" version))
-       (patches (search-patches "python-w3lib-fix-test-failure.patch"))
        (sha256
         (base32
-         "1pv02lvvmgz2qb61vz1jkjc04fgm4hpfvaj5zm4i3mjp64hd1mha"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest")))))))
+         "1cd4b3w5g3pfccsg79kjj27fwi216ip927rjq7isp8pfjzlp8nzd"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-six))
+     (list python-pytest))
     (home-page "https://github.com/scrapy/w3lib")
     (synopsis "Python library of web-related functions")
     (description
