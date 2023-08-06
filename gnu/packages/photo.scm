@@ -617,7 +617,7 @@ such as Batch image processing.")
 (define-public entangle
   (package
     (name "entangle")
-    (version "3.0")
+    (version "3.0")    ; delete the 'build-with-meson-0.60 phase when updating
     (source
      (origin
        (method git-fetch)
@@ -632,6 +632,12 @@ such as Batch image processing.")
      `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'build-with-meson-0.60
+           ;; Work around ‘ERROR: Function does not take positional arguments.’.
+           (lambda _
+             (substitute* "src/meson.build"
+               (("^i18n\\.merge_file.*" match)
+                (string-append match "  data_dirs:")))))
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
@@ -654,6 +660,7 @@ such as Batch image processing.")
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
        ("gtk-doc" ,gtk-doc)
+       ("itstool" ,itstool)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("xmllint" ,libxml2)))
