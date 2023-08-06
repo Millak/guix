@@ -1217,121 +1217,117 @@ APFS.")
           (base32 "1sbkryl04xflrk6jb4fsl3h2whilj5m3vpdkpwwb26idp7ckjjv6"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-tool-locations
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "common/config"
-                 ;; Make absolute file names relative.
-                 (("(MKFS_PROG=\").*(\")" _ pre post)
-                  (string-append pre "mkfs" post)))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("( -s|#.|[= ])(/bin/sh|/bin/bash)" _ pre match)
-                              (string-append pre
-                                             (assoc-ref inputs "bash")
-                                             match))
-                             (("/bin/(rm|true)" match)
-                              (search-input-file inputs match))
-                             (("/usr(/bin/time)" _ match)
-                              (search-input-file inputs match))))
-                         (append (find-files "common" ".*")
-                                 (find-files "tests" ".*")
-                                 (find-files "tools" ".*")
-                                 (find-files "src" "\\.(c|sh)$")))))
-           (replace 'bootstrap
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (substitute* "Makefile"
-                 ;; Avoid a mysterious (to me) ‘permission denied’ error.
-                 (("cp ") "cp -f "))
-               (substitute* "m4/package_utilies.m4"
-                 ;; Fix the bogus hard-coded paths for every single binary.
-                 (("(AC_PATH_PROG\\(.*, ).*(\\))" _ pre post)
-                  (string-append pre (getenv "PATH") post)))
-               (apply invoke "make" "configure" make-flags)))
-           (add-after 'install 'wrap-xfstests/check
-             ;; Keep wrapping distinct from 'create-helper-script below: users
-             ;; must be able to invoke xfstests/check directly if they prefer.
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out")))
-                 (wrap-program (string-append out "/xfstests/check")
-                   ;; Prefix the user's PATH with the minimum required tools.
-                   ;; The suite has many other optional dependencies and will
-                   ;; automatically select tests based on the original PATH.
-                   `("PATH" ":" prefix
-                     ,(map (lambda (name)
-                             (let ((input (assoc-ref inputs name)))
-                               (string-append input "/bin:"
-                                              input "/sbin")))
-                           (list "acl"
-                                 "attr"
-                                 "coreutils"
-                                 "inetutils"
-                                 "xfsprogs")))))))
-           (add-after 'install 'create-helper
-             ;; Upstream installs only a ‘check’ script that's not in $PATH and
-             ;; would try to write to the store without explaining how to change
-             ;; that.  Install a simple helper script to make it discoverable.
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out      (assoc-ref outputs "out"))
-                      (check    (string-append out "/xfstests/check"))
-                      (bin      (string-append out "/bin"))
-                      (helper   (string-append bin "/xfstests-check")))
-                 (mkdir-p bin)
-                 (with-output-to-file helper
-                   (lambda _
-                     (format #t "#!~a --no-auto-compile\n!#\n"
-                             (search-input-file inputs "/bin/guile"))
-                     (write
-                      `(begin
-                         (define (try proc dir)
-                           "Try to PROC DIR.  Return DIR on success, else #f."
-                           (with-exception-handler (const #f)
-                             (lambda _ (proc dir) dir)
-                             #:unwind? #t))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-tool-locations
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "common/config"
+                  ;; Make absolute file names relative.
+                  (("(MKFS_PROG=\").*(\")" _ pre post)
+                   (string-append pre "mkfs" post)))
+                (for-each (lambda (file)
+                            (substitute* file
+                              (("( -s|#.|[= ])(/bin/sh|/bin/bash)" _ pre match)
+                               (string-append pre
+                                              (search-input-file inputs match)))
+                              (("/bin/(rm|true)" match)
+                               (search-input-file inputs match))
+                              (("/usr(/bin/time)" _ match)
+                               (search-input-file inputs match))))
+                          (append (find-files "common" ".*")
+                                  (find-files "tests" ".*")
+                                  (find-files "tools" ".*")
+                                  (find-files "src" "\\.(c|sh)$")))))
+            (replace 'bootstrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (substitute* "Makefile"
+                  ;; Avoid a mysterious (to me) ‘permission denied’ error.
+                  (("cp ") "cp -f "))
+                (substitute* "m4/package_utilies.m4"
+                  ;; Fix the bogus hard-coded paths for every single binary.
+                  (("(AC_PATH_PROG\\(.*, ).*(\\))" _ pre post)
+                   (string-append pre (getenv "PATH") post)))
+                (apply invoke "make" "configure" make-flags)))
+            (add-after 'install 'wrap-xfstests/check
+              ;; Keep wrapping distinct from 'create-helper-script below: users
+              ;; must be able to invoke xfstests/check directly if they prefer.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (wrap-program (string-append #$output "/xfstests/check")
+                  ;; Prefix the user's PATH with the minimum required tools.
+                  ;; The suite has many other optional dependencies and will
+                  ;; automatically select tests based on the original PATH.
+                  `("PATH" ":" prefix
+                    ,(map (lambda (file)
+                            (dirname (search-input-file inputs file)))
+                          (list "bin/setfacl"         ; acl
+                                "bin/attr"            ; attr
+                                "bin/ls"              ; coreutils
+                                "bin/hostname"        ; inetutils
+                                "sbin/mkfs.xfs")))))) ; xfsprogs
+            (add-after 'install 'create-helper
+              ;; Upstream installs only a ‘check’ script that's not in $PATH and
+              ;; would try to write to the store without explaining how to change
+              ;; that.  Install a simple helper script to make it discoverable.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((check  (string-append #$output "/xfstests/check"))
+                       (bin    (string-append #$output "/bin"))
+                       (helper (string-append bin "/xfstests-check")))
+                  (mkdir-p bin)
+                  (with-output-to-file helper
+                    (lambda _
+                      (format #t "#!~a --no-auto-compile\n!#\n"
+                              (search-input-file inputs "/bin/guile"))
+                      (write
+                       `(begin
+                          (define (try proc dir)
+                            "Try to PROC DIR.  Return DIR on success, else #f."
+                            (with-exception-handler (const #f)
+                              (lambda _ (proc dir) dir)
+                              #:unwind? #t))
 
-                         (define args
-                           (cdr (command-line)))
+                          (define args
+                            (cdr (command-line)))
 
-                         (when (or (member "--help" args)
-                                   (member "-h" args))
-                           (format #t "Usage: ~a [OPTION]...
+                          (when (or (member "--help" args)
+                                    (member "-h" args))
+                            (format #t "Usage: ~a [OPTION]...
 This Guix helper sets up a new writable RESULT_BASE if it's unset, then executes
 xfstest's \"~a\" command (with any OPTIONs) as documented below.\n\n"
-                                   ,(basename helper)
-                                   ,(basename check)))
+                                    ,(basename helper)
+                                    ,(basename check)))
 
-                         (let* ((gotenv-base (getenv "RESULT_BASE"))
-                                (base (or gotenv-base
-                                          (let loop ((count 0))
-                                            (or (try mkdir
-                                                     (format #f "xfstests.~a"
-                                                             count))
-                                                (loop (+ 1 count))))))
-                                (result-base (if (string-prefix? "/" base)
-                                                 base
-                                                 (string-append (getcwd) "/"
-                                                                base))))
-                           (setenv "RESULT_BASE" result-base)
-                           ;; CHECK must run in its own directory or will fail.
-                           (chdir ,(dirname check))
-                           (let ((status
-                                  (status:exit-val (apply system* ,check args))))
-                             (unless gotenv-base
-                               (try rmdir result-base))
-                             status))))))
-                 (chmod helper #o755)))))))
+                          (let* ((gotenv-base (getenv "RESULT_BASE"))
+                                 (base (or gotenv-base
+                                           (let loop ((count 0))
+                                             (or (try mkdir
+                                                      (format #f "xfstests.~a"
+                                                              count))
+                                                 (loop (+ 1 count))))))
+                                 (result-base (if (string-prefix? "/" base)
+                                                  base
+                                                  (string-append (getcwd) "/"
+                                                                 base))))
+                            (setenv "RESULT_BASE" result-base)
+                            ;; CHECK must run in its own directory or will fail.
+                            (chdir ,(dirname check))
+                            (let ((status
+                                   (status:exit-val (apply system* ,check args))))
+                              (unless gotenv-base
+                                (try rmdir result-base))
+                              status))))))
+                  (chmod helper #o755)))))))
       (native-inputs
        (list autoconf automake libtool))
       (inputs
-       `(("acl" ,acl)
-         ("attr" ,attr)
-         ("guile" ,guile-3.0)           ; for our xfstests-check helper script
-         ("inetutils" ,inetutils)       ; for ‘hostname’
-         ("libuuid" ,util-linux "lib")
-         ("perl" ,perl)                 ; to automagically patch shebangs
-         ("time" ,time)
-         ("xfsprogs" ,xfsprogs)))
+       (list acl
+             attr
+             guile-3.0                  ; for our xfstests-check helper script
+             inetutils
+             `(,util-linux "lib")
+             perl
+             time
+             xfsprogs))
       (home-page "https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git")
       (synopsis "File system @acronym{QA, Quality Assurance} test suite")
       (description
