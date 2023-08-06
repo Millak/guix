@@ -32703,16 +32703,17 @@ implementing a pre-defined interface.")
 (define-public python-itemloaders
   (package
     (name "python-itemloaders")
-    (version "1.0.4")
+    (version "1.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "itemloaders" version))
         (sha256
-          (base32 "15hc78h90qhwass1bga1c3xar2dd6j8sxg61zg6jvh74lf6csxqj"))))
-    (build-system python-build-system)
+          (base32 "0j2aw4ipalj208594x80blpgkh1i63gqqa4nb67b823av9hirn11"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
     (propagated-inputs
-      (list python-itemadapter python-jmespath python-parsel python-w3lib))
+     (list python-itemadapter python-jmespath python-parsel python-w3lib))
     (home-page "https://github.com/scrapy/itemloaders")
     (synopsis "Base library for scrapy's ItemLoader")
     (description "Itemloaders is a library that helps you collect data
