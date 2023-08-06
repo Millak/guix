@@ -2786,6 +2786,58 @@ managers and Linux distros.")
     (home-page "https://github.com/fgrehm/vagrant-cachier")
     (license license:expat)))
 
+(define-public vagrant-reload
+  (package
+    (name "vagrant-reload")
+    (version "0.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant-reload" version))
+              (sha256
+               (base32
+                "0smy0px20xgakcyki5hdbk3n63k9c6ychh5pvbannn1p4zjxa0xa"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f ; has no tests, testing as described in the Readme requires
+                  ; running vagrant, a provider and downloading a box
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-gemfile
+            (lambda _
+              (substitute* "Gemfile"
+                ((", :git.*") "\n"))))
+          (add-after 'install 'install-plugin.json
+            (lambda _
+              (let* ((plugins.d (string-append
+                                 #$output "/share/vagrant-plugins/plugins.d"))
+                     (plugin.json (string-append
+                                   plugins.d "/" #$name ".json")))
+                (mkdir-p plugins.d)
+                #$(with-extensions (list guile-json-4)
+                    #~(begin
+                        (use-modules (json))
+                        (call-with-output-file plugin.json
+                          (lambda (port)
+                            (scm->json
+                             '((#$name
+                                .
+                                (("ruby_version"
+                                  . #$(package-version (this-package-input "ruby")))
+                                 ("vagrant_version"
+                                  . #$(package-version (this-package-input "vagrant")))
+                                 ("gem_version" .  "")
+                                 ("require" . "")
+                                 ("installed_gem_version" . #$version)
+                                 ("sources" . #()))))
+                             port)))))))))))
+    (inputs (list ruby vagrant))
+    (synopsis "Reload a Vagrant VM as a provisioning step")
+    (description "This Vagrant plugin enables reloading a Vagrant VM as a
+provisioning step.")
+    (home-page "http://www.vagrantup.com")
+    (license license:expat)))
+
 (define-public vagrant-vai
   (package
     (name "vagrant-vai")
