@@ -2786,6 +2786,61 @@ managers and Linux distros.")
     (home-page "https://github.com/fgrehm/vagrant-cachier")
     (license license:expat)))
 
+(define-public vagrant-libvirt
+  (package
+    (name "vagrant-libvirt")
+    (version "0.12.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant-libvirt" version))
+              (sha256
+               (base32
+                "013g6wn24k01lwwkzcb0vvxj959lws8c52bkyqi6b8shnn793j1l"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests involve running vagrant, downloading a box and
+                  ; access to libvirt socket
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-plugin.json
+            (lambda _
+              (let* ((plugins.d (string-append
+                                 #$output "/share/vagrant-plugins/plugins.d"))
+                     (plugin.json (string-append
+                                   plugins.d "/" #$name ".json")))
+                (mkdir-p plugins.d)
+                #$(with-extensions (list guile-json-4)
+                    #~(begin
+                        (use-modules (json))
+                        (call-with-output-file plugin.json
+                          (lambda (port)
+                            (scm->json
+                             '((#$name
+                                .
+                                (("ruby_version"
+                                  . #$(package-version (this-package-input "ruby")))
+                                 ("vagrant_version"
+                                  . #$(package-version (this-package-input "vagrant")))
+                                 ("gem_version" .  "")
+                                 ("require" . "")
+                                 ("installed_gem_version" . #$version)
+                                 ("sources" . #()))))
+                             port)))))))))))
+    (inputs (list ruby vagrant))
+    (propagated-inputs (list ruby-diffy
+                             ruby-fog-core
+                             ruby-fog-libvirt
+                             ruby-nokogiri
+                             ruby-rexml
+                             ruby-xml-simple))
+    (synopsis "Libvirt provider for Vagrant")
+    (description "This is a Vagrant plugin that adds a Libvirt provider to
+Vagrant, allowing Vagrant to control and provision machines via the Libvirt
+toolkit.")
+    (home-page "https://github.com/vagrant-libvirt/vagrant-libvirt")
+    (license license:expat)))
+
 (define-public vagrant-reload
   (package
     (name "vagrant-reload")
