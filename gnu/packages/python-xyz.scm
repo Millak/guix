@@ -32673,13 +32673,13 @@ message queues for Python.")
 (define-public python-itemadapter
   (package
     (name "python-itemadapter")
-    (version "0.5.0")
+    (version "0.8.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "itemadapter" version))
         (sha256
-          (base32 "083wp3h2brh8x19jbdr8rz3biqwp3jlqd0rfzcyrjyhssffsgdh5"))))
+          (base32 "1aa898gjgwy3axxfrgsh4kdvhp6n6wz3ccdishq0gh8azf2q8xbp"))))
     (build-system python-build-system)
     (home-page "https://github.com/scrapy/itemadapter")
     (synopsis "Common interface for data container classes")
