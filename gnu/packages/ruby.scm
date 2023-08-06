@@ -9726,6 +9726,29 @@ provides shared classes and tests for @code{fog} providers and services.")
     (home-page "https://github.com/fog/fog-core")
     (license license:expat)))
 
+(define-public ruby-fog-json
+  (package
+    (name "ruby-fog-json")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)        ; for tests
+              (uri (git-reference
+                    (url "https://github.com/fog/fog-json")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f4hbmhy22b1gbkzd3pnj5xvljp6bl7inc2y4fxh29nrmcn4pgb0"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-minitest))
+    (propagated-inputs (list ruby-fog-core ruby-multi-json))
+    (synopsis "JSON parsing tools used by @code{fog} providers")
+    (description "This package containse the JSON parsing tools shared between
+a number of providers in the @code{fog} gem.  @code{fog} is a Ruby cloud
+services library.")
+    (home-page "https://github.com/fog/fog-json")
+    (license license:expat)))
+
 (define-public ruby-pry-byebug
   (package
     (name "ruby-pry-byebug")
