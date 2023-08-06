@@ -9696,6 +9696,36 @@ native C API.")
     (home-page "https://ruby.libvirt.org/")
     (license license:lgpl2.1+)))
 
+(define-public ruby-fog-core
+  (package
+    (name "ruby-fog-core")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)        ; for tests
+              (uri (git-reference
+                    (url "https://github.com/fog/fog-core")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "184vpi81az7raz98652m7d98ikabdl9di37dgal0adr76q57j03c"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list ruby-minitest-stub-const))
+    (propagated-inputs (list ruby-builder ruby-excon ruby-formatador
+                             ruby-mime-types))
+    (synopsis "Shared classes and tests for fog providers and services")
+    (description "@code{fog} is a Ruby cloud services library.  This package
+provides shared classes and tests for @code{fog} providers and services.")
+    (home-page "https://github.com/fog/fog-core")
+    (license license:expat)))
+
 (define-public ruby-pry-byebug
   (package
     (name "ruby-pry-byebug")
