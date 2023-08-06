@@ -44,6 +44,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -1262,8 +1263,10 @@ APFS.")
                             (dirname (search-input-file inputs file)))
                           (list "bin/setfacl"         ; acl
                                 "bin/attr"            ; attr
-                                "bin/ls"              ; coreutils
+                                "bin/bc"              ; bc
+                                "bin/df"              ; coreutils
                                 "bin/hostname"        ; inetutils
+                                "bin/perl"            ; perl
                                 "sbin/mkfs.xfs")))))) ; xfsprogs
             (add-after 'install 'create-helper
               ;; Upstream installs only a ‘check’ script that's not in $PATH and
@@ -1322,6 +1325,7 @@ xfstest's \"~a\" command (with any OPTIONs) as documented below.\n\n"
       (inputs
        (list acl
              attr
+             bc
              guile-3.0                  ; for our xfstests-check helper script
              inetutils
              `(,util-linux "lib")
