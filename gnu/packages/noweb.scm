@@ -28,7 +28,7 @@
 (define-public noweb
   (package
     (name "noweb")
-    (version "2.12")
+    (version "2.13")
     (source
      (origin
        (method git-fetch)
@@ -38,7 +38,7 @@
                                                      "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1160i2ghgzqvnb44kgwd6s3p4jnk9668rmc15jlcwl7pdf3xqm95"))))
+        (base32 "0fwngh7zl9mrjz966pskhi4zvk26j6vsm85x99df9194nv51drq8"))))
     (build-system gnu-build-system)
     (arguments
      (list
