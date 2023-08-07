@@ -17867,7 +17867,7 @@ multiple experimental contexts.")
 (define-public vbz-compression
   (package
     (name "vbz-compression")
-    (version "1.0.1")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -17879,7 +17879,7 @@ multiple experimental contexts.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1c6wsrnw03vsc5cfp2rdakly5xy55m9chjmy6v685yapdwirdky0"))))
+         "1rn5d98flvjblhj4zjpcdqqh8qlgsh5cmb13i49fnm187p03097z"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
