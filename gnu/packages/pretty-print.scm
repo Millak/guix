@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer  <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -350,14 +351,14 @@ seen in a terminal.")
 (define-public highlight
   (package
     (name "highlight")
-    (version "3.62")
+    (version "4.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://www.andre-simon.de/zip/highlight-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "088di7qxd6b2r22qljllhnly0r9a0lfnwnfqswjn23s09awjbl6p"))))
+        (base32 "1cl21qpgy92w1x53vrn1bgq84mkh6fgayc9k38mz4xmz2yw01nv1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
