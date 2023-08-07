@@ -877,9 +877,10 @@ noun phrases, verb phrases, etc.).")
                             (copy-file "makefiles/makefile.defs.linux.pulse"
                                        "makefile.defs")))
                         (replace 'check
-                          (lambda _
-                            (invoke "./praat" "--run"
-                                    "test/runAllTests_batch.praat")))
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "./praat" "--run"
+                                      "test/runAllTests_batch.praat"))))
                         (replace 'install
                           (lambda* (#:key outputs #:allow-other-keys)
                             (let* ((out (assoc-ref outputs "out"))
