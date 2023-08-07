@@ -71,40 +71,40 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-(define %texlive-date "20220321")
-(define %texlive-version (string-take %texlive-date 4))
+(define %texlive-date "20230313")
+(define %texlive-year (string-take %texlive-date 4))
 
 (define texlive-extra-src
   (origin
     (method url-fetch)
     (uri (string-append "ftp://tug.org/historic/systems/texlive/"
-                        %texlive-version "/texlive-"
+                        %texlive-year "/texlive-"
                         %texlive-date "-extra.tar.xz"))
     (sha256 (base32
-             "15ljdlxvv051q3fq5rn1ncfk0z9a8cbchqfdpv3qrgj7i4vcz102"))))
+             "1hiqvdg679yadygf23f37b3dz5ick258k1qcam9nhkhprkx7d9l0"))))
 
 (define texlive-texmf-src
   (origin
     (method url-fetch)
     (uri (string-append "ftp://tug.org/historic/systems/texlive/"
-                        %texlive-version "/texlive-"
+                        %texlive-year "/texlive-"
                         %texlive-date "-texmf.tar.xz"))
     (sha256 (base32
-             "05iz38v2j0aih3zc20qdlajk8b72ark7zz3cfq9dvlgpn43jnarp"))))
+             "0lqjm11pr9vasvivaci3k9xcmdyd08ldnh31zf8avjjs09xcfkac"))))
 
 (define-public texlivebin
   (package
     (name "texlivebin")
-    (version %texlive-version)
+    (version %texlive-date)
     (source
      (origin
        (method url-fetch)
        (uri (string-append "ftp://tug.org/historic/systems/texlive/"
-                           %texlive-version "/texlive-"
+                           %texlive-year "/texlive-"
                            %texlive-date "-source.tar.xz"))
        (sha256
         (base32
-         "0mlv2zb4zkabvf97sdakkv5xfywxkg30yicn0i4w9chywn2k9yjz"))
+         "1fbrkv7g9j6ipmwjx27l8l9l974rmply8bhf7c2iqc6h3q7aly1q"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -170,7 +170,6 @@
          "--with-system-graphite2"
          "--with-system-harfbuzz"
          "--with-system-icu"
-         "--with-system-libgs"
          "--with-system-libpaper"
          "--with-system-libpng"
          "--with-system-mpfr"
@@ -217,13 +216,6 @@
              (substitute* "texk/texlive/linked_scripts/epstopdf/epstopdf.pl"
                (("\"gs\"")
                 (string-append "\"" (assoc-ref inputs "ghostscript") "/bin/gs\"")))))
-         (add-after 'unpack 'patch-dvisvgm-build-files
-           (lambda _
-             ;; XXX: Ghostscript is detected, but HAVE_LIBGS is never set, so
-             ;; the appropriate linker flags are not added.
-             (substitute* "texk/dvisvgm/configure"
-               (("^have_libgs=yes" all)
-                (string-append all "\nHAVE_LIBGS=1")))))
          (add-after 'unpack 'disable-failing-test
            (lambda _
              ;; FIXME: This test fails on 32-bit architectures since Glibc 2.28:
@@ -231,16 +223,6 @@
              (substitute* "texk/web2c/omegafonts/check.test"
                (("^\\./omfonts -ofm2opl \\$srcdir/tests/check tests/xcheck \\|\\| exit 1")
                 "./omfonts -ofm2opl $srcdir/tests/check tests/xcheck || exit 77"))))
-         ,@(if (or (target-ppc32?)
-                   (target-riscv64?))
-             ;; Some mendex tests fail on some architectures.
-             `((add-after 'unpack 'skip-mendex-tests
-                 (lambda _
-                   (substitute* '("texk/mendexk/tests/mendex.test"
-                                  "texk/upmendex/tests/upmendex.test")
-                     (("srcdir/tests/pprecA-0.ind pprecA-0.ind1 \\|\\| exit 1")
-                      "srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 77")))))
-             '())
          (add-after 'unpack 'unpack-texlive-extra
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir "texlive-extra")
@@ -325,7 +307,7 @@ This package contains the binaries.")
 (define-public texlivetexmf
   (package
    (name "texlivetexmf")
-   (version %texlive-version)
+   (version %texlive-date)
    (source texlive-texmf-src)
    (build-system gnu-build-system)
    (inputs
@@ -407,7 +389,7 @@ This package contains the complete tree of texmf-dist data.")
 (define-public texlive
   (package
    (name "texlive")
-   (version %texlive-version)
+   (version %texlive-date)
    (source #f)
    (build-system trivial-build-system)
    (inputs `(("bash" ,bash-minimal)     ;for wrap-program
