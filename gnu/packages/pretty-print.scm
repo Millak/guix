@@ -52,7 +52,8 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages swig))
+  #:use-module (gnu packages swig)
+  #:use-module (gnu packages qt))
 
 (define-public a2ps
   (package
@@ -352,13 +353,15 @@ seen in a terminal.")
   (package
     (name "highlight")
     (version "4.7")
+    (outputs (list "out" "gui"))
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.andre-simon.de/zip/highlight-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1cl21qpgy92w1x53vrn1bgq84mkh6fgayc9k38mz4xmz2yw01nv1"))))
+                "1cl21qpgy92w1x53vrn1bgq84mkh6fgayc9k38mz4xmz2yw01nv1"))
+              (patches (search-patches "highlight-gui-data-dir.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no tests
@@ -371,17 +374,44 @@ seen in a terminal.")
                         (delete 'configure) ;no configure script
                         (add-after 'unpack 'fix-search-for-lua
                           (lambda _
-                            (substitute* "src/makefile"
-                              (("(LUA_PKG_NAME=).*" _ assignment)
-                               (string-append assignment "lua-"
-                                              #$(version-major+minor (package-version
-                                                                      lua))
-                                              "\n")))
-                            (substitute* "extras/swig/makefile"
-                              (("lua")
-                               (string-append "lua-"
-                                              #$(version-major+minor (package-version
-                                                                      lua)))))))
+                            (let ((ver #$(version-major+minor (package-version
+                                                               lua))))
+                              (substitute* "src/makefile"
+                                (("(LUA_PKG_NAME=).*" _ assignment)
+                                 (string-append assignment "lua-" ver "\n")))
+                              (substitute* "src/gui-qt/highlight.pro"
+                                (("(PKGCONFIG \\+= lua)" _ assignment)
+                                 (string-append assignment "-" ver)))
+                              (substitute* "extras/swig/makefile"
+                                (("lua")
+                                 (string-append "lua-" ver))))))
+                        (add-after 'build 'build-gui
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (let* ((out (assoc-ref outputs "out"))
+                                   (data (string-append out
+                                                        "/share/highlight/"))
+                                   (conf (string-append out "/etc/highlight/"))
+                                   (doc (string-append out
+                                         "/share/doc/highlight/"))
+                                   (gui (assoc-ref outputs "gui"))
+                                   (gui-data (string-append gui
+                                              "/share/highlight/")))
+                              ;; modified version of gui task in makefile
+                              (invoke "make"
+                                      "-C"
+                                      "./src"
+                                      "-f"
+                                      "./makefile"
+                                      (string-append "HL_DATA_DIR=" data)
+                                      (string-append "HL_CONFIG_DIR=" conf)
+                                      (string-append "HL_DOC_DIR=" doc)
+                                      (string-append "GUI_DATA_DIR=" gui-data)
+                                      "gui-qt"))))
+                        (replace 'install
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (let ((out (assoc-ref outputs "out")))
+                              (invoke "make" "install"
+                                      (string-append "PREFIX=" out)))))
                         (add-after 'install 'install-perl-bindings
                           (lambda* (#:key outputs #:allow-other-keys)
                             (let* ((perldir (string-append (assoc-ref outputs
@@ -394,8 +424,14 @@ seen in a terminal.")
                                 (invoke "make" "perl")
                                 (invoke "perl" "-I" "." "testmod.pl")
                                 (install-file "highlight.pm" perldir)
-                                (install-file "highlight.so" autodir))))))))
-    (inputs (list lua boost perl))
+                                (install-file "highlight.so" autodir)))))
+                        (add-after 'install 'install-gui
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (let ((gui (assoc-ref outputs "gui")))
+                              (mkdir-p (string-append gui "/bin"))
+                              (invoke "make" "install-gui"
+                                      (string-append "PREFIX=" gui))))))))
+    (inputs (list lua boost perl qtbase-5))
     (native-inputs (list pkg-config swig))
     (home-page "http://www.andre-simon.de/doku/highlight/en/highlight.php")
     (synopsis "Convert code to documents with syntax highlighting")
