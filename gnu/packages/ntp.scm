@@ -139,8 +139,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
            libevent
            ;; Build with POSIX capabilities support on GNU/Linux.  This allows
            ;; 'ntpd' to run as non-root (when invoked with '-u'.)
-           (if (string-suffix? "-linux"
-                               (or (%current-target-system) (%current-system)))
+           (if (target-linux?)
                (list libcap)
                '())))
    (arguments
