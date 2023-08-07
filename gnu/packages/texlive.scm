@@ -71,7 +71,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-(define %texlive-date "20210325")
+(define %texlive-date "20220321")
 (define %texlive-version (string-take %texlive-date 4))
 
 (define texlive-extra-src
@@ -81,7 +81,7 @@
                         %texlive-version "/texlive-"
                         %texlive-date "-extra.tar.xz"))
     (sha256 (base32
-             "171kg1n9zapw3d2g47d8l0cywa99bl9m54xkqvp9625ks22z78s6"))))
+             "15ljdlxvv051q3fq5rn1ncfk0z9a8cbchqfdpv3qrgj7i4vcz102"))))
 
 (define texlive-texmf-src
   (origin
@@ -90,7 +90,7 @@
                         %texlive-version "/texlive-"
                         %texlive-date "-texmf.tar.xz"))
     (sha256 (base32
-             "070gczcm1h9rx29w2f02xd3nhd84c4k28nfmm8qgp69yq8vd84pz"))))
+             "05iz38v2j0aih3zc20qdlajk8b72ark7zz3cfq9dvlgpn43jnarp"))))
 
 (define-public texlivebin
   (package
@@ -104,7 +104,7 @@
                            %texlive-date "-source.tar.xz"))
        (sha256
         (base32
-         "0jsq1p66l46k2qq0gbqmx25flj2nprsz4wrd1ybn286p11kdkvvs"))
+         "0mlv2zb4zkabvf97sdakkv5xfywxkg30yicn0i4w9chywn2k9yjz"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
