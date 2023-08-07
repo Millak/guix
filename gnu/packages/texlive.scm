@@ -473,7 +473,7 @@ This package contains the complete TeX Live distribution.")
     ;; checking the Biber/BibLaTeX compatibility matrix in the BibLaTeX manual
     ;; at <https://ctan.org/pkg/biblatex>.
     (name "biber")
-    (version "2.16")
+    (version "2.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -482,7 +482,7 @@ This package contains the complete TeX Live distribution.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0586q8y1f2k23mvb02ccm3qsb35cwskafksixsjaih7a7xcf5gxx"))
+                "0b8a8lldz9xx3yr1h5bh2akbqq1ljydqyhr6bdf6qd7ncqvsrpaf"))
               (patches (search-patches "biber-adapt-perl-5.36.patch"))))
     (build-system perl-build-system)
     (arguments
