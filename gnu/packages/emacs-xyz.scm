@@ -24410,31 +24410,29 @@ downloading manager for Emacs.")
       (license license:gpl3+))))
 
 (define-public emacs-helpful
-  (let ((commit "1c98f6f06a85def5d34c735f8cd407f20cebddf9")
-        (revision "1"))
-    (package
-      (name "emacs-helpful")
-      (version (git-version "0.19" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Wilfred/helpful")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "18b5hjfji51zxjrxhkklxx3j9svk295awmxv8n95mp8ilas2kd3l"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash emacs-elisp-refs emacs-f emacs-s))
-      (native-inputs
-       (list emacs-ert-runner emacs-undercover))
-      (arguments
-       `(#:tests? #t
-         #:test-command '("ert-runner")))
-      (home-page "https://github.com/Wilfred/helpful")
-      (synopsis "More contextual information in Emacs help")
-      (description "@code{helpful} is an alternative to the built-in Emacs help
+  (package
+    (name "emacs-helpful")
+    (version "0.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Wilfred/helpful")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03afgdbs5nmhw833svrqky7fmfs1zlvqzcj7j5g29sakivs60xqc"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dash emacs-elisp-refs emacs-f emacs-s))
+    (native-inputs
+     (list emacs-ert-runner emacs-undercover))
+    (arguments
+     `(#:tests? #t
+       #:test-command '("ert-runner")))
+    (home-page "https://github.com/Wilfred/helpful")
+    (synopsis "More contextual information in Emacs help")
+    (description "@code{helpful} is an alternative to the built-in Emacs help
 that provides much more contextual information.
 
 @itemize
@@ -24453,7 +24451,7 @@ functions.
 @item Trace, disassemble functions from inside Helpful.  This is discoverable
 and doesn't require memorisation of commands.
 @end itemize\n")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-logview
   (package
