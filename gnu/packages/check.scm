@@ -601,7 +601,7 @@ pattern.")
 (define-public catch2-3.3
   (package
     (name "catch2")
-    (version "3.3.2")
+    (version "3.4.0")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -611,7 +611,7 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m6i3lr0qk303ashjpz5vpwmxf76n5d6s8jq6r6kcy6gph525zmp"))))
+                "1gdfsva6mnd66px85fmm3s65h8qzqnmgbmws2i3nygfav1y8d88f"))))
     (build-system cmake-build-system)
     (arguments
      (list
