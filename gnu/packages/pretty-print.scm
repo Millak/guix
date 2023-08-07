@@ -352,54 +352,55 @@ seen in a terminal.")
   (package
     (name "highlight")
     (version "4.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://www.andre-simon.de/zip/highlight-"
-                           version ".tar.bz2"))
-       (sha256
-        (base32 "1cl21qpgy92w1x53vrn1bgq84mkh6fgayc9k38mz4xmz2yw01nv1"))))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.andre-simon.de/zip/highlight-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "1cl21qpgy92w1x53vrn1bgq84mkh6fgayc9k38mz4xmz2yw01nv1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (let ((confdir (string-append %output "/share/highlight/config/")))
-         (list (string-append "PREFIX=" %output)
-               (string-append "HL_CONFIG_DIR=" confdir)
-               (string-append "conf_dir=" confdir)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'unpack 'fix-search-for-lua
-           (lambda _
-             (substitute* "src/makefile"
-               (("(LUA_PKG_NAME=).*" _ assignment)
-                (string-append assignment "lua-" ,(version-major+minor
-                                                   (package-version lua))
-                               "\n")))
-             (substitute* "extras/swig/makefile"
-               (("lua") (string-append "lua-" ,(version-major+minor
-                                                (package-version lua)))))
-             #t))
-         (add-after 'install 'install-perl-bindings
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((perldir (string-append (assoc-ref outputs "out")
-                                            "/lib/perl5/site_perl/"
-                                            ,(package-version perl)))
-                    (autodir (string-append perldir "/auto/highlight")))
-               (with-directory-excursion "extras/swig"
-                 (invoke "make" "perl")
-                 (invoke "perl" "-I" "." "testmod.pl")
-                 (install-file "highlight.pm" perldir)
-                 (install-file "highlight.so" autodir))
-               #t))))))
-    (inputs
-     (list lua boost perl))
-    (native-inputs
-     (list pkg-config swig))
+     (list #:tests? #f ;no tests
+           #:make-flags #~(let ((confdir (string-append %output
+                                          "/share/highlight/config/")))
+                            (list (string-append "PREFIX=" %output)
+                                  (string-append "HL_CONFIG_DIR=" confdir)
+                                  (string-append "conf_dir=" confdir)))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure) ;no configure script
+                        (add-after 'unpack 'fix-search-for-lua
+                          (lambda _
+                            (substitute* "src/makefile"
+                              (("(LUA_PKG_NAME=).*" _ assignment)
+                               (string-append assignment "lua-"
+                                              #$(version-major+minor (package-version
+                                                                      lua))
+                                              "\n")))
+                            (substitute* "extras/swig/makefile"
+                              (("lua")
+                               (string-append "lua-"
+                                              #$(version-major+minor (package-version
+                                                                      lua)))))))
+                        (add-after 'install 'install-perl-bindings
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (let* ((perldir (string-append (assoc-ref outputs
+                                                                      "out")
+                                             "/lib/perl5/site_perl/"
+                                             #$(package-version perl)))
+                                   (autodir (string-append perldir
+                                                           "/auto/highlight")))
+                              (with-directory-excursion "extras/swig"
+                                (invoke "make" "perl")
+                                (invoke "perl" "-I" "." "testmod.pl")
+                                (install-file "highlight.pm" perldir)
+                                (install-file "highlight.so" autodir))))))))
+    (inputs (list lua boost perl))
+    (native-inputs (list pkg-config swig))
     (home-page "http://www.andre-simon.de/doku/highlight/en/highlight.php")
     (synopsis "Convert code to documents with syntax highlighting")
-    (description "Highlight converts source code to HTML, XHTML, RTF, LaTeX,
+    (description
+     "Highlight converts source code to HTML, XHTML, RTF, LaTeX,
 TeX, SVG, BBCode and terminal escape sequences with colored syntax
 highlighting.  Language definitions and color themes are customizable.")
     (license gpl3+)))
