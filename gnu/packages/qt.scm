@@ -609,7 +609,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                             ;; are required by some internal bootstrap target
                             ;; used for the tools.
                             (list "double-conversion" "freetype" "harfbuzz-ng"
-                                  "libpng" "libjpeg" "sqlite" "xcb" "zlib"))))))
+                                  "libpng" "libjpeg" "sqlite" "xcb" "zlib"))))
+              (patches (search-patches "qtbase-use-TZDIR.patch"
+                                       "qtbase-moc-ignore-gcc-macro.patch"
+                                       "qtbase-absolute-runpath.patch"
+                                       "qtbase-qmake-use-libname.patch"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
@@ -716,6 +720,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                           (string-append #$output
                                          ":" (getenv "CMAKE_PREFIX_PATH")))
                   (setenv "QMAKEPATH" (string-append #$output "/lib/qt6"))
+                  ;; It is necessary to augment LIBRARY_PATH with that of the
+                  ;; freshly installed qtbase because of the
+                  ;; 'qtbase-qmake-use-libname.patch' patch.
+                  (setenv "LIBRARY_PATH" (string-append #$output "/lib:"
+                                                        (getenv "LIBRARY_PATH")))
                   (setenv "QML2_IMPORT_PATH"
                           (string-append #$output "/lib/qt6/qml"))
                   (setenv "QT_PLUGIN_PATH"
