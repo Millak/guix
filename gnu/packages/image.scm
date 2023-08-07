@@ -1528,6 +1528,12 @@ channels.")
                                "-DEXIV2_ENABLE_BMFF=ON")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-gcc-reference
+           (lambda _
+             ;; _GLIBCXX_ASSERTIONS brings reference to GCC.
+             (substitute* "cmake/compilerFlags.cmake"
+               (("add_compile_options[(]-Wp,-D_GLIBCXX_ASSERTIONS[)]")
+                ""))))
          (add-after 'install 'delete-static-libraries
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
