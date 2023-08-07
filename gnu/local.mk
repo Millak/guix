@@ -1964,6 +1964,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/source-highlight-gcc-compat.patch	\
   %D%/packages/patches/softhsm-fix-openssl3-tests.patch		\
   %D%/packages/patches/spectre-meltdown-checker-externalize-fwdb.patch \
+  %D%/packages/patches/spdlog-fix-tests.patch			\
   %D%/packages/patches/spectre-meltdown-checker-find-kernel.patch \
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/sssd-system-directories.patch		\

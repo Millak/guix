@@ -220,6 +220,7 @@ output in multiple windows in a terminal.")
              (url "https://github.com/gabime/spdlog")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "spdlog-fix-tests.patch"))
        (sha256
         (base32 "0i3a1cqrg1sz0w50g7zz9x73rf838igqri12q8ijh4rzpq0qq3ch"))))
     (build-system cmake-build-system)
