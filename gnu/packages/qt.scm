@@ -627,6 +627,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  (string-append "-DINSTALL_EXAMPLESDIR=" out
                                 "/share/doc/qt6/examples")
                  (string-append "-DINSTALL_INCLUDEDIR=" out "/include/qt6")
+
+                 ;; Do not embed an absolute reference to compilers, to reduce
+                 ;; the closure size.
+                 "-DQT_EMBED_TOOLCHAIN_COMPILER=OFF"
+
                  ;; Link with DBus and OpenSSL so they don't get dlopen'ed.
                  "-DINPUT_dbus=linked"
                  "-DINPUT_openssl=linked"
