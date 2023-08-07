@@ -414,14 +414,19 @@ seen in a terminal.")
                                       (string-append "PREFIX=" out)))))
                         (add-after 'install 'install-perl-bindings
                           (lambda* (#:key outputs #:allow-other-keys)
-                            (let* ((perldir (string-append (assoc-ref outputs
-                                                                      "out")
+                            (let* ((out (assoc-ref outputs "out"))
+                                   (data (string-append out
+                                                        "/share/highlight/"))
+                                   (conf (string-append out "/etc/highlight/"))
+                                   (perldir (string-append out
                                              "/lib/perl5/site_perl/"
                                              #$(package-version perl)))
                                    (autodir (string-append perldir
                                                            "/auto/highlight")))
                               (with-directory-excursion "extras/swig"
-                                (invoke "make" "perl")
+                                (invoke "make" "perl"
+                                        (string-append "hl_data_dir=" data)
+                                        (string-append "hl_conf_dir=" conf))
                                 (invoke "perl" "-I" "." "testmod.pl")
                                 (install-file "highlight.pm" perldir)
                                 (install-file "highlight.so" autodir)))))
