@@ -520,17 +520,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.38")
+(define-public linux-libre-6.1-version "6.1.43")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
-   (base32 "1b96867b46m36l88qnq2d4i9y43ghw97z9jajrh11cvb6kq4xi67")
-   (base32 "1qq3nsznblz5fkwahxwq26csmrmjbxh8xknm2z4zw6b6k9svzb1b")))
+   (base32 "1sf80f2i4vf888xjcn84ymn4w5ynn30ib9033zwmv7f09yvfhapy")
+   (base32 "1liv6s1f1k52nkljsak0i42wyvfsj2b0156rhdh3cmginb98xb37")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0hrdh1w9z8bgy4cxqsxfkwa01yincfw1mq1bbwm36zczc0dzk97r")))
+        (hash (base32 "02588pl1z8jxgxpa03rsdyg5pr0r3v0aylzp8r5ykm32193lhli4")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -656,8 +656,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                         (list %boot-logo-patch
                               %linux-libre-arm-export-__sync_icache_dcache-patch)
                         (search-patches
-                         "linux-libre-infodocs-target.patch"
-                         "linux-libre-wireguard-postup-privkey.patch"))))
+                         "linux-libre-infodocs-target.patch"))))
 
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
