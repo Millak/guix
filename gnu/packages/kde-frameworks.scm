@@ -3441,6 +3441,43 @@ need.")
 (define kinit-bootstrap
   ((package-input-rewriting `((,kdbusaddons . ,kdbusaddons-bootstrap))) kinit))
 
+(define-public ktextaddons
+  (package
+    (name "ktextaddons")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://kde/stable/" name "/" name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0ds6506il3vmqhpzd1dqcpm19yd80ijibfncr9mlhq4kvj7vnjl9"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda _
+                   (setenv "HOME" (getcwd))
+                   ;; XXX: 6 tests failed due to:
+                   ;;   missing icons
+                   ;;   translators plugins not available during tests
+                   (invoke "ctest" "-E"
+                           "(grammalecteresultwidgettest|grammalecteconfigwidgettest||grammalecteresultjobtest|languagetoolconfigwidgettest|translator-translatorwidgettest|translator-translatorengineloadertest)"))))))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (inputs
+     (list karchive kconfigwidgets kcoreaddons ki18n kxmlgui
+           qtbase-5 qtkeychain))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "Various text handling addons")
+    (description "This library provides text addons (autocorrection, text to
+speak, grammar checking, text translator, emoticon support) for Qt
+applications.")
+    (license
+     (list license:lgpl2.0+ license:bsd-3 license:gpl2+ license:cc0))))
+
 
 ;; Tier 4
 ;;
