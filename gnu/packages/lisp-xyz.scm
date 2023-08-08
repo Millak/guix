@@ -11945,28 +11945,28 @@ Scalable Vector Graphics files.")
           (base32 "1gsxg8igiavs8fr39vgw8ypa42wjqaq9sszwqiifpm7yvq54lls7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cl-colors2" ,sbcl-cl-colors2)
-         ("cl-esrap" ,sbcl-esrap)
-         ("cl-jpeg" ,sbcl-cl-jpeg)
-         ("cl-ppcre-unicode" ,sbcl-cl-ppcre-unicode)
-         ("cl-unicode" ,sbcl-cl-unicode)
-         ("clunit2" ,sbcl-clunit2)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("parse-number" ,sbcl-parse-number)
-         ("tk" ,tk)
-         ("tklib" ,tklib)))
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cl-colors2
+             sbcl-cl-jpeg
+             sbcl-cl-ppcre-unicode
+             sbcl-cl-unicode
+             sbcl-clunit2
+             sbcl-esrap
+             sbcl-named-readtables
+             sbcl-parse-number
+             tk
+             tklib))
       (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'fix-paths
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        (substitute* "src/wish-communication.lisp"
-                          (("#-freebsd \"wish\"")
-                           (string-append "#-freebsd \""
-                                          (assoc-ref inputs "tk")
-                                          "/bin/wish\"")))
-                        #t)))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/wish-communication.lisp"
+                       (("#-freebsd \"wish\"")
+                        (string-append "#-freebsd \""
+                                       (search-input-file inputs "/bin/wish")
+                                       "\""))))))))
       (synopsis "Common Lisp bindings for the Tk GUI toolkit")
       (description
        "Nodgui (@emph{No Drama GUI}) is a Common Lisp binding for the Tk GUI
