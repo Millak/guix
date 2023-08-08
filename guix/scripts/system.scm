@@ -686,7 +686,10 @@ checking this by themselves in their 'check' procedure."
          (find-partition-by-label (file-system-label->string device))))))
 
   (define file-systems
-    (filter file-system-needed-for-boot?
+    (filter (lambda (file-system)
+              (and (file-system-needed-for-boot? file-system)
+                   (not (member (file-system-type file-system)
+                                %pseudo-file-system-types))))
             (operating-system-file-systems os)))
 
   (for-each (lambda (fs)
