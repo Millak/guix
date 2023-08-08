@@ -4723,6 +4723,7 @@ library.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags #~'("--enable-cblas")
       #:modules
       '((guix build gnu-build-system)
         (guix build utils)
