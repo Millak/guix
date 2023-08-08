@@ -15,6 +15,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
@@ -133,11 +135,13 @@ joystick, and graphics hardware.")
                   #$flags))
        ((#:make-flags flags ''())
         #~(cons*
-           ;; SDL dlopens libudev, so make sure it is in rpath. This overrides
-           ;; the LDFLAG set in sdl’s configure-flags, which isn’t necessary
-           ;; as sdl2 includes Mesa by default.
+           ;; SDL dlopens libudev and libvulkan, so make sure they are in
+           ;; rpath. This overrides the LDFLAG set in sdl’s configure-flags,
+           ;; which isn’t necessary as sdl2 includes Mesa by default.
            (string-append "LDFLAGS=-Wl,-rpath,"
-                          #$(this-package-input "eudev") "/lib")
+                          #$(this-package-input "eudev") "/lib"
+                          ",-rpath,"
+                          #$(this-package-input "vulkan-loader") "/lib")
            #$flags))))
     (inputs
      ;; SDL2 needs to be built with ibus support otherwise some systems
@@ -151,6 +155,7 @@ joystick, and graphics hardware.")
                ibus-minimal
                libxkbcommon
                libxcursor               ;enables X11 cursor support
+               vulkan-loader
                wayland
                wayland-protocols)))
     (license license:bsd-3)))
