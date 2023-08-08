@@ -461,6 +461,7 @@ information.")
            kmime
            kpimcommon
            kpimtextedit
+           ktextaddons
            ktextwidgets
            kwallet
            libkdepim
@@ -519,6 +520,7 @@ information.")
            kparts
            kpimcommon
            kpimtextedit
+           ktextaddons
            ktextwidgets
            kxmlgui
            libkdepim
@@ -1238,6 +1240,7 @@ and retrieving certificates from LDAP servers.")
            kpimtextedit
            kservice
            ksyntaxhighlighting
+           ktextaddons
            ktextwidgets
            kuserfeedback
            ktnef
@@ -1330,6 +1333,7 @@ manager from KDE.")
            kpimcommon
            kpimtextedit
            ksyntaxhighlighting
+           ktextaddons
            ktextwidgets
            kwallet
            kwidgetsaddons
@@ -1388,6 +1392,7 @@ dealing with email.")
            kmime
            kpimcommon
            kpimtextedit
+           ktextaddons
            ktextwidgets
            kxmlgui
            libkdepim
@@ -1515,6 +1520,7 @@ using a Qt/KMime C++ API.")
            kpimtextedit
            kservice
            ksyntaxhighlighting
+           ktextaddons
            ktextwidgets
            kwallet
            kwidgetsaddons
@@ -1630,6 +1636,7 @@ information in non-ASCII character sets.")
            kparts
            kpimcommon
            kpimtextedit
+           ktextaddons
            ktextwidgets
            kwidgetsaddons
            kwindowsystem
@@ -1738,6 +1745,7 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
            kpimcommon
            kpimtextedit
            kservice
+           ktextaddons
            kwallet
            kwidgetsaddons
            kwindowsystem
@@ -1869,6 +1877,7 @@ pass files.")
            kmime
            knewstuff
            kpimtextedit
+           ktextaddons
            ktextwidgets
            kwallet
            kwidgetsaddons
@@ -1905,6 +1914,7 @@ pass files.")
                   kio
                   kpimcommon
                   kpimtextedit
+                  ktextaddons
                   ktextwidgets
                   kwidgetsaddons
                   qtbase-5))
@@ -2191,6 +2201,7 @@ KDE using certificate-based crypto.")
            kpimcommon
            kpimtextedit
            ksyntaxhighlighting
+           ktextaddons
            ktextwidgets
            kwallet
            kwindowsystem
