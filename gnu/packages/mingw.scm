@@ -144,7 +144,7 @@ several new APIs such as DirectX and DDK, and 64-bit support.")
 (define-public mingw-w64-tools
   (package
     (name "mingw-w64-tools")
-    (version "11.0.0")
+    (version "11.0.1")
     (source
      (origin
        (method url-fetch)
@@ -152,7 +152,7 @@ several new APIs such as DirectX and DDK, and 64-bit support.")
              "mirror://sourceforge/mingw-w64/mingw-w64/"
              "mingw-w64-release/mingw-w64-v" version ".tar.bz2"))
        (sha256
-        (base32 "0pycbxlqh8gj2zp3k531p0r4m7ay6f4nhs9sq9620c6q7dis23mx"))))
+        (base32 "047f4m37kxf7g8qj23qplrzfd9cirfkkv8d175sfv2zfd7hbqriz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
