@@ -320,7 +320,8 @@ applications on Wayland.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1ipnkdi8wgv519mvwa5zxlz20wipbypyfixjv2qdfd9vl1pznwvs"))))
+         (base32 "1ipnkdi8wgv519mvwa5zxlz20wipbypyfixjv2qdfd9vl1pznwvs"))
+        (patches (search-patches "grantlee-fix-i586-precision.patch"))))
     (native-inputs
      ;; Optional: lcov and cccc, both are for code coverage
      (list doxygen))
