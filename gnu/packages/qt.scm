@@ -3264,6 +3264,29 @@ interpreter from QML for creating asynchronous mobile and desktop UIs with
 Python.")
     (license license:isc)))
 
+(define-public pyotherside-for-qt5
+  (package/inherit pyotherside
+    (name "pyotherside-for-qt5")
+    (arguments
+     (substitute-keyword-arguments (package-arguments pyotherside)
+       ((#:qtbase _ #f)
+        qtbase-5)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'fix-installation-prefix
+              (lambda _
+                ;; The QT_INSTALL_QML property points to the qtbase
+                ;; installation prefix.
+                (substitute* "src/src.pro"
+                  (("\\$\\$\\[QT_INSTALL_QML]")
+                   (string-append #$output "/lib/qt"
+                                  #$(version-major (package-version qtbase-5))
+                                  "/qml")))))))))
+    (inputs (modify-inputs (package-inputs pyotherside)
+              (replace "qtdeclarative" qtdeclarative-5)
+              (replace "qtquickcontrols2" qtquickcontrols-5)
+              (replace "qtsvg" qtsvg-5)))))
+
 (define-public python-sip
   (package
     (name "python-sip")
