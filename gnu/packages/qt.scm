@@ -3215,6 +3215,55 @@ instances and can send data to the primary instance from secondary
 instances.")
       (license license:expat))))
 
+(define-public pyotherside
+  (package
+    (name "pyotherside")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thp/pyotherside")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vwl088p8zjkh2rwmzwpz5mkjs2rfyb80018dq4r571c9vpwp2r0"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-installation-prefix
+            (lambda _
+              ;; The QT_INSTALL_QML property points to the qtbase
+              ;; installation prefix.
+              (substitute* "src/src.pro"
+                (("\\$\\$\\[QT_INSTALL_QML]")
+                 (string-append #$output "/lib/qt"
+                                #$(version-major (package-version qtbase))
+                                "/qml")))))
+          (replace 'configure
+            (lambda _
+              (invoke "qmake")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./tests/tests"))))
+          (replace 'install
+            ;; Specify a specific install target, otherwise the build fails
+            ;; attempting to install the qtquicktests target to the qtbase
+            ;; installation prefix.
+            (lambda _
+              (invoke "make" "sub-src-install_subtargets"))))))
+    (inputs (list python qtdeclarative qtquickcontrols2 qtsvg))
+    (home-page "https://thp.io/2011/pyotherside/")
+    (synopsis "Qt plugin providing access to a Python 3 interpreter from QML")
+    (description "Pyotherside is a Qt plugin providing access to a Python 3
+interpreter from QML for creating asynchronous mobile and desktop UIs with
+Python.")
+    (license license:isc)))
+
 (define-public python-sip
   (package
     (name "python-sip")
