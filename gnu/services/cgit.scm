@@ -581,7 +581,7 @@ removed for the URL and name.")
    (string "a fast webinterface for the git dscm")
    "Text printed below the heading on the repository index page.")
   (root-readme
-   (string "")
+   (file-object "")
    "The content of the file specified with this option will be included
 verbatim below the \"about\" link on the repository index page.")
   (root-title
