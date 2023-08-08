@@ -131,6 +131,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
+  #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -5915,23 +5916,27 @@ config files---you only have to specify the www root.")
 (define-public goaccess
   (package
     (name "goaccess")
-    (version "1.5.2")
+    (version "1.7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://tar.goaccess.io/goaccess-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "12hwmd9cn7yy7vj92110skjaslpxkn05msb9wj228qmjjf9jzkm0"))
+                "0sqjkla4fjw5h49x675qibp860bk0haajc3i31m1q782kjiap6hf"))
               (modules '((guix build utils)))
-              (snippet '(begin
-                          (substitute* "src/error.h"
-                            (("__DATE__") "\"1970-01-01\"")
-                            (("__TIME__") "\"00:00:00\""))))))
+              (snippet '(substitute* '("src/error.h"
+                                       "src/parser.c")
+                          (("__DATE__") "\"1970-01-01\"")
+                          (("__TIME__") "\"00:00:00\"")))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "--enable-geoip=mmdb"
+             "--enable-utf8")))
     (inputs
-     ;; TODO: Add dependency on geoip-tools.
-     (list glib ncurses))
+     (list glib ncurses libmaxminddb openssl))
     (native-inputs
      (list pkg-config))
     (home-page "https://goaccess.io")
