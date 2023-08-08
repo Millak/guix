@@ -2666,7 +2666,7 @@ fixed point (16.16) format.")
        ("perl" ,perl)
        ("python" ,python-wrapper)))
     (home-page "https://github.com/flame/libflame")
-    (synopsis "High-performance object-based library for DLA computations")
+    (synopsis "High-performance library for @acronym{DLA, dense linear algebra} computations")
     (description "@code{libflame} is a portable library for dense matrix
 computations, providing much of the functionality present in LAPACK, developed
 by current and former members of the @acronym{SHPC, Science of High-Performance
