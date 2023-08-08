@@ -633,12 +633,15 @@ management system and its Plasma integration components.")
     (inputs (list akonadi
                   akonadi-contacts
                   breeze-icons
+                  gpgme
                   grantlee
                   grantleetheme
                   kio
                   kirigami
+                  kirigami-addons
                   kdbusaddons
                   ki18n
+                  kimap
                   kcalendarcore
                   kcalendarsupport
                   kconfigwidgets
@@ -646,15 +649,22 @@ management system and its Plasma integration components.")
                   kcoreaddons
                   kcontacts
                   kitemmodels
+                  kmailcommon
+                  kmessagelib
                   kmime
                   kidentitymanagement
+                  kpimcommon
                   kpimtextedit
+                  ktextaddons
                   ktextwidgets
                   akonadi-calendar
+                  akonadi-mime
                   keventviews
                   kcalutils
                   kxmlgui
                   kiconthemes
+                  libkdepim
+                  libkleo
                   qtbase-5
                   qtdeclarative-5
                   qtquickcontrols2-5
@@ -662,7 +672,8 @@ management system and its Plasma integration components.")
                   qtquickcontrols-5
                   qtgraphicaleffects
                   qtlocation
-                  qqc2-desktop-style))
+                  qqc2-desktop-style
+                  qtwebengine-5))
     (home-page "https://apps.kde.org/kalendar/")
     (synopsis "Calendar application")
     (description
