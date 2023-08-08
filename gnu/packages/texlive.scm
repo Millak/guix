@@ -191,9 +191,7 @@
       ;; XXX FIXME fix luajit properly on these architectures.
       #:tests? ,(let ((s (or (%current-target-system)
                              (%current-system))))
-                  (not (or (string-prefix? "aarch64" s)
-                           (string-prefix? "mips64" s)
-                           (string-prefix? "powerpc64le" s))))
+                  (not (string-prefix? "mips64" s)))
 
        #:phases
        (modify-phases %standard-phases
@@ -216,30 +214,12 @@
              (substitute* "texk/texlive/linked_scripts/epstopdf/epstopdf.pl"
                (("\"gs\"")
                 (string-append "\"" (assoc-ref inputs "ghostscript") "/bin/gs\"")))))
-         (add-after 'unpack 'disable-failing-test
-           (lambda _
-             ;; FIXME: This test fails on 32-bit architectures since Glibc 2.28:
-             ;; <https://bugzilla.redhat.com/show_bug.cgi?id=1631847>.
-             (substitute* "texk/web2c/omegafonts/check.test"
-               (("^\\./omfonts -ofm2opl \\$srcdir/tests/check tests/xcheck \\|\\| exit 1")
-                "./omfonts -ofm2opl $srcdir/tests/check tests/xcheck || exit 77"))))
          (add-after 'unpack 'unpack-texlive-extra
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir "texlive-extra")
              (with-directory-excursion "texlive-extra"
                (apply (assoc-ref %standard-phases 'unpack)
                       (list #:source (assoc-ref inputs "texlive-extra-src"))))))
-         ,@(if (target-arm32?)
-               `((add-after 'unpack 'skip-faulty-test
-                   (lambda _
-                     ;; Skip this faulty test on armhf-linux:
-                     ;;   https://issues.guix.gnu.org/54055
-                     (substitute* '("texk/mendexk/tests/mendex.test"
-                                    "texk/upmendex/tests/upmendex.test")
-                       (("^TEXMFCNF=" all)
-                        (string-append "exit 77 # skip\n" all))))))
-               '())
-
          (add-after 'install 'post-install
            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
              (let* ((out (assoc-ref outputs "out"))
@@ -345,6 +325,7 @@ This package contains the binaries.")
                      (share (string-append out "/share"))
                      (texmfroot (string-append share "/texmf-dist/web2c"))
                      (texmfcnf (string-append texmfroot "/texmf.cnf"))
+                     (fmtutilcnf (string-append texmfroot "/fmtutil.cnf"))
                      (texlive-bin (assoc-ref inputs "texlive-bin"))
                      (texbin (string-append texlive-bin "/bin"))
                      (tlpkg (string-append texlive-bin "/share/tlpkg")))
