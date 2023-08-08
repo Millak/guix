@@ -51,6 +51,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -770,6 +771,63 @@ implementing a Relying Party.")
 that after installing this package, you might still need to add appropriate
 udev rules to your system configuration to be able to configure the YubiKey as
 an unprivileged user.")
+    (license license:bsd-2)))
+
+(define-public yubikey-manager-qt
+  (package
+    (name "yubikey-manager-qt")
+    (version "1.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://developers.yubico.com/" name
+                                  "/Releases/" name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qjp9p7i6957lf6ycwwz0178nmjgdyydb2f235bkin0pfm3rxcp9"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "ykman-gui/deployment.pri"
+                (("/usr/bin")
+                 (string-append #$output "/bin")))))
+          (replace 'configure
+            (lambda _
+              (invoke "qmake")))
+          (add-after 'install 'install-desktop-resources
+            (lambda _
+              (let ((datadir (string-append #$output "/share")))
+                (with-directory-excursion "resources"
+                  (install-file "icons/ykman.png"
+                                (string-append datadir "/pixmaps"))
+                  (install-file "com.yubico.yubikey_manager.metainfo.xml"
+                                (string-append datadir "/metainfo"))
+                  (install-file "ykman-gui.desktop"
+                                (string-append datadir "/applications"))))))
+          (add-after 'qt-wrap 'wrap-more
+            (lambda _
+              (wrap-program (string-append #$output "/bin/ykman-gui")
+                ;; Wrap PYTHONPATH so that pyotherside can find the
+                ;; yubikey-manager library.
+                `("GUIX_PYTHONPATH" prefix
+                  (,(getenv "GUIX_PYTHONPATH")))))))))
+    (native-inputs (list python-wrapper))
+    (inputs (list pyotherside-for-qt5
+                  python-yubikey-manager
+                  qtdeclarative-5
+                  qtgraphicaleffects
+                  qtquickcontrols-5
+                  qtquickcontrols2-5
+                  qtsvg-5))
+    (home-page "https://developers.yubico.com/yubikey-manager-qt/")
+    (synopsis "GUI for configuring any YubiKey over all USB interfaces")
+    (description "YubiKey Manager (Qt) is a graphical application for
+configuring any YubiKey over all USB interfaces.  For a CLI alternative, refer
+to the @code{python-yubikey-manager} package.")
     (license license:bsd-2)))
 
 (define-public libnitrokey
