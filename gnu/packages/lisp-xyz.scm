@@ -9678,6 +9678,43 @@ Common Lisp via Gobject Introspection.")
 (define-public ecl-cl-glib
   (sbcl-package->ecl-package sbcl-cl-glib))
 
+(define-public sbcl-cl-gtk4
+  (let ((commit "d116905e7b68508d03681a50b3b24d63e7b111e4")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-gtk4")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bohonghuang/cl-gtk4")
+               (commit commit)))
+         (file-name (git-file-name "cl-gtk4" version))
+         (sha256
+          (base32 "0mprmmvbagnflvhynn51l42nbwr08rld99ls0c48m5lpjn0ja4zc"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("cl-gtk4" "cl-gdk4")))
+      ;; propagate because it at least requires the typelib files at runtime
+      (propagated-inputs (list gtk))
+      (inputs
+       (list gobject-introspection
+             sbcl-cl-glib
+             sbcl-cl-gobject-introspection-wrapper))
+      (home-page "https://github.com/bohonghuang/cl-gtk4")
+      (synopsis "GTK4 bindings for Common Lisp")
+      (description
+       "This library provides GTK4 bindings for Common Lisp via Gobject
+Introspection, in the cl-gtk4 ASDF system.")
+      (license license:lgpl3))))
+
+(define-public cl-gtk4
+  (sbcl-package->cl-source-package sbcl-cl-gtk4))
+
+(define-public ecl-cl-gtk4
+  (sbcl-package->ecl-package sbcl-cl-gtk4))
+
 (define-public sbcl-cl-slug
   (let ((commit "ffb229d10f0d3f7f54e706791725225e200bf749")
         (revision "1"))
