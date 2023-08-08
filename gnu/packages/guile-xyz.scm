@@ -5345,7 +5345,7 @@ GitLab instance.")
 (define-public guile-smc
   (package
     (name "guile-smc")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -5355,7 +5355,7 @@ GitLab instance.")
        (file-name (string-append name "-" version))
        (sha256
         (base32
-         "15b8m30kjl46p44xjd65vv1bv60hy130zfskkcsrj10fzahyk9zd"))))
+         "02729gkywzimmdlmnwzclvs3wl92f9mvp5dmcbp75kmwibxly288"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
