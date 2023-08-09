@@ -489,7 +489,7 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
                               (directory (string-append "/" package))
                               file->signature)
   "Return an <upstream-source> for the latest release of PACKAGE (a string)
-under DIRECTORY at BASE-URL, or #f. Optionally include a VERSION string to
+under DIRECTORY at BASE-URL, or #f.  Optionally include a VERSION string to
 fetch a specific version.
 
 BASE-URL should be the URL of an HTML page, typically a directory listing as
@@ -806,7 +806,7 @@ to fetch a specific version."
       (string-append "/pub/xorg/" (dirname (uri-path uri)))))))
 
 (define* (import-kernel.org-release package #:key (version #f))
-  "Return the latest release of PACKAGE, the name of a kernel.org package.
+  "Return the latest release of PACKAGE, a Linux kernel package.
 Optionally include a VERSION string to fetch a specific version."
   (define %kernel.org-base
     ;; This URL and sub-directories thereof are nginx-generated directory
