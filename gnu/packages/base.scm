@@ -78,7 +78,8 @@
   #:export (glibc
             libc-for-target
             make-ld-wrapper
-            libiconv-if-needed))
+            libiconv-if-needed
+            %final-inputs))
 
 ;;; Commentary:
 ;;;
@@ -1648,10 +1649,10 @@ package needs iconv ,@(libiconv-if-needed) should be added."
          (proc  (module-ref iface 'canonical-package)))
     (proc package)))
 
-(define-public (%final-inputs)
+(define* (%final-inputs #:optional (system (%current-system)))
   "Return the list of \"final inputs\"."
   ;; Avoid circular dependency by lazily resolving 'commencement'.
   (let ((iface (resolve-interface '(gnu packages commencement))))
-    ((module-ref iface '%final-inputs) (%current-system))))
+    ((module-ref iface '%final-inputs) system)))
 
 ;;; base.scm ends here
