@@ -19716,7 +19716,7 @@ described in RFC 2045 (see @url{http://tools.ietf.org/html/rfc2045}).")
        (list sbcl-cl-ppcre sbcl-cl-base64 sbcl-cl-qprint))
       (native-inputs
        (list sbcl-rove))
-      (home-page "https://github.com/eugeneia/cl-qprint/")
+      (home-page "https://github.com/40ants/cl-mime/")
       (synopsis "Read and print MIME content in Common Lisp")
       (description
        "This is a Common Lisp library for reading and printing MIME content.
