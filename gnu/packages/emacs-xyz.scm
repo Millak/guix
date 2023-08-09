@@ -9052,6 +9052,30 @@ completion candidate when using the Company text completion framework.")
 @code{company-math}.")
     (license license:gpl3+)))
 
+(define-public emacs-math-preview
+  (package
+    (name "emacs-math-preview")
+    (version "5.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.com/matsievskiysv/math-preview")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ni08900p0pbajw143iw0b7a62qiqcm9b6jy7pqgpn437vydjx1z"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash emacs-s))
+    (home-page "https://gitlab.com/matsievskiysv/math-preview")
+    (synopsis "Preview TeX math equations inline using MathJax")
+    (description
+     "Emacs math-preview uses MathJax for displaying TeX, MathML and AsciiMath
+  math inline in Emacs buffers.")
+    (license license:gpl3+)))
+
 (define-public emacs-company-coq
   (package
     (name "emacs-company-coq")
