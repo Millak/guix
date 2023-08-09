@@ -4,12 +4,12 @@ https://salsa.debian.org/mingw-w64-team/mingw-w64.git
 
 Invoke the following in the aforementioned repo to see the original patch:
 
-  $ git show 4974e2c:debian/patches/reproducible-gendef.patch
+  $ git show 9a33f50:debian/patches/reproducible-build.patch
 
-Description: Drop __DATE__ from gendef
+Description: Drop __DATE__ from gendef and genlib
 Author: Stephen Kitt <skitt@debian.org>
 
-This allows gendef to be built reproducibly.
+This allows gendef and genlib to be built reproducibly.
 
 --- a/mingw-w64-tools/gendef/src/gendef.c
 +++ b/mingw-w64-tools/gendef/src/gendef.c
@@ -21,3 +21,13 @@ This allows gendef to be built reproducibly.
    fprintf (stderr, "\nReport bugs to <mingw-w64-public@lists.sourceforge.net>\n");
    exit (0);
  }
+--- a/mingw-w64-tools/genlib/src/genlib.c
++++ b/mingw-w64-tools/genlib/src/genlib.c
+@@ -123,7 +123,6 @@
+ "Usage example:\n"
+ "  By default, the output file is named after the DLL counterpart\n"
+ "  genlib mydef.def    Produces libmydll.a\n"
+-"\nBuilt on " __DATE__ "\n"
+ "\nReport bugs to <martellmalone@gmail.com>\n"
+ ;
+
