@@ -4773,7 +4773,7 @@ including @i{fix-its} for automatic refactoring.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://download.qt.io/official_releases/qtcreator/"
+                    "mirror://qt/qtcreator/"
                     (version-major+minor version) "/" version
                     "/qt-creator-opensource-src-" version ".tar.gz"))
               (modules '((guix build utils)))
