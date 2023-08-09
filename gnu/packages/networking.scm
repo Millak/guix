@@ -4615,6 +4615,42 @@ that vnStat won't actually be sniffing any traffic and also ensures light use
 of system resources regardless of network traffic rate.")
    (license license:gpl2+)))
 
+(define-public dnstracer
+  (package
+    (name "dnstracer")
+    (version "1.10")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.mavetju.org/download/"
+                                  name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "089bmrjnmsga2n0r4xgw4bwbf41xdqsnmabjxhw8lngg2pns1kb4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                (string-append "CC=" #$(cc-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-makefile
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("\\$\\{PREFIX}/man")
+                               "${PREFIX}/share/man")
+                              (("^install:.*" all)
+                               (string-append
+                                all
+                                "\tinstall -d ${BINPREFIX}\n"
+                                "\tinstall -d ${MANPREFIX}\n")))))
+                        (delete 'configure))))
+    (native-inputs (list perl))         ;for pod2man
+    (home-page "http://www.mavetju.org/unix/dnstracer.php")
+    (synopsis "Trace a chain of DNS servers to the source")
+    (description "@command{dnstracer} determines where a given Domain Name
+Server (DNS) gets its information from, and follows the chain of DNS servers
+back to the servers which know the data.")
+    (license license:bsd-2)))
+
 (define-public dropwatch
   (package
     (name "dropwatch")
