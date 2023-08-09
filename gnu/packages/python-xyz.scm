@@ -14197,13 +14197,13 @@ implementations of ASN.1-based codecs and protocols.")
 (define-public python-asn1tools
   (package
     (name "python-asn1tools")
-    (version "0.158.0")
+    (version "0.166.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asn1tools" version))
        (sha256
-        (base32 "1k88a1azmyvp2ab6qcf2i40dig5abhyn7cmlyhmwwh8kr3syvma0"))))
+        (base32 "1hragm8dsm10rlyz67xslj01bycprlnimdmq1i2acns6kl6difpn"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-bitstruct python-diskcache python-prompt-toolkit
