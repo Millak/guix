@@ -483,15 +483,14 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
       (_
        links))))
 
-(define* (import-html-release package
+(define* (import-html-release base-url package
                               #:key
                               (version #f)
-                              (base-url "https://kernel.org/pub")
                               (directory (string-append "/" package))
                               file->signature)
-  "Return an <upstream-source> for the latest release of PACKAGE (a string) on
-SERVER under DIRECTORY, or #f. Optionally include a VERSION string to fetch a
-specific version.
+  "Return an <upstream-source> for the latest release of PACKAGE (a string)
+under DIRECTORY at BASE-URL, or #f. Optionally include a VERSION string to
+fetch a specific version.
 
 BASE-URL should be the URL of an HTML page, typically a directory listing as
 found on 'https://kernel.org/pub'.
@@ -730,9 +729,8 @@ to fetch a specific version."
          (directory (dirname (uri-path uri))))
     ;; Note: We use the default 'file->signature', which adds ".sig", ".asc",
     ;; or whichever detached signature naming scheme PACKAGE uses.
-    (import-html-release package
+    (import-html-release %savannah-base package
                          #:version version
-                         #:base-url %savannah-base
                          #:directory directory)))
 
 (define* (latest-sourceforge-release package #:key (version #f))
@@ -824,9 +822,8 @@ Optionally include a VERSION string to fetch a specific version."
                        ((uri mirrors ...) uri))))
          (package   (package-upstream-name package))
          (directory (dirname (uri-path uri))))
-    (import-html-release package
+    (import-html-release %kernel.org-base package
                          #:version version
-                         #:base-url %kernel.org-base
                          #:directory directory
                          #:file->signature file->signature)))
 
@@ -874,9 +871,8 @@ string to fetch a specific version."
                         (dirname (uri-path uri))))
          (package   (package-upstream-name package)))
     (false-if-networking-error
-     (import-html-release package
+     (import-html-release base package
                           #:version version
-                          #:base-url base
                           #:directory directory))))
 
 (define %gnu-updater
