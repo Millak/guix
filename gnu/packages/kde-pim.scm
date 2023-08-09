@@ -1715,7 +1715,7 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
         (base32 "1vp1jsmna059vvfj7xaj9fhhhq0lz9k0pphczkfbwm3gy6nzcavz"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus qttools-5 kdoctools))
+     (list extra-cmake-modules dbus qttools-5 kdoctools tzdata-for-tests))
     (inputs
      (list akonadi
            akonadi-calendar
@@ -1767,19 +1767,13 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
            phonon
            qtbase-5))
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-test
-           (lambda _
-             ;; FIXME: This test started failing after the 20.04 update
-             ;; seemingly due to DBus communication issues.
-             ;; See also 'akonadi-search' for a similar test failure.
-             (substitute* "src/autotests/CMakeLists.txt"
-               ((".*test_advanced\\(koeventpopupmenutest\\.cpp.*")
-                ""))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key inputs tests? #:allow-other-keys)
              (when tests?
+               (setenv "TZDIR" (search-input-directory
+                                inputs "share/zoneinfo"))
                (invoke "dbus-launch" "ctest")))))))
     (home-page "https://apps.kde.org/korganizer/")
     (synopsis "Organizational assistant, providing calendars and other similar
