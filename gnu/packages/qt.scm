@@ -128,8 +128,6 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
-(define %qt-version "5.15.8")
-
 (define-public qcoro-qt5
   (package
     (name "qcoro-qt5")
@@ -358,7 +356,7 @@ system, and the core design of Django is reused in Grantlee.")
 (define-public qtbase-5
   (package
     (name "qtbase")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -914,7 +912,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qt3d")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1006,7 +1004,7 @@ came with the @{qtgraphicaleffects} Qt 5 package.")
   (package
     (inherit qtbase-5)
     (name "qtsvg")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1105,7 +1103,7 @@ HostData=lib/qt5
 (define-public qtimageformats
   (package (inherit qtsvg-5)
     (name "qtimageformats")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
@@ -1132,7 +1130,7 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
 (define-public qtx11extras
   (package (inherit qtsvg-5)
     (name "qtx11extras")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
@@ -1198,7 +1196,7 @@ XLSX document format.")
 (define-public qtxmlpatterns
   (package (inherit qtsvg-5)
     (name "qtxmlpatterns")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
@@ -1227,7 +1225,7 @@ xmlpatternsvalidator.")))
   (package
     (inherit qtsvg-5)
     (name "qtdeclarative")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1405,7 +1403,7 @@ integrate QML code with JavaScript and C++.")
   (package
     (inherit qtsvg-5)
     (name "qtconnectivity")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1423,7 +1421,7 @@ with Bluetooth and NFC.")))
 (define-public qtwebsockets-5
   (package (inherit qtsvg-5)
     (name "qtwebsockets")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
@@ -1486,7 +1484,7 @@ consume data received from the server, or both.")
   (package
     (inherit qtsvg-5)
     (name "qtsensors")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1515,7 +1513,7 @@ recognition API for devices.")))
   (package
     (inherit qtsvg-5)
     (name "qtmultimedia")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1654,7 +1652,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")
   (package
     (inherit qtsvg-5)
     (name "qtwayland")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1754,7 +1752,7 @@ compositor libraries.")
   (package
     (inherit qtsvg-5)
     (name "qtserialport")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1785,7 +1783,7 @@ interacting with serial ports from within Qt.")))
   (package
     (inherit qtsvg-5)
     (name "qtserialbus")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1812,7 +1810,7 @@ and others.")))
 (define-public qtwebchannel-5
   (package (inherit qtsvg-5)
     (name "qtwebchannel")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
@@ -1868,7 +1866,7 @@ application).")
   (package
     (inherit qtsvg-5)
     (name "qtwebglplugin")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1897,7 +1895,7 @@ OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
   (package
     (inherit qtsvg-5)
     (name "qtwebview")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1915,7 +1913,7 @@ native APIs where it makes sense.")))
   (package
     (inherit qtsvg-5)
     (name "qtlocation")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -1972,7 +1970,7 @@ plugin for Adobe After Effects.")
   (package
     (inherit qtsvg-5)
     (name "qttools")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2054,7 +2052,7 @@ the Qt community.")
   (package
     (inherit qtsvg-5)
     (name "qtscript")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2073,7 +2071,7 @@ ECMAScript and Qt.")))
   (package
     (inherit qtsvg-5)
     (name "qtquickcontrols")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2093,7 +2091,7 @@ can be used to build complete interfaces in Qt Quick.")))
   (package
     (inherit qtsvg-5)
     (name "qtquickcontrols2")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2120,7 +2118,7 @@ not available.")))
   (package
     (inherit qtsvg-5)
     (name "qtgraphicaleffects")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2143,7 +2141,7 @@ coloring, and many more.")))
   (package
     (inherit qtsvg-5)
     (name "qtgamepad")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2169,7 +2167,7 @@ and mobile applications targeting TV-like form factors.")))
   (package
     (inherit qtsvg-5)
     (name "qtscxml")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2227,7 +2225,7 @@ information and perform area based monitoring.")
   (package
     (inherit qtsvg-5)
     (name "qtpurchasing")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2243,7 +2241,7 @@ purchasing goods and services.")))
   (package
     (inherit qtsvg-5)
     (name "qtcharts")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2272,7 +2270,7 @@ selecting one of the charts themes.")
   (package
     (inherit qtsvg-5)
     (name "qtdatavis3d")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2294,7 +2292,7 @@ customized by using themes or by adding custom items and labels to them.")
 (define-public qtnetworkauth-5
   (package (inherit qtsvg-5)
     (name "qtnetworkauth")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
@@ -2367,7 +2365,7 @@ processes or computers.")
   (package
     (inherit qtsvg-5)
     (name "qtspeech")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2519,7 +2517,7 @@ using the Enchant spell-checking library.")
   (package
     (inherit qtsvg-5)
     (name "qtwebengine")
-    (version %qt-version)
+    (version "5.15.8")
     (source
      (origin
        (method url-fetch)
@@ -4061,7 +4059,7 @@ color-related widgets.")
 (define-public python-shiboken-2
   (package
     (name "python-shiboken-2")
-    (version %qt-version)
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.qt.io/official_releases"
