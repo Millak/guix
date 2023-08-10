@@ -79,32 +79,30 @@
                      (delete-file-recursively "external/sqlite")))))
       (build-system cmake-build-system)
       (arguments
-       `(#:configure-flags '("-DBUILD_PRESET=everything"
-                             "-DDISTR_TAG='Guix'")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-paths
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "src/platform/posix/paths.c"
-                 (("/usr/local")
-                  (assoc-ref outputs "out")))))
-           ;; Normally, it tries to fetch patched openal with git
-           ;; but copying files manually in the right place seems to work too.
-           (add-after 'unpack 'prepare-static-openal
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((arcan-openal (assoc-ref inputs "arcan-openal")))
-                 (copy-recursively arcan-openal "external/git/openal"))
-               #t))
-           (add-after 'prepare-static-openal 'generate-man
-             (lambda _
-               (with-directory-excursion "doc"
-                 (invoke "ruby" "docgen.rb" "mangen"))
-               #t))
-           (add-before 'configure 'chdir
-             (lambda _
-               (chdir "src")
-               #t)))
-         #:tests? #f))
+       (list #:configure-flags #~'("-DBUILD_PRESET=everything"
+                                   "-DDISTR_TAG='Guix'")
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-paths
+                            (lambda* (#:key outputs #:allow-other-keys)
+                              (substitute* "src/platform/posix/paths.c"
+                                (("/usr/local")
+                                 (assoc-ref outputs "out")))))
+                          ;; Normally, it tries to fetch patched openal with git
+                          ;; but copying files manually in the right place seems to work too.
+                          (add-after 'unpack 'prepare-static-openal
+                            (lambda* (#:key inputs #:allow-other-keys)
+                              (let ((arcan-openal (assoc-ref inputs
+                                                             "arcan-openal")))
+                                (copy-recursively arcan-openal
+                                                  "external/git/openal")) #t))
+                          (add-after 'prepare-static-openal 'generate-man
+                            (lambda _
+                              (with-directory-excursion "doc"
+                                (invoke "ruby" "docgen.rb" "mangen")) #t))
+                          (add-before 'configure 'chdir
+                            (lambda _
+                              (chdir "src") #t)))
+             #:tests? #f))
       (inputs
        `(("bash-minimal" ,bash-minimal)
          ("espeak" ,espeak)
