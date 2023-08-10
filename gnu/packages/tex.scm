@@ -5069,6 +5069,28 @@ characters, and defines macros for markup of vector, matrix and tensor
 symbols.")
     (license license:lppl)))
 
+(define-public texlive-itnumpar
+  (package
+    (name "texlive-itnumpar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/itnumpar/"
+                   "source/latex/itnumpar/"
+                   "tex/latex/itnumpar/")
+             (base32
+              "1jjl1mskg0vsxfjg2wpnqi0y462mv2qrfsg15zjri83zwrilaa6f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/itnumpar")
+    (synopsis "Spell numbers in words (Italian)")
+    (description
+     "Sometimes we need to say ``Capitolo primo'' or ``Capitolo uno'' instead
+of ``Capitolo 1'', that is, spelling the number in words instead of the usual
+digit form.  This package provides support for spelling out numbers in Italian
+words, both in cardinal and in ordinal form.")
+    (license license:lppl)))
+
 (define-public texlive-jkmath
   (package
     (name "texlive-jkmath")
