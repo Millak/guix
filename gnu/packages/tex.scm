@@ -36865,6 +36865,29 @@ conference posters.")
 
 (define-deprecated-package texlive-latex-textpos texlive-textpos)
 
+(define-public texlive-udesoftec
+  (package
+    (name "texlive-udesoftec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/udesoftec/"
+                   "doc/latex/udesoftec/"
+                   "source/latex/udesoftec/"
+                   "tex/latex/udesoftec/")
+             (base32
+              "02ja6n570hc1521anr12lkgc5xrcfg97lxca2pylwgi5bfkbsr0b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/udesoftec")
+    (synopsis "Thesis class for the University of Duisburg-Essen")
+    (description
+     "The class is designed for typesetting theses in the Research Group for
+Business Informatics and Software Engineering.  (The class may also serve as
+a template for such theses.)  The class is designed for use with pdfLaTeX;
+input in UTF-8 encoding is assumed.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-unicode-math
   (package
     (name "texlive-unicode-math")
