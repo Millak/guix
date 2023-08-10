@@ -31642,6 +31642,24 @@ effects, varying slide transitions and animations.")
 
 (define-deprecated-package texlive-latex-beamer texlive-beamer)
 
+(define-public texlive-beamer-tut-pt
+  (package
+    (name "texlive-beamer-tut-pt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamer-tut-pt/")
+             (base32
+              "0ayh3kbh11l4nyyzp2kcwzn0phqhzawppy044iyl1wwwc2v3zx5b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamer-tut-pt")
+    (synopsis "Introduction to the @code{beamer} class, in Portuguese")
+    (description
+     "This package provides an introduction to the @code{beamer} class, in
+Portuguese.")
+    (license license:gpl3+)))
+
 (define-public texlive-xmpincl
   (package
     (name "texlive-xmpincl")
