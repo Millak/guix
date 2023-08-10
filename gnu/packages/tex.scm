@@ -34391,6 +34391,31 @@ simply on the size of the support.")
     (description "This collection provides support packages for Polish.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langportuguese
+  (package
+    (name "texlive-collection-langportuguese")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-babel-portuges
+           texlive-beamer-tut-pt
+           texlive-collection-basic
+           texlive-cursolatex
+           texlive-feupphdteses
+           texlive-hyphen-complete
+           texlive-latex-via-exemplos
+           texlive-latexcheat-ptbr
+           texlive-lshort-portuguese
+           texlive-numberpt
+           texlive-ordinalpt
+           texlive-xypic-tut-pt))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Portuguese")
+    (description "This collection provides support packages for Portuguese.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
