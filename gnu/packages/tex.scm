@@ -6935,6 +6935,29 @@ easily available.  Especially, these symbols are used in scientific plots, but
 the potential user is allowed to use them in other ways.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ordinalpt
+  (package
+    (name "texlive-ordinalpt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ordinalpt/"
+                   "source/latex/ordinalpt/"
+                   "tex/latex/ordinalpt/")
+             (base32
+              "02hsl021gd23qrfm3myazg606lmp149dmpss3vyx93dyqcg8axbr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ordinalpt")
+    (synopsis "Counters as ordinal numbers in Portuguese")
+    (description
+     "The package provides a counter style (like @code{\\arabic},
+@code{\\alph} and others) which produces output strings like
+@samp{primeiro} (``first'' in Portuguese), @samp{segundo}, (``second''), and
+so on up to 1999th.  Separate counter commands are provided for different
+letter case variants, and for masculine and feminine gender inflections.")
+    (license license:lppl)))
+
 (define-public texlive-ot-tableau
   (package
     (name "texlive-ot-tableau")
