@@ -5587,6 +5587,44 @@ inside the same directory.  This document is not yet complete in content and
 format and may miss some macros.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mafr
+  (package
+    (name "texlive-mafr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mafr/" "tex/latex/mafr/")
+             (base32
+              "0bzmf36xy2ppd2bkc5lkcw43jangwn0w4scgr9il06d14lbw68yn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mafr")
+    (synopsis "Mathematics in accord with French usage")
+    (description
+     "The package provides settings and macros for typesetting mathematics
+with LaTeX in compliance with French usage.  It comes with two document
+classes, @code{fiche} and @code{cours}, useful to create short high school
+documents such as tests or lessons.  The documentation is in French.")
+    (license license:gpl3+)))
+
+(define-public texlive-matapli
+  (package
+    (name "texlive-matapli")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/matapli/" "tex/latex/matapli/")
+             (base32
+              "0khkgc80hbydnlciqr02ay88gazr4nxdq099pjgf1xcjlnlmnwcp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/matapli")
+    (synopsis "Class for the French journal @emph{MATAPLI}")
+    (description
+     "This is a class for the French journal @emph{MATAPLI} of the Société de
+Mathématiques Appliquées et Industrielles (SMAI).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-math-into-latex-4
   (package
     (name "texlive-math-into-latex-4")
