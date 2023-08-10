@@ -5183,6 +5183,36 @@ and commands.")
 @code{latex2e-help-texinfo}.")
     (license license:public-domain)))
 
+(define-public texlive-letgut
+  (package
+    (name "texlive-letgut")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/letgut/"
+                   "source/lualatex/letgut/"
+                   "tex/lualatex/letgut/")
+             (base32
+              "1wk6bibz59jw9vx2syq0hfi2yz69kr3w87839bhnl3svz2x958nn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/letgut")
+    (synopsis
+     "Class for the newsletter @code{La Lettre GUTenberg} of the French TeX User
+Group GUTenberg")
+    (description
+     "The French TeX User Group GUTenberg has been publishing @emph{The
+GUTenberg Letter}, its irregular newsletter, since February 1993.  For this
+purpose, a dedicated, in-house (La)TeX class was gradually created but,
+depending on new needs and on the people who were publishing the Newsletter,
+its development was somewhat erratic; in particular, it would not have been
+possible to publish its code as it was.  In addition, its documentation was
+non-existent.  The Board of Directors of the association, elected in November
+2020, wished to provide a better structured, more perennial and documented
+class, able to be published on the CTAN.  This is now done with the present
+@code{letgut} class.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-letterswitharrows
   (package
     (name "texlive-letterswitharrows")
