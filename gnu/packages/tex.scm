@@ -36669,6 +36669,23 @@ may be used under LaTeX and plain TeX.")
 BibLaTeX.")
     (license license:lppl)))
 
+(define-public texlive-translation-chemsym-de
+  (package
+    (name "texlive-translation-chemsym-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-chemsym-de/")
+             (base32
+              "01liazqafs3lh9ppipw6i6sljcjzr31nq70r83qgknqmb9j0yfl0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-chemsym-de")
+    (synopsis "German version of @code{chemsym}")
+    (description
+     "This is a German translation of the @code{chemsym} documentation.")
+    (license license:lppl)))
+
 (define-public texlive-translations
   (package
     (name "texlive-translations")
