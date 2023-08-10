@@ -483,6 +483,14 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
       (_
        links))))
 
+(define (url->links url)
+  "Return the unique links on the HTML page accessible at URL."
+  (let* ((uri   (string->uri url))
+         (port  (http-fetch/cached uri #:ttl 3600))
+         (sxml  (html->sxml port)))
+    (close-port port)
+    (delete-duplicates (html-links sxml))))
+
 (define* (import-html-release base-url package
                               #:key
                               (version #f)
@@ -499,12 +507,10 @@ When FILE->SIGNATURE is omitted or #f, guess the detached signature file name,
 if any.  Otherwise, FILE->SIGNATURE must be a procedure; it is passed a source
 file URL and must return the corresponding signature URL, or #f it signatures
 are unavailable."
-  (let* ((uri   (string->uri (if (string-null? directory)
-                                 base-url
-                                 (string-append base-url directory "/"))))
-         (port  (http-fetch/cached uri #:ttl 3600))
-         (sxml  (html->sxml port))
-         (links (delete-duplicates (html-links sxml))))
+  (let* ((url (if (string-null? directory)
+                  base-url
+                  (string-append base-url directory "/")))
+         (links (url->links url)))
     (define (file->signature/guess url)
       (let ((base (basename url)))
         (any (lambda (link)
@@ -562,7 +568,6 @@ are unavailable."
     (define candidates
       (filter-map url->release links))
 
-    (close-port port)
     (match candidates
       (() #f)
       ((first . _)
