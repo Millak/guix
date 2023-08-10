@@ -4025,6 +4025,11 @@ you are running, what theme or icon set you are using, etc.")
           (delete 'configure)
           (add-before 'build 'patch-source-paths
             (lambda _
+              (substitute* "fetch.c"
+                (("grep")
+                 #$(file-append grep "/bin/grep"))
+                (("awk")
+                 #$(file-append gawk "/bin/awk")))
               (substitute* "uwufetch.c"
                 (("(/usr(/local)?)(.*;)" all _ _ rest)
                  (string-append #$output rest)))))
@@ -4033,6 +4038,8 @@ you are running, what theme or icon set you are using, etc.")
             (lambda _
               (mkdir-p (string-append #$output "/include")))))))
     (inputs (list lshw
+                  gawk
+                  grep
                   ;; viu XXX not yet packaged in Guix
                   xwininfo))
     (home-page "https://github.com/TheDarkBug/uwufetch")
