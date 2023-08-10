@@ -31536,6 +31536,29 @@ writing documents with bibliographies.  The author has since developed the
 quotes even when that letter wears a standard accent")
     (license license:gpl3+)))
 
+(define-public texlive-hausarbeit-jura
+  (package
+    (name "texlive-hausarbeit-jura")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hausarbeit-jura/"
+                   "source/latex/hausarbeit-jura/"
+                   "tex/latex/hausarbeit-jura/")
+             (base32
+              "14raizfrrfnwdgwaq9irxdkg2mg280csjcirsxjq4rpdwqg2nkwh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hausarbeit-jura")
+    (synopsis
+     "Class for writing @emph{juristische Hausarbeiten} at German Universities")
+    (description
+     "The class was developed for use by students writing legal
+essays (@emph{juristische Hausarbeit}) at German Universities.  It is based on
+@code{jurabook} and @code{jurabib} and makes it easy for LaTeX beginners to
+get a correct and nicely formatted paper.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
