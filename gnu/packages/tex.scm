@@ -1618,6 +1618,27 @@ equations and add annotation labels using TikZ.  It should work with pdfLaTeX
 as well as LuaLaTeX.")
     (license license:expat)))
 
+(define-public texlive-antanilipsum
+  (package
+    (name "texlive-antanilipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/antanilipsum/"
+                   "source/latex/antanilipsum/"
+                   "tex/latex/antanilipsum/")
+             (base32
+              "1yighrv3nxb266949m8sqvvl5yp8bhjq478h2abfrs1z0r65gpjr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/antanilipsum")
+    (synopsis "Generate sentences in the style of @emph{Amici miei}")
+    (description
+     "This package is an italian blind text generator that ouputs supercazzole,
+mocking nonsense phrases from the movie series @emph{Amici Miei} (``My
+friends'', in English), directed by Mario Monicelli.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
