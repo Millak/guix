@@ -4216,6 +4216,26 @@ modification of the @code{beletter} class, which is itself a modification of
 the standard LaTeX @code{letter} class.")
     (license license:public-domain)))
 
+(define-public texlive-frpseudocode
+  (package
+    (name "texlive-frpseudocode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/frpseudocode/"
+                   "tex/latex/frpseudocode/")
+             (base32
+              "1jsrx1slbbqx9hg0a3f7xylxfly2cinw2g5vhhvvgxpp356v6ick")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frpseudocode")
+    (synopsis "French translation for the @code{algorithmicx} package")
+    (description
+     "This package is intended for use alongside @code{algorithmicx} package.
+Its aim is to provide a French translation of terms and words used in
+algorithms to make it integrate seamlessly in a French written document.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-functan
   (package
     (name "texlive-functan")
