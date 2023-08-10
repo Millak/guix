@@ -4196,6 +4196,26 @@ writing french operator names like @emph{pgcd}, @emph{ppcm}, @emph{Card},
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-frletter
+  (package
+    (name "texlive-frletter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/frletter/" "tex/latex/frletter/")
+             (base32
+              "0h8lsfmv0icb616kwhkqqbfh64l43vwc63p4bl8sw9xy2lfal5xm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frletter")
+    (synopsis "Typeset letters in the French style")
+    (description
+     "This package provides a small class for typesetting letters in France.
+No assumption is made about the language in use.  The class represents a small
+modification of the @code{beletter} class, which is itself a modification of
+the standard LaTeX @code{letter} class.")
+    (license license:public-domain)))
+
 (define-public texlive-functan
   (package
     (name "texlive-functan")
