@@ -31476,6 +31476,26 @@ with the @code{blogdot} package from the @code{morehype} bundle, and HTML
 generation based on the @code{fifinddo} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-german
+  (package
+    (name "texlive-german")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/german/"
+                   "source/generic/german/"
+                   "tex/generic/german/")
+             (base32
+              "0n17j7rc69kxgs3b2cyxjb8hsh6bc9aydxf90x98rdc2ardl9idg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/german")
+    (synopsis "Support for German typography")
+    (description
+     "This package provides supports the old German orthography (alte deutsche
+Rechtschreibung).")
+    (license license:lppl)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
