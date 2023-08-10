@@ -1482,6 +1482,10 @@ on top of Baloo.")
                               (resolve-interface
                                '(gnu packages kde-systemtools))
                               'konsole)
+                             (module-ref
+                              (resolve-interface
+                               '(gnu packages kde-systemtools))
+                              'spectacle)
                              ;; kde-gtk-config ;; TODO
 
                              plasma-firewall
