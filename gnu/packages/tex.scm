@@ -6831,6 +6831,26 @@ includes some short commands for set (blackboard) or
 filtrations (calligraphic).")
     (license license:lppl)))
 
+(define-public texlive-profcollege
+  (package
+    (name "texlive-profcollege")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/profcollege/"
+                   "metapost/profcollege/"
+                   "tex/latex/profcollege/")
+             (base32
+              "06bj5crnqslqlg2dkh43b30jvdvknblg8l4fri15gpdx1z5k1d6h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/profcollege")
+    (synopsis "LaTeX package for French maths teachers in college")
+    (description
+     "This package provides some commands to help French mathematics teachers
+for 11-16 years olds.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-proof-at-the-end
   (package
     (name "texlive-proof-at-the-end")
