@@ -3582,6 +3582,28 @@ simple roots.")
     ;; LGPL 2.1+.
     (license license:lgpl2.1+)))
 
+(define-public texlive-e-french
+  (package
+    (name "texlive-e-french")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/e-french/"
+                   "makeindex/e-french/"
+                   "tex/generic/e-french/")
+             (base32
+              "14qxxfjlxygprs1ndhnn9mhz9hkb4j2dqikni5cvva457bivm4l9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/e-french")
+    (synopsis "Comprehensive LaTeX support for French-language typesetting")
+    (description
+     "E-french is a distribution that keeps alive the work of Bernard
+Gaulle (now deceased), under a free licence.  It replaces the old full
+@code{frenchpro} (the professional distribution) and the light-weight
+@code{frenchle} packages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-easing
   (package
     (name "texlive-easing")
