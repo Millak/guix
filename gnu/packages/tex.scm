@@ -36907,6 +36907,28 @@ times as formerly used in Germany.  A variety of printing formats are
 available.")
     (license license:lppl1.3+)))
 
+(define-public texlive-umlaute
+  (package
+    (name "texlive-umlaute")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/umlaute/" "source/latex/umlaute/"
+                   "tex/latex/umlaute/")
+             (base32
+              "1fz2v0p8a46car0iga8m0si7ampff8hqpsmc9v2miqqzmdlqcqcj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/umlaute")
+    (synopsis "German input encodings in LaTeX")
+    (description
+     "This is an early package for using alternate input encodings.  The
+author considers the package mostly obsolete, since most of its functions are
+taken by the @code{inputenc} package; however, @code{inputenc} doesn't support
+the @code{roman8} and @code{atari} encodings, so umlaute remains the sole
+source of that support.")
+    (license license:lppl)))
+
 (define-public texlive-unicode-math
   (package
     (name "texlive-unicode-math")
