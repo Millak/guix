@@ -31907,6 +31907,24 @@ a straight-forward and flexible way.  An alternative package
 bundle.")
     (license license:lppl1.3c)))
 
+(define-public texlive-microtype-de
+  (package
+    (name "texlive-microtype-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/microtype-de/")
+             (base32
+              "069d2f0jcg9m4fv8dli2dr9ags9gz6mkwy6fzz37ns4jzrqfsvwi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/microtype-de")
+    (synopsis "Translation into German of the documentation of @code{microtype}")
+    (description
+     "This package provides the translation into German of the documentation
+of @code{microtype}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-minitoc
   (package
     (name "texlive-minitoc")
