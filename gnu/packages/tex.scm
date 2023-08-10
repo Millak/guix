@@ -5145,6 +5145,25 @@ practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
 and commands.")
     (license license:fdl1.2+)))
 
+(define-public texlive-l2tabu-french
+  (package
+    (name "texlive-l2tabu-french")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l2tabu-french/")
+             (base32
+              "0c6fbmgwv2adlxbhl1shvpa1w6xd36gmrwvkjgdp9xc3q999l4dj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/l2tabu-french")
+    (synopsis "English translation of @emph{Obsolete packages and commands}")
+    (description
+     "This package provides a French translation of the @emph{l2tabu}
+practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
+and commands.")
+    (license license:fdl1.2+)))
+
 (define-public texlive-letterswitharrows
   (package
     (name "texlive-letterswitharrows")
