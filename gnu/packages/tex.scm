@@ -5390,6 +5390,25 @@ practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
 and commands.")
     (license license:fdl1.2+)))
 
+(define-public texlive-l2tabu-italian
+  (package
+    (name "texlive-l2tabu-italian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l2tabu-italian/")
+             (base32
+              "0bgfmn5v80rdhs9wmjj6mki29p28ip1d29rmgbw4jh4z6gd4sf22")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/l2tabu-italian")
+    (synopsis "Italian translation of @emph{Obsolete packages and commands}")
+    (description
+     "This package provides an Italian translation of the @emph{l2tabu}
+practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
+and commands.")
+    (license license:fdl1.2+)))
+
 (define-public texlive-latex2e-help-texinfo-fr
   (package
     (name "texlive-latex2e-help-texinfo-fr")
