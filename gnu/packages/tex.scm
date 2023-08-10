@@ -22187,6 +22187,26 @@ the conventions, if French is not the main language of the document).")
 Friulan either with Babel or with Polyglossia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-galician
+  (package
+    (name "texlive-babel-galician")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-galician/"
+                   "source/generic/babel-galician/"
+                   "tex/generic/babel-galician/")
+             (base32
+              "13giby8mzyxjccyvhb9dsnyqc2h17k70fch84z5mi8si3jnm9sq4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-galician")
+    (synopsis "Babel and Polyglossia support for Galician")
+    (description
+     "The package provides a language description file that enables support of
+Galician either with Babel or with Polyglossia.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-german
   (package
     (name "texlive-babel-german")
