@@ -4123,6 +4123,26 @@ therefore, there are macros to emphasize or downplay some parts of the
 grammar (which is the main novelty compared to other BNF packages).")
     (license license:lppl1.3+)))
 
+(define-public texlive-formation-latex-ul
+  (package
+    (name "texlive-formation-latex-ul")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/formation-latex-ul/"
+                   "source/latex/formation-latex-ul/")
+             (base32
+              "1cvicnjx5ayyj66f18pglz55bajxpqnkgygw3vmvca5ixg8aiwxm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/formation-latex-ul")
+    (synopsis "Introductory LaTeX course in French")
+    (description
+     "This package contains the supporting documentation, slides, exercise files,
+and templates for an introductory LaTeX course (in French) prepared for
+Universite Laval, Quebec, Canada.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-fouridx
   (package
     (name "texlive-fouridx")
