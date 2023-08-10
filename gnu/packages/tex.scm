@@ -11093,6 +11093,26 @@ analytical expansion of sin and cos.")
 barcodes.")
     (license license:lppl)))
 
+(define-public texlive-variations
+  (package
+    (name "texlive-variations")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/variations/"
+                   "tex/generic/variations/")
+             (base32
+              "1ad1yc1v32ds4wj36fql6fjiacziw4ynvw0rpj3x01k6jdvh44xh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/variations")
+    (synopsis "Typeset tables of variations of functions")
+    (description
+     "The package provides macros for typesetting tables showing variations of
+functions according to French usage.  These macros may be used by both LaTeX
+and plain TeX users.")
+    (license license:gpl3+)))
+
 (define-public texlive-varisize
   (package
     (name "texlive-varisize")
