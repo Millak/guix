@@ -31419,6 +31419,26 @@ for which the use of thin space is recommended.")
 the journal of the German-speaking TeX User Group.")
     (license license:lppl1.3c)))
 
+(define-public texlive-etdipa
+  (package
+    (name "texlive-etdipa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etdipa/")
+             (base32
+              "1jp35apalaa1lh44dbn1zayavv1n3wkm0v69hgy8vdz73yp5yvhz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/etdipa")
+    (synopsis "Simple, lightweight template for scientific documents")
+    (description
+     "This package provides a complete working directory for the scientific
+documentation of arbitrary projects.  It was originally developed to provide
+a template for Austrian @emph{Diplomarbeiten} or @emph{Vorwissenschaftliche
+Arbeiten}, which are scientfic projects of students at a secondary school.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
