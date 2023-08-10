@@ -6404,6 +6404,38 @@ ranging from very simple (lines and circles) to rather intricate (uncommon
 geometric transformations, fractals, bitmap, etc).")
     (license license:gpl1+)))
 
+(define-public texlive-mex
+  (package
+    (name "texlive-mex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/mex/base/" "source/mex/base/"
+                   "tex/mex/base/" "tex/mex/config/")
+             (base32
+              "0kc766cvvbcqrj60ncz4a105nrn454y5c2330y7s7jzh45dx8qsi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "mex" "pdfmex" "utf8mex")))
+    (propagated-inputs
+     (list texlive-enctex
+           texlive-hyphen-complete
+           texlive-knuth-lib
+           texlive-pdftex
+           texlive-pl
+           texlive-plain
+           texlive-tex
+           texlive-tex-ini-files
+           texlive-utf8mex))
+    (home-page "https://ctan.org/pkg/mex")
+    (synopsis "Polish formats for TeX")
+    (description
+     "MeX is an adaptation of Plain TeX (MeX) and LaTeX209 (LaMeX) formats to
+the Polish language and to Polish printing customs.  It contains a complete
+set of Metafont sources of Polish fonts, hyphenation rules for the Polish
+language and sources of formats.")
+    (license license:knuth)))
+
 (define-public texlive-mgltex
   (package
     (name "texlive-mgltex")
