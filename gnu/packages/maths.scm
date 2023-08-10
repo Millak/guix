@@ -2662,7 +2662,6 @@ fixed point (16.16) format.")
      (list gfortran))
     (native-inputs
      `(("lapack" ,lapack)
-       ("openblas" ,openblas)
        ("perl" ,perl)
        ("python" ,python-wrapper)))
     (home-page "https://github.com/flame/libflame")
