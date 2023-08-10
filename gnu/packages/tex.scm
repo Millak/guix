@@ -4357,6 +4357,31 @@ modification of the @code{beletter} class, which is itself a modification of
 the standard LaTeX @code{letter} class.")
     (license license:public-domain)))
 
+(define-public texlive-frontespizio
+  (package
+    (name "texlive-frontespizio")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/frontespizio/"
+                   "source/latex/frontespizio/"
+                   "tex/latex/frontespizio/")
+             (base32
+              "17xqq0n2b0acpqq2hd5c5qi5fsrhyjwm1c452i3rbdmf1xkqvkvy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frontespizio")
+    (synopsis "Create a frontispiece for Italian theses")
+    (description
+     "Typesetting a frontispiece independently of the layout of the main
+document is difficult.  This package provides a solution by producing an
+auxiliary TeX file to be typeset on its own and the result is automatically
+included at the next run.  The markup necessary for the frontispiece is
+written in the main document in a @code{frontespizio} environment.
+Documentation is mainly in Italian, as the style is probably apt only to
+theses in Italy.")
+    (license license:lppl)))
+
 (define-public texlive-frpseudocode
   (package
     (name "texlive-frpseudocode")
