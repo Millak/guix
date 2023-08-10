@@ -491,6 +491,33 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
     (close-port port)
     (delete-duplicates (html-links sxml))))
 
+(define (canonicalize-url url base-url)
+  "Make relative URL absolute, by appending URL to BASE-URL as required.  If
+URL is a directory instead of a file, it should be suffixed with a slash (/)."
+  (cond ((and=> (string->uri url) uri-scheme)
+         ;; Fully specified URL.
+         url)
+        ((string-prefix? "//" url)
+         ;; Full URL lacking a URI scheme.  Reuse the URI scheme of the
+         ;; document that contains the URL.
+         (string-append (symbol->string (uri-scheme (string->uri base-url)))
+                        ":" url))
+        ((string-prefix? "/" url)
+         ;; Absolute URL.
+         (let ((uri (string->uri base-url)))
+           (uri->string
+            (build-uri (uri-scheme uri)
+                       #:host (uri-host uri)
+                       #:port (uri-port uri)
+                       #:path url))))
+        ;; URL is relative to BASE-URL, which is assumed to be a directory.
+        ((string-suffix? "/" base-url)
+         (string-append base-url url))
+        (else
+         ;; URL is relative to BASE-URL, which is assumed to denote a file
+         ;; within a directory.
+         (string-append (dirname base-url) "/" url))))
+
 (define* (import-html-release base-url package
                               #:key
                               (version #f)
@@ -508,11 +535,12 @@ When FILE->SIGNATURE is omitted or #f, guess the detached signature file name,
 if any.  Otherwise, FILE->SIGNATURE must be a procedure; it is passed a source
 file URL and must return the corresponding signature URL, or #f it signatures
 are unavailable."
-  (let* ((package (package-upstream-name package))
+  (let* ((name (package-upstream-name package))
          (url (if (string-null? directory)
                   base-url
                   (string-append base-url directory "/")))
-         (links (url->links url)))
+         (links (map (cut canonicalize-url <> url) (url->links url))))
+
     (define (file->signature/guess url)
       "Return the first link that matches a signature extension, else #f."
       (let ((base (basename url)))
@@ -526,42 +554,12 @@ are unavailable."
 
     (define (url->release url)
       "Return an <upstream-source> object if a release file was found at URL,
-else #f."
-      (let* ((base (basename url))
-             (base-url (string-append base-url directory))
-             (url  (cond ((and=> (string->uri url) uri-scheme) ;full URL?
-                          url)
-                         ;; full URL, except for URI scheme.  Reuse the URI
-                         ;; scheme of the document that contains the link.
-                         ((string-prefix? "//" url)
-                          (string-append
-                           (symbol->string (uri-scheme (string->uri base-url)))
-                           ":" url))
-                         ((string-prefix? "/" url) ;absolute path?
-                          (let ((uri (string->uri base-url)))
-                            (uri->string
-                             (build-uri (uri-scheme uri)
-                                        #:host (uri-host uri)
-                                        #:port (uri-port uri)
-                                        #:path url))))
-
-                         ;; URL is a relative path and BASE-URL may or may not
-                         ;; end in slash.
-                         ((string-suffix? "/" base-url)
-                          (string-append base-url url))
-                         (else
-                          ;; If DIRECTORY is non-empty, assume BASE-URL
-                          ;; denotes a directory; otherwise, assume BASE-URL
-                          ;; denotes a file within a directory, and that URL
-                          ;; is relative to that directory.
-                          (string-append (if (string-null? directory)
-                                             (dirname base-url)
-                                             base-url)
-                                         "/" url)))))
-        (and (release-file? package base)
+else #f.  URL is assumed to fully specified."
+      (let ((base (basename url)))
+        (and (release-file? name base)
              (let ((version (tarball->version base)))
                (upstream-source
-                (package package)
+                (package name)
                 (version version)
                 ;; uri-mirror-rewrite: Don't turn nice mirror:// URIs into ftp://
                 ;; URLs during "guix refresh -u".
