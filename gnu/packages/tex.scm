@@ -2963,6 +2963,28 @@ this idea are code illustrations from the book @emph{Computer Science: An
 Interdisciplinary Approach} from Robert Sedgewick and Kevin Wayne.")
     (license license:lppl1.3c)))
 
+(define-public texlive-codicefiscaleitaliano
+  (package
+    (name "texlive-codicefiscaleitaliano")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/codicefiscaleitaliano/"
+                   "source/latex/codicefiscaleitaliano/"
+                   "tex/latex/codicefiscaleitaliano/")
+             (base32
+              "1ij3vcikhwx1d55z2gsx4yb9fin9dhm8yjwc6apiwg353ipxwibw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/codicefiscaleitaliano")
+    (synopsis "Test the consistency of the Italian personal Fiscal Code")
+    (description
+     "The alphanumeric string that forms the Italian personal Fiscal Code is
+prone to be misspelled thus rendering a legal document invalid.  The package
+quickly verifies the consistency of the fiscal code string, and can therefore
+be useful for lawyers and accountants that use fiscal codes very frequently.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-colorsep
   (package
     (name "texlive-colorsep")
