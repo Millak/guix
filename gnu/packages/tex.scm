@@ -903,6 +903,42 @@ mathematical or other technical packages.")
     (description "This is the TeX Live scheme for installing ConTeXt.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-scheme-medium
+  (package
+    (name "texlive-scheme-medium")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-collection-basic
+           texlive-collection-binextra
+           texlive-collection-context
+           texlive-collection-fontsrecommended
+           texlive-collection-fontutils
+           texlive-collection-langczechslovak
+           texlive-collection-langenglish
+           texlive-collection-langeuropean
+           texlive-collection-langfrench
+           texlive-collection-langgerman
+           texlive-collection-langitalian
+           texlive-collection-langpolish
+           texlive-collection-langportuguese
+           texlive-collection-langspanish
+           texlive-collection-latex
+           texlive-collection-latexrecommended
+           texlive-collection-luatex
+           texlive-collection-mathscience
+           texlive-collection-metapost
+           texlive-collection-plaingeneric
+           texlive-collection-xetex))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Small scheme with additional packages and languages")
+    (description
+     "This is the medium TeX Live collection: it contains plain TeX,
+LaTeX, many recommended packages, and support for most European languages.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-scheme-minimal
   (package
     (name "texlive-scheme-minimal")
