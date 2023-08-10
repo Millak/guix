@@ -5487,6 +5487,30 @@ run programs as a service using a variety of supervisors, including systemd,
 SysVinit, and more.")
       (license license:zlib))))
 
+(define-public go-github-com-dgryski-go-metro
+  (package
+    (name "go-github-com-dgryski-go-metro")
+    (version "0.0.0-20211217172704-adc40b04c140")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dgryski/go-metro")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16y5vc5qf7aipi8basqza8l939hlmp7wqsv4y6gsqac3sp9ziqyj"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/dgryski/go-metro"))
+    (home-page "https://github.com/dgryski/go-metro")
+    (synopsis "Go translation of MetroHash")
+    (description
+     "This package provides a Go translation of the
+@url{https://github.com/jandrewrogers/MetroHash, reference C++ code for
+MetroHash}, a high quality, high performance hash algorithm.")
+    (license license:expat)))
+
 (define-public go-github-com-docker-distribution
   (let ((commit "325b0804fef3a66309d962357aac3c2ce3f4d329")
         (revision "0"))
