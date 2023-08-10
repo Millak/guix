@@ -8157,6 +8157,24 @@ display calculators, specifically the TI-82 STATS.")
 @code{array}.")
     (license license:lppl)))
 
+(define-public texlive-translation-dcolumn-fr
+  (package
+    (name "texlive-translation-dcolumn-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-dcolumn-fr/")
+             (base32
+              "0xakssrkxb2wc6xyy1yvx4mm398x3yq032b7vapqxl82h992fjll")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-dcolumn-fr")
+    (synopsis "French translation of the documentation of @code{dcolumn}")
+    (description
+     "This package provides a French translation of the documentation of
+@code{dcolumn}.")
+    (license license:lppl)))
+
 (define-public texlive-turnstile
   (package
     (name "texlive-turnstile")
