@@ -209,3 +209,47 @@ variety of RDP clients:
 @end itemize")
     (license license:asl2.0)))
 
+(define-public xorgxrdp
+  (package
+    (name "xorgxrdp")
+    (version "0.9.19")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/neutrinolabs/xorgxrdp/releases/download/v"
+                    version "/xorgxrdp-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0m8lvdnhfvwwqrr56difgy3mblplp23x6iy12kl4r8i87ic4rky1"))))
+    (build-system gnu-build-system)
+    (inputs (list check
+                  imlib2
+                  libx11
+                  libxfixes
+                  libxfont2
+                  libxml2
+                  libxpm
+                  libxrandr
+                  libxslt
+                  libxt
+                  pixman
+                  xdpyinfo
+                  xorg-server
+                  xrdp))
+    (native-inputs (list nasm
+                         intltool
+                         pkg-config
+                         pixman))
+    (arguments
+     (list #:configure-flags #~(list "--enable-strict-locations=yes"
+                                     (string-append "XRDP_CFLAGS=-I"
+                                                    #$(this-package-input
+                                                       "xrdp") "/common"))))
+    (home-page "https://github.com/neutrinolabs/xorgxrdp")
+    (synopsis "Xorg drivers for xrdp")
+    (description
+     "xorgxrdp is a collection of modules to be used with a pre-existing X.Org
+install to make the X server act like X11rdp.  Unlike X11rdp, you don't have to
+recompile the whole X Window System.  Instead, additional modules are installed
+to a location where the existing Xorg installation would pick them.")
+    (license license:x11)))
