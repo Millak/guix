@@ -4171,6 +4171,29 @@ with pdfTeX, XeTeX and LuaTeX, and can also be used with the
 @code{unicode-math} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fixltxhyph
+  (package
+    (name "texlive-fixltxhyph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fixltxhyph/"
+                   "source/latex/fixltxhyph/"
+                   "tex/latex/fixltxhyph/")
+             (base32
+              "1wjrq2gplal5hpij758c4mk6s6aidqp2h25mvf7jmbbzq2nfsyq1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixltxhyph")
+    (synopsis "Allow hyphenation of partially-emphasised substrings")
+    (description
+     "The package fixes the problem of TeX failing to hyphenate letter strings
+that seem (to TeX} to be words, but which are followed by an apostrophe and
+then an emphasis command.  The cause of the problem is not the apostrophe, but
+the font change in the middle of the string.  The problem arises in Catalan,
+French, Italian and Romansh.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fixmath
   (package
     (name "texlive-fixmath")
