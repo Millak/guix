@@ -36753,6 +36753,23 @@ BibLaTeX.")
      "This is a German translation of the @code{filecontents} documentation.")
     (license license:lppl)))
 
+(define-public texlive-translation-moreverb-de
+  (package
+    (name "texlive-translation-moreverb-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-moreverb-de/")
+             (base32
+              "1jbpmvcm9q73kh09mhrbsb2wlycwwm4n8il342hz4jd15gwhmy8f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-moreverb-de")
+    (synopsis "German version of @code{moreverb}")
+    (description
+     "This is a German translation of the @code{moreverb} documentation.")
+    (license license:lppl)))
+
 (define-public texlive-translations
   (package
     (name "texlive-translations")
