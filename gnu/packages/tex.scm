@@ -20505,6 +20505,24 @@ papers.  Unlike many other such sheets, this sheet does not focus on
 typesetting mathematics, though it does list some symbols.")
     (license license:lppl)))
 
+(define-public texlive-latexcheat-ptbr
+  (package
+    (name "texlive-latexcheat-ptbr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexcheat-ptbr/")
+             (base32
+              "0m636j9gdfpm4j1b679z5qw5ygbm6jp8xl9dzy6v5zzy695fcgaf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexcheat-ptbr")
+    (synopsis "LaTeX cheat sheet, in Brazilian Portuguese")
+    (description
+     "This is a translation to Brazilian Portuguese of Winston Chang's LaTeX
+cheat sheet.")
+    (license license:lppl)))
+
 (define-public texlive-latexcourse-rug
   (package
     (name "texlive-latexcourse-rug")
