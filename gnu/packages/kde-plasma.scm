@@ -2265,6 +2265,7 @@ vaults.")
                   ksystemstats
                   kitemmodels
                   libksysguard
+                  qqc2-desktop-style
                   qtdeclarative-5
                   qtquickcontrols2-5))
     (synopsis "System sensors, process information and other system resources
