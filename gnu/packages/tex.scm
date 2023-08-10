@@ -8193,6 +8193,24 @@ display calculators, specifically the TI-82 STATS.")
 @code{natbib}.")
     (license license:lppl)))
 
+(define-public texlive-translation-tabbing-fr
+  (package
+    (name "texlive-translation-tabbing-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-tabbing-fr/")
+             (base32
+              "1cih442gp6zf8nwb2lbgjn7a64aglyrcw3aciqy5pkdw09pwn0an")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-tabbing-fr")
+    (synopsis "French translation of the documentation of @code{tabbing}")
+    (description
+     "This package provides a translation to French of the documentation of
+the @code{tabbing} package.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-turnstile
   (package
     (name "texlive-turnstile")
