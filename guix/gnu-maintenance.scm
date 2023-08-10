@@ -514,6 +514,7 @@ are unavailable."
                   (string-append base-url directory "/")))
          (links (url->links url)))
     (define (file->signature/guess url)
+      "Return the first link that matches a signature extension, else #f."
       (let ((base (basename url)))
         (any (lambda (link)
                (any (lambda (extension)
@@ -524,6 +525,8 @@ are unavailable."
              links)))
 
     (define (url->release url)
+      "Return an <upstream-source> object if a release file was found at URL,
+else #f."
       (let* ((base (basename url))
              (base-url (string-append base-url directory))
              (url  (cond ((and=> (string->uri url) uri-scheme) ;full URL?
@@ -574,7 +577,7 @@ are unavailable."
       (() #f)
       ((first . _)
        (if version
-           ;; find matching release version and return it
+           ;; Find matching release version and return it.
            (find (lambda (upstream)
                    (string=? (upstream-source-version upstream) version))
                  (coalesce-sources candidates))
