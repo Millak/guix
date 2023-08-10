@@ -22060,6 +22060,26 @@ rules of its own; this package provides an appropriate selection of French and
 British typographic rules.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-catalan
+  (package
+    (name "texlive-babel-catalan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-catalan/"
+                   "source/generic/babel-catalan/"
+                   "tex/generic/babel-catalan/")
+             (base32
+              "162ih5948z2kbxqxf7bp94ffg7f2b5l8ffa9w304868hj9ik6jfk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-catalan")
+    (synopsis "Babel contributed support for Catalan")
+    (description
+     "The package establishes Catalan conventions in a document (or a subset
+of the conventions, if Catalan is not the main language of the document).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-croatian
   (package
     (name "texlive-babel-croatian")
