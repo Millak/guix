@@ -5835,6 +5835,24 @@ to LaTeX2e: LaTeX2e-Kurzbeschreibung}.")
 to LaTeX2e.}")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-polish
+  (package
+    (name "texlive-lshort-polish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-polish/")
+             (base32
+              "121y638k4f4pbjpa4q0n9qj2w57624q2d1v4jz09qh399fl5yk81")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-polish")
+    (synopsis "Introduction to LaTeX in Polish")
+    (description
+     "This is the Polish translation of the @emph{(Not so) Short Introduction
+to LaTeX2e}.")
+    (license license:gpl2+)))
+
 (define-public texlive-lshort-slovak
   (package
     (name "texlive-lshort-slovak")
