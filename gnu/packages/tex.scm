@@ -32944,6 +32944,62 @@ others (Greek, German, French, ...)  have their own collections, depending
 simply on the size of the support.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langfrench
+  (package
+    (name "texlive-collection-langfrench")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-aeguill
+           texlive-annee-scolaire
+           texlive-apprendre-a-programmer-en-tex
+           texlive-apprends-latex
+           texlive-babel-basque
+           texlive-babel-french
+           texlive-basque-book
+           texlive-basque-date
+           texlive-bib-fr
+           texlive-bibleref-french
+           texlive-booktabs-fr
+           texlive-collection-basic
+           texlive-droit-fr
+           texlive-e-french
+           texlive-epslatex-fr
+           texlive-expose-expl3-dunkerque-2019
+           texlive-facture
+           texlive-formation-latex-ul
+           texlive-frenchmath
+           texlive-frletter
+           texlive-frpseudocode
+           texlive-hyphen-complete
+           texlive-impatient-fr
+           texlive-impnattypo
+           texlive-l2tabu-french
+           texlive-latex2e-help-texinfo-fr
+           texlive-letgut
+           texlive-lshort-french
+           texlive-mafr
+           texlive-matapli
+           texlive-profcollege
+           texlive-proflabo
+           texlive-proflycee
+           texlive-tabvar
+           texlive-tdsfrmath
+           texlive-translation-array-fr
+           texlive-translation-dcolumn-fr
+           texlive-translation-natbib-fr
+           texlive-translation-tabbing-fr
+           texlive-variations
+           texlive-visualfaq-fr
+           texlive-visualtikz))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for French and Basque")
+    (description
+     "This collection provides support packages for French and Basque.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
