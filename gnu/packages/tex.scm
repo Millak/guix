@@ -16013,6 +16013,37 @@ and -editable format;
 a function and a convexity table of its graph.")
     (license license:lppl1.3+)))
 
+(define-public texlive-templates-fenn
+  (package
+    (name "texlive-templates-fenn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/templates-fenn/")
+             (base32
+              "1s91swqsysva49cjrb9khgik5mvhxcb3wr2wz4l2683gdgxlbgkf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/templates-fenn")
+    (synopsis "Templates for TeX usage")
+    (description
+     "This package provides a set of templates for using LaTeX packages that
+the author uses, comprising:
+
+@itemize
+@item @file{scrlttr2.tex}: a letter, written with @code{scrlttr2.cls} from the
+KOMA-Script bundl,
+@item @file{dinbrief.tex}: a letter according to the German
+(DIN) standards, written with @file{dinbrief.cls},
+@item @file{kbrief.tex}: a brief memo (@emph{Kurzbrief}) to accompany
+enclosures, as used in German offices, again based on @code{dinbrief},
+@item @file{vermerk.tex}: a general form for taking down notes on events in
+the office,
+@item @file{diabetes.tex}: a diary for the basis-bolus insulin therapy of
+diabetes mellitus, using @file{scrartcl.cls} from the KOMA-Script bundle.
+@end itemize")
+    (license license:lppl)))
+
 (define-public texlive-tex4ht
   (package
     (name "texlive-tex4ht")
