@@ -4165,6 +4165,37 @@ level, as appropriate.  The package provides an alternative to the use of the
 @code{\\sideset} command in the @code{amsmath} package.")
     (license license:lppl)))
 
+(define-public texlive-frenchmath
+  (package
+    (name "texlive-frenchmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/frenchmath/"
+                   "source/latex/frenchmath/"
+                   "tex/latex/frenchmath/")
+             (base32
+              "0f6x5glpvjxvl5l8nvrjcbc6mfqpyv77y4qyxaaqxcwyhbkp5fw7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frenchmath")
+    (synopsis "Typesetting mathematics according to French rules")
+    (description
+     "The package provides:
+
+@itemize
+@item capital letters in roman (upright shape) in mathematical mode according
+to French rule (can be optionally disabled),
+@item optionally lowercase Greek letters in upright shape,
+@item correct spacing in math mode after commas, before a semicolon and around
+square brackets,
+@item some useful macros and aliases for symbols used in France such as
+@code{\\infeg}, @code{\\supeg}, @code{\\paral}, @item several macros for
+writing french operator names like @emph{pgcd}, @emph{ppcm}, @emph{Card},
+@emph{rg}, @emph{Vect}.
+@end itemize")
+    (license license:lppl1.3+)))
+
 (define-public texlive-functan
   (package
     (name "texlive-functan")
