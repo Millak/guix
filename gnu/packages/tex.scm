@@ -5450,6 +5450,25 @@ practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
 and commands.")
     (license license:fdl1.2+)))
 
+(define-public texlive-l2tabu-spanish
+  (package
+    (name "texlive-l2tabu-spanish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l2tabu-spanish/")
+             (base32
+              "1p83xflgv8x7nq9mylh468zn3hz5pv3zxprc63q51fwx0ylxfdbk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/l2tabu-spanish")
+    (synopsis "Spanish translation of @emph{Obsolete packages and commands}")
+    (description
+     "This package provides a Spanish translation of the @emph{l2tabu}
+practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
+and commands.")
+    (license license:public-domain)))
+
 (define-public texlive-latex2e-help-texinfo-fr
   (package
     (name "texlive-latex2e-help-texinfo-fr")
