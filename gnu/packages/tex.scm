@@ -6869,6 +6869,25 @@ for 11-16 years olds.")
 drawings (using TikZ) for laboratory stuff.")
     (license license:lppl)))
 
+(define-public texlive-proflycee
+  (package
+    (name "texlive-proflycee")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/proflycee/"
+                   "tex/latex/proflycee/")
+             (base32
+              "0kvwdppbw4gmdfa90blgj1gxv03clfx21nahdgvzk9i2dyccfllv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/proflycee")
+    (synopsis "LaTeX package for French maths teachers in high school")
+    (description
+     "This package provides some commands to help French mathematics teachers
+for 15-18 years olds.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-proof-at-the-end
   (package
     (name "texlive-proof-at-the-end")
