@@ -4613,6 +4613,28 @@ Currently two steps of symmetry reduction are supported.")
 processed files, as well as solutions to the exercices.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-gustlib
+  (package
+    (name "texlive-gustlib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/gustlib/" "bibtex/bst/gustlib/"
+                   "doc/plain/gustlib/" "tex/plain/gustlib/")
+             (base32
+              "1jfmsx5zw9yb8fkhw4fad82m48n7fs1inmx471mr7ys0i7y1l92v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gustlib")
+    (synopsis "Plain macros for much core and extra functionality, from GUST")
+    (description
+     "This package includes Plain TeX macros adding extra functionalities.
+This comprises bibliography support, token manipulation, cross-references,
+verbatim, determining length of a paragraph's last line, multicolumn output,
+Polish bibliography and index styles, prepress and color separation, graphics
+manipulation, and tables.")
+    (license (list license:knuth license:public-domain))))
+
 (define-public texlive-happy4th
   (package
     (name "texlive-happy4th")
