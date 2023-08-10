@@ -31496,6 +31496,28 @@ generation based on the @code{fifinddo} package.")
 Rechtschreibung).")
     (license license:lppl)))
 
+(define-public texlive-germbib
+  (package
+    (name "texlive-germbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/germbib/" "doc/bibtex/germbib/"
+                   "tex/latex/germbib/")
+             (base32
+              "1mc95h4ndzbg2q30vsq2rx9v0a8f0q0vhmjiz709lllkmj6n402p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/germbib")
+    (synopsis "German variants of standard BibTeX styles")
+    (description
+     "This package provides a development of the (old) @file{german.sty}, this
+bundle provides German packages, BibTeX styles and documentary examples, for
+writing documents with bibliographies.  The author has since developed the
+@code{babelbib} bundle, which (he asserts) supersedes @code{germbib}.")
+    ;; The license is a variation of Knuth's.
+    (license (license:fsf-free "file://doc/bibtex/germbib/apalike.tex"))))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
