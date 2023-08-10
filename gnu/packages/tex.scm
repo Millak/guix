@@ -32142,6 +32142,29 @@ layouts and designs.  The class also provides the functionality of over thirty
 of the more popular packages, thus simplifying document sources.")
     (license license:lppl1.3+)))
 
+(define-public texlive-milog
+  (package
+    (name "texlive-milog")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/milog/" "tex/latex/milog/")
+             (base32
+              "1114i8hgs84nnvmkiy8azbh6rgk0gjzp387idvvkx651vcyc82kf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/milog")
+    (synopsis
+     "LaTeX class for documentation duties according to the German minimum wage law
+MiLoG")
+    (description
+     "The @file{milog.cls} class provides means to fulfill the documentation
+duties by the German minimum wage law MiLoG.  The recording of working hours
+is carried out in a simple CSV file from which the class will automatically
+create a time sheet.  Alternatively, data can also be collected by a CSV
+export of a suitable app.")
+    (license license:lppl)))
+
 (define-public texlive-fp
   (package
     (name "texlive-fp")
