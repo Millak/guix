@@ -5526,6 +5526,24 @@ reference sheet for writing scientific papers).  It has been adapted to German
 standards using the KOMA script document classes.")
     (license license:lppl)))
 
+(define-public texlive-latexcheat-esmx
+  (package
+    (name "texlive-latexcheat-esmx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexcheat-esmx/")
+             (base32
+              "1d6nk9p9adlhgr28mnnizrxzzqlk20zw2clcddqlaa8pn73dqhcm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexcheat-esmx")
+    (synopsis "LaTeX cheat sheet, in Spanish")
+    (description
+     "This is a translation to Spanish (Castellano) of Winston Chang's LaTeX
+cheat sheet (a reference sheet for writing scientific papers).")
+    (license license:lppl)))
+
 (define-public texlive-letgut
   (package
     (name "texlive-letgut")
