@@ -6851,6 +6851,24 @@ filtrations (calligraphic).")
 for 11-16 years olds.")
     (license license:lppl1.3c)))
 
+(define-public texlive-proflabo
+  (package
+    (name "texlive-proflabo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/proflabo/" "tex/latex/proflabo/")
+             (base32
+              "0208sjybqgvd7xrrnc49d31cpvd0bfjyjamfsyzi6yb0fhsxd7x7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/proflabo")
+    (synopsis "Draw laboratory equipment")
+    (description
+     "This package was developed to help French chemistry teachers to create
+drawings (using TikZ) for laboratory stuff.")
+    (license license:lppl)))
+
 (define-public texlive-proof-at-the-end
   (package
     (name "texlive-proof-at-the-end")
