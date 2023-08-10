@@ -18056,6 +18056,25 @@ links to the French-speaking LaTeX FAQ.")
 per command or per parameter.")
     (license license:gpl3+)))
 
+(define-public texlive-visualtikz
+  (package
+    (name "texlive-visualtikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/visualtikz/")
+             (base32
+              "1q0a1mhc330z8cnhghp2p46bxsmzz8cdba8hcvssglz0gsq5z5fc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/visualtikz")
+    (synopsis "Visual help for TikZ based on images with minimum text")
+    (description
+     "This package provides a visual help for TikZ based on images with
+minimum text: an image per command or parameter.  The document is in French,
+but will be translated into English later.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-web
   (package
     (name "texlive-web")
