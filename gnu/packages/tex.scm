@@ -20555,6 +20555,26 @@ package provides the @code{\\luaexec} command and the @code{luacode}
 environments to help with these problems.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lualatex-doc-de
+  (package
+    (name "texlive-lualatex-doc-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lualatex-doc-de/")
+             (base32
+              "0vnmgs475bzbqi14m9sm45cwjfsbvbk45wkb8m73j1bnk7wg7hh4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lualatex-doc-de")
+    (synopsis "Guide to LuaLaTeX (German translation)")
+    (description
+     "The document is a German translation of the map/guide to the world of
+LuaLaTeX.  Coverage supports both new users and package developers.  Apart
+from the introductory material, the document gathers information from several
+sources, and offers links to others.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-lualatex-math
   (package
     (name "texlive-lualatex-math")
