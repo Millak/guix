@@ -5588,6 +5588,26 @@ LaTeX2e}, with added coverage of Finnish typesetting rules.")
 introduction to LaTeX2e}.")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-german
+  (package
+    (name "texlive-lshort-german")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-german/")
+             (base32
+              "073v7zvk8xri0f05mr0ad770p81akl9b9cnia1q4hcma9fk89k10")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-german")
+    (synopsis
+     "German version of @emph{A Short Introduction to LaTeX2e:
+LaTeX2e-Kurzbeschreibung}")
+    (description
+     "This package provides the German version of @emph{A Short Introduction
+to LaTeX2e: LaTeX2e-Kurzbeschreibung}.")
+    (license license:opl1.0+)))
+
 (define-public texlive-lshort-slovak
   (package
     (name "texlive-lshort-slovak")
