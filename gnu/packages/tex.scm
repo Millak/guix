@@ -21022,6 +21022,25 @@ similar) definitions.")
 
 (define-deprecated-package texlive-latex-amsmath texlive-amsmath)
 
+(define-public texlive-amsmath-it
+  (package
+    (name "texlive-amsmath-it")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amsmath-it/")
+             (base32
+              "0xcwsk8q9q3nsz8wbklgpbw0vzjw7iw0chffzcbp2zsk6rypqf7w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amsmath-it")
+    (synopsis "Italian translations of some old @code{amsmath} documents")
+    (description
+     "This package provides an Italian translation for some old @code{amsmath}
+documents.  The documents are: @file{diffs-m.txt} of December 1999, and
+@file{amsmath.faq} of March 2000.")
+    (license license:lppl)))
+
 (define-public texlive-manfnt
   (package
     (name "texlive-manfnt")
