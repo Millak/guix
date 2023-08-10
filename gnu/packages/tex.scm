@@ -8175,6 +8175,24 @@ display calculators, specifically the TI-82 STATS.")
 @code{dcolumn}.")
     (license license:lppl)))
 
+(define-public texlive-translation-natbib-fr
+  (package
+    (name "texlive-translation-natbib-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-natbib-fr/")
+             (base32
+              "0f0r1n8q3jkxsdcddabsgz9h9ndq4yffdpxdqxvqjmhfafhzwgkg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-natbib-fr")
+    (synopsis "French translation of the documentation of @code{natbib}")
+    (description
+     "This package provides a French translation of the documentation of
+@code{natbib}.")
+    (license license:lppl)))
+
 (define-public texlive-turnstile
   (package
     (name "texlive-turnstile")
