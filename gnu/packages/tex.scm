@@ -5260,6 +5260,25 @@ and commands.")
 @code{latex2e-help-texinfo}.")
     (license license:public-domain)))
 
+(define-public texlive-latexcheat-de
+  (package
+    (name "texlive-latexcheat-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexcheat-de/")
+             (base32
+              "1cpqcvqkkyb2bf87yjvc2migxawnacx5mva8dapma7hmwx0z7rhm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexcheat-de")
+    (synopsis "LaTeX cheat sheet, in German")
+    (description
+     "This is a translation to German of Winston Chang's LaTeX cheat sheet (a
+reference sheet for writing scientific papers).  It has been adapted to German
+standards using the KOMA script document classes.")
+    (license license:lppl)))
+
 (define-public texlive-letgut
   (package
     (name "texlive-letgut")
