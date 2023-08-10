@@ -25998,6 +25998,28 @@ written from right to left.
 book @emph{Praca magisterska i dyplomowa z programem LaTeX}.")
     (license license:lppl)))
 
+(define-public texlive-qpxqtx
+  (package
+    (name "texlive-qpxqtx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/qpxqtx/"
+                   "fonts/tfm/public/qpxqtx/"
+                   "fonts/vf/public/qpxqtx/"
+                   "tex/generic/qpxqtx/")
+             (base32
+              "0ksikdpzsv0rdnl5p536aw3625rlmzpgmhsycb8sbm9jlbrpxvi6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qpxqtx")
+    (synopsis
+     "Polish macros and fonts supporting Pagella/pxfonts and Termes/txfonts")
+    (description
+     "This package provides Polish macros and fonts supporting Pagella/pxfonts
+and Termes/txfonts")
+    (license license:public-domain)))
+
 (define-public texlive-supertabular
   (package
     (name "texlive-supertabular")
