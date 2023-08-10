@@ -4765,6 +4765,26 @@ when using for open intervals.")
 Plain TeX and Eplain.  This is its French translation.")
     (license license:fdl1.3+)))
 
+(define-public texlive-impnattypo
+  (package
+    (name "texlive-impnattypo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/impnattypo/"
+                   "source/latex/impnattypo/"
+                   "tex/latex/impnattypo/")
+             (base32
+              "05ddbpxvybr0a7sg1ximsifvgjg83qwx5pd9xcc22bliz3j5ixvm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/impnattypo")
+    (synopsis "Support typography of l'Imprimerie Nationale Francaise")
+    (description
+     "The package provides useful macros implementing recommendations by the
+French Imprimerie Nationale.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-includernw
   (package
     (name "texlive-includernw")
