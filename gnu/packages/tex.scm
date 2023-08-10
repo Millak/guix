@@ -36634,6 +36634,23 @@ to bases 2, 4, 8 and 16.  All constructs TeX accepts as arguments to its
 may be used under LaTeX and plain TeX.")
     (license (license:fsf-free "file:/binhex.dtx"))))
 
+(define-public texlive-translation-arsclassica-de
+  (package
+    (name "texlive-translation-arsclassica-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-arsclassica-de/")
+             (base32
+              "1ix5lafy3ay2bc9zkkbqw2rrw6ng3izb8d9p6rki6h2j7n0qj47s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-arsclassica-de")
+    (synopsis "German version of @code{arsclassica}")
+    (description
+     "This is a German translation of the @code{arsclassica} documentation.")
+    (license license:lppl)))
+
 (define-public texlive-translations
   (package
     (name "texlive-translations")
