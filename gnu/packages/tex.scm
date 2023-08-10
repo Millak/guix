@@ -1501,6 +1501,24 @@ diagrams using Xy-pic and a section describing how to use @code{amsrefs} to
 create a bibliography.")
     (license license:lppl)))
 
+(define-public texlive-amsldoc-it
+  (package
+    (name "texlive-amsldoc-it")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amsldoc-it/")
+             (base32
+              "0d4hwb7hywy56d6934448lcr6fdx7qchkfzs806dr7wfzfy36yix")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amsldoc-it")
+    (synopsis "Italian translation of @code{amsldoc}")
+    (description
+     "This package provides an Italian translation of @code{amsldoc}.")
+    ;; Use same license as `amsmath'.
+    (license license:lppl1.3c)))
+
 (define-public texlive-amstex
   (package
     (name "texlive-amstex")
