@@ -15399,6 +15399,27 @@ Holy Quran.  It adds three more German translations to the @code{quran}
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-r-und-s
+  (package
+    (name "texlive-r-und-s")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/r_und_s/" "tex/latex/r_und_s/")
+             (base32
+              "15w8sggvlh28567y1d4vpbq8and12hvhphfvd7vabbn8g1l6h1yi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/r-und-s")
+    (synopsis "Chemical hazard codes")
+    (description
+     "The @code{r-und-s} package decodes the german R- und S-Satze, which are
+numerically coded security advice for chemical substances into plain text.
+This is, e.g., used to compose security sheets or lab protocols and especially
+useful for students of chemistry.  There are four packages, giving texts in
+German, English, French and Dutch.")
+    (license license:bsd-2)))
+
 (define-public texlive-randbild
   (package
     (name "texlive-randbild")
