@@ -1557,6 +1557,24 @@ is the historical basis of @code{amslatex}, which should now be used to
 prepare submissions for the AMS.")
     (license license:lppl)))
 
+(define-public texlive-amsthdoc-it
+  (package
+    (name "texlive-amsthdoc-it")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amsthdoc-it/")
+             (base32
+              "0ic88gs89m3d9ys40c4k7sgx6wy82c8isg2qkmd4snw5yms6fpaz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amsthdoc-it")
+    (synopsis "Italian translation of @code{amsthdoc}")
+    (description
+     "This package provides an Italian translation of @code{amsthdoc}.")
+    ;; Use same license as `amscls'.
+    (license license:lppl1.3c)))
+
 (define-public texlive-annee-scolaire
   (package
     (name "texlive-annee-scolaire")
