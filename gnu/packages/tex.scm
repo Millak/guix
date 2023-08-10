@@ -25978,6 +25978,26 @@ written from right to left.
 
 (define-deprecated-package texlive-latex-polyglossia texlive-polyglossia)
 
+(define-public texlive-przechlewski-book
+  (package
+    (name "texlive-przechlewski-book")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/przechlewski-book/"
+                   "doc/latex/przechlewski-book/"
+                   "tex/latex/przechlewski-book/")
+             (base32
+              "06bsdpm26s3qqxhik185pkrxp0mx2n5jxndm14cd917drh162yr8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/przechlewski-book")
+    (synopsis "Examples from Przechlewski's LaTeX book")
+    (description
+     "The bundle provides machine-readable copies of the examples from the
+book @emph{Praca magisterska i dyplomowa z programem LaTeX}.")
+    (license license:lppl)))
+
 (define-public texlive-supertabular
   (package
     (name "texlive-supertabular")
