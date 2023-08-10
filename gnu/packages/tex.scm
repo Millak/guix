@@ -3875,6 +3875,28 @@ ellipsograph.  This package extends the functionalities of the @code{curve2e}
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-expose-expl3-dunkerque-2019
+  (package
+    (name "texlive-expose-expl3-dunkerque-2019")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/expose-expl3-dunkerque-2019/")
+             (base32
+              "0xij1ycxnc3hfzkl0bfs03s0zzzv6xsj3myvykb6n836j1g66g2y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/expose-expl3-dunkerque-2019")
+    (synopsis "Using @code{expl3} to implement some numerical algorithms")
+    (description
+     "This is an article, in French, based on a presentation made in Dunkerque
+for the @emph{Stage LaTeX} on 12 June 2019.  The article gives three examples
+of code in @code{expl3} with (lots of) comments: Knuth's algorithm to create
+a list of primes, the sieve of Eratosthenes, Kaprekar sequences.  The package
+contains the code itself, the documentation as a PDF file, and all the files
+needed to produce it.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-extarrows
   (package
     (name "texlive-extarrows")
