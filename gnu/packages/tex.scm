@@ -31399,6 +31399,26 @@ well as the optional active quotes are freely configurable.")
 for which the use of thin space is recommended.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dtk-bibliography
+  (package
+    (name "texlive-dtk-bibliography")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/dtk-bibliography/"
+                   "doc/bibtex/dtk-bibliography/"
+                   "tex/latex/dtk-bibliography/")
+             (base32
+              "1mrlm2yrzrafq2xhk6mc70wc55ngrxylhxrl3qmgz0yxag5yspn8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dtk-bibliography")
+    (synopsis "Bibliography of @emph{Die TeXnische Komodie}")
+    (description
+     "This package contains the bibliography for @emph{Die TeXnische Komodie},
+the journal of the German-speaking TeX User Group.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
