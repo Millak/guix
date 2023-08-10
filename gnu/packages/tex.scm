@@ -26118,6 +26118,24 @@ would automatically change the heading style in use).")
 
 (define-deprecated-package texlive-latex-fancyhdr texlive-fancyhdr)
 
+(define-public texlive-fancyhdr-it
+  (package
+    (name "texlive-fancyhdr-it")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancyhdr-it/")
+             (base32
+              "117826hd9zl15i8qf6d1pz2qz57l68a9nxqldxyk21acc29ifalr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancyhdr-it")
+    (synopsis "Italian translation of @code{fancyhdr} documentation")
+    (description
+     "This package provides an Italian translation of documentation provided
+with the @code{fancyhdr} package.")
+    (license license:lppl)))
+
 (define-public texlive-fancyref
   (package
     (name "texlive-fancyref")
