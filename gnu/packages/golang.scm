@@ -3712,9 +3712,22 @@ an interface to implement any other minifier.")
                 "1dqki9ima079k9a3l72igmx5dml8qsl9z8rzw8a433f4gjhlv320"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/tdewolff/parse/v2"))
+     (list #:import-path "github.com/tdewolff/parse/v2"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'regenerate-hash
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (for-each
+                    (lambda (dir)
+                      (with-directory-excursion
+                          (format #f "src/~a/~a" import-path dir)
+                        (make-file-writable "hash.go")
+                        (format #t "Generating `hash.go' for ~a...~%" dir)
+                        (invoke "go" "generate")))
+                    '("css" "html")))))))
     (native-inputs
-     (list go-github-com-tdewolff-test))
+     (list go-github-com-tdewolff-hasher
+           go-github-com-tdewolff-test))
     (home-page "https://github.com/tdewolff/parse")
     (synopsis "Go parsers for web formats")
     (description
