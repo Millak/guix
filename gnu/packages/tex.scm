@@ -3771,6 +3771,24 @@ you use any special symbols inside your command.")
 @url{https://www.eolang.org, EO} programming language.")
     (license license:expat)))
 
+(define-public texlive-epslatex-fr
+  (package
+    (name "texlive-epslatex-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/epslatex-fr/")
+             (base32
+              "1xs9977g9g3i6sipkf7i9jdl8sdm69ci3161a4p7k66qbizi7zvb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fepslatex")
+    (synopsis "French version of @emph{Graphics in LaTeX}")
+    (description
+     "This is the French translation of @code{epslatex}, and describes how to
+use imported graphics in LaTeX(2e) documents.")
+    (license license:gpl3+)))
+
 (define-public texlive-eqexpl
   (package
     (name "texlive-eqexpl")
