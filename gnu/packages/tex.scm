@@ -5184,6 +5184,25 @@ pictures.  The aim of the document is to provide a solution, in the form of
 some sample code, for every problem.")
     (license license:fdl1.3+)))
 
+(define-public texlive-l2tabu
+  (package
+    (name "texlive-l2tabu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l2tabu/")
+             (base32
+              "1jl0n43bqbys0c9v0xb4sjql0gvk4r14ldzp2rbwzjsk8a39q8v8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/l2tabu")
+    (synopsis "Obsolete packages and commands")
+    (description
+     "This package provides a German translation of the @emph{l2tabu}
+practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
+and commands.")
+    (license license:gpl3+)))
+
 (define-public texlive-l2tabu-english
   (package
     (name "texlive-l2tabu-english")
