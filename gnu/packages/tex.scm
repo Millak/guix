@@ -2189,6 +2189,24 @@ convert atomic numbers to element symbols or element names and vice versa.")
 characters.")
     (license license:gpl3+)))
 
+(define-public texlive-booktabs-de
+  (package
+    (name "texlive-booktabs-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/booktabs-de/")
+             (base32
+              "1ld7zdr88xjhnnl2x734rxr7h0fz84awapmv50p1kzn6fczrwyam")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/booktabs-de")
+    (synopsis "German version of @code{booktabs}")
+    (description
+     "This is a German translation of the @code{booktabs} package
+documentation.")
+    (license license:gpl3+)))
+
 (define-public texlive-booktabs-fr
   (package
     (name "texlive-booktabs-fr")
@@ -31344,6 +31362,23 @@ designed to cope with the more specific demands of academic writing,
 especially in the humanities and the social sciences.  All quote styles as
 well as the optional active quotes are freely configurable.")
     (license license:lppl1.3c+)))
+
+(define-public texlive-csquotes-de
+  (package
+    (name "texlive-csquotes-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/csquotes-de/")
+             (base32
+              "087c08c44811vd8p00l1xrkg5w6fsl8as64jq83m6gf1hfan9w4c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/csquotes-de")
+    (synopsis "German translation of @code{csquotes} documentation")
+    (description
+     "This is a German translation of the documentation of @code{csquotes}.")
+    (license license:lppl)))
 
 (define-public texlive-logreq
   (package
