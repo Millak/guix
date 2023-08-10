@@ -33549,6 +33549,62 @@ simply on the size of the support.")
      "This collection provides support packages for French and Basque.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langgerman
+  (package
+    (name "texlive-collection-langgerman")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-apalike-german
+           texlive-babel-german
+           texlive-bibleref-german
+           texlive-booktabs-de
+           texlive-collection-basic
+           texlive-csquotes-de
+           texlive-dhua
+           texlive-dtk-bibliography
+           texlive-etdipa
+           texlive-etoolbox-de
+           texlive-fifinddo-info
+           texlive-german
+           texlive-germbib
+           texlive-germkorr
+           texlive-hausarbeit-jura
+           texlive-hyphen-complete
+           texlive-koma-script-examples
+           texlive-l2picfaq
+           texlive-l2tabu
+           texlive-latexcheat-de
+           texlive-lshort-german
+           texlive-lualatex-doc-de
+           texlive-microtype-de
+           texlive-milog
+           texlive-quran-de
+           texlive-r-und-s
+           texlive-schulmathematik
+           texlive-templates-fenn
+           texlive-templates-sommer
+           texlive-termcal-de
+           texlive-tipa-de
+           texlive-translation-arsclassica-de
+           texlive-translation-biblatex-de
+           texlive-translation-chemsym-de
+           texlive-translation-ecv-de
+           texlive-translation-enumitem-de
+           texlive-translation-europecv-de
+           texlive-translation-filecontents-de
+           texlive-translation-moreverb-de
+           texlive-udesoftec
+           texlive-uhrzeit
+           texlive-umlaute
+           texlive-voss-mathcol))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for German")
+    (description "This collection provides support packages for German.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
