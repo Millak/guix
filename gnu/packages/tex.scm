@@ -39530,6 +39530,29 @@ the middle of the created link: the link comes in one atomic piece.  This
 package allows such line breaks in the generated links.")
     (license license:lppl)))
 
+(define-public texlive-cc-pl
+  (package
+    (name "texlive-cc-pl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cc-pl/" "fonts/map/dvips/cc-pl/"
+                   "fonts/source/public/cc-pl/"
+                   "fonts/tfm/public/cc-pl/"
+                   "fonts/type1/public/cc-pl/")
+             (base32
+              "0wxpa4s2rx54z259zmg5km91ycydra4d9kn3y6mhkvjjif1yl8av")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-concrete texlive-metafont texlive-pl))
+    (home-page "https://ctan.org/pkg/cc-pl")
+    (synopsis "Polish extension of Computer Concrete fonts")
+    (description
+     "These Metafont sources rely on the availability of the Metafont Polish
+fonts and of the Metafont sources of the original Concrete fonts.  Adobe Type
+1 versions of the fonts are included.")
+    (license license:public-domain)))
+
 (define-public texlive-comment
   (package
     (name "texlive-comment")
