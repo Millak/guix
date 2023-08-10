@@ -3644,6 +3644,32 @@ per-goroutine.")
     (description "The @code{walker} function is a faster, parallel version, of
 @code{filepath.Walk}")))
 
+(define-public go-github-com-tdewolff-hasher
+  (package
+    (name "go-github-com-tdewolff-hasher")
+    (version "0.0.0-20210521220142-bc97f602bca2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tdewolff/hasher")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12dmxpmdy2z7c2z7qv2mv2aq4hyvjncb6fzr0ymg3y5bfjvl4dcw"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/tdewolff/hasher"))
+    (native-inputs
+     (list go-github-com-cespare-mph
+           go-github-com-dgryski-go-mph))
+    (home-page "https://github.com/tdewolff/hasher")
+    (synopsis "Go known-keys fast-lookup map generator")
+    (description
+     "Hasher is a tool to automate the creation of methods and tables for a
+@code{string} to @code{uint32} mapper.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
