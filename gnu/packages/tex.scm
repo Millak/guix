@@ -36702,6 +36702,23 @@ BibLaTeX.")
     (description "This is a German translation of the @code{ecv} documentation.")
     (license license:lppl)))
 
+(define-public texlive-translation-enumitem-de
+  (package
+    (name "texlive-translation-enumitem-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-enumitem-de/")
+             (base32
+              "121raikamd33gabvbgwygrc8hyi3qhvx4hhv4h8wq2chrglj37dq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-enumitem-de")
+    (synopsis "@code{enumitem} documentation, in German")
+    (description
+     "This is a German translation of the manual for @code{enumitem}.")
+    (license license:lppl)))
+
 (define-public texlive-translations
   (package
     (name "texlive-translations")
