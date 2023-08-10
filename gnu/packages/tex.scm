@@ -4635,6 +4635,25 @@ Polish bibliography and index styles, prepress and color separation, graphics
 manipulation, and tables.")
     (license (list license:knuth license:public-domain))))
 
+(define-public texlive-gustprog
+  (package
+    (name "texlive-gustprog")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/gustprog/")
+             (base32
+              "07qx4xvyqb4p0cx0macjgyg0pcxgcmdxmzfsx9ah5s0dqvminwrc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gustprog")
+    (synopsis "Utility programs for Polish users of TeX")
+    (description
+     "This package provides utility programs for Polish users of TeX.  These
+programs are provided as sources, not installed in the @file{bin}
+directories.")
+    (license license:public-domain)))
+
 (define-public texlive-happy4th
   (package
     (name "texlive-happy4th")
