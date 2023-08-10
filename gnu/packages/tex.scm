@@ -8139,6 +8139,24 @@ to use the environment.")
 display calculators, specifically the TI-82 STATS.")
     (license license:lppl1.3c)))
 
+(define-public texlive-translation-array-fr
+  (package
+    (name "texlive-translation-array-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-array-fr/")
+             (base32
+              "128k8isyn4s0v496sykn22fqn0gfwyyk19kcrmxnc6clgxxfbdy6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-array-fr")
+    (synopsis "French translation of the documentation of @code{array}")
+    (description
+     "This package provides a French translation of the documentation of
+@code{array}.")
+    (license license:lppl)))
+
 (define-public texlive-turnstile
   (package
     (name "texlive-turnstile")
