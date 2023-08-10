@@ -5488,6 +5488,25 @@ and commands.")
 @code{latex2e-help-texinfo}.")
     (license license:public-domain)))
 
+(define-public texlive-latex2e-help-texinfo-spanish
+  (package
+    (name "texlive-latex2e-help-texinfo-spanish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/latex2e-es.info"
+                   "doc/latex/latex2e-help-texinfo-spanish/")
+             (base32
+              "1v3wa99phdmsiajbq0ad4h939cpwjwzpq88h6s0796h5fr34hrvq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex2e-help-texinfo")
+    (synopsis "Spanish translation of @code{latex2e-help-texinfo}")
+    (description
+     "This package provides a complete Spanish translation of
+@code{latex2e-help-texinfo}.")
+    (license license:public-domain)))
+
 (define-public texlive-latexcheat-de
   (package
     (name "texlive-latexcheat-de")
