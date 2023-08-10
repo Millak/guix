@@ -30775,6 +30775,22 @@ AMS-LaTeX, AMS-TeX, and plain TeX).  The distribution includes Michael Barr's
 
 (define-deprecated-package texlive-generic-xypic texlive-xypic)
 
+(define-public texlive-xypic-tut-pt
+  (package
+    (name "texlive-xypic-tut-pt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/xypic-tut-pt/")
+             (base32
+              "0d9ivdz5jnhnh3pg8qb2jn7qfxad06hxff65scyhdd6wbsfaizi9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xypic-tut-pt")
+    (synopsis "Tutorial for XY-pic, in Portuguese")
+    (description "This is a tutorial for XY-pic, in Portuguese.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibtex
   (package
     (name "texlive-bibtex")
