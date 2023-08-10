@@ -34190,6 +34190,37 @@ simply on the size of the support.")
     (description "This collection provides support packages for Italian.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langpolish
+  (package
+    (name "texlive-collection-langpolish")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-babel-polish
+           texlive-bredzenie
+           texlive-cc-pl
+           texlive-collection-basic
+           texlive-collection-latex
+           texlive-gustlib
+           texlive-gustprog
+           texlive-hyphen-complete
+           texlive-lshort-polish
+           texlive-mex
+           texlive-mwcls
+           texlive-pl
+           texlive-polski
+           texlive-przechlewski-book
+           texlive-qpxqtx
+           texlive-tap
+           texlive-tex-virtual-academy-pl
+           texlive-utf8mex))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Polish")
+    (description "This collection provides support packages for Polish.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
