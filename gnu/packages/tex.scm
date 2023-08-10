@@ -8455,6 +8455,25 @@ mathematical proofs and to construct programs.  This package provides macros
 that support calculational proofs and Dijkstra's guarded command language.")
     (license license:bsd-1)))
 
+(define-public texlive-tex-virtual-academy-pl
+  (package
+    (name "texlive-tex-virtual-academy-pl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tex-virtual-academy-pl/")
+             (base32
+              "1kb86nn5vp1b0sy21aw9wlla1dwlaijppzq7728bmfs5nk1dnbjv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-virtual-academy-pl")
+    (synopsis "TeX usage web pages, in Polish")
+    (description
+     "TeX Virtual Academy is a bundle of Polish documentation in HTML format
+about TeX and Co.  It contains information for beginners, LaTeX packages,
+descriptions, etc.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-textgreek
   (package
     (name "texlive-textgreek")
