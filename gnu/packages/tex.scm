@@ -30259,6 +30259,28 @@ in places where the standard @code{verbatim} environment (which is based on a
 
 (define-deprecated-package texlive-latex-verbatimbox texlive-verbatimbox)
 
+(define-public texlive-verifica
+  (package
+    (name "texlive-verifica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verifica/"
+                   "source/latex/verifica/"
+                   "tex/latex/verifica/")
+             (base32
+              "1q7kdx7rywc98sdgycj33v8w3a3rk30qil5nqh9h0kgmc7a91mpc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/verifica")
+    (synopsis "Typeset (Italian high school) exercises")
+    (description
+     "This class provides various environments and commands to produce the
+typical exercises contained in a test.  It is mainly intended for Italian high
+school teachers, as the style is probably more in line with Italian high
+school tests.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-examplep
   (package
     (name "texlive-examplep")
