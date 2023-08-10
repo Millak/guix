@@ -36888,6 +36888,25 @@ a template for such theses.)  The class is designed for use with pdfLaTeX;
 input in UTF-8 encoding is assumed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uhrzeit
+  (package
+    (name "texlive-uhrzeit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uhrzeit/" "tex/latex/uhrzeit/")
+             (base32
+              "18qms6ych9q8bras2ajkl4z3dmnrp07gpzizywz206c3i1any3rc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uhrzeit")
+    (synopsis "Time printing, in German")
+    (description
+     "The primary goal of this package is to facilitate formats and ranges of
+times as formerly used in Germany.  A variety of printing formats are
+available.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-unicode-math
   (package
     (name "texlive-unicode-math")
