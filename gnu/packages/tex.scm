@@ -5474,6 +5474,24 @@ other languages; see the @code{lshort} catalogue entry for the current list.")
 LaTeX2e}, with added coverage of Finnish typesetting rules.")
     (license license:public-domain)))
 
+(define-public texlive-lshort-french
+  (package
+    (name "texlive-lshort-french")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-french/")
+             (base32
+              "1hdl0w7b1ablx7qfcvgniz7dcbgazb49b8wfw7c08hlb38gxfqh7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-french")
+    (synopsis "Short introduction to LaTeX, French translation")
+    (description
+     "This package contains a French version of a @emph{(Not so) short
+introduction to LaTeX2e}.")
+    (license license:gpl3+)))
+
 (define-public texlive-lshort-slovak
   (package
     (name "texlive-lshort-slovak")
