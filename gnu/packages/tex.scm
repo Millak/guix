@@ -29333,6 +29333,26 @@ not only with KOMA-Script classes but also with the standard classes.")
 
 (define-deprecated-package texlive-latex-koma-script texlive-koma-script)
 
+(define-public texlive-koma-script-examples
+  (package
+    (name "texlive-koma-script-examples")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/koma-script-examples/")
+             (base32
+              "1s95a3vgjxrn34cpcinkyr1yw2rj8s2973np71yxrwzi9dqdjpn1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/koma-script-examples")
+    (synopsis "Examples from the KOMA-Script book")
+    (description
+     "This package contains some examples from the 6th edition of the book
+@emph{KOMA-Script<, Eine Sammlung von Klassen und Paketen fur LaTeX2e} by
+Markus Kohm, published by Lehmanns Media.  There are no further descriptions
+of these examples.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-atbegshi
   (package
     (name "texlive-atbegshi")
