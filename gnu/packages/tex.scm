@@ -6579,6 +6579,34 @@ related to multiobjective optimisation, multiobjective evolutionary
 algorithms, multicriteria decision making and similar fields.")
     (license license:lppl)))
 
+(define-public texlive-mwcls
+  (package
+    (name "texlive-mwcls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mwcls/" "source/latex/mwcls/"
+                   "tex/latex/mwcls/")
+             (base32
+              "1pj1m08gh5zsahvzan6wq9v0lnir9zb4qvgkadsl6jm9ia8990yn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mwcls")
+    (synopsis "Polish-oriented document classes")
+    (description
+     "@code{mwcls} is a set of document classes for LaTeX designed with Polish
+typographical tradition in mind.  The classes include: @code{mwart} (which is
+a replacement for @code{article}), @code{mwrep} (replacing @code{report}), and
+@code{mwbk} (replacing @code{book}).
+
+Most features present in standard classes work with @code{mwcls} classes.
+Some extensions/exceptions include: sectioning commands allow for second
+optional argument (it is possible to state different texts for running head
+and for TOC), new environments @code{itemize*} and @code{enumerate*} for lists
+with long items, page styles have variants for normal, opening, closing, and
+blank pages.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-naive-ebnf
   (package
     (name "texlive-naive-ebnf")
