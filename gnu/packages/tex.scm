@@ -15379,6 +15379,26 @@ designed to help users generate circuits.")
 drawing quantum circuit diagrams.")
     (license license:cc-by4.0)))
 
+(define-public texlive-quran-de
+  (package
+    (name "texlive-quran-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/quran-de/"
+                   "tex/xelatex/quran-de/")
+             (base32
+              "06syk1ifxcy8wxfxgnrh6d3hpx4bdprxgkc9jicaaca6j6m3rm65")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quran-de")
+    (synopsis "German translations to the @code{quran} package")
+    (description
+     "The package is prepared for typesetting some German translations of the
+Holy Quran.  It adds three more German translations to the @code{quran}
+package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-randbild
   (package
     (name "texlive-randbild")
