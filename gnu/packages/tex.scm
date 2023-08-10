@@ -31518,6 +31518,24 @@ writing documents with bibliographies.  The author has since developed the
     ;; The license is a variation of Knuth's.
     (license (license:fsf-free "file://doc/bibtex/germbib/apalike.tex"))))
 
+(define-public texlive-germkorr
+  (package
+    (name "texlive-germkorr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/germkorr/" "tex/latex/germkorr/")
+             (base32
+              "0qgh3j97dljwh7625m577jcsvqhfkas3jn4q09m05jsjfxb7n2bx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/germkorr")
+    (synopsis "Change kerning for German quotation marks")
+    (description
+     "The package brings some letters nearer to German single and double
+quotes even when that letter wears a standard accent")
+    (license license:gpl3+)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
