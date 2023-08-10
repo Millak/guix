@@ -84,6 +84,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (ice-9 ftw)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1))
 
@@ -92,14 +93,15 @@
     (name "openfoam-org")
     (version "10.20230119")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/OpenFOAM/OpenFOAM-"
-                                  (version-major version) "/archive/"
-                                  (second (string-split version #\.))
-                                  ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/OpenFOAM/OpenFOAM-"
+                                        (version-major version)))
+                    (commit (second (string-split version #\.)))))
               (sha256
                (base32
-                "1aw2vb5s7frg942ngd5x5x2dm67liyg6czff56qi567mshccpy46"))
+                "0icvwg7s6vnkgmdiczivia9pbrgx8nanw9a4j080fzfvdv9vxhzp"))
+              (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet `(begin
                           ;; patch shell paths
@@ -211,7 +213,24 @@
       #~(modify-phases %standard-phases
           (add-before 'build 'patch-HOME-path
             (lambda _
-              (setenv "HOME" "/tmp") #t))
+              (setenv "HOME" "/tmp")))
+          (add-before 'build 'rename-self
+            (lambda _
+              ;; The script 'bin/foamEtcFile' derives the version name based
+              ;; on the current directory name (!), so make sure to follow the
+              ;; expected naming convention.
+              (let ((here (canonicalize-path "."))
+                    (target #$(string-append
+                               "OpenFOAM-"
+                               (string-map (match-lambda
+                                             (#\. #\-)
+                                             (chr chr))
+                                           (package-version this-package)))))
+                (chdir "..")
+                (format #t "renaming '~a' to '~a'~%"
+                        here target)
+                (rename-file here target)
+                (chdir target))))
           (add-before 'build 'patch-scotch
             (lambda _
               (substitute* "etc/config.sh/scotch"
