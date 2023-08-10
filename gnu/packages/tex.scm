@@ -7928,6 +7928,31 @@ configuration of the language to be used in the diagrams.  The @code{tablor}
 package requires that shell escape be enabled.")
     (license license:lppl)))
 
+(define-public texlive-tabvar
+  (package
+    (name "texlive-tabvar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabvar/"
+                   "fonts/afm/public/tabvar/"
+                   "fonts/map/dvips/tabvar/"
+                   "fonts/tfm/public/tabvar/"
+                   "fonts/type1/public/tabvar/"
+                   "metapost/tabvar/"
+                   "source/latex/tabvar/"
+                   "tex/latex/tabvar/")
+             (base32
+              "1yjf0j3296a5csr6xrzziralfsy2iny21cyjf4dmlwp4l0h6kcpc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabvar")
+    (synopsis "Typesetting tables showing variations of functions")
+    (description
+     "This LaTeX package is meant to ease the typesetting of tables showing
+variations of functions as they are used in France.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tensind
   (package
     (name "texlive-tensind")
