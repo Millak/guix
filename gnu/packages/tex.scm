@@ -6814,6 +6814,28 @@ mass and energy data in LaTeX documents.  It uses the PythonTeX package and
 requires @command{pythontex} to be called with the TeX file as the argument.")
     (license license:lppl1.3+)))
 
+(define-public texlive-numberpt
+  (package
+    (name "texlive-numberpt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numberpt/"
+                   "source/latex/numberpt/"
+                   "tex/latex/numberpt/")
+             (base32
+              "14515d1l9d9pxs333f8m99mclaf8mklrs14h2w3bdk5m37m7pv8i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numberpt")
+    (synopsis "Counters spelled out in Portuguese")
+    (description
+     "This package defines commands to display counters spelled out in Portuguese.
+Options are offered to select variations in the spelling of @samp{14}, or
+Brazilian vs. European Portuguese forms in the spelling of @samp{16},
+@samp{17}, and @samp{19}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-numerica
   (package
     (name "texlive-numerica")
