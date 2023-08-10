@@ -494,11 +494,12 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
 (define* (import-html-release base-url package
                               #:key
                               (version #f)
-                              (directory (string-append "/" package))
+                              (directory (string-append
+                                          "/" (package-upstream-name package)))
                               file->signature)
-  "Return an <upstream-source> for the latest release of PACKAGE (a string)
-under DIRECTORY at BASE-URL, or #f.  Optionally include a VERSION string to
-fetch a specific version.
+  "Return an <upstream-source> for the latest release of PACKAGE under
+DIRECTORY at BASE-URL, or #f.  Optionally include a VERSION string to fetch a
+specific version.
 
 BASE-URL should be the URL of an HTML page, typically a directory listing as
 found on 'https://kernel.org/pub'.
@@ -507,7 +508,8 @@ When FILE->SIGNATURE is omitted or #f, guess the detached signature file name,
 if any.  Otherwise, FILE->SIGNATURE must be a procedure; it is passed a source
 file URL and must return the corresponding signature URL, or #f it signatures
 are unavailable."
-  (let* ((url (if (string-null? directory)
+  (let* ((package (package-upstream-name package))
+         (url (if (string-null? directory)
                   base-url
                   (string-append base-url directory "/")))
          (links (url->links url)))
@@ -730,7 +732,6 @@ to fetch a specific version."
                      (match (origin-uri (package-source package))
                        ((? string? uri) uri)
                        ((uri mirrors ...) uri))))
-         (package   (package-upstream-name package))
          (directory (dirname (uri-path uri))))
     ;; Note: We use the default 'file->signature', which adds ".sig", ".asc",
     ;; or whichever detached signature naming scheme PACKAGE uses.
@@ -825,7 +826,6 @@ Optionally include a VERSION string to fetch a specific version."
                      (match (origin-uri (package-source package))
                        ((? string? uri) uri)
                        ((uri mirrors ...) uri))))
-         (package   (package-upstream-name package))
          (directory (dirname (uri-path uri))))
     (import-html-release %kernel.org-base package
                          #:version version
@@ -873,8 +873,7 @@ string to fetch a specific version."
                                        "://" (uri-host uri))))
          (directory (if custom
                         ""
-                        (dirname (uri-path uri))))
-         (package   (package-upstream-name package)))
+                        (dirname (uri-path uri)))))
     (false-if-networking-error
      (import-html-release base package
                           #:version version
