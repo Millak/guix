@@ -147,4 +147,47 @@
            (equal? (list expected-signature-url)
                    (upstream-source-signature-urls update))))))
 
+(test-equal "rewrite-url, to-version specified"
+  "https://download.qt.io/official_releases/qt/6.5/6.5.2/\
+submodules/qtbase-everywhere-src-6.5.2.tar.xz"
+  (rewrite-url "https://download.qt.io/official_releases/qt/6.3/6.3.2/\
+submodules/qtbase-everywhere-src-6.3.2.tar.xz" "6.3.2" #:to-version "6.5.2"))
+
+(test-equal "rewrite-url, without to-version"
+  "https://dist.libuv.org/dist/v1.46.0/libuv-v1.46.0.tar.gz"
+  (with-http-server
+      ;; First reply, crawling https://dist.libuv.org/dist/.
+      `((200 "\
+<!DOCTYPE html>
+<html>
+<head><title>Index of dist</title></head>
+<body>
+<a href=\"../\">../</a>
+<a href=\"v1.44.0/\" title=\"v1.44.0/\">v1.44.0/</a>
+<a href=\"v1.44.1/\" title=\"v1.44.1/\">v1.44.1/</a>
+<a href=\"v1.44.2/\" title=\"v1.44.2/\">v1.44.2/</a>
+<a href=\"v1.45.0/\" title=\"v1.45.0/\">v1.45.0/</a>
+<a href=\"v1.46.0/\" title=\"v1.46.0/\">v1.46.0/</a>
+</body>
+</html>")
+        ;; Second reply, crawling https://dist.libuv.org/dist/v1.46.0/.
+        (200 "\
+<!DOCTYPE html>
+<html>
+<head><title>Index of dist/v1.46.0</title></head>
+<body>
+<a href=\"../\">../</a>
+<a href=\"libuv-v1.46.0-dist.tar.gz\" title=\"libuv-v1.46.0-dist.tar.gz\">
+   libuv-v1.46.0-dist.tar.gz</a>
+<a href=\"libuv-v1.46.0-dist.tar.gz.sign\"
+   title=\"libuv-v1.46.0-dist.tar.gz.sign\">libuv-v1.46.0-dist.tar.gz.sign</a>
+<a href=\"libuv-v1.46.0.tar.gz\" title=\"libuv-v1.46.0.tar.gz\">
+   libuv-v1.46.0.tar.gz</a>
+<a href=\"libuv-v1.46.0.tar.gz.sign\" title=\"libuv-v1.46.0.tar.gz.sign\">
+   libuv-v1.46.0.tar.gz.sign</a>
+</body>
+</html>"))
+    (rewrite-url "https://dist.libuv.org/dist/v1.45.0/libuv-v1.45.0.tar.gz"
+                 "1.45.0")))
+
 (test-end)

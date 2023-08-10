@@ -3,6 +3,7 @@
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (ice-9 regex)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (rnrs io ports)
@@ -61,6 +63,7 @@
             gnu-package?
 
             uri-mirror-rewrite
+            rewrite-url
 
             release-file?
             releases
@@ -518,9 +521,93 @@ URL is a directory instead of a file, it should be suffixed with a slash (/)."
          ;; within a directory.
          (string-append (dirname base-url) "/" url))))
 
+(define (strip-trailing-slash s)
+  "Strip any trailing slash from S, a string."
+  (if (string-suffix? "/" s)
+      (string-drop-right s 1)
+      s))
+
+;;; TODO: Extend to support the RPM and GNOME version schemes?
+(define %version-rx "[0-9.]+")
+
+(define* (rewrite-url url version #:key to-version)
+  "Rewrite URL so that the URL path components matching the current VERSION or
+VERSION-MAJOR.VERSION-MINOR are updated with that of the latest version found
+by crawling the corresponding URL directories.  Alternatively, when TO-VERSION
+is specified, rewrite version matches directly to it without crawling URL.
+
+For example, the URL
+\"https://dist.libuv.org/dist/v1.45.0/libuv-v1.45.0.tar.gz\" could be
+rewritten to something like
+\"https://dist.libuv.org/dist/v1.46.0/libuv-v1.46.0.tar.gz\"."
+  ;; XXX: major-minor may be #f if version is not a triplet but a single
+  ;; number such as "2".
+  (let* ((major-minor (false-if-exception (version-major+minor version)))
+         (to-major-minor (false-if-exception
+                          (and=> to-version version-major+minor)))
+         (uri (string->uri url))
+         (url-prefix (string-drop-right url (string-length (uri-path uri))))
+         (url-prefix-components (string-split url-prefix #\/))
+         (path (uri-path uri))
+         ;; Strip a forward slash on the path to avoid a double slash when
+         ;; string-joining later.
+         (path (if (string-prefix? "/" path)
+                   (string-drop path 1)
+                   path))
+         (path-components (string-split path #\/)))
+    (string-join
+     (reverse
+      (fold
+       (lambda (s parents)
+         (if to-version
+             ;; Direct rewrite case; the archive is assumed to exist.
+             (let ((u (string-replace-substring s version to-version)))
+               (cons (if (and major-minor to-major-minor)
+                         (string-replace-substring u major-minor to-major-minor)
+                         u)
+                     parents))
+             ;; More involved HTML crawl case.
+             (let* ((pattern (if major-minor
+                                 (format #f "(~a|~a)" version major-minor)
+                                 (format #f "(~a)" version)))
+                    (m (string-match pattern s)))
+               (if m
+                   ;; Crawl parent and rewrite current component.
+                   (let* ((parent-url (string-join (reverse parents) "/"))
+                          (links (url->links parent-url))
+                          ;; The pattern matching the version.
+                          (pattern (string-append "^" (match:prefix m)
+                                                  "(" %version-rx ")"
+                                                  (match:suffix m) "$"))
+                          (candidates (filter-map
+                                       (lambda (l)
+                                         ;; Links may be followed by a
+                                         ;; trailing '/' in the case of
+                                         ;; directories.
+                                         (and-let*
+                                             ((l (strip-trailing-slash l))
+                                              (m (string-match pattern l))
+                                              (v (match:substring m 1)))
+                                           (cons v l)))
+                                       links)))
+                     ;; Retrieve the item having the largest version.
+                     (if (null? candidates)
+                         (error "no candidates found in rewrite-url")
+                         (cons (cdr (first (sort candidates
+                                                 (lambda (x y)
+                                                   (version>? (car x)
+                                                              (car y))))))
+                               parents)))
+                   ;; No version found in path component; continue.
+                   (cons s parents)))))
+       (reverse url-prefix-components)
+       path-components))
+     "/")))
+
 (define* (import-html-release base-url package
                               #:key
-                              (version #f)
+                              rewrite-url?
+                              version
                               (directory (string-append
                                           "/" (package-upstream-name package)))
                               file->signature)
@@ -534,11 +621,19 @@ found on 'https://kernel.org/pub'.
 When FILE->SIGNATURE is omitted or #f, guess the detached signature file name,
 if any.  Otherwise, FILE->SIGNATURE must be a procedure; it is passed a source
 file URL and must return the corresponding signature URL, or #f it signatures
-are unavailable."
-  (let* ((name (package-upstream-name package))
+are unavailable.
+
+When REWRITE-URL? is #t, versioned components in BASE-URL and/or DIRECTORY are
+also updated to the latest version, as explained in the doc of the
+\"rewrite-url\" procedure used."
+  (let* ((current-version (package-version package))
+         (name (package-upstream-name package))
          (url (if (string-null? directory)
                   base-url
                   (string-append base-url directory "/")))
+         (url (if rewrite-url?
+                  (rewrite-url url current-version #:to-version version)
+                  url))
          (links (map (cut canonicalize-url <> url) (url->links url))))
 
     (define (file->signature/guess url)
@@ -877,6 +972,7 @@ string to fetch a specific version."
                         (dirname (uri-path uri)))))
     (false-if-networking-error
      (import-html-release base package
+                          #:rewrite-url? #t
                           #:version version
                           #:directory directory))))
 
