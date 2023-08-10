@@ -5963,6 +5963,24 @@ Short Introduction to LaTeX2e}.")
 Short Introduction to LaTeX2e}.")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-spanish
+  (package
+    (name "texlive-lshort-spanish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-spanish/")
+             (base32
+              "0ls50syrg3dl5dl5a3fi33cr9j990l2xr6pribn1vqglsqrh191l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-spanish")
+    (synopsis "Short introduction to LaTeX, in Spanish")
+    (description
+     "This package provides a Spanish translation of the @emph{(Not So) Short
+Introduction to LaTeX2e}.")
+    (license license:gpl3+)))
+
 (define-public texlive-lshort-turkish
   (package
     (name "texlive-lshort-turkish")
