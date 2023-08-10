@@ -36651,6 +36651,24 @@ may be used under LaTeX and plain TeX.")
      "This is a German translation of the @code{arsclassica} documentation.")
     (license license:lppl)))
 
+(define-public texlive-translation-biblatex-de
+  (package
+    (name "texlive-translation-biblatex-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-biblatex-de/")
+             (base32
+              "1ygbz7prjg6pdiqm7lknnk8a9ar05xvpdam38piivif3d3yk5bg1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-biblatex-de")
+    (synopsis "German translation of the User Guide for BibLaTeX")
+    (description
+     "This package provides a German translation of the User Guide for
+BibLaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-translations
   (package
     (name "texlive-translations")
