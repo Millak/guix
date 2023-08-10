@@ -26044,6 +26044,27 @@ a few situations where longtable has problems.")
 
 (define-deprecated-package texlive-latex-supertabular texlive-supertabular)
 
+(define-public texlive-tap
+  (package
+    (name "texlive-tap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tap/" "tex/generic/tap/")
+             (base32
+              "18xfn4p90i0hw5h7am982jgqnsj7qyaijw20zjy3shwihgkaq7fs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tap")
+    (synopsis "TeX macros for typesetting complex tables")
+    (description
+     "The package offers a simple notation for pretty complex tables (to
+Michael J.@: Ferguson's credit).  With PostScript, the package allows
+shaded/coloured tables, diagonal rules, etc.  The package is supposed to work
+with both Plain and LaTeX.  An AWK converter from ASCII semigraphic tables to
+TAP notation is included.")
+    (license license:public-domain)))
+
 (define-public texlive-texinfo
   (package
     (name "texlive-texinfo")
