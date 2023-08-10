@@ -16044,6 +16044,30 @@ diabetes mellitus, using @file{scrartcl.cls} from the KOMA-Script bundle.
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-templates-sommer
+  (package
+    (name "texlive-templates-sommer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/templates-sommer/")
+             (base32
+              "0z75xhawsmcxv4f24cqcvfi0r22gavjpg4si6nwrgc8sg82x24m6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/templates-sommer")
+    (synopsis "Templates for TeX usage")
+    (description
+     "This package provides a set of templates for using LaTeX packages that the
+author uses, comprising:
+
+@itemize
+@item @file{hausarbeit.tex}: for students of the Lehrstuhl Volkskunde an der
+Friedrich-Schiller-Universitat Jena,
+@item @file{psycho-Dipl.tex}: for diploma theses in psychology.
+@end itemize")
+    (license license:lppl)))
+
 (define-public texlive-tex4ht
   (package
     (name "texlive-tex4ht")
