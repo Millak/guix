@@ -8432,7 +8432,7 @@ accessed/downloaded on demand across HTTP.")
     (inputs
      (list zlib lapack))
     (native-inputs
-     (list unzip))
+     (list unzip gcc-8))
     (home-page "http://pngu.mgh.harvard.edu/~purcell/plink/")
     (synopsis "Whole genome association analysis toolset")
     (description
