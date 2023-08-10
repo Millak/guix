@@ -31439,6 +31439,23 @@ a template for Austrian @emph{Diplomarbeiten} or @emph{Vorwissenschaftliche
 Arbeiten}, which are scientfic projects of students at a secondary school.")
     (license license:lppl1.3+)))
 
+(define-public texlive-etoolbox-de
+  (package
+    (name "texlive-etoolbox-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etoolbox-de/")
+             (base32
+              "1vchha7ymvj51jfnvl76rxv466lzfpxr6xcvwafxhi78w4bk9yry")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/etoolbox-de")
+    (synopsis "German translation of documentation of @code{etoolbox}")
+    (description "This package provides the German translation of
+@code{etoolbox} documentation.")
+    (license license:lppl)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
