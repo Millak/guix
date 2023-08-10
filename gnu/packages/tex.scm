@@ -12513,6 +12513,23 @@ this is to print on (notional) small paper, and then to magnify the result;
 the script calculates the settings for various font and paper sizes.")
     (license license:asl2.0)))
 
+(define-public texlive-latex-via-exemplos
+  (package
+    (name "texlive-latex-via-exemplos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-via-exemplos/")
+             (base32
+              "1w0rqhgdkflxypfmxyz61aknmjil9yikc641v2dmc5l55gl2r3nw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-via-exemplos")
+    (synopsis "LaTeX course written in Brazilian Portuguese language")
+    (description
+     "This is a LaTeX2e course written in Brazilian Portuguese language.")
+    (license license:gpl2+)))
+
 (define-public texlive-latex2man
   (package
     (name "texlive-latex2man")
