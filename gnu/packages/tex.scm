@@ -31380,6 +31380,25 @@ well as the optional active quotes are freely configurable.")
      "This is a German translation of the documentation of @code{csquotes}.")
     (license license:lppl)))
 
+(define-public texlive-dhua
+  (package
+    (name "texlive-dhua")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dhua/" "source/latex/dhua/"
+                   "tex/latex/dhua/")
+             (base32
+              "0npf0bz5cdl6a98gc4l66v0hxwgg94af31bdrz8xai6r4vwjbzhl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dhua")
+    (synopsis "German abbreviations using thin space")
+    (description
+     "The package provides commands for those abbreviations of German phrases
+for which the use of thin space is recommended.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
