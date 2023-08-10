@@ -5164,6 +5164,25 @@ practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
 and commands.")
     (license license:fdl1.2+)))
 
+(define-public texlive-latex2e-help-texinfo-fr
+  (package
+    (name "texlive-latex2e-help-texinfo-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/latex2e-fr.info"
+                   "doc/latex/latex2e-help-texinfo-fr/")
+             (base32
+              "13s0zjwk3m95kbx4qrz2xwp8kifzc2zmasp1ks9l2acf1nqfac9p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex2e-help-texinfo-fr")
+    (synopsis "French translation of @code{latex2e-help-texinfo}")
+    (description
+     "This package provides a complete French translation of
+@code{latex2e-help-texinfo}.")
+    (license license:public-domain)))
+
 (define-public texlive-letterswitharrows
   (package
     (name "texlive-letterswitharrows")
