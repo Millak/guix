@@ -26,6 +26,22 @@
 (channel-news
  (version 0)
 
+ (entry (commit "bff1f2d4d07e934ea296f9c724b5337996a27c44")
+        (title
+         (en "Linux-libre kernel updated to 6.4")
+         (de "Linux-libre-Kernel wird auf 6.4 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.4")
+         (pt "Kernel linux-libre atualizado para 6.4"))
+        (body
+         (en "The default version of the linux-libre kernel has been updated to
+              the 6.4 release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 6.4-Versionsreihe.")
+         (fr "La version par défaut du noyau linux-libre est mise à jour
+              vers la série des 6.4.")
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
+              série do kernel 6.4.")))
+
  (entry (commit "1b7aabbc79969a89141aadd3d41d7a5329a3462e")
         (title
          (en "New @command{guix locate} command")
