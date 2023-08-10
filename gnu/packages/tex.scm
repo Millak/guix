@@ -36558,6 +36558,25 @@ for citations.  The package follows the 6th edition of the APA manual, and is
 designed to work with the @code{apa6} class.")
     (license license:lppl)))
 
+(define-public texlive-apalike-german
+  (package
+    (name "texlive-apalike-german")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/apalike-german/"
+                   "doc/bibtex/apalike-german/")
+             (base32
+              "15mr1s9622bj5vmmlw7cp0afcbrz2h4kq9cp303ijklcslfsx748")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apalike-german")
+    (synopsis "Copy of @file{apalike.bst} with German localization")
+    (description
+     "This package provides a copy of @file{apalike.bst}, which is part of the
+base BibTeX distribution, with German localization.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-endfloat
   (package
     (name "texlive-endfloat")
