@@ -22347,6 +22347,24 @@ T3, and the set of addendum symbols as encoding TS3.  Times-like Adobe Type
 1 versions are provided for both the T3 and the TS3 fonts.")
     (license license:lppl)))
 
+(define-public texlive-tipa-de
+  (package
+    (name "texlive-tipa-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tipa-de/")
+             (base32
+              "16gwc0dpdls6s2vdl3hmd6307d88gfzsa3kbw3vhl0z5iawvwj4h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tipa-de")
+    (synopsis "German translation of @code{tipa} documentation")
+    (description
+     "This is a German translation of Fukui Rei's @code{tipaman} from the
+@code{tipa} bundle.")
+    (license license:lppl)))
+
 (define-public texlive-amsrefs
   (package
     (name "texlive-amsrefs")
