@@ -10788,6 +10788,32 @@ documentation (for example, that of the @code{texapi} and @code{yax}
 packages).")
     (license license:lppl)))
 
+(define-public texlive-pl
+  (package
+    (name "texlive-pl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/pl/"
+                   "dvips/pl/"
+                   "fonts/afm/public/pl/"
+                   "fonts/enc/dvips/pl/"
+                   "fonts/map/dvips/pl/"
+                   "fonts/source/public/pl/"
+                   "fonts/tfm/public/pl/"
+                   "fonts/type1/public/pl/")
+             (base32
+              "18s3by7isk85ksvp40i6qg2ws3iyj5f35fh8h0561rw6jdc024rc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-amsfonts texlive-metafont texlive-cm))
+    (home-page "https://ctan.org/pkg/pl-mf")
+    (synopsis "Polish extension of Computer Modern fonts")
+    (description
+     "This package provides the Polish extension of the Computer Modern
+fonts (compatible with CM itself) for use with Polish TeX formats.")
+    (license license:public-domain)))
+
 (define-public texlive-placeins-plain
   (package
     (name "texlive-placeins-plain")
