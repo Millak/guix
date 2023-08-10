@@ -3939,6 +3939,27 @@ as @code{\\xleftarrow} from @code{amsmath}), and a simple command to create
 new ones.")
     (license license:lppl1.3+)))
 
+(define-public texlive-facture
+  (package
+    (name "texlive-facture")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/facture/"
+                   "source/xelatex/facture/"
+                   "tex/xelatex/facture/")
+             (base32
+              "1f7w697g12wx1kc7j84yyvxarkwlvmxr10nxcg93dnqz7lpfwvng")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/facture")
+    (synopsis "Generate an invoice")
+    (description
+     "This package provides a simple class that allows production of an invoice,
+with or without VAT; different addresses for delivery and for billing are
+permitted.")
+    (license license:cc-by-sa2.0)))
+
 (define-public texlive-faktor
   (package
     (name "texlive-faktor")
