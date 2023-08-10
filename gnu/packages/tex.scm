@@ -2007,6 +2007,27 @@ files.")
 conventions for use of @code{bibleref} in French.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bibleref-german
+  (package
+    (name "texlive-bibleref-german")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibleref-german/"
+                   "tex/latex/bibleref-german/")
+             (base32
+              "0nqky0x9j6w3xg2vaj29db7l0zjw88d7bl6vs8864hqz2i6h2pcw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibleref-german")
+    (synopsis "German adaptation of @code{bibleref}")
+    (description
+     "The package provides translations and various formats for the use of
+@code{bibleref} in German documents.  The German naming of the Bible books
+complies with the @emph{Loccumer Richtlinien} (Locum guidelines).  In
+addition, the Vulgate (Latin Bible) is supported.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
