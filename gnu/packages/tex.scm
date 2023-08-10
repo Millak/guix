@@ -18019,6 +18019,25 @@ piece of text and the @emph{Visual LaTeX FAQ} will send your web browser to
 the appropriate page in the TeX FAQ.")
     (license license:lppl)))
 
+(define-public texlive-visualfaq-fr
+  (package
+    (name "texlive-visualfaq-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/visualfaq-fr/")
+             (base32
+              "0xk0qly49dqkrw1qjhnyp4r7y5jykghlp1y26hipghlaqqhdynga")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/visualfaq-fr")
+    (synopsis "FAQ LaTeX visuelle francophone")
+    (description
+     "The Visual LaTeX FAQ is an innovative new search interface on LaTeX
+Frequently Asked Questions.  This version is a French translation, offering
+links to the French-speaking LaTeX FAQ.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-visualpstricks
   (package
     (name "texlive-visualpstricks")
