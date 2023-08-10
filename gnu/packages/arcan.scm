@@ -79,11 +79,8 @@
                      (delete-file-recursively "external/sqlite")))))
       (build-system cmake-build-system)
       (arguments
-       `(#:configure-flags '("-DCMAKE_C_FLAGS=-fcommon"
-                             "-DVIDEO_PLATFORM=egl-dri" "-DBUILTIN_LUA=off"
-                             "-DSTATIC_OPENAL=off""-DENABLE_LWA=on"
-                             "-DSTATIC_SQLITE3=off" "-DSTATIC_FREETYPE=off"
-                             "-DSHMIF_TUI_ACCEL=on")
+       `(#:configure-flags '("-DBUILD_PRESET=everything"
+                             "-DDISTR_TAG='Guix'")
          #:phases
          (modify-phases %standard-phases
            ;; Normally, it tries to fetch patched openal with git
@@ -167,7 +164,7 @@
       (native-inputs
        (list pkg-config ruby))               ; For documentation and testing
       (home-page "https://arcan-fe.com")
-      (synopsis "Display server, multimedia framework and game engine (egl-dri)")
+      (synopsis "Display server, multimedia framework and game engine")
       (description "Arcan is a development framework for creating virtually
 anything from user interfaces for specialized embedded applications
 all the way to full-blown desktop environments.  At its heart lies a multimedia
