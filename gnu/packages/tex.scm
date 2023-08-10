@@ -36686,6 +36686,22 @@ BibLaTeX.")
      "This is a German translation of the @code{chemsym} documentation.")
     (license license:lppl)))
 
+(define-public texlive-translation-ecv-de
+  (package
+    (name "texlive-translation-ecv-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-ecv-de/")
+             (base32
+              "06b4vhsgdphi6kdh5x4a2kl74b64z3y5qzxcpkn0hj40038z1av7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-ecv-de")
+    (synopsis "@code{ecv} documentation, in German")
+    (description "This is a German translation of the @code{ecv} documentation.")
+    (license license:lppl)))
+
 (define-public texlive-translations
   (package
     (name "texlive-translations")
