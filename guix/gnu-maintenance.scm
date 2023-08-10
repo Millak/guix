@@ -578,11 +578,11 @@ are unavailable."
                  (coalesce-sources candidates))
            ;; Select the most recent release and return it.
            (reduce (lambda (r1 r2)
-                         (if (version>? (upstream-source-version r1)
-                                        (upstream-source-version r2))
-                             r1 r2))
-                       first
-                       (coalesce-sources candidates)))))))
+                     (if (version>? (upstream-source-version r1)
+                                    (upstream-source-version r2))
+                         r1 r2))
+                   first
+                   (coalesce-sources candidates)))))))
 
 
 ;;;
@@ -656,20 +656,20 @@ list available from %GNU-FILE-LIST-URI over HTTP(S)."
            (tarballs (filter (lambda (file)
                                (string=? version (tarball->version file)))
                              relevant)))
-    (match tarballs
-           (() #f)
-           (_
-            (upstream-source
-             (package name)
-             (version version)
-             (urls (map (lambda (file)
-                          (string-append "mirror://gnu/"
-                                         (string-drop file
-                                                      (string-length "/gnu/"))))
-                       ;; Sort so that the tarball with the same compression
-                       ;; format as currently used in PACKAGE comes first.
-                       (sort tarballs better-tarball?)))
-             (signature-urls (map (cut string-append <> ".sig") urls))))))))
+      (match tarballs
+        (() #f)
+        (_
+         (upstream-source
+          (package name)
+          (version version)
+          (urls (map (lambda (file)
+                       (string-append "mirror://gnu/"
+                                      (string-drop file
+                                                   (string-length "/gnu/"))))
+                     ;; Sort so that the tarball with the same compression
+                     ;; format as currently used in PACKAGE comes first.
+                     (sort tarballs better-tarball?)))
+          (signature-urls (map (cut string-append <> ".sig") urls))))))))
 
 (define %package-name-rx
   ;; Regexp for a package name, e.g., "foo-X.Y".  Since TeXmacs uses
