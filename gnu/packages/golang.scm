@@ -3685,11 +3685,24 @@ per-goroutine.")
                 "0h006wpfkl0ls0skqxblwcanrhmphgq5q0ii26l2ayh7s99cgmy3"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/tdewolff/minify/v2"))
+     (list #:import-path "github.com/tdewolff/minify/v2"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'regenerate-hash
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (for-each
+                    (lambda (dir)
+                      (with-directory-excursion
+                          (format #f "src/~a/~a" import-path dir)
+                        (make-file-writable "hash.go")
+                        (format #t "Generating `hash.go' for ~a...~%" dir)
+                        (invoke "go" "generate")))
+                    '("css" "html" "svg")))))))
     (propagated-inputs
      (list go-github-com-tdewolff-parse-v2))
     (native-inputs
-     (list go-github-com-tdewolff-test))
+     (list go-github-com-tdewolff-hasher
+           go-github-com-tdewolff-test))
     (home-page "https://go.tacodewolff.nl/minify")
     (synopsis "Go minifiers for web formats")
     (description
