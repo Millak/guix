@@ -27588,6 +27588,24 @@ via one of the packages @code{calrsfs} and @code{mathrsfs}.")
 
 (define-deprecated-package texlive-fonts-rsfs texlive-rsfs)
 
+(define-public texlive-es-tex-faq
+  (package
+    (name "texlive-es-tex-faq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/es-tex-faq/")
+             (base32
+              "0wp5jx1qs4yp3y4qpwqhpw7rnilw3vb2z5xb4lzwph6zw27jf6sd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/faq-es")
+    (synopsis "CervanTeX (Spanish TeX Group) FAQ")
+    (description
+     "This package provides the SGML source, converted LaTeX version, and
+readable copies of the FAQ from the Spanish TeX users group.")
+    (license license:lppl)))
+
 (define-public texlive-eso-pic
   (package
     (name "texlive-eso-pic")
