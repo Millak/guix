@@ -83,6 +83,11 @@
                              "-DDISTR_TAG='Guix'")
          #:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'patch-paths
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "src/platform/posix/paths.c"
+                 (("/usr/local")
+                  (assoc-ref outputs "out")))))
            ;; Normally, it tries to fetch patched openal with git
            ;; but copying files manually in the right place seems to work too.
            (add-after 'unpack 'prepare-static-openal
@@ -98,30 +103,8 @@
            (add-before 'configure 'chdir
              (lambda _
                (chdir "src")
-               #t))
-           (add-after 'install 'wrap-program
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (wrap-program (string-append out "/bin/arcan")
-                   `("ARCAN_RESOURCEPATH" ":" suffix
-                     (,(string-append out "/share/arcan/resources")))
-                   `("ARCAN_STATEBASEPATH" ":" =
-                     ("$HOME/.arcan/resources/savestates"))
-                   `("ARCAN_STATEPATH" ":" =
-                     ("$HOME/.arcan/resources/savestates"))
-                   `("ARCAN_BINPATH" ":" =
-                     (,(string-append out "/bin/arcan_frameserver")))))
                #t)))
          #:tests? #f))
-      (native-search-paths
-       (list (search-path-specification
-              (variable "ARCAN_APPLBASEPATH")
-              (separator #f)
-              (files '("share/arcan/appl")))
-             (search-path-specification
-              (variable "ARCAN_SCRIPTPATH")
-              (separator #f)
-              (files '("share/arcan/scripts")))))
       (inputs
        `(("bash-minimal" ,bash-minimal)
          ("espeak" ,espeak)
