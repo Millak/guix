@@ -5776,6 +5776,24 @@ LaTeX2e-Kurzbeschreibung}")
 to LaTeX2e: LaTeX2e-Kurzbeschreibung}.")
     (license license:opl1.0+)))
 
+(define-public texlive-lshort-italian
+  (package
+    (name "texlive-lshort-italian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-italian/")
+             (base32
+              "085ydria5q7s648r7frl54sa1y4kyr569zvqjjkancfd83h873cg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-italian")
+    (synopsis "Introduction to LaTeX in Italian")
+    (description
+     "This is the Italian translation of the @emph{(Not so} Short Introduction
+to LaTeX2e.}")
+    (license license:gpl3+)))
+
 (define-public texlive-lshort-slovak
   (package
     (name "texlive-lshort-slovak")
