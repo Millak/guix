@@ -18564,6 +18564,24 @@ Zhuyin) for Chinese Han scripts (Hanzi ideographs).
 @end itemize")
     (license license:bsd-3)))
 
+(define-public texlive-utf8mex
+  (package
+    (name "texlive-utf8mex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/mex/utf8mex/" "tex/mex/utf8mex/")
+             (base32
+              "13013asha1v6vk743hxk4naciiham0cpar6jw0ndlh7mbmyll2y8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/utf8mex")
+    (synopsis "Tools to produce formats that read Polish language input")
+    (description
+     "The bundle provides files for building formats to read input in Polish
+encodings.")
+    (license license:public-domain)))
+
 (define-public texlive-utfsym
   (package
     (name "texlive-utfsym")
