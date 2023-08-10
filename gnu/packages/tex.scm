@@ -15645,6 +15645,27 @@ model of psychological experience.  These symbols are prepared using TikZ.")
 using TikZ.")
     (license license:lppl)))
 
+(define-public texlive-schulmathematik
+  (package
+    (name "texlive-schulmathematik")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/schulmathematik/"
+                   "tex/latex/schulmathematik/")
+             (base32
+              "1lgsn7my9v2jks553c25wcagaqvxzmzjsijwkilys697c936dv57")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schulmathematik")
+    (synopsis
+     "Commands and document classes for German-speaking teachers of
+mathematics and physics")
+    (description
+     "The @code{schulmathematik} bundle provides two LaTeX packages and six
+document classes for German-speaking teachers of mathematics and physics.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-scratch
   (package
     (name "texlive-scratch")
