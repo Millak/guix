@@ -7953,6 +7953,27 @@ package requires that shell escape be enabled.")
 variations of functions as they are used in France.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tdsfrmath
+  (package
+    (name "texlive-tdsfrmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tdsfrmath/"
+                   "source/latex/tdsfrmath/"
+                   "tex/latex/tdsfrmath/")
+             (base32
+              "1z1z3jy0mbn6dc75pnfsq9877y8yafvdhv5p8a54dbxxkzdcl3ll")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tdsfrmath")
+    (synopsis "Macros for French teachers of mathematics")
+    (description
+     "This package provides a collection of macros for French maths teachers
+in colleges and lycées (and perhaps elsewhere).  It is hoped that the package
+will facilitate the everyday use of LaTeX by mathematics teachers.")
+    (license license:lppl)))
+
 (define-public texlive-tensind
   (package
     (name "texlive-tensind")
