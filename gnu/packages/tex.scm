@@ -3538,6 +3538,26 @@ triangular, or banded matrices.")
 top of TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-droit-fr
+  (package
+    (name "texlive-droit-fr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/droit-fr/" "tex/latex/droit-fr/")
+             (base32
+              "0lx4k3w7mzldhwykpfvhv05v7fhd1jibra80kz0zf9s0jga8sq4a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/droit-fr")
+    (synopsis "Document class and bibliographic style for French law")
+    (description
+     "The bundle provides a toolkit intended for students writing a thesis in
+French law.  It features a LaTeX document class, a bibliographic style for
+BibLaTeX package, a practical example of french thesis document, and
+documentation.  The class assumes use of Biber and BibLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dyntree
   (package
     (name "texlive-dyntree")
