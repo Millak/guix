@@ -25843,6 +25843,34 @@ running text or as separate paragraphs with a preceding number or symbol.  It
 also provides compacted versions of @code{enumerate} and @code{itemize}.")
     (license license:lppl1.0+)))
 
+(define-public texlive-polski
+  (package
+    (name "texlive-polski")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/polski/" "source/latex/polski/"
+                   "tex/latex/polski/")
+             (base32
+              "0rcqyq8a96dl61fi9yr201rpm93w70sq93872ngfgvnk5m19xy13")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:build-targets #~(list "polski.ins")))
+    (propagated-inputs (list texlive-hyphen-complete texlive-pl))
+    (home-page "https://ctan.org/pkg/polski")
+    (synopsis "Typeset Polish documents with LaTeX and Polish fonts")
+    (description
+     "This package provides tools to typeset monolingual Polish documents in
+LaTeX2e without Babel or Polyglossia.  The package loads Polish hyphenation
+patterns, ensures that a font encoding suitable for Polish is used; in
+particular it enables Polish adaptation of Computer Modern fonts (the
+so-called PL fonts), provides translations of @code{\\today} and names like
+@samp{Bibliography} or @samp{Chapter}, redefines math symbols according to
+Polish typographical tradition, provides macros for dashes according to Polish
+orthography, provides a historical input method for Polish characters, works
+with traditional TeX as well as with Unicode aware variants.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-polyglossia
   (package
     (name "texlive-polyglossia")
