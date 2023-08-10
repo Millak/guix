@@ -36966,6 +36966,26 @@ fonts:
 @end itemize")
     (license license:lppl1.3c+)))
 
+(define-public texlive-voss-mathcol
+  (package
+    (name "texlive-voss-mathcol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/voss-mathcol/")
+             (base32
+              "1c7kzk2m2i8f6vqywnzfvcmv11ckanhcjxf72p4rgivw8f0lbwjm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/voss-mathcol")
+    (synopsis "Typesetting mathematics in colour, in (La)TeX")
+    (description
+     "This is a short paper from the TeXnische Komodie, in German.  Since the
+body of the paper is dominated by clear LaTeX coding examples, most LaTeX
+programmers will understand how to achieve the results shown in the diagrams,
+even if they don't understand German.")
+    (license license:lppl)))
+
 (define-public texlive-xifthen
   (package
     (name "texlive-xifthen")
