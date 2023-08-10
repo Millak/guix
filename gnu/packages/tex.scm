@@ -16068,6 +16068,27 @@ Friedrich-Schiller-Universitat Jena,
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-termcal-de
+  (package
+    (name "texlive-termcal-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/termcal-de/"
+                   "source/latex/termcal-de/"
+                   "tex/latex/termcal-de/")
+             (base32
+              "0av913y88vfv0yb68xx1lrqpxd8hwx8x7zzb1qcb2d9r5ry1l8z7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/termcal-de")
+    (synopsis "German localization for @code{termcal}")
+    (description
+     "This package provides a German localization to the @code{termcal}
+package written by Bill Mitchell, which is intended to print a term calendar
+for use in planning a class.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex4ht
   (package
     (name "texlive-tex4ht")
