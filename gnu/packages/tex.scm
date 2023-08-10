@@ -39437,6 +39437,28 @@ the @code{abstract} environment, and in particular provides for a one column
 abstract in a two column paper.")
     (license license:lppl)))
 
+(define-public texlive-bredzenie
+  (package
+    (name "texlive-bredzenie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bredzenie/"
+                   "tex/latex/bredzenie/")
+             (base32
+              "07ixmdcg2kxnaf2wacq6imp6i159jmyy3xn16135j8ddl2kbxp4s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bredzenie")
+    (synopsis
+     "Polish version of ``lorem ipsum'' in the form of a LaTeX package")
+    (description
+     "This is a polish version of the classic pseudo-Latin ``lorem ipsum dolor
+sit amet''.  It provides access to several paragraphs of pseudo-Polish
+generated with Hidden Markov Models and Recurrent Neural Networks trained on
+a corpus of Polish.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-breqn
   (package
     (name "texlive-breqn")
