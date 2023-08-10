@@ -1188,13 +1188,13 @@ been constructed to maintain extensive documentation on how to use
 (define-public python-pyotp
   (package
     (name "python-pyotp")
-    (version "2.7.0")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyotp" version))
        (sha256
-        (base32 "1dbcgpf576kmrpkx3ly8jq4g5g22r9n1rra55c1xqxyzl2mrz66f"))))
+        (base32 "0qvgsf86az9cqj6d8vim2shvyam89ik0p4sszysf7pfvw116csrl"))))
     (build-system python-build-system)
     (home-page "https://github.com/pyauth/pyotp")
     (synopsis "Python One Time Password Library")
