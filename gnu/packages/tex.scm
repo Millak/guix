@@ -9928,6 +9928,26 @@ register.  The packages require the e-TeX extensions; with them, they work
 either with Plain TeX or with LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-feupphdteses
+  (package
+    (name "texlive-feupphdteses")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/feupphdteses/"
+                   "tex/latex/feupphdteses/")
+             (base32
+              "1p6qwmcwayh45cmsgyx352ffzj2fcx2gaaya5qadn0ymx0pvb0lp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/feupphdteses")
+    (synopsis "Typeset Engineering PhD theses at the University of Porto")
+    (description
+     "This package provides a complete template for thesis/works of Faculdade
+de Engenharia da Universidade do Porto (FEUP) Faculty of Engineering
+University of Porto.")
+    (license license:lppl)))
+
 (define-public texlive-figflow
   (package
     (name "texlive-figflow")
