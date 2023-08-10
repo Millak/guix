@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1141,6 +1142,7 @@ extracting, creating, and converting between formats.")
            python-boto3
            python-conda-package-handling
            python-cytoolz
+           python-mock
            python-pluggy
            python-pycosat
            python-pytest
