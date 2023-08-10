@@ -33886,6 +33886,37 @@ simply on the size of the support.")
     (description "This collection provides support packages for German.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langitalian
+  (package
+    (name "texlive-collection-langitalian")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-amsldoc-it
+           texlive-amsmath-it
+           texlive-amsthdoc-it
+           texlive-antanilipsum
+           texlive-babel-italian
+           texlive-codicefiscaleitaliano
+           texlive-collection-basic
+           texlive-fancyhdr-it
+           texlive-fixltxhyph
+           texlive-frontespizio
+           texlive-hyphen-complete
+           texlive-itnumpar
+           texlive-l2tabu-italian
+           texlive-latex4wp-it
+           texlive-layaureo
+           texlive-lshort-italian
+           texlive-psfrag-italian
+           texlive-verifica))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Italian")
+    (description "This collection provides support packages for Italian.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-latex
   (package
     (name "texlive-collection-latex")
