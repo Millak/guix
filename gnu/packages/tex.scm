@@ -24152,6 +24152,24 @@ rotated.")
 
 (define-deprecated-package texlive-latex-psfrag texlive-psfrag)
 
+(define-public texlive-psfrag-italian
+  (package
+    (name "texlive-psfrag-italian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/psfrag-italian/")
+             (base32
+              "0ssx8rw7fwln02zzscywivnhizgrb6w05awscvv9gf9n1qj6avsf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/psfrag-italian")
+    (synopsis "PSfrag documentation in Italian")
+    (description
+     "This is a translation of the documentation that comes with the
+@code{psfrag} package.")
+    (license license:gpl3+)))
+
 (define-public texlive-pstool
   (package
     (name "texlive-pstool")
