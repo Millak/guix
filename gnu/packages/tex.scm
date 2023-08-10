@@ -5165,6 +5165,25 @@ It provides a tabular-like input syntax and support for drawing bundles
 (implicants) around adjacent values.")
     (license license:lppl1.3c)))
 
+(define-public texlive-l2picfaq
+  (package
+    (name "texlive-l2picfaq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l2picfaq/")
+             (base32
+              "0mk8d082gcqlxw2x7d2w85sm6i51928pijybzbsh9fy2rfcv99xz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/l2picfaq")
+    (synopsis "LaTeX pictures how-to (German)")
+    (description
+     "The document (in German) is a collection of how-to notes about LaTeX and
+pictures.  The aim of the document is to provide a solution, in the form of
+some sample code, for every problem.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-l2tabu-english
   (package
     (name "texlive-l2tabu-english")
