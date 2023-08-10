@@ -5853,6 +5853,24 @@ to LaTeX2e.}")
 to LaTeX2e}.")
     (license license:gpl2+)))
 
+(define-public texlive-lshort-portuguese
+  (package
+    (name "texlive-lshort-portuguese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-portuguese/")
+             (base32
+              "0wg51rjcayiizkz0vvjkirrx19q8fbnfrwilgh13prlbpams1hsh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-portuguese")
+    (synopsis "Introduction to LaTeX in Portuguese")
+    (description
+     "This is the Portuguese translation of a @emph{(Not So) Short
+Introduction to LaTeX2e}.")
+    (license license:public-domain)))
+
 (define-public texlive-lshort-slovak
   (package
     (name "texlive-lshort-slovak")
