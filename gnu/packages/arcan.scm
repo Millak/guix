@@ -245,34 +245,6 @@ engine with a Lua scripting interface.")
 as a window under Arcan.")
     (license (list license:bsd-3 license:expat))))
 
+;; Package was merged into arcan in upstream.
 (define-public arcan-wayland
-  (package
-    (inherit arcan)
-    (name "arcan-wayland")
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list arcan
-           libseccomp
-           libxkbcommon
-           mesa
-           wayland
-           wayland-protocols))
-    (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'chdir
-           (lambda _
-             (chdir "src/tools/waybridge")
-             #t))
-         (add-after 'unpack 'fix-cmake-find-shmif
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/platform/cmake/modules/Findarcan_shmif.cmake"
-               (("/usr/local") (assoc-ref inputs "arcan")))
-             #t)))))
-    (synopsis "Wayland protocol service for Arcan")
-    (description "Arcan-wayland (waybridge) bridges Wayland connections
-with an Arcan connection point.  It allows Wayland compatible clients
-to connect and render using Arcan.")
-    (license license:bsd-3)))
+  (deprecated-package "arcan-wayland" arcan))
