@@ -20231,6 +20231,24 @@ knowledge and techniques of word processing into the LaTeX typesetting
 environment.  It aims at helping such users use LaTeX instead.")
     (license license:fdl1.3+)))
 
+(define-public texlive-latex4wp-it
+  (package
+    (name "texlive-latex4wp-it")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex4wp-it/")
+             (base32
+              "14r86fwhb9zafmyv05pqfi9962dpxj7wq94acm43gv8m2rsjp52k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex4wp-it")
+    (synopsis "LaTeX guide for word processor users, in Italian")
+    (description
+     "The package provides a version of the @emph{LaTeX for Word Processor
+Users} document in Italian.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-latexcheat
   (package
     (name "texlive-latexcheat")
