@@ -31456,6 +31456,26 @@ Arbeiten}, which are scientfic projects of students at a secondary school.")
 @code{etoolbox} documentation.")
     (license license:lppl)))
 
+(define-public texlive-fifinddo-info
+  (package
+    (name "texlive-fifinddo-info")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fifinddo-info/"
+                   "source/latex/fifinddo-info/")
+             (base32
+              "0m95qyd5kbaa2x8rpjwr6f9c76ajg6l49igzw9yb0hcrwwg7cni6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fifinddo-info")
+    (synopsis "German HTML beamer presentation on nicetext and morehype")
+    (description
+     "The bundle: exhibits the process of making an HTML beamer presentation
+with the @code{blogdot} package from the @code{morehype} bundle, and HTML
+generation based on the @code{fifinddo} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-logreq
   (package
     (name "texlive-logreq")
