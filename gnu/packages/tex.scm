@@ -25442,6 +25442,24 @@ available, together with the parent (including file) and parents (all
 including files to the root of the tree).  The package supersedes FiNK.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cursolatex
+  (package
+    (name "texlive-cursolatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cursolatex/")
+             (base32
+              "048s5fg8c19s3zbl2dkmh8ffkicb8fd9n46m0iqrc39i0wrh7p12")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cursolatex")
+    (synopsis "LaTeX tutorial, in Portuguese")
+    (description
+     "This package provides a LaTeX tutorial, in Portuguese.  The tutorial is
+presented as a set of slides.")
+    (license license:gpl3+)))
+
 (define-public texlive-calrsfs
   (package
     (name "texlive-calrsfs")
