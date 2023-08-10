@@ -36736,6 +36736,23 @@ BibLaTeX.")
      "This is a German translation of the @code{europecv} documentation.")
     (license license:lppl)))
 
+(define-public texlive-translation-filecontents-de
+  (package
+    (name "texlive-translation-filecontents-de")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translation-filecontents-de/")
+             (base32
+              "0d2ds8kc98yd1can0gzcngm7gsn2gwhriaxnnds5kz3z3al71gkc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translation-filecontents-de")
+    (synopsis "German version of @code{filecontents}")
+    (description
+     "This is a German translation of the @code{filecontents} documentation.")
+    (license license:lppl)))
+
 (define-public texlive-translations
   (package
     (name "texlive-translations")
