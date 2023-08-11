@@ -258,8 +258,7 @@ network to check in GNU's database."
   (make-regexp "^.*-.*[0-9](-|~|\\.)?(alpha|beta|rc|RC|cvs|svn|git)-?[0-9\\.]*\\.tar\\."))
 
 (define (release-file? project file)
-  "Return #f if FILE is not a release tarball of PROJECT, otherwise return
-true."
+  "Return true if FILE is a release tarball of PROJECT."
   (and (not (member (file-extension file)
                     '("sig" "sign" "asc"
                       "md5sum" "sha1sum" "sha256sum")))
@@ -268,12 +267,21 @@ true."
                 ;; Filter out unrelated files, like `guile-www-1.1.1'.
                 ;; Case-insensitive for things like "TeXmacs" vs. "texmacs".
                 ;; The "-src" suffix is for "freefont-src-20120503.tar.gz".
+                ;; The '-everywhere-src' suffix is for Qt modular components.
                 (and=> (match:substring match 1)
                        (lambda (name)
                          (or (string-ci=? name project)
-                             (string-ci=? name
-                                          (string-append project
-                                                         "-src")))))))
+                             (string-ci=? name (string-append project "-src"))
+                             (string-ci=?
+                              name (string-append project "-everywhere-src"))
+                             ;; For older Qt releases such as version 5.
+                             (string-ci=?
+                              name (string-append
+                                    project "-everywhere-opensource-src"))
+                             ;; For Qt Creator.
+                             (string-ci=?
+                              name (string-append
+                                    project "-opensource-src")))))))
        (not (regexp-exec %alpha-tarball-rx file))
        (let ((s (tarball-sans-extension file)))
          (regexp-exec %package-name-rx s))))
