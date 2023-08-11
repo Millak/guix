@@ -289,7 +289,7 @@ the RFC.")
 (define-public lcsync
   (package
     (name "lcsync")
-    (version "0.0.1")
+    (version "0.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -298,45 +298,33 @@ the RFC.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s038b4xg9nlzhrganzjyfvc6n6cgd6kilnpik4axp62j2n5q11q"))))
+                "0bsd3dkir2i647nmrmyb7skbv16v0f6f3gfwkpxz8g42978dlms5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
+       #:configure-flags
+       (list
+        (string-append "--prefix="
+                       (assoc-ref %outputs "out")))
        #:make-flags (let ((target ,(%current-target-system)))
                       (list ,(string-append "CC="
-                                            (cc-for-target))
-                            ;; avoid running setcap in the install process
-                            "SETCAP_PROGRAM=true"
-                            (string-append "prefix="
-                                           (assoc-ref %outputs "out"))))
+                                            (cc-for-target))))
        #:test-target "test"
        #:phases (modify-phases %standard-phases
-                  (delete 'configure) ;no configure script
-                  (add-before 'check 'remove-network-tests
+                  (add-after 'unpack 'use-prefix-from-configure-in-doc-makefile
+                    ;; Use prefix from configure. Fixed upstream:
+                    ;; https://codeberg.org/librecast/lcsync/commit/4ba00f6
+                    ;; XXX: Remove for 0.2.2+
                     (lambda _
-                      ;; these tests require networking
-                      (delete-file "./test/0000-0027.c")
-                      (delete-file "./test/0000-0049.c")
-                      (delete-file "./test/0000-0074.c")))
-                  (add-after 'unpack 'remove-immintrin.h
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "Makefile"
-                        (("CFLAGS :=")
-                         (string-append "CFLAGS := -I" (search-input-directory
-                                                         inputs "include/simde"))))
-                      (substitute* (find-files "src")
-                        ((".*immintrin\\.h.*")
-                         (string-append "#include <simde-features.h>\n"
-                                        "#include <x86/ssse3.h>\n"))
-                        (("__m128i") "simde__m128i"))))
+                      (substitute* "doc/Makefile.in"
+                        (("PREFIX .= /usr/local") "PREFIX ?= @prefix@"))))
                   (add-before 'build 'add-library-paths
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let* ((librecast (assoc-ref inputs "librecast")))
                         (substitute* (list "./src/Makefile" "./test/Makefile")
                           (("-llibrecast")
                            (string-append "-L" librecast "/lib -llibrecast")))))))))
-    (inputs (list librecast libsodium))
-    (native-inputs (list simde))
+    (inputs (list lcrq librecast libsodium))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
     (description
