@@ -903,6 +903,53 @@ mathematical or other technical packages.")
     (description "This is the TeX Live scheme for installing ConTeXt.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-scheme-gust
+  (package
+    (name "texlive-scheme-gust")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-amslatex-primer
+           texlive-amstex
+           texlive-antt
+           texlive-bibtex8
+           texlive-collection-basic
+           texlive-collection-context
+           texlive-collection-fontsrecommended
+           texlive-collection-fontutils
+           texlive-collection-langpolish
+           texlive-collection-latex
+           texlive-collection-latexrecommended
+           texlive-collection-metapost
+           texlive-collection-plaingeneric
+           texlive-collection-xetex
+           texlive-comment
+           texlive-comprehensive
+           texlive-concrete
+           texlive-cyklop
+           texlive-dvidvi
+           texlive-dviljk
+           texlive-fontinstallationguide
+           texlive-gustprog
+           texlive-impatient
+           texlive-iwona
+           texlive-metafont-beginners
+           texlive-metapost-examples
+           texlive-poltawski
+           texlive-seetexk
+           texlive-seminar
+           texlive-tds
+           texlive-tex4ht
+           texlive-texdoc))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "GUST TeX Live scheme")
+    (description
+     "This is the GUST TeX Live scheme: it is a set of files sufficient to
+typeset Polish plain TeX, LaTeX and ConTeXt documents in PostScript or PDF.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-scheme-medium
   (package
     (name "texlive-scheme-medium")
