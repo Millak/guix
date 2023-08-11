@@ -1231,7 +1231,8 @@ xmlpatternsvalidator.")))
               (uri (qt-url name version))
               (sha256
                (base32
-                "1kb8nj17vmnky0ayiwypim7kf6rmlmfcjf6gnrw8rydmp61w0vh2"))))
+                "1kb8nj17vmnky0ayiwypim7kf6rmlmfcjf6gnrw8rydmp61w0vh2"))
+              (patches (search-patches "qtdeclarative-5-disable-qmlcache.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ;TODO: Enable the tests
@@ -1277,7 +1278,8 @@ with JavaScript and C++.")))
               (uri (qt-url name version))
               (sha256
                (base32
-                "1hbw63828pp8vm9b46i2pkcbcpr4mq9nblhmpwrw2pflq0fi24xq"))))
+                "1hbw63828pp8vm9b46i2pkcbcpr4mq9nblhmpwrw2pflq0fi24xq"))
+              (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list

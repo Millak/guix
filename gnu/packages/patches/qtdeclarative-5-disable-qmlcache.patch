@@ -1,0 +1,16 @@
+Retrieved from
+https://github.com/NixOS/nixpkgs/raw/master/pkgs/development/libraries/qt-5/5.15/qtdeclarative-default-disable-qmlcache.patch
+
+diff --git a/src/qml/qml/qqmltypeloader.cpp b/src/qml/qml/qqmltypeloader.cpp
+index 1d66e75..827567a 100644
+--- a/src/qml/qml/qqmltypeloader.cpp
++++ b/src/qml/qml/qqmltypeloader.cpp
+@@ -727,7 +727,7 @@ bool QQmlTypeLoader::Blob::isDebugging() const
+ 
+ bool QQmlTypeLoader::Blob::diskCacheEnabled() const
+ {
+-    return (!disableDiskCache() && !isDebugging()) || forceDiskCache();
++    return forceDiskCache();
+ }
+ 
+ bool QQmlTypeLoader::Blob::qmldirDataAvailable(const QQmlRefPointer<QQmlQmldirData> &data, QList<QQmlError> *errors)
