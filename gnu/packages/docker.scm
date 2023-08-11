@@ -54,7 +54,7 @@
 
 ;; Note - when changing Docker versions it is important to update the versions
 ;; of several associated packages (docker-libnetwork and go-sctp).
-(define %docker-version "20.10.17")
+(define %docker-version "20.10.25")
 
 (define-public python-docker
   (package
@@ -264,9 +264,9 @@ network attachments.")
   ;; the branch that Docker uses, as can be seen in the 'vendor.conf' Docker
   ;; source file.  NOTE - It is important that this version is kept in sync
   ;; with the version of Docker being used.
-  (let ((commit "f6ccccb1c082a432c2a5814aaedaca56af33d9ea")
+  (let ((commit "3f0048413d95802b9c6c836eba06bfc54f9dbd03")
         (version (version-major+minor %docker-version))
-        (revision "1"))
+        (revision "2"))
     (package
       (name "docker-libnetwork")
       (version (git-version version revision commit))
@@ -279,7 +279,7 @@ network attachments.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0nxpr0h0smv4n641g41vxibr5r85ixfcvs9cp3c4fc7zvrhjc49s"))
+                  "185i5ji7dwkv41zmb8s3d7i5gg72wivcj1l4bhr1lb3a1vy2hcxc"))
                 ;; Delete bundled ("vendored") free software source code.
                 (modules '((guix build utils)))
                 (snippet '(delete-file-recursively "vendor"))))
@@ -330,7 +330,7 @@ built-in registry server of Docker.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hn7fg717rggwk6dbicrwa7aglqp7dp0jp5rvn6p9gfcnrp2w97d"))))
+        (base32 "1q5vc6f5fzzxsvv1kwdky56fr1jiy9199m3vxqh4mz85qr067cmn"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -591,7 +591,7 @@ runcexecutor/executor.go"
            xz))
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)
-           go gotestsum pkg-config))
+           go-1.19 gotestsum pkg-config))
     (synopsis "Container component library and daemon")
     (description "This package provides a framework to assemble specialized
 container systems.  It includes components for orchestration, image
@@ -612,7 +612,7 @@ provisioning etc.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ksicj4iqvgp9jabd4xmhkf3vax6dwn4f5dsr73bdqj4mf3ahav0"))))
+        (base32 "0qy35vvnl4lf9w6dr9n7yfqvzhzm7m3sl2ai275apbhygwgcsbss"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/docker/cli"
