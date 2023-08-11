@@ -928,31 +928,43 @@ Optionally include a VERSION string to fetch a specific version."
                          #:directory directory
                          #:file->signature file->signature)))
 
-(define html-updatable-package?
-  ;; Return true if the given package may be handled by the generic HTML
-  ;; updater.
-  (let ((hosting-sites '("github.com" "github.io" "gitlab.com"
-                         "notabug.org" "sr.ht" "gitlab.inria.fr"
-                         "ftp.gnu.org" "download.savannah.gnu.org"
-                         "pypi.org" "crates.io" "rubygems.org"
-                         "bioconductor.org")))
-    (define http-url?
-      (url-predicate (lambda (url)
-                       (match (string->uri url)
-                         (#f #f)
-                         (uri
-                          (let ((scheme (uri-scheme uri))
-                                (host   (uri-host uri)))
-                            (and (memq scheme '(http https))
-                                 ;; HOST may contain prefixes,
-                                 ;; e.g. "profanity-im.github.io", hence the
-                                 ;; suffix-based test below.
-                                 (not (any (cut string-suffix? <> host)
-                                           hosting-sites)))))))))
+;;; These sites are disallowed for the generic HTML updater as there are
+;;; better means to query them.
+(define %disallowed-hosting-sites
+  '("github.com" "github.io" "gitlab.com"
+    "notabug.org" "sr.ht" "gitlab.inria.fr"
+    "ftp.gnu.org" "download.savannah.gnu.org"
+    "pypi.org" "crates.io" "rubygems.org"
+    "bioconductor.org"))
 
-    (lambda (package)
-      (or (assoc-ref (package-properties package) 'release-monitoring-url)
-          (http-url? package)))))
+(define (http-url? url)
+  "Return URL if URL has HTTP or HTTPS as its protocol.  If URL uses the
+special mirror:// protocol, substitute it with the first HTTP or HTTPS URL
+prefix from its set."
+  (match (string->uri url)
+    (#f #f)
+    (uri
+     (let ((scheme (uri-scheme uri))
+           (host   (uri-host uri)))
+       (or (and (memq scheme '(http https))
+                ;; HOST may contain prefixes, e.g. "profanity-im.github.io",
+                ;; hence the suffix-based test below.
+                (not (any (cut string-suffix? <> host)
+                          %disallowed-hosting-sites))
+                url)
+           (and (eq? scheme 'mirror)
+                (and=> (find http-url?
+                             (assoc-ref %mirrors
+                                        (string->symbol host)))
+                       (lambda (url)
+                         (string-append (strip-trailing-slash url)
+                                        (uri-path uri))))))))))
+
+(define (html-updatable-package? package)
+  "Return true if the given package may be handled by the generic HTML
+updater."
+  (or (assoc-ref (package-properties package) 'release-monitoring-url)
+      ((url-predicate http-url?) package)))
 
 (define* (import-html-updatable-release package #:key (version #f))
   "Return the latest release of PACKAGE.  Do that by crawling the HTML page of
@@ -960,6 +972,9 @@ the directory containing its source tarball.  Optionally include a VERSION
 string to fetch a specific version."
   (let* ((uri       (string->uri
                      (match (origin-uri (package-source package))
+                       ((? (cut string-prefix? "mirror://" <>) url)
+                        ;; Retrieve the authoritative HTTP URL from a mirror.
+                        (http-url? url))
                        ((? string? url) url)
                        ((url _ ...) url))))
          (custom    (assoc-ref (package-properties package)

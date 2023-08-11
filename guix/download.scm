@@ -51,7 +51,10 @@
 ;;; Code:
 
 (define %mirrors
-  ;; Mirror lists used when `mirror://' URLs are passed.
+  ;; Mirror lists used when `mirror://' URLs are passed.  The first mirror
+  ;; entry of each set should ideally be the most authoritative one, as that's
+  ;; what the generic HTML updater will pick to look for updates, with
+  ;; possible exceptions when the authoritative mirror is too slow.
   (let* ((gnu-mirrors
           '(;; This one redirects to a (supposedly) nearby and (supposedly)
             ;; up-to-date mirror.
