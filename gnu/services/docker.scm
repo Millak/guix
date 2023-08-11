@@ -116,12 +116,7 @@ loop-back communications.")
            (requirement '(containerd
                           dbus-system
                           elogind
-                          file-system-/sys/fs/cgroup/blkio
-                          file-system-/sys/fs/cgroup/cpu
-                          file-system-/sys/fs/cgroup/cpuset
-                          file-system-/sys/fs/cgroup/devices
-                          file-system-/sys/fs/cgroup/memory
-                          file-system-/sys/fs/cgroup/pids
+                          file-system-/sys/fs/cgroup
                           networking
                           udev))
            (start #~(make-forkexec-constructor

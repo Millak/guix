@@ -14652,6 +14652,35 @@ based on entropy estimates from k-nearest neighbors distances and algorithms
 for the reconstruction of gene regulatory networks.")
     (license license:agpl3+)))
 
+(define-public r-partr2
+  (package
+    (name "r-partr2")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "partR2" version))
+              (sha256
+               (base32
+                "06ky0hhrq0mcsn9rwrzvwn0rrjj0l8rxs0hqp10668gdq5hjk8bn"))))
+    (properties `((upstream-name . "partR2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-ggplot2
+                             r-lme4
+                             r-magrittr
+                             r-pbapply
+                             r-purrr
+                             r-rlang
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mastoffel/partR2")
+    (synopsis "Partitioning R2 in generalized linear mixed models")
+    (description
+     "This package provides an R tool for estimating and partitioning R2 in
+@dfn{generalized linear mixed models} (GLMMs) based on predictor variance.")
+    (license license:gpl2+)))
+
 (define-public r-pscl
   (package
     (name "r-pscl")

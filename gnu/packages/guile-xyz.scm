@@ -1054,36 +1054,33 @@ It has a nice, simple s-expression based syntax.")
     (inputs (list guile-2.2))))
 
 (define-public guile-scheme-json-rpc
-  (let ((commit "45ae6890f6619286f5679f88c094c88127b54c4a")
-        (revision "0")
-        (version "0.2.11"))
-    (package
-      (name "guile-scheme-json-rpc")
-      (version (git-version version revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://codeberg.org/rgherdt/scheme-json-rpc.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0w4m8xx8yyj0rv0q57mjr8ja87l7yikscj33i3ck26wg7230ppa5"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'change-to-guile-dir
-                      (lambda _
-                        (chdir "guile"))))))
-      (inputs (list guile-3.0 guile-json-3))
-      (native-inputs (list pkg-config))
-      (synopsis "Library providing JSON-RPC capability in Scheme")
-      (description
-       "This library implements parts of the
+  (package
+    (name "guile-scheme-json-rpc")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/rgherdt/scheme-json-rpc.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jsampz2ahs18z6yh9b5l3lkj8ycnavs0vg9sjngdj3w3zvrdcvm"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'change-to-guile-dir
+                    (lambda _
+                      (chdir "guile"))))))
+    (inputs (list guile-3.0 guile-srfi-145 guile-srfi-180))
+    (native-inputs (list pkg-config))
+    (synopsis "Library providing JSON-RPC capability for Guile Scheme")
+    (description
+     "This library implements parts of the
 @uref{https://www.jsonrpc.org/specification,JSON-RPC specification}, allowing
 for calling methods on remote servers by exchanging JSON objects.")
-      (home-page "https://codeberg.org/rgherdt/scheme-json-rpc/")
-      (license license:expat))))
+    (home-page "https://codeberg.org/rgherdt/scheme-json-rpc/")
+    (license license:expat)))
 
 (define-public guile-squee
   (let ((commit "9f2609563fc53466e46d37c8d8d2fbcfce67b2ba")
@@ -2505,14 +2502,14 @@ many readers as needed).")
 (define-public guile-ncurses
   (package
     (name "guile-ncurses")
-    (version "3.0")
+    (version "3.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/guile-ncurses/guile-ncurses-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "038xbffalhymg26lvmzgf7ljilxz2f2zmqg5r5nfzbipfbprwjhf"))))
+               "0cypz1ikw66n8bc2klsnnaj1plpl22dwq6pwyc7dvffamz7fi2gf"))))
     (build-system gnu-build-system)
     (inputs (list ncurses guile-3.0))
     (native-inputs (list pkg-config))
@@ -2539,8 +2536,7 @@ many readers as needed).")
                (substitute* files
                  (("\"libguile-ncurses\"")
                   (format #f "\"~a/lib/guile/~a/libguile-ncurses\""
-                          out (target-guile-effective-version))))
-               #t))))))
+                          out (target-guile-effective-version))))))))))
     (home-page "https://www.gnu.org/software/guile-ncurses/")
     (synopsis "Guile bindings to ncurses")
     (description

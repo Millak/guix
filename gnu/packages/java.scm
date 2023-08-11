@@ -1550,6 +1550,43 @@ blacklisted.certs.pem"
 (define-public openjdk openjdk19)
 
 
+;; This version of JBR is here in order to be able to build custom
+;; IntelliJ plugins.  Those usually need both jbr11 and jbr17 for
+;; tests.
+(define-public jbr11
+  (package
+    (inherit openjdk11)
+    (name "jbr")
+    (version "11_0_16-b2248")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JetBrains/JetBrainsRuntime.git")
+                     (commit (string-append "jb" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1fnrdx0wb21ghm6jczjzk7b9fz9hbdzd62512xhwpzvca57v2z09"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk11)
+       ((#:configure-flags configure-flags)
+        #~(append #$configure-flags
+                  (list "--with-jvm-features=shenandoahgc"
+                        "--enable-cds=yes"
+                        "--with-vendor-name=JetBrains s.r.o"
+                        "--with-vendor-url=https://www.jetbrains.com/"
+                        "--with-vendor-bug-url=https://youtrack.jetbrains.com/issues/JBR")))))
+    (synopsis "JetBrains Java Runtime")
+    (description "This package provides a Java runtime environment for
+and Java development kit.  It supports enhanced class redefinition (DCEVM),
+features optional JCEF, a framework for embedding Chromium-based browsers,
+includes a number of improvements in font rendering, keyboards support,
+windowing/focus subsystems, HiDPI, accessibility, and performance,
+provides better desktop integration and bugfixes not yet present in
+OpenJDK.")
+    (home-page "https://www.jetbrains.com/")
+    (license license:gpl2+)))
+
 (define-public jbr17
   (package
     (inherit openjdk17)
@@ -1589,14 +1626,14 @@ OpenJDK.")
 (define-public ant/java8
   (package
     (name "ant")
-    (version "1.10.10")
+    (version "1.10.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/ant/source/apache-ant-"
                                   version "-src.tar.gz"))
               (sha256
                (base32
-                "1dhkk9ajc378cln6sj9q0ya8bl9dpyji5xcrl1zq41zx1k6j54g5"))
+                "01l4g9b1xnnq450ljvhrlvcf8wzzmr45wmhkybrx0hcdi166y06s"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5019,6 +5056,68 @@ constructor on object instantiation.")
 mock objects in unit testing.")
     (license license:asl2.0)))
 
+(define-public java-easymock-3.2
+  (package
+    (inherit java-easymock)
+    (name "java-easymock")
+    (version "3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/easymock/easymock/")
+                     (commit (string-append "easymock-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cn6qqa261mhk9mwxrsz39lkkknfv2h7iprr5zw7wpz9p96dwgv4"))))
+    (arguments
+     (list #:jar-name "easymock.jar"
+           #:source-dir "easymock/src/main"
+           #:test-dir "easymock/src/test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'delete-android-support
+                 (lambda _
+                   (with-directory-excursion "easymock/src/main/java/org/easymock/internal"
+                     (substitute* "MocksControl.java"
+                       (("AndroidSupport.isAndroid\\(\\)") "false")
+                       (("return classProxyFactory = new AndroidClassProxyFactory\\(\\);") ""))
+                     (delete-file "AndroidClassProxyFactory.java"))))
+               (add-after 'unpack 'delete-broken-tests
+                 (lambda _
+                   (with-directory-excursion "easymock/src/test/java/org/easymock"
+                     ;; This test depends on dexmaker.
+                     (delete-file "tests2/ClassExtensionHelperTest.java")
+                     ;; This is not a test.
+                     (delete-file "tests/BaseEasyMockRunnerTest.java")
+                     ;; ...but deleting it means that we also have to delete these
+                     ;; dependent files.
+                     (delete-file "tests2/EasyMockRunnerTest.java")
+                     ;; This test fails because the file "easymock.properties" does
+                     ;; not exist.
+                     (delete-file "tests2/EasyMockPropertiesTest.java")))))))))
+
+(define-public java-easymock-class-extension
+  (package
+    (inherit java-easymock-3.2)
+    (name "java-easymock-class-extension")
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "easymock-class-extensions.jar"
+           #:source-dir "easymock-classextension/src/main/java"
+           #:test-dir "easymock-classextension/src/test"))
+    (inputs (list java-asm
+                  java-easymock-3.2
+                  java-cglib
+                  java-objenesis))
+    (native-inputs
+     (list java-junit java-hamcrest-core))
+    (home-page "https://easymock.org/")
+    (synopsis "Easymock extension to mock classes")
+    (description "This package provides an extension to earlier versions of
+easymock that allows mocking classes.")
+    (license license:asl2.0)))
+
 (define-public java-jmock-1
   (package
     (name "java-jmock")
@@ -6180,6 +6279,32 @@ NIO.")))
     (description "This package provides the HttpCore benchmarking tool.  It is
 an Apache AB clone based on HttpCore.")))
 
+(define-public java-httpcomponents-httpcore-osgi
+  (package (inherit java-httpcomponents-httpcore)
+    (name "java-httpcomponents-httpcore-osgi")
+    (arguments
+     `(#:jar-name "httpcomponents-httpcore-osgi.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "httpcore-osgi"))))))
+    (inputs
+     (modify-inputs (package-inputs java-httpcomponents-httpcore)
+                    (prepend java-httpcomponents-httpcore
+                             java-httpcomponents-httpcore-nio
+                             java-hamcrest-core)))
+    (native-inputs (list java-ops4j-pax-exam-core
+                         java-ops4j-pax-exam-core-junit
+                         java-ops4j-pax-exam-core-spi
+                         java-junit))
+    (description "HttpCore is a set of low level HTTP transport components
+that can be used to build custom client and server side HTTP services with a
+minimal footprint.  HttpCore supports two I/O models: blocking I/O model based
+on the classic Java I/O and non-blocking, event driven I/O model based on Java
+NIO.
+
+This package provides... some tests.")))
+
 (define-public java-httpcomponents-httpclient
   (package
     (name "java-httpcomponents-httpclient")
@@ -6215,6 +6340,51 @@ seeks to fill this void by providing an efficient, up-to-date, and
 feature-rich package implementing the client side of the most recent HTTP
 standards and recommendations.")
     (license license:asl2.0)))
+
+(define-public java-httpcomponents-httpclient-cache
+  (package (inherit java-httpcomponents-httpclient)
+    (name "java-httpcomponents-httpclient-cache")
+    (arguments
+     `(#:jar-name "httpcomponents-httpclient-cache.jar"
+       #:source-dir "src/main/java"
+       #:test-dir "src/test"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-unused-impls
+           (lambda _
+             (for-each
+              delete-file-recursively
+              '("src/main/java/org/apache/http/impl/client/cache/ehcache/"
+                "src/main/java/org/apache/http/impl/client/cache/memcached/"
+                "src/test/java/org/apache/http/impl/client/cache/ehcache/"
+                "src/test/java/org/apache/http/impl/client/cache/memcached/"))))
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "httpclient-cache"))))))
+    (inputs
+     (modify-inputs (package-inputs java-httpcomponents-httpclient)
+                    (prepend java-httpcomponents-httpclient
+                             java-httpcomponents-httpmime
+                             java-hamcrest-core)))
+    (native-inputs (list java-easymock-3.2 java-easymock-class-extension))
+    (description "This package provides an API for caching accessed HTTP
+resources.")))
+
+(define-public java-httpcomponents-httpclient-osgi
+  (package (inherit java-httpcomponents-httpclient)
+    (name "java-httpcomponents-httpclient-osgi")
+    (arguments
+     `(#:jar-name "httpcomponents-httpclient-osgi.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "httpclient-osgi") #t)))))
+    (inputs
+     (modify-inputs (package-inputs java-httpcomponents-httpclient)
+                    (prepend java-httpcomponents-httpclient
+                             java-httpcomponents-httpclient-cache
+                             java-osgi-framework
+                             java-osgi-service-cm
+                             java-hamcrest-core)))))
 
 (define-public java-httpcomponents-httpmime
   (package (inherit java-httpcomponents-httpclient)
@@ -11146,6 +11316,38 @@ protocol-independent framework to build mail and messaging applications.")
     ;; and Distribution License("CDDL")
     (license (list license:cddl1.1
                    license:gpl2)))); with classpath exception
+
+(define-public java-mapdb
+  (package
+    (name "java-mapdb")
+    (version "1.0.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jankotek/mapdb")
+                    (commit (string-append "mapdb-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1slb4h282jqvk16896lcvgm65pj3v6crcp2wvjdvad7nx7d2f1kv"))))
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "mapdb.jar"
+           #:source-dir "src/main/java"
+           #:test-dir "src/test"
+           #:test-exclude (list "**/ClosedThrowsExceptionTest.java"
+                                "**/ConcurrentMapInterfaceTest.java"
+                                "**/EngineTest.java"
+                                "**/Issue664Test.java"
+                                "**/MapInterfaceTest.java")
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'install (install-from-pom "pom.xml")))))
+    (native-inputs (list java-junit))
+    (home-page "https://mapdb.org/")
+    (synopsis "Concurrent data structures")
+    (description "MapDB provides concurrent maps, sets and queues backed by
+disk storage or off-heap memory.")
+    (license license:bsd-3)))
 
 (define-public java-jeromq
   (package

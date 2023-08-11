@@ -12208,6 +12208,32 @@ The following completions are currently available:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public emacs-sway
+  ;; Commit from Nicola's fork (dash free version with various improvments)
+  (let ((commit "838ef531a30fe616f0141adbdabc132d4edfd374")
+        (revision "0"))
+    (package
+      (name "emacs-sway")
+      (version (git-version "0.6.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/thblt/sway.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ddaz8my3z4ca2z81kf1h8773pyx8h0l0ra3ssqd1rq5j0041wdh"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/thblt/sway.el")
+      (synopsis "Communication with the Sway window manager")
+      (description
+       "This is a basic library to control the Sway window manager from Emacs.
+Its main use case is in combination with popup managers like Shackle, to
+use frames instead of windows while still giving focus to existing frames
+instead of duplicating them.")
+      (license license:gpl3+))))
+
 (define-public emacs-sweet-theme
   (let ((commit "78f741806ecebe01224bf54d09ad80e306652508")
         (revision "0"))
@@ -37525,6 +37551,31 @@ the buffer you want to undo.  An undo tree buffer should pop up.")
 clipboard and inserts an Org mode link with a title of a page found by the URL
 into the current buffer.")
       (license license:expat))))
+
+(define-public emacs-org-wild-notifier
+  (let ((commit "cdca8be45b80ab52077a915e77c625bc0ad07dd7")
+        (revision "0"))
+    (package
+      (name "emacs-org-wild-notifier")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/akhramov/org-wild-notifier.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0k37ac752r5whjha4mf9qg74g65kf71a2dlpl4wlxvdml5v1czw1"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-dash emacs-alert emacs-async))
+      (license license:gpl3+)
+      (home-page "https://github.com/akhramov/org-wild-notifier.el")
+      (synopsis "Customizable org-agenda notifications")
+      (description
+       "This package provides notification functions for org-agenda."))))
 
 (define-public emacs-flymake-mypy
   (let ((commit "d79e158f9ed3065ab692cd0d4048aac985c4fecd")

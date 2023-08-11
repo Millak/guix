@@ -276,14 +276,14 @@ colors, styles, options and details.")
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.85")
+    (version "2.86")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "11zcfnc80sbh10w53j4rwnmz0g5xj78b8i7hzfslgya15jv5j1ac"))
+        (base32 "07y9yg7kdkgmz024qzny8xhjw3c367kxfpwzv19cxcy7qcgsvsy4"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.

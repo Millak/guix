@@ -3,6 +3,7 @@
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,8 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gettext)
@@ -41,22 +44,31 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages ssh)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix download)
@@ -72,178 +84,325 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (ice-9 ftw)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1))
 
-(define-public openfoam
+(define-public openfoam-org
   (package
-    (name "openfoam")
-    (version "4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "http://dl.openfoam.org/source/"
-             (string-map (lambda (x) (if (eq? x #\.) #\- x)) version)))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cgxh4h2hf50qbvvdg5miwc2nympb0nrv3md96vb3gbs9vk8vq9d"))
-       (patches (search-patches "openfoam-4.1-cleanup.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Include <sys/sysmacros.h>, which is where glibc >= 2.28 provides
-           ;; 'major' and 'minor'.
-           (substitute* "src/OSspecific/POSIX/fileStat.C"
-             (("#include <unistd\\.h>")
-              "#include <unistd.h>\n#include <sys/sysmacros.h>\n"))
-           #t))))
+    (name "openfoam-org")
+    (version "10.20230119")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/OpenFOAM/OpenFOAM-"
+                                        (version-major version)))
+                    (commit (second (string-split version #\.)))))
+              (sha256
+               (base32
+                "0icvwg7s6vnkgmdiczivia9pbrgx8nanw9a4j080fzfvdv9vxhzp"))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          ;; patch shell paths
+                          (substitute* (list "wmake/src/Makefile"
+                                             "wmake/makefiles/general")
+                            (("/bin/sh")
+                             "sh"))
+                          (substitute* "etc/bashrc"
+                            ;; only go back one folder level
+                            (("\\$\\(dirname \\$\\{BASH_SOURCE:-\\$0\\}\\)/../..")
+                             "$(dirname ${BASH_SOURCE:-$0})/..")
+                            ;; do not use openfoam folder convention
+                            (("^export WM_PROJECT_DIR=.*$")
+                             (string-append
+                              "export WM_PROJECT_DIR=$WM_PROJECT_INST_DIR\n"))
+                            ;; do not source bash_completion (gives error)
+                            (("^.*bash_completion.*$" all)
+                             (string-append "#" all))
+                            ;; set same version as guix package
+                            (("^export WM_PROJECT_VERSION=.*$")
+                             (string-append "export WM_PROJECT_VERSION="
+                                            ,version "\n")))
+                          ;; add expand flag to RunFunctions
+                          (substitute* "bin/tools/RunFunctions"
+                            (("foamDictionary (.*)" all args)
+                             (string-append "foamDictionary -expand " args)))
+                          ;; disable failing test
+                          (substitute* "test/postProcessing/channel/Allrun"
+                            (("^.*getApplication.*$" all)
+                             (string-append "#" all "\n")))))))
     (build-system gnu-build-system)
-    (inputs
-     `(("boost" ,boost)
-       ("cgal" ,cgal)
-       ("flex" ,flex)
-       ("git" ,git)
-       ("gmp" ,gmp)
-       ("libxt" ,libxt)
-       ("metis" ,metis)
-       ("mpfr" ,mpfr)
-       ("ncurses" ,ncurses)
-       ("readline" ,readline)
-       ("scotch" ,pt-scotch32)
-       ("zlib" ,zlib)))
-    (native-inputs
-     (list bison))
-    (propagated-inputs
-     (list gzip gnuplot openmpi))
-    (outputs '("debug"                  ;~60MB
+    (inputs (list boost
+                  cgal
+                  git
+                  gmp
+                  libxt
+                  metis
+                  mpfr
+                  ncurses
+                  openmpi
+                  openssh
+                  paraview
+                  pt-scotch32
+                  readline
+                  zlib))
+    (native-inputs (list bison
+                         flex
+                         ;; paraview plugin dependencies
+                         cli11
+                         cmake-minimal
+                         cgns
+                         curl
+                         double-conversion
+                         eigen
+                         expat
+                         ffmpeg
+                         fmt
+                         freetype
+                         gdal
+                         gl2ps
+                         glew
+                         gmsh
+                         hdf5
+                         jsoncpp
+                         libjpeg-turbo
+                         libogg
+                         libpng
+                         libharu
+                         libtheora
+                         libtiff
+                         libx11
+                         libxml2
+                         lz4
+                         netcdf
+                         nlohmann-json
+                         proj
+                         protobuf
+                         pugixml
+                         python
+                         python-mpi4py
+                         qtbase-5
+                         qtsvg-5
+                         qttools-5
+                         qtwebengine-5
+                         qtxmlpatterns
+                         utfcpp
+                         vtk
+                         xz))
+    (propagated-inputs (list gnuplot))
+    (outputs '("debug" ;~60MB
                "out"))
     (arguments
-     `( ;; Executable files and shared libraries are located in the 'platforms'
-       ;; subdirectory.
-       #:strip-directories (list (string-append
-                                  "lib/OpenFOAM-" ,version
-                                  "/platforms/linux64GccDPInt32Opt/bin")
-                                 (string-append
-                                  "lib/OpenFOAM-" ,version
-                                  "/platforms/linux64GccDPInt32Opt/lib"))
-       #:tests? #f                                ; no tests to run
+     (list
+      ;; Executable files and shared libraries are located in the 'platforms'
+      ;; subdirectory.
+      #:strip-directories
+      #~(list "share/OpenFOAM/platforms/linux64GccDPInt32Opt/bin"
+              "share/OpenFOAM/platforms/linux64GccDPInt32Opt/lib")
 
-       #:modules ((ice-9 ftw)
-                  (ice-9 regex)
-                  (guix build gnu-build-system)
-                  (guix build utils))
+      #:modules
+      '((ice-9 ftw)
+        (ice-9 regex)
+        (ice-9 string-fun)
+        (srfi srfi-1)
+        (guix build gnu-build-system)
+        (guix build utils))
 
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'rename-build-directory
-                    (lambda _
-                      (chdir "..")
-                      ;; Use 'OpenFOAM-version' convention to match the file
-                      ;; name expectations in the build phase.
-                      (let ((unpack-dir (string-append
-                                         (getcwd) "/"
-                                         (list-ref (scandir (getcwd) (lambda (name)
-                                                                       (string-match "^OpenFOAM" name))) 0)))
-                            (build-dir (string-append
-                                        (getcwd) "/OpenFOAM-" ,version)))
-                        (rename-file unpack-dir build-dir) ; rename build directory
-                        (chdir (basename build-dir))) ; move to build directory
-                      #t))
-                  (delete 'configure)             ; no configure phase
-                  (replace 'build
-                    (lambda _
-                      (let ((libraries '("boost" "cgal" "gmp" "metis" "mpfr" "scotch")))
-                        ;; set variables to define store paths
-                        (for-each (lambda (library)
-                                    (setenv (string-append
-                                             (string-upcase library) "_ROOT")
-                                            (assoc-ref %build-inputs library))) libraries))
-                      ;; set variables to define package versions
-                      (setenv "SCOTCHVERSION" ,(package-version scotch))
-                      (setenv "METISVERSION" ,(package-version metis))
-                      ;; set variable to pass extra 'rpath' arguments to linker
-                      (setenv "LDFLAGS"
-                              (string-append
-                               "-Wl,"
-                               "-rpath=" %output "/lib/OpenFOAM-" ,version
-                               "/platforms/linux64GccDPInt32Opt/lib,"
-                               "-rpath=" %output "/lib/OpenFOAM-" ,version
-                               "/platforms/linux64GccDPInt32Opt/lib/dummy"))
-                      ;; compile OpenFOAM libraries and applications
-                      (zero? (system (format #f
-                                             "source ./etc/bashrc && ./Allwmake -j~a"
-                                             (parallel-job-count))))))
-                  (add-after 'build 'update-configuration-files
-                    (lambda _
-                      ;; record store paths and package versions in
-                      ;; configuration files
-                      (substitute* "etc/config.sh/CGAL"
-                        (("$BOOST_ROOT") (getenv "BOOST_ROOT")))
-                      (substitute* "etc/config.sh/CGAL"
-                        (("$CGAL_ROOT") (getenv "CGAL_ROOT")))
-                      (substitute* "etc/config.sh/metis"
-                        (("$METIS_ROOT") (getenv "METIS_ROOT")))
-                      (substitute* "etc/config.sh/metis"
-                        (("$METISVERSION") (getenv "METISVERSION")))
-                      (substitute* "etc/config.sh/scotch"
-                        (("$SCOTCH_ROOT") (getenv "SCOTCH_ROOT")))
-                      (substitute* "etc/config.sh/scotch"
-                        (("$SCOTCHVERSION") (getenv "SCOTCHVERSION")))
-                      (substitute* "etc/config.sh/settings"
-                        (("$GMP_ROOT") (getenv "GMP_ROOT")))
-                      (substitute* "etc/config.sh/settings"
-                        (("$MPFR_ROOT") (getenv "MPFR_ROOT")))
-                      ;; reset lockDir variable to refer to write-enabled
-                      ;; directory
-                      (substitute* "wmake/wmake"
-                        (("        lockDir=.*$")
-                         "        lockDir=$HOME/.$WM_PROJECT/.wmake\n"))
-                      (substitute* "wmake/wmakeScheduler"
-                        (("lockDir=.*$")
-                         "lockDir=$HOME/.$WM_PROJECT/.wmake\n"))
-                      (substitute* "wmake/wmakeSchedulerUptime"
-                        (("lockDir=.*$")
-                         "lockDir=$HOME/.$WM_PROJECT/.wmake\n"))
-                      #t))
-                  (add-after 'build 'cleanup
-                    ;; Avoid unncessary, voluminous object and dep files.
-                    (lambda _
-                      (delete-file-recursively
-                       "platforms/linux64GccDPInt32Opt/src")
-                      (delete-file-recursively
-                       "platforms/linux64GccDPInt32OptSYSTEMOPENMPI")
-                      (for-each delete-file (find-files "." "\\.o$"))
-                      #t))
-                  (replace 'install
-                    (lambda _
-                      ;; use 'OpenFOAM-version' convention
-                      (let ((install-dir (string-append
-                                          %output "/lib/OpenFOAM-" ,version)))
-                        (mkdir-p install-dir)     ; create install directory
-                        ;; move contents of build directory to install directory
-                        (copy-recursively "." install-dir))))
-                  (add-after 'install 'add-symbolic-link
-                    (lambda _
-                      ;; add symbolic link for standard 'bin' directory
-                      (symlink
-                       (string-append "./lib/OpenFOAM-" ,version
-                                      "/platforms/linux64GccDPInt32Opt/bin")
-                       (string-append %output "/bin"))
-                      #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-HOME-path
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-before 'build 'rename-self
+            (lambda _
+              ;; The script 'bin/foamEtcFile' derives the version name based
+              ;; on the current directory name (!), so make sure to follow the
+              ;; expected naming convention.
+              (let ((here (canonicalize-path "."))
+                    (target #$(string-append
+                               "OpenFOAM-"
+                               (string-map (match-lambda
+                                             (#\. #\-)
+                                             (chr chr))
+                                           (package-version this-package)))))
+                (chdir "..")
+                (format #t "renaming '~a' to '~a'~%"
+                        here target)
+                (rename-file here target)
+                (chdir target))))
+          (add-before 'build 'patch-scotch
+            (lambda _
+              (substitute* "etc/config.sh/scotch"
+                (("^export SCOTCH_VERSION=scotch_.*$")
+                 (string-append "export SCOTCH_VERSION=scotch_"
+                                #$(package-version pt-scotch32) "\n"))
+                (("^export SCOTCH_ARCH_PATH=.*$")
+                 (string-append "export SCOTCH_ARCH_PATH="
+                                (assoc-ref %build-inputs "pt-scotch32")
+                                "\n"))) #t))
+          (add-before 'build 'patch-mpi
+            (lambda _
+              (let* ((mpi-path (assoc-ref %build-inputs "openmpi"))
+                     (mpi-version #$(package-version openmpi)))
+                ;; specify openmpi type
+                (substitute* "etc/bashrc"
+                  (("WM_MPLIB=SYSTEMOPENMPI")
+                   "WM_MPLIB=OPENMPI"))
+                (substitute* "etc/config.sh/mpi"
+                  (("export FOAM_MPI=openmpi-.*$")
+                   (string-append "export FOAM_MPI=openmpi-"
+                                  mpi-version "\n"))
+                  (("export MPI_ARCH_PATH=.*\\$FOAM_MPI.*$")
+                   (string-append "export MPI_ARCH_PATH=" mpi-path
+                                  "\n")))) #t))
+          (add-before 'build 'patch-paraview
+            (lambda _
+              (substitute* "etc/config.sh/paraview"
+                (("^export ParaView_VERSION=.*$")
+                 (string-append "export ParaView_VERSION="
+                                #$(package-version paraview) "\n"))
+                (("^export ParaView_DIR=.*$")
+                 (string-append "export ParaView_DIR="
+                                (assoc-ref %build-inputs "paraview")
+                                "\n"))) #t))
+          (add-before 'build 'add-rpaths
+            (lambda _
+              (letrec* ((libraries '("boost" "cgal"
+                                     "gmp"
+                                     "metis"
+                                     "mpfr"
+                                     "pt-scotch32"
+                                     "openmpi"
+                                     "zlib"
+                                     "paraview"))
+                        (rpaths
+                         (fold-right (lambda (library rpaths)
+                                       (string-append rpaths
+                                                      "-rpath="
+                                                      (assoc-ref
+                                                       %build-inputs library)
+                                                      "/lib,")) "" libraries))
+                        (openfoam-lib
+                         (string-append #$output
+                                        "/share/OpenFOAM/platforms/linux64GccDPInt32Opt/lib"))
+                        (ldflags
+                         (string-append "-Wl,"
+                                        rpaths
+                                        "-rpath="
+                                        openfoam-lib
+                                        ","
+                                        "-rpath="
+                                        openfoam-lib
+                                        "/dummy,"
+                                        "-rpath="
+                                        openfoam-lib
+                                        "/paraview-"
+                                        #$(version-major+minor (package-version
+                                                                paraview)))))
+                (substitute* "wmake/rules/linux64Gcc/c++"
+                  (("\\$\\(LIB_HEADER_DIRS\\) -fPIC" all)
+                   (string-append all " " ldflags)))) #t))
+          (add-before 'build 'add-vtk-include-path
+            (lambda _
+              (let* ((vtk-version #$(version-major+minor
+                                     (package-version vtk)))
+                     (vtk-root (assoc-ref %build-inputs "vtk"))
+                     (vtk-inc (string-append vtk-root "/include/vtk-" vtk-version))
+                     (vtk-inc-flag (string-append "-I" vtk-inc)))
+                (substitute* "wmake/rules/linux64Gcc/c++"
+                  (("\\$\\(LIB_HEADER_DIRS\\)" all)
+                   (string-append all " " vtk-inc-flag " "))))
+              #t))
+          (delete 'configure) ;no configure phase
+          (replace 'build
+            (lambda _
+              ;; compile OpenFOAM libraries and applications
+              (invoke "bash" "-c"
+                      (format #f
+                              "source ./etc/bashrc && ./Allwmake -j~a"
+                              (parallel-job-count)))))
+          (add-after 'build 'cleanup
+            ;; Avoid unnecessary, voluminous object and dep files.
+            (lambda _
+              (when (file-exists? "platforms/linux64GccDPInt32Opt/src")
+                (delete-file-recursively
+                 "platforms/linux64GccDPInt32Opt/src"))
+              (when (file-exists?
+                     "platforms/linux64GccDPInt32OptOPENMPI")
+                (delete-file-recursively
+                 "platforms/linux64GccDPInt32OptOPENMPI"))
+              (for-each delete-file
+                        (find-files "." "\\.o$")) #t))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (when (file-exists? "test")
+                  (with-directory-excursion "test"
+                    (invoke "bash" "-c"
+                            (format #f
+                                    "source ../etc/bashrc && ./Allrun -j~a"
+                                    (parallel-job-count)))))
+                ;; too many tutorials are failing
+                ;; (with-directory-excursion "tutorials"
+                ;; (invoke "bash" "-c" "source ../etc/bashrc && ./Alltest"))
+                ) #t))
+          (replace 'install
+            (lambda _
+              (let ((install-dir (string-append #$output
+                                                "/share/OpenFOAM")))
+                (mkdir-p install-dir) ;create install directory
+                ;; move contents of build directory to install directory
+                (copy-recursively "." install-dir))))
+          (add-after 'install 'add-symbolic-link
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (lib (string-append #$output "/lib"))
+                     (openfoam (string-append #$output
+                                              "/share/OpenFOAM"))
+                     (build-bin (string-append openfoam
+                                               "/platforms/linux64GccDPInt32Opt/bin"))
+                     (build-lib (string-append openfoam
+                                               "/platforms/linux64GccDPInt32Opt/lib"))
+                     (foam-bin (string-append openfoam "/bin")))
+                ;; add symbolic links in standard 'bin' directory
+                (mkdir-p bin)
+                (for-each (lambda (file)
+                            (unless (member file
+                                            '("." ".."))
+                              (symlink (string-append build-bin "/"
+                                                      file)
+                                       (string-append bin "/" file))))
+                          (scandir build-bin))
+                (for-each (lambda (file)
+                            (unless (member file
+                                            '("." ".."))
+                              (symlink (string-append foam-bin "/"
+                                                      file)
+                                       (string-append bin "/" file))))
+                          (scandir foam-bin))
+                ;; add symbolic link for standard 'lib' directory
+                (symlink build-lib lib)) #t)))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "WM_PROJECT_DIR")
+            (separator #f)
+            (files '("share/OpenFOAM")))))
     ;; Note:
-    ;;  Tutorial files are installed read-only in /gnu/store.
-    ;;  To allow write permissions on files copied from the store a
-    ;;  'chmod' step is needed before running the applications.  For
-    ;;  example, from a user's login:
-    ;;  $ source $GUIX_PROFILE/lib/OpenFOAM-4.1/etc/bashrc
-    ;;  $ mkdir -p $FOAM_RUN
-    ;;  $ cd $FOAM_RUN
-    ;;  $ cp -r $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily .
-    ;;  $ cd pitzDaily
-    ;;  $ chmod -R u+w .
-    ;;  $ blockMesh
+    ;; Tutorial files are installed read-only in /gnu/store.
+    ;; To allow write permissions on files copied from the store a
+    ;; 'chmod' step is needed before running the applications.  For
+    ;; example, from a user's login:
+    ;; $ source $(dirname $(which blockMesh))/../../../etc/bashrc
+    ;; $ mkdir -p $FOAM_RUN
+    ;; $ cd $FOAM_RUN
+    ;; $ cp -r $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily .
+    ;; $ cd pitzDaily
+    ;; $ chmod -R u+w .
+    ;; $ blockMesh
     (synopsis "Framework for numerical simulation of fluid flow")
-    (description "OpenFOAM provides a set of solvers and methods for tackling
+    (description
+     "OpenFOAM provides a set of solvers and methods for tackling
 problems in the field of Computational Fluid Dynamics (CFD).  It is written in
 C++.  Governing equations such as the Navier-Stokes equations can be solved in
 integral form.  Physical processes such as phase change, droplet transport and
@@ -253,6 +412,43 @@ with gas/liquid interfaces.  Large problems may be split into smaller, connected
 problems for efficient solution on parallel systems.")
     (license license:gpl3+)
     (home-page "https://openfoam.org")))
+
+(define-public openfoam
+  (deprecated-package "openfoam" openfoam-org))
+
+(define-public openfoam-com
+  ;; This is a fork of 'openfoam-org', maintained separately.
+  (package
+    (inherit openfoam-org)
+    (name "openfoam-com")
+    (version "2212")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://develop.openfoam.com"
+                                  "/Development/openfoam/-/archive/OpenFOAM-v"
+                                  version
+                                  "/openfoam-OpenFOAM-v"
+                                  version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0i9039hfz9gvgymkdjhjvvn5500zha3cpdbpqrzfrfi8lbz10is2"))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          (substitute* "etc/bashrc"
+                            ;; set same version as guix package
+			    (("^export WM_PROJECT_VERSION=.*$")
+			     (string-append "export WM_PROJECT_VERSION="
+					    ,version "\n")))
+                          ;; patch shell paths
+                          (substitute* (list "src/OSspecific/POSIX/POSIX.C"
+                                             "wmake/src/Makefile"
+                                             "wmake/makefiles/general"
+                                             "wmake/makefiles/info")
+                            (("/bin/sh")
+                             "sh"))))))
+    (synopsis "Framework for numerical simulation of fluid flow (from openfoam.com)")
+    (home-page "https://www.openfoam.com")))
 
 (define-public open-simulation-interface
   (package

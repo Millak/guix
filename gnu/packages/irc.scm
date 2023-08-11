@@ -409,19 +409,23 @@ for the IRCv3 protocol.")
 (define-public catgirl
   (package
     (name "catgirl")
-    (version "2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://git.causal.agency/catgirl/snapshot/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "13pfphcfkdzqfb4x7w21xp6rnmg3ix9f39mpqmxxzg15ys1gp2x6"))))
+    (version "2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.causal.agency/catgirl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r1h10qdhhgy3359ndbjh269daivm126qc0c23db7bffv0xs4bff"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))))
+     (list
+      #:tests? #f                       ; no tests
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              (string-append "CC=" #$(cc-for-target)))))
     (native-inputs
      (list universal-ctags pkg-config))
     (inputs

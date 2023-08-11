@@ -363,7 +363,15 @@ and stores the database cluster in @var{data-directory}."
   (permissions      postgresql-role-permissions
                     (default '(createdb login))) ;list
   (create-database? postgresql-role-create-database?  ;boolean
-                    (default #f)))
+                    (default #f))
+  (encoding postgresql-role-encoding ;string
+            (default "UTF8"))
+  (collation postgresql-role-collation ;string
+             (default "en_US.utf8"))
+  (ctype postgresql-role-ctype ;string
+         (default "en_US.utf8"))
+  (template postgresql-role-template ;string
+            (default "template1")))
 
 (define-record-type* <postgresql-role-configuration>
   postgresql-role-configuration make-postgresql-role-configuration
@@ -392,7 +400,8 @@ and stores the database cluster in @var{data-directory}."
            (append-map
             (lambda (role)
               (match-record role <postgresql-role>
-                (name permissions create-database?)
+                (name permissions create-database? encoding collation ctype
+                      template)
                 `("SELECT NOT(EXISTS(SELECT 1 FROM pg_catalog.pg_roles WHERE \
 rolname = '" ,name "')) as not_exists;\n"
 "\\gset\n"
@@ -402,7 +411,11 @@ rolname = '" ,name "')) as not_exists;\n"
 ";\n"
 ,@(if create-database?
       `("CREATE DATABASE \"" ,name "\""
-        " OWNER \"" ,name "\";\n")
+        " OWNER \"" ,name "\"\n"
+        " ENCODING '" ,encoding "'\n"
+        " LC_COLLATE '" ,collation "'\n"
+        " LC_CTYPE '" ,ctype "'\n"
+        " TEMPLATE " ,template ";")
       '())
 "\\endif\n")))
             roles)))

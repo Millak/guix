@@ -10,7 +10,7 @@
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;; Copyright © 2021 Leo Famulari <leo@famulari.name>
+;; Copyright © 2021–2023 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
@@ -25,6 +25,34 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "db775e7367e8deffb513aad94f4afb875d796d0b")
+        (title
+          (en "Linux-libre 6.3 removed due to end of upstream support")
+          (de "Linux-libre 6.3 wurde entfernt"))
+        (body
+          (en "The linux-libre 6.3 kernel series has reached the end of
+             its life, and is no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+          (de "Vom Kernel @code{linux-libre} wird die 6.3-Versionsreihe keine
+Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
+aus GNU Guix entfernt worden.")))
+
+ (entry (commit "bff1f2d4d07e934ea296f9c724b5337996a27c44")
+        (title
+         (en "Linux-libre kernel updated to 6.4")
+         (de "Linux-libre-Kernel wird auf 6.4 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.4")
+         (pt "Kernel linux-libre atualizado para 6.4"))
+        (body
+         (en "The default version of the linux-libre kernel has been updated to
+              the 6.4 release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 6.4-Versionsreihe.")
+         (fr "La version par défaut du noyau linux-libre est mise à jour
+              vers la série des 6.4.")
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
+              série do kernel 6.4.")))
 
  (entry (commit "1b7aabbc79969a89141aadd3d41d7a5329a3462e")
         (title

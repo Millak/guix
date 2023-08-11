@@ -86,10 +86,7 @@
       (method url-fetch)
       (uri (list
             (string-append "mirror://debian/pool/main/d/delta/"
-                           "delta_" version ".orig.tar.gz")
-            ;; This uri seems to send guix download into an infinite loop
-            (string-append "http://delta.tigris.org/files/documents/3103/"
-                           "33566/delta-" version ".tar.gz")))
+                           "delta_" version ".orig.tar.gz")))
       (sha256
        (base32
         "184wh35pf2ddx97319s6sgkzpz48xxkbwzcjpycv009bm53lh61q"))))
@@ -114,7 +111,8 @@
                            `("delta" "multidelta" "topformflat"))))
              #t))
          (delete 'configure))))         ; no configure script
-    (home-page "http://delta.tigris.org/")
+    (home-page
+     "https://web.archive.org/web/20200701152100/http://delta.tigris.org/")
     (synopsis "Heuristical file minimizer")
     (description
      "Delta assists you in minimizing \"interesting\" files subject to a test

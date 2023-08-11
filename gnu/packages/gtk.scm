@@ -1594,14 +1594,14 @@ guile-gnome-platform (GNOME developer libraries), and guile-gtksourceview.")
 (define-public cairomm
   (package
     (name "cairomm")
-    (version "1.16.1")
+    (version "1.16.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.cairographics.org/releases/"
-                                  name "-" version ".tar.xz"))
+                                  "cairomm-" version ".tar.xz"))
               (sha256
                (base32
-                "1im2yjzvjfx8s7cal9kwq23z936kppfmyag2zsnbim4dx7c60q3g"))))
+                "0gy1gn79gwqzrf1d7f7rf25yy2dr7xginkg3al7jpnkxm6cbyqva"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments

@@ -30,14 +30,14 @@
 (define-public sg3-utils
   (package
     (name "sg3-utils")
-    (version "1.47")
+    (version "1.48")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://sg.danny.cz/sg/p/sg3_utils-"
+              (uri (string-append "https://sg.danny.cz/sg/p/sg3_utils-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ckj2kjcs23lbjfyl5mz2rb0aylnyq13yghg0bdv1n7dbywcmc6x"))))
+                "1ynv6kijzjj8xab3z87nks26qcrpvg46mhlr3s6yah6mj0ba9ffn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

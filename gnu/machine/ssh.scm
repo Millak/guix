@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
-;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -291,7 +291,10 @@ exist on the machine."
 if any of the modules needed by 'needed-for-boot' file systems in MACHINE are
 not available in the initrd."
   (define file-systems
-    (filter file-system-needed-for-boot?
+    (filter (lambda (file-system)
+              (and (file-system-needed-for-boot? file-system)
+                   (not (member (file-system-type file-system)
+                                %pseudo-file-system-types))))
             (operating-system-file-systems (machine-operating-system machine))))
 
   (define (missing-modules fs)

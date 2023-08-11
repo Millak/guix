@@ -1960,7 +1960,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.14p1")
+    (version "1.9.14p3")
     (source (origin
               (method url-fetch)
               (uri
@@ -1970,7 +1970,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "1bwg2bn1sbc6l2gx2r9vfqyf8dyvgp7nad0wj3p5gn095vpza6z9"))
+                "0qibg30d30gy85g83fj6gsg59g1sj3i9mkfl0k0851dwqjqii0x0"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2419,15 +2419,15 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20220331")
+    (version "20230628")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://acpica.org/sites/acpica/files/acpica-unix2-"
+                    "https://downloadmirror.intel.com/783536/acpica-unix2-"
                     version ".tar.gz"))
               (sha256
                (base32
-                "0yjcl00nnnlw01sz6a1i5d3v75gr17mkbxkxfx2v344al33abk8w"))))
+                "1fmkng72zb0yqp4hfl8a6pqmylixqbpjd43xmi6k3p74x5qiq0h6"))))
     (build-system gnu-build-system)
     (native-inputs (list flex bison))
     (arguments
@@ -4023,11 +4023,15 @@ you are running, what theme or icon set you are using, etc.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
-          (add-before 'build 'path-source-paths
+          (add-before 'build 'patch-source-paths
             (lambda _
               (substitute* "uwufetch.c"
                 (("(/usr(/local)?)(.*;)" all _ _ rest)
-                 (string-append #$output rest))))))))
+                 (string-append #$output rest)))))
+          ;; TODO this will be fixed in the next release of uwufetch
+          (add-before 'install 'make-include-dir
+            (lambda _
+              (mkdir-p (string-append #$output "/include")))))))
     (inputs (list lshw
                   ;; viu XXX not yet packaged in Guix
                   xwininfo))
@@ -4652,7 +4656,7 @@ Logitech Unifying Receiver.")
   (package
     (name "lynis")
     ;; Also update the ‘lynis-sdk’ input to the commit matching this release.
-    (version "3.0.8")
+    (version "3.0.9")
     (source
      (origin
        (method git-fetch)
@@ -4661,7 +4665,7 @@ Logitech Unifying Receiver.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19kz1ffbbd431cdfw7fjcl5hjkks3gfkwk3w2zkwsxgyiky1gx3w"))
+        (base32 "1rgiifbzlk9lfjhbgxy6pqza5kxpr5rsr8vj9fcqvqihzdb5izj1"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4677,50 +4681,53 @@ Logitech Unifying Receiver.")
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/CISOfy/lynis-sdk")
-                 (commit "dffe5d352e4d6029ea95a84d50604ccd97cb8999")))
+                 (commit "92522b3ec39ad4cdef4756dc303d99741ec7fe20")))
            (file-name (git-file-name "lynis-sdk" version))
            (sha256
             (base32 "05qq4395x8f0kyl1ppm74npsf8sb3hhgz0ck4fya91sy6a26b4ja"))))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           ;; XXX Remove after fixing <https://issues.guix.gnu.org/55287>.
-           (lambda* (#:key source #:allow-other-keys)
-             (mkdir "source")
-             (chdir "source")
-             (copy-recursively source "."
-                               #:keep-mtime? #t)))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "lynis"
-               (("/usr/share/lynis")
-                (string-append (assoc-ref outputs "out") "/share/lynis")))
-             (substitute* "include/functions"
-               (("/usr/local/etc/lynis")
-                (string-append (assoc-ref outputs "out") "/etc/lynis")))))
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "lynis" (string-append out "/bin/"))
-               (install-file "default.prf" (string-append out "/etc/lynis"))
-               (for-each
-                (lambda (dir)
-                  (copy-recursively dir (string-append out "/share/lynis/" dir)))
-                (list "db" "include" "plugins"))
-               (install-file "lynis.8" (string-append out "/share/man/man8")))))
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "lynis-sdk") "../lynis-sdk")
-             (setenv "LANG" "en_US.UTF-8")
-             (let ((lynis-dir (getcwd)))
-               (with-directory-excursion "../lynis-sdk"
-                 (substitute* "config"
-                   (("\\.\\./lynis") lynis-dir))
-                 (substitute* "unit-tests/tests-language-translations.sh"
-                   (("\\.\\./lynis") lynis-dir))
-                 (invoke "sh" "lynis-devkit" "run" "unit-tests"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            ;; XXX Remove after fixing <https://issues.guix.gnu.org/55287>.
+            (lambda* (#:key source #:allow-other-keys)
+              (mkdir "source")
+              (chdir "source")
+              (copy-recursively source "."
+                                #:keep-mtime? #t)))
+          (replace 'configure
+            (lambda _
+              (substitute* "lynis"
+                (("/usr/share/lynis")
+                 (string-append #$output "/share/lynis")))
+              (substitute* "include/functions"
+                (("/usr/local/etc/lynis")
+                 (string-append #$output "/etc/lynis")))))
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (install-file "lynis" (string-append #$output "/bin/"))
+              (install-file "default.prf" (string-append #$output "/etc/lynis"))
+              (for-each
+               (lambda (dir)
+                 (copy-recursively
+                  dir (string-append #$output "/share/lynis/" dir)))
+               (list "db" "include" "plugins"))
+              (install-file "lynis.8"
+                            (string-append #$output "/share/man/man8"))))
+          (replace 'check
+            (lambda _
+              (copy-recursively #$(this-package-native-input "lynis-sdk")
+                                "../lynis-sdk")
+              (setenv "LANG" "en_US.UTF-8")
+              (let ((lynis-dir (getcwd)))
+                (with-directory-excursion "../lynis-sdk"
+                  (substitute* "config"
+                    (("\\.\\./lynis") lynis-dir))
+                  (substitute* "unit-tests/tests-language-translations.sh"
+                    (("\\.\\./lynis") lynis-dir))
+                  (invoke "sh" "lynis-devkit" "run" "unit-tests"))))))))
     (home-page "https://cisofy.com/lynis/")
     (synopsis "Security auditing tool")
     (description "Lynis is a security auditing tool.  It performs an in-depth

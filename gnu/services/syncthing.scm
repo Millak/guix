@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2023 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,9 +61,9 @@
        (requirement '(loopback))
        (start #~(make-forkexec-constructor
                  (append (list (string-append #$syncthing "/bin/syncthing")
-                               "-no-browser"
-                               "-no-restart"
-                               (string-append "-logflags=" (number->string #$logflags)))
+                               "--no-browser"
+                               "--no-restart"
+                               (string-append "--logflags=" (number->string #$logflags)))
                          '#$arguments)
                  #:user #$user
                  #:group #$group

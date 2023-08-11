@@ -968,7 +968,7 @@ passphrases.")
 (define-public ndctl
   (package
     (name "ndctl")
-    (version "75")
+    (version "78")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -977,7 +977,7 @@ passphrases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i3fmda285qnwnmkxzwji5ffz123yrq9dpcwzg922qpysir7zq40"))))
+                "0rhmxjajxxslsikixlf9cdg5vcn42h7zzqkqj5p5pshxch368kn0"))))
     (build-system meson-build-system)
     (arguments
      ;; The test suite runs but SKIPs all tests: do not consider this tested!
@@ -1020,6 +1020,8 @@ passphrases.")
            json-c
            keyutils
            kmod
+           libtraceevent
+           libtracefs
            `(,util-linux "lib")))
     (home-page "https://github.com/pmem/ndctl")
     (synopsis "Manage the non-volatile memory device sub-system in the Linux kernel")

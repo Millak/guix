@@ -182,7 +182,7 @@ reused in several astronomical applications, such as @code{wsclean},
 (define-public calceph
   (package
     (name "calceph")
-    (version  "3.5.1")
+    (version  "3.5.2")
     (source
      (origin
        (method url-fetch)
@@ -190,7 +190,7 @@ reused in several astronomical applications, such as @code{wsclean},
              "https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-"
              version ".tar.gz"))
        (sha256
-        (base32 "078wn773pwf4pg9m0h0l00g4aq744pq1rb6kz6plgdpzp3hhpk1k"))))
+        (base32 "1rnjlaiii4j0agbj4k242p212bqqmqdqa0lni6c3bnhgfnrbjfp4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gfortran))
@@ -217,7 +217,7 @@ moment, supported SPICE files are:
 (define-public calcmysky
   (package
     (name "calcmysky")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -226,7 +226,7 @@ moment, supported SPICE files are:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lgn937px4am0lggniwby1f1dl3v4l3iigq72rl9rlhx58zv4lj1"))))
+        (base32 "14jbaf9m9wig2bs7a531dvpmdkqpd09lmyvjvj1s0mhgh9g0x9m2"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
@@ -531,13 +531,13 @@ mining in astronomy.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.1.8")
+    (version "1.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "1y80hgvlkjz1bijfyb2j03853yc1kc63yrf9ab7as31ad2r6kxb1"))
+        (base32 "0dv2vjj8qn3rq5sr99x5yjjch5h867c8q7zh73i67dzdsk7ix0jf"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio
@@ -545,7 +545,7 @@ mining in astronomy.")
             (delete-file-recursively "cfitsio3490")
             (substitute* "MANIFEST.in"
               (("recursive-include cfitsio3490.*$\n") ""))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -562,10 +562,16 @@ mining in astronomy.")
                   (("self.system_fitsio_libdir = None") "pass")
                   (("self.use_system_fitsio") "True")
                   (("self.system_fitsio_includedir") includedir)
-                  (("self.system_fitsio_libdir") libdir))))))))
-    (inputs (list curl))
+                  (("self.system_fitsio_libdir") libdir)))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest))
+    (inputs
+     (list curl cfitsio))
     (propagated-inputs
-     (list python-numpy cfitsio))
+     (list python-numpy))
     (home-page "https://github.com/esheldon/fitsio")
     (synopsis
      "Python library to read from and write to FITS files")
@@ -917,7 +923,7 @@ from Stark Labs.")
 (define-public sextractor
   (package
     (name "sextractor")
-    (version "2.25.0")
+    (version "2.28.0")
     (source
      (origin
        (method git-fetch)
@@ -926,29 +932,33 @@ from Stark Labs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q69n3nyal57h3ik2xirwzrxzljrwy9ivwraxzv9566vi3n4z5mw"))))
+        (base32 "15v7brjiraj2rdyxiidcgb58b3dqzdd363j31cjrfqhd1wc8ii5j"))))
     (build-system gnu-build-system)
     ;; NOTE: (Sharlatan-20210124T103117+0000): Building with `atlas' is failing
     ;; due to missing shared library which required on configure phase. Switch
     ;; build to use `openblas' instead. It requires FFTW with single precision
     ;; `fftwf'.
     (arguments
-     `(#:configure-flags
-       (list
-        "--enable-openblas"
-        (string-append
-         "--with-openblas-libdir=" (assoc-ref %build-inputs "openblas") "/lib")
-        (string-append
-         "--with-openblas-incdir=" (assoc-ref %build-inputs "openblas") "/include")
-        (string-append
-         "--with-fftw-libdir=" (assoc-ref %build-inputs "fftw") "/lib")
-        (string-append
-         "--with-fftw-incdir=" (assoc-ref %build-inputs "fftw") "/include"))))
+     (list
+      #:configure-flags
+      #~(list
+         "--enable-openblas"
+         (string-append "--with-cfitsio-incdir="
+                        #$(this-package-input "cfitsio") "/include")
+         (string-append "--with-cfitsio-libdir="
+                        #$(this-package-input "cfitsio") "/lib")
+         (string-append "--with-fftw-incdir="
+                        #$(this-package-input "fftwf") "/include")
+         (string-append "--with-fftw-libdir="
+                        #$(this-package-input "fftwf") "/lib")
+         (string-append "--with-openblas-incdir="
+                        #$(this-package-input "openblas") "/include")
+         (string-append "--with-openblas-libdir="
+                        #$(this-package-input "openblas") "/lib"))))
     (native-inputs
      (list autoconf automake libtool))
     (inputs
-     `(("openblas" ,openblas)
-       ("fftw" ,fftwf)))
+     (list cfitsio fftwf openblas))
     (home-page "https://www.astromatic.net/software/sextractor")
     (synopsis "Extract catalogs of sources from astronomical images")
     (description
@@ -998,7 +1008,7 @@ image formats.")
 (define-public splash
   (package
     (name "splash")
-    (version "3.7.2")
+    (version "3.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1006,7 +1016,7 @@ image formats.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0nsm6rk0bi99xz7wclk0zy4bpqf0qcsdln5cdjb30lhpf37i2fpa"))
+                "0y6l135g0a3hvvh8w8sfdh1kfq2g0gbp0dgjhnmwid8bwwcjvw8v"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1343,13 +1353,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.2.2")
+    (version "5.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "170ddflli35mvhf6pla7aizfw8a7ckq66g1mi1br99dx2r3y7ag6"))
+        (base32 "0x4dh7wx9sn1gy6sl2d54zsd24cgfjwrlk6kfrwpzzrmbsv22lwv"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1358,9 +1368,10 @@ accurately in real time at any rate desired.")
              (for-each delete-file-recursively '("ply" "configobj")))
            ;; Remove cextern bundles. Check bundled versions against available
            ;; in Guix in the future update of astropy.
+           ;; Linking against an external cfitsio version has been removed,
+           ;; see https://github.com/astropy/astropy/pull/14311
            (with-directory-excursion "cextern"
-             (for-each delete-file-recursively '("cfitsio" "expat" "wcslib")))
-           #t))))
+             (for-each delete-file-recursively '("expat" "wcslib")))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1427,7 +1438,7 @@ accurately in real time at any rate desired.")
            python-skyfield
            python-timezonefinder))
     (inputs
-     (list cfitsio expat wcslib))
+     (list expat wcslib))
     (propagated-inputs
      (list python-configobj
            python-numpy
@@ -1600,15 +1611,18 @@ Herschel.")
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ccdproc" version))
        (sha256
-        (base32 "0fy1sni87cr05dkljd8wb7vgh7z9agh8wv5kiagxcpbcf8l06jv1"))))
+        (base32 "186plgfhrj7wivs053y65jlv1x33y8ii31jdr2rm4s6pl0j7x29z"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-memory-profiler python-pytest-astropy))
+    (native-inputs
+     (list python-memory-profiler
+           python-pytest-astropy
+           python-semantic-version))
     (propagated-inputs
      (list python-astropy
            python-astroscrappy
@@ -1626,7 +1640,7 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "0.4.9")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)   ; no tests in pypi archive
@@ -1635,7 +1649,7 @@ bad pixel tracking throughout the reduction process.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k557najk7ln293zwyghnhw48ays3nqf9s94kibsc7r70c2q7p08"))))
+        (base32 "1pkda9gmpjhbqxl2jj5q9rjx77lv5c908mgf20lw3rz4nvfaa2wn"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -1753,13 +1767,13 @@ Cesium.")
 (define-public python-drms
   (package
     (name "python-drms")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "drms" version))
        (sha256
-        (base32 "1b0w350y4wbgyy19zcf28xbb85mqq6gnhb6ppibbc4hbn2ixbcvj"))))
+        (base32 "0mkrmr55fgca441z7hvsyri6x9cjsh0sfas3hrj0k1k10k8vszbw"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1914,23 +1928,29 @@ the easy construction of interactive matplotlib widget based animations.")
        (uri (pypi-uri "photutils" version))
        (sha256
         (base32 "1bq4ma402lpa5d6l85awlc23kasxf40nq8hgi3iyrilnfikan0jz"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:test-target "pytest"
-       #:phases
-       (modify-phases %standard-phases
-         ;; This file is opened in both install and check phases.
-         (add-before 'install 'writable-compiler
-           (lambda _ (make-file-writable "photutils/_compiler.c")))
-         (add-before 'check 'writable-compiler
-           (lambda _ (make-file-writable "photutils/_compiler.c"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This file is opened in both install and check phases.
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "photutils/_compiler.c")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running
+              ;; the tests. If it's not build it fails with error:
+              ;;
+              ;; ModuleNotFoundError: No module named
+              ;; 'photutils.geometry.circular_overlap'
+              (make-file-writable "photutils/_compiler.c")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-astropy python-numpy))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-pytest-astropy
-           python-pytest-runner
            python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
     (synopsis "Source detection and photometry")
@@ -2121,13 +2141,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "1ha0a1ja7k09ysd05adffgsapfwzc6m6az34a0av2mhmlwy4zb1q"))))
+        (base32 "0p07qlqinb826m4n5b5invyfyv4z750sai2caqaf598mgj04l61p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2150,21 +2170,26 @@ Virtual observatory (VO) using Python.")
             (lambda _
               (setenv "HOME" (getcwd)))))))
     (propagated-inputs
-     (list python-astropy
-           python-astropy-healpix
-           python-numpy
-           python-scipy))
-    (native-inputs
      (list python-asdf
-           python-cython
-           python-extension-helpers
+           python-astropy
+           python-astropy-healpix
+           python-click
+           python-cloudpickle
+           python-dask
+           python-fsspec
            python-gwcs
-           python-pytest-astropy
+           python-numpy
            python-pyvo
+           python-scipy
+           python-shapely
+           python-zarr))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-pytest-astropy
            python-semantic-version
            python-pytest
-           python-setuptools-scm
-           python-shapely))
+           python-setuptools-scm))
     (home-page "https://reproject.readthedocs.io")
     (synopsis "Astronomical image reprojection in Python")
     (description
@@ -2206,13 +2231,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "4.1.5")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1j5g0ivsrc5ji9s7jc3kcbi2injfs3y31pm3priycljwcsxspkpm"))))
+        (base32 "1w75yc8az86pwbf79h083j4kc2ycfk76ky5kzlmcwgp0ih23mhym"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2220,7 +2245,10 @@ orbits described in TLE files.")
       #~(list "-k" (string-append
                     ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
                     "not test_main_nonexisting_module"
-                    " and not test_main_stdlib_module"))
+                    " and not test_main_stdlib_module"
+                    ;; XXX: packaging.version.InvalidVersion: Invalid version: 'unknown'
+                    " and not test_read_cdf"
+                    " and not test_read_empty_cdf"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'writable-compiler
@@ -2466,13 +2494,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.3.7")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stcal" version))
               (sha256
                (base32
-                "0yy0pwi3krvhxfby6nzgpgyz5il3sl1j29ihbk81dh9fdh3ys2n9"))))
+                "163vyqcd9qv2knf8jik8y449z7ljl2lvbd7im82bq61prgi3z2hj"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -2495,13 +2523,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "1.5.0")
+    (version "1.7.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stdatamodels" version))
               (sha256
                (base32
-                "1lssz5mnkzgraqa9mdg1w39scsikymcp3zpmsjb146r0pqnwnpzw"))))
+                "0d7a27myl3xgri3z7yx26mr4dpqnlfhdh5i2ql2miwymi0mx3ij5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2759,9 +2787,7 @@ standard astronomy libraries:
 (define-public libxisf
   (package
     (name "libxisf")
-    ;; TODO: v0.2.2 (current latest) failed to build on configure phase, issue
-    ;; was open directly with author as he hosts source on seflhosted gitea.
-    (version "0.2.1")
+    (version "0.2.8")
     (source
      (origin
        (method git-fetch)
@@ -2770,7 +2796,7 @@ standard astronomy libraries:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fz9mmj1nz5v7hlr53q8na7khadfn1hm0d1gfpzzw3167bqpy2xv"))))
+        (base32 "1j2bg53hrr2yc55qa6549vcpj7qjnwmxjcdgc98w3ygnrjy7n7v0"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
@@ -3216,26 +3242,32 @@ exposures and high-level data products (mosaics, extracted spectra, etc.).")
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
-    (version "2.0.0.1")
+    (version "2.0.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyerfa" version))
        (sha256
-        (base32 "0c6y1rm51kj8ahbr1vwbswck3ix77dc3zhc2fkg6w7iczrzn7m1g"))
+        (base32 "0f8zykzxjsiwv5ibdn5asla2ng2xl0xdkrcrrd61j31mb3xbnzyp"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove bundled submodule library.
-           (delete-file-recursively "liberfa")
-           #t))))
-    (build-system python-build-system)
+        #~(begin
+            ;; Remove bundled submodule library.
+            (delete-file-recursively "liberfa")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'use-system-liberfa
-           (lambda _
-             (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1"))))))
+     (list
+      ;; Disable only one failing test:
+      ;; AttributeError: __warningregistry__
+      #:test-flags #~(list "-k" "not test_errwarn_reporting")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-liberfa
+            (lambda _
+              (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-pytest-doctestplus python-pytest python-setuptools-scm))
     (inputs
@@ -3381,13 +3413,13 @@ datetime object.")
 (define-public python-synphot
   (package
     (name "python-synphot")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "synphot" version))
               (sha256
                (base32
-                "02pjp1bnbyq7zi1bxqv56nif4ijd8fscmnn9ldrs8yvgsbmgdvlc"))))
+                "10kcdg2gqmi1w2hsjx9hfizwbff3kll10s68hys13nzh4i8b7cc4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3854,7 +3886,12 @@ pipelines.")
        (sha256
         (base32 "0hly20a65540hr3l1lsd1i4d90a0vdrbwnn6zx3z8s89ha9lq3pb"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-astropy python-ccdproc python-pillow))
+    (native-inputs
+     (list python-astropy
+           python-ccdproc
+           python-pillow
+           python-pytest
+           python-semantic-version))
     (propagated-inputs
      (list python-bottleneck
            python-numpy

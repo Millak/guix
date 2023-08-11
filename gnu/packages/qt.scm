@@ -635,7 +635,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                             ;; are required by some internal bootstrap target
                             ;; used for the tools.
                             (list "double-conversion" "freetype" "harfbuzz-ng"
-                                  "libpng" "libjpeg" "sqlite" "xcb" "zlib"))))))
+                                  "libpng" "libjpeg" "sqlite" "xcb" "zlib"))))
+              (patches (search-patches "qtbase-use-TZDIR.patch"
+                                       "qtbase-moc-ignore-gcc-macro.patch"
+                                       "qtbase-absolute-runpath.patch"
+                                       "qtbase-qmake-use-libname.patch"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
@@ -649,6 +653,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  (string-append "-DINSTALL_EXAMPLESDIR=" out
                                 "/share/doc/qt6/examples")
                  (string-append "-DINSTALL_INCLUDEDIR=" out "/include/qt6")
+
+                 ;; Do not embed an absolute reference to compilers, to reduce
+                 ;; the closure size.
+                 "-DQT_EMBED_TOOLCHAIN_COMPILER=OFF"
+
                  ;; Link with DBus and OpenSSL so they don't get dlopen'ed.
                  "-DINPUT_dbus=linked"
                  "-DINPUT_openssl=linked"
@@ -742,6 +751,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                           (string-append #$output
                                          ":" (getenv "CMAKE_PREFIX_PATH")))
                   (setenv "QMAKEPATH" (string-append #$output "/lib/qt6"))
+                  ;; It is necessary to augment LIBRARY_PATH with that of the
+                  ;; freshly installed qtbase because of the
+                  ;; 'qtbase-qmake-use-libname.patch' patch.
+                  (setenv "LIBRARY_PATH" (string-append #$output "/lib:"
+                                                        (getenv "LIBRARY_PATH")))
                   (setenv "QML2_IMPORT_PATH"
                           (string-append #$output "/lib/qt6/qml"))
                   (setenv "QT_PLUGIN_PATH"
@@ -3270,6 +3284,78 @@ instances.  It can (if enabled) spawn secondary (non-related to the primary)
 instances and can send data to the primary instance from secondary
 instances.")
       (license license:expat))))
+
+(define-public pyotherside
+  (package
+    (name "pyotherside")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thp/pyotherside")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vwl088p8zjkh2rwmzwpz5mkjs2rfyb80018dq4r571c9vpwp2r0"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-installation-prefix
+            (lambda _
+              ;; The QT_INSTALL_QML property points to the qtbase
+              ;; installation prefix.
+              (substitute* "src/src.pro"
+                (("\\$\\$\\[QT_INSTALL_QML]")
+                 (string-append #$output "/lib/qt"
+                                #$(version-major (package-version qtbase))
+                                "/qml")))))
+          (replace 'configure
+            (lambda _
+              (invoke "qmake")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./tests/tests"))))
+          (replace 'install
+            ;; Specify a specific install target, otherwise the build fails
+            ;; attempting to install the qtquicktests target to the qtbase
+            ;; installation prefix.
+            (lambda _
+              (invoke "make" "sub-src-install_subtargets"))))))
+    (inputs (list python qtdeclarative qtquickcontrols2 qtsvg))
+    (home-page "https://thp.io/2011/pyotherside/")
+    (synopsis "Qt plugin providing access to a Python 3 interpreter from QML")
+    (description "Pyotherside is a Qt plugin providing access to a Python 3
+interpreter from QML for creating asynchronous mobile and desktop UIs with
+Python.")
+    (license license:isc)))
+
+(define-public pyotherside-for-qt5
+  (package/inherit pyotherside
+    (name "pyotherside-for-qt5")
+    (arguments
+     (substitute-keyword-arguments (package-arguments pyotherside)
+       ((#:qtbase _ #f)
+        qtbase-5)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'fix-installation-prefix
+              (lambda _
+                ;; The QT_INSTALL_QML property points to the qtbase
+                ;; installation prefix.
+                (substitute* "src/src.pro"
+                  (("\\$\\$\\[QT_INSTALL_QML]")
+                   (string-append #$output "/lib/qt"
+                                  #$(version-major (package-version qtbase-5))
+                                  "/qml")))))))))
+    (inputs (modify-inputs (package-inputs pyotherside)
+              (replace "qtdeclarative" qtdeclarative-5)
+              (replace "qtquickcontrols2" qtquickcontrols-5)
+              (replace "qtsvg" qtsvg-5)))))
 
 (define-public python-sip
   (package

@@ -21,16 +21,23 @@
 
 (define-module (gnu services admin)
   #:use-module (gnu packages admin)
+  #:use-module ((gnu packages base)
+                #:select (canonical-package findutils))
   #:use-module (gnu packages certs)
   #:use-module (gnu packages package-management)
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
+  #:use-module (gnu system accounts)
+  #:use-module ((gnu system shadow) #:select (account-service-type))
+  #:use-module ((guix store) #:select (%store-prefix))
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
   #:export (%default-rotations
             %rotated-files
@@ -54,6 +61,23 @@
             log-cleanup-configuration-directory
             log-cleanup-configuration-expiry
             log-cleanup-configuration-schedule
+
+            file-database-service-type
+            file-database-configuration
+            file-database-configuration?
+            file-database-configuration-package
+            file-database-configuration-schedule
+            file-database-configuration-excluded-directories
+            %default-file-database-update-schedule
+            %default-file-database-excluded-directories
+
+            package-database-service-type
+            package-database-configuration
+            package-database-configuration?
+            package-database-configuration-package
+            package-database-configuration-schedule
+            package-database-configuration-method
+            package-database-configuration-channels
 
             unattended-upgrade-service-type
             unattended-upgrade-configuration
@@ -254,6 +278,118 @@ Old log files are removed or compressed according to the configuration.")
                              log-cleanup-mcron-jobs)))
    (description
     "Periodically delete old log files.")))
+
+
+;;;
+;;; File databases.
+;;;
+
+(define %default-file-database-update-schedule
+  ;; Default mcron schedule for the periodic 'updatedb' job: once every
+  ;; Sunday.
+  "10 23 * * 0")
+
+(define %default-file-database-excluded-directories
+  ;; Directories excluded from the 'locate' database.
+  (list (%store-prefix)
+        "/tmp" "/var/tmp" "/var/cache" ".*/\\.cache"
+        "/run/udev"))
+
+(define (string-or-gexp? obj)
+  (or (string? obj) (gexp? obj)))
+
+(define string-list?
+  (match-lambda
+    (((? string?) ...) #t)
+    (_ #f)))
+
+(define-configuration/no-serialization file-database-configuration
+  (package
+    (file-like (let-system (system target)
+                 ;; Unless we're cross-compiling, avoid pulling a second copy
+                 ;; of findutils.
+                 (if target
+                     findutils
+                     (canonical-package findutils))))
+    "The GNU@tie{}Findutils package from which the @command{updatedb} command
+is taken.")
+  (schedule
+   (string-or-gexp %default-file-database-update-schedule)
+   "String or G-exp denoting an mcron schedule for the periodic
+@command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).")
+  (excluded-directories
+   (string-list %default-file-database-excluded-directories)
+   "List of directories to ignore when building the file database.  By
+default, this includes @file{/tmp} and @file{/gnu/store}, which should instead
+be indexed by @command{guix locate} (@pxref{Invoking guix locate}).  This list
+is passed to the @option{--prunepaths} option of
+@command{updatedb} (@pxref{Invoking updatedb,,, find, GNU@tie{}Findutils})."))
+
+(define (file-database-mcron-jobs configuration)
+  (match-record configuration <file-database-configuration>
+    (package schedule excluded-directories)
+    (let ((updatedb (program-file
+                     "updatedb"
+                     #~(execl #$(file-append package "/bin/updatedb")
+                              "updatedb"
+                              #$(string-append "--prunepaths="
+                                               (string-join
+                                                excluded-directories))))))
+      (list #~(job #$schedule #$updatedb)))))
+
+(define file-database-service-type
+  (service-type
+   (name 'file-database)
+   (extensions (list (service-extension mcron-service-type
+                                        file-database-mcron-jobs)))
+   (description
+    "Periodically update the file database used by the @command{locate} command,
+which lets you search for files by name.  The database is created by running
+the @command{updatedb} command.")
+   (default-value (file-database-configuration))))
+
+(define %default-package-database-update-schedule
+  ;; Default mcron schedule for the periodic 'guix locate --update' job: once
+  ;; every Monday.
+  "10 23 * * 1")
+
+(define-configuration/no-serialization package-database-configuration
+  (package (file-like guix)
+           "The Guix package to use.")
+  (schedule (string-or-gexp
+             %default-package-database-update-schedule)
+            "String or G-exp denoting an mcron schedule for the periodic
+@command{guix locate --update} job (@pxref{Guile Syntax,,, mcron,
+GNU@tie{}mcron}).")
+  (method    (symbol 'store)
+             "Indexing method for @command{guix locate}.  The default value,
+@code{'store}, yields a more complete database but is relatively expensive in
+terms of CPU and input/output.")
+  (channels (gexp #~%default-channels)
+            "G-exp denoting the channels to use when updating the database
+(@pxref{Channels})."))
+
+(define (package-database-mcron-jobs configuration)
+  (match-record configuration <package-database-configuration>
+    (package schedule method channels)
+    (let ((channels (scheme-file "channels.scm" channels)))
+      (list #~(job #$schedule
+                   ;; XXX: The whole thing's running as "root" just because it
+                   ;; needs write access to /var/cache/guix/locate.
+                   (string-append #$(file-append package "/bin/guix")
+                                  " time-machine -C " #$channels
+                                  " -- locate --update --method="
+                                  #$(symbol->string method)))))))
+
+(define package-database-service-type
+  (service-type
+   (name 'package-database)
+   (extensions (list (service-extension mcron-service-type
+                                        package-database-mcron-jobs)))
+   (description
+    "Periodically update the package database used by the @code{guix locate} command,
+which lets you search for packages that provide a given file.")
+   (default-value (package-database-configuration))))
 
 
 ;;;

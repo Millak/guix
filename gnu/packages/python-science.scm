@@ -785,7 +785,7 @@ functions and around einops with an API and features adapted to xarray.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.12.3")
+    (version "2.14.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -794,7 +794,7 @@ functions and around einops with an API and features adapted to xarray.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1445fwbmzkdbndkq9hxiagdkfclgrnmpfzad40zqn6m5ry8192x8"))))
+                "1428l1v7yrnls8875xjx1svn48cmz0q83sv7sg0xdqghkfnyi7xx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -840,7 +840,10 @@ parentdir_prefix = pytensor-
                         "--ignore" "tests/tensor/"
                         "--ignore" "tests/sandbox/"
                         "--ignore" "tests/sparse/sandbox/")))))))
-    (native-inputs (list python-cython python-pytest python-versioneer))
+    (native-inputs (list python-cython
+                         python-pytest
+                         python-pytest-mock
+                         python-versioneer))
     (propagated-inputs (list python-cons
                              python-etuples
                              python-filelock

@@ -1787,6 +1787,11 @@ MANIFEST."
            (cons (gexp-input thing output)
                  (append-map entry->texlive-input deps))
            '()))))
+  (define texlive-scripts-entry?
+    (match-lambda
+      (($ <manifest-entry> name version output thing deps)
+       (or (string=? "texlive-scripts" name)
+           (any texlive-scripts-entry? deps)))))
   (define texlive-inputs
     (append-map entry->texlive-input (manifest-entries manifest)))
   (define texlive-scripts
@@ -1887,9 +1892,11 @@ MANIFEST."
               (copy-recursively a b)
               (invoke mktexlsr b)
               (install-file (string-append b "/ls-R") a))))))
-
   (with-monad %store-monad
-    (if (pair? texlive-inputs)
+    ;; `texlive-scripts' brings essential files to generate font maps.
+    ;; Therefore, it must be present in the profile.  This check prevents
+    ;; incomplete modular TeX Live installations to generate errors.
+    (if (any texlive-scripts-entry? (manifest-entries manifest))
         (gexp->derivation "texlive-font-maps" build
                           #:substitutable? #f
                           #:local-build? #t

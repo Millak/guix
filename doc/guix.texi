@@ -117,6 +117,7 @@ Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
 Copyright @copyright{} 2023 Tanguy Le Carrour@*
 Copyright @copyright{} 2023 Zheng Junjie@*
+Copyright @copyright{} 2023 Brian Cully@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -389,6 +390,7 @@ Services
 * Printing Services::           Local and remote printer support.
 * Desktop Services::            D-Bus and desktop services.
 * Sound Services::              ALSA and Pulseaudio services.
+* File Search Services::        Tools to search for files.
 * Database Services::           SQL databases, key-value stores, etc.
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
@@ -4481,7 +4483,9 @@ database, usually under @file{/var/cache/guix/locate}; if it does not
 exist or is too old, it falls back to the per-user database, by default
 under @file{~/.cache/guix/locate}.  On a multi-user system,
 administrators may want to periodically update the system-wide database
-so that all users can benefit from it.
+so that all users can benefit from it, for instance by setting up
+@code{package-database-service-type} (@pxref{File Search Services,
+@code{package-database-service-type}}).
 
 The general syntax is:
 
@@ -18429,6 +18433,7 @@ declaration.
 * Printing Services::           Local and remote printer support.
 * Desktop Services::            D-Bus and desktop services.
 * Sound Services::              ALSA and Pulseaudio services.
+* File Search Services::        Tools to search for files.
 * Database Services::           SQL databases, key-value stores, etc.
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
@@ -24956,6 +24961,111 @@ details.
 
 @end defvar
 
+@node File Search Services
+@subsection File Search Services
+
+@cindex file search
+@cindex searching for a file
+The services in this section populate @dfn{file databases} that let you
+search for files on your machine.  These services are provided by the
+@code{(gnu services admin)} module.
+
+The first one, @code{file-database-service-type}, periodically runs the
+venerable @command{updatedb} command (@pxref{Invoking updatedb,,, find,
+GNU Findutils}).  That command populates a database of file names that
+you can then search with the @command{locate} command (@pxref{Invoing
+locate,,, find, GNU Findutils}), as in this example:
+
+@example
+locate important-notes.txt
+@end example
+
+You can enable this service with its default settings by adding this
+snippet to your operating system services:
+
+@lisp
+(service file-database-service-type)
+@end lisp
+
+This updates the database once a week, excluding files from
+@file{/gnu/store}---these are more usefully handled by @command{guix
+locate} (@pxref{Invoking guix locate}).  You can of course provide a
+custom configuration, as described below.
+
+@defvar file-database-service-type
+This is the type of the file database service, which runs
+@command{updatedb} periodically.  Its associated value must be a
+@code{file-database-configuration} record, as described below.
+@end defvar
+
+@deftp {Data Type} file-database-configuration
+Record type for the @code{file-database-service-type} configuration,
+with the following fields:
+
+@table @asis
+@item @code{package} (default: @code{findutils})
+The GNU@tie{}Findutils package from which the @command{updatedb} command
+is taken.
+
+@item @code{schedule} (default: @code{%default-file-database-update-schedule})
+String or G-exp denoting an mcron schedule for the periodic
+@command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).
+
+@item @code{excluded-directories} (default @code{%default-file-database-excluded-directories})
+List of directories to ignore when building the file database.  By
+default, this includes @file{/tmp} and @file{/gnu/store}, which should
+instead be indexed by @command{guix locate} (@pxref{Invoking guix
+locate}).  This list is passed to the @option{--prunepaths} option of
+@command{updatedb} (@pxref{Invoking updatedb,,, find,
+GNU@tie{}Findutils}).
+@end table
+@end deftp
+
+The second service, @code{package-database-service-type}, builds the
+database used by @command{guix locate}, which lets you search for
+packages that contain a given file (@pxref{Invoking guix locate}).  The
+service periodically updates a system-wide database, which will be
+readily available to anyone running @command{guix locate} on the system.
+To use this service with its default settings, add this snippet to your
+service list:
+
+@lisp
+(service package-database-service-type)
+@end lisp
+
+This will run @command{guix locate --update} once a week.
+
+@defvar package-database-service-type
+This is the service type for periodic @command{guix locate} updates
+(@pxref{Invoking guix locate}).  Its value must be a
+@code{package-database-configuration} record, as shown below.
+@end defvar
+
+@deftp {Data Type} package-database-configuration
+Data type to configure periodic package database updates.  It has the
+following fields:
+
+@table @asis
+@item @code{package} (default: @code{guix})
+The Guix package to use.
+
+@item @code{schedule} (default: @code{%default-package-database-update-schedule})
+String or G-exp denoting an mcron schedule for the periodic
+@command{guix locate --update} job (@pxref{Guile Syntax,,, mcron,
+GNU@tie{}mcron}).
+
+@item @code{method} (default: @code{'store})
+Indexing method for @command{guix locate}.  The default value,
+@code{'store}, yields a more complete database but is relatively
+expensive in terms of CPU and input/output.
+
+@item @code{channels} (default: @code{#~%default-channels})
+G-exp denoting the channels to use when updating the database
+(@pxref{Channels}).
+@end table
+@end deftp
+
+
 @node Database Services
 @subsection Database Services
 
@@ -25166,7 +25276,21 @@ The role permissions list.  Supported permissions are @code{bypassrls},
 @code{superuser}.
 
 @item @code{create-database?} (default: @code{#f})
-Whether to create a database with the same name as the role.
+whether to create a database with the same name as the role.
+
+@item @code{encoding} (default: @code{"UTF8"})
+The character set to use for storing text in the database.
+
+@item @code{collation} (default: @code{"en_US.utf8"})
+The string sort order locale setting.
+
+@item @code{ctype} (default: @code{"en_US.utf8"})
+The character classification locale setting.
+
+@item @code{template} (default: @code{"template1"})
+The default template to copy the new database from when creating it.
+Use @code{"template0"} for a pristine database with no system-local
+modifications.
 
 @end table
 @end deftp
@@ -37833,6 +37957,104 @@ the partition where he stores his data:
 
 The complete list of possible options can be found in the man page for
 @uref{http://pam-mount.sourceforge.net/pam_mount.conf.5.html, pam_mount.conf}.
+@end table
+@end deftp
+
+@subheading PAM Mount Volume Service
+@cindex pam volume mounting
+
+PAM mount volumes are automatically mounted at login by the PAM login
+service according to a set of per-volume rules.  Because they are
+mounted by PAM the password entered during login may be used directly to
+mount authenticated volumes, such as @code{cifs}, using the same
+credentials.
+
+These volumes will be added in addition to any volumes directly
+specified in @code{pam-mount-rules}.
+
+Here is an example of a rule which will mount a remote CIFS share from
+@file{//remote-server/share} into a sub-directory of @file{/shares}
+named after the user logging in:
+
+@lisp
+(simple-service 'pam-mount-remote-share pam-mount-volume-service-type
+                (list (pam-mount-volume
+                       (secondary-group "users")
+                       (file-system-type "cifs")
+                       (server "remote-server")
+                       (file-name "share")
+                       (mount-point "/shares/%(USER)")
+                       (options "nosuid,nodev,seal,cifsacl"))))
+@end lisp
+
+@deftp {Data Type} pam-mount-volume-service-type
+Configuration for a single volume to be mounted.  Any fields not
+specified will be omitted from the run-time PAM configuration.  See
+@uref{http://pam-mount.sourceforge.net/pam_mount.conf.5.html,
+the man page} for the default values when unspecified.
+
+@table @asis
+@item @code{user-name} (type: maybe-string)
+Mount the volume for the given user.
+
+@item @code{user-id} (type: maybe-integer-or-range)
+Mount the volume for the user with this ID.  This field may also be
+specified as a pair of @code{(start . end)} indicating a range of user
+IDs for whom to mount the volume.
+
+@item @code{primary-group} (type: maybe-string)
+Mount the volume for users with this primary group name.
+
+@item @code{group-id} (type: maybe-integer-or-range)
+Mount the volume for the users with this primary group ID.  This field
+may also be specified as a cons cell of @code{(start . end)} indicating
+a range of group ids for whom to mount the volume.
+
+@item @code{secondary-group} (type: maybe-string)
+Mount the volume for users who are members of this group as either a
+primary or secondary group.
+
+@item @code{file-system-type} (type: maybe-string)
+The file system type for the volume being mounted (e.g., @code{cifs})
+
+@item @code{no-mount-as-root?} (type: maybe-boolean)
+Whether or not to mount the volume with root privileges.  This is
+normally disabled, but may be enabled for mounts of type @code{fuse}, or
+other user-level mounts.
+
+@item @code{server} (type: maybe-string)
+The name of the remote server to mount the volume from, when necessary.
+
+@item @code{file-name} (type: maybe-string)
+The location of the volume, either local or remote, depending on the
+@code{file-system-type}.
+
+@item @code{mount-point} (type: maybe-string)
+Where to mount the volume in the local file-system.  This may be set to
+@file{~} to indicate the home directory of the user logging in.  If this
+field is omitted then @file{/etc/fstab} is consulted for the mount
+destination.
+
+@item @code{options} (type: maybe-string)
+The options to be passed as-is to the underlying mount program.
+
+@item @code{ssh?} (type: maybe-boolean)
+Enable this option to pass the login password to SSH for use with mounts
+involving SSH (e.g., @code{sshfs}).
+
+@item @code{cipher} (type: maybe-string)
+Cryptsetup cipher name for the volume.  To be used with the @code{crypt}
+@code{file-system-type}.
+
+@item @code{file-system-key-cipher} (type: maybe-string)
+Cipher name used by the target volume.
+
+@item @code{file-system-key-hash} (type: maybe-string)
+SSL hash name used by the target volume.
+
+@item @code{file-system-key-file-name} (type: maybe-string)
+File name of the file system key for the target volume.
+
 @end table
 @end deftp
 

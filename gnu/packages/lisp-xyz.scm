@@ -24,7 +24,7 @@
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021, 2022, 2023 André A. Gomes <andremegafone@gmail.com>
-;;; Copyright © 2021, 2022 Cage <cage-dev@twistfold.it>
+;;; Copyright © 2021, 2022, 2023 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -11755,8 +11755,8 @@ be used with @code{cl-yacc}.")
   (sbcl-package->ecl-package sbcl-cl-lex))
 
 (define-public sbcl-cl-colors2
-  (let ((commit "cc03badf5f69be65ae7e13c2f9a7c16838ab8241")
-        (revision "3"))
+  (let ((commit "7a1410765e5186625df19a875cebba685e9e51bd")
+        (revision "4"))
     (package
       (name "sbcl-cl-colors2")
       (version (git-version "0.5.4" revision commit))
@@ -11764,11 +11764,11 @@ be used with @code{cl-yacc}.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://notabug.org/cage/cl-colors2.git")
+               (url "https://codeberg.org/cage/cl-colors2.git")
                (commit commit)))
          (file-name (git-file-name "cl-colors2" version))
          (sha256
-          (base32 "1l7sl7nnvq13xmss9wwkhcq123bsylskxjrijwfkqp6sm02gbd15"))))
+          (base32 "1xk3wshp21v193wbj1gs0czxaci00wwm957vmqi2dvlv0wgb2hfr"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-clunit2))
@@ -11784,7 +11784,7 @@ be used with @code{cl-yacc}.")
 @item Function printing colors to HEX, RGB, RGBA, and HSL.
 @item Predefined colors from X11, SVG, and GDK.
 @end itemize\n")
-      (home-page "https://notabug.org/cage/cl-colors2")
+      (home-page "https://codeberg.org/cage/cl-colors2")
       (license license:boost1.0))))
 
 (define-public cl-colors2
@@ -11929,44 +11929,44 @@ Scalable Vector Graphics files.")
   (sbcl-package->cl-source-package sbcl-cl-svg))
 
 (define-public sbcl-nodgui
-  (let ((commit "4a9c2e7714b278fbe97d198c56f54ea87290001d")
-        (revision "1"))
+  (let ((commit "b1d15fa9cca8550926f7823dbdd8be3b34387f1a")
+        (revision "2"))
     (package
       (name "sbcl-nodgui")
-      (version (git-version "0.1.1" revision commit))
+      (version (git-version "0.4.8.5" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://notabug.org/cage/nodgui.git")
+               (url "https://codeberg.org/cage/nodgui.git")
                (commit commit)))
-         (file-name (git-file-name "nodgui" version))
+         (file-name (git-file-name "cl-nodgui" version))
          (sha256
-          (base32 "1vgzzw459h32v2mi41cia6i940jqmvxlc8w3xj3516hbc2mqkaib"))))
+          (base32 "1gsxg8igiavs8fr39vgw8ypa42wjqaq9sszwqiifpm7yvq54lls7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cl-colors2" ,sbcl-cl-colors2)
-         ("cl-jpeg" ,sbcl-cl-jpeg)
-         ("cl-lex" ,sbcl-cl-lex)
-         ("cl-ppcre-unicode" ,sbcl-cl-ppcre-unicode)
-         ("cl-unicode" ,sbcl-cl-unicode)
-         ("cl-yacc" ,sbcl-cl-yacc)
-         ("clunit2" ,sbcl-clunit2)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("parse-number" ,sbcl-parse-number)
-         ("tk" ,tk)))
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cl-colors2
+             sbcl-cl-jpeg
+             sbcl-cl-ppcre-unicode
+             sbcl-cl-unicode
+             sbcl-clunit2
+             sbcl-esrap
+             sbcl-named-readtables
+             sbcl-parse-number
+             tk
+             tklib))
       (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'fix-paths
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        (substitute* "src/wish-communication.lisp"
-                          (("#-freebsd \"wish\"")
-                           (string-append "#-freebsd \""
-                                          (assoc-ref inputs "tk")
-                                          "/bin/wish\"")))
-                        #t)))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/wish-communication.lisp"
+                       (("#-freebsd \"wish\"")
+                        (string-append "#-freebsd \""
+                                       (search-input-file inputs "/bin/wish")
+                                       "\""))))))))
       (synopsis "Common Lisp bindings for the Tk GUI toolkit")
       (description
        "Nodgui (@emph{No Drama GUI}) is a Common Lisp binding for the Tk GUI
@@ -18552,8 +18552,8 @@ HTML documents.")
   (sbcl-package->cl-source-package sbcl-cl-html-diff))
 
 (define-public sbcl-tooter
-  (let ((commit "ec97bee3431c55913078e532daae81eb0fd90372")
-        (revision "3"))
+  (let ((commit "2e1b22f0993419c1e7e6d10ead45d7bcafb5b6cb")
+        (revision "4"))
     (package
       (name "sbcl-tooter")
       (version (git-version "1.0.0" revision commit))
@@ -18563,9 +18563,9 @@ HTML documents.")
          (uri (git-reference
                (url "https://github.com/Shinmera/tooter")
                (commit commit)))
-         (file-name (git-file-name "tooter" version))
+         (file-name (git-file-name "cl-tooter" version))
          (sha256
-          (base32 "02vpjaq38d6laaqmsana9f13c38xzr0xwy05fcfkmzdhh0kllpkv"))))
+          (base32 "02ys58gzasvk7r84jmz6k522qcw2hkbgv8p0ax5i8dggjhr04cz2"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-ppcre sbcl-documentation-utils sbcl-drakma
@@ -18719,20 +18719,20 @@ dynamically.")
   (sbcl-package->cl-source-package sbcl-sxql-composer))
 
 (define-public sbcl-cl-i18n
-  (let ((commit "66b02dc2cff3ab97f924329aaf965807fe18aa20")
-        (revision "2"))
+  (let ((commit "acb162a12dac50fc46d83da8934fce85d19e31c4")
+        (revision "3"))
     (package
       (name "sbcl-cl-i18n")
-      (version (git-version "0.5.3" revision commit))
+      (version (git-version "0.5.5" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://notabug.org/cage/cl-i18n")
+               (url "https://codeberg.org/cage/cl-i18n")
                (commit commit)))
          (file-name (git-file-name "cl-i18n" version))
          (sha256
-          (base32 "06ij1wxancsym87gg63nvjh7vfzjipi1f02h4fb2ypip60vw06lc"))))
+          (base32 "1y29cirmlyc406a45sdx39spvnjzbs772c977075ccicz46qaxz7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-babel sbcl-cl-ppcre-unicode))
@@ -18740,7 +18740,7 @@ dynamically.")
       (description
        "This is a Gettext-style internationalisation framework for Common
 Lisp.")
-      (home-page "https://notabug.org/cage/cl-i18n")
+      (home-page "https://codeberg.org/cage/cl-i18n")
       (license license:llgpl))))
 
 (define-public ecl-cl-i18n
@@ -19716,7 +19716,7 @@ described in RFC 2045 (see @url{http://tools.ietf.org/html/rfc2045}).")
        (list sbcl-cl-ppcre sbcl-cl-base64 sbcl-cl-qprint))
       (native-inputs
        (list sbcl-rove))
-      (home-page "https://github.com/eugeneia/cl-qprint/")
+      (home-page "https://github.com/40ants/cl-mime/")
       (synopsis "Read and print MIME content in Common Lisp")
       (description
        "This is a Common Lisp library for reading and printing MIME content.

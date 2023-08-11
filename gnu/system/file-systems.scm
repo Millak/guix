@@ -445,26 +445,13 @@ TARGET in the other system."
     (flags '(read-only bind-mount no-atime))))
 
 (define %control-groups
-  (let ((parent (file-system
-                  (device "cgroup")
-                  (mount-point "/sys/fs/cgroup")
-                  (type "tmpfs")
-                  (check? #f))))
-    (cons parent
-          (map (lambda (subsystem)
-                 (file-system
-                   (device "cgroup")
-                   (mount-point (string-append "/sys/fs/cgroup/" subsystem))
-                   (type "cgroup")
-                   (check? #f)
-                   (options subsystem)
-                   (create-mount-point? #t)
-
-                   ;; This must be mounted after, and unmounted before the
-                   ;; parent directory.
-                   (dependencies (list parent))))
-               '("cpuset" "cpu" "cpuacct" "memory" "devices" "freezer"
-                 "blkio" "perf_event" "pids")))))
+  ;; The cgroup2 file system.
+  (list (file-system
+          (device "none")
+	  (mount-point "/sys/fs/cgroup")
+	  (type "cgroup2")
+	  (check? #f)
+	  (create-mount-point? #f))))
 
 (define %elogind-file-systems
   ;; We don't use systemd, but these file systems are needed for elogind,
