@@ -994,13 +994,13 @@ HostData=lib/qt5"
 (define-public qt5compat
   (package
     (name "qt5compat")
-    (version "6.3.2")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1k30hnwnlbay1hnkdavgf6plsdzrryzcqd2qz8x11r477w7sr8wi"))))
+                "1i4izabbmf1dayzlj1miz7hsm4cy0qb7i72pwyl2fp05w8pf9axr"))))
     (build-system cmake-build-system)
     (arguments
      (list
