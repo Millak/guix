@@ -22798,6 +22798,45 @@ provided for those who wish to typeset Spanish as written in Mexico.")
      "The package provides the language definition file for Welsh.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cyklop
+  (package
+    (name "texlive-cyklop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cyklop/"
+                   "fonts/afm/public/cyklop/"
+                   "fonts/enc/dvips/cyklop/"
+                   "fonts/map/dvips/cyklop/"
+                   "fonts/opentype/public/cyklop/"
+                   "fonts/tfm/public/cyklop/"
+                   "fonts/type1/public/cyklop/"
+                   "tex/latex/cyklop/")
+             (base32
+              "0jfri15l1jycqzjac8s5bz6izypdwfjagfz6jhw95ixj1s9brnpl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cyklop")
+    (synopsis "The Cyclop typeface")
+    (description
+     "The Cyclop typeface was designed in the 1920s at the workshop of Warsaw
+type foundry @emph{Odlewnia Czcionek J. Idzkowski i S-ka}.  This sans serif
+typeface has a highly modulated stroke so it has high typographic contrast.
+The vertical stems are much heavier then horizontal ones.  Most characters
+have thin rectangles as additional counters giving the unique shape of the
+characters.  The lead types of Cyclop typeface were produced in slanted
+variant at sizes 8-48 pt.  It was heavily used for heads in newspapers and
+accidents prints.  Typesetters used Cyclop in the inter-war period, during the
+occupation in the underground press.  The typeface was used until the
+beginnings of the offset print and computer typesetting era.  Nowadays it is
+hard to find the metal types of this typeface.
+
+The fonts are distributed in the Type1 and OpenType formats along with the
+files necessary for use these fonts in TeX and LaTeX including encoding
+definition files: T1 (ec), T5 (Vietnamese), OT4, QX, texnansi and nonstandard
+ones (IL2 for Czech fonts).")
+    (license license:gfl1.0)))
+
 (define-public texlive-cyrillic-bin
   (package
     (name "texlive-cyrillic-bin")
