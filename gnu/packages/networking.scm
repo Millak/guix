@@ -487,7 +487,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
 (define-public librecast
   (package
     (name "librecast")
-    (version "0.6.1")
+    (version "0.7-RC3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -496,7 +496,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kixnm7pn8345wp0klhnpw5x992cqbqx3bhc01j8xhqf6irlzdm3"))))
+                "06k5a84byj7md82a7idlqwricrjbmqxn3w1cjaarybiwd2jwqg80"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -505,26 +505,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                                             (cc-for-target))
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'remove-network-tests
-                    (lambda _
-                      ;; these tests require networking
-                      (delete-file "./test/0000-0010.c")
-                      (delete-file "./test/0000-0012.c")
-                      (delete-file "./test/0000-0013.c")
-                      (delete-file "./test/0000-0014.c")
-                      (delete-file "./test/0000-0015.c")
-                      (delete-file "./test/0000-0016.c")
-                      (delete-file "./test/0000-0018.c")
-                      (delete-file "./test/0000-0019.c")
-                      (delete-file "./test/0000-0021.c")
-                      (delete-file "./test/0000-0028.c")
-                      (delete-file "./test/0000-0036.c")
-                      (delete-file "./test/0000-0037.c")
-                      (delete-file "./test/0000-0038.c")
-                      (delete-file "./test/0000-0039.c")
-                      (delete-file "./test/0000-0040.c"))))))
+       #:test-target "test"))
     (inputs (list libsodium lcrq))
     (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
