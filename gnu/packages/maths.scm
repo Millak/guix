@@ -2599,78 +2599,81 @@ fixed point (16.16) format.")
       (license license:expat))))
 
 (define-public libflame
-  (package
-    (name "libflame")
-    (version "5.2.0")
-    (outputs '("out" "static"))
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/flame/libflame")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1n6lf0wvpp77lxqlr721h2jbfbzigphdp19wq8ajiccilcksh7ay"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           ;; Sensible defaults: https://github.com/flame/libflame/issues/28
-           #~(list "--enable-dynamic-build"
-                   "--enable-max-arg-list-hack"
-                   "--enable-lapack2flame"
-                   "--enable-verbose-make-output"
-                   "--enable-multithreading=pthreads" ; Openblas isn't built with openmp.
-                   #$@(if (target-x86?)
-                          #~("--enable-vector-intrinsics=sse")
-                          #~())
-                   "--enable-supermatrix"
-                   "--enable-memory-alignment=16"
-                   "--enable-ldim-alignment")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-/usr/bin/env-bash
-                 (lambda _
-                   (substitute* "build/config.mk.in"
-                     (("/usr/bin/env bash")
-                      (which "bash")))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (substitute* "test/Makefile"
-                     (("LIBBLAS .*")
-                      "LIBBLAS = -lblas\n")
-                     (("LIBLAPACK .*")
-                      "LIBLAPACK = -llapack\n"))
-                   (when tests?
-                     (with-directory-excursion "test"
-                       (mkdir "obj")
-                       (invoke "make")
-                       (invoke "./test_libflame.x")))))
-               (add-after 'install 'install-static
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out"))
-                         (static (assoc-ref outputs "static")))
-                     (mkdir-p (string-append static "/lib"))
-                     (rename-file (string-append out
-                                                 "/lib/libflame.a")
-                                  (string-append static
-                                                 "/lib/libflame.a"))
-                     (install-file (string-append out
-                                                  "/include/FLAME.h")
-                                   (string-append static "/include"))))))))
-    (inputs (list gfortran))
-    (native-inputs (list lapack perl python-wrapper))
-    (home-page "https://github.com/flame/libflame")
-    (synopsis "High-performance library for @acronym{DLA, dense linear algebra} computations")
-    (description "@code{libflame} is a portable library for dense matrix
+  ;; The latest release (5.2.0) dates back to 2019.  Use a newer one, which
+  ;; among other things provides extra LAPACK symbols, such as 'dgemlq_'
+  ;; (needed by LAPACKe).
+  (let ((commit "70c19e770ead0ae846c59b59216deb16d236b40c")
+        (revision "0"))
+    (package
+      (name "libflame")
+      (version (git-version "5.2.0" revision commit))
+      (outputs '("out" "static"))
+      (home-page "https://github.com/flame/libflame")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rk8ln5p4yybsws6p60w0vkxbqp53jddv90brlgf60mk6lv51sxl"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags
+             ;; Sensible defaults: https://github.com/flame/libflame/issues/28
+             #~(list "--enable-dynamic-build"
+                     "--enable-max-arg-list-hack"
+                     "--enable-lapack2flame"
+                     "--enable-verbose-make-output"
+                     "--enable-multithreading=pthreads" ; Openblas isn't built with openmp.
+                     #$@(if (target-x86?)
+                            #~("--enable-vector-intrinsics=sse")
+                            #~())
+                     "--enable-supermatrix"
+                     "--enable-memory-alignment=16"
+                     "--enable-ldim-alignment")
+             #:make-flags #~(list "FC=gfortran -fPIC")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-/usr/bin/env-bash
+                   (lambda _
+                     (substitute* "build/config.mk.in"
+                       (("/usr/bin/env bash")
+                        (which "bash")))))
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (substitute* "test/Makefile"
+                       (("LIBBLAS .*")
+                        "LIBBLAS = -lblas\n")
+                       (("LIBLAPACK .*")
+                        "LIBLAPACK = -llapack\n"))
+                     (when tests?
+                       (with-directory-excursion "test"
+                         (mkdir "obj")
+                         (invoke "make")
+                         (invoke "./test_libflame.x")))))
+                 (add-after 'install 'install-static
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (static (assoc-ref outputs "static")))
+                       (mkdir-p (string-append static "/lib"))
+                       (rename-file (string-append out
+                                                   "/lib/libflame.a")
+                                    (string-append static
+                                                   "/lib/libflame.a"))
+                       (install-file (string-append out
+                                                    "/include/FLAME.h")
+                                     (string-append static "/include"))))))))
+      (inputs (list gfortran))
+      (native-inputs (list lapack perl python-wrapper))
+      (synopsis "High-performance library for @acronym{DLA, dense linear algebra} computations")
+      (description "@code{libflame} is a portable library for dense matrix
 computations, providing much of the functionality present in LAPACK, developed
 by current and former members of the @acronym{SHPC, Science of High-Performance
 Computing} group in the @url{https://www.ices.utexas.edu/, Institute for
 Computational Engineering and Sciences} at The University of Texas at Austin.
 @code{libflame} includes a compatibility layer, @code{lapack2flame}, which
 includes a complete LAPACK implementation.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public scasp
   (let ((commit "89a427aa04ec6346425a40111c99b310901ffe51")
