@@ -23891,7 +23891,7 @@ within Emacs.")
 (define-public emacs-ibrowse
   (package
     (name "emacs-ibrowse")
-    (version "0.1.8")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -23900,9 +23900,9 @@ within Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3imid9byaay0lqvv5n2klwk680w8x3qzdb279rdr08bb36w5ya"))))
+        (base32 "1dm46k67smg2m33c6n68blpw2mw7fx1ymq81kv54jjlpmv3xrdsf"))))
     (build-system emacs-build-system)
-    (inputs (list sqlite))
+    (inputs (list emacs-websocket sqlite))
     (home-page "https://git.sr.ht/~ngraves/ibrowse.el")
     (synopsis "Interact with your browser from emacs")
     (description "This package provides some commands to act on the browser
