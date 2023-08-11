@@ -2943,14 +2943,14 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.3.2")
+    (version "6.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "09j4w9ax8242d1yx3hmic7jcwidwdrn8sp7k89hj4l0n8mzkkd35"))
+         "17qxf3asyxq6kcqqvml170n7rnzih3nr4srp9r5v80pmas5l7jg7"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -2958,13 +2958,19 @@ and binaries removed, and adds modular support for using system libraries.")
                   (guix build utils)))
        (snippet
         #~(begin
-           (let ((preserved-third-party-files
+            ;; Note: Anything under a 'third_party/' directory that needs to
+            ;; be preserved must be explicitly added below, otherwise it gets
+            ;; removed by the 'remove-third-party-files' code snippet included
+            ;; below.  It is useful to refer to the list used by
+            ;; ungoogled-chromium when upgrading, but not all of the items
+            ;; present in it will need to be reported here, as Qt already
+            ;; removes components its build doesn't use.
+            (let ((preserved-third-party-files
                   '("base/third_party/double_conversion"
                     "base/third_party/cityhash"
                     "base/third_party/cityhash_v103"
                     "base/third_party/dynamic_annotations"
                     "base/third_party/icu"
-                    "base/third_party/libevent"
                     "base/third_party/nspr"
                     "base/third_party/superfasthash"
                     "base/third_party/symbolize"
@@ -2979,6 +2985,7 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/angle/src/common/third_party/base"
                     "third_party/angle/src/common/third_party/smhasher"
                     "third_party/angle/src/common/third_party/xxhash"
+                    "third_party/angle/src/third_party/libXNVCtrl" ;Expat
                     "third_party/angle/src/third_party/trace_event"
                     "third_party/angle/src/third_party/volk"
                     "third_party/axe-core"
@@ -3001,27 +3008,36 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/ced"
                     "third_party/cld_3"
                     "third_party/closure_compiler"
+                    "third_party/cpuinfo" ;BSD-2
                     "third_party/crashpad"
                     "third_party/crashpad/crashpad/third_party/lss"
                     "third_party/crashpad/crashpad/third_party/zlib"
                     "third_party/crc32c"
                     "third_party/dav1d"
                     "third_party/dawn"
-                    "third_party/dawn/third_party/tint"
+                    "third_party/dawn/third_party/gn/webgpu-cts"
+                    "third_party/dawn/third_party/khronos"
                     "third_party/devtools-frontend"
                     "third_party/devtools-frontend/src/front_end/third_party/i18n"
                     "third_party/devtools-frontend/src/front_end/third_party/acorn"
                     "third_party/devtools-frontend/src/front_end/third_party/acorn-loose"
+                    "third_party/devtools-frontend/src/front_end/third_party/\
+additional_readme_paths.json"
                     "third_party/devtools-frontend/src/front_end/third_party/axe-core"
                     "third_party/devtools-frontend/src/front_end/third_party/chromium"
                     "third_party/devtools-frontend/src/front_end/third_party/codemirror"
+                    "third_party/devtools-frontend/src/front_end/third_party/codemirror.next"
                     "third_party/devtools-frontend/src/front_end/third_party/diff"
+                    "third_party/devtools-frontend/src/front_end/third_party/i18n"
                     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat"
                     "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
                     "third_party/devtools-frontend/src/front_end/third_party/lit-html"
                     "third_party/devtools-frontend/src/front_end/third_party/marked"
+                    "third_party/devtools-frontend/src/front_end/third_party/puppeteer"
                     "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
                     "third_party/devtools-frontend/src/third_party/typescript"
+                    "third_party/distributed_point_functions"
+                    "third_party/dom_distiller_js"
                     "third_party/emoji-segmenter"
                     "third_party/fdlibm"
                     "third_party/ffmpeg/libavcodec/avcodec.h"
@@ -3033,7 +3049,11 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/ffmpeg/libavutil/log.h"
                     "third_party/ffmpeg/libavutil/mathematics.h"
                     "third_party/ffmpeg/libavutil/opt.h"
+                    "third_party/fft2d"
+                    "third_party/flatbuffers"
                     "third_party/freetype"
+                    "third_party/gemmlowp" ;ASL2.0
+                    "third_party/google_input_tools" ;ASL2.0
                     "third_party/googletest"
                     "third_party/harfbuzz-ng"
                     "third_party/highway"
@@ -3041,6 +3061,7 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/iccjpeg"
                     "third_party/icu" ;TODO: make pdfium use system version
                     "third_party/inspector_protocol"
+                    "third_party/ipcz" ;BSD-3
                     "third_party/jinja2"
                     "third_party/jsoncpp"
                     "third_party/jstemplate"
@@ -3049,42 +3070,45 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/libaddressinput"
                     "third_party/libaom"
                     "third_party/libaom/source/libaom/third_party/fastfeat"
+                    "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
                     "third_party/libaom/source/libaom/third_party/vector"
                     "third_party/libaom/source/libaom/third_party/x86inc"
                     "third_party/libavif"
+                    "third_party/libevent"
                     "third_party/libgav1"
-                    "third_party/libgifcodec"
                     "third_party/libjingle_xmpp"
                     "third_party/libjpeg_turbo"
                     "third_party/libjxl"
                     "third_party/libpng" ;TODO: make pdfium use system version
+                    "third_party/libsecret" ;LGPL2.1+
                     "third_party/libsrtp"
                     "third_party/libsync"
                     "third_party/libudev"
                     "third_party/liburlpattern"
                     "third_party/libvpx"
                     "third_party/libwebm"
-                    "third_party/libwebp/src/webp/decode.h"
-                    "third_party/libwebp/src/webp/demux.h"
-                    "third_party/libwebp/src/webp/encode.h"
-                    "third_party/libwebp/src/webp/format_constants.h"
-                    "third_party/libwebp/src/webp/mux.h"
-                    "third_party/libwebp/src/webp/mux_types.h"
-                    "third_party/libwebp/src/webp/types.h"
+                    "third_party/libwebp"
                     "third_party/libx11"
                     "third_party/libxcb-keysyms"
-                    "third_party/libxml/chromium"
+                    "third_party/libxml"
                     "third_party/libyuv"
+                    "third_party/libzip" ;BSD-3
                     "third_party/lottie"
                     "third_party/lss"
                     "third_party/mako"
                     "third_party/markupsafe"
                     "third_party/mesa_headers"
                     "third_party/metrics_proto"
+                    "third_party/minigbm" ;BSD-3
                     "third_party/modp_b64"
                     "third_party/nasm"
+                    "third_party/nearby" ;ASL2.0
                     "third_party/node"
+                    "third_party/omnibox_proto" ;BSD-3
                     "third_party/one_euro_filter"
+                    "third_party/openscreen" ;BSD-3
+                    "third_party/openscreen/src/third_party/tinycbor" ;Expat
+                    "third_party/openscreen/src/third_party/mozilla" ;MPL1.1/GPL2+/LGPL2.1+, BSD-3
                     "third_party/openh264"
                     "third_party/opus/src/include/opus.h"
                     "third_party/opus/src/include/opus_custom.h"
@@ -3098,31 +3122,46 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/pdfium/third_party/bigint"
                     "third_party/pdfium/third_party/freetype"
                     "third_party/pdfium/third_party/lcms"
-                    "third_party/pdfium/third_party/libopenjpeg20"
+                    "third_party/pdfium/third_party/libopenjpeg"
                     "third_party/pdfium/third_party/libpng16"
                     "third_party/pdfium/third_party/libtiff"
                     "third_party/pdfium/third_party/skia_shared"
+                    "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
                     "third_party/perfetto"
                     "third_party/perfetto/protos/third_party/chromium"
                     "third_party/pffft"
                     "third_party/ply"
                     "third_party/polymer"
+                    "third_party/private_membership" ;ASL2.0
+                    "third_party/private-join-and-compute" ;ASL2.0
                     "third_party/protobuf"
-                    "third_party/protobuf/third_party/six"
+                    "third_party/pthreadpool" ;BSD-2
                     "third_party/pyjson5"
+                    "third_party/qcms" ;Expat
                     "third_party/re2"
                     "third_party/rnnoise"
+                    "third_party/ruy" ;ASL2.0
+                    "third_party/s2cellid" ;ASL2.0
+                    "third_party/securemessage" ;ASL2.0
+                    "third_party/shell-encryption" ;ASL2.0
                     "third_party/skia"
-                    "third_party/skia/include/third_party/skcms/skcms.h"
                     "third_party/skia/include/third_party/vulkan"
-                    "third_party/skia/third_party/skcms"
+                    "third_party/skia/modules/skcms"
                     "third_party/skia/third_party/vulkanmemoryallocator"
                     "third_party/smhasher"
                     "third_party/snappy"
                     "third_party/speech-dispatcher"
                     "third_party/sqlite"
+                    "third_party/swiftshader" ;ASL2.0
+                    "third_party/swiftshader/third_party/llvm-10.0" ;ASL2.0, with LLVM exception
+                    "third_party/swiftshader/third_party/marl" ;ASL2.0
+                    "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
+                    "third_party/swiftshader/third_party/SPIRV-Tools" ;ASL2.0
+                    "third_party/tensorflow-text" ;ASL2.0
+                    "third_party/tflite" ;ASL2.0
+                    "third_party/ukey2" ;ASL2.0
                     "third_party/usb_ids"
-                    "third_party/usrsctp"
+                    "third_party/utf" ;Expat
                     "third_party/vulkan-deps/glslang"
                     "third_party/vulkan-deps/spirv-headers"
                     "third_party/vulkan-deps/spirv-tools"
@@ -3146,13 +3185,15 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/woff2"
                     "third_party/wuffs"
                     "third_party/x11proto"
+                    "third_party/xnnpack" ;BSD-3
                     "third_party/zlib" ;TODO: make pdfium use system version
+                    "third_party/zxcvbn-cpp" ;Expat
                     "url/third_party/mozilla"
+                    "v8/src/third_party/siphash"
                     "v8/src/third_party/utf8-decoder"
                     "v8/src/third_party/valgrind"
-                    "v8/src/third_party/siphash"
-                    "v8/third_party/v8/builtins"
-                    "v8/third_party/inspector_protocol")))
+                    "v8/third_party/inspector_protocol"
+                    "v8/third_party/v8/builtins")))
 
              (with-directory-excursion "src/3rdparty"
                (delete-file-recursively "ninja")
@@ -3193,15 +3234,8 @@ linux/libcurl_wrapper.h"
       ;; some build time and resources.
       #:tests? #f
       #:configure-flags
-      ;; Use the CMake ninja generator, otherwise the build fails (see:
-      ;; https://bugreports.qt.io/browse/QTBUG-96897).
+      ;; Use the CMake ninja generator, otherwise the build fails.
       #~(list "-GNinja"
-              ;; Manually add the NSS library prefix to the linker
-              ;; search path, otherwise it fails to be linked (see:
-              ;; https://bugreports.qt.io/browse/QTBUG-105053).
-              (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-L"
-                             (search-input-directory %build-inputs "lib/nss"))
-
               ;; The PDF renderer plugin fails to build with errors such as
               ;; "src/3rdparty/chromium/components/pdf
               ;; /renderer/pdf_accessibility_tree.cc:1373:39:
@@ -3257,10 +3291,7 @@ linux/libcurl_wrapper.h"
               (substitute* "src/3rdparty/chromium/device/udev_linux/udev1_loader.cc"
                 (("libudev.so.1")
                  (search-input-file inputs "lib/libudev.so.1")))
-              ;; Patch the location of the X11 keywoard layouts, otherwise
-              ;; webengine *crashes* at run time when the default directory,
-              ;; '/usr/share/X11/xkb' is empty (see:
-              ;; https://bugreports.qt.io/browse/QTBUG-105124).
+              ;; Patch the location of the X11 keywoard layouts.
               (substitute* "src/3rdparty/chromium/ui/events/ozone/layout/xkb\
 /xkb_keyboard_layout_engine.cc"
                 (("/usr/share/X11/xkb")
