@@ -1195,13 +1195,13 @@ the @env{RSPEC_DEBUG} environment variable to @samp{true} then invoke the
 (define-public bundler
   (package
     (name "bundler")
-    (version "2.4.10")
+    (version "2.4.18")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "bundler" version))
               (sha256
                (base32
-                "08d1nj2h4yl6c1bnrwl2pk1kcskpgi6fvyd8fs36lfh68jlnz05r"))))
+                "03ppd60cbwzlrhsidi7frj826ssmxzwd954ikjk7966l45qx5xxn"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
