@@ -1326,14 +1326,14 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.3.2")
+    (version "6.5.2")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1hbw63828pp8vm9b46i2pkcbcpr4mq9nblhmpwrw2pflq0fi24xq"))
+                "06c7xfqn2a5s2m8j1bcvx3pyjqg1rgqkjvp49737gb4z9vjiz8gk"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -1431,7 +1431,20 @@ with JavaScript and C++.")))
                     ;; waiting for a killed process, which becomes a zombie in
                     ;; the build container (perhaps solved after
                     ;; fixing/applying #30948).
-                    "tst_qqmlpreview") "|")
+                    "tst_qqmlpreview"
+
+                    ;; These tests fail starting with 6.5.2 (see:
+                    ;; https://bugreports.qt.io/browse/QTBUG-116019).  They
+                    ;; appear to fail because of attempting to load QML from
+                    ;; elsewhere than from QML2_IMPORT_PATH.
+                    "cmake_test_common_import_path"
+                    "tst_qqmlcomponent"
+                    "tst_qmllint"
+                    "tst_qmldomitem"
+                    "tst_dom_all"
+                    "tst_qmlls"
+                    "tst_qmllscompletions"
+                    ) "|")
                   ")")))))
           (add-after 'install 'delete-installed-tests
             (lambda _
@@ -1444,9 +1457,13 @@ with JavaScript and C++.")))
            qtshadertools
            vulkan-headers))
     (inputs
-     (list libxkbcommon
+     (list at-spi2-core
+           libxkbcommon
            mesa
-           qtbase))
+           qtbase
+           qtimageformats
+           qtlanguageserver
+           qtsvg))
     (home-page (package-home-page qtbase))
     (synopsis "Qt QML module (Quick 2)")
     (description "The Qt QML module provides a framework for developing
