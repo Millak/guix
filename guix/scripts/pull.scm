@@ -85,6 +85,9 @@ Download and deploy the latest version of Guix.\n"))
   (display (G_ "
   -C, --channels=FILE    deploy the channels defined in FILE"))
   (display (G_ "
+  -q, --no-channel-files
+                         inhibit loading of user and system 'channels.scm'"))
+  (display (G_ "
       --url=URL          download \"guix\" channel from the Git repository at URL"))
   (display (G_ "
       --commit=COMMIT    download the specified \"guix\" channel COMMIT"))
@@ -133,6 +136,9 @@ Download and deploy the latest version of Guix.\n"))
   (cons* (option '(#\C "channels") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'channel-file arg result)))
+         (option '(#\q "no-channel-files") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'ignore-channel-files? #t result)))
          (option '(#\l "list-generations") #f #t
                  (lambda (opt name arg result)
                    (cons `(query list-generations ,arg)
@@ -735,6 +741,9 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
   (define file
     (assoc-ref opts 'channel-file))
 
+  (define ignore-channel-files?
+    (assoc-ref opts 'ignore-channel-files?))
+
   (define default-file
     (string-append (config-directory) "/channels.scm"))
 
@@ -750,9 +759,11 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
   (define channels
     (cond (file
            (load-channels file))
-          ((file-exists? default-file)
+          ((and (not ignore-channel-files?)
+                (file-exists? default-file))
            (load-channels default-file))
-          ((file-exists? global-file)
+          ((and (not ignore-channel-files?)
+                (file-exists? global-file))
            (load-channels global-file))
           (else
            %default-channels)))

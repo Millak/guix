@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -63,6 +63,9 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
   (display (G_ "
   -C, --channels=FILE    deploy the channels defined in FILE"))
   (display (G_ "
+  -q, --no-channel-files
+                         inhibit loading of user and system 'channels.scm'"))
+  (display (G_ "
       --url=URL          use the Git repository at URL"))
   (display (G_ "
       --commit=COMMIT    use the specified COMMIT"))
@@ -86,6 +89,9 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
   (cons* (option '(#\C "channels") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'channel-file arg result)))
+         (option '(#\q "no-channel-files") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'ignore-channel-files? #t result)))
          (option '("url") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'repository-url arg

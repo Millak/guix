@@ -4802,9 +4802,11 @@ Specifically, @command{guix pull} downloads code from the @dfn{channels}
 @item
 the @option{--channels} option;
 @item
-the user's @file{~/.config/guix/channels.scm} file;
+the user's @file{~/.config/guix/channels.scm} file, unless @option{-q}
+is passed;
 @item
-the system-wide @file{/etc/guix/channels.scm} file;
+the system-wide @file{/etc/guix/channels.scm} file, unless @option{-q}
+is passed;
 @item
 the built-in default channels specified in the @code{%default-channels}
 variable.
@@ -4905,6 +4907,11 @@ Read the list of channels from @var{file} instead of
 @var{file} must contain Scheme code that
 evaluates to a list of channel objects.  @xref{Channels}, for more
 information.
+
+@item --no-channel-files
+@itemx -q
+Inhibit loading of the user and system channel files,
+@file{~/.config/guix/channels.scm} and @file{/etc/guix/channels.scm}.
 
 @cindex channel news
 @item --news
@@ -5051,7 +5058,9 @@ guix time-machine --commit=v1.2.0 -- \
   environment -C --ad-hoc guile -- guile
 @end example
 
-The command above fetches Guix@tie{}1.2.0 and runs its @command{guix
+The command above fetches Guix@tie{}1.2.0 (and possibly other channels
+specified by your @file{channels.scm} configuration files---see
+below) and runs its @command{guix
 environment} command to spawn an environment in a container running
 @command{guile} (@command{guix environment} has since been subsumed by
 @command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
@@ -5060,6 +5069,21 @@ traveling back to the 1980's.}!  The first @command{guix time-machine}
 invocation can be expensive: it may have to download or even build a
 large number of packages; the result is cached though and subsequent
 commands targeting the same commit are almost instantaneous.
+
+As for @command{guix pull}, in the absence of any options,
+@command{time-machine} fetches the latest commits of the channels
+specified in @file{~/.config/guix/channels.scm},
+@file{/etc/guix/channels.scm}, or the default channels; the @option{-q}
+option lets you ignore these configuration files.  The command:
+
+@example
+guix time-machine -q -- build hello
+@end example
+
+will thus build the package @code{hello} as defined in the main branch
+of Guix, without any additional channel, which is in general a newer
+revision of Guix than you have installed.  Time travel works in both
+directions!
 
 @quotation Note
 The history of Guix is immutable and @command{guix time-machine}
@@ -5110,18 +5134,21 @@ string or the name of a tag), or @var{branch}.
 Read the list of channels from @var{file}.  @var{file} must contain
 Scheme code that evaluates to a list of channel objects.
 @xref{Channels} for more information.
-@end table
 
-As for @command{guix pull}, the absence of any options means that the
-latest commit on the master branch will be used.  The command
+@item --no-channel-files
+@itemx -q
+Inhibit loading of the user and system channel files,
+@file{~/.config/guix/channels.scm} and @file{/etc/guix/channels.scm}.
+
+Thus, @command{guix time-machine -q} is equivalent to the following Bash
+command, using the ``process substitution'' syntax (@pxref{Process
+Substitution,,, bash, The GNU Bash Reference Manual}):
 
 @example
-guix time-machine -- build hello
+guix time-machine -C <(echo %default-channels) @dots{}
 @end example
 
-will thus build the package @code{hello} as defined in the master branch,
-which is in general a newer revision of Guix than you have installed.
-Time travel works in both directions!
+@end table
 
 Note that @command{guix time-machine} can trigger builds of channels and
 their dependencies, and these are controlled by the standard build
