@@ -2002,7 +2002,7 @@ main monitor/GPU.")
 (define-public runc
   (package
     (name "runc")
-    (version "1.1.1")
+    (version "1.1.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2011,7 +2011,7 @@ main monitor/GPU.")
               (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0jx56x49dgkygdbrfb3pmxycy1n37arj97jra8n422dj36xz1hbm"))))
+                "1hhxqwg0mblrgv2aim3scfd9xg13l6i22j124sdma5sf2fzgx5bn"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/opencontainers/runc"
