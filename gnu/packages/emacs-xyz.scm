@@ -37552,6 +37552,31 @@ clipboard and inserts an Org mode link with a title of a page found by the URL
 into the current buffer.")
       (license license:expat))))
 
+(define-public emacs-org-wild-notifier
+  (let ((commit "cdca8be45b80ab52077a915e77c625bc0ad07dd7")
+        (revision "0"))
+    (package
+      (name "emacs-org-wild-notifier")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/akhramov/org-wild-notifier.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0k37ac752r5whjha4mf9qg74g65kf71a2dlpl4wlxvdml5v1czw1"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-dash emacs-alert emacs-async))
+      (license license:gpl3+)
+      (home-page "https://github.com/akhramov/org-wild-notifier.el")
+      (synopsis "Customizable org-agenda notifications")
+      (description
+       "This package provides notification functions for org-agenda."))))
+
 (define-public emacs-flymake-mypy
   (let ((commit "d79e158f9ed3065ab692cd0d4048aac985c4fecd")
         (revision "0"))
