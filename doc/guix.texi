@@ -14529,6 +14529,26 @@ gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0
 @dots{}
 @end example
 
+In some specific cases, you may have many packages specified via a
+manifest or a module selection which should all be updated together; for
+these cases, the @option{--target-version} option can be provided to have
+them all refreshed to the same version, as shown in the examples below:
+
+@example
+$ guix refresh qtbase qtdeclarative --target-version=6.5.2
+gnu/packages/qt.scm:1248:13: qtdeclarative would be upgraded from 6.3.2 to 6.5.2
+gnu/packages/qt.scm:584:2: qtbase would be upgraded from 6.3.2 to 6.5.2
+@end example
+
+@example
+$ guix refresh --manifest=qt5-manifest.scm --target-version=5.15.10
+gnu/packages/qt.scm:1173:13: qtxmlpatterns would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1202:13: qtdeclarative would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1762:13: qtserialbus would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:2070:13: qtquickcontrols2 would be upgraded from 5.15.8 to 5.15.10
+@dots{}
+@end example
+
 Sometimes the upstream name differs from the package name used in Guix,
 and @command{guix refresh} needs a little help.  Most updaters honor the
 @code{upstream-name} property in package definitions, which can be used

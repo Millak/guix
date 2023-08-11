@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,6 +107,9 @@
         (option '(#\m "manifest") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'manifest arg result)))
+        (option '("target-version") #t #f
+                (lambda (opt name arg result)
+                  (alist-cons 'target-version arg result)))
         (option '(#\e "expression") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'expression arg result)))
@@ -165,6 +169,9 @@ specified with `--select'.\n"))
   (display (G_ "
   -m, --manifest=FILE    select all the packages from the manifest in FILE"))
   (display (G_ "
+      --target-version=VERSION
+                         update the package or packages to VERSION"))
+  (display (G_ "
   -t, --type=UPDATER,... restrict to updates from the specified updaters
                          (e.g., 'gnu')"))
   (display (G_ "
@@ -213,17 +220,20 @@ specified with `--select'.\n"))
 (define* (update-spec package #:optional version)
   (%update-spec package version))
 
-(define (update-specification->update-spec spec)
+(define (update-specification->update-spec spec fallback-version)
   "Given SPEC, a package name like \"guile@2.0=2.0.8\", return a <update>
-record with two fields: the package to upgrade, and the target version."
+record with two fields: the package to upgrade, and the target version.  When
+SPEC lacks a version, use FALLBACK-VERSION."
   (match (string-rindex spec #\=)
-    (#f  (update-spec (specification->package spec) #f))
+    (#f  (update-spec (specification->package spec) fallback-version))
     (idx (update-spec (specification->package (substring spec 0 idx))
                       (substring spec (1+ idx))))))
 
 (define (options->update-specs opts)
   "Return the list of <update-spec> records requested by OPTS, honoring
 options like '--recursive'."
+  (define target-version (assoc-ref opts 'target-version))
+
   (define core-package?
     (let* ((input->package (match-lambda
                              ((name (? package? package) _ ...) package)
@@ -263,13 +273,18 @@ update would trigger a complete rebuild."
     ;; Update specs explicitly passed as command-line arguments.
     (match (append-map (match-lambda
                          (('argument . spec)
-                          ;; Take either the specified version or the
-                          ;; latest one.
-                          (list (update-specification->update-spec spec)))
+                          ;; Take either the specified version or the latest
+                          ;; one.  The version specified as part of a spec
+                          ;; takes precedence, with the command-line specified
+                          ;; --target-version used as a fallback.
+                          (list (update-specification->update-spec
+                                 spec target-version)))
                          (('expression . exp)
-                          (list (update-spec (read/eval-package-expression exp))))
+                          (list (update-spec (read/eval-package-expression exp)
+                                             target-version)))
                          (('manifest . manifest)
-                          (map update-spec (packages-from-manifest manifest)))
+                          (map (cut update-spec <> target-version)
+                               (packages-from-manifest manifest)))
                          (_
                           '()))
                        opts)

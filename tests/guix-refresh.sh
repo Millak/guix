@@ -109,6 +109,13 @@ case "$(guix refresh -t test guile=2.0.0 2>&1)" in
     *"failed to find"*"2.0.0"*) true;;
     *) false;;
 esac
+
+guix refresh -t test guile --target-version=2.0.0 # XXX: should return non-zero?
+case "$(guix refresh -t test guile --target-version=2.0.0 2>&1)" in
+    *"failed to find"*"2.0.0"*) true;;
+    *) false;;
+esac
+
 for spec in "guile=1.6.4" "guile@3=1.6.4"
 do
     guix refresh -t test "$spec"
