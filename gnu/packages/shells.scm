@@ -602,36 +602,36 @@ use of experts and novices alike.")
     (license license:bsd-2)))
 
 (define-public scsh
-  (let ((commit "114432435e4eadd54334df6b37fcae505079b49f")
-        (revision "1"))
+  (let ((commit "4acf6e4ed7b65b46186ef0c9c2a1e10bef8dc052")
+        (revision "0"))
     (package
       (name "scsh")
-      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
+      (version (git-version "0.7" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/scheme/scsh")
                (commit commit)))
-         (file-name (string-append name "-" version "-checkout"))
+         (file-name (git-file-name name version))
          (sha256
           (base32
-           "1ghk08akiz7hff1pndi8rmgamgcrn2mv9asbss9l79d3c2iaav3q"))
+           "1czrp808v5gs0ci5lmkp3wr3gfkrb3vd5b2iw2hz1bpqgaf6bxpv"))
          (patches (search-patches "scsh-nonstring-search-path.patch"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:test-target "test"
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'replace-rx
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((rx (assoc-ref inputs "scheme48-rx"))
-                      (rxpath (string-append rx "/share/scheme48-"
-                                             ,(package-version scheme48)
+       (list
+        #:test-target "test"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'replace-rx
+              (lambda _
+                (let ((rxpath (string-append #$scheme48-rx
+                                             "/share/scheme48-"
+                                             #$(package-version scheme48)
                                              "/rx")))
-                 (delete-file-recursively "rx")
-                 (symlink rxpath "rx"))
-               #t)))))
+                  (delete-file-recursively "rx")
+                  (symlink rxpath "rx")))))))
       (inputs
        (list scheme48 scheme48-rx))
       (native-inputs
