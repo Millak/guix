@@ -177,7 +177,7 @@ Python without keeping their credentials in a Docker configuration file.")
 (define-public containerd
   (package
     (name "containerd")
-    (version "1.6.6")
+    (version "1.6.22")
     (source
      (origin
        (method git-fetch)
@@ -186,7 +186,7 @@ Python without keeping their credentials in a Docker configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vsl747i3wyy68j4lp4nprwxadbyga8qxlrk892afcd2990zp5mr"))
+        (base32 "1m31y00sq2m76m1jiq4znws8gxbgkh5adklvqibxiz1b96vvwjk8"))
        (patches
         (search-patches "containerd-create-pid-file.patch"))))
     (build-system go-build-system)
@@ -215,7 +215,12 @@ Python without keeping their credentials in a Docker configuration file.")
                     (("DefaultRuntimeName: \"runc\"")
                      (string-append "DefaultRuntimeName: \""
                                     (search-input-file inputs "/sbin/runc")
-                                    "\"")))
+                                    "\""))
+                    ;; ContainerdConfig.Runtimes
+                    (("\"runc\":")
+                     (string-append "\""
+                                    (search-input-file inputs "/sbin/runc")
+                                    "\":")))
                   (substitute* "vendor/github.com/containerd/go-runc/runc.go"
                     (("DefaultCommand[ \t]*=.*")
                      (string-append "DefaultCommand = \""
