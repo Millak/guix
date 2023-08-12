@@ -607,15 +607,16 @@ developers using C++ or QML, a CSS & JavaScript like language.")
     (license (list license:lgpl2.1 license:lgpl3))))
 
 (define-public qtbase
-  (package/inherit qtbase-5
+  (package
+    (inherit qtbase-5)
     (name "qtbase")
-    (version "6.3.2")
+    (version "6.5.2")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "19m9r8sf9mvyrwipn44if3nhding4ljys2mwf04b7dkhz16vlabr"))
+                "0s8jwzdcv97dfy8n3jjm8zzvllv380l73mwdva7rs2nqnhlwgd1x"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -768,6 +769,18 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                      (list
                       ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
                       "tst_moc"
+
+                      ;; The 'tst_qdate' test fails because the current time
+                      ;; is reported as an invalid date (see:
+                      ;; https://bugreports.qt.io/browse/QTBUG-116017).
+                      "tst_qdate"
+
+                      ;; The qgraphicsview and qopenglwidget tests fail with a
+                      ;; segfault for unknown reasons (see:
+                      ;; https://bugreports.qt.io/browse/QTBUG-116018).
+                      "tst_qgraphicsview"
+                      "tst_qopenglwidget"
+
                       ;; The 'test_rcc' test fails on a comparison:
                       ;; <<<<<< actual
                       ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x3,0xe8,
@@ -879,8 +892,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                              (search-input-file
                               outputs
                               (string-append "lib/qt6/mkspecs/features/" file)))
-                           '("device_config.prf" "moc.prf" "qt_build_config.prf"
-                             "qt_config.prf"))
+                           '("device_config.prf" "moc.prf" "qt_config.prf"))
                     (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
                     (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
     (native-inputs
@@ -889,8 +901,15 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 xvfb-run)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
-       (prepend bash-minimal coreutils-minimal libxcb md4c)
-       (replace "postgresql" postgresql))) ;use latest postgresql
+       (prepend at-spi2-core
+                bash-minimal
+                coreutils-minimal
+                md4c
+                libice
+                libsm
+                libxcb
+                libxext
+                xcb-util-cursor)))
     (native-search-paths
      (list (search-path-specification
             (variable "QMAKEPATH")
