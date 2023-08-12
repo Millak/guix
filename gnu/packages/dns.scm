@@ -1273,7 +1273,7 @@ nameservers other than libc.")
 (define-public smartdns
   (package
     (name "smartdns")
-    (version "42")
+    (version "43")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1285,18 +1285,43 @@ nameservers other than libc.")
                           ((".*SYSTEMDSYSTEMUNITDIR.*") "")))
               (sha256
                (base32
-                "17j0h5l7gig6rzk8b9180jwrx5khpnrylacjxvnnpgsi2725k8lq"))))
+                "0s789l6i4yirmarg80mknc1pp65rz01ky9f7gidgclkfcwzz41l3"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f                  ;no tests
+     (list #:test-target "test"
            #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "DESTDIR=" #$output)
-                   "PREFIX=''")
+                   "PREFIX=''"
+                   (string-append "VER=" #$version))
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))))
+               (delete 'configure)
+               (add-after 'unpack 'skip-unavailable-tests
+                 (lambda _
+                   (with-directory-excursion "test/cases"
+                     ;; Tests try to open /etc/resolv.conf
+                     (substitute* "test-bind.cc"
+                       ;; Bind.tls
+                       (("smartdns::Server server_wrap;" all)
+                        (string-append "GTEST_SKIP();" all)))
+                     ;; Tests use ICMP ping.
+                     (substitute* (find-files ".")
+                       ((".*PING_TYPE_ICMP.*" all)
+                        (string-append "GTEST_SKIP();" all)))
+                     (delete-file "test-speed-check.cc"))))
+               ;; Compiled .o files in build phase can't be used for tests.
+               (add-after 'skip-unavailable-tests 'prepare-test-dir
+                 (lambda _
+                   (copy-recursively "." "../test")))
+               (add-before 'check 'enter-test-dir
+                 (lambda _
+                   (chdir "../test/test")))
+               (add-after 'check 'leave-test-dir
+                 (lambda _
+                   (chdir "../../source"))))))
     (inputs (list openssl))
+    (native-inputs (list googletest `(,isc-bind "utils")))
     (home-page "https://github.com/pymumu/smartdns")
     (synopsis "Local DNS server")
     (description
