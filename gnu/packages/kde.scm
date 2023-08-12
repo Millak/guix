@@ -649,6 +649,30 @@ and desktop experiences.")
 expression library, that is used in Krita.")
     (license license:gpl3+)))
 
+(define-public kcolorchooser
+  (package
+    (name "kcolorchooser")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kcolorchooser-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1ripvn2li74rwngicay9c78j0slia1rpsi1f43rbb36p9af02lwq"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kcoreaddons
+           ki18n
+           kxmlgui))
+    (home-page "https://apps.kde.org/de/kcolorchooser/")
+    (synopsis "Color selector utility")
+    (description "KColorChooser is a utility to select a color.")
+    (license license:expat)))
+
 (define-public kolourpaint
   (package
     (name "kolourpaint")
