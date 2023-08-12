@@ -649,6 +649,34 @@ and desktop experiences.")
 expression library, that is used in Krita.")
     (license license:gpl3+)))
 
+(define-public kolourpaint
+  (package
+    (name "kolourpaint")
+    (version "23.04.3")
+    (source
+     (origin
+        (method url-fetch)
+        (uri (string-append "mirror://kde/stable/release-service/" version
+                            "/src/kolourpaint-" version ".tar.xz"))
+        (sha256
+         (base32 "1ab9v6ksb185f6jfhhk578qazhmy8hx6s8vjr9xyh7k3jilayj9v"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kguiaddons
+           ki18n
+           kio
+           kjobwidgets
+           ktextwidgets
+           kwidgetsaddons
+           kxmlgui))
+    (home-page "http://kolourpaint.org/")
+    (synopsis "Paint program for KDE")
+    (description "KolourPaint is a paint program for KDE.  It is useful for
+painting, image manipulating and icon editing.")
+    (license (list license:lgpl2.0+ license:bsd-2))))
+
 (define-public krita
   (package
     (name "krita")
