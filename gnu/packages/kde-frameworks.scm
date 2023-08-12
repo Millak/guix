@@ -50,6 +50,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages calendar)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
@@ -1841,6 +1842,43 @@ text and metadata from a number of different files.  This library is typically
 used by file indexers to retrieve the metadata.  This library can also be used
 by applications to write metadata.")
     (license (list license:lgpl2.0 license:lgpl2.1 license:lgpl3))))
+
+(define-public kimageannotator
+  (package
+    (name "kimageannotator")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ksnip/kImageAnnotator")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gm85d1cnhf51ssj0gs2253fifl48r05d3q5s93jwk3jkq01inll"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:configure-flags #~'("-DBUILD_TESTS=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda _
+                   ;; 1 test requires a running X server, it calls
+                   ;; 'XCloseDisplay'.
+                   (system "Xvfb :1 -screen 0 640x480x24 &")
+                   (setenv "DISPLAY" ":1")
+                   (invoke "ctest" "--test-dir" "tests"))))))
+    (native-inputs
+     (list qttools-5 xorg-server-for-tests))
+    (inputs
+     (list googletest qtsvg-5 kcolorpicker))
+    (propagated-inputs
+     (list qtbase-5))
+    (home-page "https://github.com/ksnip/kImageAnnotator")
+    (synopsis "Image annotating library")
+    (description "This library provides tools to annotate images.")
+    (license license:lgpl3+)))
 
 (define-public kimageformats
   (package
