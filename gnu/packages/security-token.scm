@@ -95,14 +95,14 @@
 (define-public ccid
   (package
     (name "ccid")
-    (version "1.4.36")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ccid.apdu.fr/files/ccid-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1ha9cwxkadx4rs4jj114qzh42qj02x6r8y1mvhcvijhvby4aqwrb"))))
+                "06bjdswbwcwndsn23rsdhz5a7xqsgb66glqnk9lqzd7qws3l94qk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--enable-usbdropdir=" %output
