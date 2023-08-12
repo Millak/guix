@@ -33,6 +33,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -556,6 +557,32 @@ Internet).")
     (license (list license:gpl2 license:gpl2+ license:bsd-2
                    license:lgpl2.1 license:lgpl2.1+ license:expat
                    license:lgpl3+ license:mpl1.1))))
+
+(define-public kcolorpicker
+  (package
+    (name "kcolorpicker")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ksnip/kColorPicker")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1aw41mj0hxin2h3cldiiv7ivq5qv97l0ww42yr7j8hmkzj7qq6ba"))))
+    (build-system qt-build-system)
+    (propagated-inputs (list qtbase-5))
+    (arguments
+     (list #:configure-flags #~'("-DBUILD_TESTS=ON")))
+    (home-page "https://github.com/ksnip/kColorPicker")
+    (synopsis "Color Picker with popup menu")
+    (description
+     "@code{KColorPicker} is a subclass of @code{QToolButton} with color popup
+menu which lets you select a color.  The popup features a color dialog button
+which can be used to add custom colors to the popup menu.")
+    (license license:lgpl3+)))
 
 (define-public kconfig
   (package
