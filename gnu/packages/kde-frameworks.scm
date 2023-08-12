@@ -78,6 +78,7 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
@@ -1499,6 +1500,27 @@ ASpell and HUNSPELL.")
 uses a job-based interface to queue tasks and execute them in an efficient way.")
     (license license:lgpl2.1+)))
 
+(define-public libkdcraw
+  (package
+    (name "libkdcraw")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "0vwr44j77c1vffsppkzdasd0l8apzx7jn6llwhzb4bjp93arx18w"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config extra-cmake-modules))
+    (inputs
+     (list libraw qtbase-5))
+    (home-page "https://invent.kde.org/graphics/libkdcraw")
+    (synopsis "C++ interface used to decode RAW picture files")
+    (description "Libkdcraw is a C++ interface around LibRaw library used to
+decode RAW picture files.")
+    (license (list license:gpl2+ license:bsd-3))))
 
 ;; Tier 2
 ;;
