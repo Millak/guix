@@ -851,6 +851,46 @@ including SSL/TLS, X.509 certificates, SASL, OpenPGP, S/MIME CMS, and smart
 cards.")
     (license license:lgpl2.1+)))
 
+(define-public kommit
+  (package
+    (name "kommit")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/"
+                                  name "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0vp9d1x01na28p6smbd6spx14bjnzilr2bjsd380h1d17b9cm3hy"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E"
+                             "(difftest|clonedialogtest|overlaytest)")))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kxmlgui
+           kio
+           ktextwidgets
+           ktexteditor
+           ksyntaxhighlighting))
+    (home-page "https://apps.kde.org/kommit/")
+    (synopsis "Git client for KDE")
+    (description
+     "Kommit is a git client for KDE.")
+    (license license:gpl3+)))
+
 (define-public kopeninghours
   (package
     (name "kopeninghours")
