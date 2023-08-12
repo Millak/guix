@@ -227,6 +227,62 @@ It comes with a fast search, advanced archiving functionality and an internal
 browser for easy news reading.")
     (license license:gpl2+)))
 
+(define-public gwenview
+  (package
+    (name "gwenview")
+    (version "23.04.3")
+    (source
+     (origin
+        (method url-fetch)
+        (uri (string-append "mirror://kde/stable/release-service/" version
+                            "/src/gwenview-" version ".tar.xz"))
+        (sha256
+         (base32 "0vijsq4174p4asdjq47bzdp2xkfn8hpg7b4dgp3yvapfxwjgp148"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E"
+                             "(placetreemodeltest|historymodeltest|contextmanagertest|urlutilstest)")))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools pkg-config))
+    (inputs
+     (list baloo
+           cfitsio
+           exiv2
+           kactivities
+           kcolorpicker
+           kguiaddons
+           kiconthemes
+           kimageannotator
+           kio
+           kitemmodels
+           knotifications
+           kparts
+           lcms
+           libjpeg-turbo
+           libkdcraw
+           libpng
+           libtiff
+           phonon
+           purpose
+           qtimageformats
+           qtsvg-5
+           qtwayland-5
+           qtx11extras
+           wayland
+           wayland-protocols
+           zlib))
+    (home-page "https://userbase.kde.org/Gwenview")
+    (synopsis "Image viewer for KDE")
+    (description
+     "Gwenview is an image viewer for KDE.  It also provides image editing and
+annotating features.")
+    (license license:gpl2+)))
+
 (define-public kdenlive
   (package
     (name "kdenlive")
