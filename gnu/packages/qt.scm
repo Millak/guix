@@ -2206,12 +2206,6 @@ module that provides platform integration: native dialogs, menus and menu bars,
 and tray icons.  It falls back to Qt Widgets when a native implementation is
 not available.")))
 
-(define-public qtquickcontrols2
-  ;; qtquickcontrols2 still exist, but was merged into qtdeclarative.
-  ;; Unfortunately that hasn't been well communicated at all (see:
-  ;; https://bugreports.qt.io/browse/QTBUG-79454).
-  (deprecated-package "qtquickcontrols2" qtdeclarative))
-
 (define-public qtgraphicaleffects
   (package
     (inherit qtsvg-5)
@@ -3445,7 +3439,7 @@ instances.")
             ;; installation prefix.
             (lambda _
               (invoke "make" "sub-src-install_subtargets"))))))
-    (inputs (list python qtdeclarative qtquickcontrols2 qtsvg))
+    (inputs (list python qtdeclarative qtsvg))
     (home-page "https://thp.io/2011/pyotherside/")
     (synopsis "Qt plugin providing access to a Python 3 interpreter from QML")
     (description "Pyotherside is a Qt plugin providing access to a Python 3
