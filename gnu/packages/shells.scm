@@ -21,6 +21,7 @@
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -856,7 +857,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -869,7 +870,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1yy4523lbwkb0abnnvp4v08nv94isxb16wjryrp820idb90c1zfb"))))
+        (base32 "01b67dq56iam44d7c81ba9w62jjnjx2z7wm928rkc1ff6bacm37r"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary
