@@ -1488,6 +1488,7 @@ on top of Baloo.")
                               'spectacle)
                              ;; kde-gtk-config ;; TODO
 
+                             kwayland-integration
                              plasma-firewall
                              plasma-integration
                              plasma-nm
