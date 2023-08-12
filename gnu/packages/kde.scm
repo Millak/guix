@@ -60,6 +60,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -71,6 +72,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
@@ -78,10 +80,13 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mp3)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -90,6 +95,8 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages samba)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages version-control)
@@ -466,21 +473,39 @@ illustrate project schedules.")
                               (setenv "HOME" (getcwd))
                               (setenv "TMPDIR" (getcwd))
                               (invoke "ctest" "-E" "(thumbnailtest|testkioarchive)")))))))
-    (native-inputs (list extra-cmake-modules dbus kdoctools qttools-5))
-    (inputs (list karchive
+    (native-inputs (list extra-cmake-modules dbus kdoctools pkg-config qttools-5))
+    ;; TODO: libappimage, kdsoap-ws-discovery-client
+    (inputs (list gperf
+                  imath
+                  kactivities
+                  kactivities-stats
+                  karchive
+                  kbookmarks
                   kconfig
                   kconfigwidgets
                   kcoreaddons
-                  kdbusaddons
-                  ki18n
                   kdnssd
-                  kio
-                  solid
-                  kbookmarks
+                  kdbusaddons
+                  kdsoap
                   kguiaddons
+                  ki18n
+                  kio
                   ksyntaxhighlighting
+                  libimobiledevice
+                  libkexiv2
+                  libmtp
+                  libplist
+                  libssh
+                  libtirpc
+                  openexr
+                  phonon
                   qtbase-5
-                  qtsvg-5))
+                  qtsvg-5
+                  samba
+                  shared-mime-info
+                  solid
+                  taglib
+                  zlib))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Additional components to increase the functionality of KIO")
     (description
