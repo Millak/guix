@@ -52,7 +52,8 @@
   #:use-module (gnu packages vnc)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xiph)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public choqok
   (package
@@ -112,6 +113,48 @@ Other notable features include:
 @item Support for automatic shortening urls with more than 30 characters.
 @item Support for configuring status lists appearance.
 @end itemize")
+    (license license:gpl3+)))
+
+(define-public falkon
+  (package
+    (name "falkon")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/falkon-" version ".tar.xz"))
+       (sha256
+        (base32
+         "11r1iwimdzabfah68gsvw6xi67cj539anqa6s1rg33agsi5y56d3"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E"
+                             "(locationbartest|qmltabsapitest)")))))))
+    (native-inputs
+     (list extra-cmake-modules pkg-config qttools-5))
+    (inputs
+     (list karchive
+           ki18n
+           kio
+           kwallet
+           openssl
+           purpose
+           qtquickcontrols-5
+           qtsvg-5
+           qtwebengine-5
+           qtx11extras
+           qtwayland-5
+           xcb-util))
+    (home-page "https://www.falkon.org/")
+    (synopsis "Qt-based web browser for KDE")
+    (description
+     "Falkon is is a Qt-based web browser for  KDE.")
     (license license:gpl3+)))
 
 (define-public kget
