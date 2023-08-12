@@ -685,15 +685,16 @@ coverages using a SpatiaLite DBMS.")
 (define-public libspatialite
   (package
     (name "libspatialite")
-    (version "5.0.1")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.gaia-gis.it/gaia-sins/libspatialite-"
+       (uri (string-append "https://www.gaia-gis.it/gaia-sins/"
+                           "libspatialite-sources/libspatialite-"
                            version ".tar.gz"))
        (sha256
         (base32
-         "164y82rw2lrp5glfc0rkn7n6xvx5dvlgmh7bb7815067251wkjzf"))))
+         "102hc18fvwr1kw8aap53zqi8r0l52b8wa00lvlbf1zys979jvgj3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
