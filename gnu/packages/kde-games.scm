@@ -27,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system qt)
+  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
@@ -1586,3 +1587,56 @@ control of the board by capturing or adding to one square.
 
 This package is part of the KDE games module.")
     (license (list license:gpl2+ license:fdl1.2+))))
+
+(define-public kde-games
+  (package
+    (name "kde-games")
+    (version "23.04.3")
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     ;; TODO: kpat, klickety, katomic, knights.
+     (list bomber
+           bovo
+           granatier
+           kajongg
+           kapman
+           kblackbox
+           kblocks
+           kbounce
+           kbreakout
+           kdiamond
+           kfourinline
+           kgoldrunner
+           kigo
+           killbots
+           kiriki
+           kjumpingcube
+           klines
+           kmahjongg
+           kmines
+           knavalbattle
+           knetwalk
+           kolf
+           kollision
+           konquest
+           kreversi
+           kshisen
+           ksirk
+           ksnakeduel
+           kspaceduel
+           ksquares
+           ksudoku
+           ktuberling
+           kubrick
+           lskat
+           palapeli
+           picmi))
+    (home-page "https://apps.kde.org/categories/games/")
+    (synopsis "KDE Games")
+    (description "This metapackage includes a collection of games provided
+with the official release of KDE.")
+    (license
+     (list license:gpl2+ license:lgpl2.0+ license:gpl3+ license:fdl1.2+))))
