@@ -44160,8 +44160,8 @@ font installation path (@file{~/.guix-home/profile/share/fonts}).  If
 you configure this service directly, be sure to include the above
 directory.
 
-A typical extension for adding an additional font directory and setting
-a font as the default monospace font might look like this:
+Here's how you'd extend it to include fonts installed with the Nix
+package manager, and to prefer your favourite monospace font:
 
 @lisp
 (simple-service 'additional-fonts-service
