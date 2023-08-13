@@ -5022,6 +5022,7 @@ in a digital read-out.")
            python-2                            ;'perf' links against libpython
            elfutils
            libiberty                 ;used alongside BDF for symbol demangling
+           libtraceevent
            libunwind                 ;better stack walking
            numactl                   ;for 'perf bench numa mem'
            ;; Documentation.
