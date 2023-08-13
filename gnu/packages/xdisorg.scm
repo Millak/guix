@@ -1117,7 +1117,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.68")
+    (version "5.72")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "http://sillycycle.com/xlock/"
@@ -1128,7 +1128,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                                         "xlockmore-" version ".tar.xz")))
               (sha256
                (base32
-                "0vndfwccnvkaaraprjam8pmx0aj55va0ag64q6snxw83nbf1ywrh"))))
+                "0wn77ri29rhk1w3wik2hpqb8lks1pyqzdk6d583mawxfcxcrf4fm"))))
     (build-system gnu-build-system)
     (arguments
      (list
