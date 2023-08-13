@@ -54,6 +54,7 @@
       #:configure-flags
       #~(list "--with-screen=ncurses"
               "--enable-aspell"
+              "--disable-configure-args" ; don't keep superfluous references
               (string-append "PERL_FOR_BUILD=" ; to build .hlp files
                              #$(this-package-native-input "perl") "/bin/perl")
               (string-append "PERL="    ; for run-time helpers, mainly VFS
