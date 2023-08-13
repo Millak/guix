@@ -909,7 +909,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 libsm
                 libxcb
                 libxext
-                xcb-util-cursor)))
+                xcb-util-cursor
+                `(,zstd "lib"))))
     (native-search-paths
      (list (search-path-specification
             (variable "QMAKEPATH")
