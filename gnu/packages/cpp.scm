@@ -783,7 +783,7 @@ lock-free fixed size queue written in C++11.")
 (define-public gperftools
   (package
     (name "gperftools")
-    (version "2.10")
+    (version "2.11")
     (source
      (origin
        (method git-fetch)
@@ -791,7 +791,7 @@ lock-free fixed size queue written in C++11.")
              (url "https://github.com/gperftools/gperftools")
              (commit (string-append "gperftools-" version))))
        (sha256
-        (base32 "0s9qhx940s8q6glc8sw74k5gs8hdhjfigq20zci92qawgm7zsicm"))
+        (base32 "1mwsa4y696m8zjya0k7xzr9vsgb24dq4aq13m21hb5ygy7nh47id"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
