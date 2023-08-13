@@ -34,7 +34,6 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
@@ -108,6 +107,19 @@
      (sha256
       (base32 "0jaywb43jfv6kzyz540k02mxdgw1shc6hn7kia21alssszkilh4r"))))
   (build-system haskell-build-system)
+  (arguments
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+      (add-after 'install 'install-extra-documentation
+        (lambda _
+          (install-file "glirc.1"
+                        (string-append #$output "/share/man/man1"))
+          ;; The man page is very terse and punts to the GitHub wiki for real
+          ;; information.  Some of that is also in the README, so install it.
+          (install-file "README.md"
+                        (string-append #$output "/share/doc/"
+                                       #$name "-" #$version)))))))
   (native-inputs
    (list ghc-hunit))
   (inputs
@@ -136,9 +148,11 @@
   (home-page "https://github.com/glguy/irc-core")
   (synopsis "Console IRC client")
   (description
-   "Glirc is a console IRC client with an emphasis on providing dynamic views
-into the model of your IRC connections.  All views and transformation are
-dynamic and don't change the underlying model.")
+   "Glirc is a console IRC client that focuses on providing both high-detail
+and concise views of an IRC connection.  All views and transformation are
+dynamic and don't change the underlying model.  It also provides advanced
+line-editing features including syntax-highlighting, multi-line buffering,
+and argument placeholders.")
   (license license:isc)))
 
 (define-public quassel
@@ -395,19 +409,23 @@ for the IRCv3 protocol.")
 (define-public catgirl
   (package
     (name "catgirl")
-    (version "2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://git.causal.agency/catgirl/snapshot/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "13pfphcfkdzqfb4x7w21xp6rnmg3ix9f39mpqmxxzg15ys1gp2x6"))))
+    (version "2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.causal.agency/catgirl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r1h10qdhhgy3359ndbjh269daivm126qc0c23db7bffv0xs4bff"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))))
+     (list
+      #:tests? #f                       ; no tests
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              (string-append "CC=" #$(cc-for-target)))))
     (native-inputs
      (list universal-ctags pkg-config))
     (inputs

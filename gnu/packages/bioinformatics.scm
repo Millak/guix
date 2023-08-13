@@ -7184,22 +7184,22 @@ sequences).")
        #:make-flags (list "CC=gcc")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           ;; The bootstrap script is missing a shebang.
+           (lambda _
+             (invoke "bash" "./bootstrap.sh")))
          (add-after 'unpack 'fix-includes
            (lambda _
              (substitute* '("src/mash/Sketch.cpp"
                             "src/mash/CommandFind.cpp"
                             "src/mash/CommandScreen.cpp")
                (("^#include \"kseq\\.h\"")
-                "#include \"htslib/kseq.h\""))
-             #t))
+                "#include \"htslib/kseq.h\""))))
          (add-after 'fix-includes 'use-c++14
            (lambda _
-             ;; capnproto 0.7 requires c++14 to build
-             (substitute* "configure.ac"
-               (("c\\+\\+11") "c++14"))
-             (substitute* "Makefile.in"
-               (("c\\+\\+11") "c++14"))
-             #t)))))
+             ;; capnproto 1.0 requires c++14 to build.
+             (substitute* (list "configure.ac" "Makefile.in")
+               (("c\\+\\+11") "c++14")))))))
     (native-inputs
      (list autoconf))
     (inputs
@@ -8432,7 +8432,7 @@ accessed/downloaded on demand across HTTP.")
     (inputs
      (list zlib lapack))
     (native-inputs
-     (list unzip))
+     (list unzip gcc-8))
     (home-page "http://pngu.mgh.harvard.edu/~purcell/plink/")
     (synopsis "Whole genome association analysis toolset")
     (description
@@ -15057,11 +15057,11 @@ activity prediction from transcriptomics data, and its R implementation
       (license license:expat))))
 
 (define-public r-liana
-  (let ((commit "efb1249af46f576d1d620956053cfa93b2cee961")
+  (let ((commit "10d81773e0874de676eb106ce56e3cf9d4fe01d3")
         (revision "1"))
     (package
       (name "r-liana")
-      (version (git-version "0.1.5" revision commit))
+      (version (git-version "0.1.11" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -15070,13 +15070,13 @@ activity prediction from transcriptomics data, and its R implementation
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0z645k26kqrfj5f1s412vwclw1q47h1zfxxrh9ijr30pxhpv6cv0"))))
+                  "0b0m8i9kava36s3cn6vnn5vmiwvqwxmcq8jacy6ccshsji3kgp09"))))
       (properties `((upstream-name . "liana")))
       (build-system r-build-system)
       (arguments
        (list
         #:phases
-        `(modify-phases %standard-phases
+        '(modify-phases %standard-phases
            ;; This is needed to find ~/.config/OmnipathR/omnipathr.yml
            (add-after 'unpack 'set-HOME
              (lambda _ (setenv "HOME" "/tmp"))))))

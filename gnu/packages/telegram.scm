@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
+;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -792,3 +793,30 @@ formerly a part of telegram-cli, but now being maintained separately.")
     (synopsis "Telegram Terminal Application")
     (description "TgCli is a telegram client to automate repetitive tasks.")
     (license license:asl2.0)))
+
+(define-public tgs2png
+  (let ((commit "25c15b7c2ca3b1a580a383d9d3cb13bf8531d04a")
+        (revision "0"))
+    (package
+      (name "tgs2png")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zevlg/tgs2png")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0camvzapkfvr9v0nkk96n26rdmw0g8wbpv41i5l03j6bzdgm4myl"))))
+      (build-system cmake-build-system)
+      (native-inputs (list pkg-config))
+      (inputs (list libpng rlottie))
+      (arguments
+       `(#:tests? #f))                            ;no tests
+      (home-page "https://github.com/zevlg/tgs2png")
+      (synopsis "Convert Telegram's TGS format into PNG images")
+      (description
+       "This program converts Telegram's animated stickers in TGS format into
+a series of PNG images.")
+      (license license:gpl3+))))

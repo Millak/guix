@@ -4422,7 +4422,7 @@ and Numpy.")
 (define-public python-pyro-ppl
   (package
     (name "python-pyro-ppl")
-    (version "1.8.1")
+    (version "1.8.6")
     ;; The sources on pypi don't include tests.
     (source
      (origin
@@ -4432,7 +4432,7 @@ and Numpy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ns20mr8qgjshzbplrfzaz1xhb9ldbgvrj2rzlsxvns2bi1ddyl5"))))
+        (base32 "0n1vsih99pvswcaygdxkc6kq6r48ny130z6ca8pp3281396r2ykw"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

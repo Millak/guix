@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -37,6 +37,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,24 +55,24 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages engineering)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix gexp)
-  #:use-module (guix git-download)
-  #:use-module (guix svn-download)
-  #:use-module (guix monads)
-  #:use-module (guix store)
-  #:use-module (guix utils)
-  #:use-module ((srfi srfi-1) #:hide (zip))
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix monads)
+  #:use-module (guix packages)
+  #:use-module (guix store)
+  #:use-module (guix svn-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -84,12 +85,10 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
-  #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
-  #:use-module (gnu packages gawk)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
@@ -99,6 +98,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fpga)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages geo)
@@ -114,19 +114,21 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)               ;FIXME: for pcb
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages m4)
-  #:use-module (gnu packages maths)
   #:use-module (gnu packages man)
-  #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages openkinect)
+  #:use-module (gnu packages openkinect)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -150,20 +152,20 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages time)
-  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages tex)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
-  #:use-module (gnu packages xml)
-  #:use-module (gnu packages xiph)
-  #:use-module (gnu packages openkinect)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg)
+  #:use-module ((srfi srfi-1) #:hide (zip)))
 
 (define-public librecad
   (package
@@ -713,58 +715,58 @@ multipole-accelerated algorithm.")
   (package
     (name "fritzing")
     (version "0.9.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fritzing/fritzing-app")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fritzing/fritzing-app")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "fritzing-parts-db")
-                               "parts")
-             ;; Use system libgit2 and boost.
-             (substitute* "phoenix.pro"
-               (("^LIBGIT_STATIC.*")
-                (string-append "LIBGIT2INCLUDE=" (assoc-ref inputs "libgit2") "/include\n"
-                               "LIBGIT2LIB=" (assoc-ref inputs "libgit2") "/lib\n"
-                               "INCLUDEPATH += $$LIBGIT2INCLUDE\n"
-                               "LIBS += -L$$LIBGIT2LIB -lgit2\n"))
-               (("^.*pri/libgit2detect.pri.") ""))
-             ;; Trick the internal mechanism to load the parts
-             (substitute* "src/version/partschecker.cpp"
-               ((".*git_libgit2_init.*")
-                "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
-
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "qmake"
-                       (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," out "/lib")
-                       (string-append "PREFIX=" out)
-                       "phoenix.pro")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Integrate parts library
+              (copy-recursively
+               (string-append #$(this-package-native-input "fritzing-parts")
+                              "/share/library")
+               "parts")
+              ;; Use system libgit2 and boost.
+              (substitute* "phoenix.pro"
+                (("^LIBGIT_STATIC.*")
+                 (string-append
+                  "LIBGIT2INCLUDE=" #$(this-package-input "libgit2") "/include\n"
+                  "LIBGIT2LIB=" #$(this-package-input "libgit2") "/lib\n"
+                  "INCLUDEPATH += $$LIBGIT2INCLUDE\n"
+                  "LIBS += -L$$LIBGIT2LIB -lgit2\n"))
+                (("^.*pri/libgit2detect.pri.") ""))
+              ;; Trick the internal mechanism to load the parts
+              (substitute* "src/version/partschecker.cpp"
+                ((".*git_libgit2_init.*")
+                 "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
+              ;; XXX: NixOS and Gento have a phase where they generate part
+              ;; SQLite library, have proper investigation if it's required in
+              ;; Guix as well.
+              (invoke "qmake"
+                      (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," #$output "/lib")
+                      (string-append "PREFIX=" #$output)
+                      "phoenix.pro"))))))
+    (native-inputs
+     (list fritzing-parts))
     (inputs
-     `(("qtbase" ,qtbase-5)
-       ("qtserialport" ,qtserialport)
-       ("qtsvg-5" ,qtsvg-5)
-       ("libgit2" ,libgit2)
-       ("boost" ,boost)
-       ("zlib" ,zlib)
-       ("fritzing-parts-db"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/fritzing/fritzing-parts")
-                 (commit (string-append "release_" version))))
-           (file-name (git-file-name "fritzing-parts" version))
-           (sha256
-            (base32
-             "0wsvn57v6n0ygnhk2my94rrfzb962z1cj4d1xmp1farwck3811h6"))))))
+     (list boost
+           libgit2
+           qtbase-5
+           ;; TODO: Needs to be renamed to qtserialport-5. when version 6 is
+           ;; packed.
+           qtserialport
+           qtsvg-5
+           zlib))
     (home-page "https://fritzing.org")
     (synopsis "Electronic circuit design")
     (description
@@ -777,6 +779,43 @@ ready for production.")
     ;; Documentation and parts are released under CC-BY-SA 3.0; source code is
     ;; released under GPLv3+.
     (license (list license:gpl3+ license:cc-by-sa3.0))))
+
+(define-public fritzing-parts
+  ;; XXX: Release of the parts stopped in 2016 and it looks like develop
+  ;; branch has latest changes comparing to other branches.
+  (let ((commit "d61d63de9294343b1b6e86f149e78e4b1d3a0009")
+        (revision "0"))
+    (package
+      (name "fritzing-parts")
+      (version (git-version "0.9.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fritzing/fritzing-parts")
+               (commit commit)))
+         (file-name (git-file-name "fritzing-parts" version))
+         (sha256
+          (base32 "0g39ja1aqw5qx8alf61m6zcy6y78j9ky556x6x1cnd6g7kkzd861"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("." "share/library/"
+             #:exclude-regexp (".github.*"
+                               ".gitignore"
+                               "CONTRIBUTING.md"
+                               "LICENSE.txt"
+                               "README.md")))
+        #:modules '(((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build copy-build-system)
+                    (guix build utils)
+                    (ice-9 match))))
+      (home-page "https://fritzing.org")
+      (synopsis "Electronic components (parts library) for use in the Fritzing app")
+      (description "This package contains all part definitions that are
+required for Fritzing app.")
+      (license license:cc-by-sa3.0))))
 
 (define-public qelectrotech
   (package
@@ -2242,7 +2281,11 @@ parallel computing platforms.  It also supports serial execution.")
              #t)))))
     (inputs
      (list coreutils
-           gcc-toolchain
+
+           ;; Lazily resolve the gcc-toolchain to avoid a circular dependency.
+           (module-ref (resolve-interface '(gnu packages commencement))
+                       'gcc-toolchain)
+
            guile-2.2
            perl
            pkg-config
@@ -2406,7 +2449,7 @@ simulation.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/radareorg/cutter")
+             (url "https://github.com/rizinorg/cutter")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -2436,7 +2479,7 @@ simulation.")
            ;; Depends on radare2 4.5.1 officially, builds and works fine with
            ;; radare2 5.0.0 but fails to build with radare2 5.1.1.
            radare2-for-cutter))
-    (home-page "https://github.com/radareorg/cutter")
+    (home-page "https://cutter.re")
     (synopsis "GUI for radare2 reverse engineering framework")
     (description "Cutter is a GUI for radare2 reverse engineering framework.
 Its goal is making an advanced andcustomizable reverse-engineering platform
@@ -2687,7 +2730,7 @@ comments.")))
 (define-public freecad
   (package
     (name "freecad")
-    (version "0.20.2")
+    (version "0.21.0")
     (source
      (origin
        (method git-fetch)
@@ -2696,7 +2739,7 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wsfz2jqfhmqshyr1n4qxcc3c6a96gyll4h34vn2zzvvcnncn9rb"))))
+        (base32 "1i1wv3swnnimmn3kwphb2fcmsc64z96rcg7fhfsgqxcbyrygw6w7"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen
@@ -2710,6 +2753,7 @@ comments.")))
            coin3D
            double-conversion
            eigen
+           fmt
            fontconfig
            freetype
            gl2ps

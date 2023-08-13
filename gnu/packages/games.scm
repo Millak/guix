@@ -4684,14 +4684,14 @@ world}, @uref{http://evolonline.org, Evol Online} and
 (define openttd-engine
   (package
     (name "openttd-engine")
-    (version "13.3")
+    (version "13.4")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://cdn.openttd.org/openttd-releases/"
                                  version "/openttd-" version "-source.tar.xz"))
              (sha256
               (base32
-               "14kiksw9qb37ryg6xkq4gahpvvd5yxwqz21sqws525k7zg91dyma"))))
+               "0vql1l25ym36vm4g76xl38kijf2gzb1m1x3ri0cf4n7y3fhfn79a"))))
     (build-system cmake-build-system)
     (inputs
      (list allegro
@@ -4789,7 +4789,7 @@ OpenGFX provides you with...
 (define openttd-opensfx
   (package
     (name "openttd-opensfx")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
@@ -4797,8 +4797,7 @@ OpenGFX provides you with...
              "https://cdn.openttd.org/opensfx-releases/"
              version "/opensfx-" version "-source.tar.xz"))
        (sha256
-        (base32
-         "0aym026lg0r7dp3jxxs9c0rj8lwy1fz3v9hmk3mml6sycsg3fv42"))))
+        (base32 "0p336bn6brnbyrf537x36ad9rfz16cjwyzwws4lmfvnql8ycpjj3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list catcodec
@@ -7979,7 +7978,7 @@ original.")
 (define xonotic-data
   (package
     (name "xonotic-data")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
@@ -7987,7 +7986,7 @@ original.")
                            version ".zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1r9pdrrki7mkdw99zh9m7911fqldsfdnl0nrp5cv1bk2hcism4hg"))))
+        (base32 "0kcnps65k81sm56s5dclahvllilnir3ix9kf5xr9jx0fh26hz1ah"))))
     (build-system trivial-build-system)
     (native-inputs (list unzip))
     (arguments

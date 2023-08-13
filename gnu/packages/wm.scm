@@ -63,6 +63,7 @@
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -192,6 +193,27 @@
     (description "bspwm is a tiling window manager that represents windows as
 the leaves of a full binary tree.")
     (license license:bsd-2)))
+
+(define-public cage
+  (package
+    (name "cage")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cage-kiosk/cage")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "11sg9x08zl2nr7a723h462knz5lf58sgvkhv1mgc9z3hhkhvbsja"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config scdoc))
+    (inputs (list wayland wlroots libxkbcommon))
+    (home-page "https://github.com/cage-kiosk/cage")
+    (synopsis "Wayland kiosk")
+    (description "This package provides a Wayland @dfn{kiosk}, which runs a
+single, maximized application.")
+    (license license:expat)))
 
 (define-public herbstluftwm
   (package

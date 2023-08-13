@@ -1179,8 +1179,8 @@ between hosts and entries in the password store.")
          (uri (string-append "http://www.openwall.com/john/j/john-"
                              official-version "-jumbo-" jumbo-version ".tar.xz"))
          (sha256
-          (base32
-           "0fvz3v41hnaiv1ggpxanfykyfjq79cwp9qcqqn63vic357w27lgm"))))
+          (base32 "0fvz3v41hnaiv1ggpxanfykyfjq79cwp9qcqqn63vic357w27lgm"))
+         (patches (search-patches "john-the-ripper-jumbo-with-gcc-11.patch"))))
       (build-system gnu-build-system)
       (native-inputs
        (list perl))

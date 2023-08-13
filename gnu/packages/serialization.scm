@@ -584,7 +584,7 @@ object, without whitespace.")
 (define-public capnproto
   (package
     (name "capnproto")
-    (version "0.8.0")
+    (version "1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -597,20 +597,13 @@ object, without whitespace.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'do-not-require-/etc/services
-           (lambda _
-             ;; Workaround for test that tries to resolve port name from
-             ;; /etc/services, which is not present in build environment.
-             (substitute* "src/kj/async-io-test.c++" ((":http") ":80"))
-             #t))
          (add-before 'check 'use-tmp-for-temporary-files
            (lambda _
              ;; Use /tmp for temporary files, as the default /var/tmp directory
              ;; doesn't exist.
              (substitute* "src/kj/filesystem-disk-test.c++"
                (("VAR\\_TMP \"/var/tmp\"")
-                "VAR_TMP \"/tmp\""))
-             #t)))))
+                "VAR_TMP \"/tmp\"")))))))
     (home-page "https://capnproto.org")
     (synopsis "Capability-based RPC and serialization system")
     (description

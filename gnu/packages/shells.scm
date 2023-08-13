@@ -21,6 +21,7 @@
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -602,36 +603,36 @@ use of experts and novices alike.")
     (license license:bsd-2)))
 
 (define-public scsh
-  (let ((commit "114432435e4eadd54334df6b37fcae505079b49f")
-        (revision "1"))
+  (let ((commit "4acf6e4ed7b65b46186ef0c9c2a1e10bef8dc052")
+        (revision "0"))
     (package
       (name "scsh")
-      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
+      (version (git-version "0.7" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/scheme/scsh")
                (commit commit)))
-         (file-name (string-append name "-" version "-checkout"))
+         (file-name (git-file-name name version))
          (sha256
           (base32
-           "1ghk08akiz7hff1pndi8rmgamgcrn2mv9asbss9l79d3c2iaav3q"))
+           "1czrp808v5gs0ci5lmkp3wr3gfkrb3vd5b2iw2hz1bpqgaf6bxpv"))
          (patches (search-patches "scsh-nonstring-search-path.patch"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:test-target "test"
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'replace-rx
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((rx (assoc-ref inputs "scheme48-rx"))
-                      (rxpath (string-append rx "/share/scheme48-"
-                                             ,(package-version scheme48)
+       (list
+        #:test-target "test"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'replace-rx
+              (lambda _
+                (let ((rxpath (string-append #$scheme48-rx
+                                             "/share/scheme48-"
+                                             #$(package-version scheme48)
                                              "/rx")))
-                 (delete-file-recursively "rx")
-                 (symlink rxpath "rx"))
-               #t)))))
+                  (delete-file-recursively "rx")
+                  (symlink rxpath "rx")))))))
       (inputs
        (list scheme48 scheme48-rx))
       (native-inputs
@@ -788,26 +789,24 @@ The OpenBSD Korn Shell is a cleaned up and enhanced ksh.")
 (define-public loksh
   (package
     (name "loksh")
-    (version "6.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dimkr/loksh")
-             (commit version)
-             ;; Include the ‘lolibc’ submodule, a static compatibility library
-             ;; created for and currently used only by loksh.
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0x33plxqhh5202hgqidgccz5hpg8d2q71ylgnm437g60mfi9z0px"))))
+    (version "7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dimkr/loksh")
+                    (commit version)
+                    ;; Include the ‘lolibc’ submodule, a static compatibility library
+                    ;; created for and currently used only by loksh.
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1miydvb79wagckchinp189l8i81f08lqajg5jngn77m4x4gwjf3n"))))
     (build-system meson-build-system)
-    (inputs
-     (list ncurses))
-    (native-inputs
-     (list pkg-config))
+    (inputs (list ncurses))
+    (native-inputs (list pkg-config))
     (arguments
-     `(#:tests? #f))                    ; no tests included
+     `(#:tests? #f)) ;no tests included
     (home-page "https://github.com/dimkr/loksh")
     (synopsis "Korn Shell from OpenBSD")
     (description
@@ -858,7 +857,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -871,7 +870,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1yy4523lbwkb0abnnvp4v08nv94isxb16wjryrp820idb90c1zfb"))))
+        (base32 "01b67dq56iam44d7c81ba9w62jjnjx2z7wm928rkc1ff6bacm37r"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary

@@ -20,6 +20,7 @@
   #:use-module (guix platform)
   #:use-module (guix records)
   #:export (powerpc-linux
+            powerpc64-linux
             powerpc64le-linux))
 
 (define powerpc-linux
@@ -28,6 +29,13 @@
    (system "powerpc-linux")
    (linux-architecture "powerpc")
    (glibc-dynamic-linker "/lib/ld.so.1")))
+
+(define powerpc64-linux
+  (platform
+   (target "powerpc64-linux-gnu")
+   (system #f)                                    ;not supported
+   (linux-architecture "powerpc")
+   (glibc-dynamic-linker "/lib/ld64.so.1")))
 
 (define powerpc64le-linux
   (platform

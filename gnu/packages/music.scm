@@ -3780,7 +3780,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.8.5")
+    (version "2.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3788,7 +3788,7 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "1kjl7iqgvvrv7mygsb7491cz872gm334489nyj0v8b79bxnzghdi"))))
+                "0afiziaq49sq1dx5r3qis4ymhhkrqlrkfnb6f7gcksj0kwljvsw9"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -3805,7 +3805,13 @@ event-based scripts for scrobbling, notifications, etc.")
                 (("pyfpcalc")
                  (string-append
                   "pyfpcalc', '"
-                  (assoc-ref inputs "chromaprint") "/bin/fpcalc"))))))))
+                  (assoc-ref inputs "chromaprint") "/bin/fpcalc")))))
+          (add-before 'check 'delete-failing-test
+            (lambda _
+              ;; FIXME: This test fails in build environment.
+              ;; util/pipe.read_from_pipe:244: pipe reader exception:
+              ;; ERROR: Pipe doesn't exist
+              (delete-file "test/test_util_pipe.py"))))))
     (native-inputs
      (list gettext-minimal python-dateutil))
     (inputs
@@ -5122,7 +5128,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "4.5.0")
+    (version "5.5.0")
     (source
      (origin
        (method git-fetch)
@@ -5131,7 +5137,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j66b8y1pyka2im5hbwz6yh3hip0wsw7fa3kwl2212wq1y2a4ys1"))))
+        (base32 "0dl3gsmpc7b4hi97qri5d5rc3ikx639r3l1dy204p6dx8pwpv2ry"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -5159,6 +5165,7 @@ studio.")
            gstreamer
            gtk
            jack-1
+           json-glib
            ladspa
            libinstpatch
            libsamplerate

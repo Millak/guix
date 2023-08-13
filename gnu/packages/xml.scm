@@ -29,7 +29,7 @@
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
@@ -1457,20 +1457,23 @@ files.  It is designed to be fast and to handle large input files.")
 (define-public freexl
   (package
     (name "freexl")
-    (version "1.0.6")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.gaia-gis.it/gaia-sins/"
+                                  "freexl-sources/"
                                   "freexl-" version ".tar.gz"))
               (sha256
                (base32
-                "08pwj17l0lgp6zms9nmpawdxpvhzrslklbd53s4b430k7mxbbs1x"))))
+                "1w57w73gfj2niz9dn235hn5wsvxpdbj6sp5zxcg7rasqvvqharqp"))))
     (build-system gnu-build-system)
+    (inputs
+     (list expat minizip))
     (home-page "https://www.gaia-gis.it/fossil/freexl/index")
     (synopsis "Read Excel files")
     (description
-     "FreeXL is a C library to extract valid data from within an Excel (.xls)
-spreadsheet.")
+     "FreeXL is a C library to extract valid data from within an Excel
+(.xls, .xlsx) or LibreOffice (.ods) spreadsheet.")
     ;; Any of these licenses may be picked.
     (license (list license:gpl2+
                    license:lgpl2.1+

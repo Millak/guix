@@ -2177,7 +2177,7 @@ comparison and diagnostics.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.6.1")
+    (version "5.7.1")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -2186,7 +2186,7 @@ comparison and diagnostics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0in5lw55camvgd6b4hiw4gr11bdy96jc74z1gvsd0xj7cfxvc043"))))
+                "0ddb467qzwzzz3zhqbpks8n7mqqr7isskbirnxlfdmcwyyf4cq3q"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; tests are too computationally intensive

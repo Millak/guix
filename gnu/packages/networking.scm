@@ -256,7 +256,7 @@ protocols.")
 (define-public lcrq
   (package
     (name "lcrq")
-    (version "0.0.1")
+    (version "0.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -265,7 +265,7 @@ protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jf7x3zcdbz5b99qz7liw4i90hn9s457zr82n0r8g9qsi81a1d8c"))))
+                "13mfg866scvy557zrvjxjhkzam39h8d07s2w3fqbwhw6br6axkxk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -350,47 +350,45 @@ them in order to efficiently transfer a minimal amount of data.")
 (define-public libcamera
   (package
     (name "libcamera")
-    (version "0.0.0-1")
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "git://linuxtv.org/libcamera.git")
-         (commit "10be87fa7c3bfb097b21ca3d469c67e40c333f7e")))
+         (url "https://git.libcamera.org/libcamera/libcamera.git")
+         (commit (string-append "v" version))))
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0qgirhlalmk9f9v6piwz50dr2asb64rvbb9zb1vix7y9zh7m11by"))))
+        (base32 "06dj3dpfbayj61015n5kffin2g3hyys11ra0px2g4hmrznvdkhc9"))))
     (build-system meson-build-system)
-    (outputs '("out" "doc"))
+    (outputs '("out" "doc" "gst" "tools"))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:configure-flags
-       (list
-        "-Dv4l2=true"
-        ;; XXX: Requires bundled pybind11.
-        "-Dpycamera=disabled")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "test/meson.build"
-               (("\\['list-cameras',                    'list-cameras.cpp'\\],")
-                "")
-               ;; TODO: Why do the gstreamer tests fail.
-               (("^subdir\\('gstreamer'\\)")
-                ""))))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))))))))
+     (list #:glib-or-gtk? #t ; To wrap binaries and/or compile schemas
+           #:configure-flags
+           #~(list (string-append "-Dbindir="
+                                  (assoc-ref %outputs "tools") "/bin")
+                   "-Dtest=true" "-Dv4l2=true"
+                   ;; XXX: Requires bundled pybind11.
+                   "-Dpycamera=disabled")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'move-doc-and-gst
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (doc (assoc-ref outputs "doc"))
+                          (gst (assoc-ref outputs "gst")))
+                     (mkdir-p (string-append doc "/share"))
+                     (rename-file (string-append out "/share/doc")
+                                  (string-append doc "/share/doc"))
+                     (mkdir-p (string-append gst "/lib"))
+                     (rename-file
+                      (string-append out "/lib/gstreamer-1.0")
+                      (string-append gst "/lib/gstreamer-1.0"))))))))
     (native-inputs
-     (list graphviz                     ;for 'dot'
+     (list googletest
+           graphviz                     ;for 'dot'
            doxygen
            pkg-config
            python-wrapper

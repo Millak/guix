@@ -4689,7 +4689,7 @@ and RDP protocols.")
     (propagated-inputs
      ;; In Requires of dconf.pc.
      (list glib))
-    (home-page "https://developer.gnome.org/dconf/")
+    (home-page "https://wiki.gnome.org/action/show/Projects/dconf")
     (synopsis "Low-level GNOME configuration system")
     (description "Dconf is a low-level configuration system.  Its main purpose
 is to provide a backend to GSettings on platforms that don't already have
@@ -6734,7 +6734,7 @@ which can read a large number of file formats.")
 (define-public rhythmbox
   (package
     (name "rhythmbox")
-    (version "3.4.6")
+    (version "3.4.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/rhythmbox/"
@@ -6742,7 +6742,7 @@ which can read a large number of file formats.")
                                   "rhythmbox-" version ".tar.xz"))
               (sha256
                (base32
-                "0d5hbsdk2p8w567mfzy4kk8xn4d227hrbyy857li3r2mrq884mpr"))))
+                "0zps1k72n7yycw6djgilgdacwdi993xqh1sh9x9lr9n17z0mcv9g"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -6802,7 +6802,7 @@ which can read a large number of file formats.")
            libpeas
            libsecret
            libmtp
-           libsoup-minimal-2
+           libsoup-minimal
            libxml2
            lirc
            pango

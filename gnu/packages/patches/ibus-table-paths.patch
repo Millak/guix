@@ -1,0 +1,38 @@
+diff --git a/engine/ibus-engine-table.in b/engine/ibus-engine-table.in
+index e79d62a6cad4..675007204abd 100644
+--- a/engine/ibus-engine-table.in
++++ b/engine/ibus-engine-table.in
+@@ -24,8 +24,6 @@ prefix=@prefix@
+ exec_prefix=@prefix@
+ datarootdir=@datarootdir@
+ datadir=@datadir@
+-export IBUS_TABLE_LOCATION=@datarootdir@/ibus-table
+-export IBUS_TABLE_LIB_LOCATION=@libexecdir@
+ 
+ # Set this variable to something > 0 to get more debug output.
+ # (Debug output may show up in the log file and/or in the lookup table):
+diff --git a/engine/ibus-table-createdb.in b/engine/ibus-table-createdb.in
+index 91eb28b7cbe5..187dddf2c952 100644
+--- a/engine/ibus-table-createdb.in
++++ b/engine/ibus-table-createdb.in
+@@ -24,6 +24,4 @@ exec_prefix=@exec_prefix@
+ bindir=@bindir@
+ datarootdir=@datarootdir@
+ datadir=@datadir@
+-export IBUS_TABLE_DATA_DIR=@datarootdir@
+-export IBUS_TABLE_BIN_PATH=@bindir@
+ exec @PYTHON@ @datarootdir@/ibus-table/engine/tabcreatedb.py $@
+diff --git a/setup/ibus-setup-table.in b/setup/ibus-setup-table.in
+index 7f7405c37296..ae6f96921c56 100644
+--- a/setup/ibus-setup-table.in
++++ b/setup/ibus-setup-table.in
+@@ -22,9 +22,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ datarootdir=@datarootdir@
+-export IBUS_PREFIX=@prefix@
+-export IBUS_DATAROOTDIR=@datarootdir@
+-export IBUS_LOCALEDIR=@localedir@
+ cd @prefix@/share/ibus-table/setup/
+ exec @PYTHON@ main.py $@
+ 
