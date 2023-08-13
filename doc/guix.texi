@@ -31863,6 +31863,38 @@ Additional arguments to pass to the @command{varnishd} process.
 @end table
 @end deftp
 
+@subheading Whoogle Search
+@cindex Whoogle Search
+@uref{https://github.com/benbusby/whoogle-search, Whoogle Search} is a
+self-hosted, ad-free, privacy-respecting metasearch engine that collects
+and displays Google search results.
+
+@defvar whoogle-service-type
+Service type for Whoogle Search.
+@end defvar
+
+@deftp {Data Type} whoogle-configuration
+Data type representing Whoogle Search service configuration.
+
+@table @asis
+@item @code{package} (default: @code{whoogle-search})
+The Whoogle Search package to use.
+
+@item @code{host} (default: @code{"127.0.0.1"})
+The host address to run Whoogle on.
+
+@item @code{port} (default: @code{5000})
+The port where Whoogle will be exposed.
+
+@item @code{environment-variables} (default: @code{'()})
+A list of strings with the environment variables to configure Whoogle.
+You can consult
+@uref{https://github.com/benbusby/whoogle-search/blob/main/whoogle.template.env,
+its environment variables template} for the list of available options.
+
+@end table
+@end deftp
+
 @subsubheading Patchwork
 @cindex Patchwork
 Patchwork is a patch tracking system.  It can collect patches sent to a
