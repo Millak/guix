@@ -1966,6 +1966,30 @@ OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
 application without necessarily including a full web browser stack by using
 native APIs where it makes sense.")))
 
+(define-public qtlanguageserver
+  (package
+    (name "qtlanguageserver")
+    (version "6.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "196iicwpqca2ydpca41qs6aqxxq8ycknw6lm2v00h1w3m86frdbk"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'delete-installed-tests
+                          (lambda _
+                            (delete-file-recursively
+                             (string-append #$output "/tests")))))))
+    (inputs (list qtbase))
+    (home-page (package-home-page qtbase))
+    (synopsis "Implementation of the Language Server Protocol for Qt")
+    (description "This package provides an implementation of the Language
+Server Protocol (LSP) for Qt.")
+    (license (package-license qtbase))))
+
 (define-public qtlocation
   (package
     (inherit qtsvg-5)
