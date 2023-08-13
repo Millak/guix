@@ -1120,7 +1120,7 @@ HostData=lib/qt5
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
-(define-public qtimageformats
+(define-public qtimageformats-5
   (package (inherit qtsvg-5)
     (name "qtimageformats")
     (version "5.15.8")

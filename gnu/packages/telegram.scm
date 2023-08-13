@@ -517,7 +517,7 @@ Telegram project, for its use in telegram desktop client.")
            qrcodegen-cpp
            qtbase-5
            qtdeclarative-5
-           qtimageformats
+           qtimageformats-5
            qtsvg-5
            qtwayland-5
            range-v3
