@@ -547,7 +547,7 @@ completely compatible with Plain TeX.")
                ('synopsis (? string?))
                ('description (? string?))
                ('license
-                ('license:fsf-free "https://www.tug.org/texlive/copying.html")))
+                ('fsf-free "https://www.tug.org/texlive/copying.html")))
              #true)
             (_
              (begin
