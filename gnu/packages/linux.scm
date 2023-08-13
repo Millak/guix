@@ -9265,7 +9265,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.3.70")
+    (version "0.3.77")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9274,7 +9274,7 @@ types and interfaces and translates so that the X server can use them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n74rrbwymm89ri4daa4v092f4b81wrak4vg685xfz2wl89p64n6"))))
+                "11jdd9ljm6967cdp97qqf5fa02ad69kdgk3212ap5gfndky2h43m"))))
     (build-system meson-build-system)
     (arguments
      (list
