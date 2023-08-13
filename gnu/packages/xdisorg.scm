@@ -3552,7 +3552,7 @@ light filter or night light.")
 (define-public ydotool
   (package
     (name "ydotool")
-    (version "1.0.1")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -3561,7 +3561,7 @@ light filter or night light.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h19dh7kai0iikssr7sq0wfkh0sb18dylyfg7c3dkwc158cdg9cr"))))
+        (base32 "0y2n1r6hx0ar1yn636a7j4ywm17qqji84ryhdina3kriwx3sgmij"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))          ; no tests
     (native-inputs (list scdoc))
