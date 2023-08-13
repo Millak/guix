@@ -1813,7 +1813,10 @@ table inet filter {
     ct state { established, related } accept
 
     # allow from loopback
-    iifname lo accept
+    iif lo accept
+    # drop connections to lo not coming from lo
+    iif != lo ip daddr 127.0.0.1/8 drop
+    iif != lo ip6 daddr ::1/128 drop
 
     # allow icmp
     ip protocol icmp accept
