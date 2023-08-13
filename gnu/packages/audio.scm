@@ -779,6 +779,9 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
                                  libdir "/panners" ":"
                                  libdir "/surfaces" ":"
                                  libdir "/vamp" "\"]"))))))
+         (add-after 'build 'build-i18n
+           (lambda _
+             (invoke "python" "waf" "i18n")))
          (add-after 'install 'install-freedesktop-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
