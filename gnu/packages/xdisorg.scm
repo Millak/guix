@@ -275,7 +275,7 @@ program.")
 (define-public autorandr
   (package
     (name "autorandr")
-    (version "1.10.1")
+    (version "1.14")
     (home-page "https://github.com/phillipberndt/autorandr")
     (source
      (origin
@@ -285,7 +285,7 @@ program.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0msw9b1hdy3gbq9w5d04mfizhyirz1c648x84mlcbzl8salm7vpg"))))
+        (base32 "0yb0rnv37xymjhg54mk7zw3h9501f45ykc1754mxy1q3bm0fgva6"))))
     (build-system python-build-system)
     (native-inputs
      (list pkg-config))
