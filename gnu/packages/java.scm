@@ -1579,7 +1579,6 @@ blacklisted.certs.pem"
     (synopsis "JetBrains Java Runtime")
     (description "This package provides a Java runtime environment for
 and Java development kit.  It supports enhanced class redefinition (DCEVM),
-features optional JCEF, a framework for embedding Chromium-based browsers,
 includes a number of improvements in font rendering, keyboards support,
 windowing/focus subsystems, HiDPI, accessibility, and performance,
 provides better desktop integration and bugfixes not yet present in
@@ -1614,7 +1613,6 @@ OpenJDK.")
     (synopsis "JetBrains Java Runtime")
     (description "This package provides a Java runtime environment for
 and Java development kit.  It supports enhanced class redefinition (DCEVM),
-features optional JCEF, a framework for embedding Chromium-based browsers,
 includes a number of improvements in font rendering, keyboards support,
 windowing/focus subsystems, HiDPI, accessibility, and performance,
 provides better desktop integration and bugfixes not yet present in
