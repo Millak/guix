@@ -30302,6 +30302,27 @@ displays as you type thanks to Helm, though @command{notmuch-search} does the
 real search.")
     (license license:gpl3+)))
 
+(define-public emacs-notmuch-indicator
+  (package
+    (name "emacs-notmuch-indicator")
+    (version "1.0.1")
+    (home-page "https://git.sr.ht/~protesilaos/notmuch-indicator")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://elpa.gnu.org/packages/notmuch-indicator-" version
+                    ".tar"))
+              (sha256
+               (base32
+                "1n5k2ikk93mdwqqysf6l7gd8i6iazk8yvbqpf8xnz5zny248cc2x"))))
+    (build-system emacs-build-system)
+    (synopsis "Display a mode line indicator with @code{notmuch-count} output")
+    (description "This package renders an indicator with an email count of the
+@code{notmuch} index on the Emacs mode line.  The underlying mechanism is that of
+@code{notmuch-count}, which is used to find the number of items that match the
+given search terms.")
+    (license license:gpl3+)))
+
 (define-public emacs-notmuch-maildir
   (package
     (name "emacs-notmuch-maildir")
