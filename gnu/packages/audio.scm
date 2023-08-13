@@ -5936,14 +5936,14 @@ while still staying in time.")
 (define-public butt
   (package
     (name "butt")
-    (version "0.1.34")
+    (version "0.1.38")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/butt/butt/butt-"
                                   version "/butt-" version ".tar.gz"))
               (sha256
                (base32
-                "0zd1g1673pv8z437y34fllxska8dzpd7mygpham35pzwpdyc5c1p"))
+                "10i3xpxzccdl4pidiyymw9cfavhy50yhn7xi5bd77y91f2903kp9"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "src/butt.cpp"
@@ -5966,9 +5966,10 @@ while still staying in time.")
            (uri (string-append "https://danielnoethen.de/butt/butt-"
                                version "_manual.pdf"))
            (sha256
-            (base32 "0kadqzzbk25n0aqxgbqhg4mq4hsbjq44phzcx5qj1b8847yzz8si"))))))
+            (base32 "04aixxqshfj11ja3ifh0zvywl2mqzmymppcd0xj8sv0j7whjibaq"))))))
     (inputs
-     (list dbus
+     (list curl
+           dbus
            flac
            fltk
            lame
