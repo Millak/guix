@@ -2661,14 +2661,14 @@ temperature of the screen.")
 (define-public xsecurelock
   (package
     (name "xsecurelock")
-    (version "1.7.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/google/xsecurelock/releases"
                     "/download/v" version "/xsecurelock-" version ".tar.gz"))
               (sha256
-               (base32 "0s2q69g1xhvs18q2jhcval5vpa9j0kkrdv02r176vvxvdms7hhc7"))))
+               (base32 "1i7vhzysirr5kra15vd501b79k0jgs11lkb9ck3hx6vicxm204d3"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
