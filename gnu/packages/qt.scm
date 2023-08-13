@@ -1121,19 +1121,20 @@ HostData=lib/qt5
     (license (package-license qtbase))))
 
 (define-public qtimageformats-5
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtimageformats")
     (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-url name version))
-             (sha256
-              (base32
-               "0c6fq9zcw5hbkiny56wx2fbm123x14l7habydv6zhvnhn3rhwi31"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 (delete-file-recursively "src/3rdparty")))))
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "0c6fq9zcw5hbkiny56wx2fbm123x14l7habydv6zhvnhn3rhwi31"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "src/3rdparty")))))
     (native-inputs `())
     (inputs
      (list jasper
