@@ -2,6 +2,7 @@
 ;;; Copyright © 2014, 2016, 2018, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -208,7 +209,7 @@ modules that can be postloaded, of the soft dependencies of module FILE."
         (string-take filename extension)
         filename)))
 
-(define (dot-ko name compression)
+(define* (dot-ko name #:optional compression)
   (let ((suffix (match compression
                   ('xz   ".ko.xz")
                   ('gzip ".ko.gz")
