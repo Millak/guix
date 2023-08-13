@@ -1148,6 +1148,40 @@ HostData=lib/qt5
     (description "The QtImageFormats module contains plugins for adding
 support for MNG, TGA, TIFF and WBMP image formats.")))
 
+(define-public qtimageformats
+  (package
+    (name "qtimageformats")
+    (version "6.5.2")
+    (source (origin
+              (inherit (package-source qtimageformats-5))
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "0hv7mkn72126rkhy5gmjmbvzy7v17mkk3q2pkmzy99f64j4w1q5a"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-display
+            (lambda _
+              ;; Make Qt render "offscreen", required for tests.
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (inputs
+     (list jasper
+           libmng
+           libtiff
+           libwebp
+           mesa
+           qtbase
+           zlib))
+    (synopsis "Additional Image Format plugins for Qt")
+    (description "The QtImageFormats module contains plugins for adding
+support for MNG, TGA, TIFF and WBMP image formats.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtx11extras
   (package (inherit qtsvg-5)
     (name "qtx11extras")
