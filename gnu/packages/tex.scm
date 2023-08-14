@@ -33426,6 +33426,28 @@ used to model the morphology of a variety of organisms or fractals like the
 Kochflake or Hilbert curve.")
     (license license:lppl)))
 
+(define-public texlive-pst-magneticfield
+  (package
+    (name "texlive-pst-magneticfield")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-magneticfield/"
+                   "dvips/pst-magneticfield/"
+                   "tex/generic/pst-magneticfield/"
+                   "tex/latex/pst-magneticfield/")
+             (base32
+              "0gxz7yfj16b23lwn5pq68r8yb6klm7xhmq5m0addmrq1dvb3id5n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-magneticfield")
+    (synopsis "Plotting a magnetic field with PSTricks")
+    (description
+     "@code{pst-magneticfield} is a PSTricks related package to draw the
+magnetic field lines of Helmholtz coils in a two or three dimensional view.
+There are several parameters to create a different output.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
