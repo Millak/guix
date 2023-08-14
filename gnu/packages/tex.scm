@@ -34029,6 +34029,38 @@ observed.  Saturn and Jupiter are in the right direction, but not in the
 correct size.")
     (license license:lppl)))
 
+(define-public texlive-pst-solides3d
+  (package
+    (name "texlive-pst-solides3d")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-solides3d/"
+                   "dvips/pst-solides3d/"
+                   "tex/generic/pst-solides3d/"
+                   "tex/latex/pst-solides3d/")
+             (base32
+              "1w6qpaw5k6x5c90k15q3r397f3ai7fd443yzwif2fhkqb2wjv3k8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-solides3d")
+    (synopsis "Draw perspective views of 3D solids")
+    (description
+     "The package is designed to draw solids in 3d perspective.  Its features
+include:
+@itemize
+@item create primitive solids;
+@item create solids by including a list of its vertices and faces;
+@item faces of solids and surfaces can be colored by choosing from a very
+large palette of colors;
+@item draw parametric surfaces in algebraic and reverse polish notation;
+@item create explicit and parameterized algebraic functions drawn in 2 or
+3 dimensions;
+@item project text onto a plane or onto the faces of a solid;
+@item support for including external database files.
+@end itemize")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
