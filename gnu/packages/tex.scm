@@ -33448,6 +33448,25 @@ magnetic field lines of Helmholtz coils in a two or three dimensional view.
 There are several parameters to create a different output.")
     (license license:lppl)))
 
+(define-public texlive-pst-marble
+  (package
+    (name "texlive-pst-marble")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-marble/"
+                   "dvips/pst-marble/"
+                   "tex/generic/pst-marble/"
+                   "tex/latex/pst-marble/")
+             (base32
+              "1j5jags1m4wwwfkd25n57q49ggdwc7b9qjp8da4q255yf0i54w91")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-marble")
+    (synopsis "PSTricks package to draw marble-like patterns")
+    (description "This is a PSTricks package to draw marble-like patterns.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
