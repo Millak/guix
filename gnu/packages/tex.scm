@@ -11516,6 +11516,25 @@ those packages provided by @code{miniltx}.  The bundle also contains a file
 provides the LaTeX picture mode to Plain TeX users.")
     (license license:lppl1.0+)))
 
+(define-public texlive-greek-inputenc
+  (package
+    (name "texlive-greek-inputenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/greek-inputenc/"
+                   "tex/latex/greek-inputenc/")
+             (base32
+              "1vifrgxwx92c44vmic9x7y65fl6lcmlavqq63dakl922ijlssrb1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/greek-inputenc")
+    (synopsis "Greek encoding support for @code{inputenc}")
+    (description
+     "The bundle provides UTF-8, Macintosh Greek encoding and ISO 8859-7
+definition files for use with @code{inputenc}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gtl
   (package
     (name "texlive-gtl")
