@@ -5083,6 +5083,60 @@ adds a collection of useful @acronym{HEP, High Energy Physics} units to the
 existing SIunits set.")
     (license license:lppl)))
 
+(define-public texlive-hitex
+  (package
+    (name "texlive-hitex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/hitex/base/"
+                   "doc/man/man1/hishrink.1"
+                   "doc/man/man1/hishrink.man1.pdf"
+                   "doc/man/man1/histretch.1"
+                   "doc/man/man1/histretch.man1.pdf"
+                   "doc/man/man1/hitex.1"
+                   "doc/man/man1/hitex.man1.pdf"
+                   "makeindex/hitex/"
+                   "tex/hitex/base/")
+             (base32
+              "19q0sd0mhsamns9i7gr85n2n0jjc6p2n2xcc7s9b65hz8zp0bdbk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "hilatex" "hitex")))
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-etex
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyphen-base
+           texlive-knuth-lib
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-plain
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/hitex")
+    (synopsis "TeX extension writing HINT output for on-screen reading")
+    (description
+     "This package provides a TeX extension that generates HINT output.  The
+HINT file format is an alternative to the DVI and PDF formats which was
+designed specifically for on-screen reading of documents.  Especially on
+mobile devices, reading DVI or PDF documents can be cumbersome.  Mobile
+devices are available in a large variety of sizes but typically are not large
+enough to display documents formated for a4/letter-size paper.  To compensate
+for the limitations of a small screen, users are used to alternating between
+landscape (few long lines) and portrait (more short lines) mode.  The HINT
+format supports variable and varying screen sizes, leveraging the ability of
+TeX to format a document for nearly-arbitrary values of @code{\\hsize} and
+@code{\\vsize}.")
+    (license license:x11)))
+
 (define-public texlive-hrlatex
   (package
     (name "texlive-hrlatex")
