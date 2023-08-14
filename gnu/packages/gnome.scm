@@ -870,7 +870,7 @@ tomorrow, the rest of the week and for special occasions.")
            libjpeg-turbo
            libportal
            libpng
-           librsvg
+           (librsvg-for-system)
            python-pygobject
            rest
            tracker
