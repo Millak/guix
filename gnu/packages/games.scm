@@ -3739,7 +3739,7 @@ object-oriented programming.")
                                (assoc-ref inputs "chess")
                                "/bin/gnuchessx"))))))))
     (inputs
-     (list alsa-utils chess gtk+-2 librsvg))
+     (list alsa-utils chess gtk+-2 (librsvg-for-system)))
     (native-inputs
      (list texinfo pkg-config))
     (home-page "https://www.gnu.org/software/xboard/")
