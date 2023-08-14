@@ -8970,6 +8970,54 @@ about TeX and Co.  It contains information for beginners, LaTeX packages,
 descriptions, etc.")
     (license license:fdl1.3+)))
 
+(define-public texlive-texsis
+  (package
+    (name "texlive-texsis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/texsis/"
+                   "doc/man/man1/texsis.1"
+                   "doc/man/man1/texsis.man1.pdf"
+                   "doc/otherformats/texsis/base/"
+                   "tex/texsis/base/"
+                   "tex/texsis/config/")
+             (base32
+              "1vdywyg03ab5w50370ml8hwiidim2sy7hhygmz917rnhsnm87lnv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "texsis")))
+    (propagated-inputs
+     (list texlive-cm
+           texlive-hyphen-base
+           texlive-knuth-lib
+           texlive-plain
+           texlive-tex))
+    (home-page "https://ctan.org/pkg/texsis")
+    (synopsis "Plain TeX macros for Physicists")
+    (description
+     "TeXsis is a TeX macro package which provides useful features for
+typesetting research papers and related documents.  For example, it includes
+support specifically for:
+
+@itemize
+@item automatic numbering of equations, figures, tables and references;
+@item simplified control of type sizes, line spacing, footnotes, running
+headlines and footlines, and tables of contents, figures and tables;
+@item specialized document formats for research papers, preprints and
+e-prints, conference proceedings, theses, books, referee reports, letters, and
+memoranda;
+@item simplified means of constructing an index for a book or thesis;
+@item easy to use double column formatting;
+@item specialized environments for lists, theorems and proofs, centered or
+non-justified text, and listing computer code;
+@item specialized macros for easily constructing ruled tables.
+@end itemize
+
+TeXsis was originally developed for physicists, but others may also find it
+useful.  It is completely compatible with Plain TeX.")
+    (license license:lppl)))
+
 (define-public texlive-textgreek
   (package
     (name "texlive-textgreek")
