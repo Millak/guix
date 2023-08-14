@@ -33214,6 +33214,26 @@ the graphics bundle's (original) @code{keyval} package, which clashes with
 PSTricks use of @code{xkeyval}.")
     (license license:lppl)))
 
+(define-public texlive-pst-hsb
+  (package
+    (name "texlive-pst-hsb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-hsb/"
+                   "tex/generic/pst-hsb/" "tex/latex/pst-hsb/")
+             (base32
+              "0cv81bbkg2yhszjs2y7b5vs241y272by5mcb7adg347jzyrs8s74")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-hsb")
+    (synopsis "Curves with continuous colours")
+    (description
+     "This is a PSTricks-related package.  It can plot lines and/or curves
+with continuous colours.  Only colours defined in the HSB model are
+supported.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
