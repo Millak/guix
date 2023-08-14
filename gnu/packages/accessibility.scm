@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2018, 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2023 Ivan Gankevich <igankevich@capybaramail.xyz>
 ;;;
@@ -212,7 +212,7 @@ incorporated.")
     (inputs
      (list libxml2
            libglade
-           librsvg
+           (librsvg-for-system)
            gstreamer
            cairo
            gtk+
