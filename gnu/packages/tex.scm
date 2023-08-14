@@ -32780,6 +32780,33 @@ positioning some nodes and defining the position of all other nodes relative
 to them by using the standard database terminology.")
     (license license:lppl)))
 
+(define-public texlive-pst-diffraction
+  (package
+    (name "texlive-pst-diffraction")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-diffraction/"
+                   "source/generic/pst-diffraction/"
+                   "tex/generic/pst-diffraction/"
+                   "tex/latex/pst-diffraction/")
+             (base32
+              "1wi67md3046nj0arqi1wmbgdhdrsnfqgmmb0ayk2iswfhvx32myr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-diffraction")
+    (synopsis "Print diffraction patterns from various apertures")
+    (description
+     "The package enables the user to draw (using PSTricks) the diffraction
+patterns for different geometric forms of apertures for monochromatic light.
+The aperture stops can have rectangular, circular or triangular openings.  The
+view of the diffraction may be planar, or three-dimensional.  Options
+available are the dimensions of the aperture under consideration and of the
+particular optical setting, e.g., the radius in case of an circular opening.
+Moreover one can choose the wavelength of the light (the associated color will
+be calculated by the package).")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
