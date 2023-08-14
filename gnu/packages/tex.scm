@@ -32621,6 +32621,25 @@ for calendars in French German and English, but the documentation is not
 available in English.")
     (license license:lppl)))
 
+(define-public texlive-pst-cie
+  (package
+    (name "texlive-pst-cie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-cie/" "dvips/pst-cie/"
+                   "tex/generic/pst-cie/" "tex/latex/pst-cie/")
+             (base32
+              "0g5yry8m935idznwn486gn75vjyhbdzs2w99l0szh95026kd4f0a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-cie")
+    (synopsis "CIE color space")
+    (description
+     "pst-cie is a PSTricks related package to show the different CIE color
+spaces: Adobe, CIE, ColorMatch, NTSC, Pal-Secam, ProPhoto, SMPTE, and sRGB.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
