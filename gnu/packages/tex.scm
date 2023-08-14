@@ -33948,6 +33948,31 @@ Conus, Ammonite, Codakia, Escalaria, Helcion, Natalina, Planorbis, and
 Nautilus, all with different parameters.")
     (license license:lppl)))
 
+(define-public texlive-pst-sigsys
+  (package
+    (name "texlive-pst-sigsys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-sigsys/"
+                   "tex/generic/pst-sigsys/"
+                   "tex/latex/pst-sigsys/")
+             (base32
+              "18g1s1afh3lnkb3993k1ypkzbb4a88jw5paclwgyn59yqjq8x737")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-sigsys")
+    (synopsis "Support of signal processing-related disciplines")
+    (description
+     "The package offers a collection of useful macros for disciplines related
+to signal processing.  It defines macros for plotting a sequence of numbers,
+drawing the pole-zero diagram of a system, shading the region of convergence,
+creating an adder or a multiplier node, placing a framed node at a given
+coordinate, creating an up-sampler or a down-sampler node, drawing the block
+diagram of a system, drawing adaptive systems, sequentially connecting a list
+of nodes, and connecting a list of nodes using any node-connecting macro.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
