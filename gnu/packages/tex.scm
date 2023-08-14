@@ -32830,6 +32830,27 @@ lines using PStricks.  There may be any number of charges which can be placed
 in a cartesian coordinate system.")
     (license license:lppl)))
 
+(define-public texlive-pst-eps
+  (package
+    (name "texlive-pst-eps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-eps/"
+                   "source/generic/pst-eps/"
+                   "tex/generic/pst-eps/" "tex/latex/pst-eps/")
+             (base32
+              "1lf106rw3w6gicn6021jpj4bgbpgjyixp64l9aqqxn6ip6vm4yh3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-eps")
+    (synopsis "Create EPS files from PSTricks figures")
+    (description
+     "Pst-eps is a PSTricks-based package for exporting PSTricks images on the
+fly to encapsulated PostScript (EPS) image files, which can then be read into
+a document in the usual way.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
