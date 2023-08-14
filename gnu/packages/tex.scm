@@ -34328,6 +34328,27 @@ is written in French.)")
 ornaments is provided).")
     (license license:lppl)))
 
+(define-public texlive-pst-vehicle
+  (package
+    (name "texlive-pst-vehicle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-vehicle/"
+                   "tex/generic/pst-vehicle/"
+                   "tex/latex/pst-vehicle/")
+             (base32
+              "1b0s5fy4w4k2q486sdwlrh649n99k9s5hy5m2v01lh7qnjl1z4c3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-vehicle")
+    (synopsis "Rolling vehicles on graphs of mathematical functions")
+    (description
+     "This package permits to represent vehicles rolling without slipping on
+mathematical curves.  Different types of vehicles are proposed, the shape of
+the curve is to be defined by its equation in algebraic notation.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
