@@ -8471,6 +8471,27 @@ engineering, those small structures are a key part for teaching.  This package
 permits to create such 2D and 3D structures in a very fast and simple way.")
     (license (list license:gpl3+ license:lppl1.3+))))
 
+(define-public texlive-startex
+  (package
+    (name "texlive-startex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/otherformats/startex/"
+                   "makeindex/startex/"
+                   "source/startex/startex/" "tex/startex/")
+             (base32
+              "06hyz1bwzvabavkl6j9588skjwx8hc5dmiv8z9n7gr1w9aa9zm7x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/startex")
+    (synopsis "XML-inspired format for student use")
+    (description
+     "This package provides a TeX format designed to help students write short
+reports and essays.  It provides the user with a suitable set of commands for
+such a task.  It is also more robust than plain TeX and LaTeX.")
+    (license license:public-domain)))
+
 (define-public texlive-statex
   (package
     (name "texlive-statex")
