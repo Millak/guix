@@ -9803,6 +9803,29 @@ These arrows are usually used to give explanations concerning the mathematical
 calculus presented.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xecyrmongolian
+  (package
+    (name "texlive-xecyrmongolian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xecyrmongolian/"
+                   "source/latex/xecyrmongolian/"
+                   "tex/latex/xecyrmongolian/")
+             (base32
+              "0097l8vx76sqpimljwxw194yg6drxzagjxflq3y99n0a0yisax05")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xecyrmongolian")
+    (synopsis
+     "Basic support for Cyrillic Mongolian documents using (Xe|Lua)LaTeX")
+    (description
+     "The @code{xecyrmongolian} package can be used to produce documents in
+Cyrillic Mongolian using either XeLaTeX or LuaLaTeX.  The command
+@code{\\setlanguage} can be used to load alternative hyphenation patterns so
+to be able to create multilingual documents.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xymtex
   (package
     (name "texlive-xymtex")
