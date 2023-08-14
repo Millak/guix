@@ -6407,6 +6407,23 @@ to LaTeX2e}.")
 Introduction to LaTeX2e}.")
     (license license:public-domain)))
 
+(define-public texlive-lshort-russian
+  (package
+    (name "texlive-lshort-russian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-russian/")
+             (base32
+              "02abh69xl43p56fcciyan4j0z4mqq2j7ynwazq1nywhz37d6zn7y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-russian")
+    (synopsis "Russian introduction to LaTeX")
+    (description "This package provides the Russian version of the @emph{Short
+Introduction to LaTeX2e}.")
+    (license license:gpl3+)))
+
 (define-public texlive-lshort-slovak
   (package
     (name "texlive-lshort-slovak")
