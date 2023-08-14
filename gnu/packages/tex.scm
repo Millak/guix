@@ -33761,6 +33761,26 @@ files from spreadsheets is available.")
 with an arbitrarily chosen angle and a variable shortening factor.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-platon
+  (package
+    (name "texlive-pst-platon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-platon/"
+                   "source/generic/pst-platon/"
+                   "tex/latex/pst-platon/")
+             (base32
+              "0a4w47varc1i22h5iwd49c0clwb2k8hdlva5l6nfmc889wgwp0d7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-platon")
+    (synopsis "Platonic solids in PSTricks")
+    (description
+     "The package adds to PSTricks the ability to draw 3-dimensional views of
+the five Platonic solids.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
