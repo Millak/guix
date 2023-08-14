@@ -1,0 +1,29 @@
+Author: Danny Milosavljevic <dannym+a@scratchpost.org>
+Date: 2023-08-15
+
+--- orig/jswba9mn9nh43l7g4w2qslmr7i3q64vy-fbreader-0.99.6-checkout/fbreader/desktop/desktop	2023-08-14 23:56:03.092567740 +0200
++++ jswba9mn9nh43l7g4w2qslmr7i3q64vy-fbreader-0.99.6-checkout/fbreader/desktop/desktop	2023-08-14 23:56:59.936213278 +0200
+@@ -25,5 +25,5 @@
+ StartupNotify=true
+ Terminal=false
+ Type=Application
+-Icon=FBReader.png
++Icon=FBReader
+ Categories=Office;Viewer;Literature;
+--- orig/jswba9mn9nh43l7g4w2qslmr7i3q64vy-fbreader-0.99.6-checkout/fbreader/desktop/Makefile	2023-08-14 23:56:03.092567740 +0200
++++ jswba9mn9nh43l7g4w2qslmr7i3q64vy-fbreader-0.99.6-checkout/fbreader/desktop/Makefile	2023-08-15 00:23:19.046691430 +0200
+@@ -10,6 +10,14 @@
+ 	@install -m 0644 desktop $(DESTDIR)/usr/share/applications/$(TARGET).desktop
+ 	@install -d $(DESTDIR)$(IMAGEDIR)
+ 	@install -m 0644 ../data/icons/application/$(TARGET_ARCH).png $(DESTDIR)$(IMAGEDIR)/FBReader.png
++	@install -d $(DESTDIR)$(SHAREDIR)/icons/hicolor/16x16/apps
++	@install -m 0644 ../data/icons/application/16x16.png $(DESTDIR)$(SHAREDIR)/icons/hicolor/16x16/apps/FBReader.png
++	@install -d $(DESTDIR)$(SHAREDIR)/icons/hicolor/32x32/apps
++	@install -m 0644 ../data/icons/application/32x32.png $(DESTDIR)$(SHAREDIR)/icons/hicolor/32x32/apps/FBReader.png
++	@install -d $(DESTDIR)$(SHAREDIR)/icons/hicolor/48x48/apps
++	@install -m 0644 ../data/icons/application/48x48.png $(DESTDIR)$(SHAREDIR)/icons/hicolor/48x48/apps/FBReader.png
++	@install -d $(DESTDIR)$(SHAREDIR)/icons/hicolor/64x64/apps
++	@install -m 0644 ../data/icons/application/64x64.png $(DESTDIR)$(SHAREDIR)/icons/hicolor/64x64/apps/FBReader.png
+ 	@install -m 0644 ../data/default/config.desktop.xml $(SHARE_FBREADER)/default/config.xml
+ 	@install -m 0644 ../data/default/keymap.desktop.xml $(SHARE_FBREADER)/default/keymap.xml
+ 	@install -m 0644 ../data/default/styles.desktop.xml $(SHARE_FBREADER)/default/styles.xml
