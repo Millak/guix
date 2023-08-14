@@ -9108,7 +9108,7 @@ devices using the GNOME desktop.")
            libgtop
            libnma
            libpwquality
-           librsvg                      ;for loading SVG files
+           (librsvg-for-system)             ;for loading SVG files
            libsecret
            libxml2
            libwacom
