@@ -23353,6 +23353,26 @@ translations of standard LaTeX names.")
 Babel.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-serbianc
+  (package
+    (name "texlive-babel-serbianc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-serbianc/"
+                   "source/generic/babel-serbianc/"
+                   "tex/generic/babel-serbianc/")
+             (base32
+              "1ji77vlb10vxdka5bsnqkrlf34c4qhpl162xizrzxf11z6099wng")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-serbianc")
+    (synopsis "Babel module to support Serbian Cyrillic")
+    (description
+     "The package provides support for Serbian documents written in Cyrillic,
+in Babel.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-slovak
   (package
     (name "texlive-babel-slovak")
