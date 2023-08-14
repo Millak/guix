@@ -40004,6 +40004,26 @@ The package may also be used in support of other PostScript-output-only
 packages, such as PSfrag.")
     (license license:gpl3+)))
 
+(define-public texlive-pdftricks2
+  (package
+    (name "texlive-pdftricks2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdftricks2/"
+                   "tex/latex/pdftricks2/")
+             (base32
+              "0znq52nzknv0x16cqbpfi90gz89frzk74ww3sg7ibjacmbpfl3j0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdftricks2")
+    (synopsis "Use PSTricks in pdfTeX")
+    (description
+     "The package provides the means of processing documents that contain
+PSTricks graphics specifications.  The package is inspired by
+@code{pdftricks}.")
+    (license license:gpl2)))
+
 (define-public texlive-pslatex
   (package
     (name "texlive-pslatex")
