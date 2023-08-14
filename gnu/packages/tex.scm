@@ -13254,6 +13254,29 @@ features allow to deal with numbers (tests, display, some high level
 operations, etc.)")
     (license license:lppl1.3+)))
 
+(define-public texlive-yannisgr
+  (package
+    (name "texlive-yannisgr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/yannisgr/"
+                   "fonts/source/public/yannisgr/"
+                   "fonts/tfm/public/yannisgr/")
+             (base32
+              "0s5cfid1r6jn34kzvmxwxyxpvyb0rayn80x3n7k515p1plqmmrnq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-levy texlive-metafont))
+    (home-page "https://ctan.org/pkg/yannisgr")
+    (synopsis "Greek fonts by Yannis Haralambous")
+    (description
+     "This package provides a family of 7-bit fonts with a code table designed
+for setting modern polytonic Greek.  The fonts are provided as Metafont
+source; macros to produce a Greek variant of Plain TeX (including
+a hyphenation table adapted to the fonts code table) are provided.")
+    (license license:gpl2)))
+
 (define-public texlive-zztex
   (package
     (name "texlive-zztex")
