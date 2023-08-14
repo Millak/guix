@@ -33340,6 +33340,25 @@ chemical objects.  The documentation of the package is illuminated with plenty
 of illustrations together with their source code, making it an easy read.")
     (license license:lppl)))
 
+(define-public texlive-pst-layout
+  (package
+    (name "texlive-pst-layout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-layout/"
+                   "tex/latex/pst-layout/")
+             (base32
+              "1f07j551kiajqyrfjlsj7xk40zv18ik2b3fih5iyzkf4zk4f650r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-layout")
+    (synopsis "Page layout macros based on PSTricks packages")
+    (description
+     "The package provides a means of creating elaborate (``pseudo-tabular'')
+layouts of material, typically to be overlaid on an included graphic.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
