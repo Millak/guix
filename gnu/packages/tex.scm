@@ -2236,6 +2236,27 @@ texts.")
 @emph{Begriffschrift}.")
     (license license:gpl3+)))
 
+(define-public texlive-betababel
+  (package
+    (name "texlive-betababel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/betababel/"
+                   "tex/latex/betababel/")
+             (base32
+              "1lck0wighndd3qrhcks6amc6gm5y50f6a61nfcz31j087r3a7liv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/betababel")
+    (synopsis "Insert ancient greek text coded in Beta Code")
+    (description
+     "The @code{betababel} package extends the Babel @samp{polutonikogreek}
+option to provide a simple way to insert ancient Greek texts with diacritical
+characters into your document using the commonly used Beta Code
+transliteration.")
+    (license license:lppl)))
+
 (define-public texlive-bib-fr
   (package
     (name "texlive-bib-fr")
