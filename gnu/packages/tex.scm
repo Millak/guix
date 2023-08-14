@@ -32873,6 +32873,24 @@ to build point using common transformations or intersections.  The use of
 coordinates is limited to points which controlled the figure.")
     (license license:lppl)))
 
+(define-public texlive-pst-exa
+  (package
+    (name "texlive-pst-exa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-exa/" "tex/latex/pst-exa/")
+             (base32
+              "1jbkk5nircdv0mas1vbydqhca1r5vcmrxyyi5xwzi1qhfbw3xa8g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-exa")
+    (synopsis "Typeset PSTricks examples, with code")
+    (description
+     "The (PSTricks-related) package provides an environment @code{PSTexample}
+to put code and output side by side or one above the other.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
