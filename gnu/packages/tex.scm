@@ -40024,6 +40024,32 @@ PSTricks graphics specifications.  The package is inspired by
 @code{pdftricks}.")
     (license license:gpl2)))
 
+(define-public texlive-pedigree-perl
+  (package
+    (name "texlive-pedigree-perl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pedigree.1"
+                   "doc/man/man1/pedigree.man1.pdf"
+                   "doc/support/pedigree-perl/"
+                   "scripts/pedigree-perl/"
+                   "source/latex/pedigree-perl/")
+             (base32
+              "0s2186j4hx5v12g5r8admif2ysi6nnm8d0xxpwq26brfcjrbbh7r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pedigree.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/pedigree-perl")
+    (synopsis "Generate TeX pedigree files from CSV files")
+    (description
+     "This program generates TeX commands to typeset pedigrees --- either TeX
+fragments or full LaTeX files, to be processed by the @code{pst-pdgr} package.
+The program has support for multilanguage pedigrees (at the present moment the
+English and Russian languages are supported).")
+    (license license:gpl2)))
+
 (define-public texlive-pslatex
   (package
     (name "texlive-pslatex")
