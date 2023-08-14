@@ -33630,6 +33630,26 @@ and flexible ways.  The components may be connected with fibers or beams, and
 realistic raytraced beam paths are also possible.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-optic
+  (package
+    (name "texlive-pst-optic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-optic/"
+                   "tex/generic/pst-optic/"
+                   "tex/latex/pst-optic/")
+             (base32
+              "1qgxqygcfv3v6wkf6igkyp5aimp9f9nvfyizcwlxlxr32mjvvbly")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-optic")
+    (synopsis "Drawing optics diagrams")
+    (description
+     "This package provides a package for drawing both reflective and
+refractive optics diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
