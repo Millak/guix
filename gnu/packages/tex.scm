@@ -33494,6 +33494,27 @@ The package also provides a routine SIMPSON for numerical integration and
 a solver of linear equation systems.")
     (license license:lppl)))
 
+(define-public texlive-pst-mirror
+  (package
+    (name "texlive-pst-mirror")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-mirror/"
+                   "dvips/pst-mirror/"
+                   "tex/generic/pst-mirror/"
+                   "tex/latex/pst-mirror/")
+             (base32
+              "0b2q1islf9mwphzcs6g04vq69hlmyisx4rb5fb77yiw3na5xlnq0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-mirror")
+    (synopsis "Images on a spherical mirror")
+    (description
+     "The package provides commands and supporting PostScript material for
+drawing images as if reflected by a spherical mirror.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
