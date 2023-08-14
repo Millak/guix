@@ -32346,6 +32346,29 @@ MATLAB for plotting.")
 and three dimensional representations of text or graphical objects.")
     (license license:lppl)))
 
+(define-public texlive-pst-3dplot
+  (package
+    (name "texlive-pst-3dplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-3dplot/"
+                   "dvips/pst-3dplot/"
+                   "tex/generic/pst-3dplot/"
+                   "tex/latex/pst-3dplot/")
+             (base32
+              "0k49c4kc126zacv2p2crdv00l50cg6kfpdnsa9m223naigifzf22")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-3dplot")
+    (synopsis "Draw 3D objects in parallel projection, using PSTricks")
+    (description
+     "This package provides a package using PSTricks to draw a large variety
+of graphs and plots, including 3D maths functions.  Data can be read from
+external data files, making this package a generic tool for graphing within
+TeX or LaTeX, without the need for external tools.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
