@@ -3225,7 +3225,7 @@ such as sway, similar to @command{rofi}.")
                 "0hq2qiqxvrw3g515ywcb676ljc8mdw3pyslgxr3vahizfljah1pv"))))
     (build-system meson-build-system)
     (native-inputs (list nlohmann-json pkg-config))
-    (inputs (list gtk-layer-shell gtkmm-3 librsvg))
+    (inputs (list gtk-layer-shell gtkmm-3 (librsvg-for-system)))
     (home-page "https://github.com/nwg-piotr/nwg-launchers")
     (synopsis "Application launchers for wlroots")
     (description
