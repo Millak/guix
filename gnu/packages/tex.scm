@@ -22784,6 +22784,26 @@ rules of its own; this package provides an appropriate selection of French and
 British typographic rules.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-bulgarian
+  (package
+    (name "texlive-babel-bulgarian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-bulgarian/"
+                   "source/generic/babel-bulgarian/"
+                   "tex/generic/babel-bulgarian/")
+             (base32
+              "065j31rl7r4x8krkwxhq0lwdkmbq90jr8666if4br36kw0g3kzv3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-bulgarian")
+    (synopsis "Babel contributed support for Bulgarian")
+    (description
+     "The package provides support for documents in Bulgarian (or simply
+containing some Bulgarian text).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-catalan
   (package
     (name "texlive-babel-catalan")
