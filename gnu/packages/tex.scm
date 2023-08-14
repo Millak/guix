@@ -7207,6 +7207,40 @@ Ongoing projects developing Omega (and Aleph) ideas include Omega-2 and
 LuaTeX.")
     (license license:gpl3+)))
 
+(define-public texlive-omegaware
+  (package
+    (name "texlive-omegaware")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/odvicopy.1"
+                   "doc/man/man1/odvicopy.man1.pdf"
+                   "doc/man/man1/odvitype.1"
+                   "doc/man/man1/odvitype.man1.pdf"
+                   "doc/man/man1/ofm2opl.1"
+                   "doc/man/man1/ofm2opl.man1.pdf"
+                   "doc/man/man1/opl2ofm.1"
+                   "doc/man/man1/opl2ofm.man1.pdf"
+                   "doc/man/man1/otangle.1"
+                   "doc/man/man1/otangle.man1.pdf"
+                   "doc/man/man1/otp2ocp.1"
+                   "doc/man/man1/otp2ocp.man1.pdf"
+                   "doc/man/man1/outocp.1"
+                   "doc/man/man1/outocp.man1.pdf"
+                   "doc/man/man1/ovf2ovp.1"
+                   "doc/man/man1/ovf2ovp.man1.pdf"
+                   "doc/man/man1/ovp2ovf.1"
+                   "doc/man/man1/ovp2ovf.man1.pdf")
+             (base32
+              "06kzz0342h6vvc32ydrzgpqsdqv5l0jbd5finr43fmzqi5jnswil")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/omega")
+    (synopsis "Documentation for Omega executables")
+    (description
+     "This package provides the documentation for Omega executables.")
+    (license license:gpl3+)))
+
 (define-public texlive-oplotsymbl
   (package
     (name "texlive-oplotsymbl")
