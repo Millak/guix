@@ -14630,6 +14630,32 @@ mathematical fonts in a range of styles, based on Monotype Modern 8A.")
 
 (define-deprecated-package texlive-fonts-cm texlive-cm)
 
+(define-public texlive-cmcyr
+  (package
+    (name "texlive-cmcyr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cmcyr/"
+                   "fonts/map/dvips/cmcyr/"
+                   "fonts/source/public/cmcyr/"
+                   "fonts/tfm/public/cmcyr/"
+                   "fonts/type1/public/cmcyr/"
+                   "fonts/vf/public/cmcyr/")
+             (base32
+              "0mmlb3ky6cakwg8nsgkdkpc52ni2jf2w7nz5bfiyxhvy6mx1c64b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cmcyr")
+    (synopsis "Computer Modern fonts with Cyrillic extensions")
+    (description
+     "These are the Computer Modern fonts extended with Russian letters, in
+Metafont sources and ATM Compatible Type 1 format.  The fonts are provided in
+KOI-7, but virtual fonts are available to recode them to three other Russian
+8-bit encodings.")
+    (license license:public-domain)))
+
 (define-public texlive-cmextra
   (package
     (name "texlive-cmextra")
