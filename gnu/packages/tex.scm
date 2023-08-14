@@ -3801,6 +3801,31 @@ BibLaTeX package, a practical example of french thesis document, and
 documentation.  The class assumes use of Biber and BibLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dsptricks
+  (package
+    (name "texlive-dsptricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dsptricks/"
+                   "tex/latex/dsptricks/")
+             (base32
+              "03ykpbvmb95n6j5071c5hrja4x6x3cpdnmppj9gjjjh63ddv40m6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dsptricks")
+    (synopsis "Macros for Digital Signal Processing (DSP) plots")
+    (description
+     "The package provides a set of @code{LaTeX} macros (based on PSTricks)
+for plotting the kind of graphs and figures that are usually employed in
+digital signal processing publications.  DSPTricks provides facilities for
+standard discrete-time lollipop plots, continuous-time and frequency plots,
+and pole-zero plots.  The companion package
+DSPFunctions (@file{dspfunctions.sty}) provides macros for computing frequency
+responses and DFTs, while the package DSPBlocks (@file{dspblocks.sty})
+supports DSP block diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-dyntree
   (package
     (name "texlive-dyntree")
