@@ -33258,6 +33258,28 @@ beginner, providing macro commands that convert natural mathematical
 expressions to PostScript syntax.")
     (license license:lppl)))
 
+(define-public texlive-pst-intersect
+  (package
+    (name "texlive-pst-intersect")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-intersect/"
+                   "dvips/pst-intersect/"
+                   "source/latex/pst-intersect/"
+                   "tex/generic/pst-intersect/"
+                   "tex/latex/pst-intersect/")
+             (base32
+              "157yqj923kikm8abiv3giyf9rrr6cw0jwqj37ri5ya5iyxlfvmmv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-intersect")
+    (synopsis "Compute intersections of arbitrary curves")
+    (description
+     "The package computes the intersections between arbitrary PostScript
+paths or Bezier curves, using the Bezier clipping algorithm.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
