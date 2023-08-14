@@ -6186,6 +6186,25 @@ from use of the package are in the format used in the textbook @emph{Language,
 Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lshort-bulgarian
+  (package
+    (name "texlive-lshort-bulgarian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-bulgarian/")
+             (base32
+              "0qg23asq2i5mqhp9xblv5hm3qxmd5886d5x0gq1fkdbyy9gsawi3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-bulgarian")
+    (synopsis
+     "Bulgarian translation of the @emph{Short Introduction to LaTeX2e}")
+    (description
+     "This package includes the source files, PostScript and PDF files of the
+Bulgarian translation of the @emph{Short Introduction to LaTeX2e}.")
+    (license license:public-domain)))
+
 (define-public texlive-lshort-czech
   (package
     (name "texlive-lshort-czech")
