@@ -2571,7 +2571,7 @@ GIF, TIFF, WEBP, BMP, PNG, XPM formats.")
        ("gettext" ,gettext-minimal)))
     (inputs
      (list gtk+
-           librsvg
+           (librsvg-for-system)
            hicolor-icon-theme
            libmypaint
            mypaint-brushes
