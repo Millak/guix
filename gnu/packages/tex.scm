@@ -32975,6 +32975,28 @@ customisation and dynamic modifications are possible by cleverly adjusting the
 options supplied to the TeX macros.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pst-fr3d
+  (package
+    (name "texlive-pst-fr3d")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-fr3d/"
+                   "source/generic/pst-fr3d/"
+                   "tex/generic/pst-fr3d/"
+                   "tex/latex/pst-fr3d/")
+             (base32
+              "0y8xsq6wklpygzf0lfdy683vkdrglw5jl00qyfwk6rl08wb4l17y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-fr3d")
+    (synopsis "Draw 3-dimensional framed boxes using PSTricks")
+    (description
+     "This package provides a package using PSTricks to draw three dimensional
+framed boxes using a macro @code{\\PstFrameBoxThreeD}.  The macro is
+especially useful for drawing 3D-seeming buttons.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
