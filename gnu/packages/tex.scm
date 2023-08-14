@@ -32536,6 +32536,27 @@ Provision is made for full control of over all the control points of the
 curve.")
     (license license:lppl)))
 
+(define-public texlive-pst-blur
+  (package
+    (name "texlive-pst-blur")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-blur/" "dvips/pst-blur/"
+                   "source/generic/pst-blur/"
+                   "tex/generic/pst-blur/"
+                   "tex/latex/pst-blur/")
+             (base32
+              "1zz5ixznkl3i59zlv9lxz7f1cfqwbar3qjy5x4323gmzjw2k9f8m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-blur")
+    (synopsis "PSTricks package for blurred shadows")
+    (description
+     "Pst-blur is a package built for use with PSTricks.  It provides macros
+that apply blurring to the normal shadow function of PSTricks.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
