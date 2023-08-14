@@ -33359,6 +33359,28 @@ of illustrations together with their source code, making it an easy read.")
 layouts of material, typically to be overlaid on an included graphic.")
     (license license:lppl)))
 
+(define-public texlive-pst-lens
+  (package
+    (name "texlive-pst-lens")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-lens/"
+                   "source/generic/pst-lens/"
+                   "tex/generic/pst-lens/"
+                   "tex/latex/pst-lens/")
+             (base32
+              "0h2930i4izgfjk96445yiwsk6x8cg5cl4zlqrg5rsv7nr2k8njy3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-lens")
+    (synopsis "Lenses with PSTricks")
+    (description
+     "This PSTricks package provides a really rather simple command
+@code{\\PstLens} that will draw a lens.  Command parameters provide
+a remarkable range of effects.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
