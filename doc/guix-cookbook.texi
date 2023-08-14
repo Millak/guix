@@ -280,6 +280,9 @@ they provide code to be executed during the package build process.  They
 look like this:
 
 @lisp
+(use-modules (guix gexp)           ;so we can write gexps
+             (gnu packages base))  ;for 'coreutils'
+
 ;; Below is a G-expression representing staged code.
 #~(begin
     ;; Invoke 'ls' from the package defined by the 'coreutils'
