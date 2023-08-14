@@ -34368,6 +34368,26 @@ the curve is to be defined by its equation in algebraic notation.")
 circles.")
     (license license:lppl)))
 
+(define-public texlive-pst-vowel
+  (package
+    (name "texlive-pst-vowel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-vowel/"
+                   "tex/latex/pst-vowel/")
+             (base32
+              "0p0qnfbmd1lh21nk6xq246xr6y50q0y55rdcq3i9vkg4j7kkkfy6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-vowel")
+    (synopsis "Enable arrows showing diphthongs on vowel charts")
+    (description
+     "The package extends the @code{vowel} package (distributed as part of the
+@code{tipa} bundle) by allowing the user to draw arrows between vowels to show
+relationships such as diphthong membership.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
