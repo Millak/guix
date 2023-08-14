@@ -32931,6 +32931,26 @@ for Feynman diagrams.")
 characters.")
     (license license:lppl)))
 
+(define-public texlive-pst-fit
+  (package
+    (name "texlive-pst-fit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-fit/"
+                   "tex/generic/pst-fit/" "tex/latex/pst-fit/")
+             (base32
+              "0w2vnd6zb9vdrqbk256ynr7lg7p9ps53rrdq9l999bw8f8vip1as")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-fit")
+    (synopsis "Macros for curve fitting")
+    (description
+     "The package uses PSTricks to fit curves to: linear functions; power
+functions; exp function; logarithm functions; Recip; Kings Law data; Gaussian;
+and fourth order polynomials.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
