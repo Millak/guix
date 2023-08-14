@@ -5165,7 +5165,7 @@ are only two levels to play with, but they are very addictive.")
                (("\"beep\"")
                 (string-append "\"" (assoc-ref inputs "beep") "/bin/beep\"")))
              #t)))))
-    (inputs (list avahi beep gtk+ librsvg))
+    (inputs (list avahi beep gtk+ (librsvg-for-system)))
     (native-inputs (list intltool itstool libxml2 pkg-config))
     (synopsis "Board game inspired by The Settlers of Catan")
     (description "Pioneers is an emulation of the board game The Settlers of
