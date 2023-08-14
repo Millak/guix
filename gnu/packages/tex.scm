@@ -23267,6 +23267,27 @@ provided.")
 Romansh either with Babel or with Polyglossia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-russian
+  (package
+    (name "texlive-babel-russian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-russian/"
+                   "source/generic/babel-russian/"
+                   "tex/generic/babel-russian/")
+             (base32
+              "0sy3b7qx5l6smpixa9896zqqrh6ymrz31pd4026f815jy78k3cfb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-russian")
+    (synopsis "Russian language module for Babel")
+    (description
+     "The package provides support for use of Babel in documents written in
+Russian (in both traditional and modern forms).  The support is adapted for
+use both under traditional TeX engines, and under XeTeX and LuaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-samin
   (package
     (name "texlive-babel-samin")
