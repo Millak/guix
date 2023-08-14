@@ -33194,6 +33194,26 @@ and HSB models are supported.  Other colour gradient mechanisms are to be
 found in package @code{pst-slpe}.")
     (license license:lppl)))
 
+(define-public texlive-pst-graphicx
+  (package
+    (name "texlive-pst-graphicx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-graphicx/"
+                   "tex/generic/pst-graphicx/")
+             (base32
+              "0x1053a92hi1msbmw7s0222k0vfg28172qrinz3hdv94igaxi38q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-graphicx")
+    (synopsis "PSTricks-compatible @code{graphicx} for use with Plain TeX")
+    (description
+     "The package provides a version of @code{graphicx} that avoids loading
+the graphics bundle's (original) @code{keyval} package, which clashes with
+PSTricks use of @code{xkeyval}.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
