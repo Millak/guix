@@ -1330,6 +1330,33 @@ ligatures, but also offers additional control over them.")
 a given (Unicode) glyph.  It relies on Fontconfig.")
     (license license:bsd-3)))
 
+(define-public texlive-aleph
+  (package
+    (name "texlive-aleph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/aleph/base/" "doc/man/man1/aleph.1"
+                   "doc/man/man1/aleph.man1.pdf")
+             (base32
+              "0b7dihilh2v8qcp4m8fblyc10jc5i4fhpj3pspzinag0pk66b7nb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "aleph")))
+    (propagated-inputs
+     (list texlive-cm
+           texlive-hyphen-base
+           texlive-knuth-lib
+           texlive-lambda
+           texlive-latex
+           texlive-plain))
+    (home-page "https://ctan.org/pkg/aleph")
+    (synopsis "Extended TeX")
+    (description
+     "This package provides a development of Omega, using most of the
+extensions of TeX, itself developed for e-TeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-alg
   (package
     (name "texlive-alg")
