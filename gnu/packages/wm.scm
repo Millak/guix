@@ -1895,7 +1895,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.18")
+    (version "0.9.20")
     (source
      (origin
        (method git-fetch)
@@ -1904,22 +1904,27 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11yia2fs5a05jlbrdhxm26c2sgmbj3iwsk3bsqcvjvv3mlsrhxkf"))))
+        (base32 "07h5l7h7wmzqgg7fbp98khrxg2sq2s4ncp4fiiz1yg62r752idy4"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "--wrap-mode=nodownload")))
     (inputs (list date
                   fmt
                   gtk-layer-shell
                   gtkmm-3
                   jsoncpp
                   libdbusmenu
+                  libevdev
                   libinput-minimal
                   libmpdclient
                   libnl
                   libxml2
+                  pipewire
                   playerctl
                   pulseaudio
                   spdlog
-                  wayland))
+                  wayland
+                  wireplumber))
     (native-inputs
      (list `(,glib "bin") pkg-config scdoc wayland-protocols))
     (home-page "https://github.com/Alexays/Waybar")
@@ -1961,7 +1966,10 @@ core/thread.")
     (package/inherit base
       (name "waybar-experimental")
       (arguments
-       (list #:configure-flags #~(list "-Dexperimental=true")))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags flags '())
+          #~(cons "-Dexperimental=true"
+                  #$flags))))
       (synopsis "Waybar with experimental features"))))
 
 (define-public wlr-randr
