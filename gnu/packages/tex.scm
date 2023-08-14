@@ -28590,6 +28590,26 @@ via one of the packages @code{calrsfs} and @code{mathrsfs}.")
 readable copies of the FAQ from the Spanish TeX users group.")
     (license license:lppl)))
 
+(define-public texlive-eskd
+  (package
+    (name "texlive-eskd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eskd/" "source/latex/eskd/"
+                   "tex/latex/eskd/")
+             (base32
+              "1q83pvycckrmyaiwwg3mcl77jy5wrcy8jy7kz004x7asq2p0a2ls")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eskd")
+    (synopsis "Modern Russian typesetting")
+    (description
+     "The class offers modern Russian text formatting, in accordance with
+accepted design standards.  Fonts not (apparently) available on CTAN are
+required for use of the class.")
+    (license license:lppl)))
+
 (define-public texlive-eso-pic
   (package
     (name "texlive-eso-pic")
