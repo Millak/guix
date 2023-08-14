@@ -21966,47 +21966,6 @@ has no concept of @code{TEXT} values; it's all just Lisp objects.  The Lisp
 object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
       (license license:gpl3+))))
 
-(define-public emacs-emacsql-sqlite3
-  ;; This commit contains changes necessary for Sqlite 3.38+.
-  (let ((commit "2113618732665f2112cb932a66c0e89c404d8777")
-        (revision "1"))
-    (package
-      (name "emacs-emacsql-sqlite3")
-      (version (git-version "1.0.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/cireu/emacsql-sqlite3")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0r8svrd0d4cflx8a8gkynnhafcpv3ksn9rds8dhyx5yibximbzsw"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:tests? #t
-         #:test-command '("emacs" "-Q" "--batch" "-L" "."
-                          "--load" "emacsql-sqlite3-test.el"
-                          "-f" "ert-run-tests-batch-and-exit")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'embed-path-to-sqlite3
-             (lambda _
-               (substitute* "emacsql-sqlite3.el"
-                 (("\\(executable-find \"sqlite3\"\\)")
-                  (string-append "\"" (which "sqlite3") "\""))))))))
-      (native-inputs
-       (list emacs-ert-runner))
-      (inputs
-       (list sqlite))
-      (propagated-inputs
-       (list emacs-emacsql))
-      (home-page "https://github.com/cireu/emacsql-sqlite3")
-      (synopsis "EmacSQL backend for SQLite")
-      (description "This is yet another EmacSQL backend for SQLite which uses
-official @command{sqlite3} executable to access SQL database.")
-      (license license:gpl3+))))
-
 (define-public emacs-closql
   (package
     (name "emacs-closql")
@@ -35269,7 +35228,7 @@ go directly to where they belong.")
        (list texinfo))
       (propagated-inputs
        (list emacs-dash
-             emacs-emacsql-sqlite3
+             emacs-emacsql
              emacs-f
              emacs-magit
              emacs-org
