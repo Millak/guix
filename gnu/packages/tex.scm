@@ -8561,6 +8561,25 @@ LaTeX documents.  This may be particularly useful for Math Teachers and IT
 specialists.")
     (license license:lppl1.3c)))
 
+(define-public texlive-serbian-apostrophe
+  (package
+    (name "texlive-serbian-apostrophe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/serbian-apostrophe/"
+                   "tex/latex/serbian-apostrophe/")
+             (base32
+              "0hkgm4q74kn172nr5whlwjq88sfqm66cvnsv7nidcqssybnn5891")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/serbian-apostrophe")
+    (synopsis "Commands for Serbian words with apostrophes")
+    (description
+     "The package provides a collection of commands (whose names are Serbian
+words) whose expansion is the Serbian word with appropriate apostrophes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sesamanuel
   (package
     (name "texlive-sesamanuel")
