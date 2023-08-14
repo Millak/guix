@@ -11602,6 +11602,26 @@ a division operation without destroying the values of the counters containing
 the dividend and divisor.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mongolian-babel
+  (package
+    (name "texlive-mongolian-babel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mongolian-babel/"
+                   "source/latex/mongolian-babel/"
+                   "tex/latex/mongolian-babel/")
+             (base32
+              "12kzips0jmjahrrfaripglg203dvvr408v5qxjvnrnxqzb8d1i2w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mongolian-babel")
+    (synopsis "Language definition file for Mongolian in Babel")
+    (description
+     "This package provides support for Mongolian in a Cyrillic
+alphabet.  (The work derives from the earlier Russian work for Babel.)")
+    (license license:lppl)))
+
 (define-public texlive-moreverb
   (package
     (name "texlive-moreverb")
