@@ -34265,6 +34265,27 @@ joining nodes created using @code{pst-node} in order to draw trees.")
      "This is a PSTricks related package for creating Turtle graphics.")
     (license license:lppl)))
 
+(define-public texlive-pst-tvz
+  (package
+    (name "texlive-pst-tvz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-tvz/"
+                   "source/generic/pst-tvz/"
+                   "tex/generic/pst-tvz/" "tex/latex/pst-tvz/")
+             (base32
+              "1xpzvfgngv5r5cdnvip87wr1i0pmrc6ibwi5gzmibfzl64w7vkqr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-tvz")
+    (synopsis "Draw trees with more than one root node, using PSTricks")
+    (description
+     "The package uses PSTricks to draw trees with more than one root node.
+It is similar to @code{pst-tree}, though it uses a different placement
+algorithm.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
