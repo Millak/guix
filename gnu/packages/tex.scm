@@ -34125,6 +34125,26 @@ exists under different forms with 2, 3 poles and even more.  We chose the most
 popular model: the triple fidget spinner.")
     (license license:lppl)))
 
+(define-public texlive-pst-stru
+  (package
+    (name "texlive-pst-stru")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-stru/"
+                   "tex/generic/pst-stru/"
+                   "tex/latex/pst-stru/")
+             (base32
+              "1zxf0bj43picgd86bwgc38d8valpx0fn0pr3pgfv2kn42r2pampj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-stru")
+    (synopsis "Civil engineering diagrams, using PSTricks")
+    (description
+     "This PSTricks-based package provides facilities to draw structural
+schemes in civil engineering analysis, for beams, portals, arches and piles.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
