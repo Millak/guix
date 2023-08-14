@@ -11943,6 +11943,27 @@ Plain TeX are included in the package; for use with LaTeX, see @code{lgreek}
 use with LaTeX.")
     (license license:gpl2)))
 
+(define-public texlive-lgrmath
+  (package
+    (name "texlive-lgrmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lgrmath/" "source/latex/lgrmath/"
+                   "tex/latex/lgrmath/")
+             (base32
+              "0lj4jdzwykqz1hkv2s6y2ghf1zlalx27gd6kfpbnignxmh63cpkb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lgrmath")
+    (synopsis "Use LGR-encoded fonts in math mode")
+    (description
+     "The @code{lgrmath} package is a LaTeX package which sets the Greek
+letters in math mode to use glyphs from the LGR-encoded font of one's choice.
+The documentation includes a rather extensive list of the available font
+family names on typical LaTeX installations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-localloc
   (package
     (name "texlive-localloc")
