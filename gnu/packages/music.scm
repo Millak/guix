@@ -7223,7 +7223,7 @@ streaming audio server.")
            gtksourceview-4 ; undo, redo, multiline text fields
            hicolor-icon-theme
            keybinder-3.0 ; keybindings outside of GNOME
-           librsvg
+           (librsvg-for-system)
            libsoup-minimal-2
            python
            python-cheetah
