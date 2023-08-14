@@ -33082,6 +33082,26 @@ and the Lorenz curve,
 The plots may be generated as volumes of rotation about the X-axis, as well.")
     (license license:lppl)))
 
+(define-public texlive-pst-gantt
+  (package
+    (name "texlive-pst-gantt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-gantt/"
+                   "tex/generic/pst-gantt/"
+                   "tex/latex/pst-gantt/")
+             (base32
+              "1ziahdc0r8pkxxn6p6ijrx1diihkbbrmwbbc1pzi1sddqg05l5sc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-gantt")
+    (synopsis "Draw GANTT charts with PSTricks")
+    (description
+     "The package uses PSTricks to draw GANTT charts, which are a kind of bar
+chart that displays a project schedule.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
