@@ -7166,6 +7166,47 @@ mathematical function values.")
      "The package will typeset both Z and Object-Z specifications.")
     (license license:lppl)))
 
+(define-public texlive-omega
+  (package
+    (name "texlive-omega")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/omega/base/"
+                   "dvips/omega/"
+                   "fonts/afm/public/omega/"
+                   "fonts/map/dvips/omega/"
+                   "fonts/ofm/public/omega/"
+                   "fonts/ovf/public/omega/"
+                   "fonts/ovp/public/omega/"
+                   "fonts/tfm/public/omega/"
+                   "fonts/type1/public/omega/"
+                   "omega/ocp/char2uni/"
+                   "omega/ocp/misc/"
+                   "omega/ocp/omega/"
+                   "omega/ocp/uni2char/"
+                   "omega/otp/char2uni/"
+                   "omega/otp/misc/"
+                   "omega/otp/omega/"
+                   "omega/otp/uni2char/"
+                   "tex/generic/encodings/"
+                   "tex/generic/omegahyph/"
+                   "tex/plain/omega/")
+             (base32
+              "1gma5angnq5wdxianz0ml7y9jh04lsq9ksspykan06p0cp1bnmjc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/omega")
+    (synopsis "Wide-character-set extension of TeX")
+    (description
+     "This package provides a development of TeX, which deals in multi-octet
+Unicode characters, to enable native treatment of a wide range of languages
+without changing character-set.  Work on Omega has ceased; its compatible
+successor is Aleph, which is itself also in major maintenance mode only.
+Ongoing projects developing Omega (and Aleph) ideas include Omega-2 and
+LuaTeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-oplotsymbl
   (package
     (name "texlive-oplotsymbl")
