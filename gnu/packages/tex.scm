@@ -21669,6 +21669,25 @@ a means of defining generic functions using a key-value syntax, and
 
 (define-deprecated-package texlive-latex-l3packages texlive-l3packages)
 
+(define-public texlive-fonts-churchslavonic
+  (package
+    (name "texlive-fonts-churchslavonic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fonts-churchslavonic/"
+                   "fonts/opentype/public/fonts-churchslavonic/")
+             (base32
+              "0yv3n8m6wcd6jk68fwlaiszv96lbax5rcv1j0wgam4dgpqqmacm4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fonts-churchslavonic")
+    (synopsis "Fonts for typesetting in Church Slavonic language")
+    (description
+     "The package provides Unicode-encoded OpenType fonts for Church Slavonic
+which are intended for Unicode TeX engines only.")
+    (license license:silofl1.1)))
+
 (define-public texlive-fontspec
   (package
     (name "texlive-fontspec")
