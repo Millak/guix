@@ -33692,6 +33692,30 @@ the two other signals.  Lissajous diagrams (XY-mode) can also be obtained.")
 in the slides of a projected presentation.")
     (license license:lppl)))
 
+(define-public texlive-pst-pad
+  (package
+    (name "texlive-pst-pad")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-pad/"
+                   "source/generic/pst-pad/"
+                   "tex/generic/pst-pad/" "tex/latex/pst-pad/")
+             (base32
+              "1vvgjf2g9dynjg1y6dm1d47v40sga4a34ngyy3h5lfmy58860jri")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-pad")
+    (synopsis "Draw simple attachment systems with PSTricks")
+    (description
+     "The package collects a set of graphical elements based on PStricks that
+can be used to facilitate display of attachment systems such as two
+differently shaped surfaces with or without a fluid wedged in between.  These
+macros ease the display of wet adhesion models and common friction systems
+such as boundary lubrication, elastohydrodynamic lubrication and hydrodynamic
+lubrication.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
