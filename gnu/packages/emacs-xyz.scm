@@ -134,6 +134,7 @@
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27895,6 +27896,33 @@ as playing them in some video player, or downloading them.")
        "This package provides an Emacs interface for browsing YouTube videos
 and comments.")
       (license license:gpl3+))))
+
+(define-public emacs-yeetube
+  (package
+   (name "emacs-yeetube")
+   (version "1.4.2")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://git.sr.ht/~thanosapollo/yeetube.el")
+           (commit version)))
+     (sha256
+      (base32
+       "0vfap6sri6qnswrjsp6qvmrp98bvrfh58gwdqbjiakq1fzvcrm03"))
+     (file-name (git-file-name name version))))
+   (build-system emacs-build-system)
+   (inputs
+    (list mpv yt-dlp))
+   (home-page "https://sr.ht/~thanosapollo/yeetube.el")
+   (synopsis "Youtube & Invidious front-end for Emacs")
+   (description
+    "This package offers an Emacs interface that allows you to search YouTube
+or an Invidious instance for a specific query.  The search results are shown as
+links in an org-mode buffer.  The videos can be opened to a user-defined video
+player(by default mpv) or downloaded using yt-dlp.  This package also includes
+a yt-dlp front-end.")
+   (license license:gpl3+)))
 
 (define-public emacs-org-web-tools
   (package
