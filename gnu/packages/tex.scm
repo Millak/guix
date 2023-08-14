@@ -34184,6 +34184,27 @@ a different path and manipulating characters.  It includes the functionality
 of the old package @code{pst-char}.")
     (license license:lppl)))
 
+(define-public texlive-pst-thick
+  (package
+    (name "texlive-pst-thick")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-thick/"
+                   "source/generic/pst-thick/"
+                   "tex/generic/pst-thick/"
+                   "tex/latex/pst-thick/")
+             (base32
+              "1clg9ahhg3zg91phlp2ni1j5m6pb68bdk74glh398r8y2gj2b5fb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-thick")
+    (synopsis "Drawing very thick lines and curves")
+    (description
+     "The package supports drawing of very thick lines and curves in PSTricks,
+with various fillings for the body of the lines.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
