@@ -6353,6 +6353,24 @@ to LaTeX2e: LaTeX2e-Kurzbeschreibung}.")
 to LaTeX2e.}")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-mongol
+  (package
+    (name "texlive-lshort-mongol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-mongol/")
+             (base32
+              "153k4dzia30fpx847wli7i5p407a808gmj3p7jifq5bpx479qg1g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-mongol")
+    (synopsis "Short introduction to LaTeX, in Mongolian")
+    (description
+     "This package provides a translation of Oetiker's @emph{(Not so) short
+introduction to LaTeX2e}.")
+    (license license:lppl)))
+
 (define-public texlive-lshort-polish
   (package
     (name "texlive-lshort-polish")
