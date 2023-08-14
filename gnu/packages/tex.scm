@@ -34081,6 +34081,28 @@ large palette of colors;
 soroban is still used in Japan today.")
     (license license:lppl)))
 
+(define-public texlive-pst-spectra
+  (package
+    (name "texlive-pst-spectra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-spectra/"
+                   "dvips/pst-spectra/"
+                   "tex/generic/pst-spectra/"
+                   "tex/latex/pst-spectra/")
+             (base32
+              "0l88wag5i1jy6pd1lx3s9cijiymzdgwvl52hkarc84d8qpn53wcw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-spectra")
+    (synopsis "Draw continuum, emission and absorption spectra with PSTricks")
+    (description
+     "The package is a PSTricks extension, based on a NASA lines database.  It
+allows you to draw continuum, emission and absorption spectra.  A Total of 16
+880 visible lines from 99 elements can be displayed.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
