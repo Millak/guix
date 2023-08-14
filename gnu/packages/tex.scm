@@ -39357,6 +39357,29 @@ to load external Lua modules, including modules installed via LuaRocks.")
 cells using LaTeX macros.")
     (license license:expat)))
 
+(define-public texlive-luapstricks
+  (package
+    (name "texlive-luapstricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luapstricks/"
+                   "fonts/opentype/public/luapstricks/"
+                   "tex/lualatex/luapstricks/")
+             (base32
+              "160y66x93rcm0zpjscxyqbfkhbl0yypv0gyixm6vjwcm50vi2w5k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luapstricks")
+    (synopsis "PSTricks backend for LuaLaTeX")
+    (description
+     "This package enables the use of PSTricks directly in LuaLaTeX documents,
+without invoking external programmes, by implementing a PostScript interpreter
+in Lua.  Therefore it does not require shell escape to be enabled or special
+environments, and instead allows PSTricks to be used exactly like in Dvips
+based documents.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-luaquotes
   (package
     (name "texlive-luaquotes")
