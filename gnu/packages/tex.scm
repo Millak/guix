@@ -32600,6 +32600,27 @@ mainly used for PSTricks related packages to allow math expressions at LaTeX
 level.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-calendar
+  (package
+    (name "texlive-pst-calendar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-calendar/"
+                   "tex/latex/pst-calendar/")
+             (base32
+              "07vc1jxrr0n0iwjx6qjww53xji1pv42dvlc2ghi1r14nypgm8j5n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-calendar")
+    (synopsis "Plot calendars in fancy ways")
+    (description
+     "The package draws tabular calendars, or calendars on dodecahedra with
+a month to each face.  The package works for years 2000--2099, and has options
+for calendars in French German and English, but the documentation is not
+available in English.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
