@@ -33901,6 +33901,30 @@ The pulley diagrams are labelled with the physical properties of the system.")
 without obscuring background colors.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pst-rubans
+  (package
+    (name "texlive-pst-rubans")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-rubans/"
+                   "source/generic/pst-rubans/"
+                   "tex/generic/pst-rubans/"
+                   "tex/latex/pst-rubans/")
+             (base32
+              "1izpw60jm4w8xgd5aiqc7qxhjd0js1g9k9anwbpni9sn1qma66zs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-rubans")
+    (synopsis "Draw three-dimensional ribbons")
+    (description
+     "The package uses PStricks and @code{pst-solides3d} to draw three
+dimensional ribbons on a cylinder, torus, sphere, cone or paraboloid.  The
+width of the ribbon, the number of turns, the colour of the outer and the
+inner surface of the ribbon may be set.  In the case of circular and conical
+helices, one may also choose the number of ribbons.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
