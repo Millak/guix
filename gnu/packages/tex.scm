@@ -4860,6 +4860,29 @@ package.  Its main features are:
 Polyglossia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gost
+  (package
+    (name "texlive-gost")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/gost/" "bibtex/csf/gost/"
+                   "doc/bibtex/gost/" "source/bibtex/gost/")
+             (base32
+              "0rsqk4r1r741ggvpgg7g51knlaqrrdq9g8yiix66vx3n5v1arp26")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gost")
+    (synopsis "BibTeX styles to format according to GOST")
+    (description
+     "This package provides BibTeX styles to format bibliographies in English,
+Russian or Ukrainian according to GOST 7.0.5-2008 or GOST 7.1-2003.  Both
+8-bit and Unicode (UTF-8) versions of each @code{BibTeX} style, in each case
+offering a choice of sorted and unsorted.  Further, a set of three
+styles (which do not conform to current standards) are retained for backwards
+compatibility.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gotoh
   (package
     (name "texlive-gotoh")
