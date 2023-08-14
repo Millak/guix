@@ -32758,6 +32758,28 @@ series.")
 Optional arguments are the unit and the fontsize.")
     (license license:lppl)))
 
+(define-public texlive-pst-dbicons
+  (package
+    (name "texlive-pst-dbicons")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-dbicons/"
+                   "source/generic/pst-dbicons/"
+                   "tex/latex/pst-dbicons/")
+             (base32
+              "0pzfahir5vvxw28095myqppfpyik7agzncm9vm42gvldw45byr4q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-dbicons")
+    (synopsis "Support for drawing ER diagrams")
+    (description
+     "The package provides some useful macros in the database area.  The
+package focusses on typesetting ER-Diagrams in a declarative style, i.e., by
+positioning some nodes and defining the position of all other nodes relative
+to them by using the standard database terminology.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
