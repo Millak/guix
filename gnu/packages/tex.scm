@@ -11558,6 +11558,24 @@ commands and options are provided, in order to completely switch to the
 ancient way, such as @code{\\today}.")
     (license license:lppl)))
 
+(define-public texlive-greektex
+  (package
+    (name "texlive-greektex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/greektex/" "tex/latex/greektex/")
+             (base32
+              "0zs3kakr7k261j876r1xpynvnmjjdn5rky0acfbcjxp7mmsqpmzn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/greektex")
+    (synopsis "Fonts for typesetting Greek/English documents")
+    (description
+     "The fonts are based on Silvio Levy's classical Greek fonts; macros and
+Greek hyphenation patterns for the fonts encoding are also provided.")
+    (license license:public-domain)))
+
 (define-public texlive-gtl
   (package
     (name "texlive-gtl")
