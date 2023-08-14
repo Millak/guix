@@ -3046,7 +3046,7 @@ format is also supported.")
       (propagated-inputs
        (list guile-cairo guile-rsvg))
       (native-inputs
-       (list autoconf automake librsvg pkg-config texinfo))
+       (list autoconf automake (librsvg-for-system) pkg-config texinfo))
       (home-page "https://git.elephly.net/software/guile-picture-language.git")
       (synopsis "Picture language for Guile")
       (description
