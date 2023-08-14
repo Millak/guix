@@ -11436,6 +11436,34 @@ provided by the Greek Font Society.  The font covers Greek only, and LaTeX
 support provides for the use of LGR encoding.")
     (license (list license:lppl1.0+ license:silofl1.1))))
 
+(define-public texlive-gfsporson
+  (package
+    (name "texlive-gfsporson")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsporson/"
+                   "fonts/afm/public/gfsporson/"
+                   "fonts/enc/dvips/gfsporson/"
+                   "fonts/map/dvips/gfsporson/"
+                   "fonts/opentype/public/gfsporson/"
+                   "fonts/tfm/public/gfsporson/"
+                   "fonts/type1/public/gfsporson/"
+                   "fonts/vf/public/gfsporson/"
+                   "tex/latex/gfsporson/")
+             (base32
+              "11m9f3vh41w8gbla62219vf2djc5kl9i4kpg6i1iiixwrhi56smc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsporson")
+    (synopsis "Greek font, originally from Porson")
+    (description
+     "Porson is an elegant Greek font, originally cut at the turn of the 19th
+Century in England.  The present version has been provided by the Greek Font
+Society.  The font supports the Greek alphabet only.  LaTeX support is
+provided, using the LGR encoding.")
+    (license (list license:lppl1.0+ license:silofl1.1))))
+
 (define-public texlive-gobble
   (package
     (name "texlive-gobble")
