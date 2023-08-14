@@ -11772,6 +11772,36 @@ for short verbatim; @file{xfig.tex}, for including xfig/transfig output in
 a TeX document; and @file{cassette.tex} for setting cassette labels.")
     (license license:public-domain)))
 
+(define-public texlive-kerkis
+  (package
+    (name "texlive-kerkis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/kerkis/"
+                   "fonts/afm/public/kerkis/"
+                   "fonts/enc/dvips/kerkis/"
+                   "fonts/map/dvips/kerkis/"
+                   "fonts/opentype/public/kerkis/"
+                   "fonts/tfm/public/kerkis/"
+                   "fonts/type1/public/kerkis/"
+                   "fonts/vf/public/kerkis/"
+                   "tex/latex/kerkis/")
+             (base32
+              "1mkrnydgc05k2n6mrz6i3ichigf0bmy465s2vg514m7ma399khi9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kerkis")
+    (synopsis "Kerkis (Greek) font family")
+    (description
+     "This package provides sans-serif Greek fonts to match the URW Bookman
+set (which are distributed with Kerkis).  The Kerkis font set has some support
+for mathematics as well as other glyphs missing from the base URW Bookman
+fonts.  Macros are provided to use the fonts in OT1, T1 (only NG/ng glyphs
+missing) and LGR encodings, as well as in mathematics; small caps and
+old-style number glyphs are also available.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lambda-lists
   (package
     (name "texlive-lambda-lists")
