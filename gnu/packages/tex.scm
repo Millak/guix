@@ -3086,6 +3086,31 @@ leading journals.  It also provides some handy chemistry-related macros.")
 Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-churchslavonic
+  (package
+    (name "texlive-churchslavonic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/churchslavonic/"
+                   "tex/latex/churchslavonic/")
+             (base32
+              "1qyxyp0ckizrryvqyz8cz066g9vvz01ki6b50sm5hk44b6b4v3ri")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-fonts-churchslavonic
+           texlive-hyphen-complete
+           texlive-oberdiek
+           texlive-xcolor))
+    (home-page "https://ctan.org/pkg/churchslavonic")
+    (synopsis "Typeset documents in Church Slavonic language using Unicode")
+    (description
+     "The package provides fonts, hyphenation patterns, and supporting macros
+to typeset Church Slavonic texts.")
+    (license license:expat)))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
