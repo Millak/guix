@@ -129,7 +129,7 @@ and security.")
      `(("glib-compile-schemas" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)))
     (propagated-inputs
-     (list librsvg
+     (list (librsvg-for-system)
            gsettings-desktop-schemas
            gtk+
            python-dateutil
