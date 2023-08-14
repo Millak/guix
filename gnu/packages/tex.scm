@@ -12840,6 +12840,27 @@ required.")
 position is already further along, @code{\\tabto} starts a new line.")
     (license license:public-domain)))
 
+(define-public texlive-talos
+  (package
+    (name "texlive-talos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/talos/"
+                   "fonts/opentype/public/talos/")
+             (base32
+              "1m656d4lkc9ikp7gb91yna4323lip3xcr6n3kqh1j4sqvp4rkm61")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/talos")
+    (synopsis "Greek cult font from the eighties")
+    (description
+     "This package provides a cult Greek font from the eighties, used at the
+University of Crete, Greece.  It belonged to the first TeX installation in
+a Greek University and most probably the first TeX installation that supported
+the Greek language.")
+    (license license:gfl1.0)))
+
 (define-public texlive-termmenu
   (package
     (name "texlive-termmenu")
