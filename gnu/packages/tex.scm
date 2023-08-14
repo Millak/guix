@@ -7022,6 +7022,45 @@ systems of equations and small matrices, @code{displaymath} in double columns
 for long calculations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mltex
+  (package
+    (name "texlive-mltex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mltex/" "tex/latex/mltex/"
+                   "tex/mltex/config/")
+             (base32
+              "1ip0q5kqj6bg4jkginzljknbrd74ss4iky2gvlmf8nnrq06n89my")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "mllatex" "mltex")))
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyphen-complete
+           texlive-knuth-lib
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-latexconfig
+           texlive-plain
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/mltex")
+    (synopsis "The MLTeX system")
+    (description
+     "MLTeX is a modification of TeX that allows the hyphenation of words with
+accented letters using ordinary Computer Modern (CM) fonts.  The system is
+distributed as a TeX change file.")
+    (license license:knuth)))
+
 (define-public texlive-multiobjective
   (package
     (name "texlive-multiobjective")
