@@ -3171,7 +3171,7 @@ using @command{dmenu}.")
                   fontconfig
                   libpng
                   libxkbcommon
-                  librsvg ;if librsvg is not used, bundled nanosvg is used
+                  (librsvg-for-system) ;if librsvg is not used, bundled nanosvg is used
                   pixman
                   wayland
                   wayland-protocols))
