@@ -32640,6 +32640,29 @@ available in English.")
 spaces: Adobe, CIE, ColorMatch, NTSC, Pal-Secam, ProPhoto, SMPTE, and sRGB.")
     (license license:lppl)))
 
+(define-public texlive-pst-circ
+  (package
+    (name "texlive-pst-circ")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-circ/" "dvips/pst-circ/"
+                   "tex/generic/pst-circ/"
+                   "tex/latex/pst-circ/")
+             (base32
+              "0255xcjhm0jcgw352cmdn8d8062g2mihfzhii20zh4j0zznmk7hj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-circ")
+    (synopsis "PSTricks package for drawing electric circuits")
+    (description
+     "The package can easily draw current 2-terminal devices and some 3- and
+4-terminal devices used in electronic or electric theory.  The package's
+macros are designed with a view to logical representation of circuits, as far
+as possible, so as to relieve the user of purely graphical considerations when
+expressing a circuit.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
