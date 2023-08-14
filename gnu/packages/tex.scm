@@ -7023,6 +7023,31 @@ with long items, page styles have variants for normal, opening, closing, and
 blank pages.")
     (license license:lppl1.2+)))
 
+(define-public texlive-mxedruli
+  (package
+    (name "texlive-mxedruli")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mxedruli/"
+                   "fonts/afm/public/mxedruli/"
+                   "fonts/map/dvips/mxedruli/"
+                   "fonts/source/public/mxedruli/"
+                   "fonts/tfm/public/mxedruli/"
+                   "fonts/type1/public/mxedruli/"
+                   "tex/latex/mxedruli/")
+             (base32
+              "070lfw12mfimcwhkgb1hh092p8npmhpmba28rzzwfl1kmsmk99q5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/mxedruli")
+    (synopsis "Pair of fonts for different Georgian alphabets")
+    (description
+     "This package provides two Georgian fonts, in both Metafont and Type
+1 formats, which cover the Mxedruli and the Xucuri alphabets.")
+    (license license:lppl)))
+
 (define-public texlive-naive-ebnf
   (package
     (name "texlive-naive-ebnf")
