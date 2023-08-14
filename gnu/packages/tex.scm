@@ -33102,6 +33102,35 @@ The plots may be generated as volumes of rotation about the X-axis, as well.")
 chart that displays a project schedule.")
     (license license:lppl)))
 
+(define-public texlive-pst-geo
+  (package
+    (name "texlive-pst-geo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-geo/" "dvips/pst-geo/"
+                   "tex/generic/pst-geo/" "tex/latex/pst-geo/")
+             (base32
+              "1zqmjjg9zmmzjqmhx2jwcc761f1rrxcchsnrd5s686f9p6z4w7c6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-geo")
+    (synopsis "Geographical projections")
+    (description
+     "The package offers a set of PSTricks related packages for various
+cartographic projections of the terrestrial sphere.  The package
+@code{pst-map2d} provides conventional projections such as Mercator, Lambert,
+cylindrical, etc.  The package @code{pst-map3d} treats representation in three
+dimensions of the terrestrial sphere.  Packages @code{pst-map2dII} and
+@code{pst-map3dII} allow use of the CIA World DataBank II. Various parameters
+of the packages allow for choice of the level of the detail and the layouts
+possible (cities, borders, rivers etc).  Substantial data files are provided,
+in an (internally) compressed format.  Decompression happens on-the-fly as
+a document using the data is displayed, printed or converted to PDF format.
+A Perl script is provided for the user to do the decompression, if the need
+should arise.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
