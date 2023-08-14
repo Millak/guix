@@ -32411,6 +32411,27 @@ amplitude of radio waves.  The user may plot curves of modulated signals, wave
 carrier, signal modulation, signal recovery and signal demodulation.")
     (license license:lppl)))
 
+(define-public texlive-pst-antiprism
+  (package
+    (name "texlive-pst-antiprism")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-antiprism/"
+                   "dvips/pst-antiprism/"
+                   "tex/generic/pst-antiprism/"
+                   "tex/latex/pst-antiprism/")
+             (base32
+              "158691m8i8zd0w7d7vsbmkjm4y1ixfvj4j7bxszcw67cz2q2cmyi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-antiprism")
+    (synopsis "PSTricks related package which draws an antiprism")
+    (description
+     "@code{pst-antiprism} is a PSTricks related package which draws an antiprism,
+which is a semiregular polyhedron constructed with 2-gons and triangles.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
