@@ -33865,6 +33865,24 @@ to build point using common transformations or intersections.  The use of
 coordinates is limited to points which controlled the figure.")
     (license license:lppl)))
 
+(define-public texlive-pst-eucl-translation-bg
+  (package
+    (name "texlive-pst-eucl-translation-bg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-eucl-translation-bg/")
+             (base32
+              "06c9ajnfl01sl81z5r8a5lzmaygq9rdmgym2v40y7xp7z033gwwv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-eucl-translation-bg")
+    (synopsis "Bulgarian translation of the @code{pst-eucl} documentation")
+    (description
+     "The package provides the @code{pst-eucl} package documentation in
+Bulgarian language.")
+    (license license:lppl)))
+
 (define-public texlive-pst-exa
   (package
     (name "texlive-pst-exa")
