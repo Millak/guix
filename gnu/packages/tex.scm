@@ -33319,6 +33319,27 @@ paths or Bezier curves, using the Bezier clipping algorithm.")
 standard graphics controls one expects.")
     (license license:lppl)))
 
+(define-public texlive-pst-labo
+  (package
+    (name "texlive-pst-labo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-labo/"
+                   "tex/generic/pst-labo/"
+                   "tex/latex/pst-labo/")
+             (base32
+              "10c2qv2fpijb49yn7p00b116icimhiva5kq0bfgj2975y90fncjb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-labo")
+    (synopsis "Draw objects for Chemistry laboratories")
+    (description
+     "Pst-labo is a PSTricks related package for drawing basic and complex
+chemical objects.  The documentation of the package is illuminated with plenty
+of illustrations together with their source code, making it an easy read.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
