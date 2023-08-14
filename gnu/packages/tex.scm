@@ -9266,6 +9266,34 @@ including emTeX drivers, dviwin, xdvi and dvips, and (using some code from
 ConTeXt) it may also be used with pdfLaTeX.")
     (license license:gpl3+)))
 
+(define-public texlive-t2
+  (package
+    (name "texlive-t2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/t2/" "fonts/enc/t2/"
+                   "tex/generic/t2/cyrfinst/" "tex/latex/t2/")
+             (base32
+              "058j3bpv03d9nb0nxal1vjpliqqibv6hsjl1qlbgnndm95xd5n1a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/t2")
+    (synopsis "Support for using T2 encoding")
+    (description
+     "The T2 bundle provides a variety of separate support functions for using
+Cyrillic characters in LaTeX:
+@itemize
+@item the @code{mathtext} package, for using Cyrillic letters
+transparently in formulae;
+@item the @code{citehack} package, for using Cyrillic (or indeed any
+non-ASCII) characters in citation keys;
+@item support for Cyrillic in BibTeX;
+@item support for Cyrillic in Makeindex;
+@item and various items of font support.
+@end itemize")
+    (license license:lppl)))
+
 (define-public texlive-tablor
   (package
     (name "texlive-tablor")
