@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
@@ -67,7 +67,7 @@
     (inputs
      (list fribidi
            libpng
-           librsvg
+           (librsvg-for-system)
            libxcursor
            libxext
            libxft
