@@ -1725,7 +1725,12 @@ Dropbox API v2.")
         (sha256
          (base32
           "1vzfhw3z2r0rb6s0qdzirh3pl7rv1z8xmxa0z5h7h1wqhpl05ai7"))
-        (patches (search-patches "dbxfs-remove-sentry-sdk.patch"))))
+        (patches (search-patches "dbxfs-remove-sentry-sdk.patch"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  ;; Don't check for package updates.
+                  (substitute* "dbxfs/main.py"
+                    (("if version") "if false"))))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; tests requires safefs
