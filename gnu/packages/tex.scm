@@ -33515,6 +33515,24 @@ a solver of linear equation systems.")
 drawing images as if reflected by a spherical mirror.")
     (license license:lppl)))
 
+(define-public texlive-pst-moire
+  (package
+    (name "texlive-pst-moire")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-moire/" "dvips/pst-moire/"
+                   "tex/generic/pst-moire/"
+                   "tex/latex/pst-moire/")
+             (base32
+              "0i2p5b2cfhnbmszcs5ydlk4nfxhwgl84kq148kpg6cx07gg8rr6l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-moire")
+    (synopsis "PSTricks package to draw moiré patterns")
+    (description "This is a PSTricks package to draw moiré patterns.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
