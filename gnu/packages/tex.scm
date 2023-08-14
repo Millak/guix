@@ -11686,6 +11686,35 @@ those for the ordinary Babel encoding, @samp{cbgreek}.  It sets up
 manner.")
     (license license:lppl)))
 
+(define-public texlive-ibygrk
+  (package
+    (name "texlive-ibygrk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ibygrk/"
+                   "fonts/afm/public/ibygrk/"
+                   "fonts/enc/dvips/ibygrk/"
+                   "fonts/map/dvips/ibygrk/"
+                   "fonts/source/public/ibygrk/"
+                   "fonts/tfm/public/ibygrk/"
+                   "fonts/type1/public/ibygrk/"
+                   "tex/generic/ibygrk/")
+             (base32
+              "14a1hqqwz3pfpz5rz9k8finxnlan4a3l8a0brgs98p6mdp9xl3q1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-levy texlive-metafont))
+    (home-page "https://ctan.org/pkg/ibygrk")
+    (synopsis "Fonts and macros to typeset ancient Greek")
+    (description
+     "Ibycus is a Greek typeface, based on Silvio Levy's realisation of
+a classic Didot cut of Greek type from around 1800.  The fonts are available
+both as Metafont source and in Adobe Type 1 format.  This distribution of
+@code{ibycus} is accompanied by a set of macro packages to use it with Plain
+TeX or LaTeX, but for use with Babel, see the @code{ibycus-babel} package.")
+    (license license:gpl3+)))
+
 (define-public texlive-inputnormalization
   (package
     (name "texlive-inputnormalization")
