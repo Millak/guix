@@ -12703,6 +12703,29 @@ a bug report.")
 LaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lhcyr
+  (package
+    (name "texlive-lhcyr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "source/latex/lhcyr/" "tex/latex/lhcyr/")
+             (base32
+              "09cg2hs5g20axbfpv2k6df5pi3xm0aywcswhnknllykr6z0ip2zw")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lhcyr")
+    (synopsis "Non-standard Cyrillic input scheme")
+    (description
+     "This package provides a collection of three LaTeX2e styles intended for
+typesetting Russian and bilingual English-Russian documents, using the
+@code{lh} fonts and without the benefit of Babel's language-switching
+mechanisms.  The packages (@code{hcyralt} and @code{hcyrwin} for use under
+emTeX, and @code{hcyrkoi} for use under teTeX} provide mappings between the
+input encoding and the font encoding, which is described as OT1.  The way this
+is done does not match the way @code{inputenc} would do the job, for output
+via fontenc to one of the T2 series of font encodings.")
+    (license license:knuth)))
+
 (define-public texlive-luafindfont
   (package
     (name "texlive-luafindfont")
