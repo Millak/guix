@@ -32470,6 +32470,26 @@ which was related to arrows, like multiple arrows and so on.")
      "The package allows the user to typeset autosegmental representations.")
     (license license:lppl)))
 
+(define-public texlive-pst-bar
+  (package
+    (name "texlive-pst-bar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-bar/" "dvips/pst-bar/"
+                   "tex/generic/pst-bar/" "tex/latex/pst-bar/")
+             (base32
+              "19x8a3r09m28g6mpa98rz94274yahajznkkqarzwh1n8v54bb7hd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-bar")
+    (synopsis "Produces bar charts using PSTricks")
+    (description
+     "The package uses PSTricks to draw bar charts from data stored in
+a comma-delimited file.  Several types of bar charts may be drawn, and the
+drawing parameters are highly customizable.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
