@@ -8580,6 +8580,26 @@ specialists.")
 words) whose expansion is the Serbian word with appropriate apostrophes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-serbian-date-lat
+  (package
+    (name "texlive-serbian-date-lat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/serbian-date-lat/"
+                   "tex/latex/serbian-date-lat/")
+             (base32
+              "1m23r2i2dxw4xnxih94iyiwk4a5ggvn7wkqhp8ai5va5grp36kfk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/serbian-date-lat")
+    (synopsis "Updated date typesetting for Serbian")
+    (description
+     "Babel defines dates for Serbian texts, in Latin script.  The style it
+uses does not match current practices.  The present package defines
+a @code{\\date} command that solves the problem.")
+    (license license:gpl2)))
+
 (define-public texlive-sesamanuel
   (package
     (name "texlive-sesamanuel")
