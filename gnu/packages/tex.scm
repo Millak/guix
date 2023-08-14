@@ -33403,6 +33403,29 @@ a remarkable range of effects.")
 effects on characters and PSTricks graphics, like lines, curves, plots, ...")
     (license license:lppl)))
 
+(define-public texlive-pst-lsystem
+  (package
+    (name "texlive-pst-lsystem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-lsystem/"
+                   "dvips/pst-lsystem/"
+                   "tex/generic/pst-lsystem/"
+                   "tex/latex/pst-lsystem/")
+             (base32
+              "1k3krdcfqa5cyzaq0jp8dzil6arfvs5ah2mp87460pl2wvfza0lr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-lsystem")
+    (synopsis "Create images based on a L-system")
+    (description
+     "@code{pst-lsystem} is a PSTricks based package for creating images based
+on a L-system.  A L-system (Lindenmayer system) is a set of rules which can be
+used to model the morphology of a variety of organisms or fractals like the
+Kochflake or Hilbert curve.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
