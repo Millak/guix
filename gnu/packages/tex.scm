@@ -32807,6 +32807,29 @@ Moreover one can choose the wavelength of the light (the associated color will
 be calculated by the package).")
     (license license:lppl)))
 
+(define-public texlive-pst-electricfield
+  (package
+    (name "texlive-pst-electricfield")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-electricfield/"
+                   "dvips/pst-electricfield/"
+                   "source/generic/pst-electricfield/"
+                   "tex/generic/pst-electricfield/"
+                   "tex/latex/pst-electricfield/")
+             (base32
+              "1awc5nqp7giqmczx1xd1y78j5vgsw7y8m767mbhgs5j12j3yl4yd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-electricfield")
+    (synopsis "Draw electric field and equipotential lines with PSTricks")
+    (description
+     "The package provides macros to plot electric field and equipotential
+lines using PStricks.  There may be any number of charges which can be placed
+in a cartesian coordinate system.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
