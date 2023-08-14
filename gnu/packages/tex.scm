@@ -8600,6 +8600,25 @@ uses does not match current practices.  The present package defines
 a @code{\\date} command that solves the problem.")
     (license license:gpl2)))
 
+(define-public texlive-serbian-def-cyr
+  (package
+    (name "texlive-serbian-def-cyr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/serbian-def-cyr/"
+                   "tex/latex/serbian-def-cyr/")
+             (base32
+              "116sgzxvny1hbkfc5s8bxirk9zshyv8qdd2fdr8iwqjfd7lhx03i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/serbian-def-cyr")
+    (synopsis "Serbian Cyrillic localization")
+    (description
+     "This package provides abstract, chapter, title, date etc, for Serbian
+language in Cyrillic scripts in T2A encoding and CP1251 code pages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sesamanuel
   (package
     (name "texlive-sesamanuel")
