@@ -7305,6 +7305,34 @@ working with the source code painless (well, less painful).  A variety of
 stylistic variants are available to suit personal taste.")
     (license license:lppl1.3+)))
 
+(define-public texlive-otibet
+  (package
+    (name "texlive-otibet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/otibet/"
+                   "fonts/ofm/public/otibet/"
+                   "fonts/ovf/public/otibet/"
+                   "fonts/ovp/public/otibet/"
+                   "fonts/source/public/otibet/"
+                   "fonts/tfm/public/otibet/"
+                   "omega/ocp/otibet/"
+                   "omega/otp/otibet/"
+                   "source/latex/otibet/"
+                   "tex/latex/otibet/")
+             (base32
+              "0cman22brlm8qklb60mzq8f6c9kmdspv3zfg4s5p0lj9sf03bb6c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/otibet")
+    (synopsis "Support for Tibetan using Omega")
+    (description "This package provides support for Tibetan using Omega.")
+    ;; Per "unidoc.tex": "this package is freely distributable under the GPL
+    ;; Version~?.? or any later one."
+    (license license:gpl1+)))
+
 (define-public texlive-oubraces
   (package
     (name "texlive-oubraces")
