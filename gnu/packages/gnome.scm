@@ -566,7 +566,7 @@ in JavaScript.")
            vala))
     (inputs
      (list avahi
-           librsvg
+           (librsvg-for-system)
            libgee
            gst-plugins-base
            gtk+))
