@@ -34145,6 +34145,24 @@ popular model: the triple fidget spinner.")
 schemes in civil engineering analysis, for beams, portals, arches and piles.")
     (license license:lppl)))
 
+(define-public texlive-pst-support
+  (package
+    (name "texlive-pst-support")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-support/")
+             (base32
+              "1470n03zanpw35dnfzyjqm7d5lgddrimypz28x0zsk9nqpamnqnv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-support")
+    (synopsis "Assorted support files for use with PSTricks")
+    (description
+     "This package provides an appropriate set of job options, together with
+process scripts for use with TeXnicCenter.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
