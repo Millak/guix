@@ -34439,6 +34439,25 @@ plots; plotting tangent lines of curves or functions; solving and printing
 differential equations; box plots; matrix plots; and pie charts.")
     (license license:lppl)))
 
+(define-public texlive-pstricks-calcnotes
+  (package
+    (name "texlive-pstricks-calcnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pstricks_calcnotes/")
+             (base32
+              "00vgcdf73p4143dfjcvs4b5v4phvisv76ink3iiijl6s6f9zbmy3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pstricks-calcnotes")
+    (synopsis "Use of PSTricks in calculus lecture notes")
+    (description
+     "The bundle shows the construction of PSTricks macros to draw Riemann
+sums of an integral and to draw the vector field of an ordinary differential
+equation.  The results are illustrated in a fragment of lecture notes.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
