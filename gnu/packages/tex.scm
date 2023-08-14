@@ -33820,6 +33820,29 @@ using PSTricks.  Plots may be configured using a wide variety of parameters.")
 manners.")
     (license license:lgpl3)))
 
+(define-public texlive-pst-poly
+  (package
+    (name "texlive-pst-poly")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-poly/"
+                   "tex/generic/pst-poly/"
+                   "tex/latex/pst-poly/")
+             (base32
+              "1fasd2y6vv28id1w858kq4rc3qd46rkds9z7vi8k102aqvv9as8n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-poly")
+    (synopsis "Polygons with PSTricks")
+    (description
+     "This PSTricks package provides a really rather simple command
+@code{\\PstPolygon} that will draw various regular and non-regular
+polygons (according to command parameters); various shortcuts to commonly-used
+polygons are provided, as well as a command @code{\\pspolygonbox} that frames
+text with a polygon.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
