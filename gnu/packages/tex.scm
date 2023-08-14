@@ -4121,6 +4121,54 @@ you use any special symbols inside your command.")
 @url{https://www.eolang.org, EO} programming language.")
     (license license:expat)))
 
+(define-public texlive-eplain
+  (package
+    (name "texlive-eplain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/eplain/"
+                   "doc/info/eplain.info"
+                   "doc/man/man1/eplain.1"
+                   "doc/man/man1/eplain.man1.pdf"
+                   "source/eplain/"
+                   "tex/eplain/")
+             (base32
+              "00nmqhfckrf8ygw6i93d5xnf85i8a88ryadb5ml73w4rllwjxr72")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "eplain")))
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyphen-complete
+           texlive-knuth-lib
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-pdftex
+           texlive-plain
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/eplain")
+    (synopsis "Extended plain TeX macros")
+    (description
+     "This package provides an extended version of the plain TeX format,
+adding support for bibliographies, tables of contents, enumerated lists,
+verbatim input of files, numbered equations, tables, two-column output,
+footnotes, hyperlinks in PDF output and commutative diagrams.  Eplain can also
+load some of the more useful LaTeX packages, notably @code{graphics},
+@code{graphicx} (an extended version of graphics), @code{color},
+@code{autopict} (a package instance of the LaTeX picture code), @code{psfrag},
+and @code{url}.")
+    (license license:gpl2+)))
+
 (define-public texlive-epslatex-fr
   (package
     (name "texlive-epslatex-fr")
