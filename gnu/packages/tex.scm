@@ -34004,6 +34004,31 @@ a three-dimensional appearance.
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-pst-solarsystem
+  (package
+    (name "texlive-pst-solarsystem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-solarsystem/"
+                   "dvips/pst-solarsystem/"
+                   "tex/generic/pst-solarsystem/"
+                   "tex/latex/pst-solarsystem/")
+             (base32
+              "147mbrir52fl1ra3qqwlmmgk7789nrpr9hh015kc07mx10zfmc5x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-solarsystem")
+    (synopsis "Plot the solar system for a specific date")
+    (description
+     "The package uses PSTricks to produce diagrams of the visible planets,
+projected on the plane of the ecliptic.  It is not possible to represent all
+the planets in their real proportions, so only Mercury, Venus, Earth and Mars
+have their orbits in correct proportions and their relative sizes are
+observed.  Saturn and Jupiter are in the right direction, but not in the
+correct size.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
