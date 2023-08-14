@@ -11844,6 +11844,28 @@ to make the text fit the box.  Note that letterspacing is not ordinarily
 considered acceptable in modern typesetting of English.")
     (license license:knuth)))
 
+(define-public texlive-levy
+  (package
+    (name "texlive-levy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/levy/"
+                   "fonts/source/public/levy/"
+                   "fonts/tfm/public/levy/" "tex/generic/levy/")
+             (base32
+              "1nkfsq5k2rysgsplv6rhvx8fimd7999dylzd2khvw7flryig32nv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/levy-font")
+    (synopsis "Fonts for typesetting classical Greek")
+    (description
+     "These fonts are derivatives of Kunth's CM fonts.  Macros for use with
+Plain TeX are included in the package; for use with LaTeX, see @code{lgreek}
+(with English documentation) or @code{levy} (with German documentation).")
+    (license license:gpl2)))
+
 (define-public texlive-localloc
   (package
     (name "texlive-localloc")
