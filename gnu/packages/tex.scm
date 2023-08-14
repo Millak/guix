@@ -23455,6 +23455,27 @@ German.")
 
 (define-deprecated-package texlive-generic-babel-german texlive-babel-german)
 
+(define-public texlive-babel-greek
+  (package
+    (name "texlive-babel-greek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-greek/"
+                   "source/generic/babel-greek/"
+                   "tex/generic/babel-greek/")
+             (base32
+              "116nifgjwx588f63fwkyny36i8p7i9prsz785m81hwnhylii2fhj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-greek")
+    (synopsis "Babel support for documents written in Greek")
+    (description
+     "The file provides modes for monotonic (single-diacritic) and polytonic
+(multiple-diacritic) modes of writing.  Provision is made for Greek function
+names in mathematics, and for classical-era symbols.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-hungarian
   (package
     (name "texlive-babel-hungarian")
