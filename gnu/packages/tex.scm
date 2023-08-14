@@ -3755,6 +3755,29 @@ displaying one step in to the right.  The macros work equally well with Plain
 TeX and with LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-disser
+  (package
+    (name "texlive-disser")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/disser/" "makeindex/disser/"
+                   "source/latex/disser/" "tex/latex/disser/")
+             (base32
+              "0sxvj4cka9xqzl2s3c465fm19lc1b8hyar1chjb51y42q4mx2bmg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/disser")
+    (synopsis "Class and templates for typesetting dissertations in Russian")
+    (description
+     "Disser comprises a document class and set of templates for typesetting
+dissertations in Russian.  One of its primary advantages is a simplicity of
+format specification for titlepage, headers and elements of automatically
+generated lists (table of contents, list of figures, etc).  Bibliography
+styles, that conform to the requirements of the Russian standard GOST
+R 7.0.11-2011, are provided.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-docbytex
   (package
     (name "texlive-docbytex")
