@@ -33467,6 +33467,33 @@ There are several parameters to create a different output.")
     (description "This is a PSTricks package to draw marble-like patterns.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pst-math
+  (package
+    (name "texlive-pst-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-math/" "dvips/pst-math/"
+                   "tex/generic/pst-math/"
+                   "tex/latex/pst-math/")
+             (base32
+              "1h9fg3wz7k28kgmlanli8jzz8kqif11lf0y50w5wxrnaasdmh1ib")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-math")
+    (synopsis "Enhancement of PostScript math operators to use with PSTricks")
+    (description
+     "PostScript lacks a lot of basic operators such as tan, acos, asin, cosh,
+sinh, tanh, acosh, asinh, atanh, exp (with e base).  Also (oddly) cos and sin
+use arguments in degrees.  Pst-math provides all those operators in a header
+file @file{pst-math.pro} with wrappers @file{pst-math.sty} and
+@file{pst-math.tex}.  In addition, sinc, gauss, gammaln and bessel are
+implemented (only partially for the latter).  The package is designed
+essentially to work with @code{pst-plot} but can be used in whatever PS code.
+The package also provides a routine SIMPSON for numerical integration and
+a solver of linear equation systems.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
