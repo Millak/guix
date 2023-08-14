@@ -500,7 +500,7 @@ of those files are returned that are unexpectedly installed."
           (license
            ,(cond
              (meta-package?
-              '(license:fsf-free "https://www.tug.org/texlive/copying.html"))
+              '(fsf-free "https://www.tug.org/texlive/copying.html"))
              ((assoc-ref data 'catalogue-license) => string->license)
              (else #f))))
        (translate-depends depends #t)))))
