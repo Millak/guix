@@ -38564,6 +38564,44 @@ simply on the size of the support.")
     (description "This collection provides support packages for German.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langgreek
+  (package
+    (name "texlive-collection-langgreek")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-babel-greek
+           texlive-begingreek
+           texlive-betababel
+           texlive-cbfonts
+           texlive-cbfonts-fd
+           texlive-collection-basic
+           texlive-gfsbaskerville
+           texlive-gfsporson
+           texlive-greek-fontenc
+           texlive-greek-inputenc
+           texlive-greekdates
+           texlive-greektex
+           texlive-greektonoi
+           texlive-hyphen-complete
+           texlive-ibycus-babel
+           texlive-ibygrk
+           texlive-kerkis
+           texlive-levy
+           texlive-lgreek
+           texlive-lgrmath
+           texlive-mkgrkindex
+           texlive-talos
+           texlive-teubner
+           texlive-xgreek
+           texlive-yannisgr))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Greek")
+    (description "This collection provides support for Greek.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langitalian
   (package
     (name "texlive-collection-langitalian")
