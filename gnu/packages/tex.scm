@@ -34286,6 +34286,28 @@ It is similar to @code{pst-tree}, though it uses a different placement
 algorithm.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-uml
+  (package
+    (name "texlive-pst-uml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-uml/"
+                   "source/generic/pst-uml/"
+                   "tex/latex/pst-uml/")
+             (base32
+              "0sgsyg9gk4wxgz7r44h6a7f5f7gl5b522f864n0kv35cgmwnzyr7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-multido))
+    (home-page "https://ctan.org/pkg/pst-uml")
+    (synopsis "UML diagrams with PSTricks")
+    (description
+     "This a PSTricks package that provides support for drawing moderately
+complex UML (Universal Modelling Language) diagrams.  (The PDF documentation
+is written in French.)")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
