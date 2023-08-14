@@ -33299,6 +33299,26 @@ paths or Bezier curves, using the Bezier clipping algorithm.")
      "jTree uses PSTricks to enable linguists to typeset complex trees.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-knot
+  (package
+    (name "texlive-pst-knot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-knot/" "dvips/pst-knot/"
+                   "tex/generic/pst-knot/"
+                   "tex/latex/pst-knot/")
+             (base32
+              "1b69m4qwd37vd3x734r4hp4wzsirsp6k5m87yqmxlhlkrf0wmrwc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-knot")
+    (synopsis "PSTricks package for displaying knots")
+    (description
+     "The package can produce a fair range of knot shapes, with all the
+standard graphics controls one expects.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
