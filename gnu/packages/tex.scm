@@ -32452,6 +32452,24 @@ which is a semiregular polyhedron constructed with 2-gons and triangles.")
 which was related to arrows, like multiple arrows and so on.")
     (license license:lppl)))
 
+(define-public texlive-pst-asr
+  (package
+    (name "texlive-pst-asr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-asr/"
+                   "tex/generic/pst-asr/" "tex/latex/pst-asr/")
+             (base32
+              "0hxp905d2r4j2z8hfbl9v45xid20lm41k8xy52fdj5grpshhg2z1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-asr")
+    (synopsis "Typeset autosegmental representations for linguists")
+    (description
+     "The package allows the user to typeset autosegmental representations.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
