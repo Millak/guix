@@ -43685,6 +43685,27 @@ a number of @code{\\magsteps} to change size; from this are defined commands
 @code{\\larger}, @code{\\smaller}, @code{\\textlarger}, etc.")
     (license license:public-domain)))
 
+(define-public texlive-russ
+  (package
+    (name "texlive-russ")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/russ/" "tex/latex/russ/")
+             (base32
+              "0ixvdjvgrqn5z8glvbr1i9k4yw00n260d11n034x6j67srxph3rb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/russ")
+    (synopsis "LaTeX in Russian, without Babel")
+    (description
+     "The package aims to facilitate Russian typesetting (based on input using
+MicroSoft Code Page 1251).  Russian hyphenation is selected, and various
+mathematical commands are set up in Russian style.  Furthermore all Cyrillic
+letters catcodes are set to @samp{letter}, so that commands with Cyrillic
+letters in their names may be defined.")
+    (license license:lppl)))
+
 (define-public texlive-everypage
   (package
     (name "texlive-everypage")
