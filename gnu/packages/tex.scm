@@ -32851,6 +32851,28 @@ fly to encapsulated PostScript (EPS) image files, which can then be read into
 a document in the usual way.")
     (license license:lppl)))
 
+(define-public texlive-pst-eucl
+  (package
+    (name "texlive-pst-eucl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-eucl/" "dvips/pst-eucl/"
+                   "tex/generic/pst-eucl/"
+                   "tex/latex/pst-eucl/")
+             (base32
+              "070f7chfvj65mhhdnghblhlq0ywvy76bw17dcb8519ixra6p4f4d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-eucl")
+    (synopsis "Euclidian geometry with PSTricks")
+    (description
+     "The package allows the drawing of Euclidean geometric figures using TeX
+PSTricks macros for specifying mathematical constraints.  It is thus possible
+to build point using common transformations or intersections.  The use of
+coordinates is limited to points which controlled the figure.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
