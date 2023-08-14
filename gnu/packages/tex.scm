@@ -32706,6 +32706,38 @@ arrowing the curve at points chosen by the user.  The package uses the
 marching squares algorithm.")
     (license license:lppl)))
 
+(define-public texlive-pst-cox
+  (package
+    (name "texlive-pst-cox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-cox/" "dvips/pst-cox/"
+                   "tex/generic/pst-cox/" "tex/latex/pst-cox/")
+             (base32
+              "1bw2qmsc735q3ji4h7l166s37wcpd6s4fvi98ggagndm29mcbia3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-cox")
+    (synopsis "Drawing regular complex polytopes with PSTricks")
+    (description
+     "Pst-cox is a PSTricks package for drawing 2-dimensional projections of
+complex regular polytopes (after the work of Coxeter).  The package consists
+of a macro library for drawing the projections.  The complex polytopes appear
+in the study of the root systems and play a crucial role in many domains
+related to mathematics and physics.  These polytopes have been completely
+described by Coxeter in his book @emph{Regular Complex Polytopes}.  There
+exist only a finite numbers of exceptional regular complex polytopes (for
+example the icosahedron) and some infinite series (for example, one can
+construct a multi-dimensional analogue of the hypercube in any finite
+dimension).
+
+The library contains two packages.  The first, @code{pst-coxcoor}, is devoted
+to the exceptional complex regular polytopes whose coordinates have been
+pre-computed.  The second, @code{pst-coxeterp}, is devoted to the infinite
+series.")
+    (license license:lgpl3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
