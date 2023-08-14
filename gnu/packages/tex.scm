@@ -11683,6 +11683,25 @@ advised to consider using the @code{fancyvrb} package in place of
 @code{moreverb}.")
     (license license:lppl)))
 
+(define-public texlive-mpman-ru
+  (package
+    (name "texlive-mpman-ru")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/mpman-ru/")
+             (base32
+              "1x3drpi21zcmkhkscvl4l7805wskqa4zskydb33i0asss5p62396")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mpman-ru")
+    (synopsis "Russian translation of the MetaPost manual")
+    (description
+     "This package provides a translation of the MetaPost user manual, as
+distributed with MetaPost itself.")
+    ;; Explicitly use the same license as MetaPost.
+    (license license:lppl)))
+
 (define-public texlive-namedef
   (package
     (name "texlive-namedef")
