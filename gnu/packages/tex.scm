@@ -22723,6 +22723,26 @@ Babel system).")
     (description "The package establishes Basque conventions in a document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-belarusian
+  (package
+    (name "texlive-babel-belarusian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-belarusian/"
+                   "source/generic/babel-belarusian/"
+                   "tex/generic/babel-belarusian/")
+             (base32
+              "1055gyy9hab9whnr5c2p4i4yczkn5pwm0n54ylnnsl8wg8q58w1z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-belarusian")
+    (synopsis "Babel support for Belarusian")
+    (description
+     "The package provides support for use of Babel in documents written in
+Belarusian.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-bosnian
   (package
     (name "texlive-babel-bosnian")
