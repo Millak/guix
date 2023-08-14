@@ -11767,6 +11767,25 @@ and use raw PDF objects.")
     ;; explicitly instead of simply renaming the file.
     (license (license:fsf-free "file://doc/plain/newsletr/read.me"))))
 
+(define-public texlive-numnameru
+  (package
+    (name "texlive-numnameru")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numnameru/"
+                   "tex/latex/numnameru/")
+             (base32
+              "1il8qn9wkdk554r4a8h5vmdmwcvgwygcx58zwnqxflz6hqsxdjmx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numnameru")
+    (synopsis "Converts a number to the Russian spelled out name")
+    (description
+     "This package converts a numerical number to the Russian spelled out name
+of the number.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ofs
   (package
     (name "texlive-ofs")
