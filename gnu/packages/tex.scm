@@ -33673,6 +33673,25 @@ oriented).  The third channel allows you to add, to subtract or to multiply
 the two other signals.  Lissajous diagrams (XY-mode) can also be obtained.")
     (license license:lppl)))
 
+(define-public texlive-pst-ovl
+  (package
+    (name "texlive-pst-ovl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-ovl/" "dvips/pst-ovl/"
+                   "tex/generic/pst-ovl/" "tex/latex/pst-ovl/")
+             (base32
+              "0v9f4k475cm922y7i2x6w6p1w3nnbaw69rniznwap9bhliv0ynfg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-ovl")
+    (synopsis "Create and manage graphical overlays")
+    (description
+     "The package is useful when building an image from assorted material, as
+in the slides of a projected presentation.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
