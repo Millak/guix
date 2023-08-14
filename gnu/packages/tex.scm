@@ -3976,6 +3976,25 @@ letters statistical distributions constants and symbols matrix operators and
 statistical operators.")
     (license license:lppl1.3+)))
 
+(define-public texlive-edmac
+  (package
+    (name "texlive-edmac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/edmac/" "source/latex/edmac/"
+                   "tex/generic/edmac/")
+             (base32
+              "1pflqzrzfyw725ypc6lcryzzbizk13j69h4875r6q4fs763kv3w1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/edmac")
+    (synopsis "Typeset critical editions")
+    (description
+     "This is the type example package for typesetting scholarly critical
+editions.")
+    (license license:gpl2)))
+
 (define-public texlive-eltex
   (package
     (name "texlive-eltex")
