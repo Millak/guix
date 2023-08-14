@@ -6496,6 +6496,24 @@ Introduction to LaTeX2e}.")
 short introduction to LaTeX2e}.")
     (license license:public-domain)))
 
+(define-public texlive-lshort-ukr
+  (package
+    (name "texlive-lshort-ukr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-ukr/")
+             (base32
+              "1nsah1h3z3sy96a9x0mfdwby7pvvjwq7zxfv2s8nvsbvnn1al17s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-ukr")
+    (synopsis "Ukrainian version of the LaTeX introduction")
+    (description
+     "This package provides the Ukrainian version of the @emph{Short
+Introduction to LaTeX2e}.")
+    (license license:gpl2+)))
+
 (define-public texlive-lstbayes
   (package
     (name "texlive-lstbayes")
