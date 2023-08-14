@@ -34308,6 +34308,26 @@ complex UML (Universal Modelling Language) diagrams.  (The PDF documentation
 is written in French.)")
     (license license:lppl)))
 
+(define-public texlive-pst-vectorian
+  (package
+    (name "texlive-pst-vectorian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-vectorian/"
+                   "dvips/pst-vectorian/"
+                   "tex/latex/pst-vectorian/")
+             (base32
+              "0knvzl4gqz79jzvb4w7a9ka1iiz5f3pjivnwvwmd1kmibykqwb67")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-vectorian")
+    (synopsis "Printing ornaments")
+    (description
+     "The package uses PSTricks to draw ornaments (a substantial repertoire of
+ornaments is provided).")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
