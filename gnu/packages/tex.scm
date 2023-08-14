@@ -33533,6 +33533,29 @@ drawing images as if reflected by a spherical mirror.")
     (description "This is a PSTricks package to draw moiré patterns.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pst-node
+  (package
+    (name "texlive-pst-node")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-node/" "dvips/pst-node/"
+                   "tex/generic/pst-node/"
+                   "tex/latex/pst-node/")
+             (base32
+              "0w9j1l5hlid98sp6hm7ny0z3nh6jcccvxglprq0wr08w89zb7dmz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-node")
+    (synopsis "Nodes and node connections in PSTricks")
+    (description
+     "The package enables the user to connect information, and to place labels,
+without knowing (in advance) the actual positions of the items to be
+connected, or where the connecting line should go.  The macros are useful for
+making graphs and trees, mathematical diagrams, linguistic syntax diagrams,
+and so on.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
