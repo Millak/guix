@@ -33131,6 +33131,26 @@ A Perl script is provided for the user to do the decompression, if the need
 should arise.")
     (license license:lppl)))
 
+(define-public texlive-pst-geometrictools
+  (package
+    (name "texlive-pst-geometrictools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-geometrictools/"
+                   "tex/generic/pst-geometrictools/"
+                   "tex/latex/pst-geometrictools/")
+             (base32
+              "14mhyjq8w3llkyjij274n5sdwbp3ak2xi6q6ggqdakgn032a7yhn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-geometrictools")
+    (synopsis "PSTricks package to draw geometric tools")
+    (description
+     "This PSTricks package facilitates the drawing of protractors, rulers,
+compasses and pencils.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
