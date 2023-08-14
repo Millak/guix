@@ -34388,6 +34388,31 @@ circles.")
 relationships such as diphthong membership.")
     (license license:lppl)))
 
+(define-public texlive-pst2pdf
+  (package
+    (name "texlive-pst2pdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/pst2pdf/" "scripts/pst2pdf/")
+             (base32
+              "0yihyrnwwpad5hf8yrjqljpwsnj6kcbb6y6cfnxwxbi1c5pf1jk9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pst2pdf.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/pst2pdf")
+    (synopsis "Script to compile PSTricks documents via pdfTeX")
+    (description
+     "The script extracts the preamble of the document and runs all
+@code{\\begin@{postscript@}...\\end@{postscript@}},
+@code{\\begin@{pspicture@}...\\end@{pspicture@}} and
+@code{\\pspicture...\\endpspicture} separately through LaTeX with the same
+preamble as the original document; thus it creates EPS, PNG and PDF files of
+these snippets.  In a final pdfLaTeX run the script replaces the environments
+with @code{\\includegraphics} to include the processed snippets.")
+    (license license:gpl2)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
