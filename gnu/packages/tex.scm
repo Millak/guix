@@ -34500,6 +34500,27 @@ sort of tabular, and an environment @code{longtabu} which provides the
 facilities of @code{tabu} in a modified @code{longtable} environment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uml
+  (package
+    (name "texlive-uml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uml/" "source/latex/uml/"
+                   "tex/latex/uml/")
+             (base32
+              "039kg3xk03cm4xfsaj33kx1j5hjqy9330zxamqyzs1jnp8xgcfdz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uml")
+    (synopsis "UML diagrams in LaTeX")
+    (description
+     "This package provides a PSTricks related package for writing
+UML (Unified Modelling Language) diagrams in LaTeX.  Currently, it implements
+a subset of class diagrams, and some extra constructs as well.  The package
+cannot be used together with @code{pst-uml}.")
+    (license license:lppl)))
+
 (define-public texlive-xkeyval
   (package
     (name "texlive-xkeyval")
