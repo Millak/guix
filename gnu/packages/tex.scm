@@ -12037,6 +12037,29 @@ of TeX and one of Metafont are needed.")
     ;; when modified.
     (license (license:fsf-free "file://tex/generic/midnight/border.tex"))))
 
+(define-public texlive-mkgrkindex
+  (package
+    (name "texlive-mkgrkindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/mkgrkindex/"
+                   "makeindex/mkgrkindex/"
+                   "scripts/mkgrkindex/")
+             (base32
+              "0bj35wdxn0xllpqzf8lrd00b5rmyy9fws84avz3ijk4k8rvfz8gk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "mkgrkindex")))
+    (home-page "https://ctan.org/pkg/greek-makeindex")
+    (synopsis "MakeIndex working with Greek")
+    (description
+     "MakeIndex is resolutely stuck with Latin-based alphabets, so will not
+deal with Greek indexes, unaided.  This package provides a Perl script that
+will transmute the index of a Greek document in such a way that MakeIndex will
+sort the entries according to the rules of the Greek alphabet.")
+    (license license:lppl)))
+
 (define-public texlive-modulus
   (package
     (name "texlive-modulus")
