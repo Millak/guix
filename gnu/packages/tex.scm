@@ -7849,6 +7849,28 @@ elements such as keywords, identifiers, and comments.")
 algorithms in a natural manner.")
     (license license:lppl)))
 
+(define-public texlive-psizzl
+  (package
+    (name "texlive-psizzl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/otherformats/psizzl/base/"
+                   "source/psizzl/base/" "tex/psizzl/base/"
+                   "tex/psizzl/config/")
+             (base32
+              "07h8raq2k80ycvsaaaxaaczwwnhkxdbnvnr52mihr8dyih5s7jns")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/psizzl")
+    (synopsis "TeX format for physics papers")
+    (description
+     "PSIZZL is a TeX format for physics papers written at SLAC and used at
+several other places.  It dates from rather early in the development of TeX82;
+as a result, some of the descriptions of limitations look rather quaint to
+modern eyes.")
+    (license license:lppl)))
+
 (define-public texlive-pythonhighlight
   (package
     (name "texlive-pythonhighlight")
