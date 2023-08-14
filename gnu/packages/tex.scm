@@ -33863,6 +33863,24 @@ text with a polygon.")
 The pulley diagrams are labelled with the physical properties of the system.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-qtree
+  (package
+    (name "texlive-pst-qtree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-qtree/"
+                   "tex/generic/pst-qtree/"
+                   "tex/latex/pst-qtree/")
+             (base32
+              "1hdmv4lar1hdg9bh049kmsjqd14rdv2066qrcaacwmd39nh816z5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-qtree")
+    (synopsis "Simple syntax for trees")
+    (description "The package provides a Qtree-like front end for PSTricks.")
+    (license license:gpl3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
