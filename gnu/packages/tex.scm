@@ -32432,6 +32432,26 @@ carrier, signal modulation, signal recovery and signal demodulation.")
 which is a semiregular polyhedron constructed with 2-gons and triangles.")
     (license license:lppl)))
 
+(define-public texlive-pst-arrow
+  (package
+    (name "texlive-pst-arrow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-arrow/"
+                   "tex/generic/pst-arrow/"
+                   "tex/latex/pst-arrow/")
+             (base32
+              "1z216b5189f390mdzxxcc240i0iav13nicqjqwcn31f4j4wclpzj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-arrow")
+    (synopsis "Special arrows for PSTricks")
+    (description
+     "This package has all the code from the package @code{pstricks-add},
+which was related to arrows, like multiple arrows and so on.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
