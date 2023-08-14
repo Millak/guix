@@ -34521,6 +34521,26 @@ a subset of class diagrams, and some extra constructs as well.  The package
 cannot be used together with @code{pst-uml}.")
     (license license:lppl)))
 
+(define-public texlive-vaucanson-g
+  (package
+    (name "texlive-vaucanson-g")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/vaucanson-g/"
+                   "tex/generic/vaucanson-g/")
+             (base32
+              "18ig6kszjr2jfr3hvq18clq8ccxbv2zw280pw20mphfjh6rjwbrj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vaucanson-g")
+    (synopsis "PSTricks macros for drawing automata")
+    (description
+     "VauCanSon-G is a package that enables the user to draw automata within
+texts written using LaTeX.  The package macros make use of commands of
+PSTricks.")
+    (license license:lppl)))
+
 (define-public texlive-xkeyval
   (package
     (name "texlive-xkeyval")
