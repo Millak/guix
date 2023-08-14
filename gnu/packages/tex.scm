@@ -39574,6 +39574,26 @@ makecell with an easy to use syntax.  It also adds some enhanced rules for the
 @code{booktabs} package.")
     (license license:expat)))
 
+(define-public texlive-makeplot
+  (package
+    (name "texlive-makeplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makeplot/"
+                   "source/latex/makeplot/"
+                   "tex/latex/makeplot/")
+             (base32
+              "1w34508lvb6rjhp41k78ph2p609mk03n8sp4mfgmhdpay0qxyjz5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makeplot")
+    (synopsis "Easy plots from Matlab in LaTeX")
+    (description
+     "Makeplot is a LaTeX package that uses the PSTricks @code{pst-plot}
+functions to plot data that it takes from Matlab output files.")
+    (license license:lppl)))
+
 (define-public texlive-minim
   (package
     (name "texlive-minim")
