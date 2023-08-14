@@ -33973,6 +33973,37 @@ diagram of a system, drawing adaptive systems, sequentially connecting a list
 of nodes, and connecting a list of nodes using any node-connecting macro.")
     (license license:lppl)))
 
+(define-public texlive-pst-slpe
+  (package
+    (name "texlive-pst-slpe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-slpe/" "dvips/pst-slpe/"
+                   "source/generic/pst-slpe/"
+                   "tex/generic/pst-slpe/"
+                   "tex/latex/pst-slpe/")
+             (base32
+              "12m6iss3hqsngq2dk7n3d1zz6z2rq4j2w1di9l26hpzly2mdp26n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-slpe")
+    (synopsis "Sophisticated colour gradients")
+    (description
+     "This PStricks package covers all the colour gradient functionality of
+@code{pst-grad} (part of the base PSTricks distribution), and provides the
+following facilities:
+
+@itemize
+@item it permits the user to specify an arbitrary number of colours, along
+with the points at which they are to be reached;
+@item it converts between RGB and HSV behind the scenes;
+@item it provides concentric and radial gradients;
+@item it provides a command @code{\\psBall} that generates bullets with
+a three-dimensional appearance.
+@end itemize")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
