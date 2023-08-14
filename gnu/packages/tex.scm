@@ -33716,6 +33716,30 @@ such as boundary lubrication, elastohydrodynamic lubrication and hydrodynamic
 lubrication.")
     (license license:lppl)))
 
+(define-public texlive-pst-pdf
+  (package
+    (name "texlive-pst-pdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-pdf/" "scripts/pst-pdf/"
+                   "source/latex/pst-pdf/" "tex/latex/pst-pdf/")
+             (base32
+              "1as5q9p6z9y3ps3hm8v8par18xmxmhrcxmknpl6rhjq0wbyjlj26")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ps4pdf")))
+    (home-page "https://ctan.org/pkg/pst-pdf")
+    (synopsis "Make PDF versions of graphics by processing between runs")
+    (description
+     "The package @code{pst-pdf} simplifies the use of graphics from PSTricks
+and other PostScript code in PDF documents.  As in building a bibliography
+with BibTeX, additional external programmes are invoked.  In this case they
+are used to create a PDF file that will contain all the graphics material.  In
+the final document these contents will be inserted instead of the original
+PostScript code.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-pst-pdgr
   (package
     (name "texlive-pst-pdgr")
