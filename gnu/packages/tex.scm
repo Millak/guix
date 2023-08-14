@@ -40050,6 +40050,24 @@ The program has support for multilanguage pedigrees (at the present moment the
 English and Russian languages are supported).")
     (license license:gpl2)))
 
+(define-public texlive-psbao
+  (package
+    (name "texlive-psbao")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/psbao/" "tex/latex/psbao/")
+             (base32
+              "11gfnjvhrgic18s45pj6hn8slj9kmrmsrh4kqn83sfdxy2mr2y32")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/psbao")
+    (synopsis "Draw Bao diagrams")
+    (description
+     "The package draws Bao diagrams in LaTeX.  The package is a development
+of @code{psgo}, and uses PSTricks to draw the diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-pslatex
   (package
     (name "texlive-pslatex")
