@@ -32683,6 +32683,29 @@ expressing a circuit.")
 and zigzag node connections.")
     (license license:lppl)))
 
+(define-public texlive-pst-contourplot
+  (package
+    (name "texlive-pst-contourplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-contourplot/"
+                   "tex/generic/pst-contourplot/"
+                   "tex/latex/pst-contourplot/")
+             (base32
+              "00nqg59x1x3nh30cclqjdyyyjzinyl9czjfywznh68dzari1fvqk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-contourplot")
+    (synopsis
+     "Draw implicit functions using the marching squares algorithm")
+    (description
+     "This package allows to draw implicit functions @samp{f(x,y) = 0} with
+options for coloring the inside of the surfaces, for marking the points and
+arrowing the curve at points chosen by the user.  The package uses the
+marching squares algorithm.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
