@@ -906,7 +906,7 @@ including 2D color images.")
            libxml2
            libexif
            libjpeg-turbo ;required by vips.pc
-           librsvg
+           (librsvg-for-system)
            fftw
            libgsf
            imagemagick
