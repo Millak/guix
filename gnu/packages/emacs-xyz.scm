@@ -21900,8 +21900,8 @@ object has been freed.")
   (license license:unlicense)))
 
 (define-public emacs-emacsql
-  (let ((commit "e1baaf2f874df7f9259a8ecca978e03d3ddae5b5")
-        (revision "0"))
+  (let ((commit "29194a63ede3ee24c7457c2fde03b0f1320ca4b1")
+        (revision "1"))
     (package
       (name "emacs-emacsql")
       (version (git-version "3.1.1" revision commit))
@@ -21913,7 +21913,7 @@ object has been freed.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0dvqs1jg5zqn0i3r67sn1a40h5rm961q9vxvmqxbgvdhkjvip8fn"))))
+          (base32 "14yj53xxqi3009bdj39k2fqwyc896yp2m7gdkgyv47wlkh1xwzxh"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -21929,12 +21929,6 @@ object has been freed.")
                     (srfi srfi-26))
         #:phases
         #~(modify-phases %standard-phases
-            (add-before 'install 'remove-sqlite-builtin
-              ;; Current emacs 28.2 doesn't have sqlite feature and compilation
-              ;; of this file fails.  This phase should be removed, when emacs
-              ;; package is updated to 29.
-              (lambda _
-                (delete-file "emacsql-sqlite-builtin.el")))
             (add-before 'install 'patch-elisp-shell-shebangs
               (lambda _
                 (substitute* (find-files "." "\\.el")
