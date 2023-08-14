@@ -33020,6 +33020,27 @@ trees (which need not be balanced) with a variety of different
 parameters (including varying numbers of iterations).")
     (license license:lppl)))
 
+(define-public texlive-pst-fun
+  (package
+    (name "texlive-pst-fun")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-fun/" "dvips/pst-fun/"
+                   "source/generic/pst-fun/"
+                   "tex/generic/pst-fun/" "tex/latex/pst-fun/")
+             (base32
+              "070nv0yv0rcfvx36xmya953pk89whrr26irvy0ccb41k66fvw5j1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-fun")
+    (synopsis "Draw funny objects with PSTricks")
+    (description
+     "This is a PSTricks related package for drawing funny objects, like ant, bird,
+fish, kangaroo, etc.  Such objects may be useful for testing other PSTricks
+macros and/or packages. (Or they can be used for fun...)")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
