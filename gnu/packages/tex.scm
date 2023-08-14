@@ -32391,6 +32391,26 @@ an object at an arbitrary absolute (or even a relative) position on the
 page.")
     (license license:lppl)))
 
+(define-public texlive-pst-am
+  (package
+    (name "texlive-pst-am")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-am/"
+                   "source/generic/pst-am/" "tex/latex/pst-am/")
+             (base32
+              "1dyhjycy6ccamxcp65761gbszxpvxdsiirqbpljkywsbynwfcn6q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-am")
+    (synopsis "Simulation of modulation and demodulation")
+    (description
+     "The package allows the simulation of the modulated and demodulated
+amplitude of radio waves.  The user may plot curves of modulated signals, wave
+carrier, signal modulation, signal recovery and signal demodulation.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
