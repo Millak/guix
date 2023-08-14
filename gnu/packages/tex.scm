@@ -23333,6 +23333,26 @@ names.")
 translations of standard LaTeX names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-serbian
+  (package
+    (name "texlive-babel-serbian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-serbian/"
+                   "source/generic/babel-serbian/"
+                   "tex/generic/babel-serbian/")
+             (base32
+              "089w8phd1pyzh8dmn4v2bspnmx4hqi63mby1yn7xk596qxi3nqrz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-serbian")
+    (synopsis "Babel and Polyglossia support for Serbian")
+    (description
+     "The package provides support for Serbian documents written in Latin, in
+Babel.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-slovak
   (package
     (name "texlive-babel-slovak")
