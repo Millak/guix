@@ -33650,6 +33650,29 @@ realistic raytraced beam paths are also possible.")
 refractive optics diagrams.")
     (license license:lppl)))
 
+(define-public texlive-pst-osci
+  (package
+    (name "texlive-pst-osci")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-osci/"
+                   "tex/generic/pst-osci/"
+                   "tex/latex/pst-osci/")
+             (base32
+              "0h7wnpm26z8v904yj0wvadrjsh3j5fsn73ihilxhb4zd88zqib99")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-osci")
+    (synopsis "Oscgons with PSTricks")
+    (description
+     "This PSTricks package enables you to produce oscilloscope screen shots.
+Three channels can be used to represent the most common signals (damped or
+not): namely sinusoidal, rectangular, triangular, dog's tooth (left and right
+oriented).  The third channel allows you to add, to subtract or to multiply
+the two other signals.  Lissajous diagrams (XY-mode) can also be obtained.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
