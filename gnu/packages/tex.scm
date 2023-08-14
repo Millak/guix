@@ -33741,6 +33741,26 @@ used both with LaTeX and PlainTeX.  A separate Perl program for generating TeX
 files from spreadsheets is available.")
     (license license:lppl)))
 
+(define-public texlive-pst-perspective
+  (package
+    (name "texlive-pst-perspective")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-perspective/"
+                   "tex/generic/pst-perspective/"
+                   "tex/latex/pst-perspective/")
+             (base32
+              "0dm7qqar0kjnc68xwhp7vn4m8bcsmzcs6qzh61ainbls7gni5aq8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-perspective")
+    (synopsis "Draw perspective views using PSTricks")
+    (description
+     "The package provides the means to draw an orthogonal parallel projection
+with an arbitrarily chosen angle and a variable shortening factor.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
