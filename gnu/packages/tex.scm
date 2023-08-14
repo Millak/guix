@@ -5755,6 +5755,21 @@ practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
 and commands.")
     (license license:public-domain)))
 
+(define-public texlive-lambda
+  (package
+    (name "texlive-lambda")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/lambda/base/" "tex/lambda/config/")
+             (base32
+              "1ajx5g5cd5s9jqr4b196689k7zmlxmhhksly88qps31s7lzaprvn")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lambda")
+    (synopsis "LaTeX for Omega and Aleph")
+    (description "This is LaTeX for Omega and Aleph.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-latex2e-help-texinfo-fr
   (package
     (name "texlive-latex2e-help-texinfo-fr")
