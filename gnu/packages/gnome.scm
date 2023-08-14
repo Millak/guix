@@ -10986,7 +10986,7 @@ Bluefish supports many programming and markup languages.")
            gtk+
            gtkmm-3
            libhandy
-           librsvg
+           (librsvg-for-system)
            libxml2
            libwnck))
     (home-page "https://wiki.gnome.org/Apps/SystemMonitor")
