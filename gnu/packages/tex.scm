@@ -39980,6 +39980,30 @@ integrated into the LaTeX kernel (or in parts into permanent support
 packages), and the current testphase bundle will be removed.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pdftricks
+  (package
+    (name "texlive-pdftricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdftricks/"
+                   "tex/latex/pdftricks/")
+             (base32
+              "07vr97rgn0n73zb2b3sb3wkwxl0p6nbnjk0cgxd05drf1k8shxnp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdftricks")
+    (synopsis "Support for PSTricks in pdfTeX")
+    (description
+     "The PSTricks macros cannot be used (directly) with pdfTeX, since
+PSTricks uses PostScript arithmetic, which isn't part of PDF.  This package
+circumvents this limitation so that the extensive facilities offered by the
+powerful PSTricks package can be made use of in a pdfTeX document.  This is
+done using the shell escape function available in current TeX implementations.
+The package may also be used in support of other PostScript-output-only
+packages, such as PSfrag.")
+    (license license:gpl3+)))
+
 (define-public texlive-pslatex
   (package
     (name "texlive-pslatex")
