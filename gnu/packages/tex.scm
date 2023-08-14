@@ -13146,6 +13146,32 @@ a size-change macro.  Note that @file{10point.tex} is by convention called by
 one of the other files, so that there's always a way back.")
     (license license:public-domain)))
 
+(define-public texlive-xgreek
+  (package
+    (name "texlive-xgreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xgreek/" "source/latex/xgreek/"
+                   "tex/latex/xgreek/")
+             (base32
+              "0hmy7s53bi9szvp13zcg6hk23s8mr2ssbnmq9cw5sb8ggz8icywa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xgreek")
+    (synopsis "Greek language support for XeLaTeX and LuaLaTeX")
+    (description
+     "This package has been designed so to allow people to typeset Greek
+language documents using XeLaTeX or LuaLaTeX.  Practically, it provides all
+the capabilities of the @samp{greek} option of the Babel package.
+
+The package can be invoked with any of the following options:
+@samp{monotonic} (for typesetting modern monotonic Greek),
+@samp{polytonic} (for typesetting modern polytonic Greek), and
+@samp{ancient} (for typesetting ancient texts).  The default option is
+@samp{monotonic}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xii
   (package
     (name "texlive-xii")
