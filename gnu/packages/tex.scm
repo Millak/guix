@@ -8619,6 +8619,25 @@ a @code{\\date} command that solves the problem.")
 language in Cyrillic scripts in T2A encoding and CP1251 code pages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-serbian-lig
+  (package
+    (name "texlive-serbian-lig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/serbian-lig/"
+                   "tex/latex/serbian-lig/")
+             (base32
+              "1vq33mr8br7z7y5ayb5wmhy0ralgx6alb9kmhaahdx8a105dl81b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/serbian-lig")
+    (synopsis "Control ligatures in Serbian")
+    (description
+     "The package suppresses @samp{fi} and @samp{fl} (and other ligatures) in
+Serbian text written using Roman script.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sesamanuel
   (package
     (name "texlive-sesamanuel")
