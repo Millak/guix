@@ -1749,6 +1749,42 @@ mocking nonsense phrases from the movie series @emph{Amici Miei} (``My
 friends'', in English), directed by Mario Monicelli.")
     (license license:lppl1.3c)))
 
+(define-public texlive-antomega
+  (package
+    (name "texlive-antomega")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/omega/antomega/" "omega/ocp/antomega/"
+                   "omega/otp/antomega/"
+                   "source/lambda/antomega/"
+                   "tex/lambda/antomega/")
+             (base32
+              "02pfjm9y33mjggn9w2lrk1fxfz3m72xgbvyvrq2iri9yf0hk33pf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            ;; This phase is necessary because the build phase is reluctant to
+            ;; generate "hyphen.cfg" since there is another one among the
+            ;; inputs already.
+            (lambda _
+              (substitute* "source/lambda/antomega/antomega.ins"
+                (("\\\\generateFile\\{hyphen\\.cfg\\}\\{t\\}")
+                 "\\generateFile{hyphen.cfg}{f}")))))))
+    (propagated-inputs (list texlive-omega))
+    (home-page "https://ctan.org/pkg/antomega")
+    (synopsis "Alternative language support for Omega and Lambda")
+    (description
+     "This package provides a language support package for Omega and Lambda.
+This replaces the original Omega package for use with Lambda, and provides
+extra facilities (including Babel-like language switching, which eases porting
+of LaTeX documents to Lambda).")
+    (license license:lppl)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
