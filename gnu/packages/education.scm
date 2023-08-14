@@ -116,7 +116,7 @@
                       ":" (or (getenv "CPATH") ""))))))))
     (inputs
      `(("gtk+" ,gtk+-2)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxml2" ,libxml2)
        ("sdl-mixer" ,sdl-mixer)
        ("sqlite" ,sqlite)
