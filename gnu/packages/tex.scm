@@ -33556,6 +33556,28 @@ making graphs and trees, mathematical diagrams, linguistic syntax diagrams,
 and so on.")
     (license license:lppl)))
 
+(define-public texlive-pst-ob3d
+  (package
+    (name "texlive-pst-ob3d")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-ob3d/"
+                   "source/generic/pst-ob3d/"
+                   "tex/generic/pst-ob3d/"
+                   "tex/latex/pst-ob3d/")
+             (base32
+              "1j6y3v4x5gkshzxnmklwl2hqbz7nr904v1qa1dr9l4m814p2jhcc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-ob3d")
+    (synopsis "Three dimensional objects using PSTricks")
+    (description
+     "The package uses PSTricks to provide basic three-dimensional objects.
+As yet, only cubes (which can be deformed to rectangular parallelipipeds) and
+dies (which are only a special kind of cubes) are defined.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
