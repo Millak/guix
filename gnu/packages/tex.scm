@@ -32514,6 +32514,28 @@ for calculating the bars.  For PDF output use a multi-pass mechansism such as
 @code{pst-pdf}.")
     (license license:lppl)))
 
+(define-public texlive-pst-bezier
+  (package
+    (name "texlive-pst-bezier")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-bezier/"
+                   "dvips/pst-bezier/"
+                   "tex/generic/pst-bezier/"
+                   "tex/latex/pst-bezier/")
+             (base32
+              "181232snaqfjdc5mzazsdgjvmjn27pcfx45mydkk0cpp61kdr9yk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-bezier")
+    (synopsis "Draw Bezier curves")
+    (description
+     "The package provides a macro @code{\\psbcurve} for drawing a Bezier curve.
+Provision is made for full control of over all the control points of the
+curve.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
