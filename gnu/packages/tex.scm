@@ -34541,6 +34541,30 @@ texts written using LaTeX.  The package macros make use of commands of
 PSTricks.")
     (license license:lppl)))
 
+(define-public texlive-vocaltract
+  (package
+    (name "texlive-vocaltract")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vocaltract/"
+                   "tex/latex/vocaltract/")
+             (base32
+              "072b712bhfxq429jh4r9d786nwpdyl8rlbm6ds4nf9asxg2lg9wr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vocaltract")
+    (synopsis "Visualise the vocal tract using LaTeX and PSTricks")
+    (description
+     "The package enables the user to visualise the vocal tract.  The vocal
+tract (in the package) is manipulated by a vector of articulation parameters
+according to the S. Maeda model.  Animation may be achieved by providing
+a sequence of vectors over time (e.g., from Matlab).  A sequence of vectors
+for certain German phonemes is embedded in the package, which allows for
+animation when no other vector is available.  The package's graphics are
+produced using PSTricks.")
+    (license license:lppl)))
+
 (define-public texlive-xkeyval
   (package
     (name "texlive-xkeyval")
