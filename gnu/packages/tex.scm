@@ -34349,6 +34349,25 @@ mathematical curves.  Different types of vehicles are proposed, the shape of
 the curve is to be defined by its equation in algebraic notation.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pst-venn
+  (package
+    (name "texlive-pst-venn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-venn/"
+                   "tex/latex/pst-venn/")
+             (base32
+              "0gz7sxwycqd71yy8jln7h3v064mrzhh1852fc7b785v55x8kna2n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-venn")
+    (synopsis "PSTricks package for drawing Venn sets")
+    (description
+     "This is a PSTricks related package for drawing Venn diagrams with three
+circles.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
