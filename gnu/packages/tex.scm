@@ -33041,6 +33041,47 @@ fish, kangaroo, etc.  Such objects may be useful for testing other PSTricks
 macros and/or packages. (Or they can be used for fun...)")
     (license license:lppl)))
 
+(define-public texlive-pst-func
+  (package
+    (name "texlive-pst-func")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-func/" "dvips/pst-func/"
+                   "tex/generic/pst-func/"
+                   "tex/latex/pst-func/")
+             (base32
+              "01ibjcyb71l5wqm0x2vq3i4by7q0hp6jmghyw9gkrapmdlwqig5q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-func")
+    (synopsis "PSTricks package for plotting mathematical functions")
+    (description
+     "The package is built for use with PSTricks.  It provides macros for
+plotting and manipulating various mathematical functions:
+
+@itemize
+@item polynomials and their derivatives,
+@item Fourier sums,
+@item the Bessel function defined by its order;
+@item the Gauss function defined by sigma and mu,
+@item Bezier curves from order 1 (two control points) to order 9 (10 control
+points),
+@item the superellipse function (the Lame curve),
+@item Chebyshev polynomials of the first and second kind,
+@item the Thomae (or popcorn) function,
+@item the Weierstrass function,
+@item various integration-derived functions: normal, binomial, poisson, gamma,
+chi-squared, student's t, F, beta, Cauchy and Weibull distribution functions
+and the Lorenz curve,
+@item the zeroes of a function, or the intermediate point of two functions,
+@item the Vasicek function for describing the evolution of interest rates,
+@item implicit functions.
+@end itemize
+
+The plots may be generated as volumes of rotation about the X-axis, as well.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
