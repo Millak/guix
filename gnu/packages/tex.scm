@@ -33925,6 +33925,29 @@ inner surface of the ribbon may be set.  In the case of circular and conical
 helices, one may also choose the number of ribbons.")
     (license license:lppl)))
 
+(define-public texlive-pst-shell
+  (package
+    (name "texlive-pst-shell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-shell/" "dvips/pst-shell/"
+                   "source/generic/pst-shell/"
+                   "tex/generic/pst-shell/"
+                   "tex/latex/pst-shell/")
+             (base32
+              "18w5csarnjv3ws554vjw2zlmpc5mcd03fc8fircv0pbxxl53l11r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-shell")
+    (synopsis "Plotting sea shells")
+    (description
+     "@code{pst-shell} is a PSTricks related package to draw seashells in 3D
+view: Argonauta, Epiteonium, Lyria, Turritella, Tonna, Achatina, Oxystele,
+Conus, Ammonite, Codakia, Escalaria, Helcion, Natalina, Planorbis, and
+Nautilus, all with different parameters.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
