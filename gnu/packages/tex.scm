@@ -11535,6 +11535,29 @@ provides the LaTeX picture mode to Plain TeX users.")
 definition files for use with @code{inputenc}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-greekdates
+  (package
+    (name "texlive-greekdates")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/greekdates/"
+                   "source/latex/greekdates/"
+                   "tex/latex/greekdates/")
+             (base32
+              "1hwjskdllwxa14l12d0fn850sll3i9yihxlpjp2fk62v3iwkrq4r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/greekdates")
+    (synopsis "Provides ancient Greek day and month names, dates, etc")
+    (description
+     "The package provides easy access to ancient Greek names of days and
+months of various regions of Greece.  In case the historical information about
+a region is not complete, we use the Athenian name of the month.  Moreover
+commands and options are provided, in order to completely switch to the
+ancient way, such as @code{\\today}.")
+    (license license:lppl)))
+
 (define-public texlive-gtl
   (package
     (name "texlive-gtl")
