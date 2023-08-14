@@ -32326,6 +32326,26 @@ plotting 2-d curves.  It defines an environment with commands similar to
 MATLAB for plotting.")
     (license license:lppl)))
 
+(define-public texlive-pst-3d
+  (package
+    (name "texlive-pst-3d")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-3d/" "dvips/pst-3d/"
+                   "source/generic/pst-3d/"
+                   "tex/generic/pst-3d/" "tex/latex/pst-3d/")
+             (base32
+              "12gpsg14glcjavlwsb7g0dkxcax89z2adkx7p29cpzvssnimdj50")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-3d")
+    (synopsis "PSTricks package for tilting and other pseudo-3D tricks")
+    (description
+     "The package provides basic macros that use PSTricks for shadows, tilting
+and three dimensional representations of text or graphical objects.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
