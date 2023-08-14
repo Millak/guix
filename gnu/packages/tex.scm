@@ -1907,6 +1907,29 @@ to get onto CTAN.")
 converted between Plain TeX and LaTeX by a simple editing action.")
     (license license:lppl1.3+)))
 
+(define-public texlive-auto-pst-pdf
+  (package
+    (name "texlive-auto-pst-pdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/auto-pst-pdf/"
+                   "source/latex/auto-pst-pdf/"
+                   "tex/latex/auto-pst-pdf/")
+             (base32
+              "1lpjwqd0rhdzz3kywl54pjlpj1qsj7kflj0336vj2zb20rxl0hqp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-ifplatform texlive-iftex texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/auto-pst-pdf")
+    (synopsis "Wrapper for @code{pst-pdf} (with some PSfrag features)")
+    (description
+     "The package uses @samp{--shell-escape} to execute @code{pst-pdf} when necessary.
+Wrappers are provided for various psfrag-related features so that Matlab
+figures via @code{laprint}, Mathematica figures via MathPSfrag, and regular
+PSfrag figures can all be input consistently and easily.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-autoaligne
   (package
     (name "texlive-autoaligne")
