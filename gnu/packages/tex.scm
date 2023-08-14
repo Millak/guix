@@ -32911,6 +32911,26 @@ to put code and output side by side or one above the other.")
 for Feynman diagrams.")
     (license license:lppl)))
 
+(define-public texlive-pst-fill
+  (package
+    (name "texlive-pst-fill")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-fill/"
+                   "tex/generic/pst-fill/"
+                   "tex/latex/pst-fill/")
+             (base32
+              "0anzq671nsprckhy92ybp2y93g5f2z1s0qja9wx2mrjpb4xq8ng0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-fill")
+    (synopsis "Fill or tile areas with PSTricks")
+    (description
+     "Pst-fill is a PSTricks-based package for filling and tiling areas or
+characters.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
