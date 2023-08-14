@@ -33801,6 +33801,25 @@ the five Platonic solids.")
 using PSTricks.  Plots may be configured using a wide variety of parameters.")
     (license license:lppl)))
 
+(define-public texlive-pst-poker
+  (package
+    (name "texlive-pst-poker")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-poker/"
+                   "tex/latex/pst-poker/")
+             (base32
+              "0c1v75rxw717hvjgzb4i0ahk7acmqpgl9czaihvw36r9yaicsm5n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-poker")
+    (synopsis "Drawing poker cards")
+    (description
+     "This PSTricks related package can create poker cards in various
+manners.")
+    (license license:lgpl3)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
