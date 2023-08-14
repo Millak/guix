@@ -32891,6 +32891,26 @@ coordinates is limited to points which controlled the figure.")
 to put code and output side by side or one above the other.")
     (license license:lppl)))
 
+(define-public texlive-pst-feyn
+  (package
+    (name "texlive-pst-feyn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-feyn/" "dvips/pst-feyn/"
+                   "tex/generic/pst-feyn/"
+                   "tex/latex/pst-feyn/")
+             (base32
+              "08m8pwl5kk2rs835pnksap8ld6ir0chlbswchgpvks229i6gkrj0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-feyn")
+    (synopsis "Draw graphical elements for Feynman diagrams")
+    (description
+     "@code{pst-feyn} is a set of drawing graphical elements which are used
+for Feynman diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
