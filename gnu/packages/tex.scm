@@ -34205,6 +34205,26 @@ of the old package @code{pst-char}.")
 with various fillings for the body of the lines.")
     (license license:lppl)))
 
+(define-public texlive-pst-tools
+  (package
+    (name "texlive-pst-tools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-tools/" "dvips/pst-tools/"
+                   "tex/generic/pst-tools/"
+                   "tex/latex/pst-tools/")
+             (base32
+              "1ws149np6121mc7msw32wkc6pn528ldsd5g95w4n4vcm6r54pmgq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-tools")
+    (synopsis "PSTricks support functions")
+    (description
+     "The package provides helper functions for other PSTricks related
+packages.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
