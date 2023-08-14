@@ -7754,7 +7754,7 @@ Github or Gitlab.")
             (base32
              "1s86cd36rwkff329mb1ay1wi5qqyi35564ppgr3f4qqz9wj9vs2m"))))
        ("gettext" ,gettext-minimal)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("po4a" ,po4a)
        ("python" ,python-wrapper)))
     (inputs
