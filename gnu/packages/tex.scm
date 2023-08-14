@@ -33234,6 +33234,30 @@ with continuous colours.  Only colours defined in the HSB model are
 supported.")
     (license license:lppl)))
 
+(define-public texlive-pst-infixplot
+  (package
+    (name "texlive-pst-infixplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-infixplot/"
+                   "tex/generic/pst-infixplot/"
+                   "tex/latex/pst-infixplot/")
+             (base32
+              "07yqjzznayk3pjbsaxjz5b63hiabmkdywv2h6kshpjqmh2q1zi6w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-infixplot")
+    (synopsis "Use PSTricks plotting capacities with infix expressions")
+    (description
+     "Plotting functions with pst-plot is very powerful but sometimes
+difficult to learn since the syntax of @code{\\psplot} and
+@code{\\parametricplot} requires some PostScript knowledge.  The infix-RPN and
+@code{pst-infixplot} styles simplify the usage of @code{pst-plot} for the
+beginner, providing macro commands that convert natural mathematical
+expressions to PostScript syntax.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
