@@ -11925,6 +11925,24 @@ Plain TeX are included in the package; for use with LaTeX, see @code{lgreek}
 (with English documentation) or @code{levy} (with German documentation).")
     (license license:gpl2)))
 
+(define-public texlive-lgreek
+  (package
+    (name "texlive-lgreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lgreek/" "tex/latex/lgreek/")
+             (base32
+              "1wa8d5mlk6jkx3m1rfddasw169sc6l6p8n4axh6i0np1imgsxx2b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lgreek")
+    (synopsis "LaTeX macros for using Silvio Levy's Greek fonts")
+    (description
+     "This package provides a conversion of Silvio Levy's Plain TeX macros for
+use with LaTeX.")
+    (license license:gpl2)))
+
 (define-public texlive-localloc
   (package
     (name "texlive-localloc")
