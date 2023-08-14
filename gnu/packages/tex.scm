@@ -33881,6 +33881,26 @@ The pulley diagrams are labelled with the physical properties of the system.")
     (description "The package provides a Qtree-like front end for PSTricks.")
     (license license:gpl3+)))
 
+(define-public texlive-pst-rputover
+  (package
+    (name "texlive-pst-rputover")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-rputover/"
+                   "tex/generic/pst-rputover/"
+                   "tex/latex/pst-rputover/")
+             (base32
+              "1d25sdhvira5vlibgv3r51dk64jplqbpf4fdimh2l1flq5h0d9dw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-rputover")
+    (synopsis "Place text over objects without obscuring background colors")
+    (description
+     "This is a PSTricks package which allows to place text over objects
+without obscuring background colors.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
