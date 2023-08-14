@@ -754,7 +754,7 @@ the OpenCV-Python library.")
            libgsf
            libjpeg-turbo
            libpng
-           librsvg
+           (librsvg-for-system)
            libtiff
            libxml2
            libwebp
