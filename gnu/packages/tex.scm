@@ -34103,6 +34103,28 @@ allows you to draw continuum, emission and absorption spectra.  A Total of 16
 880 visible lines from 99 elements can be displayed.")
     (license license:lppl)))
 
+(define-public texlive-pst-spinner
+  (package
+    (name "texlive-pst-spinner")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-spinner/"
+                   "dvips/pst-spinner/"
+                   "tex/generic/pst-spinner/"
+                   "tex/latex/pst-spinner/")
+             (base32
+              "0fm70v1kgjs32pvyvcnh2j47clqgdr4hll4j7fr935584d604g49")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-spinner")
+    (synopsis "Drawing a fidget spinner")
+    (description
+     "This package aims to propose a model of the fidget spinner gadget.  It
+exists under different forms with 2, 3 poles and even more.  We chose the most
+popular model: the triple fidget spinner.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
