@@ -32580,6 +32580,26 @@ drawing the open or closed cubic Bspline curve interpolating a sequence of
 points.  Graphical output is created using PStricks.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-calculate
+  (package
+    (name "texlive-pst-calculate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-calculate/"
+                   "tex/latex/pst-calculate/")
+             (base32
+              "19yi0n8p4gj2p16nsk8f3i02a9adlqssyv57r67dc0qh6a0ipa9k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-calculate")
+    (synopsis "Support for floating point operations at LaTeX level")
+    (description
+     "This package provides an interface to the LaTeX3 floating point unit,
+mainly used for PSTricks related packages to allow math expressions at LaTeX
+level.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
