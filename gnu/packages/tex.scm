@@ -32738,6 +32738,26 @@ pre-computed.  The second, @code{pst-coxeterp}, is devoted to the infinite
 series.")
     (license license:lgpl3+)))
 
+(define-public texlive-pst-dart
+  (package
+    (name "texlive-pst-dart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-dart/"
+                   "tex/generic/pst-dart/"
+                   "tex/latex/pst-dart/")
+             (base32
+              "1834hxlg4hfqmrl6k5i2c1jimzd0lcdi6x82b8lfj8dhnddlbgzr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-dart")
+    (synopsis "Plotting dart boards")
+    (description
+     "@code{pst-dart} is a PSTricks related package and draws dart boards.
+Optional arguments are the unit and the fontsize.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
