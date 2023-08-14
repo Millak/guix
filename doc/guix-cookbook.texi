@@ -347,6 +347,9 @@ defines the module @code{guix build-system ruby} which must be located in
 @file{guix/build-system/ruby.scm} somewhere in the Guile load path.  It
 depends on the @code{(guix store)} module and it exports two variables,
 @code{ruby-build} and @code{ruby-build-system}.
+
+@xref{Package Modules,,, guix, GNU Guix Reference Manual}, for info on
+modules that define packages.
 @end itemize
 
 @quotation Going further
