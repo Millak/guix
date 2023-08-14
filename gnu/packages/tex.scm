@@ -11409,6 +11409,33 @@ invented by Gottlob Frege in 1879 for his books @emph{Begriffsschrift} and
 books are supported.")
     (license license:gpl3)))
 
+(define-public texlive-gfsbaskerville
+  (package
+    (name "texlive-gfsbaskerville")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsbaskerville/"
+                   "fonts/afm/public/gfsbaskerville/"
+                   "fonts/enc/dvips/gfsbaskerville/"
+                   "fonts/map/dvips/gfsbaskerville/"
+                   "fonts/opentype/public/gfsbaskerville/"
+                   "fonts/tfm/public/gfsbaskerville/"
+                   "fonts/type1/public/gfsbaskerville/"
+                   "fonts/vf/public/gfsbaskerville/"
+                   "tex/latex/gfsbaskerville/")
+             (base32
+              "0hf2nr0y1l9wzxvk0s2ajy3g80fcc02avr2fqrnss23c1a0jhr8q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsbaskerville")
+    (synopsis "Greek font, from one such by Baskerville")
+    (description
+     "The font is a digital implementation of Baskerville's classic Greek font,
+provided by the Greek Font Society.  The font covers Greek only, and LaTeX
+support provides for the use of LGR encoding.")
+    (license (list license:lppl1.0+ license:silofl1.1))))
+
 (define-public texlive-gobble
   (package
     (name "texlive-gobble")
