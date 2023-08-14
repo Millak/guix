@@ -32490,6 +32490,30 @@ a comma-delimited file.  Several types of bar charts may be drawn, and the
 drawing parameters are highly customizable.")
     (license license:lppl)))
 
+(define-public texlive-pst-barcode
+  (package
+    (name "texlive-pst-barcode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-barcode/"
+                   "dvips/pst-barcode/"
+                   "tex/generic/pst-barcode/"
+                   "tex/latex/pst-barcode/")
+             (base32
+              "10990hhhj961rizfffplx8v3rhnv7knm8nz2zd1aqp686fr3fkgv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-barcode")
+    (synopsis "Print barcodes using PostScript")
+    (description
+     "The @code{pst-barcode} package allows printing of barcodes, in a huge
+variety of formats, including quick-response (QR) codes.  As a PSTricks
+package, the package requires pstricks.  The package uses @code{PostScript}
+for calculating the bars.  For PDF output use a multi-pass mechansism such as
+@code{pst-pdf}.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
