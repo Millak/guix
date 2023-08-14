@@ -12883,6 +12883,27 @@ these options for the program to process.  @code{termmenu} provides this
 mechanism for TeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-teubner
+  (package
+    (name "texlive-teubner")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/teubner/" "source/latex/teubner/"
+                   "tex/latex/teubner/")
+             (base32
+              "1wlp2hv1xsn7z1d42y01mwp4yq06w1j9p3fgk2vvi4ca20rgg7pk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/teubner")
+    (synopsis "Philological typesetting of classical Greek")
+    (description
+     "This package provides an extension to Babel @samp{greek} option for
+typesetting classical Greek with a philological approach.  The package works
+with the author's greek fonts using the Lispiakos font shape derived from that
+of the fonts used in printers shops in Lispia.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tex
   (package
     (name "texlive-tex")
