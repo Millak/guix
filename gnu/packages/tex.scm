@@ -37760,6 +37760,58 @@ includes the Aleph engine and related Omega formats and packages, and the
 HiTeX engine and related.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langcyrillic
+  (package
+    (name "texlive-collection-langcyrillic")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-babel-belarusian
+           texlive-babel-bulgarian
+           texlive-babel-russian
+           texlive-babel-serbian
+           texlive-babel-serbianc
+           texlive-babel-ukrainian
+           texlive-churchslavonic
+           texlive-cmcyr
+           texlive-collection-basic
+           texlive-collection-latex
+           texlive-cyrillic
+           texlive-cyrillic-bin
+           texlive-cyrplain
+           texlive-disser
+           texlive-eskd
+           texlive-eskdx
+           texlive-gost
+           texlive-hyphen-complete
+           texlive-lcyw
+           texlive-lh
+           texlive-lhcyr
+           texlive-lshort-bulgarian
+           texlive-lshort-mongol
+           texlive-lshort-russian
+           texlive-lshort-ukr
+           texlive-mongolian-babel
+           texlive-montex
+           texlive-mpman-ru
+           texlive-numnameru
+           texlive-pst-eucl-translation-bg
+           texlive-russ
+           texlive-serbian-apostrophe
+           texlive-serbian-date-lat
+           texlive-serbian-def-cyr
+           texlive-serbian-lig
+           texlive-t2
+           texlive-xecyrmongolian))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Cyrillic scripts")
+    (description
+     "This collection provides packages supporting Cyrillic scripts (Bulgarian,
+Russian, Serbian, Ukrainian), even if Latin alphabets may also be used.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langczechslovak
   (package
     (name "texlive-collection-langczechslovak")
