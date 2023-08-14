@@ -32997,6 +32997,29 @@ framed boxes using a macro @code{\\PstFrameBoxThreeD}.  The macro is
 especially useful for drawing 3D-seeming buttons.")
     (license license:lppl)))
 
+(define-public texlive-pst-fractal
+  (package
+    (name "texlive-pst-fractal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-fractal/"
+                   "dvips/pst-fractal/"
+                   "tex/generic/pst-fractal/"
+                   "tex/latex/pst-fractal/")
+             (base32
+              "0jc9zwjp23l6njr7y63jh0xv4a6qy2610bb88fdiwdsqnh70gs72")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-fractal")
+    (synopsis "Draw fractal sets using PSTricks")
+    (description
+     "The package uses PSTricks to draw the Julia and Mandelbrot sets, the
+Sierpinski triangle, Koch flake, and Apollonius Circle as well as fractal
+trees (which need not be balanced) with a variety of different
+parameters (including varying numbers of iterations).")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
