@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
@@ -796,7 +796,7 @@ a complete panorama and stitch any series of overlapping pictures.")
            libiptcdata
            libjpeg-turbo
            libpng
-           librsvg
+           (librsvg-for-system)
            libsigc++
            libtiff
            zlib))
