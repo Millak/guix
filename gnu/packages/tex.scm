@@ -32951,6 +32951,30 @@ functions; exp function; logarithm functions; Recip; Kings Law data; Gaussian;
 and fourth order polynomials.")
     (license license:lppl)))
 
+(define-public texlive-pst-flags
+  (package
+    (name "texlive-pst-flags")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-flags/"
+                   "tex/latex/pst-flags/")
+             (base32
+              "13078q4mg1r8hg5zvywfasfz26phcr9dvsw4s05spc116b8fz9gn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-flags")
+    (synopsis "Draw flags of countries using PSTricks")
+    (description
+     "This package provides a number of macros for rendering flags of
+countries and their associated artefacts using PSTricks.  Formatting of the
+resulting drawings is entirely controlled by TeX macros.  A good working
+knowledge of LaTeX should be sufficient to design flags of sovereign countries
+and adapt them to create new designs.  Features such as color or shape
+customisation and dynamic modifications are possible by cleverly adjusting the
+options supplied to the TeX macros.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
