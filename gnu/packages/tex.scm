@@ -5971,6 +5971,29 @@ proofs and boxes.  It creates proofs in a style similar to that used in
 @emph{Logic in Computer Science} by Huth and Ryan.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lollipop
+  (package
+    (name "texlive-lollipop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/otherformats/lollipop/" "tex/lollipop/")
+             (base32
+              "0xdldlnhsr2n8544j9vd6gllin8bfkpcbhlpmxlhrvjl5bdg0rjp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "lollipop")))
+    (propagated-inputs (list texlive-cm texlive-hyphen-base))
+    (home-page "https://ctan.org/pkg/lollipop")
+    (synopsis "TeX made easy")
+    (description
+     "Lollipop is a macro package that functions as a toolbox for writing TeX
+macros.  Its main aim is to make macro writing so easy that implementing
+a fully new layout in TeX would become a matter of less than an hour for an
+average document.  The aim is that such a task could be accomplished by
+someone with only a very basic training in TeX programming.")
+    (license license:gpl3)))
+
 (define-public texlive-longdivision
   (package
     (name "texlive-longdivision")
