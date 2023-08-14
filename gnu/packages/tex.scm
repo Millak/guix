@@ -23474,6 +23474,27 @@ provided for those who wish to typeset Spanish as written in Mexico.")
      "The package provides support, within Babel, of the Turkish language.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-ukrainian
+  (package
+    (name "texlive-babel-ukrainian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-ukrainian/"
+                   "source/generic/babel-ukrainian/"
+                   "tex/generic/babel-ukrainian/")
+             (base32
+              "1nz8yzpc5khyv6wgm5ndwfdxx591wqlg311crzxk08ardg8zwvgs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-ukrainian")
+    (synopsis "Babel support for Ukrainian")
+    (description
+     "The package provides support for use of babel in documents written in
+Ukrainian.  The support is adapted for use under legacy TeX engines as well as
+XeTeX and LuaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-babel-welsh
   (package
     (name "texlive-babel-welsh")
