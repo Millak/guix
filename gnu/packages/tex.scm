@@ -37063,6 +37063,45 @@ manipulation, mft, fontinst, etc.  Manipulating OpenType, TrueType, Type 1,and
 for manipulation of PostScript and other image formats.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-formatsextra
+  (package
+    (name "texlive-collection-formatsextra")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-aleph
+           texlive-antomega
+           texlive-collection-basic
+           texlive-collection-latex
+           texlive-edmac
+           texlive-eplain
+           texlive-hitex
+           texlive-jadetex
+           texlive-lambda
+           texlive-lollipop
+           texlive-mltex
+           texlive-mxedruli
+           texlive-omega
+           texlive-omegaware
+           texlive-otibet
+           texlive-passivetex
+           texlive-psizzl
+           texlive-startex
+           texlive-texsis
+           texlive-xmltex
+           texlive-xmltexconfig))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Additional TeX formats")
+    (description
+     "This is a collection of TeX formats, i.e., large-scale macro packages
+designed to be dumped into @file{.fmt} files --- excluding the most common
+ones, such as LaTeX and ConTeXt, which have their own package(s).  It also
+includes the Aleph engine and related Omega formats and packages, and the
+HiTeX engine and related.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langczechslovak
   (package
     (name "texlive-collection-langczechslovak")
