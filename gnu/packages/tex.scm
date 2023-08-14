@@ -33381,6 +33381,28 @@ layouts of material, typically to be overlaid on an included graphic.")
 a remarkable range of effects.")
     (license license:lppl)))
 
+(define-public texlive-pst-light3d
+  (package
+    (name "texlive-pst-light3d")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-light3d/"
+                   "dvips/pst-light3d/"
+                   "source/generic/pst-light3d/"
+                   "tex/generic/pst-light3d/"
+                   "tex/latex/pst-light3d/")
+             (base32
+              "0kwdbf64m2kmplk4r7ifxckajh3d5sgjini70fmababnrp1g8nzf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-light3d")
+    (synopsis "Three dimensional lighting effects (PSTricks)")
+    (description
+     "This package provides a PSTricks package for three dimensional lighting
+effects on characters and PSTricks graphics, like lines, curves, plots, ...")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
