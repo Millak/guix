@@ -34245,6 +34245,26 @@ packages.")
 joining nodes created using @code{pst-node} in order to draw trees.")
     (license license:lppl)))
 
+(define-public texlive-pst-turtle
+  (package
+    (name "texlive-pst-turtle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-turtle/"
+                   "dvips/pst-turtle/"
+                   "tex/generic/pst-turtle/"
+                   "tex/latex/pst-turtle/")
+             (base32
+              "0mgpjs9jkgfx0hbd9l5jw60rf0vpdkv933ksjlwcjlh98y9gay4c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-turtle")
+    (synopsis "Commands for Turtle operations")
+    (description
+     "This is a PSTricks related package for creating Turtle graphics.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
