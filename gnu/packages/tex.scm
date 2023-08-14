@@ -11663,6 +11663,29 @@ languages and/or dialects, and to select them or switch between them while
 typesetting.")
     (license license:public-domain)))
 
+(define-public texlive-ibycus-babel
+  (package
+    (name "texlive-ibycus-babel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ibycus-babel/"
+                   "source/latex/ibycus-babel/"
+                   "tex/latex/ibycus-babel/")
+             (base32
+              "1lwf28h6lzlblg7s7bx2dhqprxvjj78a8rlljhk9kw5pf065c7aj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ibycus-babel")
+    (synopsis "Use the Ibycus 4 Greek font with Babel")
+    (description
+     "The package allows you to use the Ibycus 4 font for ancient Greek with
+Babel.  It uses a Perl script to generate hyphenation patterns for Ibycus from
+those for the ordinary Babel encoding, @samp{cbgreek}.  It sets up
+@code{ibycus} as a pseudo-language you can specify in the normal Babel
+manner.")
+    (license license:lppl)))
+
 (define-public texlive-inputnormalization
   (package
     (name "texlive-inputnormalization")
