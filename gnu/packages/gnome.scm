@@ -12467,7 +12467,7 @@ to.")
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)))
     (inputs
-     (list gtk+ librsvg libxml2))
+     (list gtk+ (librsvg-for-system) libxml2))
     (arguments
      `(#:configure-flags '("CFLAGS=-fcommon")))
     (home-page "https://glabels.org/")
