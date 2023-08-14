@@ -32306,6 +32306,26 @@ and with colour support.  There are macros for colouring or shading the cells
 of tables.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-2dplot
+  (package
+    (name "texlive-pst-2dplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-2dplot/"
+                   "tex/latex/pst-2dplot/")
+             (base32
+              "1lq39hdlqf4af16lx7qrs6x2hj10rsashgd3yl8659346a2mq75a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-2dplot")
+    (synopsis "PSTricks package for drawing 2D curves")
+    (description
+     "Pst-2dplot is a PSTricks package that offers an intuitive tool for
+plotting 2-d curves.  It defines an environment with commands similar to
+MATLAB for plotting.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
