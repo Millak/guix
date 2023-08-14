@@ -33781,6 +33781,26 @@ with an arbitrarily chosen angle and a variable shortening factor.")
 the five Platonic solids.")
     (license license:lppl)))
 
+(define-public texlive-pst-plot
+  (package
+    (name "texlive-pst-plot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-plot/"
+                   "tex/generic/pst-plot/"
+                   "tex/latex/pst-plot/")
+             (base32
+              "12jrn04nxfhw07y86pjkr6bbvdvwcnhfxr6aj9ni13383dxcwl7j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-plot")
+    (synopsis "Plot data using PSTricks")
+    (description
+     "The package provides plotting of data (typically from external files),
+using PSTricks.  Plots may be configured using a wide variety of parameters.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
