@@ -101,6 +101,7 @@
     ("cc-by-sa-3" 'cc-by-sa3.0)
     ("cc-by-sa-4" 'cc-by-sa4.0)
     ("mit" 'expat)
+    ("x11" 'x11)
     ("fdl" 'fdl1.3+)
     ;; The GUST Font Nosource License, which is legally equivalent to
     ;; lppl1.3c+, is no longer in use (per
