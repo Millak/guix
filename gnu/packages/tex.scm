@@ -28610,6 +28610,25 @@ accepted design standards.  Fonts not (apparently) available on CTAN are
 required for use of the class.")
     (license license:lppl)))
 
+(define-public texlive-eskdx
+  (package
+    (name "texlive-eskdx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eskdx/" "tex/latex/eskdx/")
+             (base32
+              "07c9gbvgr4455s5sfsdjxbbdllx2lhmb5d1c2sdk7rpkvjh64lv8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eskdx")
+    (synopsis "Modern Russian typesetting")
+    (description
+     "Eskdx is a collection of LaTeX classes and packages to typeset textual
+and graphical documents in accordance with Russian (and probably post USSR)
+standards for designers.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-eso-pic
   (package
     (name "texlive-eso-pic")
