@@ -33173,6 +33173,27 @@ will draw a three dimensional grid, offering a number of options for its
 appearance.")
     (license license:lppl)))
 
+(define-public texlive-pst-grad
+  (package
+    (name "texlive-pst-grad")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-grad/" "dvips/pst-grad/"
+                   "tex/generic/pst-grad/"
+                   "tex/latex/pst-grad/")
+             (base32
+              "10b8b7mb6c1kkwvwrq31zwmn184qprd69ckypp0gs5s1nz9klc4l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-grad")
+    (synopsis "Filling with colour gradients, using PSTricks")
+    (description
+     "The package fills with colour gradients, using PSTricks.  The RGB, CMYK
+and HSB models are supported.  Other colour gradient mechanisms are to be
+found in package @code{pst-slpe}.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
