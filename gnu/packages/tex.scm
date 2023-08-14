@@ -34413,6 +34413,32 @@ these snippets.  In a final pdfLaTeX run the script replaces the environments
 with @code{\\includegraphics} to include the processed snippets.")
     (license license:gpl2)))
 
+(define-public texlive-pstricks-add
+  (package
+    (name "texlive-pstricks-add")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pstricks-add/"
+                   "dvips/pstricks-add/"
+                   "tex/generic/pstricks-add/"
+                   "tex/latex/pstricks-add/")
+             (base32
+              "18khs28v3dg5z7215k0yv7hxna9x5nh09hlrw2fc4nhmzymy2kjg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pstricks-add")
+    (synopsis "Collection of add-ons and bugfixes for PSTricks")
+    (description
+     "This package collects together examples that have been posted to the
+PSTricks mailing list, together with many additional features for the basic
+@code{pstricks}, @code{pst-plot} and @code{pst-node}, including: bugfixes; new
+options for the pspicture environment; arrows; braces as node
+connection/linestyle; extended axes for plots (e.g., logarithm axes); polar
+plots; plotting tangent lines of curves or functions; solving and printing
+differential equations; box plots; matrix plots; and pie charts.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
