@@ -32663,6 +32663,26 @@ as possible, so as to relieve the user of purely graphical considerations when
 expressing a circuit.")
     (license license:lppl)))
 
+(define-public texlive-pst-coil
+  (package
+    (name "texlive-pst-coil")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-coil/" "dvips/pst-coil/"
+                   "tex/generic/pst-coil/"
+                   "tex/latex/pst-coil/")
+             (base32
+              "0d3wqrv19zc9qwp3gbr32siad408z4g23k5861p0hqy2hw8f908q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-coil")
+    (synopsis "PSTricks package for coils, etc")
+    (description
+     "Pst-coil is a PSTricks based package for coils and zigzags and for coil
+and zigzag node connections.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
