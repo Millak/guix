@@ -2196,6 +2196,28 @@ issues of numbers in Basque.")
 It may use either TikZ or PSTricks as graphics engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-begingreek
+  (package
+    (name "texlive-begingreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/begingreek/"
+                   "source/latex/begingreek/"
+                   "tex/latex/begingreek/")
+             (base32
+              "1amzzc96pqxjicrgl4fnl2j7b65vvpxl32ckl308nbwfhd56fz6l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/begingreek")
+    (synopsis "Greek environment to be used with pdfLaTeX only")
+    (description
+     "This simple package defines a greek environment to be used with pdfLaTeX
+only, that accepts an optional Greek font family name to type its contents
+with.  A similar @code{\\greektxt} command does a similar action for shorter
+texts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-begriff
   (package
     (name "texlive-begriff")
