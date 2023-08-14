@@ -12684,6 +12684,25 @@ test file that is intended to be sent to the LaTeX bug database as part of
 a bug report.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lcyw
+  (package
+    (name "texlive-lcyw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lcyw/" "source/latex/lcyw/"
+                   "tex/latex/lcyw/")
+             (base32
+              "1yijk9l2ls6sq45ifx6m9d7xxk0ysrnn1y3fjz8wxwgwxp88x9fh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lcyw")
+    (synopsis "Make classic Cyrillic CM fonts accessible in LaTeX")
+    (description
+     "The package makes the classic CM Cyrillic fonts accessible for use with
+LaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-luafindfont
   (package
     (name "texlive-luafindfont")
