@@ -33578,6 +33578,33 @@ As yet, only cubes (which can be deformed to rectangular parallelipipeds) and
 dies (which are only a special kind of cubes) are defined.")
     (license license:lppl)))
 
+(define-public texlive-pst-ode
+  (package
+    (name "texlive-pst-ode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-ode/" "dvips/pst-ode/"
+                   "tex/generic/pst-ode/" "tex/latex/pst-ode/")
+             (base32
+              "0mx6wsdl4m0nr6848qpyfi6rn7x1nsqljnflsp0yk010r0vsmid5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-ode")
+    (synopsis
+     "Solve initial value problems for sets of Ordinary Differential
+Equations")
+    (description
+     "The package defines @code{\\pstODEsolve} for solving initial value
+problems for sets of Ordinary Differential Equations (ODE) using the
+Runge-Kutta-Fehlberg (RKF45) method with automatic step size adjustment.  The
+result is stored as a PostScript object and may be plotted later using macros
+from other PSTricks packages, such as @code{\\listplot} (from @code{pst-plot})
+and @code{\\listplotThreeD} (from @code{pst-3dplot}), or may be further
+processed by user-defined PostScript procedures.  Optionally, the computed
+state vectors can be written as a table to a text file.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
