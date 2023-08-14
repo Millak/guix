@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Fredrik Salomonsson <plattfot@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -421,7 +421,7 @@ display manager which supports different greeters.")
            bash-minimal                 ;for wrap-program
            gtk+
            guile-3.0
-           librsvg
+           (librsvg-for-system)
            libxklavier
            lightdm
            shared-mime-info))
