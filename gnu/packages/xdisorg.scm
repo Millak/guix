@@ -2032,7 +2032,7 @@ natural language input and provide results.")
     (inputs
      (list gtk+
            imlib2
-           librsvg
+           (librsvg-for-system)
            libxcomposite
            libxdamage
            libxft
