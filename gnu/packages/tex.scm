@@ -32557,6 +32557,29 @@ curve.")
 that apply blurring to the normal shadow function of PSTricks.")
     (license license:lppl)))
 
+(define-public texlive-pst-bspline
+  (package
+    (name "texlive-pst-bspline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-bspline/"
+                   "dvips/pst-bspline/"
+                   "tex/generic/pst-bspline/"
+                   "tex/latex/pst-bspline/")
+             (base32
+              "0djf1izf9779lgmbw5zhcz7k5hf8ay96nlgdgpsm1zj4ncwkpibg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-bspline")
+    (synopsis "Draw cubic Bspline curves and interpolations")
+    (description
+     "The package draws uniform, cubic B-spline curves, open and closed, based
+on a sequence of B-spline control points.  There is also code which permits
+drawing the open or closed cubic Bspline curve interpolating a sequence of
+points.  Graphical output is created using PStricks.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
