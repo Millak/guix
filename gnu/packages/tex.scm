@@ -33843,6 +33843,26 @@ polygons are provided, as well as a command @code{\\pspolygonbox} that frames
 text with a polygon.")
     (license license:lppl)))
 
+(define-public texlive-pst-pulley
+  (package
+    (name "texlive-pst-pulley")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-pulley/"
+                   "tex/generic/pst-pulley/"
+                   "tex/latex/pst-pulley/")
+             (base32
+              "1n1kv743vxjw8b6nqrlivb3m3pg3z9kw56bzxij438p5him3sdaa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-pulley")
+    (synopsis "Plot pulleys, using PSTricks")
+    (description
+     "The package enables the user to draw pulley systems with up to 6 pulleys.
+The pulley diagrams are labelled with the physical properties of the system.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
