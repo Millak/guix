@@ -14913,6 +14913,32 @@ for German, French (partially), and Italian program documentation on any
 machine.")
     (license license:knuth)))
 
+(define-public texlive-cyrplain
+  (package
+    (name "texlive-cyrplain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/plain/cyrplain/")
+             (base32
+              "1wdcibxs0g53warxs6vz39s3chldzh05p7v1ksskppghg5qzgh8z")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/t2")
+    (synopsis "Support for using T2 encoding")
+    (description
+     "The T2 bundle provides a variety of separate support functions for using
+Cyrillic characters in LaTeX:
+@itemize
+@item the @code{mathtext} package, for using Cyrillic letters transparently in
+formulae;
+@item the @code{citehack} package, for using Cyrillic (or indeed any
+non-ASCII) characters in citation keys;
+@item support for Cyrillic in BibTeX;
+@item support for Cyrillic in Makeindex;
+@item various items of font support.
+@end itemize")
+    (license license:lppl)))
+
 (define-public texlive-tex-gyre
   (package
     (name "texlive-tex-gyre")
