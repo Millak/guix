@@ -2114,6 +2114,25 @@ Basque according to the correct forms ruled by The Basque Language Academy
 issues of numbers in Basque.")
     (license license:lppl1.2+)))
 
+(define-public texlive-bclogo
+  (package
+    (name "texlive-bclogo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bclogo/" "metapost/bclogo/"
+                   "tex/latex/bclogo/")
+             (base32
+              "1hdg99xkmdca23s7i63099r9jvgw2larv8aawjllj9mw18195jr9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bclogo")
+    (synopsis "Creating colourful boxes with logos")
+    (description
+     "The package facilitates the creation of colorful boxes with a title and logo.
+It may use either TikZ or PSTricks as graphics engine.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-begriff
   (package
     (name "texlive-begriff")
