@@ -33605,6 +33605,31 @@ processed by user-defined PostScript procedures.  Optionally, the computed
 state vectors can be written as a table to a text file.")
     (license license:lppl)))
 
+(define-public texlive-pst-optexp
+  (package
+    (name "texlive-pst-optexp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pst-optexp/" "dvips/pst-optexp/"
+                   "makeindex/pst-optexp/"
+                   "source/latex/pst-optexp/"
+                   "tex/latex/pst-optexp/")
+             (base32
+              "0m835c700a6bxd8r8m84injzz862j1xdxbbh8waxh97yrfwmhp45")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-optexp")
+    (synopsis "Drawing optical experimental setups")
+    (description
+     "The package is a collection of optical components that facilitate easy
+sketching of optical experimental setups.  The package uses PSTricks for its
+output.  A wide range of free-ray and fibre components is provided, the
+alignment, positioning and labelling of which can be achieved in very simple
+and flexible ways.  The components may be connected with fibers or beams, and
+realistic raytraced beam paths are also possible.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
