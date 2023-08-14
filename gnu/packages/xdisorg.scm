@@ -1904,7 +1904,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
      (list cairo
            glib
            libjpeg-turbo
-           librsvg
+           (librsvg-for-system)
            libxcb
            libxkbcommon
            pango
