@@ -1892,7 +1892,16 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "138c4bl60p7namsb2pk8q5cdlxbdkli7zny192vk5jv5s5kczzya"))))
+                "138c4bl60p7namsb2pk8q5cdlxbdkli7zny192vk5jv5s5kczzya"))
+              (snippet
+               #~(begin
+                   ;; Delete pre-generated files.
+                   (for-each delete-file
+                             (list "lexer/theme-lexer.c"
+                                   "lexer/theme-parser.c"
+                                   "lexer/theme-parser.h"
+                                   "resources/resources.c"
+                                   "resources/resources.h"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
