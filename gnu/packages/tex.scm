@@ -33716,6 +33716,31 @@ such as boundary lubrication, elastohydrodynamic lubrication and hydrodynamic
 lubrication.")
     (license license:lppl)))
 
+(define-public texlive-pst-pdgr
+  (package
+    (name "texlive-pst-pdgr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-pdgr/"
+                   "source/generic/pst-pdgr/"
+                   "tex/generic/pst-pdgr/"
+                   "tex/latex/pst-pdgr/")
+             (base32
+              "08v28601j7ygp7d8xliwhfbrl2gh93ikf6kbl4p86wfxsbxlhg0c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-pdgr")
+    (synopsis "Draw medical pedigrees using PSTricks")
+    (description
+     "The package provides a set of macros based on PSTricks to draw medical
+pedigrees according to the recommendations for standardized human pedigree
+nomenclature.  The drawing commands place the symbols on a @code{pspicture}
+canvas.  An interface for making trees is also provided.  The package may be
+used both with LaTeX and PlainTeX.  A separate Perl program for generating TeX
+files from spreadsheets is available.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
