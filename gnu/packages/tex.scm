@@ -33280,6 +33280,25 @@ expressions to PostScript syntax.")
 paths or Bezier curves, using the Bezier clipping algorithm.")
     (license license:lppl)))
 
+(define-public texlive-pst-jtree
+  (package
+    (name "texlive-pst-jtree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-jtree/"
+                   "tex/generic/pst-jtree/"
+                   "tex/latex/pst-jtree/")
+             (base32
+              "07vzx418syv1v04z1552k9iwjz4b4kmw7g2m1i4nqdfg2lvina8s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-jtree")
+    (synopsis "Typeset complex trees for linguists")
+    (description
+     "jTree uses PSTricks to enable linguists to typeset complex trees.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
