@@ -876,7 +876,7 @@ endless.  For example:
     (inputs
      `(("font-andika" ,font-sil-andika)
        ("libpng" ,libpng)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxml2" ,libxml2)
        ("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-net sdl-pango)))))
     (home-page "https://github.com/tux4kids/t4kcommon")
