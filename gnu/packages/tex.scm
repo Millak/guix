@@ -33151,6 +33151,28 @@ should arise.")
 compasses and pencils.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pst-gr3d
+  (package
+    (name "texlive-pst-gr3d")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-gr3d/"
+                   "source/latex/pst-gr3d/"
+                   "tex/generic/pst-gr3d/"
+                   "tex/latex/pst-gr3d/")
+             (base32
+              "0pppd4l4yrdgy0vss8l2kndd0cg9nxip7d7vcyrfr0cz9kw0z45n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-gr3d")
+    (synopsis "Three dimensional grids with PSTricks")
+    (description
+     "This PSTricks package provides a command @code{\\PstGridThreeD} that
+will draw a three dimensional grid, offering a number of options for its
+appearance.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
