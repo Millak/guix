@@ -34225,6 +34225,26 @@ with various fillings for the body of the lines.")
 packages.")
     (license license:lppl)))
 
+(define-public texlive-pst-tree
+  (package
+    (name "texlive-pst-tree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-tree/"
+                   "tex/generic/pst-tree/"
+                   "tex/latex/pst-tree/")
+             (base32
+              "1vznc4qyjpnni3smdxlpqi7h3qxd13kv5pigvlly0zq676n6gw8n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-tree")
+    (synopsis "Trees, using PSTricks")
+    (description
+     "@code{pst-tree} defines a macro \\pstree that offers a structured way of
+joining nodes created using @code{pst-node} in order to draw trees.")
+    (license license:lppl)))
+
 (define-public texlive-marginnote
   (package
     (name "texlive-marginnote")
