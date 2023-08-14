@@ -11576,6 +11576,35 @@ ancient way, such as @code{\\today}.")
 Greek hyphenation patterns for the fonts encoding are also provided.")
     (license license:public-domain)))
 
+(define-public texlive-greektonoi
+  (package
+    (name "texlive-greektonoi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/greektonoi/"
+                   "fonts/map/dvips/greektonoi/"
+                   "tex/latex/greektonoi/")
+             (base32
+              "14phabwakq87qgh3jxs95gk1w2q3aw29vhy441538y4fxvskqhrw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/greektonoi")
+    (synopsis "Facilitates writing/editing of multiaccented Greek")
+    (description
+     "The @code{greektonoi} mapping extends the @code{betababel} package or
+the Babel @samp{polutonikogreek} option to provide a simple way to insert
+ancient Greek texts with diacritical characters into your document using
+a similar method to the commonly used Beta Code transliteration, but with much
+more freedom.  It is designed especially for the XeTeX engine and it could
+also be used for fast and easy modification of monotonic Greek texts to
+polytonic.  The output text is natively encoded in Unicode, so it can be
+reused in any possible way.  The @code{greektonoi} package provides, in
+addition to inserting Greek accents and breathings, many other symbols used in
+Greek numbers and arithmetic or in the Greek archaic period.  It could be used
+with @code{greektonoi} mapping or indepedently.")
+    (license license:lgpl3)))
+
 (define-public texlive-gtl
   (package
     (name "texlive-gtl")
