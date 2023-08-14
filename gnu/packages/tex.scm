@@ -32369,6 +32369,28 @@ external data files, making this package a generic tool for graphing within
 TeX or LaTeX, without the need for external tools.")
     (license license:lppl)))
 
+(define-public texlive-pst-abspos
+  (package
+    (name "texlive-pst-abspos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-abspos/"
+                   "source/generic/pst-abspos/"
+                   "tex/generic/pst-abspos/"
+                   "tex/latex/pst-abspos/")
+             (base32
+              "12k786hfhp8vrq4a6a6caf6fi1p16hd79r3lf19d5vcyykppdcm8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-abspos")
+    (synopsis "Put objects at an absolute position")
+    (description
+     "This PSTricks package provides a command @code{\\pstPutAbs(x,y)} to put
+an object at an arbitrary absolute (or even a relative) position on the
+page.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
