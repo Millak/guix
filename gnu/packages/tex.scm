@@ -34061,6 +34061,26 @@ large palette of colors;
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-pst-soroban
+  (package
+    (name "texlive-pst-soroban")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-soroban/"
+                   "source/generic/pst-soroban/"
+                   "tex/latex/pst-soroban/")
+             (base32
+              "1cpmqgaj1h2dh3acypm9xkjinmlw9wd40n1s2vdab5ascvprbr6n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pst-soroban")
+    (synopsis "Draw a soroban using PSTricks")
+    (description
+     "The package uses PSTricks to draw a Japanese abacus, or soroban.  The
+soroban is still used in Japan today.")
+    (license license:lppl)))
+
 (define-public texlive-pst-text
   (package
     (name "texlive-pst-text")
