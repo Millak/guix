@@ -8885,6 +8885,29 @@ will behave in the same way.  The package also offers a robust
 reimplementation of @code{\\big}, @code{\\bigg}, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-persian-bib
+  (package
+    (name "texlive-persian-bib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/persian-bib/"
+                   "bibtex/csf/persian-bib/"
+                   "doc/xelatex/persian-bib/")
+             (base32
+              "18x592g8y1i8kw724an65q84jj91cam5qvwp9mgnhqpwh3gjflpw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/persian-bib")
+    (synopsis "Persian translations of classic BibTeX styles")
+    (description
+     "This package provides BibTeX styles modified for Persian documents
+prepared with XePersian (which the present package depends on).  The Persian
+@file{.bst} files can simultaneously handle both Latin and Persian references.
+A file @file{p1256fa.csf} is provided for correct sorting of Persian
+references and three fields LANGUAGE, TRANSLATOR and AUTHORFA are defined.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pfdicons
   (package
     (name "texlive-pfdicons")
