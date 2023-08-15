@@ -14061,6 +14061,47 @@ analytical expansion of sin and cos.")
 barcodes.")
     (license license:lppl)))
 
+(define-public texlive-uplatex
+  (package
+    (name "texlive-uplatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/uplatex.1"
+                   "doc/man/man1/uplatex.man1.pdf"
+                   "doc/uplatex/base/"
+                   "source/uplatex/base/"
+                   "tex/uplatex/base/"
+                   "tex/uplatex/config/")
+             (base32
+              "0bzkyira30b9xdsdfxjmwzgqffl9pvckz5avm6c3r0bq6asiml9l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "uplatex" "uplatex-dev")))
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyphen-base
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-platex
+           texlive-tex-ini-files
+           texlive-unicode-data
+           texlive-uptex
+           texlive-uptex-fonts))
+    (home-page "https://ctan.org/pkg/uplatex")
+    (synopsis "pLaTeX2e and miscellaneous macros for upTeX")
+    (description
+     "The bundle provides pLaTeX2e macros for upTeX by Takuji Tanaka.")
+    (license license:bsd-3)))
+
 (define-public texlive-uptex-base
   (package
     (name "texlive-uptex-base")
