@@ -18019,6 +18019,24 @@ Holy Quran.  It adds three more German translations to the @code{quran}
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-quran-ur
+  (package
+    (name "texlive-quran-ur")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quran-ur/" "tex/latex/quran-ur/")
+             (base32
+              "0lsp4ldbi1cl044ah5x2br1krglw6qn92rx8h7hkfdr85byzyk25")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quran-ur")
+    (synopsis "Urdu translations to the @code{quran} package")
+    (description
+     "The package is prepared for typesetting some Urdu translations of the
+Holy Quran.  It adds eight Urdu translations to the @code{quran} package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-r-und-s
   (package
     (name "texlive-r-und-s")
