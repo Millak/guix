@@ -2093,6 +2093,27 @@ its own.  PDF files generated using Arabi may be searched, and text may be
 copied from them and pasted elsewhere.")
     (license license:lppl)))
 
+(define-public texlive-arabi-add
+  (package
+    (name "texlive-arabi-add")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arabi-add/"
+                   "tex/latex/arabi-add/")
+             (base32
+              "1lrr3vr9sv554bvad70rc32x0jgsam2jaflgxw0nid0629rmigdj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arabi-add")
+    (synopsis
+     "Using @code{hyperref} and @code{bookmark} packages with Arabic and Farsi languages")
+    (description
+     "This package takes advantage of some of the possibilities that
+@code{hyperref} and @code{bookmark} packages offer when you create a table of
+contents for Arabic texts created by the @code{arabi} package.")
+    (license license:lppl1.3)))
+
 (define-public texlive-arara
   (package
     (name "texlive-arara")
