@@ -2057,6 +2057,49 @@ three extra questions (with their answers) that Michael Downes didn't manage
 to get onto CTAN.")
     (license license:lppl)))
 
+(define-public texlive-arphic
+  (package
+    (name "texlive-arphic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/arphic/"
+                   "dvips/arphic/"
+                   "fonts/afm/arphic/bkaiu/"
+                   "fonts/afm/arphic/bsmiu/"
+                   "fonts/afm/arphic/gbsnu/"
+                   "fonts/afm/arphic/gkaiu/"
+                   "fonts/map/dvips/arphic/"
+                   "fonts/tfm/arphic/bkaimp/"
+                   "fonts/tfm/arphic/bkaiu/"
+                   "fonts/tfm/arphic/bsmilp/"
+                   "fonts/tfm/arphic/bsmiu/"
+                   "fonts/tfm/arphic/gbsnlp/"
+                   "fonts/tfm/arphic/gbsnu/"
+                   "fonts/tfm/arphic/gkaimp/"
+                   "fonts/tfm/arphic/gkaiu/"
+                   "fonts/type1/arphic/bkaiu/"
+                   "fonts/type1/arphic/bsmiu/"
+                   "fonts/type1/arphic/gbsnu/"
+                   "fonts/type1/arphic/gkaiu/"
+                   "fonts/vf/arphic/bkaimp/"
+                   "fonts/vf/arphic/bsmilp/"
+                   "fonts/vf/arphic/gbsnlp/"
+                   "fonts/vf/arphic/gkaimp/")
+             (base32
+              "1sqsgw9xjgd3ss2q7hwnb3vv38sg7l9i8bvsy79m5hyg29wn973x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arphic")
+    (synopsis "Arphic (Chinese) font packages")
+    (description
+     "These are font bundles for the Chinese Arphic fonts which work with the
+CJK package.  TrueType versions of these fonts for use with XeLaTeX and
+LuaLaTeX are provided by the @code{arphic-ttf} package.")
+    ;; The files are generated from `chinese-fonts-truetype', located in
+    ;; non-GNU FTP site, using the license below.
+    (license license:arphic-1999)))
+
 (define-public texlive-ascii-chart
   (package
     (name "texlive-ascii-chart")
