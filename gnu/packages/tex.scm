@@ -6269,6 +6269,25 @@ Plain TeX and Eplain.  This is its French translation.")
 French Imprimerie Nationale.")
     (license license:lppl1.3+)))
 
+(define-public texlive-imsproc
+  (package
+    (name "texlive-imsproc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/imsproc/"
+                   "tex/xelatex/imsproc/")
+             (base32
+              "1akzdc4nas4fkmlhm6xp97xw65vm5bif73jq2ki5if5kwssxc38z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/imsproc")
+    (synopsis "Typeset IMS conference proceedings")
+    (description
+     "The class typesets papers for IMS (Iranian Mathematical Society)
+conference proceedings.  The class uses the XePersian package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-includernw
   (package
     (name "texlive-includernw")
