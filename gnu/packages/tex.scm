@@ -31034,6 +31034,27 @@ engine, together with a simple DVIPDFMx font mapping of Fandol fonts for
 DVIPDFMx.")
     (license license:lppl1.3+)))
 
+(define-public texlive-zhnumber
+  (package
+    (name "texlive-zhnumber")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zhnumber/"
+                   "source/latex/zhnumber/"
+                   "tex/latex/zhnumber/")
+             (base32
+              "170lwb97ji9zgmmayzxmpawjkzk50g7rwqmwr11w72zfqkc2v9g2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zhnumber")
+    (synopsis "Typeset Chinese representations of numbers")
+    (description
+     "The package provides commands to typeset Chinese representations of numbers.
+The main difference between this package and CJKnumb is that the commands
+provided are expandable in the proper way.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-zhspacing
   (package
     (name "texlive-zhspacing")
