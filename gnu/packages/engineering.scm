@@ -3223,7 +3223,7 @@ data structures and to operate on them.")
           gerbv
           glibmm
           gtkmm-2
-          librsvg))
+          (librsvg-for-system)))
    (native-inputs
     (list autoconf automake libtool pkg-config))
    (home-page "https://github.com/pcb2gcode/pcb2gcode")
