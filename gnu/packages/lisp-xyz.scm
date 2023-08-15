@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2022, 2023 Artyom Bologov <mail@aartaka.me>
 ;;; Copyright © 2023 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2023 ykonai <mail@ykonai.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9606,6 +9607,41 @@ of C+GObject libraries without the need of writing dedicated bindings.")
 
 (define-public ecl-cl-gobject-introspection
   (sbcl-package->ecl-package sbcl-cl-gobject-introspection))
+
+(define-public sbcl-cl-gobject-introspection-wrapper
+  (let ((commit "2d197cba7e7d734ac8a2e181e5e709e5b218bada")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-gobject-introspection-wrapper")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bohonghuang/cl-gobject-introspection-wrapper")
+               (commit commit)))
+         (file-name (git-file-name "cl-gobject-introspection-wrapper" version))
+         (sha256
+          (base32 "05np2zs5806ib6qfz7d6knyaz6llxgwvjqavl1fsz5hcga40296s"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-gobject-introspection
+             sbcl-cl-ppcre))
+      (home-page
+       "https://github.com/bohonghuang/cl-gobject-introspection-wrapper")
+      (synopsis
+       "Wrap and call GObject Introspection FFI function in Common Lisp")
+      (description
+       "This library converts the elements from GObject Introspection into
+Common Lisp-style definitions, based on cl-gobject-introspection.")
+      (license license:lgpl3+))))
+
+(define-public cl-gobject-introspection-wrapper
+  (sbcl-package->cl-source-package sbcl-cl-gobject-introspection-wrapper))
+
+(define-public ecl-cl-gobject-introspection-wrapper
+  (sbcl-package->ecl-package sbcl-cl-gobject-introspection-wrapper))
 
 (define-public sbcl-cl-slug
   (let ((commit "ffb229d10f0d3f7f54e706791725225e200bf749")
