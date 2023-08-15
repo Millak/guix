@@ -27059,6 +27059,26 @@ may itself contain text).")
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-sauter
+  (package
+    (name "texlive-sauter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/sauter/")
+             (base32
+              "037skfr46198y0vczwcy6dzq9ry8w5imj1ih9nfy9mrb0hmj8caq")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sauter")
+    (synopsis "Wide range of design sizes for CM fonts")
+    (description
+     "This package includes extensions, originally to the CM fonts, providing
+a parameterization scheme to build Metafont fonts at true design sizes, for
+a large range of sizes.  The scheme has now been extended to a range of other
+fonts, including the AMS fonts, @code{bbm}, @code{bbold}, @code{rsfs} and
+@code{wasy} fonts.")
+    (license license:gpl3+)))
+
 (define-public texlive-selinput
   (package
     (name "texlive-selinput")
