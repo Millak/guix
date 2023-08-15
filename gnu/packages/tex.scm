@@ -24592,6 +24592,27 @@ Slovenian in Babel.  Several shortcuts are defined, as well as translations to
 Slovenian of standard LaTeX names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-sorbian
+  (package
+    (name "texlive-babel-sorbian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-sorbian/"
+                   "source/generic/babel-sorbian/"
+                   "tex/generic/babel-sorbian/")
+             (base32
+              "1b6qqk0qik294z8sirvf58cf5v8mhsz4hj91gw7zg8b4j362lp8y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-sorbian")
+    (synopsis "Babel support for Upper and Lower Sorbian")
+    (description
+     "The package provides language definitions file for support of both Upper
+and Lower Sorbian, in Babel.  Some shortcuts are defined, as well as
+translations to the relevant language of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-spanish
   (package
     (name "texlive-babel-spanish")
