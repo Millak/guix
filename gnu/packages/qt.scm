@@ -2611,14 +2611,14 @@ using the Enchant spell-checking library.")
   (package
     (inherit qtsvg-5)
     (name "qtwebengine")
-    (version "5.15.8")
+    (version "5.15.10")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "1qv15g5anhlfsdwnjxy21vc3zxxm8149vysi774l93iab6mxqmjg"))
+         "1rz6vbmr1aydmixayazmpsy7v2naq25l72q1gmvrhf9yf69584q8"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -2711,7 +2711,7 @@ using the Enchant spell-checking library.")
                      "third_party/nasm"
                      "third_party/node"
                      "third_party/one_euro_filter"
-                     "third_party/openh264/src/codec/api/svc"
+                     "third_party/openh264"
                      "third_party/opus"
                      "third_party/ots"
                      "third_party/pdfium"
