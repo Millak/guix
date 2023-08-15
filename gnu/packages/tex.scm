@@ -2140,6 +2140,35 @@ this class can be searched, and text can be copied from them and pasted
 elsewhere.")
     (license license:lppl1.3+)))
 
+(define-public texlive-arabluatex
+  (package
+    (name "texlive-arabluatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/arabluatex/"
+                   "source/lualatex/arabluatex/"
+                   "tex/lualatex/arabluatex/")
+             (base32
+              "1g1ai0inai3jniq49avfswyaysxlk1yp6n97l94pq8v3vszx0k8i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arabluatex")
+    (synopsis "ArabTeX for LuaLaTeX")
+    (description
+     "This package provides for LuaLaTeX an ArabTeX-like interface to generate
+Arabic writing from an ascii transliteration.  It is particularly well-suited
+for complex documents such as technical documents or critical editions where
+a lot of left-to-right commands intertwine with Arabic writing.
+@code{arabluatex} is able to process any ArabTeX input notation.  Its output
+can be set in the same modes of vocalization as ArabTeX, or in different roman
+transliterations.  It further allows many typographical refinements.  It will
+eventually interact with some other packages yet to come to produce from
+@file{.tex} source files, in addition to printed books, TEI XML compliant
+critical editions and/or lexicons that can be searched, analyzed and
+correlated in various ways.")
+    (license (list license:gpl3+ license:cc-by-sa4.0))))
+
 (define-public texlive-arara
   (package
     (name "texlive-arara")
