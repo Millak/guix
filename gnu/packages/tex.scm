@@ -47463,6 +47463,22 @@ letters in their names may be defined.")
               "0rcw2d5ncq8avk33nxika34q3da1v4kcmr6jqdxdg49bq4h8ljs7")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-bera
+                  texlive-enumitem
+                  texlive-etoolbox
+                  texlive-hypdoc
+                  texlive-inconsolata
+                  texlive-lipsum
+                  texlive-listings
+                  texlive-mathpazo
+                  texlive-microtype
+                  texlive-palatino
+                  texlive-svn-prov
+                  texlive-upquote
+                  texlive-xkeyval))))
     (home-page "https://ctan.org/pkg/everyhook")
     (synopsis "Hooks for standard TeX token lists")
     (description
