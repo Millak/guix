@@ -2335,13 +2335,13 @@ purchasing goods and services.")))
   (package
     (inherit qtsvg-5)
     (name "qtcharts")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1q11ank69l9qw3iks2svr0g2g6pzng9v8p87dpsmjs988f4ysmll"))))
+                "0ax1qab1ibibk2bbwmlmsni7j4y821jzvcvrr63iz6pcw94vwx6h"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
@@ -2355,9 +2355,9 @@ purchasing goods and services.")))
     (synopsis "Qt Charts module")
     (description "The Qt Charts module provides a set of easy to use chart
 components.  It uses the Qt Graphics View Framework, therefore charts can be
-easily integrated to modern user interfaces.  Qt Charts can be used as QWidgets,
-QGraphicsWidget, or QML types. Users can easily create impressive graphs by
-selecting one of the charts themes.")
+easily integrated to modern user interfaces.  Qt Charts can be used as
+QWidgets, QGraphicsWidget, or QML types.  Users can easily create impressive
+graphs by selecting one of the charts themes.")
     (license license:gpl3)))
 
 (define-public qtdatavis3d
