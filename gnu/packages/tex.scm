@@ -5337,6 +5337,26 @@ the chapters.  Each chapter can consist of three sections: the lesson, the
 exercises and the activities.")
     (license license:lppl)))
 
+(define-public texlive-fduthesis
+  (package
+    (name "texlive-fduthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fduthesis/"
+                   "source/latex/fduthesis/"
+                   "tex/latex/fduthesis/")
+             (base32
+              "1imgp79fa048nyvyjzfky1fzzmak4h4j7xa4168ak07qgr5gdq87")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fduthesis")
+    (synopsis "LaTeX thesis template for Fudan University")
+    (description
+     "This package is a LaTeX thesis template package for Fudan University.
+It can make it easy to write theses both in Chinese and English.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-filecontentsdef
   (package
     (name "texlive-filecontentsdef")
