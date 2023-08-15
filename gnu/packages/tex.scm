@@ -13305,6 +13305,27 @@ functionality, and handling of arbitrary (multiple) private letters (analagous
 LaTeX packages use of @samp{@@@@}) in nested package files.")
     (license license:lppl1.3+)))
 
+(define-public texlive-platex-tools
+  (package
+    (name "texlive-platex-tools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/platex-tools/"
+                   "tex/latex/platex-tools/")
+             (base32
+              "1wdxcmag1kk6zs7dv10jdcs9ih0bs08xr14iw5bqqyppia4pa1lv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/platex-tools")
+    (synopsis "pLaTeX standard tools bundle")
+    (description
+     "This bundle is an extended version of the @code{latex-tools} bundle
+developed by the LaTeX team, mainly intended to support pLaTeX2e and
+upLaTeX2e.  Currently patches for the @code{latex-tools} bundle and Martin
+Schroder's @code{ms} bundle are included.")
+    (license license:bsd-3)))
+
 (define-public texlive-plipsum
   (package
     (name "texlive-plipsum")
