@@ -5968,6 +5968,32 @@ directories.")
 through it.")
     (license license:public-domain)))
 
+(define-public texlive-hanzibox
+  (package
+    (name "texlive-hanzibox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/hanzibox/"
+                   "source/xelatex/hanzibox/"
+                   "tex/xelatex/hanzibox/")
+             (base32
+              "1bgbybzz5h79i2l3mbjxm11x9nsxm366c6d2mha9j5qabjghakya")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ctex))
+    (home-page "https://ctan.org/pkg/hanzibox")
+    (synopsis
+     "Boxed Chinese characters with Pinyin above and translation below")
+    (description
+     "This is a LaTeX package written to simplify the input of Chinese with
+Hanyu Pinyin and translation.  Hanyu Pinyin is placed above Chinese with the
+@code{xpinyin} package, and the translation is placed below.  The package can
+be used as a utility for learning to write and pronounce Chinese characters,
+for Chinese character learning plans, presentations, exercise booklets and
+other documentation work.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-helmholtz-ellis-ji-notation
   (package
     (name "texlive-helmholtz-ellis-ji-notation")
