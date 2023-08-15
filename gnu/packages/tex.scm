@@ -17981,6 +17981,24 @@ designed to help users generate circuits.")
 drawing quantum circuit diagrams.")
     (license license:cc-by4.0)))
 
+(define-public texlive-quran-bn
+  (package
+    (name "texlive-quran-bn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quran-bn/" "tex/latex/quran-bn/")
+             (base32
+              "1zlm02drh9qfasxf0bwhvrmp521ixzys2aqq896339grkzay0g6q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quran-bn")
+    (synopsis "Bengali translations to the @code{quran} package")
+    (description
+     "The package is prepared for typesetting some Bengali translations of the
+Holy Quran.  It adds two Bengali translations to the @code{quran} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-quran-de
   (package
     (name "texlive-quran-de")
