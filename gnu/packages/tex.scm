@@ -1670,6 +1670,24 @@ create a bibliography.")
     ;; Use same license as `amsmath'.
     (license license:lppl1.3c)))
 
+(define-public texlive-amsldoc-vn
+  (package
+    (name "texlive-amsldoc-vn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amsldoc-vn/")
+             (base32
+              "1iz0zjn1v7izwbsq0zb6cvpnkbvk0nxw1b24j7dzqwk3m9j43i6x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amslatexdoc-vietnamese")
+    (synopsis "Vietnamese translation of AMSLaTeX documentation")
+    (description
+     "This is a Vietnamese translation of @code{amsldoc}, the users guide to
+@code{amsmath}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-amstex
   (package
     (name "texlive-amstex")
