@@ -24713,6 +24713,26 @@ Ukrainian.  The support is adapted for use under legacy TeX engines as well as
 XeTeX and LuaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-babel-vietnamese
+  (package
+    (name "texlive-babel-vietnamese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-vietnamese/"
+                   "source/generic/babel-vietnamese/"
+                   "tex/generic/babel-vietnamese/")
+             (base32
+              "12nnrdk0k2xfab33249s3gzs1815p7j197bv4zisndxvrmiv6hdf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-vietnamese")
+    (synopsis "Babel support for typesetting Vietnamese")
+    (description
+     "The package provides the language definition file for support of
+Vietnamese in Babel.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-welsh
   (package
     (name "texlive-babel-welsh")
