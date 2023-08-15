@@ -10325,6 +10325,28 @@ These arrows are usually used to give explanations concerning the mathematical
 calculus presented.")
     (license license:lppl1.3+)))
 
+(define-public texlive-wnri
+  (package
+    (name "texlive-wnri")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/wnri/"
+                   "fonts/source/public/wnri/"
+                   "fonts/tfm/public/wnri/")
+             (base32
+              "1p2b847a5xa00xvv46b8p0f2fhi1k01w4l7bm2517hs7inwj3brs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/wnri")
+    (synopsis "Ridgeway's fonts")
+    (description
+     "This package provides fonts (as Metafont source) for Old English, Indic
+languages in Roman transliteration and Puget Salish (Lushootseed) and other
+Native American languages.")
+    (license license:gpl3+)))
+
 (define-public texlive-xecyrmongolian
   (package
     (name "texlive-xecyrmongolian")
