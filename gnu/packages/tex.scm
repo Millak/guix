@@ -23224,6 +23224,30 @@ base LaTeX code now supports multiple dots and spaces, and this package by
 default is a stub that just loads @code{graphicx}.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-sanskrit
+  (package
+    (name "texlive-sanskrit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sanskrit/"
+                   "fonts/source/public/sanskrit/"
+                   "fonts/tfm/public/sanskrit/"
+                   "source/latex/sanskrit/"
+                   "tex/latex/sanskrit/")
+             (base32
+              "0qc0mylgdcc4rnid29was51s6mzil0smrs7kgnnrv8kvlb6mzydl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/sanskrit")
+    (synopsis "Sanskrit support")
+    (description
+     "This package provides a font and pre-processor suitable for the
+production of documents written in Sanskrit.  Type 1 versions of the fonts are
+available.")
+    (license license:lppl)))
+
 (define-public texlive-sansmath
   (package
     (name "texlive-sansmath")
