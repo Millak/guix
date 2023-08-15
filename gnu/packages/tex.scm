@@ -18778,6 +18778,26 @@ duck) showcasing the use of characters from the Mario video games by Nintendo
 in LaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pxtatescale
+  (package
+    (name "texlive-pxtatescale")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pxtatescale/"
+                   "tex/latex/pxtatescale/")
+             (base32
+              "1f9xm6nc9h6r2n5rsz6iw4m1x8r13anisv08j5hkidcyvj6n2s6n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxtatescale")
+    (synopsis
+     "Patch to graphics driver for scaling in vertical direction of pTeX")
+    (description
+     "This package patches graphics driver @code{dvipdfmx} to support correct
+scaling in vertical direction of Japanese pTeX and upTeX.")
+    (license license:expat)))
+
 (define-public texlive-qcircuit
   (package
     (name "texlive-qcircuit")
