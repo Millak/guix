@@ -2129,7 +2129,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
@@ -2138,7 +2138,7 @@ are both supported).")
                        version ".tar.gz"))
        (sha256
         (base32
-         "14n45zwc6fxjargqhwqan8fyb7x0ql0hmw56rbjkjfkhpba2qmks"))))
+         "0zygsxxwdxmpppr7vyzi2r7d854yjl6918w0lrs7k41iib9zy8zx"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
