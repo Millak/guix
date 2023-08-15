@@ -15393,6 +15393,28 @@ and the footnote text.  For CJK typesetting, these ratios usually range from
 that of the Latin text (usually 1.2 times the font size).")
     (license license:lppl1.3c)))
 
+(define-public texlive-zhlipsum
+  (package
+    (name "texlive-zhlipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zhlipsum/"
+                   "source/latex/zhlipsum/"
+                   "tex/latex/zhlipsum/")
+             (base32
+              "1lhc3a8l5sizyw0v1cfsrwwwymmyab1yvx99iqhdh7avrzmi2gda")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ctex))
+    (home-page "https://ctan.org/pkg/zhlipsum")
+    (synopsis "Chinese dummy text")
+    (description
+     "This package provides an interface to dummy text in Chinese language,
+which will be useful for testing Chinese documents.  UTF-8, GBK and Big5
+encodings are supported.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-zztex
   (package
     (name "texlive-zztex")
