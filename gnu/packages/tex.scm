@@ -3491,6 +3491,25 @@ the above -- Cyrillic, Greek, Latin-based scripts, Russian and Vietnamese are
 supported.")
     (license license:gpl2)))
 
+(define-public texlive-cjkpunct
+  (package
+    (name "texlive-cjkpunct")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cjkpunct/"
+                   "source/latex/cjkpunct/"
+                   "tex/latex/cjkpunct/")
+             (base32
+              "0l4jnawgcsq7lzsrky7259diswxm06mn9mvgxgw8j0za10kvv4vb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cjkpunct")
+    (synopsis "Adjust locations and kerning of CJK punctuation marks")
+    (description "The package serves as a companion package for CJK.  It
+adjust locations and kerning of CJK punctuation marks.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
