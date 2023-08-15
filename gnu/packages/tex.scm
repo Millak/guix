@@ -16528,6 +16528,36 @@ document knows basic (La)TeX or has, at least, tried her hand on it.  This
 document is not very suitable for first time users.")
     (license license:lppl1.3+)))
 
+(define-public texlive-latexbangla
+  (package
+    (name "texlive-latexbangla")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexbangla/"
+                   "tex/latex/latexbangla/")
+             (base32
+              "19h1axbfp1xclbhffdiczzqpr4lk2jw8kkz4qqh8f2rnhjxd94vw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexbangla")
+    (synopsis "Enhanced LaTeX integration for Bangla")
+    (description
+     "This package simplifies the process of writing Bangla in LaTeX and
+addresses most of the associated typesetting issues.  Its notable features
+are:
+
+@itemize
+@item automated transition from Bangla to English and vice versa;
+@item patch for the unproportionate whitespace issue in popular Bangla fonts;
+@item full support for all the common commands and environments;
+@item Bangla numbering for page, section, chapter, footnotes, extending
+Polyglossia's support.
+@item new @code{theorem}, @code{problems}, @code{example}, @code{solution} and
+other environments, all of which are in Bangla.
+@end itemize")
+    (license license:lppl1.3+)))
+
 (define-public texlive-liftarm
   (package
     (name "texlive-liftarm")
