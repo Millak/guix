@@ -11643,6 +11643,35 @@ otc) into individual fonts.
 @end itemize")
     (license license:gpl2)))
 
+(define-public texlive-fonts-tlwg
+  (package
+    (name "texlive-fonts-tlwg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fonts-tlwg/"
+                   "fonts/afm/public/fonts-tlwg/"
+                   "fonts/enc/dvips/fonts-tlwg/"
+                   "fonts/map/dvips/fonts-tlwg/"
+                   "fonts/opentype/public/fonts-tlwg/"
+                   "fonts/tfm/public/fonts-tlwg/"
+                   "fonts/type1/public/fonts-tlwg/"
+                   "fonts/vf/public/fonts-tlwg/"
+                   "source/fonts/fonts-tlwg/"
+                   "tex/latex/fonts-tlwg/")
+             (base32
+              "19g1ksxsidf6cpcxm3knbbfpjw6jsfq2acy99cgmsy7jn33k253b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fonts-tlwg")
+    (synopsis "Thai fonts for LaTeX from TLWG")
+    (description
+     "This package provides a collection of Thai fonts, supplied as FontForge
+sources, and with LaTeX @file{.fd} files.")
+    (license (list license:gpl2+
+                   license:lppl1.3+
+                   (license:x11-style "file://source/fonts/fonts-tlwg/COPYING")))))
+
 (define-public texlive-fontware
   (package
     (name "texlive-fontware")
