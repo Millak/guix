@@ -2364,22 +2364,22 @@ graphs by selecting one of the charts themes.")
   (package
     (inherit qtsvg-5)
     (name "qtdatavis3d")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1mr2kdshahxrkjs9wlgpr59jbqvyvlax16rlnca4iq00w3v5hrdh"))))
+                "1lhy6l0hlm8mc21k7bwzkgnj6nn6x1f0h2imk8wqjjcvb5g605g5"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Data Visualization module")
     (description "The Qt Data Visualization module provides a way to visualize
-data in 3D as bar, scatter, and surface graphs. It is especially useful for
+data in 3D as bar, scatter, and surface graphs.  It is especially useful for
 visualizing depth maps and large quantities of rapidly changing data, such as
-data received from multiple sensors. The look and feel of graphs can be
+data received from multiple sensors.  The look and feel of graphs can be
 customized by using themes or by adding custom items and labels to them.")
     (license license:gpl3)))
 
