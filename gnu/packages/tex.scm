@@ -32560,12 +32560,15 @@ DVIPDFMx.")
               "170lwb97ji9zgmmayzxmpawjkzk50g7rwqmwr11w72zfqkc2v9g2")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    ;; FIXME: I couldn't find how to build this package from source.
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases (delete 'build))))
     (home-page "https://ctan.org/pkg/zhnumber")
     (synopsis "Typeset Chinese representations of numbers")
     (description
-     "The package provides commands to typeset Chinese representations of numbers.
-The main difference between this package and CJKnumb is that the commands
-provided are expandable in the proper way.")
+     "The package provides commands to typeset Chinese representations of
+numbers.  The main difference between this package and CJKnumb is that the
+commands provided are expandable in the proper way.")
     (license license:lppl1.3c)))
 
 (define-public texlive-zhspacing
