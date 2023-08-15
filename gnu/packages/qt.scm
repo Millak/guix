@@ -2386,13 +2386,13 @@ customized by using themes or by adding custom items and labels to them.")
 (define-public qtnetworkauth-5
   (package (inherit qtsvg-5)
     (name "qtnetworkauth")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
              (sha256
               (base32
-               "0fsmpjwkzzy3281shld7gs1gj217smb1f8ai63gdvnkp0jb2fhc5"))))
+               "0qf9dqh7rlbyi3fl7610zb86yqxwaq5m3zvwp2c8w1sa0m8jcili"))))
     (inputs (list qtbase-5))
     (synopsis "Qt Network Authorization module")
     (description "The Qt Network Authorization module provides an
