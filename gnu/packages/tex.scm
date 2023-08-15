@@ -10245,6 +10245,63 @@ Czech/Slovak typographical rule forbidding a non-syllabic preposition alone at
 the end of a line.")
     (license license:knuth)))
 
+(define-public texlive-vntex
+  (package
+    (name "texlive-vntex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/vntex/"
+                   "fonts/afm/vntex/chartervn/"
+                   "fonts/afm/vntex/grotesqvn/"
+                   "fonts/afm/vntex/urwvn/"
+                   "fonts/afm/vntex/vntopia/"
+                   "fonts/enc/dvips/vntex/"
+                   "fonts/enc/pdftex/vntex/"
+                   "fonts/map/dvips/vntex/"
+                   "fonts/source/vntex/vnr/"
+                   "fonts/tfm/vntex/arevvn/"
+                   "fonts/tfm/vntex/chartervn/"
+                   "fonts/tfm/vntex/cmbrightvn/"
+                   "fonts/tfm/vntex/concretevn/"
+                   "fonts/tfm/vntex/grotesqvn/"
+                   "fonts/tfm/vntex/txttvn/"
+                   "fonts/tfm/vntex/urwvn/"
+                   "fonts/tfm/vntex/vnr/"
+                   "fonts/tfm/vntex/vntopia/"
+                   "fonts/type1/vntex/arevvn/"
+                   "fonts/type1/vntex/chartervn/"
+                   "fonts/type1/vntex/cmbrightvn/"
+                   "fonts/type1/vntex/concretevn/"
+                   "fonts/type1/vntex/grotesqvn/"
+                   "fonts/type1/vntex/txttvn/"
+                   "fonts/type1/vntex/urwvn/"
+                   "fonts/type1/vntex/vnr/"
+                   "fonts/type1/vntex/vntopia/"
+                   "fonts/vf/vntex/chartervn/"
+                   "fonts/vf/vntex/urwvn/"
+                   "fonts/vf/vntex/vntopia/"
+                   "source/generic/vntex/"
+                   "tex/latex/vntex/"
+                   "tex/plain/vntex/")
+             (base32
+              "0vbpxzqvqpymw2chgrrva7alrvp6lj735hy8wqksal968sch6azx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ec texlive-metafont))
+    (home-page "https://ctan.org/pkg/vntex")
+    (synopsis "Support for Vietnamese")
+    (description
+     "The vntex bundle provides fonts, Plain TeX, texinfo and LaTeX macros for
+typesetting documents in Vietnamese.  Users of the fonts (in both Metafont and
+Adobe Type 1 format) of this bundle may alternatively use the @code{lm} fonts
+bundle, for which map files are available to provide a Vietnamese version.")
+    ;; Vietnamese glyphs has been added according to the conditions of the
+    ;; Adobe/TUG license agreement.  The package itself is released under
+    ;; LPPL1.3+ terms.
+    (license (list license:lppl1.3+
+                   (license:fsf-free "file://source/generic/vntex/LICENSE-utopia.txt")))))
+
 (define-public texlive-witharrows
   (package
     (name "texlive-witharrows")
