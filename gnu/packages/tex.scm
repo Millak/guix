@@ -11065,6 +11065,64 @@ release process for LaTeX package authors.  Note by the CTAN
 team (2015-02-05): It seems that this script is currently not working.")
     (license license:gpl3)))
 
+(define-public texlive-ctex
+  (package
+    (name "texlive-ctex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ctex/" "source/latex/ctex/"
+                   "tex/generic/ctex/" "tex/latex/ctex/"
+                   "tex/luatex/ctex/")
+             (base32
+              "17zyr0cyxvp91832q35ha3qabdzh4njh96yvp4gfkkfkkszqp3jh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-adobemapping
+           texlive-atbegshi
+           texlive-beamer
+           texlive-cjk
+           texlive-cjkpunct
+           texlive-ec
+           texlive-epstopdf-pkg
+           texlive-etoolbox
+           texlive-everyhook
+           texlive-fandol
+           texlive-fontspec
+           texlive-iftex
+           texlive-infwarerr
+           texlive-kvoptions
+           texlive-kvsetkeys
+           texlive-latex-bin
+           texlive-ltxcmds
+           texlive-luatexja
+           texlive-mptopdf
+           texlive-ms
+           texlive-pdftexcmds
+           texlive-platex-tools
+           texlive-svn-prov
+           texlive-tipa
+           texlive-tools
+           texlive-ttfutils
+           texlive-ulem
+           texlive-uplatex
+           texlive-xcjk2uni
+           texlive-xecjk
+           texlive-xetex
+           texlive-xkeyval
+           texlive-xpinyin
+           texlive-xunicode
+           texlive-zhmetrics
+           texlive-zhmetrics-uptex
+           texlive-zhnumber))
+    (home-page "https://ctan.org/pkg/ctex")
+    (synopsis "LaTeX classes and packages for Chinese typesetting")
+    (description
+     "CTeX is a collection of macro packages and document classes for LaTeX
+Chinese typesetting.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ctib
   (package
     (name "texlive-ctib")
