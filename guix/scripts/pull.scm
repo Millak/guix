@@ -166,7 +166,7 @@ Download and deploy the latest version of Guix.\n"))
                                (alist-delete 'repository-url result))))
          (option '("commit") #t #f
                  (lambda (opt name arg result)
-                   (alist-cons 'ref `(commit . ,arg) result)))
+                   (alist-cons 'ref `(tag-or-commit . ,arg) result)))
          (option '("branch") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'ref `(branch . ,arg) result)))
@@ -774,7 +774,8 @@ Use '~/.config/guix/channels.scm' instead."))
                (if (guix-channel? c)
                    (let ((url (or url (channel-url c))))
                      (match ref
-                       (('commit . commit)
+                       ((or ('commit . commit)
+                            ('tag-or-commit . commit))
                         (channel (inherit c)
                                  (url url) (commit commit) (branch #f)))
                        (('branch . branch)
