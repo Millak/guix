@@ -26300,6 +26300,26 @@ is much more flexible, since it can be used as direct replacement for
 provided by @code{tex.mp}.")
     (license license:public-domain)))
 
+(define-public texlive-marathi
+  (package
+    (name "texlive-marathi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/marathi/" "source/latex/marathi/"
+                   "tex/latex/marathi/")
+             (base32
+              "0xlyvdb6dadg4x2xixcxr1ixqsz69ssifpbh5p46lzsz080pwd58")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/marathi")
+    (synopsis "Typeset Marathi language using XeLaTeX or LuaLaTeX")
+    (description
+     "This package is used to typeset Marathi language with LuaLaTeX and XeLaTeX.
+It will provide localizations needed for the Marathi language.  Currently the
+package localizes package @code{blindtext} and package @code{expex}.")
+    (license (list license:gpl3+ license:fdl1.3+))))
+
 (define-public texlive-markdown
   (package
     (name "texlive-markdown")
