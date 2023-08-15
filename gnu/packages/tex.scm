@@ -15371,6 +15371,28 @@ source; macros to produce a Greek variant of Plain TeX (including
 a hyphenation table adapted to the fonts code table) are provided.")
     (license license:gpl2)))
 
+(define-public texlive-zhlineskip
+  (package
+    (name "texlive-zhlineskip")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zhlineskip/"
+                   "tex/latex/zhlineskip/")
+             (base32
+              "070vi0pra74in55r0pq2k35s3x3xk6gjwvnsif7bnx4k7wn39mal")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zhlineskip")
+    (synopsis "Line spacing for CJK documents")
+    (description
+     "This package supports typesetting CJK documents.  It allows users to
+specify the two ratios between the leading and the font size of the body text
+and the footnote text.  For CJK typesetting, these ratios usually range from
+1.5 to 1.67.  This package is also capable of restoring the math leading to
+that of the Latin text (usually 1.2 times the font size).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-zztex
   (package
     (name "texlive-zztex")
