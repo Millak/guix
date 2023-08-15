@@ -1942,13 +1942,13 @@ application).")
   (package
     (inherit qtsvg-5)
     (name "qtwebglplugin")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1gvzhgfn55kdp5g11fg5yja5xb6wghx5sfc8vfp8zzpxnak7pbn1"))))
+                "12kcvq5y5rpivxrn0p43gdkk3yysdi7bk904jgd3wk67gl0bda8r"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
@@ -1961,7 +1961,7 @@ application).")
     (inputs (list mesa qtbase-5 qtdeclarative-5 qtwebsockets-5 zlib))
     (synopsis "QPA plugin for running applications via a browser using
 streamed WebGL commands")
-    (description "Qt back end that uses WebGL for rendering. It allows Qt
+    (description "Qt back end that uses WebGL for rendering.  It allows Qt
 applications (with some limitations) to run in a web browser that supports
 WebGL.  WebGL is a JavaScript API for rendering 2D and 3D graphics within any
 compatible web browser without the use of plug-ins.  The API is similar to
