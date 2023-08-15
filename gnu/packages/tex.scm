@@ -35460,6 +35460,26 @@ school teachers, as the style is probably more in line with Italian high
 school tests.")
     (license license:lppl1.3+)))
 
+(define-public texlive-exam-zh
+  (package
+    (name "texlive-exam-zh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/exam-zh/" "tex/latex/exam-zh/")
+             (base32
+              "1p0zy0y2c75mq84n3bqbd39hw1phiyfl22q0fzid58v5ngcf0ip1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exam-zh")
+    (synopsis "LaTeX template for Chinese exams")
+    (description
+     "This package provides a class @file{exam-zh.cls} suitable for Chinese
+exams of all types.  It also includes several module packages like
+@file{exam-zh-question.sty} and @file{exam-zh-choices.sty}, which can be used
+individually.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-examplep
   (package
     (name "texlive-examplep")
