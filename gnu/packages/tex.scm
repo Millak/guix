@@ -2425,6 +2425,24 @@ Chinese.")
     (description "This is a Chinese translation of the Asymptote FAQ.")
     (license license:lppl)))
 
+(define-public texlive-asymptote-manual-zh-cn
+  (package
+    (name "texlive-asymptote-manual-zh-cn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/asymptote-manual-zh-cn/")
+             (base32
+              "047l3bh8vvk185wkazyfw4dm6893xpa2ksn5vfc57r5rv4x16wmb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asymptote-manual-zh-cn")
+    (synopsis "Chinese translation of the Asymptote manual")
+    (description
+     "This is an (incomplete, simplified) Chinese translation of the Asymptote
+manual.")
+    (license license:lgpl3+)))
+
 (define-public texlive-auto-pst-pdf
   (package
     (name "texlive-auto-pst-pdf")
