@@ -15163,6 +15163,26 @@ original LaTeX with @code{\\inputenc@{utf8@}} and Babel
     (description "The bundle contains fonts (TFM and VF) for use with upTeX.")
     (license license:bsd-3)))
 
+(define-public texlive-upzhkinsoku
+  (package
+    (name "texlive-upzhkinsoku")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/upzhkinsoku/"
+                   "tex/generic/upzhkinsoku/")
+             (base32
+              "0c95fy9raykpjgnkz5h0wyjxyg2h0ksx2kb14lx2rsv65xsi909y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/upzhkinsoku")
+    (synopsis "Supplementary Chinese kinsoku for Unicode *pTeX")
+    (description
+     "This package provides supplementary Chinese kinsoku (line breaking rules
+etc.)@: settings for Unicode (e-)upTeX (when using Unicode as its internal
+encoding), and ApTeX.  Both LaTeX and plain TeX are supported.")
+    (license license:knuth)))
+
 (define-public texlive-variations
   (package
     (name "texlive-variations")
