@@ -45872,6 +45872,30 @@ letters catcodes are set to @samp{letter}, so that commands with Cyrillic
 letters in their names may be defined.")
     (license license:lppl)))
 
+(define-public texlive-everyhook
+  (package
+    (name "texlive-everyhook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/everyhook/"
+                   "source/latex/everyhook/"
+                   "tex/latex/everyhook/")
+             (base32
+              "0rcw2d5ncq8avk33nxika34q3da1v4kcmr6jqdxdg49bq4h8ljs7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/everyhook")
+    (synopsis "Hooks for standard TeX token lists")
+    (description
+     "The package takes control of the six TeX token registers @code{\\everypar},
+@code{\\everymath}, @code{\\everydisplay}, @code{\\everyhbox},
+@code{\\everyvbox} and @code{\\everycr}.  Real hooks for each of the registers
+may be installed using a stack like interface.  For backwards compatibility,
+each of the @code{\\everyX} token lists can be set without interfering with
+the hooks.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-everypage
   (package
     (name "texlive-everypage")
