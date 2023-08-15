@@ -2459,13 +2459,13 @@ processes or computers.")
   (package
     (inherit qtsvg-5)
     (name "qtspeech")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1q56lyj7s05sx52j5z6gcs000mni4c7mb7qyq4lfval7c06hw5p6"))))
+                "1qscnqxnm9yvfa0i6xnz04xrhlxf08v3xkas8ng790camr34pwwa"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
