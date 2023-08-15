@@ -2203,6 +2203,27 @@ formatted lists of productions, with numbers if required.  It can also print
 in-line BNF expressions using math mode.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bangla
+  (package
+    (name "texlive-bangla")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bangla/"
+                   "fonts/truetype/public/bangla/"
+                   "tex/latex/bangla/")
+             (base32
+              "0basibrsbns9s2ny6ny95hl6dj4rjf6q4z9bqn2kc9945akxg8af")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-charissil texlive-doulossil))
+    (home-page "https://ctan.org/pkg/bangla")
+    (synopsis "Comprehensive Bangla LaTeX package")
+    (description
+     "This package provides all the necessary LaTeX frontends for the Bangla
+language and comes with some fonts of its own.")
+    (license (list license:lppl1.3c license:silofl1.1))))
+
 (define-public texlive-barr
   (package
     (name "texlive-barr")
