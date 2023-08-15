@@ -24152,6 +24152,29 @@ Icelandic of standard LaTeX names.")
     (description "This is the Babel style for Indonesian.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-interlingua
+  (package
+    (name "texlive-babel-interlingua")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-interlingua/"
+                   "source/generic/babel-interlingua/"
+                   "tex/generic/babel-interlingua/")
+             (base32
+              "0mxyfa6rsaxwazliblg9p4cbr0vip12c00mkvnz4dak2adnhzvbg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-interlingua")
+    (synopsis "Babel support for Interlingua")
+    (description
+     "The package provides the language definition file for support of
+Interlingua in Babel.  This includes translations to Interlingua of standard
+LaTeX names (no shortcuts are provided).  Interlingua itself is an auxiliary
+language, built from the common vocabulary of Spanish/Portuguese, English,
+Italian and French, with some normalisation of spelling.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-irish
   (package
     (name "texlive-babel-irish")
