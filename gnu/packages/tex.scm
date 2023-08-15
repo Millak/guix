@@ -16832,6 +16832,33 @@ mathematical fonts in a range of styles, based on Monotype Modern 8A.")
 
 (define-deprecated-package texlive-fonts-cm texlive-cm)
 
+(define-public texlive-cmbright
+  (package
+    (name "texlive-cmbright")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cmbright/"
+                   "doc/latex/cmbright/"
+                   "fonts/source/public/cmbright/"
+                   "fonts/tfm/public/cmbright/"
+                   "source/latex/cmbright/"
+                   "tex/latex/cmbright/")
+             (base32
+              "0sj6g877p6ak045x7737g3lg4kab8hgc2s2g6i23dw9d35csqf8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-amsfonts texlive-ec texlive-metafont))
+    (home-page "https://ctan.org/pkg/cmbright")
+    (synopsis "Computer Modern Bright fonts")
+    (description
+     "This package provides a family of sans serif fonts for TeX and LaTeX,
+based on Donald Knuth's CM fonts.  It comprises OT1, T1 and TS1 encoded text
+fonts of various shapes as well as all the fonts necessary for mathematical
+typesetting, including AMS symbols.  This collection provides all the
+necessary files for using the fonts with LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-cmcyr
   (package
     (name "texlive-cmcyr")
