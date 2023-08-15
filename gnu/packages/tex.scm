@@ -6349,6 +6349,24 @@ when using for open intervals.")
      "@emph{TeX for the Impatient} is a book on TeX, Plain TeX and Eplain.")
     (license license:fdl1.3+)))
 
+(define-public texlive-impatient-cn
+  (package
+    (name "texlive-impatient-cn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/impatient-cn/")
+             (base32
+              "1pc20pb0las3slam1d9hmqigipmr6r98wwif12m33mm750vmq65i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/impatient")
+    (synopsis "Chinese translation of @emph{TeX for the Impatient} book")
+    (description
+     "@emph{TeX for the Impatient} is a book (of around 350 pages) on TeX,
+Plain TeX and Eplain.  This is its Chinese translation.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-impatient-fr
   (package
     (name "texlive-impatient-fr")
