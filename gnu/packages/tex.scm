@@ -6840,6 +6840,24 @@ short introduction to LaTeX2e}.")
 Introduction to LaTeX2e}.")
     (license license:gpl2+)))
 
+(define-public texlive-lshort-vietnamese
+  (package
+    (name "texlive-lshort-vietnamese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-vietnamese/")
+             (base32
+              "094lfry6cqvpk02c3acss6581mgb7j30fnja1b3qwzxmyxjdblwa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-vietnamese")
+    (synopsis "Vietnamese version of the LaTeX introduction")
+    (description
+     "This is the Vietnamese version of the @emph{Short Introduction to
+LaTeX2e}.")
+    (license license:lppl)))
+
 (define-public texlive-lstbayes
   (package
     (name "texlive-lstbayes")
