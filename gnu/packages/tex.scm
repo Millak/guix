@@ -14036,7 +14036,18 @@ LaTeX packages use of @samp{@@@@}) in nested package files.")
               "0a843xnp3iikjxw1klxb3j2bssm6ylhcw32s046xxm2bs527hxi8")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:create-formats #~(list "platex" "platex-dev")))
+    (arguments
+     (list #:create-formats #~(list "platex" "platex-dev")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-build
+                 ;; This phase is necessary because the build phase is
+                 ;; reluctant to generate "kinsoku.tex" since there is another
+                 ;; one among the inputs (texlive-ptex) already.
+                 (lambda _
+                   (substitute* "source/platex/base/plfmt.ins"
+                     (("\\\\keepsilent\n" all)
+                      (string-append all "\\askforoverwritefalse\n"))))))))
     (propagated-inputs
      (list texlive-atbegshi
            texlive-atveryend
