@@ -1558,13 +1558,13 @@ consume data received from the server, or both.")
   (package
     (inherit qtsvg-5)
     (name "qtsensors")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1fdpgbikvxjacyipcyac0czqhv96pvc75dl9cyafslws8m53fm56"))))
+                "00gzb7xcifi3ib5adi7s6h5wvc6v4f48nwb4g1pm0zq9sv22lg6d"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:parallel-tests? _ #f) #f)    ; can lead to race condition
