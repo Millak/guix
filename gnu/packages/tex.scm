@@ -3302,6 +3302,28 @@ formatting chemistry documents according to the conventions of a number of
 leading journals.  It also provides some handy chemistry-related macros.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chhaya
+  (package
+    (name "texlive-chhaya")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chhaya/" "source/latex/chhaya/"
+                   "tex/latex/chhaya/")
+             (base32
+              "1if47icrsy56sjza170cxcpcczwfh9k8jl7j22gwwam4msa4d1if")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chhaya")
+    (synopsis "Linguistic glossing in Marathi language")
+    (description
+     "This package provides macros for linguistic glossing as per the rules
+given by Mumbai University.")
+    (license (list license:gpl3+
+                   ;; Aalok (आलोक) copyleft license v1.0+.
+                   (license:fsf-free "file://doc/latex/aalok/README.txt")
+                   license:fdl1.3+))))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
