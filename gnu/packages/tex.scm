@@ -6174,6 +6174,25 @@ meaning bloke.)  With this package you can typeset 150 paragraphs of Lorum
 ipse.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hvarabic
+  (package
+    (name "texlive-hvarabic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hvarabic/" "tex/latex/hvarabic/")
+             (base32
+              "0kjx2x3fnpqw6hybw7ifdlqad4mmbacba290qwlhhggpjrxsvp39")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hvarabic")
+    (synopsis "Macros for RTL typesetting")
+    (description
+     "This package provides some macros for right-to-left typesetting.  It
+uses by default the Arabic fonts Scheherazade and ALM fixed, the only
+monospaced Arabic font.  The package only works with LuaLaTeX or XeLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ibrackets
   (package
     (name "texlive-ibrackets")
