@@ -4815,6 +4815,28 @@ ellipsograph.  This package extends the functionalities of the @code{curve2e}
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-evangelion-jfm
+  (package
+    (name "texlive-evangelion-jfm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/evangelion-jfm/"
+                   "tex/luatex/evangelion-jfm/")
+             (base32
+              "1wr55p96v9x58l0bqcnrbs1q47pf5v0rj8pmclfv0jx9mzc3d5j7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/evangelion-jfm")
+    (synopsis "Japanese font metric supporting many advanced features")
+    (description
+     "This package provides a Japanese font metric supporting vertical and
+horizontal typesetting, linegap punctuations, extended fonts, and more
+interesting and helpful features using traditional and simplified Chinese or
+Japanese fonts under LuaTeX-ja.  It also makes full use of the priority
+feature, meeting the standards, and allows easy customisation.")
+    (license license:expat)))
+
 (define-public texlive-expose-expl3-dunkerque-2019
   (package
     (name "texlive-expose-expl3-dunkerque-2019")
