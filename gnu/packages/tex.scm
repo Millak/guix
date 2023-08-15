@@ -3368,6 +3368,33 @@ Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
 to typeset Church Slavonic texts.")
     (license license:expat)))
 
+(define-public texlive-cjhebrew
+  (package
+    (name "texlive-cjhebrew")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cjhebrew/"
+                   "fonts/afm/public/cjhebrew/"
+                   "fonts/enc/dvips/cjhebrew/"
+                   "fonts/map/dvips/cjhebrew/"
+                   "fonts/tfm/public/cjhebrew/"
+                   "fonts/type1/public/cjhebrew/"
+                   "fonts/vf/public/cjhebrew/"
+                   "tex/latex/cjhebrew/")
+             (base32
+              "00rf55ck8y1ny1v242sbhcfchnq7q5mlsmmqppgqspd892ymlxh0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cjhebrew")
+    (synopsis "Typeset Hebrew with LaTeX")
+    (description
+     "The @code{cjhebrew} package provides Adobe Type 1 fonts for Hebrew, and
+LaTeX macros to support their use.  Hebrew text can be vocalised, and a few
+accents are also available.  The package makes it easy to include Hebrew text
+in other-language documents.")
+    (license license:lppl)))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
