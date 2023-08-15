@@ -1089,7 +1089,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "7.0.6")
+    (version "7.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1097,7 +1097,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1bifg73id0grn37a4n5wpq440z9xz14q0fvkva5vajx0xfd34llv"))
+                "1xbzf29rhqh6kl0vggdn2dblgp927096fc1lr3y4yw63b8n0qq50"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1197,7 +1197,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0byvm25jw108h808g5zdjq14gx4xxd87pvlbczd07c3rx6nmzl08"))))
+                "00f51rcnki08x2jkyla5vmqx7nhck3cyz86wiy0qkmc8klb1a6ba"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1231,7 +1231,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p60dvig7xx8svzsgp871r0aix2m95bmzg3snz372nmgnza2nnvf"))))
+                "1wr754m4ykidds3i14gqhvyrj3mbkchp2hkfnr0rjsdaqf4zmqdf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1260,7 +1260,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fqnviaxsai0xwyq8xq5ks26j4vd390ns6h6lr0fx2ikv1ghaml5"))))
+                "0xnnivlqgcyaz9qay73p43jnvmvshp2b3fbh3569j7rmgi5pn8x0"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1277,7 +1277,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dmssyhqd94d9wj8w7g7xjan560b2rwcs540sgl0rc77cw2jify8"))))
+                "141r5wd8s1bgyf77kvb9q14cpsiwwv4zmfzwbgcd42rflsk2lcbc"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
