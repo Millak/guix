@@ -33250,6 +33250,25 @@ LaTeX Companion} book, together with necessary supporting files.")
 necessary supporting files.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tlmgr-intro-zh-cn
+  (package
+    (name "texlive-tlmgr-intro-zh-cn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/tlmgr-intro-zh-cn/")
+             (base32
+              "127fad3aq66rnn4jkccyw7qc8pdcwapyjb6lj9kn49nqcy3jm6nk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tlmgr-intro-zh-cn")
+    (synopsis "Short tutorial on using @command{tlmgr} in Chinese")
+    (description
+     "This is a Chinese translation of the @command{tlmgr} documentation.  It
+introduces some of the common usage of the TeX Live Manager.  The original can
+be found in the @code{tlmgrbasics} package.")
+    (license license:gpl3+)))
+
 (define-public texlive-tlmgrbasics
   (package
     (name "texlive-tlmgrbasics")
