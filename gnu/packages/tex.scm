@@ -4256,6 +4256,22 @@ styles, that conform to the requirements of the Russian standard GOST
 R 7.0.11-2011, are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dnp
+  (package
+    (name "texlive-dnp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/sfd/dnp/")
+             (base32
+              "0jlvb0nps1ij4sgbg3clgbk34p80la1fhh9zihn9fhl9nrqk637r")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dnp")
+    (synopsis "Subfont numbers for DNP font encoding")
+    (description "This package provides subfont numbers for DNP font encoding.")
+    ;; This is part of the CJK package, use the same GPL license.
+    (license license:gpl2)))
+
 (define-public texlive-docbytex
   (package
     (name "texlive-docbytex")
