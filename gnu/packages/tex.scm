@@ -3508,6 +3508,31 @@ the above -- Cyrillic, Greek, Latin-based scripts, Russian and Vietnamese are
 supported.")
     (license license:gpl2)))
 
+(define-public texlive-cjk-gs-integrate
+  (package
+    (name "texlive-cjk-gs-integrate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cjk-gs-integrate/"
+                   "fonts/misc/cjk-gs-integrate/"
+                   "scripts/cjk-gs-integrate/"
+                   "source/fonts/cjk-gs-integrate/")
+             (base32
+              "0ml35bs1pr3kbdqnbclyy31ln8yigy609rsm9rc2y3j5ngmw2y8y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "cjk-gs-integrate.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/cjk-gs-integrate")
+    (synopsis "Tools to integrate CJK fonts into Ghostscript")
+    (description
+     "This script searches a list of directories for CJK fonts, and makes them
+available to an installed Ghostscript.  In the simplest case, with sufficient
+privileges, a run without arguments should result in a complete setup of
+Ghostscript.")
+    (license license:gpl3)))
+
 (define-public texlive-cjkpunct
   (package
     (name "texlive-cjkpunct")
