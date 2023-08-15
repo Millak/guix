@@ -2152,13 +2152,13 @@ the Qt community.")
   (package
     (inherit qtsvg-5)
     (name "qtscript")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0rjj1pn0fwdq0qz0nzisxza671ywfrq5cv6iplywfyflh7q4dmcs"))
+                "0fvhjsn41f6gx7bmvifxl61fdk6mg9lc6wgnwsfz2kyx0r2wsbb4"))
               (patches (search-patches "qtscript-disable-tests.patch"))))
     (native-inputs (list perl qttools-5))
     (inputs (list qtbase-5))
