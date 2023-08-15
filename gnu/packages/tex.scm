@@ -28314,6 +28314,26 @@ The package is a reimplementation of the @code{spotcolor} package for use with
 XeLaTeX.  As such, it has the same user interface and the same capabilities.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xetex-devanagari
+  (package
+    (name "texlive-xetex-devanagari")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xetex/xetex-devanagari/"
+                   "fonts/misc/xetex/fontmapping/xetex-devanagari/")
+             (base32
+              "17br9aq1af36wadq2cmndbb0z2jdhr1mn7jdb3cq642wwngcfi13")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetex-devanagari")
+    (synopsis "XeTeX input map for Unicode Devanagari")
+    (description
+     "The package provides a map for use with Jonathan Kew's TECkit, to
+translate Devanagari (encoded according to the Harvard/Kyoto convention) to
+Unicode (range 0900-097F).")
+    (license license:lppl)))
+
 (define-public texlive-xetex-itrans
   (package
     (name "texlive-xetex-itrans")
