@@ -20560,6 +20560,28 @@ no file is specified), filters out less relevant messages, and displays
 a summary report.")
     (license license:gpl3+)))
 
+(define-public texlive-texnegar
+  (package
+    (name "texlive-texnegar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texnegar/"
+                   "source/latex/texnegar/"
+                   "tex/latex/texnegar/")
+             (base32
+              "0rza5bmn7cm85aznnffpmfv6b8776jxkpfwhs0y04f83sdjapw63")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texnegar")
+    (synopsis "Kashida justification in XeLaTeX and LuaLaTeX")
+    (description
+     "In some cursive scripts such as Persian or Arabic, kashida is used to
+create justification.  In this type of justification characters are elongated
+rather than expanding spaces between words.  This package extends the kashida
+justification to be used with the LuaTeX engine.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-texosquery
   (package
     (name "texlive-texosquery")
