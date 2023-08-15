@@ -11236,6 +11236,26 @@ of the languages of Ethiopia, with Metafont fonts based on EthTeX's.  The
 macros use the Babel framework.")
     (license license:gpl3+)))
 
+(define-public texlive-ethiop-t1
+  (package
+    (name "texlive-ethiop-t1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ethiop-t1/"
+                   "fonts/map/dvips/ethiop-t1/"
+                   "fonts/type1/public/ethiop-t1/")
+             (base32
+              "19n6i61db88nhhkq9gg3gfr3sgpaf1ylr41l0xdhpfkn71y7par1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ethiop-t1")
+    (synopsis "Type 1 versions of Amharic fonts")
+    (description
+     "These fonts provided in this package are drop-in Adobe type
+1 replacements for the fonts of the @code{ethiop} package.")
+    (license license:gpl3+)))
+
 (define-public texlive-expex-acro
   (package
     (name "texlive-expex-acro")
