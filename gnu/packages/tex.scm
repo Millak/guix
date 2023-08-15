@@ -5623,6 +5623,27 @@ provides an environment like @code{eqnarray}, a @code{newtheorem}-like
 environment (NewTheorem), and several macros.")
     (license license:isc)))
 
+(define-public texlive-ghab
+  (package
+    (name "texlive-ghab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ghab/"
+                   "fonts/source/public/ghab/"
+                   "tex/latex/ghab/")
+             (base32
+              "0jknnlcigk6aa48xqvxd67015fxjlmmp36p52c95xrii4lv3m0zk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ghab")
+    (synopsis "Typeset ghab boxes in LaTeX")
+    (description
+     "The package defines a command @code{\\darghab} that will typeset its
+argument in a box with a decorated frame.  The width of the box may be set
+using an optional argument.")
+    (license license:lppl)))
+
 (define-public texlive-ghsystem
   (package
     (name "texlive-ghsystem")
