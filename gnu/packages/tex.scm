@@ -13471,6 +13471,23 @@ problems in typesetting Japanese.  A manual (in both Japanese and English) is
 distributed as package @code{pTeX-manual}.")
     (license license:bsd-3)))
 
+(define-public texlive-ptex-base
+  (package
+    (name "texlive-ptex-base")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/ptex/ptex-base/" "tex/ptex/ptex-base/")
+             (base32
+              "0hfccpsfpj56v97056k77lyb09az7m24m8klf1n2v0a7kqdc1fv6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ptex-base")
+    (synopsis "Plain TeX format for pTeX and e-pTeX")
+    (description
+     "The bundle contains the plain TeX format for pTeX and e-pTeX.")
+    (license license:bsd-3)))
+
 (define-public texlive-ptex-fonts
   (package
     (name "texlive-ptex-fonts")
