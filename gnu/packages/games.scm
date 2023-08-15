@@ -1891,7 +1891,13 @@ built-in level editor.")
                                   version "_src.tar.gz"))
               (sha256
                (base32
-                "18vp2ygvn0s0jz8rm585jqf6hjqkam1ximq81k0r9hpmfj7wb88f"))))
+                "18vp2ygvn0s0jz8rm585jqf6hjqkam1ximq81k0r9hpmfj7wb88f"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix a missing include for std::map.
+               #~(substitute* "src/shared/impl/lua_func_wrapper.cpp"
+                   (("#include \"misc[.]hpp\"" x)
+                    (string-append "#include <map>\n" x))))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
