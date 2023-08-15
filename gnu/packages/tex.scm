@@ -1306,6 +1306,23 @@ adaptation for working with Babel.")
 controlling the searches that the package does.")
     (license license:lppl)))
 
+(define-public texlive-adobemapping
+  (package
+    (name "texlive-adobemapping")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/cmap/adobemapping/")
+             (base32
+              "1yvf74mlmxmnq9m0wvda9xcna8xnn382bbrzizzjm5w7bk8c4g98")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adobemapping")
+    (synopsis "Adobe CMap and PDF mapping files")
+    (description
+     "The package comprises the collection of CMap and PDF mapping files made
+available for distribution by Adobe.")
+    (license license:bsd-3)))
+
 (define-public texlive-afm2pl
   (package
     (name "texlive-afm2pl")
