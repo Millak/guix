@@ -19863,6 +19863,25 @@ popular Java script Bootstrap.")
 mirrors for use in optical diagrams.")
     (license license:lppl1.3c)))
 
+(define-public texlive-simurgh
+  (package
+    (name "texlive-simurgh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/simurgh/"
+                   "tex/lualatex/simurgh/")
+             (base32
+              "11256ssaq6hw6c93ldfgyp0gagv69hl54yg1c8wl5wkc0mrh42rb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simurgh")
+    (synopsis "Typeset Parsi in LuaLaTeX")
+    (description
+     "The package provides an automatic and unified interface for Parsi
+typesetting in LaTeX, using the LuaTeX engine.")
+    (license license:gpl2)))
+
 (define-public texlive-smartdiagram
   (package
     (name "texlive-smartdiagram")
