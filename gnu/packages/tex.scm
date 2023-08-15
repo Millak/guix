@@ -13305,6 +13305,48 @@ functionality, and handling of arbitrary (multiple) private letters (analagous
 LaTeX packages use of @samp{@@@@}) in nested package files.")
     (license license:lppl1.3+)))
 
+(define-public texlive-platex
+  (package
+    (name "texlive-platex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/platex.1"
+                   "doc/man/man1/platex.man1.pdf"
+                   "doc/platex/base/"
+                   "source/platex/base/"
+                   "tex/platex/base/"
+                   "tex/platex/config/")
+             (base32
+              "0a843xnp3iikjxw1klxb3j2bssm6ylhcw32s046xxm2bs527hxi8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "platex" "platex-dev")))
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyphen-base
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-ptex
+           texlive-ptex-fonts
+           texlive-tex-ini-files
+           texlive-unicode-data
+           texlive-uptex))
+    (home-page "https://ctan.org/pkg/platex")
+    (synopsis "pLaTeX2e and miscellaneous macros for pTeX")
+    (description
+     "The bundle provides pLaTeX2e and miscellaneous macros for pTeX and
+e-pTeX.")
+    (license license:bsd-3)))
+
 (define-public texlive-platex-tools
   (package
     (name "texlive-platex-tools")
