@@ -43514,6 +43514,33 @@ a template for such theses.)  The class is designed for use with pdfLaTeX;
 input in UTF-8 encoding is assumed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uhc
+  (package
+    (name "texlive-uhc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/uhc/umj/"
+                   "dvips/uhc/"
+                   "fonts/afm/uhc/umj/"
+                   "fonts/map/dvips/uhc/"
+                   "fonts/tfm/uhc/umj/"
+                   "fonts/tfm/uhc/uwmj/"
+                   "fonts/tfm/uhc/wmj/"
+                   "fonts/type1/uhc/umj/"
+                   "fonts/vf/uhc/uwmj/"
+                   "fonts/vf/uhc/wmj/")
+             (base32
+              "1hpqdzmz4xrcgk443lysif8yk52rbra8rh6cjjfr4kibyfpy77p3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uhc")
+    (synopsis "Fonts for the Korean language")
+    (description
+     "This package provides support for Korean documents written in Korean
+standard KSC codes for LaTeX2e.")
+    (license license:lppl)))
+
 (define-public texlive-uhrzeit
   (package
     (name "texlive-uhrzeit")
