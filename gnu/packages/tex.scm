@@ -3455,6 +3455,42 @@ accents are also available.  The package makes it easy to include Hebrew text
 in other-language documents.")
     (license license:lppl)))
 
+(define-public texlive-cjk
+  (package
+    (name "texlive-cjk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cjk/"
+                   "source/latex/cjk/contrib/wadalab/"
+                   "source/latex/cjk/texinput/KS/HLaTeX/"
+                   "source/latex/cjk/utils/"
+                   "tex/latex/cjk/contrib/wadalab/"
+                   "tex/latex/cjk/texinput/"
+                   "tex/latex/cjk/utils/pyhyphen/")
+             (base32
+              "044r1mmszq3hjmlck87vmqp62j2z02bm7lda8wb17phs0grkws5z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-arphic
+           texlive-cns
+           texlive-garuda-c90
+           texlive-norasi-c90
+           texlive-uhc
+           texlive-wadalab))
+    (home-page "https://ctan.org/pkg/cjk")
+    (synopsis "CJK language support")
+    (description
+     "CJK is a macro package for LaTeX, providing simultaneous support for
+various Asian scripts in many encodings (including Unicode): Chinese (both
+traditional and simplified), Japanese, Korean and Thai.  A special add-on
+feature is an interface to the Emacs editor (@file{cjk-enc.el}) which gives
+simultaneous, easy-to-use support to a bunch of other scripts in addition to
+the above -- Cyrillic, Greek, Latin-based scripts, Russian and Vietnamese are
+supported.")
+    (license license:gpl2)))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
