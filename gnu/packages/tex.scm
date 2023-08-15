@@ -22536,6 +22536,27 @@ ordinary text, and as a picture element within a TikZ-picture.  The appearance
 of a flag (size, frame etc.)  can be adapted using optional parameters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xepersian
+  (package
+    (name "texlive-xepersian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xepersian/"
+                   "fonts/misc/xetex/fontmapping/xepersian/"
+                   "source/xelatex/xepersian/"
+                   "tex/xelatex/xepersian/")
+             (base32
+              "1h6nicajnvrrr72yixcdzcwdck82qa3zv2k2k6q5xprsf9sz8yly")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xepersian")
+    (synopsis "Persian for LaTeX, using XeTeX")
+    (description
+     "This package provides a convenient interface for typesetting Persian and
+English texts in LaTeX, using the XeTeX engine.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xindex
   (package
     (name "texlive-xindex")
