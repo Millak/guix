@@ -24653,6 +24653,26 @@ provided for those who wish to typeset Spanish as written in Mexico.")
      "The package provides the language definition file for Swedish.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-thai
+  (package
+    (name "texlive-babel-thai")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-thai/"
+                   "source/generic/babel-thai/"
+                   "tex/generic/babel-thai/")
+             (base32
+              "1wgprys500a1fn56bnsmq8fhmb9y8cfwsqn5hginfb36d3gym4p6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-thai")
+    (synopsis "Support for Thai within babel")
+    (description
+     "The package provides support for typesetting Thai text within the Babel
+system.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-turkish
   (package
     (name "texlive-babel-turkish")
