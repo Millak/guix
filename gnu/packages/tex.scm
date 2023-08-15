@@ -1329,6 +1329,25 @@ a @file{.tfm} (TeX Font Metric) file.  It normally preserves kerns and
 ligatures, but also offers additional control over them.")
     (license license:gpl2)))
 
+(define-public texlive-akshar
+  (package
+    (name "texlive-akshar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/akshar/" "source/latex/akshar/"
+                   "tex/latex/akshar/")
+             (base32
+              "17xiqalqpw64pgvmpsa41qf6y5fhg720rpbr57kv8ipvvm1fn3n5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/akshar")
+    (synopsis "Support for syllables in the Devanagari script")
+    (description
+     "This LaTeX3 package provides macros and interfaces to work with
+Devanagari characters and syllables in a more correct way.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-albatross
   (package
     (name "texlive-albatross")
