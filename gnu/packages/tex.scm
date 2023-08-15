@@ -10699,6 +10699,22 @@ multiple flavours for putting labels inside or outside nodes), and a debugging
 mode to avoid getting lost in big diagrams.")
     (license license:expat)))
 
+(define-public texlive-zxjafont
+  (package
+    (name "texlive-zxjafont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zxjafont/" "tex/latex/zxjafont/")
+             (base32
+              "1n8sky4aprs7r12pvyj6q1lman57k94s7mkynnzfw1z4xnam459j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zxjafont")
+    (synopsis "Set up Japanese font families for XeLaTeX")
+    (description "This package sets up Japanese font families for XeLaTeX.")
+    (license license:expat)))
+
 (define-public texlive-biblatex-cheatsheet
   (package
     (name "texlive-biblatex-cheatsheet")
