@@ -15056,7 +15056,18 @@ barcodes.")
               "0bzkyira30b9xdsdfxjmwzgqffl9pvckz5avm6c3r0bq6asiml9l")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:create-formats #~(list "uplatex" "uplatex-dev")))
+    (arguments
+     (list #:create-formats #~(list "uplatex" "uplatex-dev")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-build
+                 ;; This phase is necessary because the build phase is
+                 ;; reluctant to generate "ukinsoku.tex" since there is
+                 ;; another one among the inputs (texlive-uptex) already.
+                 (lambda _
+                   (substitute* "source/uplatex/base/uplfmt.ins"
+                     (("\\\\keepsilent\n" all)
+                      (string-append all "\\askforoverwritefalse\n"))))))))
     (propagated-inputs
      (list texlive-atbegshi
            texlive-atveryend
