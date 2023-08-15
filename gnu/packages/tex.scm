@@ -39748,6 +39748,73 @@ simply on the size of the support.")
     (description "This collection provides support packages for Italian.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langother
+  (package
+    (name "texlive-collection-langother")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-aalok
+           texlive-akshar
+           texlive-amsldoc-vn
+           texlive-aramaic-serto
+           texlive-babel-azerbaijani
+           texlive-babel-esperanto
+           texlive-babel-georgian
+           texlive-babel-hebrew
+           texlive-babel-indonesian
+           texlive-babel-interlingua
+           texlive-babel-malay
+           texlive-babel-sorbian
+           texlive-babel-thai
+           texlive-babel-vietnamese
+           texlive-bangla
+           texlive-bangtex
+           texlive-bengali
+           texlive-burmese
+           texlive-chhaya
+           texlive-cjhebrew
+           texlive-collection-basic
+           texlive-ctib
+           texlive-ebong
+           texlive-ethiop
+           texlive-ethiop-t1
+           texlive-fc
+           texlive-fonts-tlwg
+           texlive-hindawi-latex-template
+           texlive-hyphen-complete
+           texlive-latex-mr
+           texlive-latexbangla
+           texlive-latino-sine-flexione
+           texlive-lshort-thai
+           texlive-lshort-vietnamese
+           texlive-marathi
+           texlive-ntheorem-vn
+           texlive-padauk
+           texlive-quran-bn
+           texlive-quran-ur
+           texlive-sanskrit
+           texlive-sanskrit-t1
+           texlive-thaienum
+           texlive-thaispec
+           texlive-unicode-alphabets
+           texlive-velthuis
+           texlive-vntex
+           texlive-wnri
+           texlive-wnri-latex
+           texlive-xetex-devanagari))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support other languages")
+    (description
+     "This collection provides support for languages not otherwise listed,
+including Indic, Thai, Vietnamese, Hebrew, Indonesian, African languages, and
+plenty more.  The split is made simply on the basis of the size of the
+support, to keep both collection sizes and the number of collections
+reasonable.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langpolish
   (package
     (name "texlive-collection-langpolish")
