@@ -15330,6 +15330,24 @@ features allow to deal with numbers (tests, display, some high level
 operations, etc.)")
     (license license:lppl1.3+)))
 
+(define-public texlive-xtuthesis
+  (package
+    (name "texlive-xtuthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xtuthesis/"
+                   "tex/latex/xtuthesis/")
+             (base32
+              "1fdk9dkikqlkjwrg8qjm2phvsyyvddshf78bjy6liyz5hqakk6r8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xtuthesis")
+    (synopsis "XTU thesis template")
+    (description
+     "The package provides a thesis template for the Xiangtan University.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-yannisgr
   (package
     (name "texlive-yannisgr")
