@@ -6444,6 +6444,24 @@ conference proceedings.  The class uses the XePersian package.")
 installed.")
     (license license:lppl1.3c)))
 
+(define-public texlive-install-latex-guide-zh-cn
+  (package
+    (name "texlive-install-latex-guide-zh-cn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/install-latex-guide-zh-cn/")
+             (base32
+              "1mb6d92c7llz5cpkir4d1wf0l2yvmskl0kxgch9r5zjmb67qflin")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/install-latex-guide-zh-cn")
+    (synopsis "Short introduction to LaTeX installation written in Chinese")
+    (description
+     "This package will introduce the operations related to installing TeX
+Live and mainly introducing command line operations, in Chinese.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-interval
   (package
     (name "texlive-interval")
