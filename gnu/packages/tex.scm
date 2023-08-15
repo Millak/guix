@@ -8276,6 +8276,25 @@ blank pages.")
 1 formats, which cover the Mxedruli and the Xucuri alphabets.")
     (license license:lppl)))
 
+(define-public texlive-na-box
+  (package
+    (name "texlive-na-box")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/na-box/" "tex/xelatex/na-box/")
+             (base32
+              "1j02k0d4m23yackb1vn8pajxwkimkkrx9h512xs3hkxdi6qdwb73")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/na-box")
+    (synopsis "Arabic-aware version of @code{pas-cours} package")
+    (description
+     "This is a modified version of the @code{pas-cours} package made
+compatible with XeLaTeX and Polyglossia to write Arabic documents with fancy
+boxed @code{theorem}-alike environments.")
+    (license license:lppl)))
+
 (define-public texlive-naive-ebnf
   (package
     (name "texlive-naive-ebnf")
