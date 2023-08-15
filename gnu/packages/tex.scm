@@ -10175,6 +10175,40 @@ to define new units and changes the output concerning to the surrounding font
 settings.")
     (license license:lppl)))
 
+(define-public texlive-velthuis
+  (package
+    (name "texlive-velthuis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/velthuis/"
+                   "doc/man/man1/devnag.1"
+                   "doc/man/man1/devnag.man1.pdf"
+                   "fonts/afm/public/velthuis/"
+                   "fonts/map/dvips/velthuis/"
+                   "fonts/source/public/velthuis/"
+                   "fonts/tfm/public/velthuis/"
+                   "fonts/type1/public/velthuis/"
+                   "tex/generic/velthuis/"
+                   "tex/latex/velthuis/"
+                   "tex/plain/velthuis/"
+                   "tex/xelatex/velthuis/")
+             (base32
+              "0h9maci6b65x7zy13v5j4vlr07lnghiwckh7bn4ix7d1wmh74bij")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (propagated-inputs (list texlive-xetex-devanagari))
+    (home-page "https://ctan.org/pkg/devanagari")
+    (synopsis "Typeset Devanagari")
+    (description
+     "This package provides Frans Velthuis preprocessor for Devanagari text,
+and fonts and macros to use when typesetting the processed text.  The macros
+provide features that support Sanskrit, Hindi, Marathi, Nepali, and other
+languages typically printed in the Devanagari script.  The package provides
+fonts, in both Metafont and Type 1 formats.")
+    (license license:gpl3+)))
+
 (define-public texlive-venn
   (package
     (name "texlive-venn")
