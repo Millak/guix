@@ -9643,6 +9643,41 @@ Common Lisp-style definitions, based on cl-gobject-introspection.")
 (define-public ecl-cl-gobject-introspection-wrapper
   (sbcl-package->ecl-package sbcl-cl-gobject-introspection-wrapper))
 
+(define-public sbcl-cl-glib
+  (let ((commit "9e52827cce1cbb3962536b6a5e628febab593f57")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-glib")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bohonghuang/cl-glib")
+               (commit commit)))
+         (file-name (git-file-name "cl-glib" version))
+         (sha256
+          (base32 "0dxa493zdp1p93cahhpp3yaggn3j3kkn90mdw99g4ld7scmiglp4" ))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("cl-gio" "cl-glib" "cl-gobject")))
+      (inputs
+       (list glib
+             gobject-introspection
+             sbcl-bordeaux-threads
+             sbcl-cl-gobject-introspection-wrapper))
+      (home-page "https://github.com/bohonghuang/cl-glib")
+      (synopsis "Glib, GIO and Gobject bindings for Common Lisp")
+      (description "This library provides Glib, GIO and Gobject bindings for
+Common Lisp via Gobject Introspection.")
+      (license license:lgpl3+))))
+
+(define-public cl-glib
+  (sbcl-package->cl-source-package sbcl-cl-glib))
+
+(define-public ecl-cl-glib
+  (sbcl-package->ecl-package sbcl-cl-glib))
+
 (define-public sbcl-cl-slug
   (let ((commit "ffb229d10f0d3f7f54e706791725225e200bf749")
         (revision "1"))
