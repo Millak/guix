@@ -1572,9 +1572,11 @@ consume data received from the server, or both.")
         `(modify-phases ,phases
            (add-after 'unpack 'fix-tests
              (lambda _
-               (substitute* "tests/auto/qsensorgestures_gestures/tst_sensorgestures_gestures.cpp"
+               (substitute* "tests/auto/qsensorgestures_gestures\
+/tst_sensorgestures_gestures.cpp"
                  (("2000") "5000")      ;lengthen test timeout
-                 (("QTest::newRow(\"twist\") << \"twist\"") "")))))))) ;failing test
+                 ;; This test fails.
+                 (("QTest::newRow(\"twist\") << \"twist\"") ""))))))))
     (native-inputs
      (list perl qtdeclarative-5))
     (inputs (list qtbase-5))
