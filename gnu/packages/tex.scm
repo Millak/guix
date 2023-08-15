@@ -2169,6 +2169,35 @@ critical editions and/or lexicons that can be searched, analyzed and
 correlated in various ways.")
     (license (list license:gpl3+ license:cc-by-sa4.0))))
 
+(define-public texlive-arabtex
+  (package
+    (name "texlive-arabtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arabtex/"
+                   "fonts/map/dvips/arabtex/"
+                   "fonts/source/public/arabtex/"
+                   "fonts/tfm/public/arabtex/"
+                   "fonts/type1/public/arabtex/"
+                   "tex/latex/arabtex/")
+             (base32
+              "1z1iaj59lawilydp31d3zxbd5jbny4szpdnkbwl6lrnki4c0s51c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/arabtex")
+    (synopsis "Macros and fonts for typesetting Arabic")
+    (description
+     "ArabTeX is a package extending the capabilities of TeX and LaTeX to
+generate Arabic and Hebrew text.  Input may be in ASCII transliteration or
+other encodings (including UTF-8); output may be Arabic, Hebrew, or any of
+several languages that use the Arabic script.  ArabTeX consists of a TeX macro
+package and Arabic and Hebrew fonts (provided both in Metafont format and
+Adobe Type 1).  The Arabic font is presently only available in the Naskhi
+style.  ArabTeX will run with Plain TeX and also with LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-arara
   (package
     (name "texlive-arara")
