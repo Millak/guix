@@ -28113,6 +28113,25 @@ of node lists.  It uses a similar visual representation for node lists as the
 UNIX @command{tree} command for a folder structure.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nomencl
+  (package
+    (name "texlive-nomencl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nomencl/" "makeindex/nomencl/"
+                   "source/latex/nomencl/" "tex/latex/nomencl/")
+             (base32
+              "176lqab9ypsym7x7mk9d0pbqf3fl9iwi539zjqv3l6nbmxj9ga88")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nomencl")
+    (synopsis "Produce lists of symbols as in nomenclature")
+    (description
+     "This package produces lists of symbols using the capabilities of the
+MakeIndex program.")
+    (license license:lppl)))
+
 (define-public texlive-norasi-c90
   (package
     (name "texlive-norasi-c90")
