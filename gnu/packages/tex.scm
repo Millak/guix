@@ -2114,6 +2114,32 @@ copied from them and pasted elsewhere.")
 contents for Arabic texts created by the @code{arabi} package.")
     (license license:lppl1.3)))
 
+(define-public texlive-arabic-book
+  (package
+    (name "texlive-arabic-book")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/arabic-book/"
+                   "tex/xelatex/arabic-book/")
+             (base32
+              "070agzwpgdfvjqn2klxw2m1bavy0l9b9pqqikc7il3wx107m4ni1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arabic-book")
+    (synopsis "Arabic @code{book} class")
+    (description
+     "This document class provides both Arabic and English support for TeX and
+LaTeX.  Input may be in ASCII transliteration or other encodings
+(including UTF-8), and output may be Arabic, Hebrew, or any of several
+languages that use the Arabic script, as can be specified by the Polyglossia
+package.  The Arabic font is presently available in any Arabic fonts style.
+In order to use Amiri font style, the user needs to install the amiri package.
+This document class runs with the XeTeX engine.  PDF files generated using
+this class can be searched, and text can be copied from them and pasted
+elsewhere.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-arara
   (package
     (name "texlive-arara")
