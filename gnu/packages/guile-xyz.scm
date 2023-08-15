@@ -728,7 +728,7 @@ you send to a FIFO file.")
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -737,12 +737,17 @@ you send to a FIFO file.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0llivcgb7idglsapcmvb2qscds7768f2xfgr4lns8mzl2xf5hwvv"))))
+                "0shrzmbh6x3n3xzpcijkxk3f73z6m1i50zgc2dnnccwf4j1c78p2"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake pkg-config texinfo help2man))
-    (inputs (list guile-3.0))
-    (propagated-inputs (list guile-lib))
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         help2man
+                         ;; needed when cross-compiling.
+                         guile-smc))
+    (inputs (list bash-minimal guile-3.0))
+    (propagated-inputs (list guile-lib guile-smc))
     (arguments
      `(#:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
@@ -756,31 +761,32 @@ you send to a FIFO file.")
                              (bin (string-append out "/bin"))
                              (guile-lib (assoc-ref inputs "guile-lib"))
                              (version (target-guile-effective-version))
-                             (scm (string-append "/share/guile/site/"
-                                                 version))
-                             (go (string-append  "/lib/guile/"
-                                                 version "/site-ccache")))
+                             (scm (string-append "/share/guile/site/" version))
+                             (go (string-append "/lib/guile/" version
+                                                "/site-ccache")))
                         (wrap-program (string-append bin "/dsv")
                           `("GUILE_LOAD_PATH" prefix
-                            (,(string-append out scm)
-                             ,(string-append guile-lib scm)))
+                            (,(string-append out scm) ,(string-append
+                                                        guile-lib scm)))
                           `("GUILE_LOAD_COMPILED_PATH" prefix
-                            (,(string-append out go)
-                             ,(string-append guile-lib go)))))
-                      #t)))))
+                            (,(string-append out go) ,(string-append guile-lib
+                                                       go))))) #t)))))
     (home-page "https://github.com/artyom-poptsov/guile-dsv")
     (synopsis "DSV module for Guile")
     (description
-     "Guile-DSV is a GNU Guile module for working with the
-delimiter-separated values (DSV) data format.  Guile-DSV supports the
-Unix-style DSV format and RFC 4180 format.")
+     "Guile-DSV is a GNU Guile module for working with the delimiter-separated
+values (DSV) data format.  Guile-DSV supports the Unix-style DSV format and RFC 4180
+style format.  Also Guile-DSV includes a console program named @code{dsv} that allows
+to view and process DSV data, including such operations as delimiter change,
+conversion from one DSV standard to another and printing the data as pseudographics
+tables.")
     (license license:gpl3+)))
 
 (define-public guile2.2-dsv
   (package
     (inherit guile-dsv)
     (name "guile2.2-dsv")
-    (inputs (list guile-2.2))
+    (inputs (list bash-minimal guile-2.2))
     (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
 
 (define-public guile-fibers-1.3
