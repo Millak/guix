@@ -1669,6 +1669,25 @@ text which spans over multiple lines.")
 math environments.")
     (license license:lppl1.3c)))
 
+(define-public texlive-alkalami
+  (package
+    (name "texlive-alkalami")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/alkalami/"
+                   "fonts/truetype/public/alkalami/")
+             (base32
+              "0979xhsjar0gwjp9yqp0kaf4gp4z715gr2kdb8dkqg8zzlkqhgzk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alkalami")
+    (synopsis "Font for Arabic-based writing systems in Nigeria and Niger")
+    (description
+     "This font is designed for Arabic-based writing systems in the Kano
+region of Nigeria and Niger.")
+    (license license:silofl1.1)))
+
 (define-public texlive-amscdx
   (package
     (name "texlive-amscdx")
