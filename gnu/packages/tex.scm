@@ -24006,6 +24006,26 @@ Friulan either with Babel or with Polyglossia.")
 Galician either with Babel or with Polyglossia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-georgian
+  (package
+    (name "texlive-babel-georgian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-georgian/"
+                   "tex/generic/babel-georgian/")
+             (base32
+              "1qjpaxzgm0qh88j6x1zvnjb1n994prxqnzchrp05pgsbyjcf410p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-georgian")
+    (synopsis "Babel support for Georgian")
+    (description
+     "The package provides support for use of Babel in documents written in
+Georgian.  The package is adapted for use both under traditional TeX engines,
+and under XeTeX and LuaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-german
   (package
     (name "texlive-babel-german")
