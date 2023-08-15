@@ -33017,6 +33017,32 @@ be specified in the document itself (one often needs a LaTeX citation-style
 package, such as @command{natbib} as well).")
     (license license:knuth)))
 
+(define-public texlive-charissil
+  (package
+    (name "texlive-charissil")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/charissil/"
+                   "fonts/enc/dvips/charissil/"
+                   "fonts/map/dvips/charissil/"
+                   "fonts/tfm/SIL/charissil/"
+                   "fonts/truetype/SIL/charissil/"
+                   "fonts/type1/SIL/charissil/"
+                   "fonts/vf/SIL/charissil/"
+                   "tex/latex/charissil/")
+             (base32
+              "0hdwxbck39xjkyq981fm3zxxkjw753mnr05jb7h7824k9x9wpfsl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/charissil")
+    (synopsis "CharisSIL fonts with support for all LaTeX engines")
+    (description
+     "This package provides the CharisSIL family of fonts adapted by SIL
+International from Bitstream Charter in TrueType format, with support for
+LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-charter
   (package
     (name "texlive-charter")
