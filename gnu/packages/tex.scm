@@ -19782,6 +19782,24 @@ display many variants of snowman")
     (description "The package will typeset cards for use in a game of Set.")
     (license license:gpl3)))
 
+(define-public texlive-sexam
+  (package
+    (name "texlive-sexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/sexam/" "tex/xelatex/sexam/")
+             (base32
+              "0bwzxm8xj7p930rgxh6j6rzb7r26i0w61ixy74wkqwmvb3951rf6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sexam")
+    (synopsis "Typeset Arabic exam scripts")
+    (description
+     "The package provides a modified version of the @code{exam} package made
+compatible with XeLaTeX and Polyglossia to typeset Arabic exams.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-signchart
   (package
     (name "texlive-signchart")
