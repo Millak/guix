@@ -14019,6 +14019,25 @@ analytical expansion of sin and cos.")
 barcodes.")
     (license license:lppl)))
 
+(define-public texlive-uptex-base
+  (package
+    (name "texlive-uptex-base")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/uptex/uptex-base/"
+                   "tex/uptex/uptex-base/")
+             (base32
+              "1xd55rv5ivlmmfmvvz611by6dbi0cw4lwpprcvd9yvgmqjafc1pj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uptex-base")
+    (synopsis "Plain TeX formats and documents for upTeX")
+    (description
+     "The bundle contains plain TeX format files and documents for upTeX and
+and e-upTeX.")
+    (license license:bsd-3)))
+
 (define-public texlive-variations
   (package
     (name "texlive-variations")
