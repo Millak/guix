@@ -2224,6 +2224,28 @@ in-line BNF expressions using math mode.")
 language and comes with some fonts of its own.")
     (license (list license:lppl1.3c license:silofl1.1))))
 
+(define-public texlive-bangtex
+  (package
+    (name "texlive-bangtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bangtex/"
+                   "fonts/source/public/bangtex/"
+                   "fonts/tfm/public/bangtex/"
+                   "tex/latex/bangtex/")
+             (base32
+              "1hmv27wpnwv70gipvfvxs1rwfjqbcy0lgn09hs2ah6ayqgr740im")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/bangtex")
+    (synopsis "Writing Bangla and Assamese with LaTeX")
+    (description
+     "The bundle provides class files for writing Bangla and Assamese with LaTeX,
+and Metafont sources for fonts.")
+    (license license:lppl)))
+
 (define-public texlive-barr
   (package
     (name "texlive-barr")
