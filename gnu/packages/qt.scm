@@ -1251,13 +1251,13 @@ XLSX document format.")
 (define-public qtxmlpatterns
   (package (inherit qtsvg-5)
     (name "qtxmlpatterns")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
              (sha256
               (base32
-               "1inf7ar32a557faqpwdsmafhz1p6k8hywpw3wbsdjlj74dkgdq35"))))
+               "03fss4lssi48d8gdj8inkj4qgmyzxbn7r4bm58ckbh5vl9rpamq3"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
