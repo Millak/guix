@@ -10660,6 +10660,24 @@ providing lots more features.  Skew and coloured tableaux are easy, and
 pgfkeys-enabled options are provided both at package load and configurably.")
     (license license:lppl1.2+)))
 
+(define-public texlive-zitie
+  (package
+    (name "texlive-zitie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/zitie/" "tex/xelatex/zitie/")
+             (base32
+              "0la4fg42c20isdip5gnynzhkj0hn295lf48hbyjjfvadx7zx408s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zitie")
+    (synopsis "Create CJK character calligraphy practicing sheets")
+    (description
+     "This is a LaTeX package for creating CJK character calligraphy
+practicing sheets (copybooks).  Currently, only XeTeX is supported.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-zx-calculus
   (package
     (name "texlive-zx-calculus")
