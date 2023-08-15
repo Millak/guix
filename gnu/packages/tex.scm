@@ -19364,6 +19364,28 @@ designed to help users generate circuits.")
 drawing quantum circuit diagrams.")
     (license license:cc-by4.0)))
 
+(define-public texlive-quran
+  (package
+    (name "texlive-quran")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quran/" "tex/latex/quran/")
+             (base32
+              "0y5znkwaw5qy2541p10pqqvbblzn0v088c7v8p5lc2za6lh83fj2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quran")
+    (synopsis "Easy way to typeset any part of the @emph{Holy Quran}")
+    (description
+     "This package offers the user an easy way to typeset the @emph{Holy
+Quran}.  It provides several macros for typesetting the whole or any part of
+the Quran based on its popular division, including @emph{Surah}, @emph{Ayah},
+@emph{Juz}, @emph{Hizb}, @emph{Quarter}, and @emph{Page}.  Besides the Arabic
+original, translations to English, German, French, and Persian are provided,
+as well as an English transliteration.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-quran-bn
   (package
     (name "texlive-quran-bn")
