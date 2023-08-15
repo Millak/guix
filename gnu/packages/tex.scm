@@ -13430,6 +13430,47 @@ not overly complex, so that users should find it easy to adapt the macros to
 their specific needs.")
     (license license:lppl)))
 
+(define-public texlive-ptex
+  (package
+    (name "texlive-ptex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/eptex.1"
+                   "doc/man/man1/eptex.man1.pdf"
+                   "doc/man/man1/makejvf.1"
+                   "doc/man/man1/makejvf.man1.pdf"
+                   "doc/man/man1/mendex.1"
+                   "doc/man/man1/mendex.man1.pdf"
+                   "doc/man/man1/pbibtex.1"
+                   "doc/man/man1/pbibtex.man1.pdf"
+                   "doc/man/man1/ppltotf.1"
+                   "doc/man/man1/ppltotf.man1.pdf"
+                   "doc/man/man1/ptex.1"
+                   "doc/man/man1/ptex.man1.pdf"
+                   "doc/man/man1/ptftopl.1"
+                   "doc/man/man1/ptftopl.man1.pdf")
+             (base32
+              "1dk8rvadr1q00bjizj567lzjp5l47pr7miyk0ghkajbiiwbqi0kn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "eptex" "ptex")))
+    (propagated-inputs
+     (list texlive-cm
+           texlive-etex
+           texlive-hyphen-base
+           texlive-knuth-lib
+           texlive-plain
+           texlive-ptex-base
+           texlive-ptex-fonts))
+    (home-page "https://ctan.org/pkg/ptex")
+    (synopsis "TeX system for publishing in Japanese")
+    (description
+     "pTeX adds features related to vertical writing, and deals with other
+problems in typesetting Japanese.  A manual (in both Japanese and English) is
+distributed as package @code{pTeX-manual}.")
+    (license license:bsd-3)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
