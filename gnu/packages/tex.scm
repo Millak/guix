@@ -6248,6 +6248,31 @@ standards using the KOMA script document classes.")
 cheat sheet (a reference sheet for writing scientific papers).")
     (license license:lppl)))
 
+(define-public texlive-latino-sine-flexione
+  (package
+    (name "texlive-latino-sine-flexione")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latino-sine-flexione/"
+                   "tex/latex/latino-sine-flexione/")
+             (base32
+              "0py61xhgg73jlz6f9p7g9r06pn7m648d29068i4d97gqc20i2jvc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latino-sine-flexione")
+    (synopsis "LaTeX support for documents written in Peano's Interlingua")
+    (description
+     "Latino sine Flexione (or Interlingua) is a language constructed by
+Giuseppe Peano at the beginning of the last century.  This simplified Latin is
+designed to be an instrument for international cooperation, especially in the
+academic sphere.  This package provides the necessary translations to use the
+language within a LaTeX document.  It also imports @code{fontenc} in order to
+be able to use ligatures and quotation marks.  Finally, it offers a text in
+Interlingua that can be used as a dummy text: @emph{Fundamento de
+intelligentia}.")
+    (license license:public-domain)))
+
 (define-public texlive-letgut
   (package
     (name "texlive-letgut")
