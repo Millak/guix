@@ -5015,6 +5015,24 @@ with pdfTeX, XeTeX and LuaTeX, and can also be used with the
 @code{unicode-math} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fixjfm
+  (package
+    (name "texlive-fixjfm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/fixjfm/" "tex/generic/fixjfm/")
+             (base32
+              "0x3wf7v03jqczvxaslqw422bvccvna31jl5sgld6llvfh7b0ziyx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixjfm")
+    (synopsis "Fix JFM (for *pTeX)")
+    (description
+     "This package fixes several bugs in the JFM format.  Both LaTeX and plain
+TeX are supported.")
+    (license license:knuth)))
+
 (define-public texlive-fixltxhyph
   (package
     (name "texlive-fixltxhyph")
