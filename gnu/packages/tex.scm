@@ -11104,6 +11104,28 @@ optionally be replaced with graphics paths so that applications that do not
 support SVG fonts are enabled to render the graphics properly.")
     (license license:gpl3+)))
 
+(define-public texlive-ebong
+  (package
+    (name "texlive-ebong")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ebong/" "scripts/ebong/")
+             (base32
+              "0ivzr6d83ws7q00k71zdz1v25y88fhja1safc4jfvd45i58fccy7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ebong.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/ebong")
+    (synopsis "Utility for writing Bengali in Rapid Roman Format")
+    (description
+     "This package provides a tool (preprocessor) for writing your
+@code{pRaa-ne-r} ka-thaa in the Bengali langauage.  It allows one to write the
+text in Rapid Roman Bangla and convert it to the BangTeX format by a Python
+program.  All LaTeX markups are preserved in the target file.")
+    (license license:public-domain)))
+
 (define-public texlive-eijkhout
   (package
     (name "texlive-eijkhout")
