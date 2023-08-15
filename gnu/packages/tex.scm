@@ -25047,6 +25047,28 @@ blackboard bold sampler.")
     ;; file." everywhere, notably in the file below.
     (license (license:fsf-free "file://doc/fonts/bbm/README"))))
 
+(define-public texlive-bbm-macros
+  (package
+    (name "texlive-bbm-macros")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bbm-macros/"
+                   "source/latex/bbm-macros/"
+                   "tex/latex/bbm-macros/")
+             (base32
+              "11klh7hwi06yr2wx5bpk230hn7rpfspk6sd55j6rmw8kz2wa3lr7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bbm-macros")
+    (synopsis "LaTeX support for blackboard-style CM fonts")
+    (description
+     "This package provides LaTeX support for Blackboard variants of Computer
+Modern fonts.  It declares a font family @code{bbm} so you can in principle
+write running text in blackboard bold, and lots of math alphabets for using
+the fonts within maths.")
+    (license license:lppl)))
+
 (define-public texlive-blockdraw-mp
   (package
     (name "texlive-blockdraw-mp")
