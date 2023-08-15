@@ -40305,6 +40305,42 @@ includes the Aleph engine and related Omega formats and packages, and the
 HiTeX engine and related.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langcjk
+  (package
+    (name "texlive-collection-langcjk")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-adobemapping
+           texlive-c90
+           texlive-cjk
+           texlive-cjk-gs-integrate
+           texlive-cjkpunct
+           texlive-cjkutils
+           texlive-collection-basic
+           texlive-dnp
+           texlive-evangelion-jfm
+           texlive-fixjfm
+           texlive-garuda-c90
+           texlive-jfmutil
+           texlive-norasi-c90
+           texlive-pxtatescale
+           texlive-xcjk2uni
+           texlive-xecjk
+           texlive-zitie
+           texlive-zxjafont))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Chinese/Japanese/Korean support (base)")
+    (description
+     "This is a collection of packages supporting a combination of Chinese,
+Japanese, Korean, including macros, fonts, documentation.  Also Thai in the
+c90 encoding, since there is some overlap in those fonts; standard Thai
+support is in @code{collection-langother}.  Additional packages for CJK are in
+their individual language collections.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langcyrillic
   (package
     (name "texlive-collection-langcyrillic")
