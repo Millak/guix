@@ -11318,6 +11318,33 @@ a comfortable and straightforward way.
 allow a somewhat natural formulation.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fc
+  (package
+    (name "texlive-fc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fc/" "fonts/source/jknappen/fc/"
+                   "fonts/tfm/jknappen/fc/" "tex/latex/fc/")
+             (base32
+              "0v0r8jcr1lv31mx613h76h13psj73g49p2a6dnd0nfbfharww3gr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; FIXME: Font metrics cannot be generated due to "bad pos"
+               ;; errors with "fcitt" fonts.
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont texlive-sauter))
+    (home-page "https://ctan.org/pkg/fc")
+    (synopsis "Fonts for African languages")
+    (description
+     "This package includes fonts for African languages.  The fonts are
+provided as Metafont source, in the familiar arrangement of lots of preamble
+files and a modest set of glyph specifications.")
+    (license license:gpl2)))
+
 (define-public texlive-fenixpar
   (package
     (name "texlive-fenixpar")
