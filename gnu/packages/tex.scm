@@ -2367,6 +2367,29 @@ texts.")
 @emph{Begriffschrift}.")
     (license license:gpl3+)))
 
+(define-public texlive-bengali
+  (package
+    (name "texlive-bengali")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bengali/"
+                   "fonts/source/public/bengali/"
+                   "fonts/tfm/public/bengali/"
+                   "source/latex/bengali/" "tex/latex/bengali/")
+             (base32
+              "077rs7rcx592g5m53hy73w6jd39qgb83z5sg2jbymjfwkk7y593h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/bengali-pandey")
+    (synopsis "Support for the Bengali language")
+    (description
+     "The package is based on Velthuis transliteration scheme, with extensions
+to deal with the Bengali letters that are not in Devanagari.  The package also
+supports Assamese.")
+    (license license:lppl)))
+
 (define-public texlive-betababel
   (package
     (name "texlive-betababel")
