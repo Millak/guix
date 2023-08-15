@@ -13471,6 +13471,34 @@ problems in typesetting Japanese.  A manual (in both Japanese and English) is
 distributed as package @code{pTeX-manual}.")
     (license license:bsd-3)))
 
+(define-public texlive-ptex-fonts
+  (package
+    (name "texlive-ptex-fonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ptex-fonts/"
+                   "fonts/source/ptex-fonts/jis/"
+                   "fonts/source/ptex-fonts/nmin-ngoth/"
+                   "fonts/source/ptex-fonts/standard/"
+                   "fonts/tfm/ptex-fonts/dvips/"
+                   "fonts/tfm/ptex-fonts/jis/"
+                   "fonts/tfm/ptex-fonts/nmin-ngoth/"
+                   "fonts/tfm/ptex-fonts/standard/"
+                   "fonts/vf/ptex-fonts/jis/"
+                   "fonts/vf/ptex-fonts/nmin-ngoth/"
+                   "fonts/vf/ptex-fonts/standard/")
+             (base32
+              "0f33y28zmrc6gw01qj956vrwj3mh5gn6kph2i13yg1yi2hdl7wwa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ptex-fonts")
+    (synopsis "Fonts for use with pTeX")
+    (description
+     "The bundle contains fonts for use with pTeX and the documents for the
+@command{makejvf} program.")
+    (license license:bsd-3)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
