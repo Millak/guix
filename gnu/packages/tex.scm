@@ -10481,6 +10481,48 @@ Native American languages.")
      "This package provides LaTeX support for the @code{wnri} fonts.")
     (license license:gpl2)))
 
+(define-public texlive-xecjk
+  (package
+    (name "texlive-xecjk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xecjk/"
+                   "fonts/misc/xetex/fontmapping/xecjk/"
+                   "source/xelatex/xecjk/" "tex/xelatex/xecjk/")
+             (base32
+              "0mpmfrj0n00gpnh67zh627vxhpp6vim8x755vdpb75h36k8zm6yq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'copy-ctxdocstrip.tex
+            ;; There's a circular dependency between this package (where
+            ;; `ctex' should be a native input) and `ctex' (where this package
+            ;; is a propagated input).  To work around this, install the
+            ;; specific "ctxdocstrip.tex" file from `ctex' in the build
+            ;; directory and set TEXINPUTS variable accordingly so the process
+            ;; can find it.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (install-file (search-input-file inputs
+                                               "tex/generic/ctex/ctxdocstrip.tex")
+                            "build/")
+              (setenv "TEXINPUTS" (string-append (getcwd) "/build:")))))))
+    (native-inputs
+     (list (texlive-origin
+            "ctxdocstrip.tex" (number->string %texlive-revision)
+            (list "tex/generic/ctex/ctxdocstrip.tex")
+            (base32
+             "154v2d6wfzhfg654nlh2apy9zr78d09rkimymyjqpxymkpbk8lli"))))
+    (home-page "https://ctan.org/pkg/xecjk")
+    (synopsis "Support for CJK documents in XeLaTeX")
+    (description
+     "This package provides a LaTeX package for typesetting CJK documents in
+the way users have become used to, in the CJK package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xecyrmongolian
   (package
     (name "texlive-xecyrmongolian")
