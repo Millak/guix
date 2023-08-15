@@ -37737,12 +37737,11 @@ Emacs.")
 
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
-  (let ((version "1.14.6")
-        (revision "242")
-        (commit "7d8df0ef2f483e2dc063a72099295f467e6bc2c8"))
+  (let ((commit "9370961ddcee78e389e44b36d38c3d93f8351619")
+        (revision "246"))
     (package
       (name "emacs-semi-epg")
-      (version (git-version version revision commit))
+      (version (git-version "1.14.6" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -37751,9 +37750,10 @@ Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "01dn91xjcl7p5rnbgyh5l4kdlqx31s0gw5vh7hhcapbiq8rihmjd"))))
+                  "13f267j0mrji9cvjhq129nslrj2gwvq7ibsz384a4qilxf5rhccc"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-bbdb-vcard emacs-flim-lb))
+      (propagated-inputs (list emacs-flim-lb))
+      (inputs (list emacs-bbdb-vcard))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
       (synopsis "Library to provide MIME feature for GNU Emacs")
       (description
