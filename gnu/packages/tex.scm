@@ -23248,6 +23248,26 @@ production of documents written in Sanskrit.  Type 1 versions of the fonts are
 available.")
     (license license:lppl)))
 
+(define-public texlive-sanskrit-t1
+  (package
+    (name "texlive-sanskrit-t1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/sanskrit-t1/"
+                   "fonts/map/dvips/sanskrit-t1/"
+                   "fonts/type1/public/sanskrit-t1/")
+             (base32
+              "0mv9ph7999y9shnq25k0w4sgcbvlf2gav5d1fpycjxan3h6rc7vi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sanskrit-t1")
+    (synopsis "Type 1 version of @code{skt} fonts for Sanskrit")
+    (description
+     "The sanskrit-t1 font package provides Type 1 version of Charles Wikner's
+@code{skt} font series for the Sanskrit language.")
+    (license license:lppl)))
+
 (define-public texlive-sansmath
   (package
     (name "texlive-sansmath")
