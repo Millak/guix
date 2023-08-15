@@ -43258,6 +43258,24 @@ support for @code{amsmath} displayed-equation environments); and support for
 making a list of theorems, analagous to @code{\\listoffigures}.")
     (license license:lppl)))
 
+(define-public texlive-ntheorem-vn
+  (package
+    (name "texlive-ntheorem-vn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ntheorem-vn/")
+             (base32
+              "13lkgb4qjiblbfm4jcxgkxsf08zk90lqz02bxrmim1n8gvyihwcc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ntheorem-vn")
+    (synopsis "Vietnamese translation of documentation of @code{ntheorem}")
+    (description
+     "This is a translation of the documentation provided with
+@code{ntheorem}.")
+    (license license:lppl)))
+
 (define-public texlive-fmtcount
   (package
     (name "texlive-fmtcount")
