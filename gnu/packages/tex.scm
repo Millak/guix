@@ -44037,6 +44037,54 @@ the end of the document, optionally leaving markers in the text near to where
 the figure (or table) would normally have occurred.")
     (license license:gpl3+)))
 
+(define-public texlive-wadalab
+  (package
+    (name "texlive-wadalab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/wadalab/"
+                   "fonts/afm/wadalab/dgj/"
+                   "fonts/afm/wadalab/dmj/"
+                   "fonts/afm/wadalab/mc2j/"
+                   "fonts/afm/wadalab/mcj/"
+                   "fonts/afm/wadalab/mr2j/"
+                   "fonts/afm/wadalab/mrj/"
+                   "fonts/map/dvips/wadalab/"
+                   "fonts/tfm/wadalab/dgj/"
+                   "fonts/tfm/wadalab/dmj/"
+                   "fonts/tfm/wadalab/mc2j/"
+                   "fonts/tfm/wadalab/mcj/"
+                   "fonts/tfm/wadalab/mr2j/"
+                   "fonts/tfm/wadalab/mrj/"
+                   "fonts/tfm/wadalab/udgj/"
+                   "fonts/tfm/wadalab/udmj/"
+                   "fonts/tfm/wadalab/umcj/"
+                   "fonts/tfm/wadalab/umrj/"
+                   "fonts/type1/wadalab/dgj/"
+                   "fonts/type1/wadalab/dmj/"
+                   "fonts/type1/wadalab/mc2j/"
+                   "fonts/type1/wadalab/mcj/"
+                   "fonts/type1/wadalab/mr2j/"
+                   "fonts/type1/wadalab/mrj/"
+                   "fonts/vf/wadalab/udgj/"
+                   "fonts/vf/wadalab/udmj/"
+                   "fonts/vf/wadalab/umcj/"
+                   "fonts/vf/wadalab/umrj/")
+             (base32
+              "1i72xbn28wh2rl4j1yzl1rvb5nd8bxmci9q9qjzynwq845zgjvnk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wadalab")
+    (synopsis "Wadalab (Japanese) font packages")
+    (description
+     "These are font bundles for the Japanese Wadalab fonts which work with
+the CJK package.  All subfonts now have glyph names compliant to the Adobe
+Glyph List, making ToUnicode CMaps in PDF documents (created automatically by
+@code{dvipdfmx}) work correctly.  All font bundles now contain virtual Unicode
+subfonts.")
+    (license (license:fsf-free "https://fedoraproject.org/wiki/Licensing:Wadalab"))))
+
 (define-public texlive-was
   (package
     (name "texlive-was")
