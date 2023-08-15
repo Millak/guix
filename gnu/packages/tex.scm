@@ -10347,6 +10347,25 @@ languages in Roman transliteration and Puget Salish (Lushootseed) and other
 Native American languages.")
     (license license:gpl3+)))
 
+(define-public texlive-wnri-latex
+  (package
+    (name "texlive-wnri-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wnri-latex/"
+                   "source/latex/wnri-latex/"
+                   "tex/latex/wnri-latex/")
+             (base32
+              "08ld2nys36vb368977dpwav75ffra2p8999dx4dwrs4vg6k2r2l7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wnri-latex")
+    (synopsis "LaTeX support for @code{wnri} fonts")
+    (description
+     "This package provides LaTeX support for the @code{wnri} fonts.")
+    (license license:gpl2)))
+
 (define-public texlive-xecyrmongolian
   (package
     (name "texlive-xecyrmongolian")
