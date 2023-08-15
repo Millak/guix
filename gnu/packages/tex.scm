@@ -6787,6 +6787,23 @@ Short Introduction to LaTeX2e}.")
 Introduction to LaTeX2e}.")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-thai
+  (package
+    (name "texlive-lshort-thai")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-thai/")
+             (base32
+              "16r9gx902a342q2mj570y269yw97yaj6hrbqrk4h49ihm695z30i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-thai")
+    (synopsis "Introduction to LaTeX in Thai")
+    (description
+     "This is the Thai translation of the @emph{Short Introduction to LaTeX2e}.")
+    (license license:public-domain)))
+
 (define-public texlive-lshort-turkish
   (package
     (name "texlive-lshort-turkish")
