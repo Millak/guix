@@ -11810,6 +11810,25 @@ team (2015-02-05): It seems that this script is currently not working.")
 Chinese typesetting.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ctex-faq
+  (package
+    (name "texlive-ctex-faq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ctex-faq/")
+             (base32
+              "15c0g0x8w7vm3hyn6lk60jf66akyfcq6x8jc2lnbjx8ydwgb26br")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ctex-faq")
+    (synopsis "LaTeX FAQ by the Chinese TeX Society (ctex.org)")
+    (description
+     "This is the LaTeX FAQ by the Chinese TeX Society.  Most questions were
+collected on the @url{bbs.ctex.org} forum, and were answered in detail by the
+author.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-ctib
   (package
     (name "texlive-ctib")
