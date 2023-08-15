@@ -14038,6 +14038,28 @@ barcodes.")
 and e-upTeX.")
     (license license:bsd-3)))
 
+(define-public texlive-uptex-fonts
+  (package
+    (name "texlive-uptex-fonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/uptex-fonts/"
+                   "fonts/cmap/uptex-fonts/"
+                   "fonts/source/uptex-fonts/"
+                   "fonts/tfm/uptex-fonts/jis/"
+                   "fonts/tfm/uptex-fonts/min/"
+                   "fonts/vf/uptex-fonts/jis/"
+                   "fonts/vf/uptex-fonts/min/")
+             (base32
+              "13cvdmfr97ad77q0djffl28grm1brqcsb1ccwkfdnkznp7ihiz82")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uptex-fonts")
+    (synopsis "Fonts for use with upTeX")
+    (description "The bundle contains fonts (TFM and VF) for use with upTeX.")
+    (license license:bsd-3)))
+
 (define-public texlive-variations
   (package
     (name "texlive-variations")
