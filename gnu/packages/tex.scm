@@ -16339,6 +16339,41 @@ National Bank (WP CNB).  The package was developed for CNB but it is also
 intended for authors from outside CNB.")
     (license license:lppl)))
 
+(define-public texlive-cns
+  (package
+    (name "texlive-cns")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cns/cns40-1/"
+                   "doc/fonts/cns/cns40-2/"
+                   "doc/fonts/cns/cns40-3/"
+                   "doc/fonts/cns/cns40-4/"
+                   "doc/fonts/cns/cns40-5/"
+                   "doc/fonts/cns/cns40-6/"
+                   "doc/fonts/cns/cns40-7/"
+                   "doc/fonts/cns/cns40-b5/"
+                   "fonts/misc/cns/"
+                   "fonts/tfm/cns/c0so12/"
+                   "fonts/tfm/cns/c1so12/"
+                   "fonts/tfm/cns/c2so12/"
+                   "fonts/tfm/cns/c3so12/"
+                   "fonts/tfm/cns/c4so12/"
+                   "fonts/tfm/cns/c5so12/"
+                   "fonts/tfm/cns/c6so12/"
+                   "fonts/tfm/cns/c7so12/")
+             (base32
+              "00v6sf0a0fm09z54d3zhvdwc2gi712knbxnx3mlj2ri5x2jisyqa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cjk-fonts")
+    (synopsis "Chinese/Japanese/Korean bitmap fonts")
+    (description
+     "This bundle provides fonts to go with the @code{cjk} macro package for Chinese,
+Japanese and Korean with LaTeX2e.  The package aims to supersede HLaTeX fonts
+bundle.")
+    (license license:public-domain)))
+
 (define-public texlive-courier
   (package
     (name "texlive-courier")
