@@ -2757,6 +2757,44 @@ involving brackets and allow partial differentials to be expressed in an
 alternate form.")
     (license license:lppl1.3+)))
 
+(define-public texlive-burmese
+  (package
+    (name "texlive-burmese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/burmese/"
+                   "fonts/map/dvips/burmese/"
+                   "fonts/tfm/public/burmese/"
+                   "fonts/type1/public/burmese/"
+                   "source/fonts/burmese/"
+                   "tex/latex/burmese/")
+             (base32
+              "04d022k7bqc7092xhsda0h5ma18b24hkmn0b7mlblpd3zf4qhs79")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The "birm.pl" script is located in the "source" part, and
+          ;; therefore will not appear in any output.  This phase forces its
+          ;; installation in "bin/" directory.
+          (add-after 'install 'install-script
+            (lambda _
+              (install-file "source/fonts/burmese/birm.pl"
+                            (string-append #$output "/bin")))))))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/burmese")
+    (synopsis "Basic support for writing Burmese")
+    (description
+     "This package provides basic support for writing Burmese.  The package
+provides a preprocessor (written in Perl), an Adobe Type 1 font, and LaTeX
+macros.")
+    ;; The package itself is under LPPL terms, but the preprocessor relies on
+    ;; Knuth's.
+    (license (list license:lppl license:knuth))))
+
 (define-public texlive-bussproofs-extra
   (package
     (name "texlive-bussproofs-extra")
