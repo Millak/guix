@@ -27256,6 +27256,26 @@ of node lists.  It uses a similar visual representation for node lists as the
 UNIX @command{tree} command for a folder structure.")
     (license license:lppl1.3+)))
 
+(define-public texlive-norasi-c90
+  (package
+    (name "texlive-norasi-c90")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/norasi-c90/"
+                   "fonts/map/dvips/norasi-c90/"
+                   "fonts/tfm/public/norasi-c90/"
+                   "source/fonts/norasi-c90/")
+             (base32
+              "19ynw46dbk71sbzx6rna359gdddjmwl57gw3kfz3f9ywvhq01m1k")))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-fonts-tlwg))
+    (home-page "https://ctan.org/pkg/norasi-c90")
+    (synopsis  "TeX support (from CJK) for the Norasi font")
+    (description
+     "This package provides TeX support (from CJK) for the Norasi font.")
+    (license license:gpl2+)))
+
 (define-public texlive-noto
   (package
     (name "texlive-noto")
