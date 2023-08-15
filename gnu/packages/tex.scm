@@ -2917,6 +2917,23 @@ a packet or in memory.")
 in Python, C and Pascal.  Program source files may also be input.")
     (license license:public-domain)))
 
+(define-public texlive-c90
+  (package
+    (name "texlive-c90")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/enc/c90/" "fonts/enc/dvips/c90/"
+                   "source/fonts/enc/c90/")
+             (base32
+              "0g4rwimlqqzbbs8ar15nsf8qcr8bbyjacmklbgv4pmsls5ka9n3n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/c90")
+    (synopsis "C90 font encoding for Thai")
+    (description "This package provides C90 font encoding for Thai.")
+    (license license:gpl2+)))
+
 (define-public texlive-calculation
   (package
     (name "texlive-calculation")
