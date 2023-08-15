@@ -7324,6 +7324,25 @@ Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
 Bulgarian translation of the @emph{Short Introduction to LaTeX2e}.")
     (license license:public-domain)))
 
+(define-public texlive-lshort-chinese
+  (package
+    (name "texlive-lshort-chinese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-chinese/")
+             (base32
+              "0455mdpcv3yg4m5vrbdp47j7mcwi43mvsy2p9clp7794agaf2ir6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-zh-cn")
+    (synopsis "Introduction to LaTeX, in Chinese")
+    (description
+     "This package provides a Chinese edition of the @emph{(Not so) short
+introduction to LaTeX2e}, with additional information of typesetting Chinese
+language.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-lshort-czech
   (package
     (name "texlive-lshort-czech")
