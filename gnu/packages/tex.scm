@@ -24451,6 +24451,8 @@ UTF-8 or a suitable 8-bit encoding.")
 (define-public texlive-xpinyin
   (package
     (name "texlive-xpinyin")
+    ;; XXX: Whenever updating this package, please check if "Unihan.zip"
+    ;; native input needs to be updated, too.
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
@@ -24460,6 +24462,60 @@ UTF-8 or a suitable 8-bit encoding.")
               "1fxsnvmkm66rfq08j03sch24maw0wgb8dhl73r2rf6gwxzf4imc5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "luatex"
+      #:modules '((ice-9 match)
+                  (srfi srfi-1)
+                  (guix build texlive-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-unihan.zip
+            ;; Copy the "Unihan.zip" file where the Lua script expects to find
+            ;; it.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((unihan.zip
+                     (any (match-lambda
+                            ((_ . dir)
+                             (and (string-suffix? "Unihan.zip" dir) dir)))
+                          inputs)))
+                (with-directory-excursion "source/latex/xpinyin"
+                  (install-file unihan.zip ".")
+                  (rename-file (basename unihan.zip) "Unihan.zip")))))
+          (add-before 'build 'copy-ctxdocstrip.tex
+            ;; Set TEXINPUTS so that the process can find extracted
+            ;; "ctxdocstrip.tex".
+            (lambda* (#:key inputs #:allow-other-keys)
+              (install-file (search-input-file inputs
+                                               "tex/generic/ctex/ctxdocstrip.tex")
+                            "build/")
+              (setenv "TEXINPUTS" (string-append (getcwd) "/build:"))))
+          (add-after 'build 'fix-reproducibility
+            ;; Remove a time-stamp so the generated database is reproducible.
+            (lambda _
+              (substitute* "tex/latex/xpinyin/xpinyin-database.def"
+                (("%% +by \"texlua xpinyin.lua\" .*") "")))))))
+    (native-inputs
+     (list
+      ;; XXX: The Unihan database may need to be updated whenever this package
+      ;; is.  Appropriate Unicode version can be found in the
+      ;; "tex/latex/xpinyin/xpinyin-database.def" file.
+      (origin
+        (method url-fetch)
+        (uri "https://www.unicode.org/Public/14.0.0/ucd/Unihan.zip")
+        (sha256
+         (base32
+          "0bc5277lpc5j0gg7fjfsah7krhqjzdxya5ww6walvkc25fdm3r1a")))
+      ;; There's a circular dependency between this package (where `ctex'
+      ;; should be a native input) and `ctex' (where this package is
+      ;; a propagated input).  To work around this, grab the required
+      ;; "ctxdocstrip.tex" file from `ctex'.
+      (texlive-origin
+       "ctxdocstrip.tex" (number->string %texlive-revision)
+       (list "tex/generic/ctex/ctxdocstrip.tex")
+       (base32
+        "154v2d6wfzhfg654nlh2apy9zr78d09rkimymyjqpxymkpbk8lli"))))
     (home-page "https://ctan.org/pkg/xpinyin")
     (synopsis "Automatically add pinyin to Chinese characters")
     (description
