@@ -12018,6 +12018,25 @@ which are not necessarily balanced.  It is in particular used a lot in the
 to work with entire braced groups at a time.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hindawi-latex-template
+  (package
+    (name "texlive-hindawi-latex-template")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hindawi-latex-template/")
+             (base32
+              "0q35drybrlcfcrhrd5691m66nd17b0m6hkcsqazpb1ck227zih61")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hindawi-latex-template")
+    (synopsis "LaTeX template for authors of the Hindawi journals")
+    (description
+     "This package contains a LaTeX template for authors of the Hindawi journals.
+Authors can use this template for formatting their research articles for
+submissions.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-hlist
   (package
     (name "texlive-hlist")
