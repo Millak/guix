@@ -11290,39 +11290,38 @@ interface.")
     (license license:expat)))
 
 (define-public emacs-orderless
-  (let ((commit "004cee6b8e01f8eb0cb1c683d0a637b14890600f"))
-    (package
-      (name "emacs-orderless")
-      (version "1.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/oantolin/orderless")
-               (commit commit)))
-         (sha256
-          (base32 "115bwqi2yc44bgvcl7lha8p2s6jgh5hksn4wa9s0kpfxhi14jwmy"))
-         (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'makeinfo
-              (lambda _
-                (invoke "makeinfo" "orderless.texi")
-                (install-file "orderless.info"
-                              (string-append #$output "/share/info")))))))
-      (native-inputs
-       (list texinfo))
-      (home-page "https://github.com/oantolin/orderless")
-      (synopsis "Emacs completion style that matches multiple regexps in any order")
-      (description "This package provides an orderless completion style that
+  (package
+    (name "emacs-orderless")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oantolin/orderless")
+             (commit version)))
+       (sha256
+        (base32 "1jmwyici90v82gqjq44n0scrwhmg05pi9yplkn4bpss80c83dxp4"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "makeinfo" "orderless.texi")
+              (install-file "orderless.info"
+                            (string-append #$output "/share/info")))))))
+    (native-inputs
+     (list texinfo))
+    (home-page "https://github.com/oantolin/orderless")
+    (synopsis "Emacs completion style that matches multiple regexps in any order")
+    (description "This package provides an orderless completion style that
 divides the pattern into space-separated components, and matches candidates
 that match all of the components in any order.  Each component can match in
 any one of several ways: literally, as a regexp, as an initialism, in the flex
 style, or as multiple word prefixes.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-consult
   (package
