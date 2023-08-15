@@ -9893,6 +9893,27 @@ symbols.")
 membrane protein topology plots and helical wheels.")
     (license license:gpl3+)))
 
+(define-public texlive-thaienum
+  (package
+    (name "texlive-thaienum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thaienum/" "tex/latex/thaienum/")
+             (base32
+              "1g7sf5gjnrmhgq4qmdh3gphc0ixyfx4rpm7kmbwmjra3b8j2i46w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thaienum")
+    (synopsis "Thai labels in @code{enumerate} environments")
+    (description
+     "This LaTeX package provides a command to use Thai numerals or characters
+as labels in enumerate environments.  Once the package is loaded with
+@samp{\\usepackage@{thaienum@}} you can use labels such as @code{\\thainum*}
+or @code{\\thaimultialph*} in conjunction with the package @code{enumitem}.
+Concrete examples are given in the documentation.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-thermodynamics
   (package
     (name "texlive-thermodynamics")
