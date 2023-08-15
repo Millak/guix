@@ -2392,6 +2392,23 @@ package.")
 converted between Plain TeX and LaTeX by a simple editing action.")
     (license license:lppl1.3+)))
 
+(define-public texlive-asymptote-by-example-zh-cn
+  (package
+    (name "texlive-asymptote-by-example-zh-cn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/asymptote-by-example-zh-cn/")
+             (base32
+              "0854pbh3rm21rzzbhai7xijzw26qawffj4wd3mrwbva1406106ff")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asymptote-by-example-zh-cn")
+    (synopsis "Asymptote by example")
+    (description "This is an Asymptote tutorial written in Simplified
+Chinese.")
+    (license license:gpl3+)))
+
 (define-public texlive-auto-pst-pdf
   (package
     (name "texlive-auto-pst-pdf")
