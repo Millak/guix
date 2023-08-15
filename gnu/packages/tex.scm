@@ -10629,6 +10629,29 @@ release process for LaTeX package authors.  Note by the CTAN
 team (2015-02-05): It seems that this script is currently not working.")
     (license license:gpl3)))
 
+(define-public texlive-ctib
+  (package
+    (name "texlive-ctib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ctib/"
+                   "fonts/source/public/ctib/"
+                   "fonts/tfm/public/ctib/"
+                   "source/latex/ctib/" "tex/latex/ctib/")
+             (base32
+              "0qvh0icrijcsyi3kvzkp890qjx7j9axv9yzzfa1paivyfp33aijn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/ctib4tex")
+    (synopsis "Tibetan for TeX and LaTeX2e")
+    (description
+     "This LaTeX package uses a modified version of Sirlin's Tibetan font.  An
+advantage of this Tibetan implementation is that all consonant clusters are
+formed by TeX and Metafont.  No external preprocessor is needed.")
+    (license license:gpl3+)))
+
 (define-public texlive-ctie
   (package
     (name "texlive-ctie")
