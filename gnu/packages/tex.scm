@@ -30975,6 +30975,44 @@ what your review will look like on zbMATH Open and you can test whether your
 LaTeX-Code will compile on our system.")
     (license (list license:gpl3 license:cc-by-sa4.0))))
 
+(define-public texlive-zhmetrics
+  (package
+    (name "texlive-zhmetrics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/zhmetrics/"
+                   "fonts/tfm/zhmetrics/cyberb/"
+                   "fonts/tfm/zhmetrics/gbk/"
+                   "fonts/tfm/zhmetrics/gbkfs/"
+                   "fonts/tfm/zhmetrics/gbkhei/"
+                   "fonts/tfm/zhmetrics/gbkkai/"
+                   "fonts/tfm/zhmetrics/gbkli/"
+                   "fonts/tfm/zhmetrics/gbksong/"
+                   "fonts/tfm/zhmetrics/gbkyou/"
+                   "fonts/tfm/zhmetrics/unifs/"
+                   "fonts/tfm/zhmetrics/unihei/"
+                   "fonts/tfm/zhmetrics/unikai/"
+                   "fonts/tfm/zhmetrics/unili/"
+                   "fonts/tfm/zhmetrics/unisong/"
+                   "fonts/tfm/zhmetrics/uniyou/"
+                   "source/fonts/zhmetrics/"
+                   "tex/generic/zhmetrics/"
+                   "tex/latex/zhmetrics/")
+             (base32
+              "0953rxs3k3vil9aq9v8hacwbnchz73ql8xp0dp0ynpw6v8iabxyg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zhmetrics")
+    (synopsis "TFM subfont files for using Chinese fonts in 8-bit TeX")
+    (description
+     "These are metrics to use existing Chinese TrueType fonts in workflows
+that use LaTeX and @command{dvipdfmx}, or pdfLaTeX.  The fonts themselves are
+not included in the package.  Six font families are supported: Kai, Song,
+Lishu, Fangsong, Youyuan and Hei.  Two encodings (GBK and UTF-8) are
+supported.")
+    (license license:lppl)))
+
 (define-public texlive-zhspacing
   (package
     (name "texlive-zhspacing")
