@@ -4276,6 +4276,34 @@ Environmental scores will be part of a future release.")
      "This package contains parts of CWEB that are no longer useful.")
     (license license:knuth)))
 
+(define-public texlive-dad
+  (package
+    (name "texlive-dad")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dad/"
+                   "fonts/afm/public/dad/"
+                   "fonts/map/dvips/dad/"
+                   "fonts/ofm/public/dad/"
+                   "fonts/ovf/public/dad/"
+                   "fonts/tfm/public/dad/"
+                   "fonts/type1/public/dad/"
+                   "tex/lualatex/dad/")
+             (base32
+              "0mkfhdai5m1fwj9x0rkpklvcrp3synfxl67dp6cb0bfz3w8nmis0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dad")
+    (synopsis "Simple typesetting system for mixed Arabic/Latin documents")
+    (description
+     "This package allows simple typesetting in Arabic script, intended for
+mixed Arabic/Latin script usage in situations where heavy-duty solutions are
+discouraged.  The system operates with both Unicode and transliterated input,
+allowing the user to choose the most appropriate approach for every
+situation.")
+    (license license:lppl)))
+
 (define-public texlive-decision-table
   (package
     (name "texlive-decision-table")
