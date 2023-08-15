@@ -11206,6 +11206,36 @@ an @file{.eps} file has anything except the origin for the lower-left of its
 bounding box.")
     (license license:public-domain)))
 
+(define-public texlive-ethiop
+  (package
+    (name "texlive-ethiop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ethiop/"
+                   "fonts/ofm/public/ethiop/"
+                   "fonts/ovf/public/ethiop/"
+                   "fonts/ovp/public/ethiop/"
+                   "fonts/source/public/ethiop/"
+                   "fonts/tfm/public/ethiop/"
+                   "omega/ocp/ethiop/"
+                   "omega/otp/ethiop/"
+                   "source/latex/ethiop/"
+                   "tex/latex/ethiop/")
+             (base32
+              "1852g96rjyrsky7mpfwlxgip11qmk800xcmqccs8cv51f5342qlq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/ethiop")
+    (synopsis "LaTeX macros and fonts for typesetting Amharic")
+    (description
+     "This package provides Ethiopian language support for the Babel package,
+including a collection of fonts and TeX macros for typesetting the characters
+of the languages of Ethiopia, with Metafont fonts based on EthTeX's.  The
+macros use the Babel framework.")
+    (license license:gpl3+)))
+
 (define-public texlive-expex-acro
   (package
     (name "texlive-expex-acro")
