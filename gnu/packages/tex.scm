@@ -10130,6 +10130,30 @@ providing the LaTeX user with macros which are used to markup textual
 information.")
     (license license:lppl)))
 
+(define-public texlive-unicode-alphabets
+  (package
+    (name "texlive-unicode-alphabets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unicode-alphabets/"
+                   "tex/latex/unicode-alphabets/")
+             (base32
+              "0xvzmx0xa8mmi39a8c89byi6c6y7vbl5k3plp63k5mif19ncyq3s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unicode-alphabets")
+    (synopsis "Macros for using characters from Unicode's Private Use Area")
+    (description
+     "While Unicode supports the vast majority of use cases, there are certain
+specialized niches which require characters and glyphs not (yet) represented
+in the standard.  Thus the Private Use Area (PUA) at code points E000-F8FF,
+which enables third parties to define arbitrary character sets.  This package
+allows configuring a number of macros for using various PUA character sets in
+LaTeX (AGL, CYFI, MUFI, SIL, TITUS, UCSUR, UNZ), to enable transcription and
+display of medieval and other documents.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-unitsdef
   (package
     (name "texlive-unitsdef")
