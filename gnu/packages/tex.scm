@@ -41013,6 +41013,48 @@ includes the Aleph engine and related Omega formats and packages, and the
 HiTeX engine and related.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langarabic
+  (package
+    (name "texlive-collection-langarabic")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-alkalami
+           texlive-alpha-persian
+           texlive-amiri
+           texlive-arabi
+           texlive-arabi-add
+           texlive-arabic-book
+           texlive-arabluatex
+           texlive-arabtex
+           texlive-bidi
+           texlive-bidihl
+           texlive-collection-basic
+           texlive-dad
+           texlive-ghab
+           texlive-hvarabic
+           texlive-hyphen-complete
+           texlive-imsproc
+           texlive-kurdishlipsum
+           texlive-lshort-persian
+           texlive-luabidi
+           texlive-na-box
+           texlive-persian-bib
+           texlive-quran
+           texlive-sexam
+           texlive-simurgh
+           texlive-texnegar
+           texlive-tram
+           texlive-xepersian
+           texlive-xepersian-hm
+           texlive-xindy-persian))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Arabic and Persian")
+    (description "This collection provides support for Arabic and Persian.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langcjk
   (package
     (name "texlive-collection-langcjk")
