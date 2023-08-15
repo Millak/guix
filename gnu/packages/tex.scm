@@ -1172,6 +1172,28 @@ TGA. Accepted output formats are: EPS, PCL5, PDF, PDF1, PBM, PGM, PPM, PS,
 markedEPS, markedPS, PNG, XWD, BMP, TIFF, JPEG, GIF, XPM.")
     (license license:gpl3+)))
 
+(define-public texlive-aalok
+  (package
+    (name "texlive-aalok")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aalok/" "source/latex/aalok/"
+                   "tex/latex/aalok/")
+             (base32
+              "0vpvqv60p5v3frdqa5r8k9k4zxk0icma5blw9dr6jhqfzf6lc3jy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aalok")
+    (synopsis "LaTeX class file for the Marathi journal @emph{Aalok}")
+    (description
+     "This package provides the class file for typesetting @emph{Aalok},
+a Marathi journal, with LaTeX.")
+    (license (list license:gpl3+
+                   ;; Aalok (आलोक) copyleft license v1.0+.
+                   (license:fsf-free "file://doc/latex/aalok/README.txt")
+                   license:fdl1.3+))))
+
 (define-public texlive-accents
   (package
     (name "texlive-accents")
