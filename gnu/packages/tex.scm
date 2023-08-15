@@ -2059,6 +2059,40 @@ the main text, and supports a separate bibliography for the appendix
 material.")
     (license license:lppl1.3+)))
 
+(define-public texlive-arabi
+  (package
+    (name "texlive-arabi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arabi/"
+                   "fonts/afm/arabi/arabeyes/"
+                   "fonts/enc/dvips/arabi/"
+                   "fonts/map/dvips/arabi/"
+                   "fonts/tfm/arabi/arabeyes/"
+                   "fonts/tfm/arabi/farsiweb/"
+                   "fonts/type1/arabi/arabeyes/"
+                   "fonts/type1/arabi/farsiweb/"
+                   "tex/latex/arabi/")
+             (base32
+              "19js5lw5r51n97gnf7ggvnvdkaamd0aagx73hnpyfzgzj9nb8pjr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arabi")
+    (synopsis "(La)TeX support for Arabic and Farsi, compliant with Babel")
+    (description
+     "The package provides an Arabic and Farsi script support for TeX without
+the need of any external pre-processor, and in a way that is compatible with
+Babel.  The bi-directional capability supposes that the user has a TeX engine
+that knows the four primitives @code{\\beginR}, @code{\\endR}, @code{\\beginL}
+and @code{\\endL}.  That is the case in both the TeX--XeT and e-TeX engines.
+
+Arabi will accept input in several 8-bit encodings, including UTF-8.  Arabi
+can make use of a wide variety of Arabic and Farsi fonts, and provides one of
+its own.  PDF files generated using Arabi may be searched, and text may be
+copied from them and pasted elsewhere.")
+    (license license:lppl)))
+
 (define-public texlive-arara
   (package
     (name "texlive-arara")
