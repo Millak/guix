@@ -8123,6 +8123,26 @@ kerning when a subscript follows.  Some predefined commands are also
 provided.")
     (license license:lppl1.3c)))
 
+(define-public texlive-padauk
+  (package
+    (name "texlive-padauk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/padauk/"
+                   "fonts/truetype/public/padauk/")
+             (base32
+              "0yn5w8bkcf9ihqy4v2zq4yc74d2d3dc1c6dcissaa6pcdj4z9r9l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/padauk")
+    (synopsis
+     "High-quality TrueType font for languages using the Myanmar script")
+    (description
+     "Padauk is a Unicode-based font family with broad support for writing
+systems that use the Myanmar script.")
+    (license license:silofl1.1)))
+
 (define-public texlive-pascaltriangle
   (package
     (name "texlive-pascaltriangle")
