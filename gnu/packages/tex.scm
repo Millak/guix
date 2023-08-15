@@ -2783,6 +2783,23 @@ complies with the @emph{Loccumer Richtlinien} (Locum guidelines).  In
 addition, the Vulgate (Latin Bible) is supported.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bidihl
+  (package
+    (name "texlive-bidihl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bidihl/" "tex/xelatex/bidihl/")
+             (base32
+              "021q2qhfl2ww95nbp63p3j7lv9wjj5s9wvn2sj5zyj1pcw75l8ir")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bidihl")
+    (synopsis "Experimental Bidi-aware text highlighting")
+    (description
+     "This package provides experimental Bidi-aware text highlighting.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
