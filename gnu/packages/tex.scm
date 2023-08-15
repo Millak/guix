@@ -9914,6 +9914,28 @@ or @code{\\thaimultialph*} in conjunction with the package @code{enumitem}.
 Concrete examples are given in the documentation.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thaispec
+  (package
+    (name "texlive-thaispec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thaispec/"
+                   "source/latex/thaispec/"
+                   "tex/latex/thaispec/")
+             (base32
+              "1d0mj98akv7bfq3msaplm2pffcwfayssn4i5an12zrw0wxicmp96")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thaispec")
+    (synopsis "Thai language typesetting in XeLaTeX")
+    (description
+     "This package allows you to input Thai characters directly to LaTeX
+documents and choose any (system wide) Thai fonts for typesetting in XeLaTeX.
+It also tries to appropriately justify paragraphs with no more external
+tools.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-thermodynamics
   (package
     (name "texlive-thermodynamics")
