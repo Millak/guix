@@ -41111,6 +41111,24 @@ in your document (DOT and Neato are both part of @code{graphviz}; DOT creates
 directed graphs, Neato undirected graphs).")
     (license license:gpl3+)))
 
+(define-public texlive-doulossil
+  (package
+    (name "texlive-doulossil")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/doulossil/"
+                   "fonts/truetype/public/doulossil/")
+             (base32
+              "0frhwpm7xzhhz83wpmlrwgz3c3bpvhm8pa0b6vkdgm8qj799irrb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/doulossil")
+    (synopsis "Font for typesetting the International Phonetic Alphabet (IPA)")
+    (description
+     "This package provides the IPA font Doulos SIL in TrueType format.")
+    (license license:silofl1.1)))
+
 (define-public texlive-dpcircling
   (package
     (name "texlive-dpcircling")
