@@ -45292,6 +45292,23 @@ SGML-based languages.  Xindy is highly configurable, both in markup terms and
 in terms of the collating order of the text being processed.")
     (license license:gpl2+)))
 
+(define-public texlive-xindy-persian
+  (package
+    (name "texlive-xindy-persian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/xindy-persian/")
+             (base32
+              "04w3h65215slnakk5w19m94xmj9cjx01izbk9xijifv5l6dqh447")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xindy-persian")
+    (synopsis "Support for the Persian language in Xindy")
+    (description
+     "The package offers Persian language support for indexing using Xindy.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-xits
   (package
     (name "texlive-xits")
