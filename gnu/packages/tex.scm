@@ -23998,6 +23998,27 @@ upgrade smoothly to the new support structure.")
      "The package provides emulation of pdfTeX primitives for LuaTeX v0.85+.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luatexja
+  (package
+    (name "texlive-luatexja")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luatexja/"
+                   "source/luatex/luatexja/"
+                   "tex/luatex/luatexja/")
+             (base32
+              "1j4dvzxgjyx5aa7akg5wg2w694vds6ra70zk9crrlm83aryqkda7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-luatexbase))
+    (home-page "https://ctan.org/pkg/luatexja")
+    (synopsis "Typeset Japanese with Lua(La)TeX")
+    (description
+     "The package offers support for typesetting Japanese documents with LuaTeX.
+Either of the Plain and LaTeX2e formats may be used with the package.")
+    (license license:bsd-3)))
+
 (define-public texlive-luahbtex
   (package
     (name "texlive-luahbtex")
