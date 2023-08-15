@@ -31197,6 +31197,27 @@ into Python''.  The package is modelled on @code{lipsum}, and may be used for
 similar purposes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-kurdishlipsum
+  (package
+    (name "texlive-kurdishlipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/kurdishlipsum/"
+                   "tex/xelatex/kurdishlipsum/")
+             (base32
+              "0lpdjqbif0pqsb6pmg8jc8igdf06dzwn3yfxh19mnjfzslcxkcmk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kurdishlipsum")
+    (synopsis "Lipsum package for the Kurdish language")
+    (description
+     "This package provides lipsum-like facilities for the Kurdish language.
+The package gives you easy access to the Kurdish poetry and balladry texts of
+the Diwany Vafaiy, Ahmedy Xani, Naly, Mahwy,....  The package needs to be run
+under XeLaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-kurier
   (package
     (name "texlive-kurier")
