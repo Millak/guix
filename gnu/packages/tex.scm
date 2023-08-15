@@ -23902,6 +23902,27 @@ Canadian and USA text.")
 
 (define-deprecated-package texlive-generic-babel-english texlive-babel-english)
 
+(define-public texlive-babel-esperanto
+  (package
+    (name "texlive-babel-esperanto")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-esperanto/"
+                   "source/generic/babel-esperanto/"
+                   "tex/generic/babel-esperanto/")
+             (base32
+              "1av9x9d5rff6hsssssbn1jnyrqnj1c2n5fa4kgxlla95xn7zs65m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-esperanto")
+    (synopsis "Babel support for Esperanto")
+    (description
+     "The package provides the language definition file for support of
+Esperanto in Babel.  Some shortcuts are defined, as well as translations to
+Esperanto of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-estonian
   (package
     (name "texlive-babel-estonian")
