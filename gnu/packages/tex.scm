@@ -2353,6 +2353,27 @@ LuaLaTeX are provided by the @code{arphic-ttf} package.")
     ;; non-GNU FTP site, using the license below.
     (license license:arphic-1999)))
 
+(define-public texlive-arphic-ttf
+  (package
+    (name "texlive-arphic-ttf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/arphic-ttf/"
+                   "fonts/truetype/public/arphic-ttf/")
+             (base32
+              "141hsz7lhqpbz3k10kl57bg21yslrb562alk1a6q129i56zb7jby")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arphic-ttf")
+    (synopsis "TrueType version of Chinese Arphic fonts")
+    (description
+     "This package provides TrueType versions of the Chinese Arphic fonts for
+use with XeLaTeX and LuaLaTeX.  Type1 versions of these fonts, for use with
+pdfLaTeX and the @code{cjk} package, are provided by the @code{arphic}
+package.")
+    (license license:arphic-1999)))
+
 (define-public texlive-ascii-chart
   (package
     (name "texlive-ascii-chart")
