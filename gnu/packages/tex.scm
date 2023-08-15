@@ -14038,6 +14038,47 @@ barcodes.")
 and e-upTeX.")
     (license license:bsd-3)))
 
+(define-public texlive-uptex
+  (package
+    (name "texlive-uptex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/euptex.1"
+                   "doc/man/man1/euptex.man1.pdf"
+                   "doc/man/man1/upbibtex.1"
+                   "doc/man/man1/upbibtex.man1.pdf"
+                   "doc/man/man1/uppltotf.1"
+                   "doc/man/man1/uppltotf.man1.pdf"
+                   "doc/man/man1/uptex.1"
+                   "doc/man/man1/uptex.man1.pdf"
+                   "doc/man/man1/uptftopl.1"
+                   "doc/man/man1/uptftopl.man1.pdf")
+             (base32
+              "14hn2n6jbibbqbdr72j74z5bz003jnlabi3kja0f0waxhas680gd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "euptex" "uptex")))
+    (propagated-inputs
+     (list texlive-cm
+           texlive-etex
+           texlive-hyphen-base
+           texlive-knuth-lib
+           texlive-plain
+           texlive-ptex-base
+           texlive-uptex-base
+           texlive-uptex-fonts))
+    (home-page "https://ctan.org/pkg/uptex")
+    (synopsis "Unicode version of pTeX")
+    (description
+     "upTeX is an extension of pTeX, using UTF-8 input and producing UTF-8 output.
+It was originally designed to improve support for Japanese, but is also useful
+for documents in Chinese and Korean.  It can process Chinese simplified,
+Chinese traditional, Japanese, and Korean simultaneously, and can also process
+original LaTeX with @code{\\inputenc@{utf8@}} and Babel
+(Latin/Cyrillic/Greek etc.) by switching its @code{\\kcatcode} tables.")
+    (license license:bsd-3)))
+
 (define-public texlive-uptex-fonts
   (package
     (name "texlive-uptex-fonts")
