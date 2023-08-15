@@ -8530,6 +8530,27 @@ Form (EBNF) notation.")
     (description "This style file provides macros for named tensor notation.")
     (license license:expat)))
 
+(define-public texlive-nanicolle
+  (package
+    (name "texlive-nanicolle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/nanicolle/"
+                   "tex/xelatex/nanicolle/")
+             (base32
+              "0lzcsmy4iw0ch3w1g3h5b23hkzspi5q2gs406l4cihfmf30yiadk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nanicolle")
+    (synopsis "Typesetting herbarium specimen labels")
+    (description
+     "This package provides a LaTeX class @file{nanicolle.cls} for typesetting
+collection labels and identification labels in Chinese style or in western
+style for plant herbarium specimens.  So far, documents using this class can
+only be compiled with XeLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-natded
   (package
     (name "texlive-natded")
