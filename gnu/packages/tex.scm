@@ -24322,6 +24322,24 @@ match Babel support for other languages.")
 Cyrillic, in Babel.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-malay
+  (package
+    (name "texlive-babel-malay")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-malay/"
+                   "source/generic/babel-malay/"
+                   "tex/generic/babel-malay/")
+             (base32
+              "1gbjrsf4drmrplhwl0avpzv5yfyb30znhza4pxk704i1khabnwzk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-malay")
+    (synopsis "Support for Malay within Babel")
+    (description "This is the Babel style for Malay.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-occitan
   (package
     (name "texlive-babel-occitan")
