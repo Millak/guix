@@ -7316,6 +7316,24 @@ to LaTeX2e.}")
 introduction to LaTeX2e}.")
     (license license:lppl)))
 
+(define-public texlive-lshort-persian
+  (package
+    (name "texlive-lshort-persian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-persian/")
+             (base32
+              "0b1b45nh2d3d3zv735dymgyllj6m8i57icbihjkl1im0nghrzklk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-persian")
+    (synopsis "Persian (Farsi) introduction to LaTeX")
+    (description
+     "This package provides a Persian (Farsi) translation of Oetiker's
+@emph{(Not so) short introduction to LaTeX2e}.")
+    (license license:public-domain)))
+
 (define-public texlive-lshort-polish
   (package
     (name "texlive-lshort-polish")
