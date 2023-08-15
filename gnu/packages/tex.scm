@@ -25017,6 +25017,36 @@ needed.")
 sorts with MetaPost.")
     (license license:public-domain)))
 
+(define-public texlive-bbm
+  (package
+    (name "texlive-bbm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bbm/" "fonts/source/public/bbm/"
+                   "fonts/tfm/public/bbm/")
+             (base32
+              "0fyzr8zfcv3i1ymzvpifbkmfxqvrva029vh4v0siia63sl36lvq3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; FIXME: Font metrics cannot be generated due to "bad pos"
+               ;; errors with "bbmitt" fonts.
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/bbm")
+    (synopsis "Blackboard-style CM fonts")
+    (description
+     "This package provides blackboard variants of Computer Modern fonts.  The
+fonts are distributed as Metafont source (only); LaTeX support is available
+with the @code{bbm-macros} package.  A sample of these fonts appears in the
+blackboard bold sampler.")
+    ;; The package states "You may freely use, modify and/or distribute this
+    ;; file." everywhere, notably in the file below.
+    (license (license:fsf-free "file://doc/fonts/bbm/README"))))
+
 (define-public texlive-blockdraw-mp
   (package
     (name "texlive-blockdraw-mp")
