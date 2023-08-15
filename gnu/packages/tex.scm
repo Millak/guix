@@ -20962,6 +20962,38 @@ application is powerful enough to generate any text-based structure, given
 that a corresponding template exists.")
     (license license:bsd-3)))
 
+(define-public texlive-texproposal
+  (package
+    (name "texlive-texproposal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texproposal/")
+             (base32
+              "1yxb3yagljsdp4s07fzd6498889i7cscch68fb77jbfc2z4srvsy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texproposal")
+    (synopsis "Proposal prototype for LaTeX promotion in Chinese universities")
+    (description
+     "This package contains the original source code and necessary attachment
+of the document @emph{Proposal for Offering TeX Courses and Relevant Resources
+in Chongqing University}.  This proposal could be helpful if one is
+considering to suggest their (Chinese) university or company to use TeX (or
+LaTeX, or XeLaTeX} as a typesetting system.
+
+The present proposal mainly explains the importance and necessity of
+introducing TeX, a typesetting system often used in academic writing, to
+students and teachers.  This proposal starts from a brief introduction of TeX,
+then steps further into its fascinating application to academic writing and
+dissertation formatting.  Finally, a set of possible implementation strategies
+with regard to the proper introduction of TeX and relevant resources to our
+university, is proposed.")
+    ;; The content of the project itself is released under CC-BY 4.0 terms,
+    ;; but the underlying code used to format and display that content is
+    ;; licensed under the Expat license.
+    (license (list license:cc-by4.0 license:expat))))
+
 (define-public texlive-texware
   (package
     (name "texlive-texware")
