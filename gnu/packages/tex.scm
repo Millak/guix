@@ -26506,6 +26506,26 @@ Unicode blocks, for automatic font tagging of multilingual text.")
 Easter nomogram.")
     (license license:lppl)))
 
+(define-public texlive-garuda-c90
+  (package
+    (name "texlive-garuda-c90")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/garuda-c90/"
+                   "fonts/map/dvips/garuda-c90/"
+                   "fonts/tfm/public/garuda-c90/"
+                   "source/fonts/garuda-c90/")
+             (base32
+              "1f6rlfxq3ccv9wdf7pzfgs1081yflxd3fzhkzi23mpyl777l7q9y")))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-fonts-tlwg))
+    (home-page "https://ctan.org/pkg/garuda-c90")
+    (synopsis "TeX support (from CJK) for the Garuda font")
+    (description
+     "This package provides TeX support (from CJK) for the Garuda font.")
+    (license license:gpl2+)))
+
 (define-public texlive-hanging
   (package
     (name "texlive-hanging")
