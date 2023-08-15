@@ -19727,6 +19727,27 @@ package.")
 Holy Quran.  It adds eight Urdu translations to the @code{quran} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-qyxf-book
+  (package
+    (name "texlive-qyxf-book")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qyxf-book/"
+                   "tex/latex/qyxf-book/")
+             (base32
+              "0sgjdfpmwjqh40sbanj772bwimbf3az7wah65hxaz5198xd67m1y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qyxf-book")
+    (synopsis "Book Template for Qian Yuan Xue Fu")
+    (description
+     "@code{qyxf-book} is a LaTeX document class (template) developed by Qian
+Yuan Xue Fu (QYXF), a student club of Xi'an Jiaotong University (XJTU).  It
+creates a minimalistic document style, and several color schemes are offered.
+Currently the template is only designed for Chinese typesetting.")
+    (license license:expat)))
+
 (define-public texlive-r-und-s
   (package
     (name "texlive-r-und-s")
