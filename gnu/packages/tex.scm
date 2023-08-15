@@ -22557,6 +22557,27 @@ of a flag (size, frame etc.)  can be adapted using optional parameters.")
 English texts in LaTeX, using the XeTeX engine.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xepersian-hm
+  (package
+    (name "texlive-xepersian-hm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xepersian-hm/"
+                   "source/xelatex/xepersian-hm/"
+                   "tex/xelatex/xepersian-hm/")
+             (base32
+              "0lq5bam9vx2phwphy2ig9hygsz4vvz4bx2c6f87my84kp8n3w25n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xepersian-hm")
+    (synopsis "Fixes kashida feature in XePersian package")
+    (description
+     "The kashida feature in XePersian has problems with some fonts such as
+the HM Series fonts and the XB Series fonts.  This package fixes these
+problems.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xindex
   (package
     (name "texlive-xindex")
