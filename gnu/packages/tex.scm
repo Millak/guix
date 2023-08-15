@@ -1688,6 +1688,26 @@ math environments.")
 region of Nigeria and Niger.")
     (license license:silofl1.1)))
 
+(define-public texlive-alpha-persian
+  (package
+    (name "texlive-alpha-persian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/alpha-persian/"
+                   "doc/bibtex/alpha-persian/")
+             (base32
+              "15ynmgh3fp6s40c200kgr6v0q84bkzp9cv45yg90mr9d7mq72djv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alpha-persian")
+    (synopsis "Persian version of @file{alpha.bst}")
+    (description
+     "The package provides a Persian version of the alpha BibTeX style and
+offers several enhancements.  It is compatible with the @code{hyperref},
+@code{url}, @code{natbib}, and @code{cite} packages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-amscdx
   (package
     (name "texlive-amscdx")
