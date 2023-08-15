@@ -25069,6 +25069,34 @@ write running text in blackboard bold, and lots of math alphabets for using
 the fonts within maths.")
     (license license:lppl)))
 
+(define-public texlive-bbold
+  (package
+    (name "texlive-bbold")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bbold/"
+                   "fonts/source/public/bbold/"
+                   "fonts/tfm/public/bbold/"
+                   "source/latex/bbold/" "tex/latex/bbold/")
+             (base32
+              "0x3fhz582xcv33s9yiwka82j8bz3nxribgmni3j8j03r6dih8d8r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:build-targets #~(list "bbold.dtx")
+           #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-hypdoc texlive-metafont))))
+    (home-page "https://ctan.org/pkg/bbold")
+    (synopsis "Sans serif blackboard bold")
+    (description
+     "This package provides a geometric sans serif blackboard bold font, for
+use in mathematics; Metafont sources are provided, as well as macros for use
+with LaTeX.")
+    (license license:bsd-3)))
+
 (define-public texlive-blockdraw-mp
   (package
     (name "texlive-blockdraw-mp")
