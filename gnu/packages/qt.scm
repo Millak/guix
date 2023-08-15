@@ -2261,13 +2261,13 @@ and mobile applications targeting TV-like form factors.")))
   (package
     (inherit qtsvg-5)
     (name "qtscxml")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "17j6npvgr8q3lyrqmvfh1n47mkhfzk18r998hcjm2w75xj46km1n"))
+                "10lxvdxdkxr2vldhqdp4bk38r7q9j0jy54lrqw9whnyj3y5wgzzi"))
               (modules '((guix build utils)))
               (snippet
                '(begin
