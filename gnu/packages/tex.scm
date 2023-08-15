@@ -23111,6 +23111,25 @@ names, as well as character data, may use any characters allowed in XML, using
 UTF-8 or a suitable 8-bit encoding.")
     (license license:lppl1.0+)))        ;per xmltex/base/readme.txt
 
+(define-public texlive-xpinyin
+  (package
+    (name "texlive-xpinyin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xpinyin/" "source/latex/xpinyin/"
+                   "tex/latex/xpinyin/")
+             (base32
+              "1fxsnvmkm66rfq08j03sch24maw0wgb8dhl73r2rf6gwxzf4imc5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xpinyin")
+    (synopsis "Automatically add pinyin to Chinese characters")
+    (description
+     "The package is written to simplify the input of Hanyu Pinyin.  Macros are
+provided that automatically add pinyin to Chinese characters.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hyperref
   (package
     (name "texlive-hyperref")
