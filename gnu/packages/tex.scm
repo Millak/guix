@@ -22165,6 +22165,27 @@ cobordisms between circles, such as those used in TQFT and other mathematical
 diagrams.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tram
+  (package
+    (name "texlive-tram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tram/"
+                   "fonts/source/public/tram/"
+                   "tex/latex/tram/")
+             (base32
+              "1b26615dd1qs12vl9d82xcxlc718s5jgirzygss9g7m908w2hqch")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tram")
+    (synopsis "Typeset tram boxes in LaTeX")
+    (description
+     "Tram boxes are highlighted with patterns of dots; the package defines an
+environment @code{tram} that typesets its content into a tram box.  The
+pattern used may be selected in an optional argument to the environment.")
+    (license license:lppl)))
+
 (define-public texlive-tsemlines
   (package
     (name "texlive-tsemlines")
