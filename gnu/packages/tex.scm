@@ -22429,6 +22429,26 @@ verbatim source).")
 
 (define-deprecated-package texlive-latex-fancyvrb texlive-fancyvrb)
 
+(define-public texlive-fandol
+  (package
+    (name "texlive-fandol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fandol/"
+                   "fonts/opentype/public/fandol/")
+             (base32
+              "1lk91ypsvj2wkqsw8lklkqfsqimjyn0vzbwgqgs5h6kf61m6qsk5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fandol")
+    (synopsis "Four basic fonts for Chinese typesetting")
+    (description
+     "This package provides Fandol fonts designed for Chinese typesetting.
+The current version contains four styles: Song, Hei, Kai, Fang.  All fonts are
+in OpenType format.")
+    (license license:gpl3+)))
+
 (define-public texlive-gentium-tug
   (package
     (name "texlive-gentium-tug")
