@@ -24134,6 +24134,24 @@ Icelandic in Babel.  Some shortcuts are defined, as well as translations to
 Icelandic of standard LaTeX names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-indonesian
+  (package
+    (name "texlive-babel-indonesian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-indonesian/"
+                   "source/generic/babel-indonesian/"
+                   "tex/generic/babel-indonesian/")
+             (base32
+              "1ilkl7s5dh8cs6z211p4imyzg3d2axfa5vkmrxn4d3lbx1g3chs1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-indonesian")
+    (synopsis "Support for Indonesian within Babel")
+    (description "This is the Babel style for Indonesian.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-irish
   (package
     (name "texlive-babel-irish")
