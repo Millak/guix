@@ -1612,7 +1612,8 @@ recognition API for devices.")))
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
                  (invoke "qmake" "QT_BUILD_PARTS = libs tools tests"
-                         (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," out "/lib -Wl,-rpath,")
+                         (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath,"
+                                        out "/lib -Wl,-rpath,")
                          (string-append "PREFIX=" out)))))))
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
     (native-inputs
