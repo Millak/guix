@@ -6071,6 +6071,35 @@ digit form.  This package provides support for spelling out numbers in Italian
 words, both in cardinal and in ordinal form.")
     (license license:lppl)))
 
+(define-public texlive-jfmutil
+  (package
+    (name "texlive-jfmutil")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/jfmutil/" "scripts/jfmutil/")
+             (base32
+              "1c23wak28a1kwgsk6bw1ifa794zywmqzm7a6w5g883nmbfmsq388")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "jfmutil.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/jfmutil")
+    (synopsis "Utility to process pTeX-extended TFM and VF")
+    (description
+     "This program provides functionality to process data files (JFM and VF) that
+form logical fonts used in (u)pTeX.  The functions currently available
+include:
+@itemize
+@item The mutual conversion between Japanese virtual fonts (pairs of VF and
+JFM) and files in the ZVP format, which is an original text format
+representing data in virtual fonts.  This function can be seen as
+a counterpart to the @code{vftovp} and @code{vptovf} programs.
+@item The mutual conversion between VF files alone and files in the ZVP0
+format, which is a subset of the ZVP format.
+@end itemize")
+    (license license:expat)))
+
 (define-public texlive-jkmath
   (package
     (name "texlive-jkmath")
