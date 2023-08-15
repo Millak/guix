@@ -9556,8 +9556,8 @@ function.")
   (sbcl-package->cl-source-package sbcl-specialization-store))
 
 (define-public sbcl-cl-gobject-introspection
-  (let ((commit "d0136c8d9ade2560123af1fc55bbf70d2e3db539")
-        (revision "1"))
+  (let ((commit "c4fef07d01cec7c830ce84ef150ed8e4da5959c4")
+        (revision "2"))
     (package
       (name "sbcl-cl-gobject-introspection")
       (version (git-version "0.3" revision commit))
@@ -9568,18 +9568,17 @@ function.")
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-gobject-introspection" version))
          (sha256
-          (base32
-           "0dz0r73pq7yhz2iq2jnkq977awx2zws2qfxdcy33329sys1ii32p"))))
+          (base32 "18n4wg93sf6cjmpcpr47bg2rd8mbm9ml9lykmjsxgvsf3nwr5vnw"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("iterate" ,sbcl-iterate)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("glib" ,glib)
-         ("gobject-introspection" ,gobject-introspection)))
+       (list glib
+             gobject-introspection
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-iterate
+             sbcl-trivial-garbage))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
