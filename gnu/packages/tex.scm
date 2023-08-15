@@ -31013,6 +31013,27 @@ Lishu, Fangsong, Youyuan and Hei.  Two encodings (GBK and UTF-8) are
 supported.")
     (license license:lppl)))
 
+(define-public texlive-zhmetrics-uptex
+  (package
+    (name "texlive-zhmetrics-uptex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/zhmetrics-uptex/"
+                   "fonts/tfm/public/zhmetrics-uptex/"
+                   "fonts/vf/public/zhmetrics-uptex/")
+             (base32
+              "1598l2k32g8nvxqzbgc6mzsib4v0pmsn9h221r4m1d95vm3n0pvd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zhmetrics-uptex")
+    (synopsis "Chinese font metrics for upTeX")
+    (description
+     "The package contains some Chinese font metrics (JFM, VF, etc) for upTeX
+engine, together with a simple DVIPDFMx font mapping of Fandol fonts for
+DVIPDFMx.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-zhspacing
   (package
     (name "texlive-zhspacing")
