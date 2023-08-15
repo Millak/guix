@@ -24072,6 +24072,28 @@ German.")
 names in mathematics, and for classical-era symbols.")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-hebrew
+  (package
+    (name "texlive-babel-hebrew")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-hebrew/"
+                   "source/generic/babel-hebrew/"
+                   "tex/generic/babel-hebrew/")
+             (base32
+              "1h4ksd9nvicdgi88fxv8jfh9r5gabg0w75jpqgnngszfnfw486k2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-hebrew")
+    (synopsis "Babel support for Hebrew")
+    (description
+     "The package provides the language definition file for support of Hebrew
+in babel.  Macros to control the use of text direction control of TeX--XeT and
+e-TeX are provided (and may be used elsewhere).  Some shortcuts are defined,
+as well as translations to Hebrew of standard LaTeX names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-hungarian
   (package
     (name "texlive-babel-hungarian")
