@@ -3552,6 +3552,43 @@ Ghostscript.")
 adjust locations and kerning of CJK punctuation marks.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cjkutils
+  (package
+    (name "texlive-cjkutils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/bg5conv.1"
+                   "doc/man/man1/bg5conv.man1.pdf"
+                   "doc/man/man1/cef5conv.1"
+                   "doc/man/man1/cef5conv.man1.pdf"
+                   "doc/man/man1/cefconv.1"
+                   "doc/man/man1/cefconv.man1.pdf"
+                   "doc/man/man1/cefsconv.1"
+                   "doc/man/man1/cefsconv.man1.pdf"
+                   "doc/man/man1/extconv.1"
+                   "doc/man/man1/extconv.man1.pdf"
+                   "doc/man/man1/hbf2gf.1"
+                   "doc/man/man1/hbf2gf.man1.pdf"
+                   "doc/man/man1/sjisconv.1"
+                   "doc/man/man1/sjisconv.man1.pdf"
+                   "hbf2gf/")
+             (base32
+              "0by2g05xv5dndnd78jz9y73fyswqhfvcbzcw8rzhvpvd6inrcdq8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cjk")
+    (synopsis "CJK language support")
+    (description
+     "CJK is a macro package for LaTeX, providing simultaneous support for
+various Asian scripts in many encodings (including Unicode): Chinese (both
+traditional and simplified), Japanese, Korean and Thai.  A special add-on
+feature is an interface to the Emacs editor (cjk-enc.el) which gives
+simultaneous, easy-to-use support to a bunch of other scripts in addition to
+the above --- Cyrillic, Greek, Latin-based scripts, Russian and Vietnamese are
+supported.")
+    (license license:gpl2)))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
