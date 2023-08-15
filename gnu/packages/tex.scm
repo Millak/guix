@@ -23716,6 +23716,29 @@ right-aligned table and (multiple-)figure floats, with footnotes.")
 Babel system).")
     (license license:lppl1.3+)))
 
+(define-public texlive-babel-azerbaijani
+  (package
+    (name "texlive-babel-azerbaijani")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-azerbaijani/"
+                   "source/generic/babel-azerbaijani/"
+                   "tex/generic/babel-azerbaijani/")
+             (base32
+              "0vpgx76316gfhxp9maiqnd3z1hjavzlnjibxi4yhalbby0dnswi1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-azerbaijani")
+    (synopsis "Support for Azerbaijani within Babel")
+    (description
+     "This is the Babel style for Azerbaijani.  This language poses special
+challenges because no traditional font encoding contains the full character
+set, and therefore a mixture must be used (e.g., T2A and T1).  This package is
+compatible with Unicode engines LuaTeX and XeTeX, which are very likely the
+most convenient way to write Azerbaijani documents.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-basque
   (package
     (name "texlive-babel-basque")
