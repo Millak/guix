@@ -19077,6 +19077,27 @@ same way that @code{kvoptions} adds the same facility to the LaTeX standard
 PGF/TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pgfornament-han
+  (package
+    (name "texlive-pgfornament-han")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgfornament-han/"
+                   "tex/latex/pgfornament-han/")
+             (base32
+              "17h71dbzj7a381gv3zn1pr1g2376mwwg8l9mk3y97wiv9m9afhxn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgfornament-han")
+    (synopsis "Library for Chinese traditional motifs and patterns")
+    (description
+     "This package provides a @code{pgfornament} library for Chinese
+traditional motifs and patterns.  The command @code{\\pgfornamenthan} takes
+the same options as @code{\\pgfornament} from the @code{pgfornament} package,
+but renders Chinese traditional motifs instead.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-pgfplots
   (package
     (name "texlive-pgfplots")
