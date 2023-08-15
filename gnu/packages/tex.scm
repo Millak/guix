@@ -8677,6 +8677,26 @@ digits than A require special spacing to appear properly; this spacing is
 supported in the package.")
     (license license:lppl)))
 
+(define-public texlive-njurepo
+  (package
+    (name "texlive-njurepo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/njurepo/" "source/latex/njurepo/"
+                   "tex/latex/njurepo/")
+             (base32
+              "03dli7kk1h8kycbj83h2gy434zl6wvj4xz0lli91b1h8k59i8fv4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/njurepo")
+    (synopsis "Reports for Nanjing University")
+    (description
+     "This LaTeX document class provides a thesis template for Nanjing
+University in order to make it easy to write experiment reports and homework
+for the bachelor's curriculum.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
