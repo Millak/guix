@@ -6963,6 +6963,26 @@ and commands.")
     (description "This is LaTeX for Omega and Aleph.")
     (license license:lppl1.0+)))
 
+(define-public texlive-latex-notes-zh-cn
+  (package
+    (name "texlive-latex-notes-zh-cn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/latex-notes-zh-cn/")
+             (base32
+              "0w9rmd7b5fnfvix653n9vbnn1k8yxlaaak79ipvm8p53dx75xfxd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-notes-zh-cn")
+    (synopsis "Chinese Introduction to TeX and LaTeX")
+    (description
+     "The document is an introduction to TeX and LaTeX, in Chinese.  It covers
+basic text typesetting, mathematics, graphics, tables, Chinese language &
+fonts, and some miscellaneous features (hyperlinks, long documents,
+bibliographies, indexes and page layout).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-latex2e-help-texinfo-fr
   (package
     (name "texlive-latex2e-help-texinfo-fr")
