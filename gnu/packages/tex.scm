@@ -1962,6 +1962,35 @@ on indirect resources, such as log file analysis.  Arara requires a Java
 virtual machine.")
     (license license:bsd-3)))
 
+(define-public texlive-aramaic-serto
+  (package
+    (name "texlive-aramaic-serto")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aramaic-serto/"
+                   "fonts/afm/public/aramaic-serto/"
+                   "fonts/map/dvips/aramaic-serto/"
+                   "fonts/source/public/aramaic-serto/"
+                   "fonts/tfm/public/aramaic-serto/"
+                   "fonts/type1/public/aramaic-serto/"
+                   "tex/latex/aramaic-serto/")
+             (base32
+              "154bicknhsj8nypnyzr999wj34xli0kfpic9vym805abxbpwrmsw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/aramaic-serto")
+    (synopsis "Fonts and LaTeX for Syriac written in Serto")
+    (description
+     "This package enables (La)TeX users to typeset words or phrases (e-TeX
+extensions are needed) in Syriac (Aramaic) using the Serto-alphabet.  The
+package includes a preprocessor written in Python in order to deal with
+right-to-left typesetting for those who do not want to use e-LaTeX and to
+choose the correct letter depending on word context (initial/medial/final
+form).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-armtex
   (package
     (name "texlive-armtex")
