@@ -9264,6 +9264,26 @@ ranging from very simple (lines and circles) to rather intricate (uncommon
 geometric transformations, fractals, bitmap, etc).")
     (license license:gpl1+)))
 
+(define-public texlive-metrix
+  (package
+    (name "texlive-metrix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/metrix/" "source/latex/metrix/"
+                   "tex/latex/metrix/")
+             (base32
+              "185w7pgil8zix0czvd69l5pv6pcjc0n4nfbllm5v5mzr31sc0k5j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metrix")
+    (synopsis "Typeset metric marks for Latin text")
+    (description
+     "The package may be used to type the prosodics/metrics of (Latin) verse;
+it provides macros to typeset the symbols standing alone, and in combination
+with symbols, giving automatic alignment.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mex
   (package
     (name "texlive-mex")
