@@ -1918,84 +1918,80 @@ Machine Protocol.")
   (package
     (name "looking-glass-client")
     (version "B6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://looking-glass.io/artifact/"
-                           version "/source"))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://looking-glass.io/artifact/" version
+                                  "/source"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))))
     (build-system cmake-build-system)
-    (inputs
-     (list bash-minimal
-           font-dejavu
-           fontconfig
-           freetype
-           glu
-           gmp
-           libglvnd
-           libiberty
-           libsamplerate
-           libx11
-           libxcursor
-           libxfixes
-           libxi
-           libxinerama
-           libxkbcommon
-           libxpresent
-           libxrandr
-           libxscrnsaver
-           mesa
-           pipewire
-           pulseaudio
-           spice-protocol
-           wayland
-           wayland-protocols
-           `(,zlib "static")))
+    (inputs (list bash-minimal
+                  font-dejavu
+                  fontconfig
+                  freetype
+                  glu
+                  gmp
+                  libglvnd
+                  libiberty
+                  libsamplerate
+                  libx11
+                  libxcursor
+                  libxfixes
+                  libxi
+                  libxinerama
+                  libxkbcommon
+                  libxpresent
+                  libxrandr
+                  libxscrnsaver
+                  mesa
+                  pipewire
+                  pulseaudio
+                  spice-protocol
+                  wayland
+                  wayland-protocols
+                  `(,zlib "static")))
     (native-inputs (list nettle pkg-config))
     (arguments
-     `(#:tests? #f ;; No tests are available.
-       ;; Package uses "-march=native" by default. We disable that to build with the
-       ;; lowest supported architecture for reproducibility and CPU compatibility.
-       #:configure-flags '("-DOPTIMIZE_FOR_NATIVE=OFF")
-       #:make-flags '("CC=gcc")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'chdir-to-client
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (chdir "client")
-                      #t))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (install-file "looking-glass-client"
-                                    (string-append (assoc-ref outputs "out")
-                                                   "/bin"))
-                      #t))
-                  (add-after 'install 'wrapper
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (wrap-program
-                          (string-append (assoc-ref outputs "out")
-                                         "/bin/looking-glass-client")
-                        `("LD_LIBRARY_PATH" ":" prefix
-                          ,(map (lambda (name)
-                                  (let ((input (assoc-ref inputs name)))
-                                    (string-append input "/lib")))
-                                '("gmp"
-                                  "libxi"
-                                  "nettle"
-                                  "mesa"
-                                  "wayland"
-                                  "fontconfig-minimal"
-                                  "freetype"
-                                  "libx11"
-                                  "libxfixes"
-                                  "libxscrnsaver"
-                                  "libxinerama"))))
-                      #t)))))
+     (list #:tests? #f ;No tests are available.
+           ;; Package uses "-march=native" by default. We disable that to build with the
+           ;; lowest supported architecture for reproducibility and CPU compatibility.
+           #:configure-flags #~'("-DOPTIMIZE_FOR_NATIVE=OFF")
+           #:make-flags #~'("CC=gcc")
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'configure 'chdir-to-client
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (chdir "client")))
+                        (replace 'install
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (install-file "looking-glass-client"
+                                          (string-append (assoc-ref outputs
+                                                                    "out")
+                                                         "/bin"))))
+                        (add-after 'install 'wrapper
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (wrap-program (string-append (assoc-ref outputs
+                                                                    "out")
+                                           "/bin/looking-glass-client")
+                              `("LD_LIBRARY_PATH" ":" prefix
+                                ,(map (lambda (name)
+                                        (let ((input (assoc-ref inputs name)))
+                                          (string-append input "/lib")))
+                                      '("gmp" "libxi"
+                                        "nettle"
+                                        "mesa"
+                                        "wayland"
+                                        "fontconfig-minimal"
+                                        "freetype"
+                                        "libx11"
+                                        "libxfixes"
+                                        "libxscrnsaver"
+                                        "libxinerama")))))))))
     (home-page "https://looking-glass.io/")
     (synopsis "KVM Frame Relay (KVMFR) implementation")
-    (description "Looking Glass allows the use of a KVM (Kernel-based Virtual
+    (description
+     "Looking Glass allows the use of a KVM (Kernel-based Virtual
 Machine) configured for VGA PCI Pass-through without an attached physical
 monitor, keyboard or mouse.  It displays the VM's rendered contents on your
 main monitor/GPU.")
