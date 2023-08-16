@@ -11180,6 +11180,25 @@ Grammar (RRG).  This package allows the construction of trees with crossing
 lines, as is required by this theory for many languages.")
     (license license:lppl)))
 
+(define-public texlive-rtklage
+  (package
+    (name "texlive-rtklage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rtklage/" "tex/latex/rtklage/")
+             (base32
+              "0p9z4dgh572n7j6b8vf8aqag8ybqw3xzsh5kab1czks2774gm7cq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ratex")
+    (synopsis "Package for German lawyers")
+    (description
+     "RATeX is a newly developed bundle of packages and classes provided for
+German lawyers.  Now in the early beginning it only contains @code{rtklage},
+a class to make lawsuits.")
+    (license license:lppl)))
+
 (define-public texlive-sankey
   (package
     (name "texlive-sankey")
