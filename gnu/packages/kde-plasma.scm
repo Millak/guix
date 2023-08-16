@@ -1500,6 +1500,7 @@ on top of Baloo.")
                              ;; oxygen
                              oxygen-sounds
 
+                             kde-gtk-config
                              kdesu
                              krunner
                              kinfocenter
@@ -1527,7 +1528,6 @@ on top of Baloo.")
                               (resolve-interface
                                '(gnu packages kde-systemtools))
                               'spectacle)
-                             ;; kde-gtk-config ;; TODO
 
                              kwayland-integration
                              plasma-firewall
