@@ -34380,6 +34380,26 @@ somewhat from the standard LaTeX writing style.  This package introduces
 enumerative expressions in Japanese education.")
     (license license:expat)))
 
+(define-public texlive-jpnedumathsymbols
+  (package
+    (name "texlive-jpnedumathsymbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jpnedumathsymbols/"
+                   "tex/latex/jpnedumathsymbols/")
+             (base32
+              "0ap370bp831xxrq45zllyrbhhxs0yv3qb1l5pkpvgsildfk5rk7m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jpnedumathsymbols")
+    (synopsis "Mathematical equation representation in Japanese education")
+    (description
+     "Mathematical equation representation in Japanese education differs
+somewhat from the standard LaTeX writing style.  This package introduces
+mathematical equation representation in Japanese education.")
+    (license license:expat)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
