@@ -7966,6 +7966,29 @@ Interlingua that can be used as a dummy text: @emph{Fundamento de
 intelligentia}.")
     (license license:public-domain)))
 
+(define-public texlive-ledmac
+  (package
+    (name "texlive-ledmac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ledmac/" "source/latex/ledmac/"
+                   "tex/latex/ledmac/")
+             (base32
+              "03b23rkhdhvr0rbmp687p76mlq68crsfyh67frxbnh11vccmfgnc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ledmac")
+    (synopsis "Typeset scholarly editions")
+    (description
+     "This package provides a macro package for typesetting scholarly critical
+editions.  The @code{ledmac} package is a LaTeX port of the Plain TeX EDMAC
+macros.  It supports indexing by page and line number and simple
+@code{tabular}- and @code{array}-style environments.  The package is
+distributed with the related @code{ledpar} and @code{ledarab} packages.  The
+package is now superseded by @code{reledmac}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-letgut
   (package
     (name "texlive-letgut")
