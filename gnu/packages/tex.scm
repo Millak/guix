@@ -19338,6 +19338,25 @@ styles (@file{.bst}), for pBibTeX, which is a Japanese extended version of
 BibTeX contained in TeX Live.")
     (license license:bsd-3)))
 
+(define-public texlive-pbibtex-manual
+  (package
+    (name "texlive-pbibtex-manual")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pbibtex-manual/")
+             (base32
+              "030rhhb4xcijvjc0x1ylyk6xz5mn90wrlp5ss4yr6qlpzmq21b50")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pbibtex-manual")
+    (synopsis "Documentation files for (u)pBibTeX")
+    (description
+     "The bundle contains documentation files for Japanese pBibTeX and
+upBibTeX.  For historical reasons, this also contains old documentation files
+for JBibTeX.")
+    (license license:bsd-3)))
+
 (define-public texlive-penrose
   (package
     (name "texlive-penrose")
