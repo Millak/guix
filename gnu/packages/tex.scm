@@ -11900,6 +11900,23 @@ mode to avoid getting lost in big diagrams.")
 Japanese, for XeLaTeX.")
     (license license:expat)))
 
+(define-public texlive-zxjafbfont
+  (package
+    (name "texlive-zxjafbfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zxjafbfont/"
+                   "tex/latex/zxjafbfont/")
+             (base32
+              "1vwbr2nwxp5f8c7q1gwm9z3karjkxjxr1j4lg5p12ljqlwm7p3lw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zxjafbfont")
+    (synopsis "Fallback CJK font support for xeCJK")
+    (description "This package provides fallback CJK font support for xeCJK.")
+    (license license:expat)))
+
 (define-public texlive-biblatex-cheatsheet
   (package
     (name "texlive-biblatex-cheatsheet")
