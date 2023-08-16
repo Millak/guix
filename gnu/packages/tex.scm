@@ -11605,6 +11605,33 @@ providing the LaTeX user with macros which are used to markup textual
 information.")
     (license license:lppl)))
 
+(define-public texlive-unfonts-core
+  (package
+    (name "texlive-unfonts-core")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/unfonts-core/"
+                   "fonts/truetype/public/unfonts-core/")
+             (base32
+              "12q7h1akmgc3vdvyb4i8x51a716451kwi90vh9i57xw76hmg5f4x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unfonts-core")
+    (synopsis "TrueType version of Un-fonts")
+    (description
+     "This is TrueType version of Un-fonts core bundle.  It includes the
+following font families (12 fonts):
+@itemize
+@item UnBatang, UnBatangBold: serif;
+@item UnDotum, UnDotumBold: sans-serif;
+@item UnGraphic, UnGraphicBold: sans-serif style;
+@item UnDinaru, UnDinaruBold, UnDinaruLight;
+@item UnPilgi, UnPilgiBold: script;
+@item UnGungseo: cursive, brush-stroke.
+@end itemize")
+    (license license:gpl2)))
+
 (define-public texlive-unicode-alphabets
   (package
     (name "texlive-unicode-alphabets")
