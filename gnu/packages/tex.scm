@@ -7807,6 +7807,23 @@ to LaTeX2e: LaTeX2e-Kurzbeschreibung}.")
 to LaTeX2e.}")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-japanese
+  (package
+    (name "texlive-lshort-japanese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-japanese/")
+             (base32
+              "0mfxig980jyzhay1i83d69p294hgbr92v3kk2a4z8ca3fwzy8w74")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-japanese")
+    (synopsis "Japanese version of the @emph{Short Introduction to LaTeX2e}")
+    (description "This is the Japanese version of the @emph{(Not so) Short
+Introduction to LaTeX2e}.")
+    (license license:gpl3+)))
+
 (define-public texlive-lshort-mongol
   (package
     (name "texlive-lshort-mongol")
