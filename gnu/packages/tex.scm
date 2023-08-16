@@ -6328,6 +6328,24 @@ possibility to override the standard behavior of norms, ...).")
 nets, diagrams, etc., very easily, in the LaTeX @code{picture} environment.")
     (license license:lppl)))
 
+(define-public texlive-gb4e
+  (package
+    (name "texlive-gb4e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gb4e/" "tex/latex/gb4e/")
+             (base32
+              "1pi6n59v8vrrm2qaff8z28kwb0xa6nykgrfi9r0lxc8f1d2r5k7f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gb4e")
+    (synopsis "Linguistic tools")
+    (description
+     "This package provides an environment for linguistic examples, tools for
+glosses, and various other goodies.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-gene-logic
   (package
     (name "texlive-gene-logic")
