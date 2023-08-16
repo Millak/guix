@@ -50,6 +50,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages package-management) ; flatpak
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vpn)
   #:use-module (gnu packages vulkan)
@@ -2345,6 +2347,7 @@ sensors, process information and other system resources.")
                   breeze-icons
                   dbus
                   fontconfig
+                  icu4c
                   iso-codes
                   kactivities
                   kactivities-stats
@@ -2374,6 +2377,8 @@ sensors, process information and other system resources.")
                   kquickcharts
                   kpackage
                   kpeople
+                  kpipewire
+                  kquickcharts
                   krunner
                   kscreenlocker
                   ktexteditor
@@ -2404,6 +2409,7 @@ sensors, process information and other system resources.")
                   qtbase-5
                   qtdeclarative-5
                   qtquickcontrols2-5
+                  qttools-5
                   qtwayland-5
                   qtgraphicaleffects
                   qtx11extras
@@ -2416,6 +2422,7 @@ sensors, process information and other system resources.")
                   xmessage
                   xsetroot
                   polkit-qt
+                  ucd
 
                   libxcursor
                   libkexiv2
@@ -2442,7 +2449,8 @@ sensors, process information and other system resources.")
                    (let ((xmessage (search-input-file inputs "/bin/xmessage"))
                          (xsetroot (search-input-file inputs "/bin/xsetroot"))
                          (xrdb (search-input-file inputs "/bin/xrdb"))
-                         (kinit #$(this-package-input "kinit")))
+                         (kinit #$(this-package-input "kinit"))
+                         (qttools #$(this-package-input "qttools")))
                      (substitute* "startkde/startplasma.cpp"
                        (("xmessage") xmessage)
                        (("xsetroot") xsetroot))
@@ -2458,7 +2466,13 @@ sensors, process information and other system resources.")
                                    "startkde/startplasma-wayland.cpp"
                                    "startkde/startplasma-x11.cpp")
                        (("kdeinit5_shutdown")
-                        (string-append kinit "/bin/kdeinit5_shutdown"))))))
+                        (string-append kinit "/bin/kdeinit5_shutdown")))
+                     ;; QT_INSTALL_BINS refers to qtbase, but qdbus is in
+                     ;; qttools.
+                     (substitute* "CMakeLists.txt"
+                       (("ecm_query_qt\\(QtBinariesDir QT_INSTALL_BINS\\)")
+                        (string-append "set(QtBinariesDir \"" qttools
+                                       "/bin\")"))))))
                (delete 'check)
                (add-after 'install 'check-after-install
                  (lambda* (#:key tests? #:allow-other-keys)
