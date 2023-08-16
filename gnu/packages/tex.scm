@@ -4495,6 +4495,29 @@ custom derivatives and differential operators.  The options follow
 a consistent naming scheme making them easy to use and understand.")
     (license license:lppl1.3+)))
 
+(define-public texlive-diagbox
+  (package
+    (name "texlive-diagbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/diagbox/" "source/latex/diagbox/"
+                   "tex/latex/diagbox/")
+             (base32
+              "0zr7ih8jr56j727gf3l1q87rlrqn3zfz8cm7hs2q5l1f3y1gmcgh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/diagbox")
+    (synopsis "Table heads with diagonal lines")
+    (description
+     "The package's principal command, @code{\\diagbox}, takes two
+arguments (texts for the slash-separated parts of the box), and an optional
+argument with which the direction the slash will go, the box dimensions, etc.,
+may be controlled.  The package also provides @code{\\slashbox} and
+@code{\\backslashbox} commands for compatibility with the now removed slashbox
+package, which it supersedes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-diffcoeff
   (package
     (name "texlive-diffcoeff")
