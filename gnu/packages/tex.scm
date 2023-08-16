@@ -15090,6 +15090,26 @@ for multistep processing, this script runs one of the pTeX-based programs
 followed by dvipdfmx.")
     (license license:gpl2)))
 
+(define-public texlive-pxbase
+  (package
+    (name "texlive-pxbase")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/platex/pxbase/" "tex/platex/pxbase/")
+             (base32
+              "0dq9d4ixddffjnzb73d2qacgzm27665hvq2gsfjqzikzaa70dahw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxbase")
+    (synopsis "Tools for use with (u)pLaTeX")
+    (description
+     "The main purpose of this package is to provide auxiliary functions which
+are utilized by other packages created by the same author.  It also provides
+a few user commands to assist in creating Japanese documents using
+@code{(u)pLaTeX.}")
+    (license license:expat)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
