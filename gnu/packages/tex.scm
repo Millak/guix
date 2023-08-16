@@ -34339,6 +34339,27 @@ for Japanese text layout.  The class file and the JFM (Japanese font metric)
 files for LuaTeX-ja, pLaTeX, or upLaTeX are provided.")
     (license license:bsd-2)))
 
+(define-public texlive-jlreq-deluxe
+  (package
+    (name "texlive-jlreq-deluxe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/platex/jlreq-deluxe/"
+                   "fonts/tfm/public/jlreq-deluxe/"
+                   "fonts/vf/public/jlreq-deluxe/"
+                   "tex/platex/jlreq-deluxe/")
+             (base32
+              "0l80iqgsnhvqisrkhgflwpxs5fqyz2ddv6vp3b17vnxvymyzzvg4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jlreq-deluxe")
+    (synopsis "Multi-weight Japanese font support for the @code{jlreq} class")
+    (description
+     "This package provides multi-weight Japanese font support for the
+@code{jlreq} class.")
+    (license license:expat)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
