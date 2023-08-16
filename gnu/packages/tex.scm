@@ -14024,6 +14024,30 @@ advised to consider using the @code{fancyvrb} package in place of
 @code{moreverb}.")
     (license license:lppl)))
 
+(define-public texlive-morisawa
+  (package
+    (name "texlive-morisawa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/morisawa/"
+                   "fonts/map/dvipdfmx/morisawa/"
+                   "fonts/tfm/public/morisawa/"
+                   "fonts/vf/public/morisawa/"
+                   "source/fonts/morisawa/"
+                   "tex/latex/morisawa/")
+             (base32
+              "1wqyiq049y0mv6d1r3d0mrjzhh5pq2vi50sr0jhd58k4wdg8zqkb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/morisawa")
+    (synopsis
+     "Selection of 5 standard Japanese fonts for pLaTeX and dvips")
+    (description
+     "The package enables selection of 5 standard Japanese fonts for pLaTeX
+and dvips.")
+    (license license:bsd-2)))
+
 (define-public texlive-mpman-ru
   (package
     (name "texlive-mpman-ru")
