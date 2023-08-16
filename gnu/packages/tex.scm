@@ -2981,6 +2981,29 @@ references to the scriptures of The Church of Jesus Christ of Latter-day
 Saints (LDS).")
     (license license:lppl1.3+)))
 
+(define-public texlive-bibleref-mouth
+  (package
+    (name "texlive-bibleref-mouth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibleref-mouth/"
+                   "source/latex/bibleref-mouth/"
+                   "tex/latex/bibleref-mouth/")
+             (base32
+              "0dakbx8rnjs9yjnn1xal9y0bmh165lqhbjj3bns974vkyb7nla4m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibleref-mouth")
+    (synopsis "Consistent formatting of @emph{Bible} references")
+    (description
+     "The package allows @emph{Bible} references to be formatted in
+a consistent way.  It is similar to the @code{bibleref} package, except that
+the formatting macros are all purely expandable --- that is, they are all
+implemented in TeX's mouth.  This means that they can be used in any
+expandable context, such as an argument to a @code{\\url} command.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bidihl
   (package
     (name "texlive-bidihl")
