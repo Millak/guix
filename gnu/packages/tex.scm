@@ -15199,6 +15199,28 @@ names.  This function will assist users who want to use the
 @code{japanese-otf} package together with tailored TFMs of Japanese fonts.")
     (license license:expat)))
 
+(define-public texlive-pxrubrica
+  (package
+    (name "texlive-pxrubrica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/platex/pxrubrica/"
+                   "source/platex/pxrubrica/"
+                   "tex/platex/pxrubrica/")
+             (base32
+              "0n8jc65szkq114qg197hc9amrpifqvha8wifxplhvbmb09kzm5mm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxrubrica")
+    (synopsis "Ruby annotations according to JIS X 4051")
+    (description
+     "This package provides a function to add ruby annotations (furigana) that
+follow the style conventional in Japanese typography as described in the W3C
+technical note @emph{Requirements for Japanese Text Layout} and the JIS
+specification JIS X 4051.")
+    (license license:expat)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
