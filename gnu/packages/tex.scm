@@ -34250,6 +34250,26 @@ command).")
     ;; The license text is found at the header of the jadetex.dtx file.
     (license license:expat)))
 
+(define-public texlive-japanese-mathformulas
+  (package
+    (name "texlive-japanese-mathformulas")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/japanese-mathformulas/"
+                   "tex/lualatex/japanese-mathformulas/")
+             (base32
+              "0a5kqgkl89m5yc9zgkhlz44dvvi52jfaja3lwcf7g7q039k2h6fg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/japanese-mathformulas")
+    (synopsis "Compiling basic math formulas in Japanese using LuaLaTeX")
+    (description
+     "This is a style file for compiling basic maths formulas in Japanese
+using LuaLaTeX.  @code{\\NewDocumentCommand} allows you to specify whether the
+formula should be used within a sentence or on a new line.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
