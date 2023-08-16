@@ -3449,6 +3449,28 @@ use to be used as the caption names for a specific language introduced by the
 Babel package.")
     (license license:expat)))
 
+(define-public texlive-bxwareki
+  (package
+    (name "texlive-bxwareki")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxwareki/" "tex/latex/bxwareki/")
+             (base32
+              "0qy1nsxi8ihhxdz5grp3nymsm2lfj5gf6wmky30fxizxya92ml2b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxwareki")
+    (synopsis "Convert dates from Gregorian to Japanese calender")
+    (description
+     "This LaTeX package provides commands to convert from the Gregorian
+calendar to the Japanese rendering of the Japanese calendar.  You can choose
+whether the numbers are written in Western numerals or kanji numerals.  Note
+that the package only deals with dates in the year 1873 or later, where the
+Japanese calendar is really a Gregorian calendar with a different notation of
+years.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
