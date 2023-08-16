@@ -5439,6 +5439,27 @@ letters statistical distributions constants and symbols matrix operators and
 statistical operators.")
     (license license:lppl1.3+)))
 
+(define-public texlive-edfnotes
+  (package
+    (name "texlive-edfnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/edfnotes/"
+                   "source/latex/edfnotes/"
+                   "tex/latex/edfnotes/")
+             (base32
+              "074db5fanasjzk7clj0l4ka3x1qpmvczwxix0l2v6sjjmyb4xfz4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/edfnotes")
+    (synopsis "Critical annotations to footnotes with @code{ednotes}")
+    (description
+     "The package modifies the annotation commands and label-test mechanism of
+the ednotes package so that critical notes appear on the pages and in the
+order that one would expect.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-edmac
   (package
     (name "texlive-edmac")
