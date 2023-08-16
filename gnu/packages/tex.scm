@@ -11950,6 +11950,9 @@ team (2015-02-05): It seems that this script is currently not working.")
               "17zyr0cyxvp91832q35ha3qabdzh4njh96yvp4gfkkfkkszqp3jh")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments
+     ;; FIXME: I couldn't find how to build this package from source.
+     (list #:phases #~(modify-phases %standard-phases (delete 'build))))
     (propagated-inputs
      (list texlive-adobemapping
            texlive-atbegshi
