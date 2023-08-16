@@ -19318,6 +19318,26 @@ LaTeX user to easily create complex commutative diagrams, by placing formula
 nodes on a conceptual grid and attaching arrows to them.")
     (license license:gpl2+)))
 
+(define-public texlive-pbibtex-base
+  (package
+    (name "texlive-pbibtex-base")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/ptex/pbibtex/" "pbibtex/bib/"
+                   "pbibtex/bst/")
+             (base32
+              "06glwwv1rw4n5cpg6cs70yzgyix65nhfsakyq72sn82yss1gvf8z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pbibtex-base")
+    (synopsis "Bibliography styles and miscellaneous files for pBibTeX")
+    (description
+     "These are miscellaneous files, including bibliography
+styles (@file{.bst}), for pBibTeX, which is a Japanese extended version of
+BibTeX contained in TeX Live.")
+    (license license:bsd-3)))
+
 (define-public texlive-penrose
   (package
     (name "texlive-penrose")
