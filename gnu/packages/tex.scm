@@ -8118,6 +8118,27 @@ package @code{dynkin-diagrams}.")
 expressions.  It covers a range of subfields in formal linguistics.")
     (license license:lppl1.3+)))
 
+(define-public texlive-linguex
+  (package
+    (name "texlive-linguex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/linguex/" "tex/latex/linguex/")
+             (base32
+              "0w2rxvjljrl4b7s1dr7k2vk5nifq0zgmjlx68ajpsihjnzal7k8g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/linguex")
+    (synopsis "Format linguists' examples")
+    (description
+     "This bundle comprises two packages: the @code{linguex} package
+facilitates the formatting of linguist examples, automatically taking care of
+example numbering, indentations, indexed brackets, and the @samp{*} in
+grammaticality judgments.  The @code{ps-trees} package provides linguistic
+trees.")
+    (license license:lppl)))
+
 (define-public texlive-lithuanian
   (package
     (name "texlive-lithuanian")
