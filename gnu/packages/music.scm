@@ -3780,15 +3780,15 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.9")
+    (version "2.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://musicbrainz.osuosl.org/pub/musicbrainz/"
+                    "https://data.musicbrainz.org/pub/musicbrainz/"
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "0afiziaq49sq1dx5r3qis4ymhhkrqlrkfnb6f7gcksj0kwljvsw9"))))
+                "1f1nf53xm94jam8w86a8hx69ilzddjibf29c7f1i353fr6k6bqvs"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -3806,12 +3806,10 @@ event-based scripts for scrobbling, notifications, etc.")
                  (string-append
                   "pyfpcalc', '"
                   (assoc-ref inputs "chromaprint") "/bin/fpcalc")))))
-          (add-before 'check 'delete-failing-test
+          ;; pipe tests require writable $HOME.
+          (add-before 'check 'set-HOME
             (lambda _
-              ;; FIXME: This test fails in build environment.
-              ;; util/pipe.read_from_pipe:244: pipe reader exception:
-              ;; ERROR: Pipe doesn't exist
-              (delete-file "test/test_util_pipe.py"))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list gettext-minimal python-dateutil))
     (inputs
