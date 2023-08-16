@@ -9048,6 +9048,34 @@ style for plant herbarium specimens.  So far, documents using this class can
 only be compiled with XeLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-nanumtype1
+  (package
+    (name "texlive-nanumtype1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/nanumtype1/"
+                   "fonts/afm/public/nanumtype1/"
+                   "fonts/map/dvips/nanumtype1/"
+                   "fonts/tfm/public/nanumtype1/"
+                   "fonts/type1/public/nanumtype1/"
+                   "fonts/vf/public/nanumtype1/"
+                   "tex/latex/nanumtype1/")
+             (base32
+              "0n7dbhxa186x7f2ql8kjr2bn425vlhswl2m5n2n3iklfam9bmf6k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nanumtype1")
+    (synopsis "Type1 subfonts of Nanum Korean fonts")
+    (description
+     "Nanum is a unicode font designed especially for Korean-language script.
+The font was designed by Sandoll Communication and Fontrix; it includes the
+sans serif (gothic), serif (myeongjo), pen script and brush script typefaces.
+The package provides Type1 subfonts converted from Nanum Myeongjo (Regular and
+@code{ExtraBold)} and Nanum Gothic (Regular and Bold) OTFs.  C70, LUC, T1, and
+TS1 font definition files are also provided.")
+    (license license:silofl1.1)))
+
 (define-public texlive-natded
   (package
     (name "texlive-natded")
