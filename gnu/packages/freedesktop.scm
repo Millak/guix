@@ -5,7 +5,7 @@
 ;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -338,7 +338,7 @@ tests.")
 (define-public malcontent
   (package
     (name "malcontent")
-    (version "0.8.0")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
@@ -347,7 +347,7 @@ tests.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vnf0pk516fwwh41v96c29l2i7h1pnwhivlkbf53kkx1q35g7lb3"))))
+        (base32 "0g622ig5ffrzk9184xff3lardk7rnmkvj8y5g6h6s41bfh51b71m"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -358,25 +358,26 @@ tests.")
            (lambda _
              (substitute* "libmalcontent/tests/app-filter.c"
                (("g_test_add_func \\(\"/app-filter/appinfo\", test_app_filter_appinfo\\);")
-                 ""))
-             #t)))))
+                 "")))))))
     (native-inputs
      `(("desktop-file-utils" ,desktop-file-utils)
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
+       ("gtk:bin" ,gtk "bin")
        ("itstool" ,itstool)
        ("libglib-testing" ,libglib-testing)
        ("libxml2" ,libxml2)
        ("pkg-config" ,pkg-config)))
     (inputs
      (list accountsservice
+           appstream
            appstream-glib
            dbus
            flatpak
            glib
-           gtk+
+           gtk
+           libadwaita
            libostree
            linux-pam
            polkit))
