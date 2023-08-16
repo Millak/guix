@@ -6582,6 +6582,25 @@ Finally, an @emph{e} starts the exponent of the number.  For example,
 @samp{$21e6$} may be output as @samp{$26\\times10\\,^@{6@}$}.")
     (license license:gpl3+)))
 
+(define-public texlive-ipaex
+  (package
+    (name "texlive-ipaex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ipaex/"
+                   "fonts/truetype/public/ipaex/")
+             (base32
+              "0zpvpdpry4ckgbs79hy0gv8cc98x9c0cizzdqzg2qkx8clp8y1bn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ipaex")
+    (synopsis "IPA (Japanese) fonts")
+    (description
+     "The fonts provide fixed-width glyphs for Kana and Kanji characters,
+proportional width glyphs for Western characters.")
+    (license license:ipa)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
