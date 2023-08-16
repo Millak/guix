@@ -7404,6 +7404,28 @@ sentences, legal opinions, books and dissertations for German lawyers.
 A @code{jurabook} class is also provided, which may not yet be complete.")
     (license license:lppl)))
 
+(define-public texlive-jurarsp
+  (package
+    (name "texlive-jurarsp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/jurarsp/" "doc/latex/jurarsp/"
+                   "source/latex/jurarsp/" "tex/latex/jurarsp/")
+             (base32
+              "03lwp5v6fmq2zhiwaf4qj52k44grzh119il4pdp2fvgl2q4a39sm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jurarsp")
+    (synopsis
+     "Citations of judgements and official documents in (German) juridical
+documents")
+    (description
+     "This package should be helpful for people working on (German) law.
+It (ab)uses BibTeX for citations of judgements and official documents.  For
+this purpose, a special BibTeX-style is provided.")
+    (license license:gpl3+)))
+
 (define-public texlive-karnaugh
   (package
     (name "texlive-karnaugh")
