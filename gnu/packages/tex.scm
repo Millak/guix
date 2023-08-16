@@ -7803,7 +7803,7 @@ to LaTeX2e: LaTeX2e-Kurzbeschreibung}.")
     (home-page "https://ctan.org/pkg/lshort-italian")
     (synopsis "Introduction to LaTeX in Italian")
     (description
-     "This is the Italian translation of the @emph{(Not so} Short Introduction
+     "This is the Italian translation of the @emph{(Not so) Short Introduction
 to LaTeX2e.}")
     (license license:gpl3+)))
 
