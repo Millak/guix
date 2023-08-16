@@ -6555,17 +6555,15 @@ reduction.")
 (define-public mcrl2
   (package
     (name "mcrl2")
-    (version "202206.0")
+    (version "202206.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://www.mcrl2.org/download/release/mcrl2-"
                     version ".tar.gz"))
-              (patches (search-patches "mcrl2-fix-1687.patch"
-                                       "mcrl2-fix-counterexample.patch"))
               (sha256
                (base32
-                "0alpck09pbvwk4axqmrvcjmsabsn20yayq5b3apq284n0hcbf01q"))))
+                "1rbfyw47bi31qla1sa4fd1npryb5kbdr0vijmdc2gg1zhpqfv0ia"))))
     (inputs
      (list boost glu mesa qtbase-5))
     (build-system cmake-build-system)
