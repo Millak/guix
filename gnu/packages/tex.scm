@@ -7822,6 +7822,30 @@ and commands.")
     (description "This is LaTeX for Omega and Aleph.")
     (license license:lppl1.0+)))
 
+(define-public texlive-langnames
+  (package
+    (name "texlive-langnames")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/langnames/"
+                   "source/latex/langnames/"
+                   "tex/latex/langnames/")
+             (base32
+              "0fi2xfy33d970g8wdnzasqdzgjcj7rkss9y7pzsp89z1hij3d1z2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/langnames")
+    (synopsis "Name languages and their genetic affiliations consistently")
+    (description
+     "This package attempts to make the typing of language names, codes, and
+families slightly easier by providing macros to access pre-defined
+language --- code --- family combinations from two important databases, as
+well as the possibility to create new combinations.  It may be particularly
+useful for large, collaborative projects as well as typologically minded ones
+with a variety of language examples.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-latex-notes-zh-cn
   (package
     (name "texlive-latex-notes-zh-cn")
