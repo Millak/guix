@@ -11322,6 +11322,26 @@ specialists.")
 Picture Arts and Sciences.")
     (license license:gpl3+)))
 
+(define-public texlive-screenplay-pkg
+  (package
+    (name "texlive-screenplay-pkg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/screenplay-pkg/"
+                   "tex/latex/screenplay-pkg/")
+             (base32
+              "07xl6631yjjx56whl1vl4mzdcn8k63i624lspxiw18ppfrxdh3an")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/screenplay-pkg")
+    (synopsis "Package version of the screenplay document class")
+    (description
+     "This package implements the tools of the @code{screenplay} document
+class in the form of a package so that screenplay fragments can be included
+within another document class.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-serbian-apostrophe
   (package
     (name "texlive-serbian-apostrophe")
