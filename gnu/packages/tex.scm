@@ -5314,6 +5314,25 @@ responses and DFTs, while the package DSPBlocks (@file{dspblocks.sty})
 supports DSP block diagrams.")
     (license license:lppl)))
 
+(define-public texlive-dvgloss
+  (package
+    (name "texlive-dvgloss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dvgloss/" "source/latex/dvgloss/"
+                   "tex/latex/dvgloss/")
+             (base32
+              "1fs5ghbyl3qhg1v0iljjqn723a93m4l7f873h3h81pcga75mng4s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvgloss")
+    (synopsis "Facilities for setting interlinear glossed text")
+    (description
+     "The package provides extensible macros for setting interlinear glossed
+text --- useful, for instance, for typing linguistics papers.")
+    (license license:lppl)))
+
 (define-public texlive-dyntree
   (package
     (name "texlive-dyntree")
