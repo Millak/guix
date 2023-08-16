@@ -4206,6 +4206,27 @@ systems of continued equalities (or inequalities).  Several variant layouts of
 the equalities are provided, and the user may define their own.")
     (license license:lppl1.3+)))
 
+(define-public texlive-convbkmk
+  (package
+    (name "texlive-convbkmk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/convbkmk/" "scripts/convbkmk/")
+             (base32
+              "0w4fm4az1smrw002sqjkiiz94x01z6jkrb0mf9wb8qxdwrxriql9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "convbkmk.rb")))
+    (inputs (list ruby))
+    (home-page "https://ctan.org/pkg/convbkmk")
+    (synopsis
+     "Correct pLaTeX/upLaTeX bookmarks in PDF created with @code{hyperref}")
+    (description
+     "The package provides a small Ruby script that corrects bookmarks in PDF
+files created by pLaTeX or upLaTeX, using @code{hyperref}.")
+    (license license:expat)))
+
 (define-public texlive-correctmathalign
   (package
     (name "texlive-correctmathalign")
