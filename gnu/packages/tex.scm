@@ -4148,6 +4148,27 @@ privileges, a run without arguments should result in a complete setup of
 Ghostscript.")
     (license license:gpl3)))
 
+(define-public texlive-cjk-ko
+  (package
+    (name "texlive-cjk-ko")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cjk-ko/" "tex/latex/cjk-ko/")
+             (base32
+              "0z94rrbr56kybvxx37hpncc0rj4v4i44kyb9nc42nb7854y8zl0a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-cjk))
+    (home-page "https://ctan.org/pkg/cjk-ko")
+    (synopsis "Extension of the CJK package for Korean typesetting")
+    (description
+     "The package supports typesetting UTF-8-encoded modern Korean documents
+with the help of the LaTeX2e CJK package.  It provides some enhanced features
+focused on Korean typesetting culture, one of them being allowing line-break
+between Latin and CJK characters.")
+    (license (list license:gpl3+ license:lppl license:public-domain))))
+
 (define-public texlive-cjkpunct
   (package
     (name "texlive-cjkpunct")
