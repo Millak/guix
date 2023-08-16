@@ -14748,6 +14748,26 @@ upLaTeX2e.  Currently patches for the @code{latex-tools} bundle and Martin
 Schroder's @code{ms} bundle are included.")
     (license license:bsd-3)))
 
+(define-public texlive-platexcheat
+  (package
+    (name "texlive-platexcheat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/platexcheat/")
+             (base32
+              "04hvm19x4z7vq2md3p3r2wwa7iqkgkxnvvj1xx3s9145m6fjib5a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/platexcheat")
+    (synopsis "LaTeX cheat sheet, in Japanese")
+    (description
+     "This is a translation to Japanese of Winston Chang's LaTeX cheat
+sheet (a reference sheet for writing scientific papers).  It has been adapted
+to Japanese standards using pLaTeX, and also attached additional information
+of standard LaTeX (especially about Math mode).")
+    (license license:expat)))
+
 (define-public texlive-plipsum
   (package
     (name "texlive-plipsum")
