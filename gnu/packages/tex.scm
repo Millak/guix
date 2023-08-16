@@ -10582,6 +10582,49 @@ way, and with a few additional abilities, such as facilities for a list of
 poems, an index of first lines, and some structural commands.")
     (license license:lppl1.3c)))
 
+(define-public texlive-poetrytex
+  (package
+    (name "texlive-poetrytex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/poetrytex/"
+                   "source/latex/poetrytex/"
+                   "tex/latex/poetrytex/")
+             (base32
+              "1y78zd1hd3z1901x6mc6q0mw4rgj3qcqhnjn34zix11r0gn4b2jr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Replace "\code{...}" with "\texttt{...}" (which is the alias
+               ;; chosen in the documentation) in order to prevent a "Command
+               ;; \code already defined" error.
+               (add-after 'unpack 'fix-documentation-source
+                 (lambda _
+                   (substitute* "source/latex/poetrytex/poetrytex.dtx"
+                     (("\\\\newcommand\\*\\\\code\\[1\\].*") "")
+                     (("\\\\code\\{") "\\texttt{")))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-etoolbox
+                  texlive-fancyvrb
+                  texlive-framed
+                  texlive-hologo
+                  texlive-hypdoc
+                  texlive-parskip
+                  texlive-tipa
+                  texlive-tocloft))))
+    (home-page "https://ctan.org/pkg/poetrytex")
+    (synopsis "Typeset anthologies of poetry")
+    (description
+     "The package is designed to aid in the management and formatting of
+anthologies of poetry and other writings; it does not concern itself with
+actually typesetting the verse itself.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-polexpr
   (package
     (name "texlive-polexpr")
