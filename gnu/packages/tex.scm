@@ -7950,6 +7950,24 @@ to LaTeX2e.}")
 Introduction to LaTeX2e}.")
     (license license:gpl3+)))
 
+(define-public texlive-lshort-korean
+  (package
+    (name "texlive-lshort-korean")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lshort-korean/")
+             (base32
+              "07660lrss97hswmis7rgc419h05mgrvsfrrwmnrwk5yn97flhhqd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lshort-korean")
+    (synopsis "Korean introduction to LaTeX")
+    (description
+     "This package provides a translation of Oetiker's original @emph{(Not so)
+short introduction to LaTeX2e}.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-lshort-mongol
   (package
     (name "texlive-lshort-mongol")
