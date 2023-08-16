@@ -10472,6 +10472,25 @@ LaTeX, and directly supporting PDF output format.")
 paragraphs vertically separated rather than indented.")
     (license license:gpl3+)))
 
+(define-public texlive-play
+  (package
+    (name "texlive-play")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/play/" "source/latex/play/"
+                   "tex/latex/play/")
+             (base32
+              "1v1d8hfng6s8x8spzrzhhkgg36zay9jvfna9md1mh4ijlipnzyma")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/play")
+    (synopsis "Typeset drama using LaTeX")
+    (description
+     "This package provides a class and style file that supports the
+typesetting of plays, including options for line numbering.")
+    (license license:lppl)))
+
 (define-public texlive-pm-isomath
   (package
     (name "texlive-pm-isomath")
