@@ -23968,6 +23968,28 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
+(define-public texlive-ieejtran
+  (package
+    (name "texlive-ieejtran")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/ieejtran/"
+                   "doc/bibtex/ieejtran/")
+             (base32
+              "01bcw45v6mbyb1gzykzk5ccwz70s6591994xrj84z9ljgzp06lyg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ieejtran")
+    (synopsis
+     "Unofficial bibliography style file for the Institute of Electrical
+Engineers of Japan")
+    (description
+     "This package provides an unofficial BibTeX style for authors of the
+Institute of Electrical Engineers of Japan (IEEJ) transactions journals and
+conferences.")
+    (license license:expat)))
+
 (define-public texlive-inputenx
   (package
     (name "texlive-inputenx")
