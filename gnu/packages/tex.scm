@@ -16720,6 +16720,71 @@ process.  It also provides a library which can be used to create customized
 conversion tools.")
     (license license:lppl1.3+)))
 
+(define-public texlive-makecell
+  (package
+    (name "texlive-makecell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makecell/"
+                   "source/latex/makecell/"
+                   "tex/latex/makecell/")
+             (base32
+              "1n122230s49jizldn8ps1pfa5dsg8wmh5x8wla4y6rsgjcccqn4s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "latex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'replace-obsolete-package
+            ;; "slashbox" is no longer provided in TeX Live.  It is superseded
+            ;; by `diagbox', which is backward compatible.
+            (lambda _
+              (substitute* "source/latex/makecell/makecell.dtx"
+                (("\\\\usepackage\\{slashbox\\}")
+                 "\\usepackage{diagbox}"))))
+          (add-after 'replace-obsolete-package 'load-float
+            ;; Loading `float' package prevents the "Unknown float option `H'"
+            ;; error.
+            (lambda _
+              (substitute* "source/latex/makecell/makecell.dtx"
+                (("usepackage\\{diagbox\\}.*" line)
+                 (string-append line "\\usepackage{float}\n")))))
+          (add-after 'load-float 'remove-hsize-reference
+            ;; Replace "\hsize" primitive with a dummy value to prevent
+            ;; a "missing number treated as zero" error.
+            (lambda _
+              (substitute* "source/latex/makecell/makecell.dtx"
+                (("\\\\ttabbox\\[\\\\hsize\\]") "\\ttabbox[10cm]")))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-diagbox
+                  texlive-float
+                  texlive-hypdoc
+                  texlive-multirow
+                  texlive-pict2e))))
+    (home-page "https://ctan.org/pkg/makecell")
+    (synopsis "Tabular column heads and multilined cells")
+    (description
+     "This package supports common layouts for tabular column heads in whole
+documents, based on one-column tabular environment.  In addition, it can
+create multi-lined tabular cells.
+
+The package also offers:
+@itemize
+@item a macro which changes the vertical space around all the cells in a @code{tabular}
+environment,
+@item macros for multirow cells, which use the facilities
+of the @code{multirow} package,
+@item macros to number rows in tables, or to skip cells;
+@item diagonally divided cells;
+@item horizontal lines in @code{tabular} environments with defined thickness.
+@end itemize")
+    (license license:lppl)))
+
+
 (define-public texlive-optexcount
   (package
     (name "texlive-optexcount")
