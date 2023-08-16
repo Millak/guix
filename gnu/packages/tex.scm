@@ -8169,6 +8169,29 @@ and @file{latin7.def}.
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-liturg
+  (package
+    (name "texlive-liturg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/liturg/" "source/latex/liturg/"
+                   "tex/latex/liturg/")
+             (base32
+              "1nmcz7zg27aasczdv3p6ilsmy66cbfjg9yri45d0pml7m7c56din")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    ;; The "liturg.ins" provided by the package does not generate anything.
+    ;; As a consequence, there's nothing to build.
+    (arguments (list #:build-targets #~'()))
+    (home-page "https://ctan.org/pkg/liturg")
+    (synopsis "Support for typesetting Catholic liturgical texts")
+    (description
+     "The packages offers simple macros for typesetting Catholic liturgical
+texts, particularly @code{Missal} and @code{Breviary} texts.  The package
+assumes availability of Latin typesetting packages.")
+    (license license:lppl)))
+
 (define-public texlive-logicproof
   (package
     (name "texlive-logicproof")
