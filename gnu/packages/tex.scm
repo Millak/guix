@@ -12432,6 +12432,24 @@ to introduce characters lines, to render stage directions, to divide a play
 into acts and scenes and to build the dramatis personae automatically.")
     (license license:lppl1.3+)))
 
+(define-public texlive-theatre
+  (package
+    (name "texlive-theatre")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/theatre/")
+             (base32
+              "1nhm56spqvryhmhwmzly939mzv5yv3398lh2lyfhf40rr02mzgi5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/theatre")
+    (synopsis "Sophisticated package for typesetting stage plays")
+    (description
+     "This package enables the user to typeset stage plays in a way that
+permits to create highly customized printouts for each actor.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-thermodynamics
   (package
     (name "texlive-thermodynamics")
