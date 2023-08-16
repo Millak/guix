@@ -360,15 +360,15 @@ tests.")
                (("g_test_add_func \\(\"/app-filter/appinfo\", test_app_filter_appinfo\\);")
                  "")))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk:bin" ,gtk "bin")
-       ("itstool" ,itstool)
-       ("libglib-testing" ,libglib-testing)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk "bin")
+           itstool
+           libglib-testing
+           libxml2
+           pkg-config))
     (inputs
      (list accountsservice
            appstream
