@@ -44111,6 +44111,74 @@ includes the Aleph engine and related Omega formats and packages, and the
 HiTeX engine and related.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-humanities
+  (package
+    (name "texlive-collection-humanities")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-adtrees
+           texlive-bibleref
+           texlive-bibleref-lds
+           texlive-bibleref-mouth
+           texlive-bibleref-parse
+           texlive-collection-latex
+           texlive-covington
+           texlive-diadia
+           texlive-dramatist
+           texlive-dvgloss
+           texlive-ecltree
+           texlive-edfnotes
+           texlive-eledform
+           texlive-eledmac
+           texlive-expex
+           texlive-gb4e
+           texlive-gmverse
+           texlive-jura
+           texlive-juraabbrev
+           texlive-juramisc
+           texlive-jurarsp
+           texlive-langnames
+           texlive-ledmac
+           texlive-lexikon
+           texlive-lexref
+           texlive-ling-macros
+           texlive-linguex
+           texlive-liturg
+           texlive-metrix
+           texlive-nnext
+           texlive-parallel
+           texlive-parrun
+           texlive-phonrule
+           texlive-plari
+           texlive-play
+           texlive-poemscol
+           texlive-poetry
+           texlive-poetrytex
+           texlive-qobitree
+           texlive-qtree
+           texlive-reledmac
+           texlive-rrgtrees
+           texlive-rtklage
+           texlive-screenplay
+           texlive-screenplay-pkg
+           texlive-sides
+           texlive-stage
+           texlive-textglos
+           texlive-thalie
+           texlive-theatre
+           texlive-tree-dvips
+           texlive-verse
+           texlive-xyling))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Humanities packages")
+    (description
+     "This collection contains packages for law, linguistics, social sciences,
+humanities, etc.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langarabic
   (package
     (name "texlive-collection-langarabic")
