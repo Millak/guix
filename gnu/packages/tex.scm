@@ -31315,6 +31315,37 @@ BibLaTeX, and is considered experimental.")
 typesetting for @code{(u)pLaTeX} and LuaLaTeX.")
     (license license:expat)))
 
+(define-public texlive-gentombow
+  (package
+    (name "texlive-gentombow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gentombow/"
+                   "tex/latex/gentombow/")
+             (base32
+              "1pc1cxsxlnj9d2qnvm31r3cw15mf7fwr5dadd10473mww8bp8irf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gentombow")
+    (synopsis "Generate Japanese-style crop marks")
+    (description
+     "This bundle provides a LaTeX package for generating Japanese-style crop
+marks (called tombow in Japanese) for practical use in self-publishing.
+
+The bundle contains the following packages:
+@itemize
+@item @file{gentombow.sty}: Generate crop marks (called tombow in
+Japanese) for practical use in self-publishing.  It provides the core
+tombow feature if not available.
+@item @file{pxgentombow.sty}: Superseded by @file{gentombow.sty}; kept
+for compatibility only.
+@item @file{bounddvi.sty}: Set papersize special to DVI file.  Can be
+used on LaTeX, pLaTeX, upLaTeX (with DVI output mode) with dvips or
+dvipdfmx drivers.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public texlive-geometry
   (package
     (name "texlive-geometry")
