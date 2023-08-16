@@ -10365,6 +10365,24 @@ from true constants, e.g. the fine structure constant, have been calculated
 using the accepted values of the fundamental constants.")
     (license license:lppl1.3c)))
 
+(define-public texlive-phonrule
+  (package
+    (name "texlive-phonrule")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phonrule/" "tex/latex/phonrule/")
+             (base32
+              "09nhlhqgq2af2p6rn5r0q8ccn9a2qq35znn5j4z2kjq744wbzjih")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phonrule")
+    (synopsis "Typeset linear phonological rules")
+    (description
+     "The package provides macros for typesetting phonological rules like
+those in @emph{Sound Pattern of English} (Chomsky and Halle 1968).")
+    (license license:lppl1.0+)))
+
 (define-public texlive-physics2
   (package
     (name "texlive-physics2")
