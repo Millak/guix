@@ -11157,6 +11157,29 @@ package solves the problem by extending ideas described in M. I. Grinchuk
 mathematical packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-rrgtrees
+  (package
+    (name "texlive-rrgtrees")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rrgtrees/"
+                   "source/latex/rrgtrees/"
+                   "tex/latex/rrgtrees/")
+             (base32
+              "0h33q32pb1s8zv598aacdzfhpk2psrzxgxnav6am16cxfri60hpi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rrgtrees")
+    (synopsis
+     "Linguistic tree diagrams for Role and Reference Grammar (RRG) with LaTeX")
+    (description
+     "This package provides a set of LaTeX macros that makes it easy to
+produce linguistic tree diagrams suitable for Role and Reference
+Grammar (RRG).  This package allows the construction of trees with crossing
+lines, as is required by this theory for many languages.")
+    (license license:lppl)))
+
 (define-public texlive-sankey
   (package
     (name "texlive-sankey")
