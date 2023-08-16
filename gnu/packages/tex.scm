@@ -10892,6 +10892,25 @@ modern eyes.")
 @code{listings} package.")
     (license license:bsd-3)))
 
+(define-public texlive-qobitree
+  (package
+    (name "texlive-qobitree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qobitree/" "tex/latex/qobitree/")
+             (base32
+              "1pzy5i8fi37zhkpsrh179qd4gp8ahwk8s2gw6261kjjiqf6p6znc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qobitree")
+    (synopsis "LaTeX macros for typesetting trees")
+    (description
+     "This package provides commands @code{\\branch} and @code{\\leaf} for
+specifying the elements of the tree; you build up your tree with those
+commands, and then issue the @code{\\tree} command to typeset the whole.")
+    (license license:lppl)))
+
 (define-public texlive-qsharp
   (package
     (name "texlive-qsharp")
