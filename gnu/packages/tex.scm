@@ -15176,6 +15176,29 @@ that authors can properly create PDF documents that contain document
 information in Japanese.")
     (license license:expat)))
 
+(define-public texlive-pxjodel
+  (package
+    (name "texlive-pxjodel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pxjodel/"
+                   "fonts/tfm/public/pxjodel/"
+                   "fonts/vf/public/pxjodel/"
+                   "tex/latex/pxjodel/")
+             (base32
+              "1g5sd60zd34ark50qy2dgqrdcd5pwy5hxmi6g5jxqlj3j1n6r1ny")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxjodel")
+    (synopsis "Help change metrics of fonts from japanese-otf")
+    (description
+     "This package changes the setup of the @code{japanese-otf} package so
+that the TFMs for direct input are all replaced by new ones with prefixed
+names.  This function will assist users who want to use the
+@code{japanese-otf} package together with tailored TFMs of Japanese fonts.")
+    (license license:expat)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
