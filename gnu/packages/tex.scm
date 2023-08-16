@@ -43616,6 +43616,34 @@ simply on the size of the support.")
 from @code{collection-langcjk}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langkorean
+  (package
+    (name "texlive-collection-langkorean")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-baekmuk
+           texlive-cjk-ko
+           texlive-collection-langcjk
+           texlive-kotex-oblivoir
+           texlive-kotex-plain
+           texlive-kotex-utf
+           texlive-kotex-utils
+           texlive-lshort-korean
+           texlive-nanumtype1
+           texlive-pmhanguljamo
+           texlive-uhc
+           texlive-unfonts-core
+           texlive-unfonts-extra))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Korean")
+    (description
+     "This collection provides support for Korean, with additional packages
+from @code{collection-langcjk}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langother
   (package
     (name "texlive-collection-langother")
