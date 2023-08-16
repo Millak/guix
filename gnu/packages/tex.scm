@@ -11632,6 +11632,34 @@ following font families (12 fonts):
 @end itemize")
     (license license:gpl2)))
 
+(define-public texlive-unfonts-extra
+  (package
+    (name "texlive-unfonts-extra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/unfonts-extra/"
+                   "fonts/truetype/public/unfonts-extra/")
+             (base32
+              "1krs93dsi50278qxgm24ij9w9r7gdcxqsdfk6ai5klvkmlka8gkf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unfonts-extra")
+    (synopsis "TrueType version of Un-fonts")
+    (description
+     "This is TrueType version of Un-fonts extra bundle.  It includes the
+following Korean font families (11 fonts):
+@itemize
+@item UnPen, UnPenheulim: script;
+@item UnTaza: typewriter style;
+@item UnShinmun;
+@item UnYetgul: old Korean printing style;
+@item UnJamoSora, UnJamoNovel, UnJamoDotum, UnJamoBatang;
+@item UnPilgia;
+@item UnVada.
+@end itemize")
+    (license license:gpl2)))
+
 (define-public texlive-unicode-alphabets
   (package
     (name "texlive-unicode-alphabets")
