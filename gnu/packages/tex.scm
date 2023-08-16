@@ -33242,6 +33242,26 @@ provides means for easy customization of the list of notes.")
 document.")
     (license license:lppl1.2+)))
 
+(define-public texlive-endnotesj
+  (package
+    (name "texlive-endnotesj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/endnotesj/"
+                   "tex/latex/endnotesj/")
+             (base32
+              "1yv8jzvps79svd4013f6cpm41mh3mx2m64jx7bv01ryqdgjzq2g9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/endnotesj")
+    (synopsis "Japanese-style endnotes")
+    (description
+     "This package provides customized styles for endnotes to be used with
+Japanese documents.  It can be used on pLaTeX, upLaTeX, and LuaLaTeX
+(LuaTeX-ja).")
+    (license license:bsd-3)))
+
 (define-public texlive-enumitem
   (package
     (name "texlive-enumitem")
