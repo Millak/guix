@@ -3004,6 +3004,27 @@ implemented in TeX's mouth.  This means that they can be used in any
 expandable context, such as an argument to a @code{\\url} command.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bibleref-parse
+  (package
+    (name "texlive-bibleref-parse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibleref-parse/"
+                   "tex/latex/bibleref-parse/")
+             (base32
+              "01jhic1idgjgv9hsx5gih4230krfqm8pc3j7f4kn22w2jnw7fs68")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibleref-parse")
+    (synopsis "Specify @emph{Bible} passages in human-readable format")
+    (description
+     "The package parses @emph{Bible} passages that are given in human
+readable format.  It accepts a wide variety of formats.  This allows for
+a simpler and more convenient interface to the functionality of the
+@code{bibleref} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bidihl
   (package
     (name "texlive-bidihl")
