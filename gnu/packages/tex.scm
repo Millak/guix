@@ -7342,6 +7342,27 @@ Notebook format to proper LaTeX so it gets included seamlessly, supporting
 text, LaTeX, images, etc.")
     (license license:asl2.0)))
 
+(define-public texlive-jura
+  (package
+    (name "texlive-jura")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jura/" "source/latex/jura/"
+                   "tex/latex/jura/")
+             (base32
+              "1lxss00mymcxljzaqmwj9zpy9cpc71a0a4g6bqrzvgspj506jdp7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jura")
+    (synopsis "Document class for German legal texts")
+    (description
+     "This package implements the standard layout for German term papers in law
+(one-and-half linespacing, 7 cm margins, etc.).  It includes @code{alphanum}
+that permits alphanumeric section numbering (e.g., @samp{A. Introduction};
+@samp{III. International Law}).")
+    (license license:gpl3+)))
+
 (define-public texlive-karnaugh
   (package
     (name "texlive-karnaugh")
