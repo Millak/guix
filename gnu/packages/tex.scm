@@ -8472,6 +8472,26 @@ styles that ease the declaration of memory graphs.  It is intended for graphs
 that represent the memory of a computer program during its execution.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mendex-doc
+  (package
+    (name "texlive-mendex-doc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/mendex-doc/"
+                   "makeindex/mendex-doc/"
+                   "source/latex/mendex-doc/")
+             (base32
+              "096b1v9zzl3qm189paaxz16z4a1xgcj7l2bhdgvl2wqshsz9lx4p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mendex-doc")
+    (synopsis "Documentation for Mendex index processor")
+    (description
+     "This package provides documentation for Mendex (Japanese index
+processor).")
+    (license license:bsd-3)))
+
 (define-public texlive-messagepassing
   (package
     (name "texlive-messagepassing")
