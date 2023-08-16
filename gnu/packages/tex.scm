@@ -11013,6 +11013,29 @@ functionals, c.e.@: sets, stagewise computations, forcing and syntactic
 classes.")
     (license license:public-domain)))
 
+(define-public texlive-reledmac
+  (package
+    (name "texlive-reledmac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/reledmac/"
+                   "source/latex/reledmac/"
+                   "tex/latex/reledmac/")
+             (base32
+              "16nfibnjdasflskmxd23hxkapz788abfilwxm3vdj6djkznxq4sw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/reledmac")
+    (synopsis "Typeset scholarly editions")
+    (description
+     "This package provides a package for typesetting scholarly critical
+editions, replacing the established @code{ledmac} and @code{eledmac} packages.
+It supports indexing by page and by line numbers, and simple @code{tabular}-
+and @code{array}-style environments.  The package is distributed with the
+related @code{reledpar} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-resolsysteme
   (package
     (name "texlive-resolsysteme")
