@@ -9498,6 +9498,46 @@ related to multiobjective optimisation, multiobjective evolutionary
 algorithms, multicriteria decision making and similar fields.")
     (license license:lppl)))
 
+(define-public texlive-musixtex
+  (package
+    (name "texlive-musixtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/musixtex/"
+                   "doc/man/man1/musixflx.1"
+                   "doc/man/man1/musixflx.man1.pdf"
+                   "doc/man/man1/musixtex.1"
+                   "doc/man/man1/musixtex.man1.pdf"
+                   "dvips/musixtex/"
+                   "scripts/musixtex/"
+                   "source/generic/musixtex/musixcrd/"
+                   "tex/generic/musixtex/"
+                   "tex/latex/musixtex/")
+             (base32
+              "1j46cf3v3jmhww47xvm4grnb495aggf1vnmb2sq3zbk9pfmrvd4x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:build-targets #~(list "strip.tex")
+           #:link-scripts #~(list "musixflx.lua" "musixtex.lua")))
+    (home-page "https://ctan.org/pkg/musixtex")
+    (synopsis "Sophisticated music typesetting")
+    (description
+     "MusiXTeX provides a set of macros, based on the earlier MusicTeX,
+for typesetting music with TeX.  To produce optimal spacing, MusiXTeX
+is a three-pass system: @command{etex}, @command{musixflx}, and
+@command{etex} again.  (Musixflx is a Lua script that is provided in
+the bundle.) The three-pass process, optionally followed by processing
+for printed output, is automated by the @command{musixtex} wrapper
+script.
+
+The package uses its own specialised fonts, which must be available on the
+system for @command{musixtex} to run.  The MusiXTeX macros are universally
+acknowledged to be challenging to use directly: the @command{pmx} preprocessor
+compiles a simpler input language to MusiXTeX macros.")
+    (license license:gpl2+)))
+
 (define-public texlive-mwcls
   (package
     (name "texlive-mwcls")
