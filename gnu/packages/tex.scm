@@ -10453,6 +10453,25 @@ It is designed as a tool that is easy to use, with a lean syntax, native to
 LaTeX, and directly supporting PDF output format.")
     (license license:lppl1.3c)))
 
+(define-public texlive-plari
+  (package
+    (name "texlive-plari")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/plari/" "source/latex/plari/"
+                   "tex/latex/plari/")
+             (base32
+              "07g4rn4nn5wvwqd39s0xnn35ijkamhzxi12icnha8vb0b564jwq8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plari")
+    (synopsis "Typesetting stageplay scripts")
+    (description
+     "Plari is a @code{report}-alike class, without section headings, and with
+paragraphs vertically separated rather than indented.")
+    (license license:gpl3+)))
+
 (define-public texlive-pm-isomath
   (package
     (name "texlive-pm-isomath")
