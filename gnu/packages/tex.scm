@@ -28210,6 +28210,25 @@ between various classes of Unix systems.")
 
 (define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
 
+(define-public texlive-ifptex
+  (package
+    (name "texlive-ifptex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/ifptex/" "tex/generic/ifptex/")
+             (base32
+              "0l5mclz9cwj756ah0nqbiai0b5m9368dz4ykb0ih5irm6cmswdfm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ifptex")
+    (synopsis "Check if the engine is pTeX or one of its derivatives")
+    (description
+     "The @code{ifptex} package is a counterpart of @code{ifxetex},
+@code{ifluatex}, etc.@: for the pTeX engine.  The @code{ifuptex} package is an
+alias to @code{ifptex} provided for backward compatibility.")
+    (license license:expat)))
+
 (define-public texlive-iftex
   (package
     (name "texlive-iftex")
