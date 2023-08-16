@@ -7093,6 +7093,26 @@ document author needs.  So it can be a useful guide for beginners as well as
 a reference manual for advanced users.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-kotex-oblivoir
+  (package
+    (name "texlive-kotex-oblivoir")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kotex-oblivoir/"
+                   "tex/latex/kotex-oblivoir/")
+             (base32
+              "0hq22jdzcg516zx26mkijpnk5i8gdj30lhjldly8plwmfznhzwwa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kotex-utf texlive-memoir))
+    (home-page "https://ctan.org/pkg/kotex-oblivoir")
+    (synopsis "LaTeX document class for typesetting Korean documents")
+    (description
+     "The class is based on @code{memoir}, and is adapted to typesetting
+Korean documents.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-kotex-plain
   (package
     (name "texlive-kotex-plain")
