@@ -5479,6 +5479,26 @@ order that one would expect.")
 editions.")
     (license license:gpl2)))
 
+(define-public texlive-eledform
+  (package
+    (name "texlive-eledform")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eledform/"
+                   "source/latex/eledform/"
+                   "tex/latex/eledform/")
+             (base32
+              "1sslbwabzpvx314bfmr6gy1p8nrh89v5mnkgdcby9w42hnfqiw2n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eledform")
+    (synopsis "Define textual variants")
+    (description
+     "The package provides commands to formalize textual variants in critical
+editions typeset using @code{eledmac}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-eltex
   (package
     (name "texlive-eltex")
