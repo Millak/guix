@@ -2958,6 +2958,29 @@ complies with the @emph{Loccumer Richtlinien} (Locum guidelines).  In
 addition, the Vulgate (Latin Bible) is supported.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bibleref-lds
+  (package
+    (name "texlive-bibleref-lds")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibleref-lds/"
+                   "source/latex/bibleref-lds/"
+                   "tex/latex/bibleref-lds/")
+             (base32
+              "0wqmpzml3yyhzv7bx5wkfl2ni0qinz0kjzdanh6rx0bczp29dlfh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibleref-lds")
+    (synopsis
+     "Bible references, including scriptures of the Church of Jesus Christ of
+Latter Day Saints")
+    (description
+     "The package extends the @code{bibleref-mouth} package to support
+references to the scriptures of The Church of Jesus Christ of Latter-day
+Saints (LDS).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bidihl
   (package
     (name "texlive-bidihl")
