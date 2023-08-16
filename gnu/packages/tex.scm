@@ -43291,6 +43291,84 @@ simply on the size of the support.")
     (description "This collection provides support packages for Italian.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-langjapanese
+  (package
+    (name "texlive-collection-langjapanese")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-ascmac
+           texlive-asternote
+           texlive-babel-japanese
+           texlive-bxbase
+           texlive-bxcjkjatype
+           texlive-bxghost
+           texlive-bxjaholiday
+           texlive-bxjalipsum
+           texlive-bxjaprnind
+           texlive-bxjatoucs
+           texlive-bxjscls
+           texlive-bxorigcapt
+           texlive-bxwareki
+           texlive-collection-langcjk
+           texlive-convbkmk
+           texlive-endnotesj
+           texlive-gckanbun
+           texlive-gentombow
+           texlive-haranoaji
+           texlive-haranoaji-extra
+           texlive-ieejtran
+           texlive-ifptex
+           texlive-ifxptex
+           texlive-ipaex
+           texlive-japanese-mathformulas
+           texlive-japanese-otf
+           texlive-jieeetran
+           texlive-jlreq
+           texlive-jlreq-deluxe
+           texlive-jpneduenumerate
+           texlive-jpnedumathsymbols
+           texlive-jsclasses
+           texlive-kanbun
+           texlive-lshort-japanese
+           texlive-luatexja
+           texlive-mendex-doc
+           texlive-morisawa
+           texlive-pbibtex-base
+           texlive-pbibtex-manual
+           texlive-platex
+           texlive-platex-tools
+           texlive-platexcheat
+           texlive-plautopatch
+           texlive-ptex
+           texlive-ptex-base
+           texlive-ptex-fontmaps
+           texlive-ptex-fonts
+           texlive-ptex-manual
+           texlive-ptex2pdf
+           texlive-pxbase
+           texlive-pxchfon
+           texlive-pxcjkcat
+           texlive-pxjahyper
+           texlive-pxjodel
+           texlive-pxrubrica
+           texlive-pxufont
+           texlive-uplatex
+           texlive-uptex
+           texlive-uptex-base
+           texlive-uptex-fonts
+           texlive-wadalab
+           texlive-zxjafbfont
+           texlive-zxjatype))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Support for Japanese")
+    (description
+     "This collection provides support for Japanese; additional packages are
+in @code{collection-langcjk}.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-langother
   (package
     (name "texlive-collection-langother")
