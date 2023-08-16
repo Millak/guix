@@ -126,11 +126,13 @@
                     (not (null? (package-native-inputs this-package))))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-lib-path
+          (add-after 'unpack 'fix-lib-and-libexec-path
             (lambda _
-              ;; Always install into /lib and not into /lib64.
               (substitute* "kde-modules/KDEInstallDirsCommon.cmake"
-                (("\"lib64\"") "\"lib\""))
+                ;; Always install into /lib and not into /lib64.
+                (("\"lib64\"") "\"lib\"")
+                ;; Install into /libexec and not into /lib/libexec.
+                (("LIBDIR \"libexec\"") "EXECROOTDIR \"libexec\""))
 
               ;; Determine the install path by the major version of Qt.
               ;; TODO: Base the following on values taken from Qt
