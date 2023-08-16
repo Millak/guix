@@ -34360,6 +34360,26 @@ files for LuaTeX-ja, pLaTeX, or upLaTeX are provided.")
 @code{jlreq} class.")
     (license license:expat)))
 
+(define-public texlive-jpneduenumerate
+  (package
+    (name "texlive-jpneduenumerate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jpneduenumerate/"
+                   "tex/latex/jpneduenumerate/")
+             (base32
+              "0ndg4ig5bg9ns2pxcf070c7jyh7d7r3r7c7xg5d99k3qlg4vkd9n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jpneduenumerate")
+    (synopsis "Enumerative expressions in Japanese education")
+    (description
+     "Mathematical equation representation in Japanese education differs
+somewhat from the standard LaTeX writing style.  This package introduces
+enumerative expressions in Japanese education.")
+    (license license:expat)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
