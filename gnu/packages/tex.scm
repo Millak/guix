@@ -11883,6 +11883,23 @@ mode to avoid getting lost in big diagrams.")
     (description "This package sets up Japanese font families for XeLaTeX.")
     (license license:expat)))
 
+(define-public texlive-zxjatype
+  (package
+    (name "texlive-zxjatype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zxjatype/" "tex/latex/zxjatype/")
+             (base32
+              "0llm0414kdwqsajb1nl92xa8kqwvbm446pwijag2735gk8rxqz8j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zxjatype")
+    (synopsis "Standard conforming typesetting of Japanese, for XeLaTeX")
+    (description "This package eases standard conforming typesetting of
+Japanese, for XeLaTeX.")
+    (license license:expat)))
+
 (define-public texlive-biblatex-cheatsheet
   (package
     (name "texlive-biblatex-cheatsheet")
