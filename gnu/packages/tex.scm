@@ -5499,6 +5499,28 @@ editions.")
 editions typeset using @code{eledmac}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-eledmac
+  (package
+    (name "texlive-eledmac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eledmac/" "source/latex/eledmac/"
+                   "tex/latex/eledmac/")
+             (base32
+              "1a4579g3rykcgbwjqbky260lx6x7mc41i6cqhi83anf3zilsii0r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eledmac")
+    (synopsis "Typeset scholarly editions")
+    (description
+     "This package provides a package for typesetting scholarly critical editions,
+replacing the established @code{ledmac} package.  The package supports
+indexing by page and by line numbers, and simple @code{tabular}- and
+@code{array}-style environments.  The package is distributed with the related
+@code{eledpar} package.  The package is now superseded by @code{reledmac}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-eltex
   (package
     (name "texlive-eltex")
