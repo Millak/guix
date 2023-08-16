@@ -8041,6 +8041,23 @@ with the symbols.  While it is possible to set arrows over longer strings of
 symbols, the focus lies on single characters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lexikon
+  (package
+    (name "texlive-lexikon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lexikon/" "tex/latex/lexikon/")
+             (base32
+              "0x2h8w3cchzr2lvx5xqs1fn01y7b4lqkky85dard223w2r1dn22m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lexikon")
+    (synopsis "Macros for a two language dictionary")
+    (description "This package provides macros for a two language
+dictionary.")
+    (license license:lppl)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
