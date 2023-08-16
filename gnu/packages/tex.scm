@@ -11693,6 +11693,25 @@ can be adjusted with respect to relative position and format, and can be used
 in text and math mode.")
     (license license:cc-by4.0)))
 
+(define-public texlive-stage
+  (package
+    (name "texlive-stage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stage/" "source/latex/stage/"
+                   "tex/latex/stage/")
+             (base32
+              "0789mddzsadiw9fiasjzjdma0f9li8gddf8m9wy5jblnsl2asf5p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stage")
+    (synopsis "LaTeX class for stage plays")
+    (description
+     "@file{stage.cls} is a LaTeX class for creating plays of any length in
+a standard manuscript format for production and submission.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-stanli
   (package
     (name "texlive-stanli")
