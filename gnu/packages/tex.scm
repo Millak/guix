@@ -23876,6 +23876,27 @@ Han Serif and Source Han Sans) with Adobe-Japan1 (AJ1) CIDs.  There are 14
 fonts, 7 weights each for Mincho and Gothic.")
     (license license:silofl1.1)))
 
+(define-public texlive-haranoaji-extra
+  (package
+    (name "texlive-haranoaji-extra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/haranoaji-extra/"
+                   "fonts/opentype/public/haranoaji-extra/")
+             (base32
+              "1zy3bv836rmpqimky7b2xgsmdh6xkkbnjiljraci2vnfgwl1q3pb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/haranoaji-extra")
+    (synopsis "Extra weights for Harano Aji fonts")
+    (description
+     "Harano Aji fonts (Harano Aji Mincho and Harano Aji Gothic) are fonts
+obtained by replacing Adobe-Identity-0 (AI0) CIDs of Source Han fonts (Source
+Han Serif and Source Han Sans) with Adobe-Japan1 (AJ1) CIDs.  This package
+provides extra weights for these fonts.")
+    (license license:silofl1.1)))
+
 (define-public texlive-hardwrap
   (package
     (name "texlive-hardwrap")
