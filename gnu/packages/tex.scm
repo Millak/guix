@@ -34293,6 +34293,27 @@ formula should be used within a sentence or on a new line.")
 supporting a wide variety of fonts in LaTeX using the pTeX engine.")
     (license license:bsd-3)))
 
+(define-public texlive-jieeetran
+  (package
+    (name "texlive-jieeetran")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/jieeetran/"
+                   "doc/bibtex/jieeetran/")
+             (base32
+              "122g618j9wli9amx9c82whjp81i5cpjz1mj4pnmyfa8x5mfdh6dp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jieeetran")
+    (synopsis
+     "UnofficiaL BibTeX style for citing Japanese articles in IEEE format")
+    (description
+     "This package provides an unofficial BibTeX style for authors trying to
+cite Japanese articles in the Institute of Electrical and Electronics
+Engineers (IEEE) format.")
+    (license license:expat)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
