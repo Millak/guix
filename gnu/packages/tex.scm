@@ -5205,6 +5205,29 @@ such lists.  Applications in mind belonged to LaTeX, but the package should
 work with other formats as well.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dramatist
+  (package
+    (name "texlive-dramatist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dramatist/"
+                   "source/latex/dramatist/"
+                   "tex/latex/dramatist/")
+             (base32
+              "17x10jaa7f9rnqfrnvgw225n5ypqrmacbpsfpl5zdhx9abbjh793")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dramatist")
+    (synopsis "Typeset dramas, both in verse and in prose")
+    (description
+     "This package is intended for typesetting drama of any length.  It
+provides two environments for typesetting dialogues in prose or in verse; new
+document divisions corresponding to acts and scenes; macros that control the
+appearance of characters and stage directions; and automatic generation of
+a ``dramatis personae'' list.")
+    (license license:gpl3+)))
+
 (define-public texlive-drawmatrix
   (package
     (name "texlive-drawmatrix")
