@@ -23855,6 +23855,27 @@ and so on) while being, at the same time, seamlessly integrated within the
 rest of the mathematics produced by (AmS-)LaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-haranoaji
+  (package
+    (name "texlive-haranoaji")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/haranoaji/"
+                   "fonts/opentype/public/haranoaji/")
+             (base32
+              "06lkgiylh0vjxqm8i4dvygna0zb112dw5xxlh8r5hr5kf2805m99")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/haranoaji")
+    (synopsis "Harano Aji fonts")
+    (description
+     "Harano Aji fonts (Harano Aji Mincho and Harano Aji Gothic) are fonts
+obtained by replacing Adobe-Identity-0 (AI0) CIDs of Source Han fonts (Source
+Han Serif and Source Han Sans) with Adobe-Japan1 (AJ1) CIDs.  There are 14
+fonts, 7 weights each for Mincho and Gothic.")
+    (license license:silofl1.1)))
+
 (define-public texlive-hardwrap
   (package
     (name "texlive-hardwrap")
