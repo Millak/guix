@@ -13611,6 +13611,27 @@ for short verbatim; @file{xfig.tex}, for including xfig/transfig output in
 a TeX document; and @file{cassette.tex} for setting cassette labels.")
     (license license:public-domain)))
 
+(define-public texlive-jsclasses
+  (package
+    (name "texlive-jsclasses")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/platex/jsclasses/"
+                   "source/platex/jsclasses/"
+                   "tex/platex/jsclasses/")
+             (base32
+              "024bgaim5rkamlwj4xa6w4yp8i37f8j6vn4jyrh8avwm9anc22pg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jsclasses")
+    (synopsis "Classes tailored for use with Japanese")
+    (description
+     "This package provides classes @code{jsarticle} and @code{jsbook},
+together with packages @code{okumacro} and @code{okuverb}.  These classes are
+designed to work under ASCII Corporation's Japanese TeX system pTeX.")
+    (license license:bsd-2)))
+
 (define-public texlive-kerkis
   (package
     (name "texlive-kerkis")
