@@ -15136,6 +15136,26 @@ font.  This package also supports setup for the fonts used in the
 @code{japanese-otf} package.")
     (license license:expat)))
 
+(define-public texlive-pxcjkcat
+  (package
+    (name "texlive-pxcjkcat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pxcjkcat/" "tex/latex/pxcjkcat/")
+             (base32
+              "10lbwry55rdldfhj2v893rpp1jdzv00vxhg4hf4gsgsmv1nnp25f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxcjkcat")
+    (synopsis "LaTeX interface for the CJK category codes of upTeX")
+    (description
+     "The package provides management of the CJK category code table of the
+upTeX extended TeX engine.  Package options are available for tailored use in
+the cases of documents that are principally written in Japanese, or
+principally written in English or other Western languages.")
+    (license license:expat)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
