@@ -34314,6 +34314,31 @@ cite Japanese articles in the Institute of Electrical and Electronics
 Engineers (IEEE) format.")
     (license license:expat)))
 
+(define-public texlive-jlreq
+  (package
+    (name "texlive-jlreq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jlreq/"
+                   "fonts/tfm/public/jlreq/"
+                   "fonts/vf/public/jlreq/"
+                   "source/latex/jlreq/"
+                   "tex/latex/jlreq/"
+                   "tex/luatex/jlreq/")
+             (base32
+              "11jyj5mcyd9yxhb7mnm7naaaj26cgdk5iqkwna20109pcc2qy0wz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jlreq")
+    (synopsis
+     "Japanese document class based on requirements for Japanese text layout")
+    (description
+     "This package provides a Japanese document class based on requirements
+for Japanese text layout.  The class file and the JFM (Japanese font metric)
+files for LuaTeX-ja, pLaTeX, or upLaTeX are provided.")
+    (license license:bsd-2)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
