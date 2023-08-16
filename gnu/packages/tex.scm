@@ -34400,6 +34400,26 @@ somewhat from the standard LaTeX writing style.  This package introduces
 mathematical equation representation in Japanese education.")
     (license license:expat)))
 
+(define-public texlive-kanbun
+  (package
+    (name "texlive-kanbun")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kanbun/" "tex/latex/kanbun/")
+             (base32
+              "1a922jly8f791r4jbz4097h8js5z29435zphm5i52pvkl6p245wy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kanbun")
+    (synopsis "Typeset kanbun-kundoku with support for kanbun annotation")
+    (description
+     "This package allows users to manually input macros for elements in
+a kanbun-kundoku (Han Wen Xun Du) paragraph.  More importantly, it accepts
+plain text input in the kanbun annotation form when used with LuaLaTeX, which
+allows typesetting kanbun-kundoku paragraphs efficiently.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
