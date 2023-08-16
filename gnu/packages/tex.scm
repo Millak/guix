@@ -8099,6 +8099,25 @@ simple roots of any complex simple Lie algebra.  It uses the Dynkin diagrams
 package @code{dynkin-diagrams}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ling-macros
+  (package
+    (name "texlive-ling-macros")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ling-macros/"
+                   "tex/latex/ling-macros/")
+             (base32
+              "0q5l9h5xkd9gkpx2g5inzkcsssqvdicv05r8xvlmmx41mf1ikc88")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ling-macros")
+    (synopsis "Macros for typesetting formal linguistics")
+    (description
+     "This package contains macros for typesetting glosses and formal
+expressions.  It covers a range of subfields in formal linguistics.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lithuanian
   (package
     (name "texlive-lithuanian")
