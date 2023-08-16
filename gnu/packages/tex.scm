@@ -12413,6 +12413,25 @@ It also tries to appropriately justify paragraphs with no more external
 tools.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thalie
+  (package
+    (name "texlive-thalie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thalie/" "tex/latex/thalie/")
+             (base32
+              "08dg91nr469s3x5c8njj0gpki1j89dji7ii9sw5l5ajd3pk8xbwv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thalie")
+    (synopsis "Typeset drama plays")
+    (description
+     "The package provides tools to typeset drama plays.  It defines commands
+to introduce characters lines, to render stage directions, to divide a play
+into acts and scenes and to build the dramatis personae automatically.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-thermodynamics
   (package
     (name "texlive-thermodynamics")
