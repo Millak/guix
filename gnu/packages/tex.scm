@@ -28254,6 +28254,26 @@ the engine in use.")
 (define-deprecated-package texlive-generic-iftex texlive-iftex)
 (define-deprecated-package texlive-generic-ifxetex texlive-iftex)
 
+(define-public texlive-ifxptex
+  (package
+    (name "texlive-ifxptex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/ifxptex/"
+                   "tex/generic/ifxptex/")
+             (base32
+              "0r77j010a9fcn47kjy6vwv72i8fynb8jsilas6hs9c9lgk5bal1g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ifxptex")
+    (synopsis "Detect pTeX and its derivatives")
+    (description
+     "The package provides commands for detecting pTeX and its derivatives
+(e-pTeX, upTeX, e-upTeX, and ApTeX).  Both LaTeX and plain TeX are
+supported.")
+    (license license:knuth)))
+
 (define-public texlive-tipa
   (package
     (name "texlive-tipa")
