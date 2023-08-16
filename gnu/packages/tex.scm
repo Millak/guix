@@ -7113,6 +7113,26 @@ of the Korean language, using Plain TeX.  Korean text should be encoded in
 UTF-8.")
     (license license:lppl1.3c)))
 
+(define-public texlive-kotex-utf
+  (package
+    (name "texlive-kotex-utf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kotex-utf/"
+                   "tex/latex/kotex-utf/")
+             (base32
+              "1l3hlav7fihws2ly49fn994sc7mjcdwk3zp4xhkgvm0mqjbxzxzz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-cjk-ko))
+    (home-page "https://ctan.org/pkg/kotex-utf")
+    (synopsis "Typeset Hangul, coded in UTF-8")
+    (description
+     "The package typesets Hangul, which is the native alphabet of the Korean
+language; input Korean text should be encoded in UTF-8.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-knuth-errata
   (package
     (name "texlive-knuth-errata")
