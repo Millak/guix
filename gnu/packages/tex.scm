@@ -14955,6 +14955,76 @@ distributed as package @code{pTeX-manual}.")
      "The bundle contains the plain TeX format for pTeX and e-pTeX.")
     (license license:bsd-3)))
 
+(define-public texlive-ptex-fontmaps
+  (package
+    (name "texlive-ptex-fontmaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ptex-fontmaps/"
+                   "fonts/cmap/ptex-fontmaps/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/adobe/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/apple/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/arphic/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/baekmuk/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/bizud/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/canon/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/cjkunifonts-ttf/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/cjkunifonts/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/dynacomware/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/fandol/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/founder/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/haranoaji/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/hiragino-pron/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/hiragino/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/ipa/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/ipaex/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/kozuka-pr6/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/kozuka-pr6n/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/kozuka/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/moga-mobo-ex/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/moga-mobo/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/morisawa-pr6n/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/morisawa/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/ms-osx/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/ms-win10/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/ms/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/noEmbed/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/noto-otc/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/noto/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/solaris/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/sourcehan-otc/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/sourcehan/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/ume/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/unfonts/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/yu-osx/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/yu-win/"
+                   "fonts/map/dvipdfmx/ptex-fontmaps/yu-win10/"
+                   "fonts/misc/ptex-fontmaps/"
+                   "scripts/ptex-fontmaps/"
+                   "source/ptex-fontmaps/jis04cmap_exp/"
+                   "source/ptex-fontmaps/script/")
+             (base32
+              "07qm41d33z9vjvchsxfrqxim7zb15cg77x4aw5a06mgn3w7kz6ha")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "kanji-config-updmap-sys.sh"
+                                  "kanji-config-updmap-user.sh"
+                                  "kanji-config-updmap.pl"
+                                  "kanji-fontmap-creator.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/ptex-fontmaps")
+    (synopsis
+     "Font maps and tools for Japanese/Chinese/Korean fonts with (u)pTeX")
+    (description
+     "This package provides font maps and setup tools for Japanese, Korean,
+Traditional Chinese, and Simplified Chinese.  It is the successor of the
+@code{jfontmaps} package.  The files in this package contain font maps for
+dvipdfmx to make various Japanese, Chinese, and Korean fonts available
+for (u)ptex and related programs and formats.")
+    (license (list license:public-domain license:gpl3))))
+
 (define-public texlive-ptex-fonts
   (package
     (name "texlive-ptex-fonts")
