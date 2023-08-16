@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
+;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,6 +76,7 @@
   #:use-module (gnu packages figlet)
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -1915,27 +1917,27 @@ Machine Protocol.")
 (define-public looking-glass-client
   (package
     (name "looking-glass-client")
-    (version "B5")
+    (version "B6")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gnif/LookingGlass")
-             (commit version)
-             (recursive? #t)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://looking-glass.io/artifact/"
+                           version "/source"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "09mn544x5hg1z31l92ksk7fi7yj9r8xdk0dcl9fk56ivcr452ylm"))))
+         "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))))
     (build-system cmake-build-system)
     (inputs
      (list bash-minimal
+           font-dejavu
            fontconfig
            freetype
            glu
            gmp
            libglvnd
            libiberty
+           libsamplerate
            libx11
            libxcursor
            libxfixes
@@ -1946,16 +1948,18 @@ Machine Protocol.")
            libxrandr
            libxscrnsaver
            mesa
-           openssl
-           sdl2
-           sdl2-ttf
+           pipewire
+           pulseaudio
            spice-protocol
            wayland
            wayland-protocols
            `(,zlib "static")))
-    (native-inputs (list libconfig nettle pkg-config))
+    (native-inputs (list nettle pkg-config))
     (arguments
      `(#:tests? #f ;; No tests are available.
+       ;; Package uses "-march=native" by default. We disable that to build with the
+       ;; lowest supported architecture for reproducibility and CPU compatibility.
+       #:configure-flags '("-DOPTIMIZE_FOR_NATIVE=OFF")
        #:make-flags '("CC=gcc")
        #:phases (modify-phases %standard-phases
                   (add-before 'configure 'chdir-to-client
