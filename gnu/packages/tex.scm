@@ -3364,6 +3364,26 @@ Since there is no well-known nonsense text like Lipsum in the Japanese
 language, the package uses some real text in public domain.")
     (license license:expat)))
 
+(define-public texlive-bxjaprnind
+  (package
+    (name "texlive-bxjaprnind")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxjaprnind/"
+                   "tex/latex/bxjaprnind/")
+             (base32
+              "0j2k06y63c7dgpcflrfrjy82g2746fnmpf8dk445lbqkbn1jypr5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxjaprnind")
+    (synopsis "Adjust the position of parentheses at paragraph head")
+    (description
+     "In Japanese typesetting, opening parentheses placed at the beginning of
+paragraphs or lines are treated specially.  This package adjusts the position
+of parentheses accordingly.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
