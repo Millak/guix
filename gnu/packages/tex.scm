@@ -5397,6 +5397,25 @@ Gaulle (now deceased), under a free licence.  It replaces the old full
 to the PGF mathematical engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ecltree
+  (package
+    (name "texlive-ecltree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ecltree/" "tex/latex/ecltree/")
+             (base32
+              "0ki5zzpl8dkz7zwyccmsxfnfq7vl5vlx3gi1py64mgqxfxp0rivw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ecltree")
+    (synopsis "Trees using Epic and Eepic macros")
+    (description
+     "The package recursively draws trees: each subtree is defined in
+a @code{bundle} environment, with a set of leaves described by @code{\\chunk}
+macros.  A chunk may have a @code{bundle} environment inside it.")
+    (license license:lppl)))
+
 (define-public texlive-econometrics
   (package
     (name "texlive-econometrics")
