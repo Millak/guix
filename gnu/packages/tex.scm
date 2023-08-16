@@ -7072,6 +7072,26 @@ document author needs.  So it can be a useful guide for beginners as well as
 a reference manual for advanced users.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-kotex-plain
+  (package
+    (name "texlive-kotex-plain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/kotex-plain/"
+                   "tex/plain/kotex-plain/")
+             (base32
+              "0r79cvm7iy1266yvrn60vwq9wjkgmzgfihbz9dqc84lif5q8kmnw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kotex-plain")
+    (synopsis "Macros for typesetting Korean under Plain TeX")
+    (description
+     "The package provides macros for typesetting Hangul, the native alphabet
+of the Korean language, using Plain TeX.  Korean text should be encoded in
+UTF-8.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-knuth-errata
   (package
     (name "texlive-knuth-errata")
