@@ -2897,6 +2897,26 @@ transliteration.")
 files.")
     (license license:lppl)))
 
+(define-public texlive-bibleref
+  (package
+    (name "texlive-bibleref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibleref/"
+                   "source/latex/bibleref/"
+                   "tex/latex/bibleref/")
+             (base32
+              "1fgb6lljdsdvkbs4i7yvwvgjbpbc8vnki0wv3gdi9yq6s5j6lzv5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibleref")
+    (synopsis "Format @emph{Bible} citations")
+    (description
+     "The bibleref package offers consistent formatting of references to parts
+of the Christian @emph{Bible}, in a number of well-defined formats.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref-french
   (package
     (name "texlive-bibleref-french")
