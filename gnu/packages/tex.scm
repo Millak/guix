@@ -4935,6 +4935,33 @@ custom derivatives and differential operators.  The options follow
 a consistent naming scheme making them easy to use and understand.")
     (license license:lppl1.3+)))
 
+(define-public texlive-diadia
+  (package
+    (name "texlive-diadia")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/diadia/" "scripts/diadia/"
+                   "tex/latex/diadia/")
+             (base32
+              "1sjnjabgqsv6v45sffkkzm78fnx89vmk836dajsvck5pd5nvkzxv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "diadia.lua")))
+    (home-page "https://ctan.org/pkg/diadia")
+    (synopsis "Package to keep a diabetes diary")
+    (description
+     "The @code{diadia} package allows you to keep a diabetes diary.  Usually,
+this means keeping record of certain medical values like blood sugar, blood
+pressure, pulse or weight.  It might also include other medical,
+pharmaceutical or nutritional data (HbA1c, insulin doses, carbohydrate units).
+
+The @code{diadia} package supports all of this plus more --- simply by adding
+more columns to the data file!  It is able to evaluate the data file and
+typesets formatted tables and derived plots.  Furthermore, it supports
+medication charts and info boxes.")
+    (license license:lppl)))
+
 (define-public texlive-diagbox
   (package
     (name "texlive-diagbox")
