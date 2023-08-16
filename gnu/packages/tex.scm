@@ -7385,6 +7385,25 @@ helps you to handle abbreviations and creates a list of those (pre-defined)
 abbreviations that have actually been used in the document.")
     (license license:gpl3+)))
 
+(define-public texlive-juramisc
+  (package
+    (name "texlive-juramisc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/juramisc/" "tex/latex/juramisc/")
+             (base32
+              "0ka6gmlb0vlg0317ihjnlklvaajj4rrbi7c2iisngz69fgjm26iy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/juramisc")
+    (synopsis "Typesetting German juridical documents")
+    (description
+     "This package provides a collection of classes for typesetting court
+sentences, legal opinions, books and dissertations for German lawyers.
+A @code{jurabook} class is also provided, which may not yet be complete.")
+    (license license:lppl)))
+
 (define-public texlive-karnaugh
   (package
     (name "texlive-karnaugh")
