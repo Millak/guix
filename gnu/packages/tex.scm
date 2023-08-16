@@ -1381,6 +1381,24 @@ adaptation for working with Babel.")
 controlling the searches that the package does.")
     (license license:lppl)))
 
+(define-public texlive-adtrees
+  (package
+    (name "texlive-adtrees")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/adtrees/" "tex/latex/adtrees/")
+             (base32
+              "0ypb609wvw3mvs7bf2mwa7r7v4frxjhfll8d1sqfry3dv3kr13pq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adtrees")
+    (synopsis "Macros for drawing adpositional trees")
+    (description
+     "This package provides a means to write adpositional trees, a formalism
+devoted to representing natural language expressions.")
+    (license license:gpl3+)))
+
 (define-public texlive-adobemapping
   (package
     (name "texlive-adobemapping")
