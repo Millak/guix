@@ -12819,6 +12819,26 @@ fonts, in both Metafont and Type 1 formats.")
     (description "This package provides MetaPost macros for Venn diagrams.")
     (license license:lppl)))
 
+(define-public texlive-verse
+  (package
+    (name "texlive-verse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verse/" "source/latex/verse/"
+                   "tex/latex/verse/")
+             (base32
+              "0v54xgn9d91xsjcy5dmgs5r50amvqnakyc7hymdzbqkv5cz2dd3r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/verse")
+    (synopsis "Aids for typesetting simple verse")
+    (description
+     "The package provides aids for typesetting simple verses; the package is
+strong on layout, from simple alternate-line indentation to the @code{Mouse's
+tale} from @emph{Alice in Wonderland}.")
+    (license license:lppl)))
+
 (define-public texlive-vlna
   (package
     (name "texlive-vlna")
