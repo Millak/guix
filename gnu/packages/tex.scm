@@ -3263,6 +3263,25 @@ macros.")
 entire (sub)deductions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bxbase
+  (package
+    (name "texlive-bxbase")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxbase/" "tex/latex/bxbase/")
+             (base32
+              "19zhvwj55lihlj11mk322735z595al847wsg3p0s3a9zm17b0skk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxbase")
+    (synopsis "BX bundle base components")
+    (description
+     "The main purpose of this bundle is to serve as an underlying library for
+other packages created by the same author.  However @code{bxbase} package
+contains a few user-level commands and is of some use by itself.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
