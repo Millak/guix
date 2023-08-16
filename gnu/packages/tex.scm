@@ -5821,6 +5821,25 @@ Japanese fonts under LuaTeX-ja.  It also makes full use of the priority
 feature, meeting the standards, and allows easy customisation.")
     (license license:expat)))
 
+(define-public texlive-expex
+  (package
+    (name "texlive-expex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/expex/" "tex/generic/expex/")
+             (base32
+              "0is4cdpsqycaw8xzc6x1gkg4ldk8v6a1i52qmxw13q8k10qh6b95")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/expex")
+    (synopsis "Linguistic examples and glosses, with reference capabilities")
+    (description
+     "The package provides macros for typesetting linguistic examples and
+glosses, with a refined mechanism for referencing examples and parts of
+examples.  The package can be used with LaTeX or with Plain TeX.")
+    (license license:lppl)))
+
 (define-public texlive-expose-expl3-dunkerque-2019
   (package
     (name "texlive-expose-expl3-dunkerque-2019")
