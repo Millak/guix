@@ -8058,6 +8058,27 @@ symbols, the focus lies on single characters.")
 dictionary.")
     (license license:lppl)))
 
+(define-public texlive-lexref
+  (package
+    (name "texlive-lexref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lexref/" "tex/latex/lexref/")
+             (base32
+              "0562vjn0vvjsqfi2jqy1yp6mqi8nrs25yc9nr1zc950q421w0vrb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lexref")
+    (synopsis "Convenient and uniform references to legal provisions")
+    (description
+     "The package is aimed at continental lawyers (especially those in
+Switzerland and Germany), allowing the user to make references to legal
+provisions conveniently and uniformly.  The package also allows the user to
+add cited Acts to a nomenclature list (automatically), and to build specific
+indexes for each cited Act.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
