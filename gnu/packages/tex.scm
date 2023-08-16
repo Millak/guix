@@ -2392,6 +2392,32 @@ package.")
 converted between Plain TeX and LaTeX by a simple editing action.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ascmac
+  (package
+    (name "texlive-ascmac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ascmac/"
+                   "fonts/map/dvips/ascmac/"
+                   "fonts/source/public/ascmac/"
+                   "fonts/tfm/public/ascmac/"
+                   "fonts/type1/public/ascmac/"
+                   "source/latex/ascmac/"
+                   "tex/latex/ascmac/")
+             (base32
+              "1d388nqyjipqsgd0pd4zrskaf3wddacg6rrmy3q1n8pvmna4gmz1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/ascmac")
+    (synopsis "Boxes and picture macros with Japanese vertical writing support")
+    (description
+     "The bundle provides boxes and picture macros with Japanese vertical
+writing support.  It uses only native picture macros and fonts for drawing
+boxes and is thus driver independent.")
+    (license license:bsd-3)))
+
 (define-public texlive-asymptote-by-example-zh-cn
   (package
     (name "texlive-asymptote-by-example-zh-cn")
