@@ -9766,6 +9766,28 @@ the columns; tools to color rows and columns with a good PDF result; blocks of
 cells; etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nnext
+  (package
+    (name "texlive-nnext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nnext/" "source/latex/nnext/"
+                   "tex/latex/nnext/")
+             (base32
+              "0hh2kn4ghnxv9l0xfkh0c0bkflmq5qwnc24y0jm1djjwrnyg1y2r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nnext")
+    (synopsis "Extension for the @code{gb4e} package")
+    (description
+     "This is an add-on for the @code{gb4e} package used in linguistics.  It
+implements the @code{\\Next}, @code{\\NNext}, @code{\\Last}, and
+@code{\\LLast} commands from the @code{linguex} package or the @code{\\nextx},
+@code{\\anextx}, @code{\\lastx}, @code{\\blastx}, and @code{\\bblastx}
+commands from the @code{expex} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-nuc
   (package
     (name "texlive-nuc")
