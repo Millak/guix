@@ -7363,6 +7363,28 @@ that permits alphanumeric section numbering (e.g., @samp{A. Introduction};
 @samp{III. International Law}).")
     (license license:gpl3+)))
 
+(define-public texlive-juraabbrev
+  (package
+    (name "texlive-juraabbrev")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/juraabbrev/"
+                   "makeindex/juraabbrev/"
+                   "source/latex/juraabbrev/"
+                   "tex/latex/juraabbrev/")
+             (base32
+              "0xybpc9j3x0gvq8hs5hrbb6ivilmp8ayjp6bq8xd7gsy7awag5d7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/juraabbrev")
+    (synopsis "Abbreviations for typesetting (German) juridical documents")
+    (description
+     "This package should be helpful for people working on (German) law.  It
+helps you to handle abbreviations and creates a list of those (pre-defined)
+abbreviations that have actually been used in the document.")
+    (license license:gpl3+)))
+
 (define-public texlive-karnaugh
   (package
     (name "texlive-karnaugh")
