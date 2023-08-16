@@ -15069,6 +15069,27 @@ for (u)ptex and related programs and formats.")
 @command{makejvf} program.")
     (license license:bsd-3)))
 
+(define-public texlive-ptex2pdf
+  (package
+    (name "texlive-ptex2pdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ptex2pdf/" "scripts/ptex2pdf/")
+             (base32
+              "0vc4clig35s9cir2gmls7zvj8k1qal4np0akvlgsz2zch44b0imr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "ptex2pdf.lua")))
+    (home-page "https://ctan.org/pkg/ptex2pdf")
+    (synopsis "Convert Japanese TeX documents to PDF")
+    (description
+     "The Lua script provides system-independent support of Japanese
+typesetting engines in TeXworks.  As TeXworks typesetting setup does not allow
+for multistep processing, this script runs one of the pTeX-based programs
+followed by dvipdfmx.")
+    (license license:gpl2)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
