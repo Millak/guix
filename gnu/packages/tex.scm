@@ -27171,6 +27171,27 @@ LaTeX names.")
 Babel.")
     (license license:lppl1.3c)))
 
+(define-public texlive-babel-japanese
+  (package
+    (name "texlive-babel-japanese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-japanese/"
+                   "source/generic/babel-japanese/"
+                   "tex/generic/babel-japanese/")
+             (base32
+              "0jn2pl080c0dd6ryj6y5b87h6ijg3lcd2hw7g5kyw7p9r7a6b8i0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-japanese")
+    (synopsis "Babel support for Japanese")
+    (description
+     "This package provides a japanese option for the Babel package.  It
+defines all the language definition macros in Japanese.  Currently this
+package works with pLaTeX, upLaTeX, XeLaTeX and LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-babel-kurmanji
   (package
     (name "texlive-babel-kurmanji")
