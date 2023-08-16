@@ -15025,6 +15025,22 @@ dvipdfmx to make various Japanese, Chinese, and Korean fonts available
 for (u)ptex and related programs and formats.")
     (license (list license:public-domain license:gpl3))))
 
+(define-public texlive-ptex-manual
+  (package
+    (name "texlive-ptex-manual")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/ptex/ptex-manual/")
+             (base32
+              "1pz8jyd86s2fjj0d63q9h04x0sxcyx1ffp48lf3n8awj0zrij861")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ptex-manual")
+    (synopsis "Japanese pTeX manual")
+    (description "This package contains the Japanese pTeX manual.")
+    (license license:bsd-3)))
+
 (define-public texlive-ptex-fonts
   (package
     (name "texlive-ptex-fonts")
