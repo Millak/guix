@@ -3343,6 +3343,27 @@ Japanese holidays.  Another command, converting dates to the day of the week
 in Japanese, is available as a free gift.")
     (license license:expat)))
 
+(define-public texlive-bxjalipsum
+  (package
+    (name "texlive-bxjalipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxjalipsum/"
+                   "tex/latex/bxjalipsum/")
+             (base32
+              "1d71l9mrqc2lwzri5p97rfy0rdvj6jv2jpfm10grfpbwpln7big8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxjalipsum")
+    (synopsis "Dummy text in Japanese")
+    (description
+     "This package enables users to print some Japanese text that can be used
+as dummy text.  It is a Japanese counterpart of the @code{lipsum} package.
+Since there is no well-known nonsense text like Lipsum in the Japanese
+language, the package uses some real text in public domain.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
