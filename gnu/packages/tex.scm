@@ -3429,6 +3429,26 @@ and LuaLaTeX, with the aid of suitable packages that provide capability of
 Japanese typesetting.")
     (license license:bsd-2)))
 
+(define-public texlive-bxorigcapt
+  (package
+    (name "texlive-bxorigcapt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxorigcapt/"
+                   "tex/latex/bxorigcapt/")
+             (base32
+              "1gj61hjmyxsbfkrs1sh604b6dfl00kp39fcamlfzb8s197wsl9fv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxorigcapt")
+    (synopsis "Retain the original caption names when using Babel")
+    (description
+     "This package forces the caption names declared by the document class in
+use to be used as the caption names for a specific language introduced by the
+Babel package.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
