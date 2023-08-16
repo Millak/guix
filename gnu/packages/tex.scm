@@ -15221,6 +15221,36 @@ technical note @emph{Requirements for Japanese Text Layout} and the JIS
 specification JIS X 4051.")
     (license license:expat)))
 
+(define-public texlive-pxufont
+  (package
+    (name "texlive-pxufont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pxufont/"
+                   "fonts/tfm/public/pxufont/"
+                   "fonts/vf/public/pxufont/"
+                   "tex/latex/pxufont/")
+             (base32
+              "167hmw73lxgsv27gkzanr1plalsqfxphknl8q3rbamy2zp6n0al0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxufont")
+    (synopsis "Emulate non-Unicode Japanese fonts using Unicode fonts")
+    (description
+     "The set of the Japanese logical fonts (JFMs) that are used as standard
+fonts in pTeX and upTeX contains both Unicode JFMs and non-Unicode JFMs.  This
+bundle provides an alternative set of non-Unicode JFMs that are tied to the
+virtual fonts (VFs) that refer to the glyphs in the Unicode JFMs.  Moreover it
+provides a LaTeX package that redefines the NFSS settings of the Japanese
+fonts of @code{(u)pLaTeX} so that the new set of non-Unicode JFMs will be
+employed.  As a whole, this bundle allows users to dispense with the mapping
+setup on non-Unicode JFMs.  Such a setup is useful in particular when users
+want to use OpenType fonts (such as Source Han Serif) that have a glyph
+encoding different from Adobe-Japan1, because mapping setups from non-Unicode
+JFMs to such physical fonts are difficult to prepare.")
+    (license license:expat)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
