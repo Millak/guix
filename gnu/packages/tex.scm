@@ -11302,6 +11302,26 @@ LaTeX documents.  This may be particularly useful for Math Teachers and IT
 specialists.")
     (license license:lppl1.3c)))
 
+(define-public texlive-screenplay
+  (package
+    (name "texlive-screenplay")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/screenplay/"
+                   "source/latex/screenplay/"
+                   "tex/latex/screenplay/")
+             (base32
+              "16vw7ikxblzlmamz0d95d0zj6vzhdg75w0q645sfh75pj7v6b1v0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/screenplay")
+    (synopsis "Class file to typeset screenplays")
+    (description
+     "The class implements the format recommended by the Academy of Motion
+Picture Arts and Sciences.")
+    (license license:gpl3+)))
+
 (define-public texlive-serbian-apostrophe
   (package
     (name "texlive-serbian-apostrophe")
