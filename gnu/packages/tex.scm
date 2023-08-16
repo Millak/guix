@@ -3304,6 +3304,25 @@ that are similar to those used by the pLaTeX kernel and some other packages
 used with it.")
     (license license:expat)))
 
+(define-public texlive-bxghost
+  (package
+    (name "texlive-bxghost")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxghost/" "tex/latex/bxghost/")
+             (base32
+              "11hnnyd6h3r5fl9p23qj1zspwzgnamfah7xqj7l1prp6ygb322mn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxghost")
+    (synopsis "Ghost insertion for proper @code{xkanjiskip}")
+    (description
+     "The package provides two commands to help authors for documents in
+Japanese to insert proper @code{xkanjiskips}.  It supports LuaTeX, XeTeX,
+pTeX, upTeX, and ApTeX (pTeX-ng).")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
