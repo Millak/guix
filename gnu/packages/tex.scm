@@ -15156,6 +15156,26 @@ the cases of documents that are principally written in Japanese, or
 principally written in English or other Western languages.")
     (license license:expat)))
 
+(define-public texlive-pxjahyper
+  (package
+    (name "texlive-pxjahyper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/platex/pxjahyper/"
+                   "tex/platex/pxjahyper/")
+             (base32
+              "0128yslhwbrdhshjhxk6ayfl42ds0x0sfyvp91aspwbkfjnr34p9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxjahyper")
+    (synopsis "Hyperref support for pLaTeX")
+    (description
+     "This package adjusts the behavior of @code{hyperref} on (u)pLaTeX so
+that authors can properly create PDF documents that contain document
+information in Japanese.")
+    (license license:expat)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
