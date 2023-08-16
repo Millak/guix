@@ -2633,6 +2633,26 @@ formatted lists of productions, with numbers if required.  It can also print
 in-line BNF expressions using math mode.")
     (license license:lppl1.3c)))
 
+(define-public texlive-baekmuk
+  (package
+    (name "texlive-baekmuk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/baekmuk/"
+                   "fonts/truetype/public/baekmuk/")
+             (base32
+              "0nc6sfjbimh1g8zhcl58ag6kqskhwd3h0m68y7k2v3v5i9n5g5yr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/baekmuk")
+    (synopsis "Baekmuk Korean TrueType fonts")
+    (description
+     "This bundle consists of four Korean fonts: @file{batang.ttf} (serif),
+@file{dotum.ttf} (sans-serif), @file{gulim.ttf} (sans-serif rounded) and
+@file{hline.ttf} (headline).")
+    (license license:expat)))
+
 (define-public texlive-bangla
   (package
     (name "texlive-bangla")
