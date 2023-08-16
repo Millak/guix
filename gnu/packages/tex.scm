@@ -42843,8 +42843,8 @@ HiTeX engine and related.")
     (home-page "https://www.tug.org/texlive/")
     (synopsis "Support for Chinese")
     (description
-     "This collection provides support for Chinese; additional packages are
-located in @code{collection-langcjk}.")
+     "This collection provides support for Chinese, with additional packages
+from @code{collection-langcjk}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 (define-public texlive-collection-langcjk
