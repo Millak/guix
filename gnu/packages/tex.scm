@@ -14768,6 +14768,31 @@ to Japanese standards using pLaTeX, and also attached additional information
 of standard LaTeX (especially about Math mode).")
     (license license:expat)))
 
+(define-public texlive-plautopatch
+  (package
+    (name "texlive-plautopatch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/plautopatch/"
+                   "tex/latex/plautopatch/")
+             (base32
+              "1fhphmjhq0mbsarkfmfj0580b97lxxbcwanr4zpwjj5f6krqq742")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plautopatch")
+    (synopsis "Automated patches for pLaTeX/upLaTeX")
+    (description
+     "Japanese pLaTeX and upLaTeX formats and packages often conflict with
+other LaTeX packages which are unaware of pLaTeX and upLaTeX.  In the worst
+case, such packages throw a fatal error or end up with a wrong output.  The
+goal of this package is that there should be no need to worry about such
+incompatibilities, because specific patches are loaded automatically whenever
+necessary.  This helps not only to simplify source files, but also to make the
+appearance of working pLaTeX or upLaTeX sources similar to those of ordinary
+LaTeX ones.")
+    (license license:bsd-3)))
+
 (define-public texlive-plipsum
   (package
     (name "texlive-plipsum")
