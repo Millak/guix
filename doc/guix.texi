@@ -44475,6 +44475,40 @@ The @code{(gnu home services desktop)} module provides services that you
 may find useful on ``desktop'' systems running a graphical user
 environment such as Xorg.
 
+@cindex X Window, for Guix Home services
+@cindex X11, in Guix Home
+@defvar home-x11-service-type
+This is the service type representing the X Window graphical display
+server (also referred to as ``X11'').
+
+X Window is necessarily started by a system service; on Guix System,
+starting it is the responsibility of @code{gdm-service-type} and similar
+services (@pxref{X Window}).  At the level of Guix Home, as an
+unprivileged user, we cannot start X Window; all we can do is check
+whether it is running.  This is what this service does.
+
+As a user, you probably don't need to worry or explicitly instantiate
+@code{home-x11-service-type}.  Services that require an X Window
+graphical display, such as @code{home-redshift-service-type} below,
+instantiate it and depend on its corresponding @code{x11-display}
+Shepherd service (@pxref{Shepherd Home Service}).
+
+When X Window is running, the @code{x11-display} Shepherd service starts
+and sets the @env{DISPLAY} environment variable of the
+@command{shepherd} process, using its original value if it was already
+set; otherwise, it fails to start.
+
+The service can also be forced to use a given value for @env{DISPLAY},
+like so:
+
+@example
+herd start x11-display :3
+@end example
+
+In the example above, @code{x11-display} is instructed to set
+@env{DISPLAY} to @code{:3}.
+@end defvar
+
 @defvar home-redshift-service-type
 This is the service type for @uref{https://github.com/jonls/redshift,
 Redshift}, a program that adjusts the display color temperature
