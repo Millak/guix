@@ -6456,6 +6456,26 @@ package.  Its main features are:
 Polyglossia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gmverse
+  (package
+    (name "texlive-gmverse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gmverse/" "tex/latex/gmverse/")
+             (base32
+              "13vs1w9pfl4is5f5papwqqm83kmb17d4z7gv8nxkswnav9v5cl56")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gmverse")
+    (synopsis "Package for typesetting (short) poems")
+    (description
+     "This package provides a redefinition of the @code{verse} environment to
+make the @code{\\\\} command optional for line ends and to give it
+a possibility of optical centering and right-hanging alignment of lines broken
+because of length.")
+    (license license:lppl)))
+
 (define-public texlive-gost
   (package
     (name "texlive-gost")
