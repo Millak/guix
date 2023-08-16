@@ -15110,6 +15110,32 @@ a few user commands to assist in creating Japanese documents using
 @code{(u)pLaTeX.}")
     (license license:expat)))
 
+(define-public texlive-pxchfon
+  (package
+    (name "texlive-pxchfon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/platex/pxchfon/" "fonts/sfd/pxchfon/"
+                   "fonts/tfm/public/pxchfon/"
+                   "fonts/vf/public/pxchfon/"
+                   "tex/platex/pxchfon/")
+             (base32
+              "0pvhgcv6rxp2lnscsh9k3z907114p09ja3frcy5276is21d6sdrj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxchfon")
+    (synopsis "Japanese font setup for pLaTeX and upLaTeX")
+    (description
+     "This package enables users to declare in their document which physical
+fonts should be used for the standard Japanese (logical) fonts of pLaTeX and
+upLaTeX.  Font setup is realized by changing the font mapping of dvipdfmx, and
+thus users can use any (monospaced) physical fonts they like, once they
+properly install this package, without creating helper files for each new
+font.  This package also supports setup for the fonts used in the
+@code{japanese-otf} package.")
+    (license license:expat)))
+
 (define-public texlive-pwebmac
   (package
     (name "texlive-pwebmac")
