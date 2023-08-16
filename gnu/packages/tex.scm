@@ -3323,6 +3323,26 @@ Japanese to insert proper @code{xkanjiskips}.  It supports LuaTeX, XeTeX,
 pTeX, upTeX, and ApTeX (pTeX-ng).")
     (license license:expat)))
 
+(define-public texlive-bxjaholiday
+  (package
+    (name "texlive-bxjaholiday")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxjaholiday/"
+                   "tex/latex/bxjaholiday/")
+             (base32
+              "1n0h9g5lgaz00gn8wjai8w3pbg7bs02aaw7zi7h8l01i4lc8l1r1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxjaholiday")
+    (synopsis "Support for Japanese holidays")
+    (description
+     "This LaTeX package provides a command to convert dates to names of
+Japanese holidays.  Another command, converting dates to the day of the week
+in Japanese, is available as a free gift.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
