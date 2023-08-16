@@ -10559,6 +10559,29 @@ sections, index of titles and first lines, and automatic generation of a table
 of contents.")
     (license license:lppl1.3c)))
 
+(define-public texlive-poetry
+  (package
+    (name "texlive-poetry")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/poetry/" "source/latex/poetry/"
+                   "tex/latex/poetry/")
+             (base32
+              "1z262am0qh6h1qqf36hxj2lc7d5pr4r65yx8ysrydh0sijccgild")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/poetry")
+    (synopsis "Facilities for typesetting poetry and poetical structure")
+    (description
+     "This package provides some macros and general doodads for typesetting poetry.
+There is, of course, already the excellent @code{verse} package, and the
+@code{poetrytex} package provides some extra functionality on top of it.  But
+@code{poetry} provides much of the same functionality in a bit of a different
+way, and with a few additional abilities, such as facilities for a list of
+poems, an index of first lines, and some structural commands.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-polexpr
   (package
     (name "texlive-polexpr")
