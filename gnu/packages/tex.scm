@@ -13045,6 +13045,29 @@ Cyrillic Mongolian using either XeLaTeX or LuaLaTeX.  The command
 to be able to create multilingual documents.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xyling
+  (package
+    (name "texlive-xyling")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xyling/" "tex/latex/xyling/")
+             (base32
+              "1c4bgkbd42japidvrfg3ibj4h1l8v6zlivy7bqyiyj8alzdjhq4g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xyling")
+    (synopsis
+     "Draw syntactic trees, etc., for linguistics literature, using XY-Pic")
+    (description
+     "The macros in this package model the construction of linguistic tree
+structures as a genuinely graphical problem: they contain two types of
+objects, ``branches'' and ``node labels'', and these are positioned relative
+to a ``grid''.  It is essential that each of these three elements is
+constructed independent of the other two, and hence they can be modified
+without unwanted side effects.  The macros are based on the XY-Pic package.")
+    (license license:lppl)))
+
 (define-public texlive-xymtex
   (package
     (name "texlive-xymtex")
