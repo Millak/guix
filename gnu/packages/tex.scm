@@ -11481,6 +11481,25 @@ electrical and electronics engineers and graph theorists.")
 the shuffle product which is used in some part of mathematics and physics.")
     (license license:public-domain)))
 
+(define-public texlive-sides
+  (package
+    (name "texlive-sides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sides/" "tex/latex/sides/")
+             (base32
+              "0lffwhb6px6f09f8jk6r9kvfh49dl5n0461b261mk2sr6fgyxrfz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sides")
+    (synopsis "LaTeX class for typesetting stage plays")
+    (description
+     "This is a LaTeX class for typesetting stage plays, based on the
+@code{plari} class.  It has been updated and several formatting changes have
+been made to it.")
+    (license license:gpl3+)))
+
 (define-public texlive-simplebnf
   (package
     (name "texlive-simplebnf")
