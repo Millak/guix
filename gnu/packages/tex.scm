@@ -10930,6 +10930,28 @@ commands, and then issue the @code{\\tree} command to typeset the whole.")
 a domain-specific language for quantum programming.")
     (license license:lppl1.3c)))
 
+(define-public texlive-qtree
+  (package
+    (name "texlive-qtree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qtree/" "tex/latex/qtree/")
+             (base32
+              "1gmwkm6400pcrjnq111bih7za0p45nx6gy4lksvgjhdcpnykbbla")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qtree")
+    (synopsis "Draw tree structures")
+    (description
+     "The package offers support for drawing tree diagrams, and is especially
+suitable for linguistics use.  It allows trees to be specified in a simple
+bracket notation, automatically calculates branch sizes, and supports both
+DVI/PostScript and PDF output by use of @code{pict2e} facilities.  The package
+is a development of the existing @code{qobitree} package, offering a new front
+end.")
+    (license license:lppl)))
+
 (define-public texlive-rank-2-roots
   (package
     (name "texlive-rank-2-roots")
