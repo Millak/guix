@@ -330,6 +330,10 @@ immediately.  Return the exit status of the process in the container."
                  (display "127.0.0.1 localhost\n" port)
                  (chmod port #o444))))
 
+           ;; Create /tmp; bits of code expect it, such as
+           ;; 'least-authority-wrapper'.
+           (mkdir-p "/tmp")
+
            ;; Set PATH for things that the activation script might expect, such
            ;; as "env".
            (load-profile #$system-profile)
