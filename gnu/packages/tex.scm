@@ -4645,6 +4645,26 @@ files created by pLaTeX or upLaTeX, using @code{hyperref}.")
 mathematical environments.")
     (license license:bsd-2)))
 
+(define-public texlive-covington
+  (package
+    (name "texlive-covington")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/covington/"
+                   "tex/latex/covington/")
+             (base32
+              "0h47zgbiylnirwcjprh31q2n8g842qlhlddd733xn1zal3n5alsz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/covington")
+    (synopsis "LaTeX macros for Linguistics")
+    (description
+     "This package provides numerous minor LaTeX enhancements for linguistics,
+including multiple accents on the same letter, interline glosses (word-by-word
+translations), Discourse Representation Structures, and example numbering.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
