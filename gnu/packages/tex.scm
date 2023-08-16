@@ -10182,6 +10182,29 @@ provided.")
 systems that use the Myanmar script.")
     (license license:silofl1.1)))
 
+(define-public texlive-parallel
+  (package
+    (name "texlive-parallel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/parallel/"
+                   "source/latex/parallel/"
+                   "tex/latex/parallel/")
+             (base32
+              "14gca28ph90vhsliy5g8jc6fd87igni1wkiy41jrp33qhjiz94qa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/parallel")
+    (synopsis "Typeset parallel texts")
+    (description
+     "This package provides a @code{parallel} environment which allows two
+potentially different texts to be typeset in two columns, while maintaining
+alignment.  The two columns may be on the same page, or on facing pages.  This
+arrangement of text is commonly used when typesetting translations, but it can
+have value when comparing any two texts.")
+    (license license:lppl)))
+
 (define-public texlive-pascaltriangle
   (package
     (name "texlive-pascaltriangle")
