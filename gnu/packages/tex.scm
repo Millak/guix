@@ -3282,6 +3282,28 @@ other packages created by the same author.  However @code{bxbase} package
 contains a few user-level commands and is of some use by itself.")
     (license license:expat)))
 
+(define-public texlive-bxcjkjatype
+  (package
+    (name "texlive-bxcjkjatype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxcjkjatype/"
+                   "tex/latex/bxcjkjatype/")
+             (base32
+              "1cnh1xdqcapahixzfxrrmadplkfrljh1vcdq7i3p4xdaclrbhzds")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxcjkjatype")
+    (synopsis "Typeset Japanese with pdfLaTeX and CJK")
+    (description
+     "The package provides a working configuration of the CJK package,
+suitable for Japanese typesetting of moderate quality.  Moreover, it
+facilitates use of the CJK package for pLaTeX users, by providing commands
+that are similar to those used by the pLaTeX kernel and some other packages
+used with it.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
