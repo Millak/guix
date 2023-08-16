@@ -3384,6 +3384,29 @@ paragraphs or lines are treated specially.  This package adjusts the position
 of parentheses accordingly.")
     (license license:expat)))
 
+(define-public texlive-bxjatoucs
+  (package
+    (name "texlive-bxjatoucs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxjatoucs/"
+                   "fonts/tfm/public/bxjatoucs/"
+                   "tex/latex/bxjatoucs/")
+             (base32
+              "1032lfp9qy4arzy06s5hkqlva7y182763wxfdql93yn68hcn85vd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxjatoucs")
+    (synopsis "Convert Japanese character code to Unicode")
+    (description
+     "This package is meant for macro or package developers: it provides
+function-like macros that convert a character code value in one of several
+Japanese encodings to a Unicode value.  Supported source encodings are:
+ISO-2022-JP (jis), EUC-JP (euc), Shift_JIS (sjis), and the Adobe-Japan1 glyph
+set.")
+    (license license:expat)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
