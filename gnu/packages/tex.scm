@@ -9809,6 +9809,26 @@ only a maximum of such alphabets.  The necessary user macros are defined for
 typsetting common math symbols that require special ISO treatment.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pmhanguljamo
+  (package
+    (name "texlive-pmhanguljamo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pmhanguljamo/"
+                   "tex/latex/pmhanguljamo/")
+             (base32
+              "1k8cvzmrrpb6hkkjczfq4mad71450pappf68jdlf1vmg3qb0f9z3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pmhanguljamo")
+    (synopsis "Poor man's Hangul Jamo input method")
+    (description
+     "This package provides a Hangul transliteration input method that allows
+to typeset Korean letters (Hangul) using the proper fonts. The use of XeLaTeX
+is recommended.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-polexpr
   (package
     (name "texlive-polexpr")
