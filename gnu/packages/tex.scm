@@ -3407,6 +3407,28 @@ ISO-2022-JP (jis), EUC-JP (euc), Shift_JIS (sjis), and the Adobe-Japan1 glyph
 set.")
     (license license:expat)))
 
+(define-public texlive-bxjscls
+  (package
+    (name "texlive-bxjscls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxjscls/" "source/latex/bxjscls/"
+                   "tex/latex/bxjscls/")
+             (base32
+              "0bm9ab1j949v3ygnml8w0isx7yydq6jfq4ws3i0pf1rhs56m6rm0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxjscls")
+    (synopsis "Japanese document class collection for all major engines")
+    (description
+     "This package provides an extended version of the Japanese document class
+collection provided by @code{jsclasses}.  While the original version supports
+only pLaTeX and upLaTeX, the extended version also supports pdfLaTeX, XeLaTeX
+and LuaLaTeX, with the aid of suitable packages that provide capability of
+Japanese typesetting.")
+    (license license:bsd-2)))
+
 (define-public texlive-bytefield
   (package
     (name "texlive-bytefield")
