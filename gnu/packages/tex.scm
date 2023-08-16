@@ -7133,6 +7133,31 @@ UTF-8.")
 language; input Korean text should be encoded in UTF-8.")
     (license license:lppl1.3c)))
 
+(define-public texlive-kotex-utils
+  (package
+    (name "texlive-kotex-utils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kotex-utils/"
+                   "makeindex/kotex-utils/"
+                   "scripts/kotex-utils/")
+             (base32
+              "01qmr50fr3i2gzgjyj69jgj4czf62s22z58kja6hbqygczc1jba3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts
+           #~(list "jamo-normalize.pl" "komkindex.pl" "ttf2kotexfont.pl")))
+    (inputs (list perl))
+    (propagated-inputs (list texlive-kotex-utf))
+    (home-page "https://ctan.org/pkg/kotex-utils")
+    (synopsis "Utility scripts and support files for typesetting Korean")
+    (description
+     "The bundle provides scripts and support files for index generation in
+Korean language typesetting.")
+    (license license:lppl)))
+
 (define-public texlive-knuth-errata
   (package
     (name "texlive-knuth-errata")
