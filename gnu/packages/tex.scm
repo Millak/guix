@@ -34270,6 +34270,29 @@ using LuaLaTeX.  @code{\\NewDocumentCommand} allows you to specify whether the
 formula should be used within a sentence or on a new line.")
     (license license:lppl1.3c)))
 
+(define-public texlive-japanese-otf
+  (package
+    (name "texlive-japanese-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/japanese-otf/"
+                   "fonts/ofm/public/japanese-otf/"
+                   "fonts/tfm/public/japanese-otf/"
+                   "fonts/vf/public/japanese-otf/"
+                   "source/fonts/japanese-otf/"
+                   "tex/platex/japanese-otf/")
+             (base32
+              "125z1fi13dnksngsc442n6fcmicv7hhrxrq8anzxax4ic3dqfvha")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/japanese-otf")
+    (synopsis "Advanced font selection for platex and its friends")
+    (description
+     "The package contains pLaTeX support files and virtual fonts for
+supporting a wide variety of fonts in LaTeX using the pTeX engine.")
+    (license license:bsd-3)))
+
 (define-public texlive-libertine
   (package
     (name "texlive-libertine")
