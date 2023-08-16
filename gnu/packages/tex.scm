@@ -12308,6 +12308,28 @@ TeXsis was originally developed for physicists, but others may also find it
 useful.  It is completely compatible with Plain TeX.")
     (license license:lppl)))
 
+(define-public texlive-textglos
+  (package
+    (name "texlive-textglos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textglos/"
+                   "source/latex/textglos/"
+                   "tex/latex/textglos/")
+             (base32
+              "1jxx3wrwkmmm6ida3ih0yap57laflvsks8nv0395sv49xn7waxf0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/textglos")
+    (synopsis "Typeset and index linguistic gloss abbreviations")
+    (description
+     "The package provides a set of macros for in-line linguistic examples (as
+opposed to interlinear glossing, set apart from the main text).  It prevents
+hyphenated examples from breaking across lines and consistently formats
+phonemic examples, orthographic examples, and more.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-textgreek
   (package
     (name "texlive-textgreek")
