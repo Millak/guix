@@ -10534,6 +10534,31 @@ to typeset Korean letters (Hangul) using the proper fonts. The use of XeLaTeX
 is recommended.")
     (license license:lppl1.3+)))
 
+(define-public texlive-poemscol
+  (package
+    (name "texlive-poemscol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/poemscol/"
+                   "source/latex/poemscol/"
+                   "tex/latex/poemscol/")
+             (base32
+              "0hz6zsqcvlzcccxywwzwlpp9gsv41g4hc88481vmj313bys77spd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/poemscol")
+    (synopsis "Typesetting critical editions of poetry")
+    (description
+     "The package offers LaTeX macros for typesetting critical editions of
+poetry.  Its features include automatic linenumbering, generation of separate
+endnotes sections for emendations, textual collations, and explanatory notes,
+special marking for cases in which page breaks occur during stanza breaks,
+running headers of the form @samp{Notes to pp.@: xx-yy} for the notes
+sections, index of titles and first lines, and automatic generation of a table
+of contents.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-polexpr
   (package
     (name "texlive-polexpr")
