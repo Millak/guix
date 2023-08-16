@@ -31297,6 +31297,24 @@ BibLaTeX, and is considered experimental.")
 
 (define-deprecated-package texlive-latex-gcite texlive-gcite)
 
+(define-public texlive-gckanbun
+  (package
+    (name "texlive-gckanbun")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gckanbun/" "tex/latex/gckanbun/")
+             (base32
+              "1hjp7nw2b34pkfxh6n2722zc83hjpn492q77gb063jzi79pgbprx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gckanbun")
+    (synopsis "Kanbun typesetting for (u)pLaTeX and LuaLaTeX")
+    (description
+     "This package provides a Kanbun (Han Wen, ``Chinese writing'')
+typesetting for @code{(u)pLaTeX} and LuaLaTeX.")
+    (license license:expat)))
+
 (define-public texlive-geometry
   (package
     (name "texlive-geometry")
