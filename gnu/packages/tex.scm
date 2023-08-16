@@ -10205,6 +10205,25 @@ arrangement of text is commonly used when typesetting translations, but it can
 have value when comparing any two texts.")
     (license license:lppl)))
 
+(define-public texlive-parrun
+  (package
+    (name "texlive-parrun")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/parrun/" "source/latex/parrun/"
+                   "tex/latex/parrun/")
+             (base32
+              "1cfqvsda505pxwyjv6k197lg464y4njr2j65sghvzk7qp3i6vq11")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/parrun")
+    (synopsis "Typesets (two) streams of text running parallel")
+    (description
+     "This package can be used for typesetting translated text and the
+original source, parallel on the same page, one above the other.")
+    (license license:lppl)))
+
 (define-public texlive-pascaltriangle
   (package
     (name "texlive-pascaltriangle")
