@@ -2418,6 +2418,25 @@ writing support.  It uses only native picture macros and fonts for drawing
 boxes and is thus driver independent.")
     (license license:bsd-3)))
 
+(define-public texlive-asternote
+  (package
+    (name "texlive-asternote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/asternote/"
+                   "tex/latex/asternote/")
+             (base32
+              "1a53pmw237lm1yjx55qwq3fq6jq34vlw03w62vrq3ksw9346dg5r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asternote")
+    (synopsis "Annotation symbols enclosed in square brackets with an asterisk")
+    (description
+     "This LaTeX package can output annotation symbols enclosed in square
+brackets and marked with an asterisk.")
+    (license license:expat)))
+
 (define-public texlive-asymptote-by-example-zh-cn
   (package
     (name "texlive-asymptote-by-example-zh-cn")
