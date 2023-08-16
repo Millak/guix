@@ -357,6 +357,45 @@ concept.")
     (home-page "https://invent.kde.org/plasma/kactivitymanagerd")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public kde-gtk-config
+  (package
+    (name "kde-gtk-config")
+    (version "5.27.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/kde-gtk-config-" version ".tar.xz"))
+              (sha256
+               (base32
+                "13qwj3gdfvs0l6k01n8hf25kzrsksi3qi0b1rzpshcj1ix31wamf"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-gsettings-schemas-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "cmake/modules/FindGSettingSchemas.cmake"
+                     (("\\$\\{PC_GLIB2_PREFIX\\}")
+                      (assoc-ref inputs "gsettings-desktop-schemas"))))))))
+    (native-inputs
+     (list extra-cmake-modules pkg-config qtsvg-5 sassc))
+    (inputs
+     (list gsettings-desktop-schemas
+           gtk+
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kguiaddons
+           kdbusaddons
+           kdecoration
+           kwindowsystem
+           xsettingsd))
+    (home-page "https://invent.kde.org/plasma/kde-gtk-config")
+    (synopsis "Sync of KDE settings to GTK applications")
+    (description "This package provides tools to sync KDE settings to GTK
+applications.")
+    (license (list license:bsd-2 license:bsd-3 license:gpl2 license:gpl3))))
+
 (define-public kdecoration
   (package
     (name "kdecoration")
