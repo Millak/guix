@@ -7219,6 +7219,29 @@ TeX to format a document for nearly-arbitrary values of @code{\\hsize} and
 @code{\\vsize}.")
     (license license:x11)))
 
+(define-public texlive-hmtrump
+  (package
+    (name "texlive-hmtrump")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/hmtrump/"
+                   "fonts/truetype/public/hmtrump/"
+                   "tex/lualatex/hmtrump/")
+             (base32
+              "03r1f784ipr2j38y2xy8agl94xwcmyv4pxd0l42iclmx08rczb9q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hmtrump")
+    (synopsis "Describe card games")
+    (description
+     "This package provides a font with LuaLaTeX support for describing
+card games.")
+    (license
+     (list (license:fsf-free
+            "doc/lualatex/hmtrump/nkd04_playing_cards_index/LICENSE")
+           license:cc-by-sa4.0))))
+
 (define-public texlive-hrlatex
   (package
     (name "texlive-hrlatex")
