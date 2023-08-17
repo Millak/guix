@@ -4237,6 +4237,27 @@ Journal of Medicine (NEJM).")
 University of Nottingham.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-opcit-booktitle
+  (package
+    (name "texlive-biblatex-opcit-booktitle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-opcit-booktitle/"
+                   "tex/latex/biblatex-opcit-booktitle/")
+             (base32
+              "078fzk4i7sknaxkgn2lr54bcslqbjjsr1nb0z7y46v7kpg2lpcrf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-opcit-booktitle")
+    (synopsis "Use @samp{op.@: cit.}@: for the booktitle of a subentry")
+    (description
+     "The default citation styles use the @samp{op.@: cit.}@: form in order to
+have a shorter reference when a title has already been cited.  However, when
+you cite two entries which share the same booktitle but not the same title,
+the @samp{op.@: cit.}@: mechanism does not work.  This package fixes this.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
