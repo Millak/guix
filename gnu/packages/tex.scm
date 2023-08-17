@@ -4319,6 +4319,27 @@ BibLaTeX conventions, and can be used simply by loading BibLaTeX with the
 appropriate option: @samp{\\usepackage[style=phys]@{biblatex@}}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-publist
+  (package
+    (name "texlive-biblatex-publist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-publist/"
+                   "tex/latex/biblatex-publist/")
+             (base32
+              "0s43idph9n9klrxy34lnplrrwy3wy4z87iiif5l9japi1j51vz6c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-publist")
+    (synopsis "BibLaTeX bibliography support for publication lists")
+    (description
+     "The package provides a BibLaTeX bibliography style file (@file{.bbx})
+for publication lists.  The style file draws on BibLaTeX's @code{authoryear}
+style, but provides some extra features often desired for publication lists,
+such as the omission of the author's own name from author or editor data.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
