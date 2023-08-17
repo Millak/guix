@@ -12833,6 +12833,24 @@ effortless pretty-printing of SuperCollider source code in documents typeset
 with LaTeX and friends.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scrabble
+  (package
+    (name "texlive-scrabble")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scrabble/" "tex/latex/scrabble/")
+             (base32
+              "1wr85x1kh6457sr61cq6mx8z6zrf61c9659a941wakc610sbqlsx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scrabble")
+    (synopsis "Commands for Scrabble boards")
+    (description
+     "This package provides some commands (in English and in French) to work
+with a Scrabble board.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-scratchx
   (package
     (name "texlive-scratchx")
