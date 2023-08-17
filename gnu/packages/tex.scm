@@ -10004,6 +10004,31 @@ acknowledged to be challenging to use directly: the @command{pmx} preprocessor
 compiles a simpler input language to MusiXTeX macros.")
     (license license:gpl2+)))
 
+(define-public texlive-musixtex-fonts
+  (package
+    (name "texlive-musixtex-fonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/musixtex-fonts/"
+                   "fonts/map/dvips/musixtex-fonts/"
+                   "fonts/opentype/public/musixtex-fonts/"
+                   "fonts/source/public/musixtex-fonts/"
+                   "fonts/tfm/public/musixtex-fonts/"
+                   "fonts/type1/public/musixtex-fonts/")
+             (base32
+              "0ychs959d1yvxkhwayf73iwvl4qg0a6v5fk7lnw8w3hk8n7zvp86")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/musixtex-fonts")
+    (synopsis "Fonts used by MusixTeX")
+    (description
+     "These are fonts for use with MusixTeX; they are provided both as
+original Metafont source, and as converted Adobe Type 1.  The bundle renders
+the older (Type 1 fonts only) bundle @code{musixtex-t1fonts} obsolete.")
+    (license license:gpl3+)))
+
 (define-public texlive-musixtnt
   (package
     (name "texlive-musixtnt")
