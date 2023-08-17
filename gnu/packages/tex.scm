@@ -3532,6 +3532,28 @@ compatible with English and German.")
 Harvard style recommended by the University of Bath Library.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-bookinarticle
+  (package
+    (name "texlive-biblatex-bookinarticle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-bookinarticle/"
+                   "tex/latex/biblatex-bookinarticle/")
+             (base32
+              "0mhj3adqlirylhjqj8y0m8pinmark07zqvx00zl9rrdpagj6q4y8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-bookinarticle")
+    (synopsis "Manage book edited in article")
+    (description
+     "This package provides three new BibLaTeX entry types --- @code{@@bookinarticle},
+@code{@@bookinincollection} and @code{@@bookinthesis} --- to refer to a modern
+edition of an old book, where this modern edition is provided in
+a @code{@@article}, @code{@@incollection} or in a @code{@@thesis}.  The
+package is now superseded by @code{biblatex-bookinother}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
