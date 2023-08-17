@@ -9945,6 +9945,25 @@ package, where the symbols are taken from the MusiXTeX fonts.  But it provides
 a larger range of symbols and a more flexible, user-friendly interface.")
     (license license:lppl1.3+)))
 
+(define-public texlive-musixguit
+  (package
+    (name "texlive-musixguit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/musixguit/"
+                   "tex/latex/musixguit/")
+             (base32
+              "1ck8li0wdn22x0g4f57c9r57ans4rj7ggrm3rsp7xnqgc78as065")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/musixguit")
+    (synopsis "Easy notation for guitar music, in MusixTeX")
+    (description
+     "The package provides commands for typesetting notes for guitar,
+especially for simplifying guitar notation with MusixTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-musixtex
   (package
     (name "texlive-musixtex")
