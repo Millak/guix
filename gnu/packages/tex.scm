@@ -4454,6 +4454,25 @@ the fields.  This list also includes the claves defined with the
 @code{biblatex-claves} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-socialscienceshuberlin
+  (package
+    (name "texlive-biblatex-socialscienceshuberlin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-socialscienceshuberlin/"
+                   "tex/latex/biblatex-socialscienceshuberlin/")
+             (base32
+              "1klcvjf8vz3bg0q7pmci6hhih52ph0z0hhkbv3iippyy33jhijrc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-socialscienceshuberlin")
+    (synopsis "BibLaTeX-style for the social sciences at HU Berlin")
+    (description
+     "This is a BibLaTeX style for the social sciences at the
+Humboldt-Universitat zu Berlin.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
