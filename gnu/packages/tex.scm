@@ -4473,6 +4473,26 @@ the fields.  This list also includes the claves defined with the
 Humboldt-Universitat zu Berlin.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-software
+  (package
+    (name "texlive-biblatex-software")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-software/"
+                   "source/latex/biblatex-software/"
+                   "tex/latex/biblatex-software/")
+             (base32
+              "0dlinydsrlcw898ccynx76mdv9jsvr4ninsqv2aggmj3g9xripn0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-software")
+    (synopsis "BibLaTeX stylefiles for software products")
+    (description
+     "This package implements software entry types for BibLaTeX in the form of
+a bibliography style extension.  It requires the Biber backend.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
