@@ -9271,6 +9271,30 @@ classes, @code{fiche} and @code{cours}, useful to create short high school
 documents such as tests or lessons.  The documentation is in French.")
     (license license:gpl3+)))
 
+(define-public texlive-mahjong
+  (package
+    (name "texlive-mahjong")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mahjong/" "source/latex/mahjong/"
+                   "tex/latex/mahjong/")
+             (base32
+              "1nkj6kri9dpk3gkms4raldzkj3dhsf54vggivb6nh169s7a16m7q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mahjong")
+    (synopsis "Typeset mahjong tiles using MPSZ Notation")
+    (description
+     "The @code{mahjong} package provides a LaTeX interface for typesetting
+mahjong tiles using an extended version of MPSZ algebraic notation.  Its
+features include spaces, rotated, blank, and concealed tiles, as well as red
+fives.  The size of the mahjong tiles can be controlled using a package option
+and an optional argument of @code{\\mahjong}.  It is primarily aimed at
+Riichi (aka Japanese) Mahjong but can be used to typeset any style of
+mahjong.")
+    (license (list license:expat license:cc-by4.0))))
+
 (define-public texlive-matapli
   (package
     (name "texlive-matapli")
