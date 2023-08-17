@@ -3728,6 +3728,27 @@ features that are not provided by the standard BibLaTeX styles.  The styles
 are dependent on BibLaTeX and cannot be used without it.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-enc
+  (package
+    (name "texlive-biblatex-enc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-enc/"
+                   "tex/latex/biblatex-enc/")
+             (base32
+              "0k9sais0dknydcdy1a7fkkrb5grqap3q2jn8qk36x658nkjjb9ln")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-enc")
+    (synopsis "BibLaTeX style for the Ecole nationale des chartes (Paris)")
+    (description
+     "This package provides a citation and bibliography style for use with
+BibLaTeX.  It conforms to the bibliographic standards used at the Ecole
+nationale des chartes (Paris), and may be suitable for a more general use in
+historical and philological works.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
