@@ -6804,6 +6804,27 @@ lyrics.  To typeset the chords graphically (and not only by name), the author
 recommends use of an additional package such as @code{gchords}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-guitarchordschemes
+  (package
+    (name "texlive-guitarchordschemes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/guitarchordschemes/"
+                   "tex/latex/guitarchordschemes/")
+             (base32
+              "189xx0y549ss4ip8x2f1rpcqyad5njrni785sxmy2cghqbdcgzzn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/guitarchordschemes")
+    (synopsis "Guitar chord and scale tablatures")
+    (description
+     "This package provides two commands (@code{\\chordscheme} and
+@code{\\scales}).  With those commands it is possible to draw schematic
+diagrams of guitar chord tablatures and scale tablatures.  Both commands know
+a range of options that allow wide customization of the output.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gustlib
   (package
     (name "texlive-gustlib")
