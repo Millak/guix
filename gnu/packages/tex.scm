@@ -9899,6 +9899,29 @@ related to multiobjective optimisation, multiobjective evolutionary
 algorithms, multicriteria decision making and similar fields.")
     (license license:lppl)))
 
+(define-public texlive-musical
+  (package
+    (name "texlive-musical")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/musical/" "tex/latex/musical/")
+             (base32
+              "0qdrd622vs5dkr5w6pvf04hvni1jqcgxfvhf0ak7gjaxjczisb9h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/musical")
+    (synopsis "Typeset (musical) theatre scripts")
+    (description
+     "This package is designed to simplify the development and distribution of
+scripts for theatrical musicals, especially ones under development.  The
+output is formatted to follow generally accepted script style while also
+maintaining a high level of typographic integrity, and includes commands for
+dialog, lyrics, stage directions, music and dance cues, rehearsal marks, and
+more.  It gracefully handles dialog that crosses page breaks, and can generate
+lists of songs and lists of dances in the show.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-musixtex
   (package
     (name "texlive-musixtex")
