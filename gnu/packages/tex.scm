@@ -4114,6 +4114,33 @@ means the editor of @code{@@mvcollection}, and not the editor of the
 @code{@@collection}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-ms
+  (package
+    (name "texlive-biblatex-ms")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/biblatex-ms/biblatex/"
+                   "bibtex/bst/biblatex-ms/"
+                   "doc/latex/biblatex-ms/"
+                   "tex/latex/biblatex-ms/")
+             (base32
+              "00xib8xvxl78qzxs66qmfyp4jdkcs3qx4ray2nwv1fffhj69aw3n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-etoolbox texlive-kvoptions texlive-logreq
+                             texlive-pdftexcmds texlive-url))
+    (home-page "https://ctan.org/pkg/biblatex-ms")
+    (synopsis "Sophisticated bibliographies in LaTeX (multiscript version)")
+    (description
+     "This package is the multiscript' version of the BibLaTeX package
+intended to solve the issues faced by those wishing to create multilingual
+bibliographies.  It is intended to be backwards-compatible with the standard
+BibLaTeX package and includes significantly enhanced optional functionality.
+
+It requires the use of the multiscript version of Biber (biber-ms).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
