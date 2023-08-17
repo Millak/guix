@@ -1040,70 +1040,67 @@ collaboration using typical untrusted file hosts or services.")
                 "193d990ym10qlslk0p8mjwp2j6rhqa7fq0y1iff65lvbyv914pss"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ; XXX: fail to build the in-source git.
-       #:test-target "test"
-       #:make-flags '("CC=gcc" "SHELL_PATH=sh")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-git
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Unpack the source of git into the 'git' directory.
-             (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
-                     (assoc-ref inputs "git-source"))))
-         (add-after 'unpack 'patch-absolute-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (define (quoted-file-name input path)
-               (string-append "\"" input path "\""))
-             (substitute* "ui-snapshot.c"
-               (("\"gzip\"")
-                (quoted-file-name (assoc-ref inputs "gzip") "/bin/gzip"))
-               (("\"bzip2\"")
-                (quoted-file-name (assoc-ref inputs "bzip2") "/bin/bzip2"))
-               (("\"xz\"")
-                (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
+     (list
+      #:tests? #f ; XXX: fail to build the in-source git.
+      #:test-target "test"
+      #:make-flags '("CC=gcc" "SHELL_PATH=sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-git
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Unpack the source of git into the 'git' directory.
+              (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
+                      (assoc-ref inputs "git-source"))))
+          (add-after 'unpack 'patch-absolute-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (quoted-file-name input path)
+                (string-append "\"" input path "\""))
+              (substitute* "ui-snapshot.c"
+                (("\"gzip\"")
+                 (quoted-file-name (assoc-ref inputs "gzip") "/bin/gzip"))
+                (("\"bzip2\"")
+                 (quoted-file-name (assoc-ref inputs "bzip2") "/bin/bzip2"))
+                (("\"xz\"")
+                 (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
 
-             (substitute* "filters/about-formatting.sh"
-               (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
-                                                     "/lib/cgit/filters"))
-               (("\\| tr") (string-append "| " (which "tr"))))
+              (substitute* "filters/about-formatting.sh"
+                (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
+                                                      "/lib/cgit/filters"))
+                (("\\| tr") (string-append "| " (which "tr"))))
 
-             (substitute* "filters/html-converters/txt2html"
-               (("sed") (which "sed")))
+              (substitute* "filters/html-converters/txt2html"
+                (("sed") (which "sed")))
 
-             (substitute* "filters/html-converters/man2html"
-               (("groff") (which "groff")))
+              (substitute* "filters/html-converters/man2html"
+                (("groff") (which "groff")))
 
-             (substitute* "filters/html-converters/rst2html"
-               (("rst2html\\.py") (which "rst2html.py")))
-
-             #t))
-         (delete 'configure) ; no configure script
-         (add-after 'build 'build-man
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "doc-man" make-flags)))
-         (replace 'install
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (apply invoke
-                      "make" "install" "install-man"
-                      (string-append "prefix=" out)
-                      (string-append "CGIT_SCRIPT_PATH=" out "/share/cgit")
-                      make-flags)
-               ;; Move the platform-dependent 'cgit.cgi' into lib to get it
-               ;; stripped.
-               (rename-file (string-append out "/share/cgit/cgit.cgi")
-                            (string-append out "/lib/cgit/cgit.cgi"))
-               #t)))
-         (add-after 'install 'wrap-python-scripts
-           (lambda* (#:key outputs #:allow-other-keys)
-             (for-each
-              (lambda (file)
-                (wrap-program (string-append (assoc-ref outputs "out")
-                                             "/lib/cgit/filters/" file)
-                  `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
-              '("syntax-highlighting.py"
-                "html-converters/md2html"))
-             #t)))))
+              (substitute* "filters/html-converters/rst2html"
+                (("rst2html\\.py") (which "rst2html.py")))))
+          (delete 'configure) ; no configure script
+          (add-after 'build 'build-man
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "doc-man" make-flags)))
+          (replace 'install
+            (lambda* (#:key make-flags outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (apply invoke
+                       "make" "install" "install-man"
+                       (string-append "prefix=" out)
+                       (string-append "CGIT_SCRIPT_PATH=" out "/share/cgit")
+                       make-flags)
+                ;; Move the platform-dependent 'cgit.cgi' into lib to get it
+                ;; stripped.
+                (rename-file (string-append out "/share/cgit/cgit.cgi")
+                             (string-append out "/lib/cgit/cgit.cgi")))))
+          (add-after 'install 'wrap-python-scripts
+            (lambda* (#:key outputs #:allow-other-keys)
+              (for-each
+               (lambda (file)
+                 (wrap-program (string-append (assoc-ref outputs "out")
+                                              "/lib/cgit/filters/" file)
+                   `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
+               '("syntax-highlighting.py"
+                 "html-converters/md2html")))))))
     (native-inputs
      ;; For building manpage.
      (list asciidoc gzip bzip2 xz))
