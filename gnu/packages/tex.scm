@@ -9061,6 +9061,90 @@ proofs and boxes.  It creates proofs in a style similar to that used in
 @emph{Logic in Computer Science} by Huth and Ryan.")
     (license license:lppl1.3+)))
 
+(define-public texlive-logicpuzzle
+  (package
+    (name "texlive-logicpuzzle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/logicpuzzle/"
+                   "scripts/logicpuzzle/"
+                   "tex/latex/logicpuzzle/")
+             (base32
+              "1m2yrizdj76gywxkcfz90by2qwx8pq8akacj5qmsin095hnyskfh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/logicpuzzle")
+    (synopsis "Typeset (grid-based) logic puzzles")
+    (description
+     "The package allows the user to typeset various logic puzzles.  At the
+moment the following puzzles are supported:
+
+@itemize
+
+@item 2D-Sudoku (aka Magiequadrat, Diagon, ...),
+
+@item Battleship (aka Bimaru, Marinespiel, Batalla Naval, ...),
+
+@item Bokkusu (aka Kakurasu, Feldersummenratsel, ...),
+
+@item Bridges (akak Bruckenbau, Hashi, ...),
+
+@item Chaos Sudoku,
+
+@item Four Winds (aka Eminent Domain, Lichtstrahl, ...),
+
+@item Hakyuu (aka Seismic, Ripple Effect, ...),
+
+@item Hitori,
+
+@item Kakuro,
+
+@item Kendoku (aka Mathdoku, Calcudoku, Basic, MiniPlu, Ken Ken, Square
+Wisdom, Sukendo, Caldoku, ...),
+
+@item Killer Sudoku (aka Samunapure, Sum Number Place, Sumdoku, Gebietssummen,
+...),
+
+@item Laser Beam (aka Laserstrahl, ...),
+
+@item Magic Labyrinth (aka Magic Spiral, Magisches Labyrinth, ...),
+
+@item Magnets (aka Magnetplatte, Magnetfeld, ...),
+
+@item Masyu (aka Mashi, White or Black Pearls, ...),
+
+@item Minesweeper (aka Minensuche, ...),
+
+@item Nonogram (aka Griddlers, Hanjie, Tsunami, Logic Art, Logimage, ...),
+
+@item Number Link (aka Alphabet Link, Arukone, Buchstabenbund, ...),
+
+@item Resuko,
+
+@item Schatzsuche,
+
+@item Skyline (aka Skycrapers, Wolkenkratzer, Hochhauser, ...), including
+Skyline Sudoku and Skyline Sudou (N*N) variants,
+
+@item Slitherlink (aka Fences, Number Line, Dotty Dilemma, Sli-Lin, Takegaki,
+Great Wall of China, Loop the Loop, Rundweg, Gartenzaun, ...),
+
+@item Star Battle (aka Sternenschlacht, ...),
+
+@item Stars and Arrows (aka Sternenhimmel, ...),
+
+@item Sudoku,
+
+@item Sun and Moon (aka Sternenhaufen, Munraito, ...),
+
+@item Tents and Trees (aka Zeltlager, Zeltplatz, Camping, ...),
+
+@item and Tunnel.
+
+@end itemize")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lollipop
   (package
     (name "texlive-lollipop")
