@@ -4493,6 +4493,28 @@ Humboldt-Universitat zu Berlin.")
 a bibliography style extension.  It requires the Biber backend.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-source-division
+  (package
+    (name "texlive-biblatex-source-division")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-source-division/"
+                   "tex/latex/biblatex-source-division/")
+             (base32
+              "07y25624fpmx9hfmyyga8wh5cmvl14lqbmflglpl60jqsy622mgi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-source-division")
+    (synopsis "References by division in classical sources")
+    (description
+     "The package enables the user to make reference to division marks (such
+as book, chapter, section), in the document being referenced, in addition to
+the page-based references that BibTeX-based citations have always had.  The
+citation is made in the same way as the LaTeX standard, but what's inside the
+square brackets may include the division specification.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
