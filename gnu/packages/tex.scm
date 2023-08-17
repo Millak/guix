@@ -3595,6 +3595,25 @@ and citation styles for the Business Administration Department of the Free
 University of Berlin.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-caspervector
+  (package
+    (name "texlive-biblatex-caspervector")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-caspervector/"
+                   "tex/latex/biblatex-caspervector/")
+             (base32
+              "0drch06w3kp5ygc3jad70iixylgaivhxnnibglnih89yg4wq90y4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-caspervector")
+    (synopsis "Simple citation style for Chinese users")
+    (description
+     "The package provides a simple and easily extensible biblography/citation
+style for Chinese LaTeX users, using BibLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
