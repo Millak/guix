@@ -4404,6 +4404,25 @@ Handbook of Style.  A style file for writing SBL student papers is also
 included.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-science
+  (package
+    (name "texlive-biblatex-science")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-science/"
+                   "tex/latex/biblatex-science/")
+             (base32
+              "0sw2bzhbgbfg5gajbm61x4243qrfna1ifbp9bl1swdmvw9g3hycd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-science")
+    (synopsis "BibLaTeX implementation of the @emph{Science} bibliography style")
+    (description
+     "The bundle offers styles that allow authors to use BibLaTeX when
+preparing papers for submission to the journal @emph{Science}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
