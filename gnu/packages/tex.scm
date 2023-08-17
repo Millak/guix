@@ -3512,6 +3512,26 @@ adjust the outcome according to one's own preferences.  The style is
 compatible with English and German.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-bath
+  (package
+    (name "texlive-biblatex-bath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-bath/"
+                   "source/latex/biblatex-bath/"
+                   "tex/latex/biblatex-bath/")
+             (base32
+              "1c640csqvq0f9fd5d7xx4apllbwvr4cmi2x38863wlrvlnxa9kd7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-bath")
+    (synopsis "Style recommended by the University of Bath Library")
+    (description
+     "This package provides a BibLaTeX style to format reference lists in the
+Harvard style recommended by the University of Bath Library.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
