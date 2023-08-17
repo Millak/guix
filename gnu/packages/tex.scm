@@ -6903,6 +6903,24 @@ directories.")
 through it.")
     (license license:public-domain)))
 
+(define-public texlive-harmony
+  (package
+    (name "texlive-harmony")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/harmony/" "tex/latex/harmony/")
+             (base32
+              "0ky4aiv3zvykfwalf1md4lzjbr9pc14i93xsxdwl25jcsi2kvjk7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/harmony")
+    (synopsis "Typeset harmony symbols, etc., for musicology")
+    (description
+     "The package @file{harmony.sty} helps typesetting harmony symbols for
+musicology.")
+    (license license:lppl)))
+
 (define-public texlive-hanzibox
   (package
     (name "texlive-hanzibox")
