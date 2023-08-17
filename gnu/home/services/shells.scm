@@ -183,7 +183,8 @@ another process for example)."))
   (mixed-text-file
    "zshenv"
    (zsh-serialize-field config 'zshenv)
-   (zsh-serialize-field config 'environment-variables)))
+   (zsh-serialize-field config 'environment-variables)
+   "[ -n \"$SSH_CLIENT\" ] && source /etc/profile"))
 
 (define (zsh-file-zprofile config)
   (mixed-text-file
@@ -209,9 +210,7 @@ source ~/.profile
 
 (define (zsh-get-configuration-files config)
   `((".zprofile" ,(zsh-file-by-field config 'zprofile)) ;; Always non-empty
-    ,@(if (or (zsh-field-not-empty? config 'zshenv)
-              (zsh-field-not-empty? config 'environment-variables))
-          `((".zshenv" ,(zsh-file-by-field config 'zshenv))) '())
+    (".zshenv" ,(zsh-file-by-field config 'zshenv)) ;; Always non-empty
     ,@(if (zsh-field-not-empty? config 'zshrc)
           `((".zshrc" ,(zsh-file-by-field config 'zshrc))) '())
     ,@(if (zsh-field-not-empty? config 'zlogin)
