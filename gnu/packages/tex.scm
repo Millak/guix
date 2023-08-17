@@ -1496,6 +1496,23 @@ the American Institute of Chemical Engineers Journal (or @code{AIChE} Journal
 or @code{AIChE} J or @code{AIChEJ).}")
     (license license:lppl)))
 
+(define-public texlive-ajl
+  (package
+    (name "texlive-ajl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/ajl/")
+             (base32
+              "1xkrvy06lw4ngj94zybs14ysal2pg7g71h864gq9bjw0zwq2yjzs")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ajl")
+    (synopsis "BibTeX style for AJL")
+    (description
+     "This package provides bibliographic style references in style of
+Australian Journal of Linguistics.")
+    (license license:lppl)))
+
 (define-public texlive-akshar
   (package
     (name "texlive-akshar")
