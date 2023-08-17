@@ -12555,6 +12555,28 @@ method description path parameter request body and content type response body,
 content type and status code.")
     (license license:lppl1.3c)))
 
+(define-public texlive-reverxii
+  (package
+    (name "texlive-reverxii")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/reverxii/"
+                   "source/generic/reverxii/"
+                   "tex/generic/reverxii/")
+             (base32
+              "1gg8qbc8ll3n6rfp3pjshbbjd30s4n3yk219y6qcmz1nv66fp1qq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list (texlive-updmap.cfg)))
+    (home-page "https://ctan.org/pkg/reverxii")
+    (synopsis "Playing Reversi in TeX")
+    (description
+     "Following the lead of @file{xii.tex}, this little program plays
+Reversi.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-revquantum
   (package
     (name "texlive-revquantum")
