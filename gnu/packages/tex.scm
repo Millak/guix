@@ -3124,6 +3124,27 @@ to deal with the Bengali letters that are not in Devanagari.  The package also
 supports Assamese.")
     (license license:lppl)))
 
+(define-public texlive-besjournals
+  (package
+    (name "texlive-besjournals")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/besjournals/"
+                   "doc/bibtex/besjournals/")
+             (base32
+              "1mcc5xa56j17h6wv9b111qypw6ff4mg0skapa4wq79lb8p3l1cmv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/besjournals-bst")
+    (synopsis
+     "Bibliographies suitable for British Ecological Society journals")
+    (description
+     "The package provides a BibTeX style for use with journals published by
+the British Ecological Society.  The style was produced independently of the
+Society, and has no formal approval by the BES.")
+    (license license:lppl)))
+
 (define-public texlive-betababel
   (package
     (name "texlive-betababel")
