@@ -5807,6 +5807,24 @@ order that one would expect.")
 editions.")
     (license license:gpl2)))
 
+(define-public texlive-egameps
+  (package
+    (name "texlive-egameps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/egameps/" "tex/latex/egameps/")
+             (base32
+              "1wlki6y54czvvq7cvs7pvsvl1fhd8laaj5j52jv1v8w1msh5mlpr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/egameps")
+    (synopsis "LaTeX package for typesetting extensive games")
+    (description
+     "The style is intended to have enough features to draw any extensive game
+with relative ease.  The facilities of PSTricks are used for graphics.")
+    (license license:lppl)))
+
 (define-public texlive-eledform
   (package
     (name "texlive-eledform")
