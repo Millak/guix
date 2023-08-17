@@ -3380,6 +3380,25 @@ package provides three different style files derived from each of the standard
 @file{abbrv.bst} and unsrt.bst (i.e., eight in total).")
     (license license:gpl3+)))
 
+(define-public texlive-biblatex-abnt
+  (package
+    (name "texlive-biblatex-abnt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-abnt/"
+                   "tex/latex/biblatex-abnt/")
+             (base32
+              "14j3yn8ijwaa547gzyw7ql8q871w5r9rprc6l1s5dhp7vz3kzk6z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-abnt")
+    (synopsis "BibLaTeX style for Brazil's ABNT rules")
+    (description
+     "This package offers a BibLaTeX style for Brazil's ABNT (Brazilian
+Association of Technical Norms) rules.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
