@@ -11165,6 +11165,34 @@ to typeset Korean letters (Hangul) using the proper fonts. The use of XeLaTeX
 is recommended.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pmx
+  (package
+    (name "texlive-pmx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pmx/"
+                   "doc/man/man1/pmxab.1"
+                   "doc/man/man1/pmxab.man1.pdf"
+                   "doc/man/man1/scor2prt.1"
+                   "doc/man/man1/scor2prt.man1.pdf"
+                   "tex/generic/pmx/")
+             (base32
+              "1p9js9izv50vg7qqqmyg5jz4am4phhscqdfnn4nszlyfv3zkg7p3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pmx")
+    (synopsis "Preprocessor for MusiXTeX")
+    (description
+     "PMX provides a preprocessor for MusiXTeX.  @command{pmxab} builds a TeX
+input file based on a @file{.pmx} input file in a much simpler language,
+making most of the layout decisions by itself.  It has most of MusiXTeX's
+functionality, but it also permits in-line TeX to give access to virtually all
+of MusiXTeX.  For proof-listening, @command{pmxab} will make a MIDI file of
+your score.  @command{scor2prt} is an auxiliary program that makes parts from
+a score.")
+    (license license:gpl2)))
+
 (define-public texlive-poemscol
   (package
     (name "texlive-poemscol")
