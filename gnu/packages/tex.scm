@@ -3973,6 +3973,26 @@ the latest revision of the international standard ISO 690:2010.")
 law thesis with LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-biblatex-license
+  (package
+    (name "texlive-biblatex-license")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-license/"
+                   "tex/latex/biblatex-license/")
+             (base32
+              "1xz6zms984v5r8hq01f7ap245lfhqj577rc9ww57ccv4kgvgicqd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-license")
+    (synopsis "Add license data to the bibliography")
+    (description
+     "This package is for adding license license:data to bibliography entries
+via BibLaTeX's built-in related mechanism.  It provides a new related type
+@code{license} and some bibmacros for typesetting these related entries.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
