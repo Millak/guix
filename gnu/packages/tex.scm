@@ -4638,6 +4638,25 @@ text]@{key@}}.  The package corrects this problem.")
 Unified Stylesheet for Linguistics Journals.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-vancouver
+  (package
+    (name "texlive-biblatex-vancouver")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-vancouver/"
+                   "tex/latex/biblatex-vancouver/")
+             (base32
+              "1sji214mi5garp5h3if1fh1rvck573cxg61rgdlyy543883nrxv7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-vancouver")
+    (synopsis "Vancouver style for BibLaTeX")
+    (description
+     "This package provides the Vancouver reference style for BibLaTeX.  It is
+based on the @code{numeric} style and requires Biber.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
