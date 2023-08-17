@@ -4212,6 +4212,26 @@ per bar, with the chord shown inside the square.  It also handles the song
 structure by showing the bar count and the repetitions of the patterns.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chordbox
+  (package
+    (name "texlive-chordbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chordbox/" "tex/latex/chordbox/")
+             (base32
+              "01css8dnzss7s711ry2rs2fi3bw70s0lgj0cwwdicjgi331zbq70")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chordbox")
+    (synopsis "Draw chord diagrams")
+    (description
+     "This package provides two macros for drawing chord diagrams, as may be
+found for example in chord charts/books and educational materials.  They are
+composed as TikZ pictures and have several options to modify their
+appearance.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
