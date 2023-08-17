@@ -6675,6 +6675,32 @@ The package also provides an interface to control various settings including
 algorithm parameters.")
     (license license:expat)))
 
+(define-public texlive-gregoriotex
+  (package
+    (name "texlive-gregoriotex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/gregoriotex/"
+                   "fonts/source/gregoriotex/"
+                   "fonts/truetype/public/gregoriotex/"
+                   "scripts/gregoriotex/"
+                   "source/luatex/gregoriotex/"
+                   "tex/lualatex/gregoriotex/"
+                   "tex/luatex/gregoriotex/")
+             (base32
+              "0lnpq6rfdb6dg543cmbsm817ziim6arxnzxzbn0wn8i8aw681idr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gregoriotex")
+    (synopsis "Engraving gregorian chant scores")
+    (description
+     "Gregorio is a software application for engraving gregorian chant scores
+on a computer.  Gregorio's main job is to convert a gabc file (simple text
+representation of a score) into a GregorioTeX file, which makes TeX able to
+create a PDF of your score.")
+    (license license:gpl3)))
+
 (define-public texlive-grundgesetze
   (package
     (name "texlive-grundgesetze")
