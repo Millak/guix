@@ -10564,6 +10564,24 @@ package, where the symbols are taken from the MusiXTeX fonts.  But it provides
 a larger range of symbols and a more flexible, user-friendly interface.")
     (license license:lppl1.3+)))
 
+(define-public texlive-musikui
+  (package
+    (name "texlive-musikui")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/musikui/" "tex/latex/musikui/")
+             (base32
+              "1r5ygiavq51sj0l2jcn8jzc1jafach05a3pz2xvzxmxsxdjgzf02")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/musikui")
+    (synopsis "Easy creation of ``arithmetical restoration'' puzzles")
+    (description
+     "This package permits to easily typeset arithmetical restorations using
+LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-musixguit
   (package
     (name "texlive-musixguit")
