@@ -4578,6 +4578,25 @@ French or German.  However, the package is at present outdated and does not
 work properly with newer versions of BibLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-trad
+  (package
+    (name "texlive-biblatex-trad")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-trad/"
+                   "tex/latex/biblatex-trad/")
+             (base32
+              "19ma61dsdpsm52zm7wnkqccmx54g9gvh05d10c59q86ffv1dnlmx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-trad")
+    (synopsis "Traditional BibTeX styles with BibLaTeX")
+    (description
+     "The bundle provides implementations of the traditional BibTeX styles
+(@code{plain}, @code{abbrev}, @code{unsrt} and @code{alpha}) with BibLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
