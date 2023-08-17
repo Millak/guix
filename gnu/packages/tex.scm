@@ -3419,6 +3419,25 @@ Combinatorics.  Note that the journal (as for 01 March 2020) does not accept
 BibLaTeX, so you probably want to use @code{biblatex2bibitem}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-anonymous
+  (package
+    (name "texlive-biblatex-anonymous")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-anonymous/"
+                   "tex/latex/biblatex-anonymous/")
+             (base32
+              "1q24xrr80i6xsq65gfvvi1s5qsp78g52qgn2nf2523gjnnzp4p7n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-anonymous")
+    (synopsis "Tool to manage anonymous work with BibLaTeX")
+    (description
+     "The package provides tools to help manage anonymous work with BibLaTeX.
+It will be useful, for example, in history or classical philology.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
