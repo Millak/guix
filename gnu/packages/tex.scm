@@ -3896,6 +3896,27 @@ and can be used simply by loading BibLaTeX with the appropriate @samp{ieee}
 option.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-ijsra
+  (package
+    (name "texlive-biblatex-ijsra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-ijsra/"
+                   "tex/latex/biblatex-ijsra/")
+             (base32
+              "0phgbrp47f6pgayws29acsacm7dcb5w3asvwswx5a2rg30wj2fln")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-ijsra")
+    (synopsis
+     "BibLaTeX style for the International Journal of Student Research in
+Archaeology")
+    (description
+     "This is the BibLaTeX style used for the journal International Journal of
+Student Research in Archaeology.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
