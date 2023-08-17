@@ -1478,6 +1478,24 @@ a @file{.tfm} (TeX Font Metric) file.  It normally preserves kerns and
 ligatures, but also offers additional control over them.")
     (license license:gpl2)))
 
+(define-public texlive-aichej
+  (package
+    (name "texlive-aichej")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/aichej/")
+             (base32
+              "1pr92pq3yjsrbax6ah01cqg7131fp2rkqqjnxwcrm4119z2ic0gf")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aichej")
+    (synopsis "Bibliography style file for the AIChE Journal")
+    (description
+     "The style was generated using custom-bib, and implements the style of
+the American Institute of Chemical Engineers Journal (or @code{AIChE} Journal
+or @code{AIChE} J or @code{AIChEJ).}")
+    (license license:lppl)))
+
 (define-public texlive-akshar
   (package
     (name "texlive-akshar")
