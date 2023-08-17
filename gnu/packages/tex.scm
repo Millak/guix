@@ -3043,6 +3043,24 @@ issues of numbers in Basque.")
 It may use either TikZ or PSTricks as graphics engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-beebe
+  (package
+    (name "texlive-beebe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/beebe/" "tex/generic/beebe/")
+             (base32
+              "060v67ma1r6n9fmg4v4zl2pgxz6gmd4qrazyss9hwq6z4206pqc0")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblio")
+    (synopsis "Collection of bibliographies")
+    (description
+     "This package provides a collection of BibTeX bibliographies on
+TeX-related topics (including, for example, spell-checking and SGML).  Each
+includes a LaTeX wrapper file to typeset the bibliography.")
+    (license license:public-domain)))
+
 (define-public texlive-begingreek
   (package
     (name "texlive-begingreek")
