@@ -3705,6 +3705,29 @@ way.")
 automatically format, group, and sort the entries on a CV.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-dw
+  (package
+    (name "texlive-biblatex-dw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-dw/"
+                   "tex/latex/biblatex-dw/bbx/"
+                   "tex/latex/biblatex-dw/cbx/"
+                   "tex/latex/biblatex-dw/lbx/")
+             (base32
+              "1vw008djg535hdwbmk5dqvaw0v6cm3lqmlvk8sfzybpqffw1crlr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-dw")
+    (synopsis "Humanities styles for BibLaTeX")
+    (description
+     "This package provides a small collection of styles for the BibLaTeX
+package.  It was designed for citations in the humanities and offers some
+features that are not provided by the standard BibLaTeX styles.  The styles
+are dependent on BibLaTeX and cannot be used without it.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
