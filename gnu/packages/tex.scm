@@ -9120,6 +9120,27 @@ LaTeX2e}.")
 several languages not included in that package: BUGS, JAGS, and Stan.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lyluatex
+  (package
+    (name "texlive-lyluatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/lyluatex/" "scripts/lyluatex/"
+                   "tex/luatex/lyluatex/")
+             (base32
+              "04w57pki09mzhaxv3s1f2m0bj1df5aqxygqgrihvkabc5x00is87")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lyluatex")
+    (synopsis
+     "Commands to include LilyPond scores within a (Lua)LaTeX document")
+    (description
+     "This package provides macros for the inclusion of LilyPond scores within
+LuaLaTeX.  It calls LilyPond to compile scores, then includes the produced
+files.")
+    (license license:expat)))
+
 (define-public texlive-macros2e
   (package
     (name "texlive-macros2e")
