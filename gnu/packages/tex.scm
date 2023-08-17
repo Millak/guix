@@ -4216,6 +4216,27 @@ notation support), @code{texmate} (for alternative notation support), or
 @code{chessfss} (for flexible font choices).")
     (license license:public-domain)))
 
+(define-public texlive-chess-problem-diagrams
+  (package
+    (name "texlive-chess-problem-diagrams")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chess-problem-diagrams/"
+                   "source/latex/chess-problem-diagrams/"
+                   "tex/latex/chess-problem-diagrams/")
+             (base32
+              "0m32dhwdfrgy1r3lq8j7hdaa79kniwwq3lanbkkn32dhybwa0b61")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chess-problem-diagrams")
+    (synopsis "Package for typesetting chess problem diagrams")
+    (description
+     "This package provides macros to typeset chess problem diagrams including
+fairy chess problems (mostly using rotated images of pieces) and other
+boards.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-chhaya
   (package
     (name "texlive-chhaya")
