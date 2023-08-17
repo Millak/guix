@@ -4986,6 +4986,26 @@ separated by thick lines.
 @end itemize")
     (license license:expat)))
 
+(define-public texlive-crosswrd
+  (package
+    (name "texlive-crosswrd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crosswrd/"
+                   "source/latex/crosswrd/"
+                   "tex/latex/crosswrd/")
+             (base32
+              "0yhsrfn49wj579ms3smd1z97rjqnsi1wrsgrjs570bllgf09bcir")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crosswrd")
+    (synopsis "Macros for typesetting crossword puzzles")
+    (description
+     "The package provides a LaTeX method of typesetting crosswords, and
+assists the composer ensure that the grid all goes together properly.")
+    (license license:lppl)))
+
 (define-public texlive-cryptocode
   (package
     (name "texlive-cryptocode")
