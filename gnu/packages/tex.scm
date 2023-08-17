@@ -3875,6 +3875,27 @@ GOST 7.0.5-2008")
 Manual} (a version of Chicago).")
     (license license:lppl)))
 
+(define-public texlive-biblatex-ieee
+  (package
+    (name "texlive-biblatex-ieee")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-ieee/"
+                   "tex/latex/biblatex-ieee/")
+             (base32
+              "0a3r2lvp4nr53gxpa40qa7zdgj2qpyygvcgcbprnvfxlqrk8lfm0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-ieee")
+    (synopsis "IEEE style files for BibLaTeX")
+    (description
+     "This is a BibLaTeX style that implements the bibliography style of the
+IEEE for BibLaTeX.  The implementation follows standard BibLaTeX conventions,
+and can be used simply by loading BibLaTeX with the appropriate @samp{ieee}
+option.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
