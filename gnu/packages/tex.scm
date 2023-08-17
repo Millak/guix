@@ -11363,6 +11363,28 @@ working with the source code painless (well, less painful).  A variety of
 stylistic variants are available to suit personal taste.")
     (license license:lppl1.3+)))
 
+(define-public texlive-othello
+  (package
+    (name "texlive-othello")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/othello/"
+                   "fonts/source/public/othello/"
+                   "fonts/tfm/public/othello/"
+                   "tex/latex/othello/")
+             (base32
+              "0ijb2giry6bjvx6ll51n9c8fqy1kmwgrwvrg21mxnj9xc4gkdjrh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/othello")
+    (synopsis "Create othello boards")
+    (description
+     "This package can be used to create othello boards.  It includes also
+fonts, as Metafont source.")
+    (license license:gpl3+)))
+
 (define-public texlive-otibet
   (package
     (name "texlive-otibet")
