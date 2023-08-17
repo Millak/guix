@@ -3993,6 +3993,25 @@ via BibLaTeX's built-in related mechanism.  It provides a new related type
 @code{license} and some bibmacros for typesetting these related entries.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-lncs
+  (package
+    (name "texlive-biblatex-lncs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-lncs/"
+                   "tex/latex/biblatex-lncs/")
+             (base32
+              "0fxhwvkgk3y2d1w6h2sldgzwbwng97bqqgny2slaajhk9wlbcs3k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-lncs")
+    (synopsis "BibLaTeX style for Springer Lecture Notes in Computer Science")
+    (description
+     "This is a BibLaTeX style for Springer Lecture Notes in Computer Science
+(LNCS).  It extends the standard BiBTeX model by an acronym entry.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
