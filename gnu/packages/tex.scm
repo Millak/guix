@@ -1990,6 +1990,26 @@ of the academic year, a macro to be redefined to change the presentation of
 the years.")
     (license license:lppl1.3c)))
 
+(define-public texlive-annotate
+  (package
+    (name "texlive-annotate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/annotate/")
+             (base32
+              "12q3xk08ycz57vsrcr2glk7y48w8sbc4n8lrqaicd46cxfd4jdqm")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/annotate")
+    (synopsis "Bibliography style with annotations")
+    (description
+     "The style is a derivative of the standard @code{alpha} style, which
+processes an entry's annotate field as part of the printed output.")
+    ;; There is no explicit license in the "annotate.bst" file, but it
+    ;; mentions being derived from "alpha.bst", which is released under
+    ;; Knuth's terms.  We therefore use the same license.
+    (license license:knuth)))
+
 (define-public texlive-annotate-equations
   (package
     (name "texlive-annotate-equations")
