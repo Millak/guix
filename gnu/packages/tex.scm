@@ -8186,6 +8186,26 @@ bibliographies, indexes and page layout).")
 @code{latex2e-help-texinfo}.")
     (license license:public-domain)))
 
+(define-public texlive-latex4musicians
+  (package
+    (name "texlive-latex4musicians")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex4musicians/")
+             (base32
+              "1zvy2pa93kyn056d5n0irzdq5xmzki6d35zxacxfy19r0g9rwq6f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex4musicians")
+    (synopsis "Guide for combining LaTeX and music")
+    (description
+     "This guide, @emph{LaTeX for Musicians}, explains how to create LaTeX
+documents that include several kinds of music elements: music symbols, song
+lyrics, guitar chords diagrams, lead sheets, music excerpts, guitar
+tablatures, multi-page scores.")
+    (license license:fdl1.3+)))
+
 (define-public texlive-latexcheat-de
   (package
     (name "texlive-latexcheat-de")
