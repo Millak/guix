@@ -4074,6 +4074,25 @@ manuscript in classical philology, for example to prepare a critical
 edition.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-mla
+  (package
+    (name "texlive-biblatex-mla")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-mla/"
+                   "tex/latex/biblatex-mla/")
+             (base32
+              "09qlx067vhc4aflx9rjdbyq99xh3nzwlxj81cxp07mm2mykhxf39")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-mla")
+    (synopsis "MLA style files for BibLaTeX")
+    (description
+     "The package provides BibLaTeX support for citations in the format
+specified by the MLA handbook.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
