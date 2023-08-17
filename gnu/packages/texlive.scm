@@ -41,34 +41,25 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system perl)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
-  #:use-module (guix git-download)
-  #:use-module (guix svn-download)
-  #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages ghostscript)
-  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages multiprecision)
-  #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages shells)
-  #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
 (define %texlive-date "20230313")
@@ -92,7 +83,7 @@
     (sha256 (base32
              "0lqjm11pr9vasvivaci3k9xcmdyd08ldnh31zf8avjjs09xcfkac"))))
 
-(define-public texlivebin
+(define texlivebin
   (package
     (name "texlivebin")
     (version %texlive-date)
@@ -277,7 +268,7 @@ This package contains the binaries.")
     (home-page "https://www.tug.org/texlive/")))
 
 
-(define-public texlivetexmf
+(define texlivetexmf
   (package
    (name "texlivetexmf")
    (version %texlive-date)
