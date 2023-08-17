@@ -6917,6 +6917,27 @@ a possibility of optical centering and right-hanging alignment of lines broken
 because of length.")
     (license license:lppl)))
 
+(define-public texlive-go
+  (package
+    (name "texlive-go")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/go/" "fonts/source/public/go/"
+                   "fonts/tfm/public/go/" "source/fonts/go/"
+                   "tex/latex/go/")
+             (base32
+              "1cvxfz9m7fx62iiz00f7qlywrmwwnpk0xzlyv63c90ji9xzfawcv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/go")
+    (synopsis "Fonts and macros for typesetting go games")
+    (description
+     "The macros provide for nothing more complicated than the standard
+19x19 board; the fonts are written in Metafont.")
+    (license license:public-domain)))
+
 (define-public texlive-gost
   (package
     (name "texlive-gost")
