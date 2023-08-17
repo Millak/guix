@@ -4093,6 +4093,27 @@ edition.")
 specified by the MLA handbook.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-morenames
+  (package
+    (name "texlive-biblatex-morenames")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-morenames/"
+                   "tex/latex/biblatex-morenames/")
+             (base32
+              "1gwzxz1yqnq3q2fjrb4nf0370a90fbi6b20zvplj3lfiqmdkaiak")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-morenames")
+    (synopsis "New names for standard BibLaTeX entry type")
+    (description
+     "This package adds new fields of ``name'' type to the standard entry
+types of BibLaTeX.  For example, @samp{maineditor}, for a @code{@@collection},
+means the editor of @code{@@mvcollection}, and not the editor of the
+@code{@@collection}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
