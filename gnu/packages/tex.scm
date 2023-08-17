@@ -12418,6 +12418,26 @@ systems, with Weyl chambers, weight lattices, and parabolic subgroups.")
 for typesetting homework assignments, and formula cheat sheets for exams.")
     (license license:lppl1.3c)))
 
+(define-public texlive-realtranspose
+  (package
+    (name "texlive-realtranspose")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/realtranspose/"
+                   "source/latex/realtranspose/"
+                   "tex/latex/realtranspose/")
+             (base32
+              "0ar1yisx6pq8qjhsvb406l5j06y9jkyxvvgq9s1sg15nk9sjzy1r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/realtranspose")
+    (synopsis "The ``real'' way to transpose a matrix")
+    (description
+     "With @code{realtranspose} you can notate the transposition of a matrix
+by rotating the symbols 90 degrees.")
+    (license license:expat)))
+
 (define-public texlive-rec-thy
   (package
     (name "texlive-rec-thy")
