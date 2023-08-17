@@ -7191,6 +7191,24 @@ programs are provided as sources, not installed in the @file{bin}
 directories.")
     (license license:public-domain)))
 
+(define-public texlive-hanoi
+  (package
+    (name "texlive-hanoi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/plain/hanoi/")
+             (base32
+              "09a7cv76naxzdach5507wdqnjp12amvlia7kw0jh224ydmkzfx9x")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hanoi")
+    (synopsis "Tower of Hanoi in TeX")
+    (description
+     "The Plain TeX program (typed in the shape of the towers of Hanoi) serves
+both as a game and as a TeX programming exercise.  As a game, it will solve
+the towers with (up to) 15 discs.")
+    (license license:public-domain)))
+
 (define-public texlive-happy4th
   (package
     (name "texlive-happy4th")
