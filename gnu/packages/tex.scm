@@ -14723,6 +14723,32 @@ bundle, for which map files are available to provide a Vietnamese version.")
     (license (list license:lppl1.3+
                    (license:fsf-free "file://source/generic/vntex/LICENSE-utopia.txt")))))
 
+(define-public texlive-wargame
+  (package
+    (name "texlive-wargame")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wargame/" "source/latex/wargame/"
+                   "tex/latex/wargame/")
+             (base32
+              "1j56fnq5m298ly650v0k7qla15kiwcwswsd7454wqv9f191gmhhh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wargame")
+    (synopsis "LaTeX package to prepare hex'n'counter wargames")
+    (description
+     "This package can help make classic Hex'n'Counter wargames using LaTeX.
+The package provide tools for generating Hex maps and boards Counters for
+units, markers, and so on Counter sheets Order of Battle charts Illustrations
+in the rules using the defined maps and counters The result will often be
+a PDF (or set of PDFs) that contain everything one will need for
+a game (rules, charts, boards, counter sheets).  The package uses NATO App6
+symbology for units.  The package uses NATO App6 symbology for units.  The
+package uses TikZ for most things.  The package support exporting the game to
+a VASSAL module.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-witharrows
   (package
     (name "texlive-witharrows")
