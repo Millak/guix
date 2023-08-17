@@ -4218,6 +4218,25 @@ preparing papers for submission to the journal @emph{Nature}.")
 Journal of Medicine (NEJM).")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-nottsclassic
+  (package
+    (name "texlive-biblatex-nottsclassic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-nottsclassic/"
+                   "tex/latex/biblatex-nottsclassic/")
+             (base32
+              "13rvxykjyah5vn44sfagf1ggqhh1hd1qhz9m6jb87yhwz5snkrxh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-nottsclassic")
+    (synopsis "Citation style for the University of Nottingham")
+    (description
+     "This citation-style covers the citation and bibliography rules of the
+University of Nottingham.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
