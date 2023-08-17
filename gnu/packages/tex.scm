@@ -11542,6 +11542,26 @@ have value when comparing any two texts.")
 original source, parallel on the same page, one above the other.")
     (license license:lppl)))
 
+(define-public texlive-pas-crosswords
+  (package
+    (name "texlive-pas-crosswords")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pas-crosswords/"
+                   "tex/latex/pas-crosswords/")
+             (base32
+              "1masrs2ywyxa9rfw7vz9j9jw0b1hhkd5fin2rg7rd2x1qb305q5w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pas-crosswords")
+    (synopsis "Creating crossword grids, using TikZ")
+    (description
+     "The package produces crossword grids, using a wide variety of colours
+and decorations of the grids and the text in them.  The package uses TikZ for
+its graphical output.")
+    (license license:lppl)))
+
 (define-public texlive-pascaltriangle
   (package
     (name "texlive-pascaltriangle")
