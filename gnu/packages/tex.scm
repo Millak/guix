@@ -3462,6 +3462,33 @@ style guide.  This is a legacy style for 6th Edition documents.  Please use
 the BibLaTeX-apa style package for the latest APA edition conformance.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-archaeology
+  (package
+    (name "texlive-biblatex-archaeology")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-archaeology/"
+                   "source/latex/biblatex-archaeology/"
+                   "tex/latex/biblatex-archaeology/")
+             (base32
+              "059mp6c1wgxkdjqrpwyx9yafw8dma75c3653rjc3sp66xx3akr8k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-archaeology")
+    (synopsis "Collection of BibLaTeX styles for German prehistory")
+    (description
+     "This package provides additional BibLaTeX styles for German humanities.
+Its core purpose is to enable the referencing rules of the Romano-Germanic
+Commission (@emph{Romisch-Germanische Kommission}), the department of
+prehistory of the German Archaeological Institute (@emph{Deutsches
+Archaologisches Institut}), since these are referenced by most guidelines in
+German prehistory and medieval archaeology and serve as a kind of template.
+@code{biblatex-archaeology} provides verbose, numeric and author date styles
+as well and adaptions to specific document types like exhibition and auction
+catalogues.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
