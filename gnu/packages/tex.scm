@@ -4556,6 +4556,28 @@ number inside the subseries.  This package provides new fields to manage such
 system.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-swiss-legal
+  (package
+    (name "texlive-biblatex-swiss-legal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-swiss-legal/"
+                   "tex/latex/biblatex-swiss-legal/")
+             (base32
+              "1x4dy1vxrbx0xkw3vysvcds0s1jz9w1pwri5ypiidj517sdsnff4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-swiss-legal")
+    (synopsis
+     "Bibliography and citation styles following Swiss legal practice")
+    (description
+     "The package provides BibLaTeX bibliography and citation styles for
+documents written in accordance with Swiss legal citation standards in either
+French or German.  However, the package is at present outdated and does not
+work properly with newer versions of BibLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
