@@ -575,7 +575,6 @@ symmetries written in C.  Spglib can be used to:
            glew
            libxml2
            mmtf-cpp
-           msgpack
            python-pyqt
            glm
            netcdf))
