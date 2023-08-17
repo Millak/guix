@@ -2108,6 +2108,23 @@ made to follow the European Journal of Operational Research reference style
 guidelines.")
     (license license:lppl1.3c)))
 
+(define-public texlive-apalike2
+  (package
+    (name "texlive-apalike2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/apalike2/")
+             (base32
+              "0mn84ahwjg8gvw5lifvcrnch11q79d4bgw3nmhrh4v8slwgip5l7")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apalike2")
+    (synopsis "Bibliography style that approaches APA requirements")
+    (description
+     "This package is an adaptation of @code{apalike}, which is part of the
+base BibTeX distribution.")
+    (license license:knuth)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
