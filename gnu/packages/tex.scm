@@ -10995,6 +10995,30 @@ the columns; tools to color rows and columns with a good PDF result; blocks of
 cells; etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nimsticks
+  (package
+    (name "texlive-nimsticks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nimsticks/"
+                   "source/latex/nimsticks/"
+                   "tex/latex/nimsticks/")
+             (base32
+              "0y7v01a02lz6mj1fdyrqzgz7kf7y4m3jarkr3sdyid25k0zx9dbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nimsticks")
+    (synopsis "Draws sticks for games of multi-pile nim")
+    (description
+     "This LaTeX package provides commands @code{\\drawnimstick} to draw
+a single nim stick and @code{\\nimgame} which represents games of multi-pile
+Nim.  Nim sticks are drawn with a little random wobble so they look thrown
+together and not too regular.  The package also provides options to customise
+the size and colour of the sticks, and flexibility to draw heaps of different
+objects.")
+    (license license:expat)))
+
 (define-public texlive-nnext
   (package
     (name "texlive-nnext")
