@@ -4535,6 +4535,27 @@ Biber for typesetting articles for Springer's journals.  It is the same as the
 old BibTeX style @file{spbasic.bst}.")
     (license license:lppl)))
 
+(define-public texlive-biblatex-subseries
+  (package
+    (name "texlive-biblatex-subseries")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-subseries/"
+                   "tex/latex/biblatex-subseries/")
+             (base32
+              "09kqqccn8dlaydz1v2szllryaxrj0c36z63ynhrv9dvd1sk0vdhd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-subseries")
+    (synopsis "Manages subseries with BibLaTeX")
+    (description
+     "Some publishers organize book series with subseries.  In this case, two
+numbers are associated with one volume: the number inside the series and the
+number inside the subseries.  This package provides new fields to manage such
+system.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
