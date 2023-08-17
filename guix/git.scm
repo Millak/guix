@@ -360,17 +360,8 @@ dynamic extent of EXP."
 (define (reference-available? repository ref)
   "Return true if REF, a reference such as '(commit . \"cabba9e\"), is
 definitely available in REPOSITORY, false otherwise."
-  (match ref
-    ((or ('commit . commit)
-         ('tag-or-commit . (? commit-id? commit)))
-     (let ((len (string-length commit))
-           (oid (string->oid commit)))
-       (false-if-git-not-found
-        (->bool (if (< len 40)
-                    (object-lookup-prefix repository oid len OBJ-COMMIT)
-                    (commit-lookup repository oid))))))
-    (_
-     #f)))
+  (false-if-git-not-found
+   (->bool (resolve-reference repository ref))))
 
 (define (clone-from-swh url tag-or-commit output)
   "Attempt to clone TAG-OR-COMMIT (a string), which originates from URL, using
