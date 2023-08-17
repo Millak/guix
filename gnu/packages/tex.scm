@@ -4259,6 +4259,32 @@ board.  It has a lot of options to place pieces on the board.  Using exotic
 pieces (e.g., for fairy chess) is possible.")
     (license license:lppl)))
 
+(define-public texlive-chessfss
+  (package
+    (name "texlive-chessfss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chessfss/"
+                   "fonts/enc/dvips/chessfss/"
+                   "source/latex/chessfss/"
+                   "tex/latex/chessfss/")
+             (base32
+              "1l51famz3zx9v4v0mdxwk51xhaidwgfplf268q2f1ipif9h6ma5d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chessfss")
+    (synopsis "Package to handle chess fonts")
+    (description
+     "This package offers commands to use and switch between chess fonts.
+It uses the LaTeX font selection scheme (nfss).  The package doesn't parse,
+format and print PGN input like e.g., the packages @code{skak} or
+@code{texmate}; the aim of the package is to offer writers of chess packages
+a bundle of commands for fonts, so that they don't have to implement all these
+commands for themselves.  A normal user can use the package to print
+e.g,. single chess symbols and simple diagrams.")
+    (license license:lppl)))
+
 (define-public texlive-chhaya
   (package
     (name "texlive-chhaya")
