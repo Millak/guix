@@ -12688,6 +12688,46 @@ German lawyers.  Now in the early beginning it only contains @code{rtklage},
 a class to make lawsuits.")
     (license license:lppl)))
 
+(define-public texlive-rubik
+  (package
+    (name "texlive-rubik")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rubik/"
+                   "doc/man/man1/rubikrotation.1"
+                   "doc/man/man1/rubikrotation.man1.pdf"
+                   "scripts/rubik/"
+                   "source/latex/rubik/"
+                   "tex/latex/rubik/")
+             (base32
+              "0v7j88d72acgrj24x8g859k7q6qd47pjy3wdqfvrqq3y39x48011")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "rubikrotation.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/rubik")
+    (synopsis "Document Rubik cube configurations and rotation sequences")
+    (description
+     "The bundle provides four packages:
+@itemize
+
+@item @code{rubikcube} provides commands for typesetting Rubik cubes
+and their transformations,
+
+@item @code{rubiktwocube} provides commands for typesetting Rubik
+twocubes and their transformations,
+
+@item @code{rubikrotation} can process a sequence of Rubik rotation
+moves, with the help of a Perl package executed via
+@code{\\write18} (shell escape) commands,
+
+@item @code{rubikpatterns} is a collection of well known patterns and
+their associated rotation sequences.
+
+@end itemize")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sankey
   (package
     (name "texlive-sankey")
