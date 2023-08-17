@@ -4190,6 +4190,28 @@ given by Mumbai University.")
                    (license:fsf-free "file://doc/latex/aalok/README.txt")
                    license:fdl1.3+))))
 
+(define-public texlive-chordbars
+  (package
+    (name "texlive-chordbars")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chordbars/"
+                   "tex/latex/chordbars/")
+             (base32
+              "0pyxnjalrmkan3mjir6w3g3xhgyzzbjkjhxz460p1nm8n5ng05xq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chordbars")
+    (synopsis "Print chord grids for pop/jazz tunes")
+    (description
+     "This Tikz-based music-related package is targeted at pop/jazz
+guitar/bass/piano musicians.  They usually need only the chords and the song
+structure.  This package produces rectangular song patterns with one square
+per bar, with the chord shown inside the square.  It also handles the song
+structure by showing the bar count and the repetitions of the patterns.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chronosys
   (package
     (name "texlive-chronosys")
