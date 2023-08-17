@@ -46027,6 +46027,69 @@ includes the Aleph engine and related Omega formats and packages, and the
 HiTeX engine and related.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-games
+  (package
+    (name "texlive-collection-games")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-bartel-chess-fonts
+           texlive-chess
+           texlive-chess-problem-diagrams
+           texlive-chessboard
+           texlive-chessfss
+           texlive-chinesechess
+           texlive-collection-latex
+           texlive-crossword
+           texlive-crosswrd
+           texlive-customdice
+           texlive-egameps
+           texlive-gamebook
+           texlive-gamebooklib
+           texlive-go
+           texlive-hanoi
+           texlive-havannah
+           texlive-hexboard
+           texlive-hexgame
+           texlive-hmtrump
+           texlive-horoscop
+           texlive-jeuxcartes
+           texlive-jigsaw
+           texlive-labyrinth
+           texlive-logicpuzzle
+           texlive-mahjong
+           texlive-maze
+           texlive-musikui
+           texlive-nimsticks
+           texlive-onedown
+           texlive-othello
+           texlive-othelloboard
+           texlive-pas-crosswords
+           texlive-psgo
+           texlive-realtranspose
+           texlive-reverxii
+           texlive-rubik
+           texlive-schwalbe-chess
+           texlive-scrabble
+           texlive-sgame
+           texlive-skak
+           texlive-skaknew
+           texlive-soup
+           texlive-sudoku
+           texlive-sudokubundle
+           texlive-tangramtikz
+           texlive-wargame
+           texlive-xq
+           texlive-xskak))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Games typesetting")
+    (description
+     "This collection includes setups for typesetting various games,
+including chess.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-humanities
   (package
     (name "texlive-collection-humanities")
