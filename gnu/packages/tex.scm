@@ -4198,6 +4198,26 @@ usable with other classes, too.")
 preparing papers for submission to the journal @emph{Nature}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-nejm
+  (package
+    (name "texlive-biblatex-nejm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-nejm/"
+                   "source/latex/biblatex-nejm/"
+                   "tex/latex/biblatex-nejm/")
+             (base32
+              "1fa12hbzrqd7brz90zhn3lklbqvvn5sw5l3y8pnm5xx604dkdiiw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-nejm")
+    (synopsis "BibLaTeX style for the New England Journal of Medicine (NEJM)")
+    (description
+     "This is a BibLaTeX numeric style based on the design of the New England
+Journal of Medicine (NEJM).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
