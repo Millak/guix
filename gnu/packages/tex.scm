@@ -3145,6 +3145,31 @@ the British Ecological Society.  The style was produced independently of the
 Society, and has no formal approval by the BES.")
     (license license:lppl)))
 
+(define-public texlive-bestpapers
+  (package
+    (name "texlive-bestpapers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/bestpapers/"
+                   "doc/bibtex/bestpapers/")
+             (base32
+              "0c0lp51z5z2707r1hig993gbx78v7zb84wmk3z9iyw08m3bbq34s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bestpapers")
+    (synopsis "A BibTeX package to produce lists of authors' best papers")
+    (description
+     "Many people preparing their resumes find the requirement ``please list
+five (or six, or ten) papers authored by you''.  The same requirement is often
+stated for reports prepared by professional teams.  The creation of such lists
+may be a cumbersome task.  Even more difficult is it to support such lists
+over the time, when new papers are added.  The BibTeX style
+@file{bestpapers.bst} is intended to facilitate this task.  It is based on the
+idea that it is easier to score than to sort: we can assign a score to a paper
+and then let the computer select the papers with highest scores.")
+    (license license:public-domain)))
+
 (define-public texlive-betababel
   (package
     (name "texlive-betababel")
