@@ -3808,7 +3808,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.4.12")
+    (version "3.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3817,7 +3817,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yji5pziqxfvyfizk3fn9j59bqlfdwfa1a0y9jjfknb2mmlwwb9w"))))
+                "15jx62fm1frbbvpkxysvvwz1a8d605xi53aacf0bvp4mb1dzpddn"))))
     (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
@@ -3845,6 +3845,14 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (substitute* "tests/Makefile.am"
                 (("\\bdhtrunnertester\\.(h|cpp)\\b")
                  ""))))
+          (add-after 'unupack 'relax-test-timeouts
+            (lambda _
+              ;; At least the 'test_send_json' has been seen to fail
+              ;; non-deterministically, but it seems hard to reproducible that
+              ;; failure.
+              (substitute* "tests/httptester.cpp"
+                (("std::chrono::seconds\\(10)")
+                 "std::chrono::seconds(30)"))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
