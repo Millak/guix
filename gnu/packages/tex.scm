@@ -4237,6 +4237,28 @@ fairy chess problems (mostly using rotated images of pieces) and other
 boards.")
     (license license:lppl1.2+)))
 
+(define-public texlive-chessboard
+  (package
+    (name "texlive-chessboard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chessboard/"
+                   "source/latex/chessboard/"
+                   "tex/latex/chessboard/")
+             (base32
+              "1nz66h6baz5m2jfzjzyccw0rcpkc6rfbq9cc759y875b47j8pkhx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chessboard")
+    (synopsis "Print chess boards")
+    (description
+     "This package offers commands to print chessboards.  It can print partial
+boards, hide pieces and fields, color the boards and put various marks on the
+board.  It has a lot of options to place pieces on the board.  Using exotic
+pieces (e.g., for fairy chess) is possible.")
+    (license license:lppl)))
+
 (define-public texlive-chhaya
   (package
     (name "texlive-chhaya")
