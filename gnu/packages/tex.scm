@@ -6700,6 +6700,35 @@ A simple gamebook example is included with the package, and acts as
 a tutorial.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gamebooklib
+  (package
+    (name "texlive-gamebooklib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gamebooklib/"
+                   "source/latex/gamebooklib/"
+                   "tex/latex/gamebooklib/")
+             (base32
+              "1zw1l4a6wqrqpfmvxj404lf8z559hm7sgw8cwxn04g6pk72jycdl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gamebooklib")
+    (synopsis "Macros for setting numbered entries in shuffled order")
+    (description
+     "This package provides macros and environments to allow the user to
+typeset a series of cross-referenced, numbered entries, shuffled into random
+order, to produce an interactive novel or @dfn{gamebook}.  This allows entries
+to be written in natural order and shuffled automatically into a repeatable
+non-linear order.  Limited support is provided for footnotes to appear at the
+natural position: the end of each entry, or the end of each page, whichever is
+closest to the footnote mark.
+
+This is unrelated to the @code{gamebook} package which is more concerned with
+the formatting of entries rather than their order.  The two packages can be
+used together or separately.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gastex
   (package
     (name "texlive-gastex")
