@@ -7983,6 +7983,30 @@ digit form.  This package provides support for spelling out numbers in Italian
 words, both in cardinal and in ordinal form.")
     (license license:lppl)))
 
+(define-public texlive-jeuxcartes
+  (package
+    (name "texlive-jeuxcartes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jeuxcartes/"
+                   "tex/latex/jeuxcartes/")
+             (base32
+              "0imwfdwpap755id1k3cqk2p71nqsddc7g8kp3cc8376j4nc34c8a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jeuxcartes")
+    (synopsis "Macros to insert playing cards")
+    (description
+     "This package provides macros to insert playing cards, single, or
+hand, or random-hand, Poker or French Tarot or Uno, from PNG files.")
+    (license
+     (list license:cc-by-sa4.0
+           license:expat
+           license:lgpl2.1
+           license:lppl1.3c
+           license:public-domain))))
+
 (define-public texlive-jfmutil
   (package
     (name "texlive-jfmutil")
