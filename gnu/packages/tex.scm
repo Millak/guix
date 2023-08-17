@@ -3917,6 +3917,25 @@ Archaeology")
 Student Research in Archaeology.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-iso690
+  (package
+    (name "texlive-biblatex-iso690")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-iso690/"
+                   "tex/latex/biblatex-iso690/")
+             (base32
+              "07h16m8n8lydph2n567fnx2hzdw15mwyrcgs30x8anv9qxh0z6jf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-iso690")
+    (synopsis "BibLaTeX style for ISO 690 standard")
+    (description
+     "The package provides a bibliography and citation style which conforms to
+the latest revision of the international standard ISO 690:2010.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
