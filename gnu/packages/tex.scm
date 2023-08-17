@@ -3285,6 +3285,34 @@ The lists are created by @command{bibsort}.  This program creates the
 bibliography without using MakeIndex or BibTeX.")
     (license license:gpl3+)))
 
+(define-public texlive-bibcop
+  (package
+    (name "texlive-bibcop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/bibtex/bibcop/"
+                   "doc/man/man1/bibcop.1"
+                   "doc/man/man1/bibcop.man1.pdf"
+                   "scripts/bibcop/"
+                   "source/bibtex/bibcop/"
+                   "tex/latex/bibcop/")
+             (base32
+              "0w8n51ksff3b4nfx0ggnh00jhsdh1zg25hijxmpsq0z0wgazai9b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "bibcop.pl")))
+    (inputs (list perl))
+    (propagated-inputs (list texlive-iexec texlive-pgfopts))
+    (home-page "https://ctan.org/pkg/bibcop")
+    (synopsis "Style checker for .bib files")
+    (description
+     "This LaTeX package checks the quality of your @file{.bib} file and emits
+warning messages if any issues are found.  For this, the TeX processor must be
+run with the @samp{--shell-escape} option.  @command{bibcop} can also be used
+as a standalone command line tool.")
+    (license license:expat)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
