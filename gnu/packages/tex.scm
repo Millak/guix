@@ -4054,6 +4054,26 @@ the institutes for the social sciences of the Leibniz University Hannover/LUH
 (especially the Institute of Political Science).")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-manuscripts-philology
+  (package
+    (name "texlive-biblatex-manuscripts-philology")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-manuscripts-philology/"
+                   "tex/latex/biblatex-manuscripts-philology/")
+             (base32
+              "1q0rqqh6gqs930bzay5cq5hghxk28xs2321y8h7awif0akq03rhm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-manuscripts-philology")
+    (synopsis "Manage classical manuscripts with BibLaTeX")
+    (description
+     "The package adds a new entry type: @code{@@manuscript} to manage
+manuscript in classical philology, for example to prepare a critical
+edition.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
