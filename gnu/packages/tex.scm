@@ -4382,6 +4382,28 @@ indicates the real author of a work, when published in a pseudepigraphic
 name.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-sbl
+  (package
+    (name "texlive-biblatex-sbl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-sbl/"
+                   "makeindex/biblatex-sbl/"
+                   "tex/latex/biblatex-sbl/")
+             (base32
+              "1b04lwzmsgapf2x1y83jdmzsc0h59dwy35lglxwvmlwlv8czpx9s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-sbl")
+    (synopsis "Society of Biblical Literature (SBL) style files for BibLaTeX")
+    (description
+     "The package provides BibLaTeX support for citations in the format
+specified by the second edition of the Society of Biblical Literature (SBL)
+Handbook of Style.  A style file for writing SBL student papers is also
+included.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
