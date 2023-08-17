@@ -8561,6 +8561,26 @@ practical guide to LaTeX2e by Mark Trettin.  It focuses on obsolete packages
 and commands.")
     (license license:public-domain)))
 
+(define-public texlive-labyrinth
+  (package
+    (name "texlive-labyrinth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/labyrinth/"
+                   "tex/latex/labyrinth/")
+             (base32
+              "0i4w3dmfjq9vp6m82p4afplca0pdvk36g2h1yskmwbis07bykdgp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/labyrinth")
+    (synopsis "Draw labyrinths and solution paths")
+    (description
+     "The @code{labyrinth} package provides code and an environment for
+typesetting simple labyrinths with LaTeX, and generating an automatic or
+manual solution path.")
+    (license license:lppl)))
+
 (define-public texlive-lambda
   (package
     (name "texlive-lambda")
