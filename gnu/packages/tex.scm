@@ -3313,6 +3313,26 @@ run with the @samp{--shell-escape} option.  @command{bibcop} can also be used
 as a standalone command line tool.")
     (license license:expat)))
 
+(define-public texlive-biber-ms
+  (package
+    (name "texlive-biber-ms")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/bibtex/biber-ms/"
+                   "source/bibtex/biber-ms/")
+             (base32
+              "10r9jgarrbvqrz9nkjfkzsy3niggg5w6sjr7zi7bqy8zhkwf3hsf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biber-ms")
+    (synopsis
+     "BibTeX replacement for users of BibLaTeX (multiscript version)")
+    (description
+     "This is the multiscript version of Biber.  It must be used with the
+multiscript version of @code{biblatex-ms}.")
+    (license license:artistic2.0)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
