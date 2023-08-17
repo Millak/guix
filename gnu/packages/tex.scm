@@ -8420,6 +8420,38 @@ simple roots of any complex simple Lie algebra.  It uses the Dynkin diagrams
 package @code{dynkin-diagrams}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lilyglyphs
+  (package
+    (name "texlive-lilyglyphs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lilyglyphs/"
+                   "fonts/opentype/public/lilyglyphs/"
+                   "scripts/lilyglyphs/"
+                   "source/latex/lilyglyphs/fonts/"
+                   "source/latex/lilyglyphs/glyphimages/definitions/"
+                   "source/latex/lilyglyphs/glyphimages/generated_src/"
+                   "tex/latex/lilyglyphs/")
+             (base32
+              "1g5v2bq7ml9pnh2xlkzf6k9zh3azw7i96iapp8yajyxk8akj0ki2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts
+           #~(list "lily-glyph-commands.py"
+                   "lily-image-commands.py"
+                   "lily-rebuild-pdfs.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/lilyglyphs")
+    (synopsis "Access Lilypond fragments and glyphs, in LaTeX")
+    (description
+     "The package provides the means to include arbitrary elements of LilyPond
+notation, including symbols from Lilypond's Emmentaler font, in a LaTeX
+document.  The package uses OpenType fonts, and as a result must be compiled
+with LuaLaTeX or XeLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ling-macros
   (package
     (name "texlive-ling-macros")
