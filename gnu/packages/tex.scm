@@ -11385,6 +11385,29 @@ stylistic variants are available to suit personal taste.")
 fonts, as Metafont source.")
     (license license:gpl3+)))
 
+(define-public texlive-othelloboard
+  (package
+    (name "texlive-othelloboard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/othelloboard/"
+                   "tex/latex/othelloboard/")
+             (base32
+              "1kaj01bn4828261n8s761qcv7hg6a5aqi577rqglbkjg9grdh1s6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/othelloboard")
+    (synopsis
+     "Typeset othello (Reversi) diagrams of any size, with annotations")
+    (description
+     "The package enables the user to generate high-quality othello (also
+known as Reversi) board diagrams of any size.  The diagrams support
+annotations, including full game transcripts.  Automated board or transcript
+creation, from plain text formats standard to WZebra (and other programs) is
+also supported.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-otibet
   (package
     (name "texlive-otibet")
