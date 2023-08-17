@@ -3399,6 +3399,26 @@ package provides three different style files derived from each of the standard
 Association of Technical Norms) rules.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-ajc2020unofficial
+  (package
+    (name "texlive-biblatex-ajc2020unofficial")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-ajc2020unofficial/"
+                   "tex/latex/biblatex-ajc2020unofficial/")
+             (base32
+              "1ngh68a7ihhvpdfz09c087pfqnnpj3mnm8c4jmw8krq52b79fr87")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-ajc2020unofficial")
+    (synopsis "BibLaTeX style for the Australasian Journal of Combinatorics")
+    (description
+     "This is an unofficial BibLaTeX style for the Australasian Journal of
+Combinatorics.  Note that the journal (as for 01 March 2020) does not accept
+BibLaTeX, so you probably want to use @code{biblatex2bibitem}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
