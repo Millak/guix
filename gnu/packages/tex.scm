@@ -4297,6 +4297,61 @@ The bundle provides support for a wide variety of content types, including
 manuscripts, audiovisual resources, social media and legal references.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-philosophy
+  (package
+    (name "texlive-biblatex-philosophy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-philosophy/"
+                   "source/latex/biblatex-philosophy/"
+                   "tex/latex/biblatex-philosophy/")
+             (base32
+              "05fapyb6wwyv4mwjhgg3gasvqkwpwd6jxv095hird9011n6drrzm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-biblatex
+                  texlive-cochineal
+                  texlive-csquotes
+                  texlive-etoolbox
+                  texlive-fontaxes
+                  texlive-fontsize
+                  texlive-guitlogo
+                  texlive-hologo
+                  texlive-hypdoc
+                  texlive-inconsolata
+                  texlive-libertine
+                  texlive-listings
+                  texlive-ltxdockit
+                  texlive-manfnt
+                  texlive-mdframed
+                  texlive-metalogo
+                  texlive-microtype
+                  texlive-needspace
+                  texlive-newtx
+                  texlive-parskip
+                  texlive-pgf
+                  texlive-sectsty
+                  texlive-upquote
+                  texlive-xcolor
+                  texlive-xkeyval
+                  texlive-xstring
+                  texlive-zref))))
+    (home-page "https://ctan.org/pkg/biblatex-philosophy")
+    (synopsis "Styles for using BibLaTeX for work in philosophy")
+    (description
+     "The bundle offers two styles --- @code{philosophy-classic} and
+@code{philosophy-modern} --- that facilitate the production of two different
+kinds of bibliography, based on the author-year style, with options and
+features to manage the information about the translation of foreign texts or
+their reprints.  Though the package's default settings are based on the
+conventions used in Italian publications, these styles can be used with every
+language recognized by Babel, possibly with some simple redefinitions.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-biblatex-phys
   (package
     (name "texlive-biblatex-phys")
