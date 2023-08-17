@@ -13027,6 +13027,27 @@ book.")
 electrical and electronics engineers and graph theorists.")
     (license license:lppl)))
 
+(define-public texlive-sgame
+  (package
+    (name "texlive-sgame")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sgame/" "tex/latex/sgame/")
+             (base32
+              "0kzrimwmgwa3f61vawc1fq5vvgx4pxa2586wqhd4cf66ywdikn0v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sgame")
+    (synopsis "LaTeX style for typesetting strategic games")
+    (description
+     "This package can be used to format strategic games.  For a 2x2 game,
+for example, the input: @samp{\\begin@{game@}{2}{2} &$L$ &$M$\\\\ $T$ &$2,2$
+&$2,0$\\\\ $B$ &$3,0$ &$0,9$ \\end@{game@}} produces output with (a) boxes
+around the payoffs, (b) payoff columns of equal width, and (c) payoffs
+vertically centered within the boxes.")
+    (license license:lppl)))
+
 (define-public texlive-shuffle
   (package
     (name "texlive-shuffle")
