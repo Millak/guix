@@ -2801,6 +2801,31 @@ and Metafont sources for fonts.")
 of mathematical disciplines.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bartel-chess-fonts
+  (package
+    (name "texlive-bartel-chess-fonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bartel-chess-fonts/"
+                   "fonts/source/public/bartel-chess-fonts/"
+                   "fonts/tfm/public/bartel-chess-fonts/")
+             (base32
+              "1gg7g2gb5j0g0ig4190260zlpnyfmdzcqn7dsw5kp9p5pbn5hbhf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    ;; FIXME: Font metrics generation fails with "! Strange path (turning
+    ;; number is zero)." error.
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/bartel-chess-fonts")
+    (synopsis "Set of fonts supporting chess diagrams")
+    (description "This package provides fonts supporting chess diagrams.")
+    (license license:gpl3+)))
+
 (define-public texlive-basque-book
   (package
     (name "texlive-basque-book")
