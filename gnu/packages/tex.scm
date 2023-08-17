@@ -4619,6 +4619,25 @@ of the verbose family of BibLaTeX citestyles.  The option works when you
 text]@{key@}}.  The package corrects this problem.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-unified
+  (package
+    (name "texlive-biblatex-unified")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-unified/"
+                   "tex/latex/biblatex-unified/")
+             (base32
+              "0d9b20m10dlkii2zxj00xgascqarf8qv1vfz28v7hnm9vd54h3rw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-unified")
+    (synopsis "BibLaTeX unified stylesheet for linguistics journals")
+    (description
+     "BibLaTeX-unified is an opinionated BibLaTeX implementation of the
+Unified Stylesheet for Linguistics Journals.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
