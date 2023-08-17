@@ -3333,6 +3333,29 @@ as a standalone command line tool.")
 multiscript version of @code{biblatex-ms}.")
     (license license:artistic2.0)))
 
+(define-public texlive-bibexport
+  (package
+    (name "texlive-bibexport")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/bibexport/"
+                   "doc/bibtex/bibexport/" "scripts/bibexport/"
+                   "source/bibtex/bibexport/")
+             (base32
+              "161056627w1lazfpld3lyjwfrl8j8gc4b6dzml46bzwf7mk9ifln")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "bibexport.sh")))
+    (home-page "https://ctan.org/pkg/bibexport")
+    (synopsis "Extract a BibTeX file based on a @file{.aux} file")
+    (description
+     "This package provides a Bourne shell script that uses BibTeX to extract
+bibliography entries that are @code{\\cite}'d in a document.  It can also
+expand a BibTeX file, expanding the abbreviations (other than the built-in
+ones like month names) and following the cross-references.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
