@@ -6783,6 +6783,27 @@ Currently two steps of symmetry reduction are supported.")
 processed files, as well as solutions to the exercices.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-guitar
+  (package
+    (name "texlive-guitar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/guitar/" "source/latex/guitar/"
+                   "tex/latex/guitar/")
+             (base32
+              "0rywmlz59mjm59n4607qk9fa62w1c9qv9iyyja8k9vb4pc9yijrc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/guitar")
+    (synopsis "Guitar chords and song texts")
+    (description
+     "This package provides (La)TeX macros for typesetting guitar chords over
+song texts.  Note that this package only places arbitrary TeX code over the
+lyrics.  To typeset the chords graphically (and not only by name), the author
+recommends use of an additional package such as @code{gchords}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gustlib
   (package
     (name "texlive-gustlib")
