@@ -3837,6 +3837,25 @@ in books (style german-legal-book), but may be extended to journal articles in
 the future.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-gost
+  (package
+    (name "texlive-biblatex-gost")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-gost/"
+                   "tex/latex/biblatex-gost/")
+             (base32
+              "0k4fdvhj8ki05arcimxlj3fm2216cijaj5jk5yy95754j3z6byj3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-gost")
+    (synopsis "BibLaTeX support for GOST standard bibliographies")
+    (description
+     "The package provides BibLaTeX support for Russian bibliography style
+GOST 7.0.5-2008")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
