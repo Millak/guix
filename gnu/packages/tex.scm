@@ -3954,6 +3954,25 @@ the latest revision of the international standard ISO 690:2010.")
      "The package offers BibLaTeX support for citations in German legal texts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-juradiss
+  (package
+    (name "texlive-biblatex-juradiss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-juradiss/"
+                   "tex/latex/biblatex-juradiss/")
+             (base32
+              "13rwvj1ibhj0c46xr13wjyh68abkrvh2jcg2ccichh33crrxaql0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-juradiss")
+    (synopsis "BibLaTeX stylefiles for German law theses")
+    (description
+     "The package provides a custom citation-style for typesetting a German
+law thesis with LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
