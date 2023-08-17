@@ -4811,6 +4811,45 @@ with a wide array of formats.  For the moment, it works out of the box with
 ConTeXt and LaTeX.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-crossword
+  (package
+    (name "texlive-crossword")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crossword/"
+                   "source/latex/crossword/"
+                   "tex/latex/crossword/")
+             (base32
+              "1yxjhni6jw7j7wnz6g6d1bmri8afvqsj58bar0aqliyfhr55xzai")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crossword")
+    (synopsis "Typeset crossword puzzles")
+    (description
+     "This is an extended grid-based puzzle package, designed to take all
+input (both grid and clues) from the same file.  The package can
+typeset grids with holes in them, and can deal with several sorts of
+puzzle:
+@itemize
+
+@item the classical puzzle contains numbers for the words and clues
+for the words to be filled in;
+
+@item the numbered puzzle contains numbers in each cell where
+identical numbers represent identical letters; the goal is to find out
+which number corresponds to which letter;
+
+@item the fill-in type of puzzle consists of a grid and a list of
+words; the goal is to place all words in the grid;
+
+@item Sudoku and Kakuro puzzles involve filling in grids of numbers
+according to their own rules; format may be block-separated, or
+separated by thick lines.
+
+@end itemize")
+    (license license:expat)))
+
 (define-public texlive-cryptocode
   (package
     (name "texlive-cryptocode")
