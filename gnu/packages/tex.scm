@@ -3772,6 +3772,28 @@ counterparts as possible, so that most customisation methods can be applied
 here as well.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-fiwi
+  (package
+    (name "texlive-biblatex-fiwi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-fiwi/"
+                   "tex/latex/biblatex-fiwi/")
+             (base32
+              "080m1xj1g8v6aavp2i0hipjk3iikjqd2i36by2fiq0ys5vl5vhnq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-fiwi")
+    (synopsis "BibLaTeX styles for use in German humanities")
+    (description
+     "The package provides a collection of styles for BibLaTeX.  It was
+designed for citations in German Humanities, especially film studies, and
+offers some features that are not provided by the standard BibLaTeX styles.
+The style is highly optimized for documents written in German, and the main
+documentation is only available in German.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
