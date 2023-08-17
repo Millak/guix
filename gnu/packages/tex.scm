@@ -6722,6 +6722,27 @@ concept-script in the style of his @emph{Grundgesetze der Arithmetik} (Basic
 Laws of Arithmetic).")
     (license license:gpl2)))
 
+(define-public texlive-gtrcrd
+  (package
+    (name "texlive-gtrcrd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gtrcrd/" "tex/latex/gtrcrd/")
+             (base32
+              "0ndnzkm84ynn3wcnfg6j6fcl87wmd3g9w5d17g1z6qp340asrkp9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gtrcrd")
+    (synopsis "Add chords to lyrics")
+    (description
+     "The package provides the means to specify guitar chords to be played
+with each part of the lyrics of a song.  The syntax of the macros reduces the
+chance of failing to provide a chord where one is needed, and the structure of
+the macros ensures that the chord specification appears immediately above the
+start of the lyric.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gu
   (package
     (name "texlive-gu")
