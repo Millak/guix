@@ -9922,6 +9922,29 @@ more.  It gracefully handles dialog that crosses page breaks, and can generate
 lists of songs and lists of dances in the show.")
     (license license:lppl1.3+)))
 
+(define-public texlive-musicography
+  (package
+    (name "texlive-musicography")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/musicography/"
+                   "tex/latex/musicography/")
+             (base32
+              "07z5yg0ganmmp3qx5v55ll82sf45x6mhjl59abc5xckkfrgixpxn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/musicography")
+    (synopsis "Accessing symbols for music writing with pdfLaTeX")
+    (description
+     "This package makes available the most commonly used symbols in writing
+about music in a way that can be used with pdfLaTeX and looks consistent and
+attractive.  It includes accidentals, meters, and notes of different rhythmic
+values.  The package builds on the approach used in the @code{harmony}
+package, where the symbols are taken from the MusiXTeX fonts.  But it provides
+a larger range of symbols and a more flexible, user-friendly interface.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-musixtex
   (package
     (name "texlive-musixtex")
