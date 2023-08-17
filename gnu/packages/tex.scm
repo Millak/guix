@@ -13946,6 +13946,27 @@ package requires that shell escape be enabled.")
 variations of functions as they are used in France.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tangramtikz
+  (package
+    (name "texlive-tangramtikz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tangramtikz/"
+                   "tex/latex/tangramtikz/")
+             (base32
+              "18n67k7ggqh3mvp8iqyp44d70gh3s8jfbwbp3ympv2ff5drjjb3l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tangramtikz")
+    (synopsis "Tangram puzzles, with TikZ")
+    (description
+     "This package provides some commands (with English and French keys) to
+work with tangram puzzles: @code{\\begin{EnvTangramTikz}} and
+@code{\\PieceTangram} to position a piece, @code{\\TangramTikz} to display
+a predefined tangram.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tdsfrmath
   (package
     (name "texlive-tdsfrmath")
