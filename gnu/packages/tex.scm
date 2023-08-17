@@ -14878,6 +14878,26 @@ Cyrillic Mongolian using either XeLaTeX or LuaLaTeX.  The command
 to be able to create multilingual documents.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xq
+  (package
+    (name "texlive-xq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/xq/" "fonts/source/public/xq/"
+                   "fonts/tfm/public/xq/" "tex/latex/xq/")
+             (base32
+              "1g9j4vdlcnidv247bmagqd7q357h6fkg3b5cx1765n38k1bx8ikx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/xq")
+    (synopsis "Support for writing about xiangqi")
+    (description
+     "The package is for writing about xiangqi or chinese chess.  You can
+write games or parts of games and show diagrams with special positions.")
+    (license license:lppl)))
+
 (define-public texlive-xyling
   (package
     (name "texlive-xyling")
