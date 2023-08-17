@@ -38761,6 +38761,8 @@ UTF-8, can (re)-encode input and output, supports highly configurable sorting,
 dynamic bibliography sets and many other features.")
     (license license:artistic2.0)))
 
+(define-deprecated-package biber texlive-biber)
+
 (define-public rubber
   (package
     (name "rubber")
