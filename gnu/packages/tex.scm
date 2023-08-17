@@ -2660,6 +2660,28 @@ Chinese.")
 manual.")
     (license license:lgpl3+)))
 
+(define-public texlive-authordate
+  (package
+    (name "texlive-authordate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/authordate/"
+                   "doc/bibtex/authordate/"
+                   "tex/latex/authordate/")
+             (base32
+              "0d3cd63b80vfd8vzbpn6dnhy47fpq5rxm95i52id2j6606gi1skf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/authordate")
+    (synopsis "Author/date style citation styles")
+    (description
+     "The bundle provides four BibTeX styles (@code{authordate1}, ...,
+@code{authordate4}), and a LaTeX package, for citation in author/date style.
+The BibTeX styles differ in how they format names and titles; one of them is
+necessary for the LaTeX package to work.")
+    (license license:knuth)))
+
 (define-public texlive-auto-pst-pdf
   (package
     (name "texlive-auto-pst-pdf")
