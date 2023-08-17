@@ -13744,6 +13744,32 @@ using the @code{\\text@{@}} command from the @code{amstext} package.")
 grids.")
     (license license:lppl)))
 
+(define-public texlive-sudokubundle
+  (package
+    (name "texlive-sudokubundle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sudokubundle/"
+                   "source/latex/sudokubundle/"
+                   "tex/latex/sudokubundle/")
+             (base32
+              "1swsx8r0chgxv8h27syj4h5cf7lnj6mxvwhhzixbkjg6scrvd8kw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sudokubundle")
+    (synopsis "A set of sudoku-related packages")
+    (description
+     "The bundle provides three packages: @code{printsudoku}, which provides
+a command @code{\\sudoku} whose argument is the name of a file containing
+a puzzle specification; @code{solvesudoku}, which attempts to find a solution
+to the puzzle in the file named in the argument; and @code{createsudoku},
+which uses the @code{random} package to generate a puzzle according to a bunch
+of parameters that the user sets via macros.
+
+The bundle comes with a set of ready-prepared puzzle files.")
+    (license license:lppl)))
+
 (define-public texlive-susy
   (package
     (name "texlive-susy")
