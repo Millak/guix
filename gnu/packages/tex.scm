@@ -11045,6 +11045,25 @@ mode.  All major SI units are included, as well as some @acronym{CGS,
 Centimetre–Gram–Second} units used in astronomy.")
     (license license:lppl1.3c)))
 
+(define-public texlive-piano
+  (package
+    (name "texlive-piano")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/piano/" "tex/latex/piano/")
+             (base32
+              "0nbax18dgg2a9l6bihqhwx0va7829324lk29ibq29wjissmhjqww")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/piano")
+    (synopsis "Typeset a basic 2-octave piano diagram")
+    (description
+     "This package adds the @code{\\keyboard[1][2]..[7]} command to your
+project.  When used, it draws a small 2 octaves piano keyboard on your
+document, with up to 7 keys highlighted.")
+    (license license:lppl)))
+
 (define-public texlive-pinoutikz
   (package
     (name "texlive-pinoutikz")
