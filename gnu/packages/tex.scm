@@ -2411,6 +2411,28 @@ choose the correct letter depending on word context (initial/medial/final
 form).")
     (license license:lppl1.3+)))
 
+(define-public texlive-archaeologie
+  (package
+    (name "texlive-archaeologie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/archaeologie/"
+                   "doc/latex/archaeologie/"
+                   "source/latex/archaeologie/"
+                   "tex/latex/archaeologie/")
+             (base32
+              "0w8r9z0k0rxdgxa2p16rqyh7rm83sy0410p5lz5k23h805q5qsmy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/archaeologie")
+    (synopsis "Citation-style for the German Archaeological Institute")
+    (description
+     "This citation-style covers the citation and bibliography rules of the
+German Archaeological Institute (DAI).  Various options are available to
+change and adjust the outcome according to one's own preferences.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-armtex
   (package
     (name "texlive-armtex")
