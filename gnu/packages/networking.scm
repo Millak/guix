@@ -3888,7 +3888,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            fmt
            readline))
     (propagated-inputs
-     (list msgpack                      ;included in several installed headers
+     (list msgpack-cxx                  ;included in several installed headers
            restinio-0.6                 ;included in opendht/http.h
            ;; The following are listed in the 'Requires.private' field of
            ;; opendht.pc:

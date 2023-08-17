@@ -884,6 +884,14 @@ refactor Vim in order to:
      '(#:tests? #false ;no tests
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'help-cmake-find-msgpack-c
+           (lambda _
+             ;; Patch the build system so that it can find the modern
+             ;; 'msgpack-c' named pkg-config file (see:
+             ;; https://github.com/jeanguyomarch/eovim/issues/73).
+             (substitute* "cmake/Modules/FindMsgPack.cmake"
+               (("MSGPACK QUIET msgpack")
+                "MSGPACK QUIET msgpack-c msgpack"))))
          (add-after 'configure 'reference-nvim
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((nvim (search-input-file inputs "/bin/nvim")))
@@ -894,10 +902,8 @@ refactor Vim in order to:
                   (string-append start nvim))))))
          (add-before 'build 'set-home
            (lambda _ (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list efl msgpack neovim))
+    (native-inputs (list pkg-config))
+    (inputs (list efl msgpack-c neovim))
     (home-page "https://github.com/jeanguyomarch/eovim/")
     (synopsis "EFL GUI for Neovim")
     (description "Graphical Neovim interface based on the @acronym{EFL, Enlightenment

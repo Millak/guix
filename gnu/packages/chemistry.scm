@@ -263,7 +263,7 @@ molecules.")
     (arguments '(#:tests? #f))
     ;; There is no support for modern msgpack versions yet (see:
     ;; https://github.com/rcsb/mmtf-cpp/issues/44).
-    (propagated-inputs (list msgpack))  ;included by mmtf/structure_data.hpp
+    (propagated-inputs (list msgpack-3)) ;included by mmtf/structure_data.hpp
     (home-page "https://mmtf.rcsb.org/")
     (synopsis "C++ API for the Macromolecular Transmission Format")
     (description "This package is a library for the
