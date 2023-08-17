@@ -3936,6 +3936,24 @@ Student Research in Archaeology.")
 the latest revision of the international standard ISO 690:2010.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-jura2
+  (package
+    (name "texlive-biblatex-jura2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-jura2/"
+                   "tex/latex/biblatex-jura2/")
+             (base32
+              "1cnsmk46j98z7wk7qs6v9f5m42x124v2nxrnq8n1jcs1jd03q6ry")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-jura2")
+    (synopsis "Citation style for the German legal profession")
+    (description
+     "The package offers BibLaTeX support for citations in German legal texts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
