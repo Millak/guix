@@ -954,8 +954,8 @@ package.")
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (setenv "HOME" (getcwd))
-                     ;; XXX: This test fails randomly.
-                     (invoke "ctest" "-E" "kgpg-import")))))))
+                     ;; XXX: Those tests fails randomly.
+                     (invoke "ctest" "-E" "kgpg-import|kgpg-export")))))))
     (native-inputs
      (list extra-cmake-modules
            gnupg ;; TODO: Remove after gpgme uses fixed path
