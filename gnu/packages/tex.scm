@@ -13365,6 +13365,28 @@ scripture references);
 @end itemize")
     (license license:gpl2)))
 
+(define-public texlive-soup
+  (package
+    (name "texlive-soup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/soup/" "source/latex/soup/"
+                   "tex/latex/soup/")
+             (base32
+              "04lpc3nn45i66cwnjn0sycdpfaynzkb19djyfi8ca3ppb1sn79z6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/soup")
+    (synopsis "Generate alphabet soup puzzles")
+    (description
+     "This package generates alphabet soup puzzles (aka word search puzzles),
+and variations using numbers or other symbols.  It provides macros to generate
+an alphabet soup style puzzle (also known as word search puzzles or
+find-the-word puzzles).  It also allows creating number soup and soups with
+custom symbol sets.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-spalign
   (package
     (name "texlive-spalign")
