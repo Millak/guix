@@ -12259,6 +12259,23 @@ elements such as keywords, identifiers, and comments.")
 algorithms in a natural manner.")
     (license license:lppl)))
 
+(define-public texlive-psgo
+  (package
+    (name "texlive-psgo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/psgo/" "tex/latex/psgo/")
+             (base32
+              "0ki49zbdn0qvzsz7h53vqwpf4rmiiranq52lh344z7wypznddi28")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/psgo")
+    (synopsis "Typeset go diagrams with PSTricks")
+    (description
+     "This packages can be used to typeset go diagrams with PSTricks.")
+    (license license:lppl)))
+
 (define-public texlive-psizzl
   (package
     (name "texlive-psizzl")
