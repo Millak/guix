@@ -4423,6 +4423,37 @@ included.")
 preparing papers for submission to the journal @emph{Science}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-shortfields
+  (package
+    (name "texlive-biblatex-shortfields")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-shortfields/"
+                   "tex/latex/biblatex-shortfields/")
+             (base32
+              "14s6ykbnb6b2i811rjn44chv8f73yhnnywczn78zwbij5z6jgcjv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-shortfields")
+    (synopsis "Use short forms of fields with BibLaTeX")
+    (description
+     "The BibLaTeX package provides @code{shortseries} and @code{shortjournal}
+field, but the default styles don't use them.  It also provides a mechanism to
+print the equivalence between short forms of fields and long
+fields (@code{\\printbiblist}), but this mechanism does not allow to mix
+between different type of short fields, for example, between short forms of
+journal title and short forms of series titles.
+
+This package provides a solution to these two problems.  If
+a @code{shortjournal} field is defined, it prints it instead of the
+@code{\\journal} field.  If a @code{shortseries} field is defined, it prints
+it instead of the @code{\\series} field.  It provides
+a @code{\\printbibshortfields} command to print a list of the sort forms of
+the fields.  This list also includes the claves defined with the
+@code{biblatex-claves} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
