@@ -1269,6 +1269,28 @@ a Marathi journal, with LaTeX.")
                    (license:fsf-free "file://doc/latex/aalok/README.txt")
                    license:fdl1.3+))))
 
+(define-public texlive-abc
+  (package
+    (name "texlive-abc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/abc/" "source/latex/abc/"
+                   "tex/latex/abc/")
+             (base32
+              "1vywrv35h65gkxipc7d26k32r04fk61kfkkk9bj3zsmxsw1v3r8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abc")
+    (synopsis "Support ABC music notation in LaTeX")
+    (description
+     "The abc package lets you include lines of music written in the ABC Plus
+language.  The package will then employ the @code{\\write18} facility to
+convert your notation to PostScript (using the established utility
+@command{abcm2ps}) and hence to the format needed for inclusion in your
+document.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-accents
   (package
     (name "texlive-accents")
