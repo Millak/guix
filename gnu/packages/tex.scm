@@ -3489,6 +3489,29 @@ as well and adaptions to specific document types like exhibition and auction
 catalogues.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-arthistory-bonn
+  (package
+    (name "texlive-biblatex-arthistory-bonn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-arthistory-bonn/"
+                   "tex/latex/biblatex-arthistory-bonn/")
+             (base32
+              "0iwms7w1xqghdf3s0m91xzw4y7d20lvpv69ibl92cpjj5fggp0x8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-arthistory-bonn")
+    (synopsis "BibLaTeX citation style for art historians")
+    (description
+     "This citation style covers the citation and bibliography guidelines of
+the Kunsthistorisches Institut der Universitat Bonn for undergraduates.  It
+introduces bibliography entry types for catalogs and features a tabular
+bibliography, among other things.  Various options are available to change and
+adjust the outcome according to one's own preferences.  The style is
+compatible with English and German.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
