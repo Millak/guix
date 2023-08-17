@@ -4012,6 +4012,25 @@ via BibLaTeX's built-in related mechanism.  It provides a new related type
 (LNCS).  It extends the standard BiBTeX model by an acronym entry.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-lni
+  (package
+    (name "texlive-biblatex-lni")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-lni/"
+                   "tex/latex/biblatex-lni/")
+             (base32
+              "1532swanj6p4pq7a4gqkmqjsdby20ls04ghkvdjg4066z1mizjp4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-lni")
+    (synopsis "LNI style for BibLaTeX")
+    (description
+     "BibLaTeX style for the Lecture Notes in Informatics, which is published
+by the Gesellschaft fur Informatik (GI e.V.).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
