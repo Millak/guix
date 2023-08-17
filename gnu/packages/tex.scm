@@ -3575,6 +3575,26 @@ more types than the older package @code{biblatex-bookinarticle}, which it
 supersedes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-bwl
+  (package
+    (name "texlive-biblatex-bwl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-bwl/"
+                   "tex/latex/biblatex-bwl/")
+             (base32
+              "122qz05rc7c3pys6adg38xq0r123f4hspc3yyw8l2mzlpbbwm9y5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-bwl")
+    (synopsis "BibLaTeX citations for FU Berlin")
+    (description
+     "The bundle provides a set of BibLaTeX implementations of bibliography
+and citation styles for the Business Administration Department of the Free
+University of Berlin.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
