@@ -13725,6 +13725,25 @@ mode by providing an optional argument to @samp{_}.  This is implemented by
 using the @code{\\text@{@}} command from the @code{amstext} package.")
     (license license:gpl3)))
 
+(define-public texlive-sudoku
+  (package
+    (name "texlive-sudoku")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sudoku/" "source/latex/sudoku/"
+                   "tex/latex/sudoku/")
+             (base32
+              "14g1kkxinp9l57yvdpbdx4wclgka71gilcbxl1dc6sdj4cmw7mbz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sudoku")
+    (synopsis "Create sudoku grids")
+    (description
+     "The @code{sudoku} package provides an environment for typesetting sudoku
+grids.")
+    (license license:lppl)))
+
 (define-public texlive-susy
   (package
     (name "texlive-susy")
