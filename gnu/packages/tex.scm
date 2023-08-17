@@ -3636,6 +3636,28 @@ standard (Chem.@: Commun.) style; and Angewandte Chem.@: style, (thus covering
 a wide range of journals).")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-chicago
+  (package
+    (name "texlive-biblatex-chicago")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-chicago/"
+                   "tex/latex/biblatex-chicago/")
+             (base32
+              "00y8h4hvmz17bn46936xfi1cy0rsh5y33pyc1hrkrrldabq8rxys")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-chicago")
+    (synopsis "Chicago style files for BibLaTeX")
+    (description
+     "This is a BibLaTeX style that implements the Chicago author-date and
+notes with bibliography style specifications given in the @emph{Chicago Manual
+of Style}, 17th edition (with continuing support for the 16th edition, too).
+The style implements entry types for citing audio-visual materials, among many
+others.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
