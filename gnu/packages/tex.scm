@@ -4657,6 +4657,30 @@ Unified Stylesheet for Linguistics Journals.")
 based on the @code{numeric} style and requires Biber.")
     (license license:gpl3+)))
 
+(define-public texlive-biblatex2bibitem
+  (package
+    (name "texlive-biblatex2bibitem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex2bibitem/"
+                   "tex/latex/biblatex2bibitem/")
+             (base32
+              "1cd9b7vhmlx2clqr2gpwqs4hjga9mjqlxj7m74kq555rn5ppkyyn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex2bibitem")
+    (synopsis "Convert BibLaTeX-generated bibliography to bibitems")
+    (description
+     "Some journals accept the reference list only as @code{\\bibitems}.  If
+you use BibTeX, there is no problem: just paste the content of the @file{.bbl}
+file into your document.  However, there was no out-of-the-box way to do the
+same for BibLaTeX, and you had to struggle with searching appropriate
+@file{.bst} files, or formatting your reference list by hand, or something
+like that.  Using the workaround provided by this package solves the
+problem.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
