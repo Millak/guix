@@ -4297,6 +4297,28 @@ The bundle provides support for a wide variety of content types, including
 manuscripts, audiovisual resources, social media and legal references.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-phys
+  (package
+    (name "texlive-biblatex-phys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-phys/"
+                   "tex/latex/biblatex-phys/")
+             (base32
+              "1q9l7ma3zpybx142adbiall4y5x4hc5kc536wpmiwkz29zi6w7ka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-phys")
+    (synopsis
+     "BibLaTeX implementation of the AIP and APS bibliography style")
+    (description
+     "The package provides an implementation of the bibliography styles of
+both the AIP and the APS for BibLaTeX.  This implementation follows standard
+BibLaTeX conventions, and can be used simply by loading BibLaTeX with the
+appropriate option: @samp{\\usepackage[style=phys]@{biblatex@}}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
