@@ -7490,6 +7490,25 @@ existing SIunits set.")
 and XeTeX, that provides functionality for drawing Hex boards and games.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-hexgame
+  (package
+    (name "texlive-hexgame")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hexgame/" "tex/latex/hexgame/")
+             (base32
+              "1qr9v7225k6xzykw3rdsxf2sa3b5asvmd767i88jwimmacwi2cp1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hexgame")
+    (synopsis "Provide an environment to draw a hexgame-board")
+    (description
+     "Hex is a mathematical game invented by the Danish mathematician Piet
+Hein and independently by the mathematician John Nash.  This package defines
+an environment that enables the user to draw such a game in a trivial way.")
+    (license license:lppl)))
+
 (define-public texlive-hitex
   (package
     (name "texlive-hitex")
