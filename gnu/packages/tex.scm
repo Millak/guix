@@ -3247,6 +3247,44 @@ existing @file{.tex} files containing definitions (@code{\\newglossaryentry}
 etc.)#: to the @file{.bib} format required by @command{bib2gls}.")
     (license license:gpl3+)))
 
+(define-public texlive-bibarts
+  (package
+    (name "texlive-bibarts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibarts/" "source/latex/bibarts/"
+                   "tex/latex/bibarts/")
+             (base32
+              "18jms4i9y9ngzr5cf74j6xhxkas4yg7hm1yfgim6iakshhdhy964")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-and-install'bibsort
+                 (lambda _
+                   (mkdir-p "build")
+                   (invoke "gcc" "-o" "build/bibsort"
+                           "source/latex/bibarts/bibsort.c")
+                   (install-file "build/bibsort"
+                                 (string-append #$output "/bin")))))))
+    (home-page "https://ctan.org/pkg/bibarts")
+    (synopsis "Arts-style bibliographical information")
+    (description
+     "@code{BibArts} is a LaTeX package to assist in making bibliographical
+features common in the arts and the humanities (history, political science,
+philosophy, etc.).  @file{bibarts.sty} provides commands for quotations,
+abbreviations, and especially for a formatted citation of literature,
+journals (periodicals), edited sources, and archive sources.
+
+It will also copy all citation information, abbreviations, and register key
+words into lists for an automatically generated appendix.  These lists may
+refer to page and footnote numbers. BibArts has nothing to do with BibTeX.
+The lists are created by @command{bibsort}.  This program creates the
+bibliography without using MakeIndex or BibTeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
