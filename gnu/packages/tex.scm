@@ -27436,6 +27436,25 @@ correctly; and define two extra commands: @code{\\vfrac} and
 @code{\\namedglyph}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xml2pmx
+  (package
+    (name "texlive-xml2pmx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/xml2pmx.1"
+                   "doc/man/man1/xml2pmx.man1.pdf")
+             (base32
+              "1d3ralqh0b71scd59b4hmm707yfrz1rj28ni2lzkhbb1ql73bvah")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xml2pmx")
+    (synopsis "Convert MusicXML to PMX and MusiXTeX")
+    (description
+     "This program translates MusicXML files to input suitable for PMX and
+MusiXTeX processing.")
+    (license license:gpl3+)))
+
 (define-public texlive-xmltexconfig
   (package
     (name "texlive-xmltexconfig")
