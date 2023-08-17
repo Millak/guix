@@ -4362,6 +4362,26 @@ does not need to run the Biber program.  However, when the bibliography
 changes one has to create a new @file{.bbl} file.")
     (license license:lppl)))
 
+(define-public texlive-biblatex-realauthor
+  (package
+    (name "texlive-biblatex-realauthor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-realauthor/"
+                   "tex/latex/biblatex-realauthor/")
+             (base32
+              "1av0vd7lwg5yad75b9fbi09s4bcaqd8bdz43kzyj2r7cimj8dpl0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-realauthor")
+    (synopsis "Indicate the real author of a work")
+    (description
+     "This package allows to use a new field @code{realauthor}, which
+indicates the real author of a work, when published in a pseudepigraphic
+name.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
