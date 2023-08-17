@@ -6679,6 +6679,27 @@ products and convergence with some object oriented flavor (it gives the
 possibility to override the standard behavior of norms, ...).")
     (license license:lppl)))
 
+(define-public texlive-gamebook
+  (package
+    (name "texlive-gamebook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gamebook/"
+                   "source/latex/gamebook/"
+                   "tex/latex/gamebook/")
+             (base32
+              "0ksyr0hb1bfhc1lbbnzlj7ih8xw516djkn0lddnn07sb6hpzl8x4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gamebook")
+    (synopsis "Typeset gamebooks and other interactive novels")
+    (description
+     "This package provides the means in order to lay-out gamebooks with LaTeX.
+A simple gamebook example is included with the package, and acts as
+a tutorial.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gastex
   (package
     (name "texlive-gastex")
