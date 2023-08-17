@@ -46392,6 +46392,55 @@ science packages.")
 with packages in @code{collection-basic}.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-collection-music
+  (package
+    (name "texlive-collection-music")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-abc
+           texlive-autosp
+           texlive-bagpipe
+           texlive-chordbars
+           texlive-chordbox
+           texlive-collection-latex
+           texlive-ddphonism
+           texlive-figbas
+           texlive-gchords
+           texlive-gregoriotex
+           texlive-gtrcrd
+           texlive-guitar
+           texlive-guitarchordschemes
+           texlive-guitartabs
+           texlive-harmony
+           texlive-latex4musicians
+           texlive-leadsheets
+           texlive-lilyglyphs
+           texlive-lyluatex
+           texlive-m-tx
+           texlive-musical
+           texlive-musicography
+           texlive-musixguit
+           texlive-musixtex
+           texlive-musixtex-fonts
+           texlive-musixtnt
+           texlive-octave
+           texlive-piano
+           texlive-pmx
+           texlive-pmxchords
+           texlive-recorder-fingering
+           texlive-songbook
+           texlive-songproj
+           texlive-songs
+           texlive-xml2pmx
+           texlive-xpiano))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Music packages")
+    (description "This collection includes music-related fonts and packages.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-collection-pictures
   (package
     (name "texlive-collection-pictures")
