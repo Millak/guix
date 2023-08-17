@@ -12350,6 +12350,33 @@ by @code{siunitx}; @code{siunits} has maintenance-only support, now.")
 re-definitions of existing commands.")
     (license license:lppl1.3+)))
 
+(define-public texlive-songbook
+  (package
+    (name "texlive-songbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/songbook/" "makeindex/songbook/"
+                   "source/latex/songbook/"
+                   "tex/latex/songbook/")
+             (base32
+              "0ab4l130dyzaslqmy7vm71rszwszw11kqzkn0b5fb680kxvsyicf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/songbook")
+    (synopsis "Package for typesetting song lyrics and chord books")
+    (description
+     "The package provides an all purpose songbook style.  Three types of
+output may be created from a single input file: ``words and chords'' books for
+the musicians to play from, ``words only'' songbooks for the congregation to
+sing from, and overhead transparency masters for congregational use.
+
+The package will also print a table of contents, an index sorted by title and
+first line, and an index sorted by key, or by artist/composer.  The package
+attempts to handle songs in multiple keys, as well as songs in multiple
+languages.")
+    (license license:lgpl2.1)))
+
 (define-public texlive-spalign
   (package
     (name "texlive-spalign")
