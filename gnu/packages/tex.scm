@@ -4597,6 +4597,28 @@ work properly with newer versions of BibLaTeX.")
 (@code{plain}, @code{abbrev}, @code{unsrt} and @code{alpha}) with BibLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-true-citepages-omit
+  (package
+    (name "texlive-biblatex-true-citepages-omit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-true-citepages-omit/"
+                   "tex/latex/biblatex-true-citepages-omit/")
+             (base32
+              "1mfkmn5g6r61mlyf3vx98q18a042yjkmh3drid9vs0kaj66di4n5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-true-citepages-omit")
+    (synopsis
+     "Correct some limitations of BibLaTeX @samp{citepages=omit} option")
+    (description
+     "This package deals with a limitation of the @samp{citepages=omit} option
+of the verbose family of BibLaTeX citestyles.  The option works when you
+@code{\\cite[xx]@{key@}}, but not when you @code{\\cite[\\pno~xx, some
+text]@{key@}}.  The package corrects this problem.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
