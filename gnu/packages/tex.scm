@@ -13216,6 +13216,31 @@ International System of Units (SI).  Note that the package is now superseded
 by @code{siunitx}; @code{siunits} has maintenance-only support, now.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skak
+  (package
+    (name "texlive-skak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skak/"
+                   "fonts/source/public/skak/"
+                   "fonts/tfm/public/skak/" "tex/latex/skak/")
+             (base32
+              "12fbzvyz40fnb9v5y80wkmv1fmvi7frbyv28k68lagdalm7mwp3b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/skak")
+    (synopsis "Fonts and macros for typesetting chess games")
+    (description
+     "This package provides macros and fonts in Metafont format which can be
+used to typeset chess games using PGN, and to show diagrams of the current
+board in a document.  An Adobe Type 1 implementation of skak's fonts is
+available as package @code{skaknew}; an alternative chess notational scheme is
+available in package @code{texmate}, and a general mechanism for selecting
+chess fonts is provided in @code{chessfss}.")
+    (license license:lppl)))
+
 (define-public texlive-skmath
   (package
     (name "texlive-skmath")
