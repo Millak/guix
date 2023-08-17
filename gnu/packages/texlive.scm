@@ -186,13 +186,6 @@
                "--disable-mfluajit")
              '()))
 
-      ;; Disable tests on some architectures to cope with a failure of
-      ;; luajiterr.test.
-      ;; XXX FIXME fix luajit properly on these architectures.
-      #:tests? ,(let ((s (or (%current-target-system)
-                             (%current-system))))
-                  (not (string-prefix? "mips64" s)))
-
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-psutils-test
