@@ -8036,6 +8036,25 @@ format, which is a subset of the ZVP format.
 @end itemize")
     (license license:expat)))
 
+(define-public texlive-jigsaw
+  (package
+    (name "texlive-jigsaw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jigsaw/" "tex/latex/jigsaw/")
+             (base32
+              "0qpbsff6saxv2qp4fzyqrprxjy2434ylm11snyc3d59imdmksq0b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jigsaw")
+    (synopsis "Draw jigsaw pieces with TikZ")
+    (description
+     "This is a small LaTeX package to draw jigsaw pieces with TikZ.  It is
+possible to draw individual pieces and adjust their shape, create tile
+patterns or automatically generate complete jigsaws.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-jkmath
   (package
     (name "texlive-jkmath")
