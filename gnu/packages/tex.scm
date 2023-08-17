@@ -4340,6 +4340,28 @@ style, but provides some extra features often desired for publication lists,
 such as the omission of the author's own name from author or editor data.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-readbbl
+  (package
+    (name "texlive-biblatex-readbbl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-readbbl/"
+                   "tex/latex/biblatex-readbbl/")
+             (base32
+              "0fr0p5c2v66vy86qx2m8i4p3p75d6qm506gv8xbfqckzyfzi9x6z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-readbbl")
+    (synopsis "Read a @file{.bbl} file created by biber")
+    (description
+     "This small package modifies the BibLaTeX macro which reads a @file{.bbl}
+file created by Biber.  It is thus possible to include a @file{.bbl} file into
+the main document with the @code{environment} and send it to a publisher who
+does not need to run the Biber program.  However, when the bibliography
+changes one has to create a new @file{.bbl} file.")
+    (license license:lppl)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
