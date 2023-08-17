@@ -4160,6 +4160,44 @@ It requires the use of the multiscript version of Biber (biber-ms).")
 multiple sources.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-musuos
+  (package
+    (name "texlive-biblatex-musuos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-musuos/"
+                   "tex/latex/biblatex-musuos/")
+             (base32
+              "0iqp02yk8b9s18k8v78q2y5g507fsh2zk68dj0yc77gwa6gsmrmh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-musuos")
+    (synopsis "BibLaTeX style for citations in @file{musuos.cls}")
+    (description
+     "The style is designed for use with the musuos class, but it should be
+usable with other classes, too.")
+    (license license:lppl)))
+
+(define-public texlive-biblatex-nature
+  (package
+    (name "texlive-biblatex-nature")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-nature/"
+                   "tex/latex/biblatex-nature/")
+             (base32
+              "1bpgcwpd8sw28dn7q8bkxpnpqb741216gaasvqdpah9kj53zfypg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-nature")
+    (synopsis "BibLaTeX support for @emph{Nature}")
+    (description
+     "The bundle offers styles that allow authors to use BibLaTeX when
+preparing papers for submission to the journal @emph{Nature}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
