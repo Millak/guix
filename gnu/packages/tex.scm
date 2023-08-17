@@ -4193,6 +4193,29 @@ formatting chemistry documents according to the conventions of a number of
 leading journals.  It also provides some handy chemistry-related macros.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chess
+  (package
+    (name "texlive-chess")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/chess/"
+                   "fonts/source/public/chess/"
+                   "fonts/tfm/public/chess/" "tex/latex/chess/")
+             (base32
+              "079naqw9bd5da3c2bsa0322kdjrfpwa35inrfznzgrfdk1w0irs7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/chess")
+    (synopsis "Fonts for typesetting chess boards")
+    (description
+     "This is the original, and somewhat dated, TeX chess font package.
+Potential users should consider @code{skak} (for alternative fonts, and
+notation support), @code{texmate} (for alternative notation support), or
+@code{chessfss} (for flexible font choices).")
+    (license license:public-domain)))
+
 (define-public texlive-chhaya
   (package
     (name "texlive-chhaya")
