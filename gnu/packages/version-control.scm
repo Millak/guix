@@ -1043,7 +1043,8 @@ collaboration using typical untrusted file hosts or services.")
      (list
       #:tests? #f ; XXX: fail to build the in-source git.
       #:test-target "test"
-      #:make-flags '("CC=gcc" "SHELL_PATH=sh")
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           "SHELL_PATH=sh")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unpack-git
@@ -1103,7 +1104,7 @@ collaboration using typical untrusted file hosts or services.")
                  "html-converters/md2html")))))))
     (native-inputs
      ;; For building manpage.
-     (list asciidoc gzip bzip2 xz))
+     (list asciidoc))
     (inputs
      `(;; Building cgit requires a Git source tree.
        ("git-source"
@@ -1114,13 +1115,20 @@ collaboration using typical untrusted file hosts or services.")
            (uri "mirror://kernel.org/software/scm/git/git-2.25.4.tar.xz")
            (sha256
             (base32 "11am6s46wmn1yll5614smjhzlghbqq6gysgcs64igjr9y5wzpdxq"))))
+       ("bash-minimal" ,bash-minimal)
        ("openssl" ,openssl)
-       ("groff" ,groff)
        ("python" ,python)
        ("python-docutils" ,python-docutils)
        ("python-markdown" ,python-markdown)
        ("python-pygments" ,python-pygments)
-       ("zlib" ,zlib)))
+       ("zlib" ,zlib)
+       ;; bzip2, groff, gzip and xz are inputs (not native inputs)
+       ;; since they are actually substituted into cgit source and
+       ;; referenced by the built package output.
+       ("bzip2" ,bzip2)
+       ("groff" ,groff)
+       ("gzip" ,gzip)
+       ("xz" ,xz)))
     (home-page "https://git.zx2c4.com/cgit/")
     (synopsis "Web frontend for git repositories")
     (description
