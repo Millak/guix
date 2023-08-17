@@ -3356,6 +3356,30 @@ expand a BibTeX file, expanding the abbreviations (other than the built-in
 ones like month names) and following the cross-references.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bibhtml
+  (package
+    (name "texlive-bibhtml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/bibhtml/" "doc/bibtex/bibhtml/")
+             (base32
+              "0fjpipxc885hk9pvjf3f0wsp84lr1d7flvs5c56jmlvryvc6mv0w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibhtml")
+    (synopsis "BibTeX support for HTML files")
+    (description
+     "Bibhtml consists of a Perl script and a set of BibTeX style files, which
+together allow you to output a bibliography as a collection of HTML files.
+The references in the text are linked directly to the corresponding
+bibliography entry, and if a URL is defined in the entry within the BibTeX
+database file, then the generated bibliography entry is linked to this.  The
+package provides three different style files derived from each of the standard
+@file{plain.bst} and @file{alpha.bst}, as well as two style files derived from
+@file{abbrv.bst} and unsrt.bst (i.e., eight in total).")
+    (license license:gpl3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
