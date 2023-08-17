@@ -1247,6 +1247,23 @@ TGA. Accepted output formats are: EPS, PCL5, PDF, PDF1, PBM, PGM, PPM, PS,
 markedEPS, markedPS, PNG, XWD, BMP, TIFF, JPEG, GIF, XPM.")
     (license license:gpl3+)))
 
+(define-public texlive-aaai-named
+  (package
+    (name "texlive-aaai-named")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/aaai-named/")
+             (base32
+              "1xs2iki0v1mh0kbqjxnv9r24bcfmgj6myfw7h368h8g0s1n8d5v6")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aaai-named")
+    (synopsis "BibTeX style for AAAI")
+    (description
+     "This package provides a BibTeX style derived from the standard master,
+presumably for use with the @code{aaai} package.")
+    (license license:knuth)))
+
 (define-public texlive-aalok
   (package
     (name "texlive-aalok")
