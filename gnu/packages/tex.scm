@@ -2721,6 +2721,25 @@ in-line BNF expressions using math mode.")
 @file{hline.ttf} (headline).")
     (license license:expat)))
 
+(define-public texlive-bagpipe
+  (package
+    (name "texlive-bagpipe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/bagpipe/"
+                   "tex/generic/bagpipe/")
+             (base32
+              "0zybnikkj00hmlzfaaljcq1ml5vi6qfhl1hfrjq9vjc409vzzvka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bagpipe")
+    (synopsis "Support for typesetting bagpipe music")
+    (description
+     "Typesetting bagpipe music in MusixTeX is needlessly tedious.  This
+package provides specialized and re-defined macros to simplify this task.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bangla
   (package
     (name "texlive-bangla")
