@@ -11696,6 +11696,27 @@ functionals, c.e.@: sets, stagewise computations, forcing and syntactic
 classes.")
     (license license:public-domain)))
 
+(define-public texlive-recorder-fingering
+  (package
+    (name "texlive-recorder-fingering")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/recorder-fingering/"
+                   "tex/latex/recorder-fingering/")
+             (base32
+              "075n6ifhpn15fdnrhp326lzp0dnzs0j287g7kr4xx59cc1m6lqkg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/recorder-fingering")
+    (synopsis "Package to display recorder fingering diagrams")
+    (description
+     "This package provides support for generating and displaying fingering
+diagrams for baroque fingering recorders.  Standard fingerings are provided
+for recorders in both C and F, along with methods to create and display
+alternate fingerings for trills, etc.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-reledmac
   (package
     (name "texlive-reledmac")
