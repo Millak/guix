@@ -2593,6 +2593,34 @@ package tries to put breaks at adequate places.  It is suitable for
 computer-generated long formulae with many terms.")
     (license license:lppl1.3+)))
 
+(define-public texlive-autosp
+  (package
+    (name "texlive-autosp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/autosp/"
+                   "doc/man/man1/autosp.1"
+                   "doc/man/man1/autosp.man1.pdf"
+                   "doc/man/man1/tex2aspc.1"
+                   "doc/man/man1/tex2aspc.man1.pdf")
+             (base32
+              "16szmbffp9pwzv7zq3l4yvnsfk4m7w57wib7pqpgv1v5fzhlaahs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/autosp")
+    (synopsis
+     "Preprocessor generating note-spacing commands for MusiXTeX scores")
+    (description
+     "This program simplifies the creation of MusiXTeX scores by converting
+(non-standard) commands of the form @code{\\anotes ... \\en} into one or more
+conventional note-spacing commands, as determined by the note values
+themselves, with @code{\\sk} spacing commands inserted as necessary.  The
+coding for an entire measure can be entered one part at a time, without
+concern for note-spacing changes within the part or spacing requirements of
+other parts.")
+    (license license:gpl2+)))
+
 (define-public texlive-axodraw2
   (package
     (name "texlive-axodraw2")
