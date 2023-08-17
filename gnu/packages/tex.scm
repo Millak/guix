@@ -10543,6 +10543,26 @@ mathematical function values.")
      "The package will typeset both Z and Object-Z specifications.")
     (license license:lppl)))
 
+(define-public texlive-octave
+  (package
+    (name "texlive-octave")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/octave/" "tex/latex/octave/")
+             (base32
+              "1avikh00n92lxk7p7h0kvsv2dk2z411fv85fagj7bg6azb3fch8g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/octave")
+    (synopsis "Typeset musical pitches with octave designations")
+    (description
+     "This package package typesets musical pitch names with designation for
+the octave in either the Helmholtz system (with octave numbers), or the
+traditional system (with prime symbols).  The system can also be changed
+mid-document.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
