@@ -6481,6 +6481,27 @@ nets, diagrams, etc., very easily, in the LaTeX @code{picture} environment.")
 glosses, and various other goodies.")
     (license license:lppl1.2+)))
 
+(define-public texlive-gchords
+  (package
+    (name "texlive-gchords")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gchords/" "tex/latex/gchords/")
+             (base32
+              "0wchfk25v6rh5nffjyn8bypwjsqc9pi2rjrw3np65a0sxxc0sl1v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gchords")
+    (synopsis "Typeset guitar chords")
+    (description
+     "This package provides a LaTeX package for typesetting of guitar chord
+diagrams, including options for chord names, finger numbers and typesetting
+above lyrics.  The bundle also includes a TCL script (@file{chordbox.tcl})
+that provides a graphical application which creates LaTeX files that use
+@file{gchords.sty}.")
+    (license license:gpl3+)))
+
 (define-public texlive-gene-logic
   (package
     (name "texlive-gene-logic")
