@@ -4031,6 +4031,29 @@ via BibLaTeX's built-in related mechanism.  It provides a new related type
 by the Gesellschaft fur Informatik (GI e.V.).")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-luh-ipw
+  (package
+    (name "texlive-biblatex-luh-ipw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-luh-ipw/"
+                   "tex/latex/biblatex-luh-ipw/bbx/"
+                   "tex/latex/biblatex-luh-ipw/cbx/"
+                   "tex/latex/biblatex-luh-ipw/lbx/")
+             (base32
+              "18fnq2xjwsp5lq7vywbgzppbijqn4xarqga0g1rpj89g9q0zjs30")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-luh-ipw")
+    (synopsis "BibLaTeX styles for social sciences")
+    (description
+     "The bundle is a small collection of styles for BibLaTeX.  It was
+designed for citations in the Humanities, following the guidelines of style of
+the institutes for the social sciences of the Leibniz University Hannover/LUH
+(especially the Institute of Political Science).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
