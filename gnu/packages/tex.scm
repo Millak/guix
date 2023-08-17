@@ -3438,6 +3438,30 @@ BibLaTeX, so you probably want to use @code{biblatex2bibitem}.")
 It will be useful, for example, in history or classical philology.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-apa6
+  (package
+    (name "texlive-biblatex-apa6")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-apa6/"
+                   "tex/latex/biblatex-apa6/")
+             (base32
+              "14xkqca4l4sb8jwlz6k28hmlya4m9474sv79icyzzq1v0vbqmgbq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-apa6")
+    (synopsis "BibLaTeX citation and reference style for APA 6th Edition")
+    (description
+     "This is a fairly complete BibLaTeX style (citations and references) for
+APA (American Psychological Association) 6th Edition conformant publications.
+It implements and automates most of the guidelines in the APA 6th edition
+style guide for citations and references.  An example document is also given
+which typesets every citation and reference example in the APA 6th edition
+style guide.  This is a legacy style for 6th Edition documents.  Please use
+the BibLaTeX-apa style package for the latest APA edition conformance.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
