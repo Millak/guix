@@ -3614,6 +3614,28 @@ University of Berlin.")
 style for Chinese LaTeX users, using BibLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-chem
+  (package
+    (name "texlive-biblatex-chem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-chem/"
+                   "tex/latex/biblatex-chem/")
+             (base32
+              "0y4fgnykh5x48cnbgyhgj04iqz05mvnzqvjn84vbr3mqmwjrndbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-chem")
+    (synopsis
+     "BibLaTeX implementations of chemistry-related bibliography styles")
+    (description
+     "The bundle offers a set of styles to allow chemists to use BibLaTeX.
+The package has complete styles for: all ACS journals; RSC journals using
+standard (Chem.@: Commun.) style; and Angewandte Chem.@: style, (thus covering
+a wide range of journals).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
