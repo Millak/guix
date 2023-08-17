@@ -33040,7 +33040,7 @@ IP address that no longer correspond to their freshly resolved host
 name.  Set this to @code{#t} if one or more endpoints use host names
 provided by a dynamic DNS service to keep the sessions alive.
 
-@item @code{monitor-ips-internal} (default: @code{'(next-minute (range 0 60 5))})
+@item @code{monitor-ips-interval} (default: @code{'(next-minute (range 0 60 5))})
 The time interval at which the IP monitoring job should run, provided as
 an mcron time specification (@pxref{Guile Syntax,,,mcron}).
 
