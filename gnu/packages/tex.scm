@@ -12402,6 +12402,36 @@ slides with overlays.  The package comes with an additional Python script that
 can be used to convert plain-text song lyrics to the expected LaTeX markup.")
     (license license:bsd-3)))
 
+(define-public texlive-songs
+  (package
+    (name "texlive-songs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/songs/" "source/latex/songs/"
+                   "tex/latex/songs/")
+             (base32
+              "0mgzkh6cvq3smwjlkvd1gnhb7m151fgiv7f4v3drjqlsjyg2qds6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/songs")
+    (synopsis "Produce song books for church or fellowship")
+    (description
+     "The package provides a means of producing beautiful song books for
+church or fellowship.  It offers:
+@itemize
+@item a very easy chord-entry syntax;
+@item multiple modes (words-only; words+chords; slides; handouts);
+@item measure bars;
+@item guitar tablatures;
+@item automatic transposition;
+@item scripture quotations;
+@item multiple indexes (sorted by title, author, important lyrics, or
+scripture references);
+@item and projector-style output generation, for interactive use.
+@end itemize")
+    (license license:gpl2)))
+
 (define-public texlive-spalign
   (package
     (name "texlive-spalign")
