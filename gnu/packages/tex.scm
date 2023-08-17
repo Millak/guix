@@ -13241,6 +13241,29 @@ available in package @code{texmate}, and a general mechanism for selecting
 chess fonts is provided in @code{chessfss}.")
     (license license:lppl)))
 
+(define-public texlive-skaknew
+  (package
+    (name "texlive-skaknew")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/skaknew/"
+                   "fonts/afm/public/skaknew/"
+                   "fonts/map/dvips/skaknew/"
+                   "fonts/opentype/public/skaknew/"
+                   "fonts/tfm/public/skaknew/"
+                   "fonts/type1/public/skaknew/")
+             (base32
+              "1jpm36qb65jbsrhq1yqhwajqz3jg35wid0wlav9hk7q4hd58qi4r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skaknew")
+    (synopsis "The @code{skak} chess fonts redone in Adobe Type 1")
+    (description
+     "This package offers Adobe Type 1 versions of the fonts provided as
+Metafont source by the @code{skak} bundle.")
+    (license license:lppl)))
+
 (define-public texlive-skmath
   (package
     (name "texlive-skmath")
