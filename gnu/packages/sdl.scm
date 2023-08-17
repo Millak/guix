@@ -46,7 +46,6 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages fcitx)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
@@ -146,7 +145,6 @@ joystick, and graphics hardware.")
      (modify-inputs (package-inputs sdl)
        (append dbus
                eudev                    ;for discovering input devices
-               fcitx                    ;helps with CJK input
                glib
                ibus-minimal
                libxkbcommon
