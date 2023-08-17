@@ -3658,6 +3658,33 @@ The style implements entry types for citing audio-visual materials, among many
 others.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-claves
+  (package
+    (name "texlive-biblatex-claves")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-claves/"
+                   "tex/latex/biblatex-claves/")
+             (base32
+              "08ydcv7qlbxaysh7jm3d4glrhp1fyd4fvvxc3jc4k50ga77ksqj0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-claves")
+    (synopsis "Tool to manage claves of old litterature with BibLaTeX")
+    (description
+     "When studying antic and medieval literature, we may find many different
+texts published with the same title, or, in contrary, the same text published
+with different titles.  To avoid confusion, scholars have published claves,
+which are books listing ancient texts, identifying them by an identifier ---
+a number or a string of text.  For example, for early Christianity, we have
+the Bibliotheca Hagiographica Graeca, the Clavis Apocryphorum Novi Testamenti
+and other claves.  It could be useful to print the identifier of a texts in
+one specific clavis, or in many claves.  The package allows us to create new
+field for different claves, and to present all these fields in a consistent
+way.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
