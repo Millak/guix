@@ -3794,6 +3794,28 @@ The style is highly optimized for documents written in German, and the main
 documentation is only available in German.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-gb7714-2015
+  (package
+    (name "texlive-biblatex-gb7714-2015")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-gb7714-2015/"
+                   "tex/latex/biblatex-gb7714-2015/")
+             (base32
+              "061gp5xwh2dkckb8dn9b7xhf76cqsq908dniwkp6hg531dzyn525")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-gb7714-2015")
+    (synopsis
+     "BibLaTeX implementation of the GBT7714-2015 bibliography style for
+Chinese users")
+    (description
+     "This package provides an implementation of the GBT7714-2015 bibliography
+style.  This implementation follows the GBT7714-2015 standard and can be used
+by simply loading BibLaTeX with the appropriate option.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
