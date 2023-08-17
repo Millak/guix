@@ -3816,6 +3816,27 @@ style.  This implementation follows the GBT7714-2015 standard and can be used
 by simply loading BibLaTeX with the appropriate option.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-german-legal
+  (package
+    (name "texlive-biblatex-german-legal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-german-legal/"
+                   "tex/latex/biblatex-german-legal/")
+             (base32
+              "14njaba2gvz338f8z4w3vi1qyf7yxx3l9c9nla6ggrw4rnicjpzs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-german-legal")
+    (synopsis "Comprehensive citation style for German legal texts")
+    (description
+     "This package aims to provide citation styles (for footnotes and
+bibliographies) for German legal texts.  It is currently focused on citations
+in books (style german-legal-book), but may be extended to journal articles in
+the future.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
