@@ -8268,6 +8268,25 @@ Interlingua that can be used as a dummy text: @emph{Fundamento de
 intelligentia}.")
     (license license:public-domain)))
 
+(define-public texlive-leadsheets
+  (package
+    (name "texlive-leadsheets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/leadsheets/"
+                   "tex/latex/leadsheets/")
+             (base32
+              "12aly170pf10dw82i6rykiaxl9r5mmva7kvkhlywir4s6gx07gjc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/leadsheets")
+    (synopsis "Typesetting leadsheets and songbooks")
+    (description
+     "This LaTeX package offers support for typesetting simple leadsheets of
+songs, i.e., song lyrics and the corresponding chords.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ledmac
   (package
     (name "texlive-ledmac")
