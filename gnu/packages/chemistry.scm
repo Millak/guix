@@ -87,7 +87,6 @@
     (native-inputs
      (list eigen
            mmtf-cpp
-           msgpack
            googletest
            pkg-config
            pybind11))
