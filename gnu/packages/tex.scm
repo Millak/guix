@@ -7470,6 +7470,26 @@ adds a collection of useful @acronym{HEP, High Energy Physics} units to the
 existing SIunits set.")
     (license license:lppl)))
 
+(define-public texlive-hexboard
+  (package
+    (name "texlive-hexboard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hexboard/"
+                   "source/latex/hexboard/"
+                   "tex/latex/hexboard/")
+             (base32
+              "04z0qhajbjn55mqax4kaw53h7s6g84iy1yh0pfhzj3ib7gd4cpw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hexboard")
+    (synopsis "For drawing Hex boards and games")
+    (description
+     "@code{hexboard} is a package for LaTeX that should also work with LuaTeX
+and XeTeX, that provides functionality for drawing Hex boards and games.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-hitex
   (package
     (name "texlive-hitex")
