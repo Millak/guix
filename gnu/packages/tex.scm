@@ -3554,6 +3554,27 @@ a @code{@@article}, @code{@@incollection} or in a @code{@@thesis}.  The
 package is now superseded by @code{biblatex-bookinother}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-bookinother
+  (package
+    (name "texlive-biblatex-bookinother")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-bookinother/"
+                   "tex/latex/biblatex-bookinother/")
+             (base32
+              "062ri08pwr5fh8v500dbgrc7nbxgi0jd864xfmvf601lwpwqn9c7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-bookinother")
+    (synopsis "Manage book edited in other entry type")
+    (description
+     "This package provides new BibLaTeX entry types and fields for book
+edited in other types, like for instance @code{@@bookinarticle}.  It offers
+more types than the older package @code{biblatex-bookinarticle}, which it
+supersedes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
