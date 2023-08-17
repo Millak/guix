@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -102,7 +102,7 @@ implementations.")
        ("openbox" ,openbox)
        ("startup-notification" ,startup-notification)
        ("libsm" ,libsm)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxft" ,libxft)))
     (native-inputs
      `(("gettext" ,gettext-minimal)

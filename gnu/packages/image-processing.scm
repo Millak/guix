@@ -754,7 +754,7 @@ the OpenCV-Python library.")
            libgsf
            libjpeg-turbo
            libpng
-           librsvg
+           (librsvg-for-system)
            libtiff
            libxml2
            libwebp
@@ -906,7 +906,7 @@ including 2D color images.")
            libxml2
            libexif
            libjpeg-turbo ;required by vips.pc
-           librsvg
+           (librsvg-for-system)
            fftw
            libgsf
            imagemagick

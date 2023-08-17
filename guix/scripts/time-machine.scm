@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,13 +20,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix scripts time-machine)
+  #:use-module (guix channels)
+  #:use-module (guix diagnostics)
   #:use-module (guix ui)
   #:use-module (guix scripts)
   #:use-module (guix inferior)
   #:use-module (guix store)
   #:use-module (guix status)
   #:use-module ((guix git)
-                #:select (with-git-error-handling))
+                #:select (update-cached-checkout with-git-error-handling))
   #:use-module ((guix utils)
                 #:select (%current-system))
   #:use-module ((guix scripts pull)
@@ -38,8 +41,16 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:export (guix-time-machine))
+
+;;; The required inferiors mechanism relied on by 'guix time-machine' was
+;;; firmed up in v1.0.0; it is the oldest, safest commit that can be travelled
+;;; to.
+(define %oldest-possible-commit
+  "6298c3ffd9654d3231a6f25390b056483e8f407c") ;v1.0.0
 
 
 ;;;
@@ -81,7 +92,7 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
                                (alist-delete 'repository-url result))))
          (option '("commit") #t #f
                  (lambda (opt name arg result)
-                   (alist-cons 'ref `(commit . ,arg) result)))
+                   (alist-cons 'ref `(tag-or-commit . ,arg) result)))
          (option '("branch") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'ref `(branch . ,arg) result)))
@@ -140,8 +151,27 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
      (let* ((opts         (parse-args args))
             (channels     (channel-list opts))
             (command-line (assoc-ref opts 'exec))
+            (ref          (assoc-ref opts 'ref))
             (substitutes?  (assoc-ref opts 'substitutes?))
             (authenticate? (assoc-ref opts 'authenticate-channels?)))
+
+       (define (validate-guix-channel channels)
+         "Finds the Guix channel among CHANNELS, and validates that REF as
+captured from the closure, a git reference specification such as a commit hash
+or tag associated to CHANNEL, is valid and new enough to satisfy the 'guix
+time-machine' requirements.  A `formatted-message' condition is raised
+otherwise."
+         (let* ((guix-channel (find guix-channel? channels))
+                (checkout commit relation (update-cached-checkout
+                                           (channel-url guix-channel)
+                                           #:ref (or ref '())
+                                           #:starting-commit
+                                           %oldest-possible-commit)))
+           (unless (memq relation '(ancestor self))
+             (raise (formatted-message
+                     (G_ "cannot travel past commit `~a' from May 1st, 2019")
+                     (string-take %oldest-possible-commit 12))))))
+
        (when command-line
          (let* ((directory
                  (with-store store
@@ -153,6 +183,8 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
                                                          #:dry-run? #f)
                        (set-build-options-from-command-line store opts)
                        (cached-channel-instance store channels
-                                                #:authenticate? authenticate?)))))
+                                                #:authenticate? authenticate?
+                                                #:validate-channels
+                                                validate-guix-channel)))))
                 (executable (string-append directory "/bin/guix")))
            (apply execl (cons* executable executable command-line))))))))

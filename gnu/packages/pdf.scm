@@ -1040,7 +1040,7 @@ using a stylus.")
     (inputs
      (list alsa-lib
            gtk+
-           librsvg
+           (librsvg-for-system)
            libsndfile
            libxml2
            libzip

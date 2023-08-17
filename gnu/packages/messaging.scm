@@ -1372,7 +1372,7 @@ Encryption to Gajim.")
            at-spi2-core
            bash-minimal
            cairo
-           librsvg
+           (librsvg-for-system)
            glib
            glib-networking
            gpgme

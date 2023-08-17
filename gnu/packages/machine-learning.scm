@@ -408,7 +408,7 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((commit "3cd8dde0d1357b7f11bdd25c45d5bf5e97e284a0")
+  (let ((commit "f31b5397143009d682db90fd2a6cde83f1ef00eb")
         (revision "0"))
     (package
       (name "llama-cpp")
@@ -421,7 +421,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                (commit (string-append "master-" (string-take commit 7)))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0i7c92cxqs31xklrn688978kk29agivgxjgvsb45wzm65gc6hm5c"))))
+          (base32 "0ys6n53n032zq1ll9f3vgxk8sw0qq7x3fi7awsyy13adzp3hn08p"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -449,18 +449,13 @@ Performance is achieved by using the LLVM JIT compiler.")
                       (chmod (string-append bin script) #o555)))
                   (mkdir-p bin)
                   (make-script "convert-pth-to-ggml")
-                  (make-script "convert-gptq-to-ggml")
-                  (make-script "quantize.py")
-                  (substitute* (string-append bin "quantize.py")
-                    (("os\\.getcwd\\(\\), quantize_script_binary")
-                     (string-append "\"" bin "\", quantize_script_binary"))))))
+                  (make-script "convert-lora-to-ggml")
+                  (make-script "convert"))))
             (add-after 'install-python-scripts 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
             (replace 'install
               (lambda _
-                (let ((bin (string-append #$output "/bin/")))
-                  (install-file "bin/quantize" bin)
-                  (copy-file "bin/main" (string-append bin "llama"))))))))
+                (copy-file "bin/main" (string-append #$output "/bin/llama")))))))
       (inputs (list python))
       (propagated-inputs
        (list python-numpy python-pytorch python-sentencepiece))
@@ -4422,7 +4417,7 @@ and Numpy.")
 (define-public python-pyro-ppl
   (package
     (name "python-pyro-ppl")
-    (version "1.8.1")
+    (version "1.8.6")
     ;; The sources on pypi don't include tests.
     (source
      (origin
@@ -4432,7 +4427,7 @@ and Numpy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ns20mr8qgjshzbplrfzaz1xhb9ldbgvrj2rzlsxvns2bi1ddyl5"))))
+        (base32 "0n1vsih99pvswcaygdxkc6kq6r48ny130z6ca8pp3281396r2ykw"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

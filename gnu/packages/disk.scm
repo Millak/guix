@@ -1131,7 +1131,7 @@ LVM D-Bus API).")
 (define-public rmlint
   (package
     (name "rmlint")
-    (version "2.10.1")
+    (version "2.10.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1140,48 +1140,44 @@ LVM D-Bus API).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15xfkcw1bkfyf3z8kl23k3rlv702m0h7ghqxvhniynvlwbgh6j2x"))))
+                "0sk4v1chnk2hvzi92svyf8qgamfs4fvial90qwx4a7dayxhkbsm4"))))
     (build-system scons-build-system)
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags (list (string-append "--prefix=" %output)
-                           (string-append "--actual-prefix=" %output))
-       #:tests? #f                      ; No tests?
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'scons-propagate-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; TODO: `rmlint --gui` fails with
-             ;; "Failed to load shredder: No module named 'shredder'".
-             ;; The GUI might also need extra dependencies, such as
-             ;; python-gobject, python-cairo, dconf, librsvg, gtksourceview3.
-             (substitute* "lib/cmdline.c"
-               (("const char \\*commands\\[\\] = \\{\"python3\", \"python\", NULL\\};")
-                (string-append
-                 "const char *commands[] = {\""
-                 (assoc-ref inputs "python") "/bin/python"
-                 "\", \"python\", NULL};")))
-             ;; By design, SCons does not, by default, propagate
-             ;; environment variables to subprocesses.  See:
-             ;; <http://comments.gmane.org/gmane.linux.distributions.nixos/4969>
-             ;; Here, we modify the SConstruct file to arrange for
-             ;; environment variables to be propagated.
-             (substitute* "SConstruct"
-               (("^env = Environment\\(.*\\)" all)
-                (string-append
-                 all
-                 "\nenv['ENV']=os.environ"))))))))
+     (list
+      #:scons scons-python2
+      #:scons-flags
+      #~(list (string-append "--prefix=" #$output)
+              (string-append "--actual-prefix=" #$output))
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'scons-propagate-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; TODO: `rmlint --gui` fails with
+              ;; "Failed to load shredder: No module named 'shredder'".
+              ;; The GUI might also need extra dependencies, such as
+              ;; python-gobject, python-cairo, dconf, librsvg, gtksourceview3.
+              (substitute* "lib/cmdline.c"
+                (("const char \\*commands\\[\\] = \\{\"python3\", \"python\", NULL\\};")
+                 (string-append "const char *commands[] = {\""
+                                (search-input-file inputs "/bin/python")
+                                "\", \"python\", NULL};")))
+              ;; By design, SCons does not, by default, propagate
+              ;; environment variables to subprocesses.  See:
+              ;; <http://comments.gmane.org/gmane.linux.distributions.nixos/4969>
+              ;; Here, we modify the SConstruct file to arrange for
+              ;; environment variables to be propagated.
+              (substitute* "SConstruct"
+                (("^env = Environment\\(.*\\)" all)
+                 (string-append all "\nenv['ENV']=os.environ"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin")
-       ("python-sphinx" ,python-sphinx)))
+     (list `(,glib "bin") pkg-config python-sphinx))
     (inputs
-     `(("python" ,python-wrapper)
-       ("glib" ,glib)
-       ("libelf" ,libelf)
-       ("elfutils" ,elfutils)
-       ("json-glib" ,json-glib)
-       ("libblkid" ,util-linux "lib")))
+     (list elfutils
+           glib
+           json-glib
+           python-wrapper
+           `(,util-linux "lib")))
     (home-page "https://rmlint.rtfd.org")
     (synopsis "Remove duplicates and other lint from the file system")
     (description "@command{rmlint} finds space waste and other broken things

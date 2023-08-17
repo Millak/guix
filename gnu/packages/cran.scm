@@ -19,7 +19,7 @@
 ;;; Copyright © 2019 Nicolò Balzarotti <anothersms@gmail.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Todor Kondić <tk.code@protonmail.com>
 ;;; Copyright © 2020 Danjela Lura <danielaluraa@gmail.com>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
@@ -29400,7 +29400,7 @@ automatically show a loader when the output is (re)calculating.")
     (properties `((upstream-name . "rsvg")))
     (build-system r-build-system)
     (inputs
-     (list librsvg zlib))
+     (list (librsvg-for-system) zlib))
     (native-inputs
      (list pkg-config r-knitr))
     (home-page "https://github.com/jeroen/rsvg#readme")

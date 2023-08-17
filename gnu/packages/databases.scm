@@ -1190,14 +1190,14 @@ and high-availability (HA).")
 (define-public postgresql-15
   (package
     (name "postgresql")
-    (version "15.3")
+    (version "15.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0cnrk5jrwfqkcx8mlg761s60ninqrsxpzasf7xfbzzq03y4x9izz"))
+                "1yf8cfg9j2pfxh5lxfaq1ifbvrcvv2g5vjxnadk36ds4vi5mmv5s"))
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1265,27 +1265,27 @@ pictures, sounds, or video.")
 (define-public postgresql-13
   (package
     (inherit postgresql-14)
-    (version "13.11")
+    (version "13.12")
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1yqbwnzgdgaim476smwkdj2jd6j92x9xqm2f1mknnmh3f9jgz4j9"))))))
+                "12r1kwjaclq2qn4qg3k6j0asrs4r0k0g1fkdpb3pnjsiwg7fv88d"))))))
 
 (define-public postgresql-11
   (package
     (inherit postgresql-13)
     (name "postgresql")
-    (version "11.20")
+    (version "11.21")
     (source (origin
               (inherit (package-source postgresql-13))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kmcnnc2nwjxv042b8bxbdxdgfksxvgmfhh4999rhzjays18hz1x"))))
+                "0l7qrwzwyiy5dwg6j7nnd9mq245sycc4gcv6a6r7gpfmf5s87c07"))))
     (native-inputs
      (modify-inputs (package-native-inputs postgresql-13)
        (replace "docbook-xml" docbook-xml-4.2)))))
@@ -1850,8 +1850,8 @@ which uses SQL to describe changes.")
 
 (define-public sqlcrush
   ;; Unfortunately, there is no proper upstream release and may never be.
-  (let ((commit "b5f6868f189566a26eecc78d0f0659813c1aa98a")
-        (revision "1"))
+  (let ((commit "502a583e97a84efdeb48e59f1bfe403daa9681ee")
+        (revision "2"))
     (package
       (name "sqlcrush")
       (version (git-version "0.1.5" revision commit))
@@ -1863,7 +1863,7 @@ which uses SQL to describe changes.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0x3wy40r93p0jv3nbwj9a77wa4ff697d13r0wffmm7q9h3mzsww8"))))
+                  "0x2q4m9ryw68kifalnm3x4bv9v2xrc2ffsiap8m9wnw6lf1h05la"))))
       (build-system python-build-system)
       (inputs
        (list python-cryptography python-psycopg2 python-pymysql

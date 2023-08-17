@@ -181,7 +181,7 @@
            m17n-lib
            qtbase-5
            librime
-           librsvg
+           (librsvg-for-system)
            wayland
            wayland-protocols
            libx11

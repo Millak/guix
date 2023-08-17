@@ -55,7 +55,7 @@
           (test-equal "login on tty1"
             '(("c1" "0" "root" "seat0" "tty1")      ;session
               ("seat0")                             ;seat
-              ("0" "root"))                         ;user
+              ("0" "root" "no"))                    ;user
 
             (begin
               ;; Wait for tty1.

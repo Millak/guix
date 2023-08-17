@@ -1,0 +1,51 @@
+This patch distinguishes between the data directory path for GUI and the one
+for non-GUI by allowing to set the former path.
+
+highlight package has two outputs: out and gui.  Both outputs have files which
+will be in the same directory /share/highlight/ without this patch (see also
+install and install-gui tasks in makefile).  In the gui's data directory,
+there are GUI specific files in /share/highlight/gui-files/{l10n,ext}/.
+
+diff --git a/src/gui-qt/main.cpp b/src/gui-qt/main.cpp
+index 4700dc1..3567745 100644
+--- a/src/gui-qt/main.cpp
++++ b/src/gui-qt/main.cpp
+@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
+ {
+     QApplication app(argc, argv);
+     QTranslator translator;
+-#ifdef DATA_DIR
+-    translator.load(QString("%1/gui_files/l10n/highlight_%2").arg(DATA_DIR).arg(QLocale::system().name()));
++#ifdef GUI_DATA_DIR
++    translator.load(QString("%1/gui_files/l10n/highlight_%2").arg(GUI_DATA_DIR).arg(QLocale::system().name()));
+ #else
+     translator.load(QString("%1/gui_files/l10n/highlight_%2").arg(QDir::currentPath()).arg(QLocale::system().name()));
+ #endif
+diff --git a/src/gui-qt/mainwindow.cpp b/src/gui-qt/mainwindow.cpp
+index 3a21ad2..f060431 100644
+--- a/src/gui-qt/mainwindow.cpp
++++ b/src/gui-qt/mainwindow.cpp
+@@ -2131,8 +2131,8 @@ QString MainWindow::getDistFileFilterPath(){
+ #ifdef Q_OS_OSX
+     return QCoreApplication::applicationDirPath()+"/../Resources/gui_files/ext/fileopenfilter.conf";
+ #else
+-    #ifdef DATA_DIR
+-    return QString(DATA_DIR) + "/gui_files/ext/fileopenfilter.conf";
++    #ifdef GUI_DATA_DIR
++    return QString(GUI_DATA_DIR) + "/gui_files/ext/fileopenfilter.conf";
+     #else
+     return QDir::currentPath()+"/gui_files/ext/fileopenfilter.conf";
+     #endif
+diff --git a/src/makefile b/src/makefile
+index b1d7988..2963105 100644
+--- a/src/makefile
++++ b/src/makefile
+@@ -118,7 +118,7 @@ gui-qt: highlight-gui
+ 
+ highlight-gui: libhighlight.a ${GUI_OBJECTS}
+ 	cd gui-qt && \
+-	${QMAKE} 'DEFINES+=DATA_DIR=\\\"${HL_DATA_DIR}\\\" CONFIG_DIR=\\\"${HL_CONFIG_DIR}\\\" DOC_DIR=\\\"${HL_DOC_DIR}\\\" ' && \
++	${QMAKE} 'DEFINES+=DATA_DIR=\\\"${HL_DATA_DIR}\\\" CONFIG_DIR=\\\"${HL_CONFIG_DIR}\\\" DOC_DIR=\\\"${HL_DOC_DIR}\\\" GUI_DATA_DIR=\\\"${GUI_DATA_DIR}\\\" ' && \
+ 	$(MAKE)
+ 
+ $(OBJECTFILES) : makefile

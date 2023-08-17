@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -350,47 +350,45 @@ them in order to efficiently transfer a minimal amount of data.")
 (define-public libcamera
   (package
     (name "libcamera")
-    (version "0.0.0-1")
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "git://linuxtv.org/libcamera.git")
-         (commit "10be87fa7c3bfb097b21ca3d469c67e40c333f7e")))
+         (url "https://git.libcamera.org/libcamera/libcamera.git")
+         (commit (string-append "v" version))))
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0qgirhlalmk9f9v6piwz50dr2asb64rvbb9zb1vix7y9zh7m11by"))))
+        (base32 "06dj3dpfbayj61015n5kffin2g3hyys11ra0px2g4hmrznvdkhc9"))))
     (build-system meson-build-system)
-    (outputs '("out" "doc"))
+    (outputs '("out" "doc" "gst" "tools"))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:configure-flags
-       (list
-        "-Dv4l2=true"
-        ;; XXX: Requires bundled pybind11.
-        "-Dpycamera=disabled")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "test/meson.build"
-               (("\\['list-cameras',                    'list-cameras.cpp'\\],")
-                "")
-               ;; TODO: Why do the gstreamer tests fail.
-               (("^subdir\\('gstreamer'\\)")
-                ""))))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))))))))
+     (list #:glib-or-gtk? #t ; To wrap binaries and/or compile schemas
+           #:configure-flags
+           #~(list (string-append "-Dbindir="
+                                  (assoc-ref %outputs "tools") "/bin")
+                   "-Dtest=true" "-Dv4l2=true"
+                   ;; XXX: Requires bundled pybind11.
+                   "-Dpycamera=disabled")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'move-doc-and-gst
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (doc (assoc-ref outputs "doc"))
+                          (gst (assoc-ref outputs "gst")))
+                     (mkdir-p (string-append doc "/share"))
+                     (rename-file (string-append out "/share/doc")
+                                  (string-append doc "/share/doc"))
+                     (mkdir-p (string-append gst "/lib"))
+                     (rename-file
+                      (string-append out "/lib/gstreamer-1.0")
+                      (string-append gst "/lib/gstreamer-1.0"))))))))
     (native-inputs
-     (list graphviz                     ;for 'dot'
+     (list googletest
+           graphviz                     ;for 'dot'
            doxygen
            pkg-config
            python-wrapper
@@ -961,7 +959,7 @@ systems with no further dependencies.")
     (inputs
      (list bluez
            dbus
-           librsvg
+           (librsvg-for-system)
            glib
            gtk+
            iproute
@@ -4616,6 +4614,42 @@ interface statistics provided by the kernel as information source.  This means
 that vnStat won't actually be sniffing any traffic and also ensures light use
 of system resources regardless of network traffic rate.")
    (license license:gpl2+)))
+
+(define-public dnstracer
+  (package
+    (name "dnstracer")
+    (version "1.10")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.mavetju.org/download/"
+                                  name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "089bmrjnmsga2n0r4xgw4bwbf41xdqsnmabjxhw8lngg2pns1kb4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                (string-append "CC=" #$(cc-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-makefile
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("\\$\\{PREFIX}/man")
+                               "${PREFIX}/share/man")
+                              (("^install:.*" all)
+                               (string-append
+                                all
+                                "\tinstall -d ${BINPREFIX}\n"
+                                "\tinstall -d ${MANPREFIX}\n")))))
+                        (delete 'configure))))
+    (native-inputs (list perl))         ;for pod2man
+    (home-page "http://www.mavetju.org/unix/dnstracer.php")
+    (synopsis "Trace a chain of DNS servers to the source")
+    (description "@command{dnstracer} determines where a given Domain Name
+Server (DNS) gets its information from, and follows the chain of DNS servers
+back to the servers which know the data.")
+    (license license:bsd-2)))
 
 (define-public dropwatch
   (package

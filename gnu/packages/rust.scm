@@ -705,7 +705,7 @@ safety and thread safety guarantees.")
   (rust-bootstrapped-package
    rust-1.67 "1.68.2" "15ifyd5jj8rd979dkakp887hgmhndr68pqaqvd2hqkfdywirqcwk"))
 
-;;; Note: Only the latest versions of Rust are supported and tested.  The
+;;; Note: Only the latest version of Rust is supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
 ;;; required to build the full Rust bootstrap chain.
@@ -713,7 +713,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.67))
+  (let ((base-rust rust-1.68))
     (package
       (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
@@ -807,7 +807,7 @@ safety and thread safety guarantees.")
                ;; We skip the test since it's drastically unlikely Guix's
                ;; packaging will introduce a bug here.
                (lambda _
-                 (delete-file "src/test/ui/parser/shebang/sneaky-attrib.rs")))
+                 (delete-file "tests/ui/parser/shebang/sneaky-attrib.rs")))
              (add-after 'unpack 'patch-process-tests
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((bash (assoc-ref inputs "bash")))
@@ -831,6 +831,17 @@ safety and thread safety guarantees.")
                                 ((file) file))
                    (("fn ctrl_c_kills_everyone")
                     "#[ignore]\nfn ctrl_c_kills_everyone"))))
+             (add-after 'unpack 'adjust-rpath-values
+               ;; This adds %output:out to rpath, allowing us to install utilities in
+               ;; different outputs while reusing the shared libraries.
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let ((out (assoc-ref outputs "out")))
+                   (substitute* "src/bootstrap/builder.rs"
+                      ((" = rpath.*" all)
+                       (string-append all
+                                      "                "
+                                      "rustflags.arg(\"-Clink-args=-Wl,-rpath="
+                                      out "/lib\");\n"))))))
              (add-after 'configure 'add-gdb-to-config
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((gdb (assoc-ref inputs "gdb")))

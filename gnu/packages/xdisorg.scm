@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +103,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -132,6 +134,8 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages syncthing)
@@ -140,6 +144,8 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages wm)
+  #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
   #:use-module (ice-9 match))
@@ -1816,6 +1822,66 @@ but can also follow a growing file, display contents, delete entries and more.")
 connectivity of the X server running on a particular @code{DISPLAY}.")
     (license license:gpl3+)))
 
+(define-public ulauncher
+  (package
+    (name "ulauncher")
+    (version "6.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Ulauncher/Ulauncher")
+                    (commit "1e68d47473f8e77d375cb4eca644c3cda68ed7e9")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c2czlrsf5aq8c88qliqbnqvf04q9cnjc1j6hivqa0w260mzjll1"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-libX11
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "ulauncher/utils/xinit.py"
+                              (("libX11.so.6")
+                               (search-input-file inputs "/lib/libX11.so")))))
+                        (add-after 'unpack 'fix-usr
+                          (lambda _
+                            (substitute* "setup.py"
+                              (("\\{sys.prefix\\}")
+                               (string-append #$output)))))
+                        (add-after 'unpack 'fix-os-release
+                          (lambda _
+                            (define (touch file)
+                              (call-with-output-file file
+                                (const #t)))
+                            (let* ((hard-path "/etc/os-release")
+                                   (fixed-path (string-append #$output
+                                                              hard-path)))
+                              ;; Make it relative
+                              ;; Update hardcoded path to something
+                              ;; within the build enviroment.
+                              (substitute* "ulauncher/utils/environment.py"
+                                ((hard-path)
+                                 fixed-path))
+                              ;; Create directory for the dummy file.
+                              (mkdir-p (string-append #$output "/etc"))
+                              (touch fixed-path))))
+                        (add-before 'check 'env-setup
+                          ;; The test require access to home to put temporary files.
+                          (lambda _
+                            (setenv "HOME"
+                                    (getcwd)))))))
+    (native-inputs (list intltool python-distutils-extra python-mock))
+    (inputs (list libx11 python-levenshtein python-pycairo))
+    (propagated-inputs (list keybinder libwnck gsettings-desktop-schemas
+                             python-pygobject webkitgtk-with-libsoup2))
+    (home-page "https://ulauncher.io")
+    (synopsis "Application launcher for Linux")
+    (description
+     "Ulauncher is a fast application launcher for Linux.  It is written in
+Python, using GTK+, and features: App Search (fuzzy matching), Calculator,
+Extensions, Shortcuts, File browser mode and Custom Color Themes.")
+    (license license:gpl3+)))
+
 (define-public rofi
   (package
     (name "rofi")
@@ -1827,7 +1893,16 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "138c4bl60p7namsb2pk8q5cdlxbdkli7zny192vk5jv5s5kczzya"))))
+                "138c4bl60p7namsb2pk8q5cdlxbdkli7zny192vk5jv5s5kczzya"))
+              (snippet
+               #~(begin
+                   ;; Delete pre-generated files.
+                   (for-each delete-file
+                             (list "lexer/theme-lexer.c"
+                                   "lexer/theme-parser.c"
+                                   "lexer/theme-parser.h"
+                                   "resources/resources.c"
+                                   "resources/resources.h"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -1839,7 +1914,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
      (list cairo
            glib
            libjpeg-turbo
-           librsvg
+           (librsvg-for-system)
            libxcb
            libxkbcommon
            pango
@@ -1875,7 +1950,7 @@ by name.")
     (package
       (inherit rofi)
       (name "rofi-wayland")
-      (version "1.7.5+wayland1")
+      (version "1.7.5+wayland2")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://github.com/lbonn/rofi"
@@ -1883,16 +1958,16 @@ by name.")
                                     "/rofi-" version ".tar.xz"))
                 (sha256
                  (base32
-                  "09n71wv3nxpzpjmvqmxlxk0zfln3x2l8admfq571781p9hw0w6wp"))))
+                  "0l6rf8qwvawyh938pinl9fkwzjnq72xpa9a7lwk9jrr5lkk3h8yj"))))
       (build-system meson-build-system)
       (inputs
        (modify-inputs (package-inputs base)
          (append wayland wayland-protocols)))
       (description
-       (string-append
-        (package-description base)
-        "  This package, @code{rofi-wayland}, provides additional wayland
-support.")))))
+       "Rofi is a minimalist application launcher.  It memorizes which
+applications you regularly use and also allows you to search for an
+application by name.  This package, @code{rofi-wayland}, provides additional
+wayland support."))))
 
 (define-public rofi-calc
   (package
@@ -1958,7 +2033,7 @@ natural language input and provide results.")
     (inputs
      (list gtk+
            imlib2
-           librsvg
+           (librsvg-for-system)
            libxcomposite
            libxdamage
            libxft
@@ -1978,6 +2053,46 @@ The taskbar includes transparency and color settings for the font, icons,
 border, and background.  It also supports multihead setups, customized mouse
 actions, a built-in clock, a battery monitor and a system tray.")
     (license license:gpl2)))
+
+(define-public stalonetray
+  (package
+    (name "stalonetray")
+    (version "0.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/kolbusa/stalonetray")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "074wy1xppfycillbxq6fwrq87ik9glc95083df5vgm20mhzni7pz"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-docbook-root
+            (lambda _
+              (substitute* "configure.ac"
+                (("AC_SUBST\\(DOCBOOK_ROOT\\)" all)
+                 (string-append "DOCBOOK_ROOT="
+                                #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/docbook-xsl-"
+                                #$(package-version (this-package-native-input "docbook-xsl"))
+                                "; " all))))))))
+    (inputs (list libx11 libxpm))
+    (native-inputs (list autoconf automake docbook-xsl libxslt))
+    (build-system gnu-build-system)
+    (home-page "https://kolbusa.github.io/stalonetray")
+    (synopsis "Standalone freedesktop.org and KDE systray implementation")
+    (description
+     "Stalonetray is a stand-alone freedesktop.org and KDE system
+tray (notification area) for X Window System/X11 (e.g. X.Org or XFree86).  It
+has full XEMBED support and minimal dependencies: an X11 lib only.  Stalonetray
+works with virtually any EWMH-compliant window manager.")
+    (license license:gpl2+)))
 
 (define-public tofi
   (package
@@ -2583,7 +2698,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
 (define-public wl-clipboard
   (package
     (name "wl-clipboard")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2592,7 +2707,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g6hcsn4klapvz3bw0k8syixwyyi4cl1c7vbc6f1a2hjpcf4pawn"))))
+        (base32 "0r45k6fk9k26qs88s2sjlgjjamhj2jqghdivlh2xjqknws63d29g"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -2605,7 +2720,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
                (add-after 'unpack 'patch-file-names
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* (find-files "src" "\\.c$")
-                     (("\"(cat|rm)\"" _ command)
+                     (("\"(cat)\"" _ command)
                       (string-append "\"" (assoc-ref inputs "coreutils")
                                      "/bin/" command "\""))
                      (("\"xdg-mime\"")
@@ -3097,7 +3212,7 @@ using @command{dmenu}.")
                   fontconfig
                   libpng
                   libxkbcommon
-                  librsvg ;if librsvg is not used, bundled nanosvg is used
+                  (librsvg-for-system) ;if librsvg is not used, bundled nanosvg is used
                   pixman
                   wayland
                   wayland-protocols))
@@ -3151,7 +3266,7 @@ such as sway, similar to @command{rofi}.")
                 "0hq2qiqxvrw3g515ywcb676ljc8mdw3pyslgxr3vahizfljah1pv"))))
     (build-system meson-build-system)
     (native-inputs (list nlohmann-json pkg-config))
-    (inputs (list gtk-layer-shell gtkmm-3 librsvg))
+    (inputs (list gtk-layer-shell gtkmm-3 (librsvg-for-system)))
     (home-page "https://github.com/nwg-piotr/nwg-launchers")
     (synopsis "Application launchers for wlroots")
     (description

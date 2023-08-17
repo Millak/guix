@@ -1589,10 +1589,21 @@ will automatically show up at
 @indicateurl{https://qa.guix.gnu.org/branch/@var{branch}}, with an
 indication of its build status on various platforms.
 
+@cindex feature branches, coordination
 To help coordinate the merging of branches, you must create a new
 guix-patches issue each time you wish to merge a branch (@pxref{The
-Issue Tracker}).  Normally branches will be merged in a ``first come,
-first merged'' manner, tracked through the guix-patches issues.
+Issue Tracker}).  The title of the issue requesting to merge a branch
+should have the following format:
+
+@cindex merge requests, template
+@example
+Request for merging "@var{name}" branch
+@end example
+
+The @url{https://qa.guix.gnu.org/, QA infrastructure} recognizes such
+issues and lists the merge requests on its main page.  Normally branches
+will be merged in a ``first come, first merged'' manner, tracked through
+the guix-patches issues.
 
 If you agree on a different order with those involved, you can track
 this by updating which issues block@footnote{You can mark an issue as

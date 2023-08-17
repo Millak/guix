@@ -118,6 +118,7 @@ Copyright @copyright{} 2023 Nathaniel Nicandro@*
 Copyright @copyright{} 2023 Tanguy Le Carrour@*
 Copyright @copyright{} 2023 Zheng Junjie@*
 Copyright @copyright{} 2023 Brian Cully@*
+Copyright @copyright{} 2023 Felix Lechner@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -5068,6 +5069,23 @@ revision.  Naturally, no security fixes are provided for old versions
 of Guix or its channels.  A careless use of @command{guix time-machine}
 opens the door to security vulnerabilities.  @xref{Invoking guix pull,
 @option{--allow-downgrades}}.
+@end quotation
+
+Due to @command{guix time-machine} relying on the ``inferiors''
+mechanism (@pxref{Inferiors}), the oldest commit it can travel to is
+commit @samp{6298c3ff} (``v1.0.0''), dated May 1@sup{st}, 2019, which is
+the first release that included the inferiors mechanism.  An error is
+returned when attempting to navigate to older commits.
+
+@quotation Note
+Although it should technically be possible to travel to such an old
+commit, the ease to do so will largely depend on the availability of
+binary substitutes.  When traveling to a distant past, some packages may
+not easily build from source anymore.  One such example are old versions
+of Python 2 which had time bombs in its test suite, in the form of
+expiring SSL certificates.  This particular problem can be worked around
+by setting the hardware clock to a value in the past before attempting
+the build.
 @end quotation
 
 The general syntax is:
@@ -14530,6 +14548,26 @@ gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0
 @dots{}
 @end example
 
+In some specific cases, you may have many packages specified via a
+manifest or a module selection which should all be updated together; for
+these cases, the @option{--target-version} option can be provided to have
+them all refreshed to the same version, as shown in the examples below:
+
+@example
+$ guix refresh qtbase qtdeclarative --target-version=6.5.2
+gnu/packages/qt.scm:1248:13: qtdeclarative would be upgraded from 6.3.2 to 6.5.2
+gnu/packages/qt.scm:584:2: qtbase would be upgraded from 6.3.2 to 6.5.2
+@end example
+
+@example
+$ guix refresh --manifest=qt5-manifest.scm --target-version=5.15.10
+gnu/packages/qt.scm:1173:13: qtxmlpatterns would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1202:13: qtdeclarative would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1762:13: qtserialbus would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:2070:13: qtquickcontrols2 would be upgraded from 5.15.8 to 5.15.10
+@dots{}
+@end example
+
 Sometimes the upstream name differs from the package name used in Guix,
 and @command{guix refresh} needs a little help.  Most updaters honor the
 @code{upstream-name} property in package definitions, which can be used
@@ -16925,6 +16963,13 @@ Alternatively, the @code{modify-services} macro can be used:
   (delete avahi-service-type))
 @end lisp
 
+@quotation Do not panic
+@cindex Scheme programming language, getting started
+Intimidated by the Scheme language or curious about it?  The Cookbook
+has a short section to get started that explains the fundamentals, which
+you will find helpful when hacking your configuration.  @xref{A Scheme
+Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
+@end quotation
 
 @unnumberedsubsec Instantiating the System
 
@@ -25169,6 +25214,20 @@ There is no need to add this field for contrib extensions such as hstore or
 dblink as they are already loadable by postgresql.  This field is only
 required to add extensions provided by other packages.
 
+@item @code{create-account?} (default: @code{#t})
+Whether or not the @code{postgres} user and group should be created.
+
+@item @code{uid} (default: @code{#f})
+Explicitly specify the UID of the @code{postgres} daemon account.
+You normally do not need to specify this, in which case a free UID will
+be automatically assigned.
+
+One situation where this option might be useful is if the @var{data-directory}
+is located on a mounted network share.
+
+@item @code{gid} (default: @code{#f})
+Explicitly specify the GID of the @code{postgres} group.
+
 @end table
 @end deftp
 
@@ -32539,113 +32598,6 @@ network or obtained a DHCP lease from dnsmasq.
 @end table
 @end deftp
 
-@subsubheading ddclient Service
-
-@cindex ddclient
-The ddclient service described below runs the ddclient daemon, which takes
-care of automatically updating DNS entries for service providers such as
-@uref{https://dyn.com/dns/, Dyn}.
-
-The following example show instantiates the service with its default
-configuration:
-
-@lisp
-(service ddclient-service-type)
-@end lisp
-
-Note that ddclient needs to access credentials that are stored in a
-@dfn{secret file}, by default @file{/etc/ddclient/secrets} (see
-@code{secret-file} below).  You are expected to create this file manually, in
-an ``out-of-band'' fashion (you @emph{could} make this file part of the
-service configuration, for instance by using @code{plain-file}, but it will be
-world-readable @i{via} @file{/gnu/store}).  See the examples in the
-@file{share/ddclient} directory of the @code{ddclient} package.
-
-@c %start of fragment
-
-Available @code{ddclient-configuration} fields are:
-
-@deftypevr {@code{ddclient-configuration} parameter} package ddclient
-The ddclient package.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} integer daemon
-The period after which ddclient will retry to check IP and domain name.
-
-Defaults to @samp{300}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} boolean syslog
-Use syslog for the output.
-
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string mail
-Mail to user.
-
-Defaults to @samp{"root"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string mail-failure
-Mail failed update to user.
-
-Defaults to @samp{"root"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string pid
-The ddclient PID file.
-
-Defaults to @samp{"/var/run/ddclient/ddclient.pid"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} boolean ssl
-Enable SSL support.
-
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string user
-Specifies the user name or ID that is used when running ddclient
-program.
-
-Defaults to @samp{"ddclient"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string group
-Group of the user who will run the ddclient program.
-
-Defaults to @samp{"ddclient"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string secret-file
-Secret file which will be appended to @file{ddclient.conf} file.  This
-file contains credentials for use by ddclient.  You are expected to
-create it manually.
-
-Defaults to @samp{"/etc/ddclient/secrets.conf"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} list extra-options
-Extra options will be appended to @file{ddclient.conf} file.
-
-Defaults to @samp{'()}.
-
-@end deftypevr
-
-
-@c %end of fragment
-
 @node VNC Services
 @subsection VNC Services
 @cindex VNC (virtual network computing)
@@ -38650,6 +38602,94 @@ parameters, can be done as follow:
 @end lisp
 @end defvar
 
+@subsubheading Cachefilesd Service
+
+@cindex cachefilesd
+@cindex fscache, file system caching (Linux)
+The Cachefilesd service starts a daemon that caches network file system
+data locally.  It is especially useful for NFS and AFS shares, where it
+reduces latencies for repeated access when reading files.
+
+The daemon can be configured as follows:
+
+@lisp
+(service cachefilesd-service-type
+         (cachefilesd-configuration
+           (cache-directory "/var/cache/fscache")))
+@end lisp
+
+@defvar cachefilesd-service-type
+The service type for starting @command{cachefilesd}.  The value for this
+service type is a @code{cachefilesd-configuration}, whose only required
+field is @var{cache-directory}.
+
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} cachefilesd-configuration
+Available @code{cachefilesd-configuration} fields are:
+
+@table @asis
+@item @code{cachefilesd} (default: @code{cachefilesd}) (type: file-like)
+The cachefilesd package to use.
+
+@item @code{debug-output?} (default: @code{#f}) (type: boolean)
+Print debugging output to stderr.
+
+@item @code{use-syslog?} (default: @code{#t}) (type: boolean)
+Log to syslog facility instead of stdout.
+
+@item @code{scan?} (default: @code{#t}) (type: boolean)
+Scan for cachable objects.
+
+@item @code{cache-directory} (type: maybe-string)
+Location of the cache directory.
+
+@item @code{cache-name} (default: @code{"CacheFiles"}) (type: maybe-string)
+Name of cache (keep unique).
+
+@item @code{security-context} (type: maybe-string)
+SELinux security context.
+
+@item @code{pause-culling-for-block-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available blocks exceed this percentage.
+
+@item @code{pause-culling-for-file-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available files exceed this percentage.
+
+@item @code{resume-culling-for-block-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available blocks drop below this percentage.
+
+@item @code{resume-culling-for-file-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available files drop below this percentage.
+
+@item @code{pause-caching-for-block-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available blocks drop below this
+percentage.
+
+@item @code{pause-caching-for-file-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available files drop below this
+percentage.
+
+@item @code{log2-table-size} (default: @code{12}) (type: maybe-non-negative-integer)
+Size of tables holding cullable objects in logarithm of base 2.
+
+@item @code{cull?} (default: @code{#t}) (type: boolean)
+Create free space by culling (consumes system load).
+
+@item @code{trace-function-entry-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function entry in the kernel module (for debugging).
+
+@item @code{trace-function-exit-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function exit in the kernel module (for debugging).
+
+@item @code{trace-internal-checkpoints-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace internal checkpoints in the kernel module (for debugging).
+
+@end table
+@end deftp
+@c %end of fragment
+
 @cindex rasdaemon
 @cindex Platform Reliability, Availability and Serviceability daemon
 @subsubheading Rasdaemon Service
@@ -44178,8 +44218,8 @@ font installation path (@file{~/.guix-home/profile/share/fonts}).  If
 you configure this service directly, be sure to include the above
 directory.
 
-A typical extension for adding an additional font directory and setting
-a font as the default monospace font might look like this:
+Here's how you'd extend it to include fonts installed with the Nix
+package manager, and to prefer your favourite monospace font:
 
 @lisp
 (simple-service 'additional-fonts-service

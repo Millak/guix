@@ -1174,6 +1174,10 @@ started~%")
                             (string-append #$output service-directory))
           (symlink (string-append #$elogind "/etc") ;for etc/dbus-1
                    (string-append #$output "/etc"))
+          ;; Also expose the D-Bus policy configurations (.conf) files, now
+          ;; installed under '/share' instead of the legacy '/etc' prefix.
+          (symlink (string-append #$elogind "/share/dbus-1/system.d")
+                   (string-append #$output "/share/dbus-1/system.d"))
 
           ;; Replace the "Exec=" line of the 'org.freedesktop.login1.service'
           ;; file with one that refers to WRAPPER instead of elogind.

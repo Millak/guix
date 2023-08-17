@@ -69,9 +69,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages mail)
-  #:use-module (guix gexp)
-  #:use-module (guix utils)
-  #:use-module (gnu packages)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages autotools)
@@ -97,6 +95,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -104,15 +103,14 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
-  #:use-module (gnu packages flex)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages kerberos)
@@ -133,8 +131,8 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
-  #:use-module (gnu packages openldap)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages openldap)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -149,15 +147,15 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ragel)
-  #:use-module (gnu packages regex)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages rust-apps)
-  #:use-module (gnu packages search)
-  #:use-module (gnu packages serialization)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages screen)
+  #:use-module (gnu packages search)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
@@ -169,29 +167,30 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml)
-  #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
-  #:use-module (guix deprecation)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
-  #:use-module (guix svn-download)
-  #:use-module (guix utils)
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system glib-or-gtk)
-  #:use-module (guix build-system go)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system guile)
-  #:use-module (guix build-system emacs)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
-  #:use-module (srfi srfi-1)
-  #:use-module (ice-9 match))
+  #:use-module (guix deprecation)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+  #:use-module (guix svn-download)
+  #:use-module (guix utils)
+  #:use-module (guix utils)
+  #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1))
 
 (define-public abook
   (package
@@ -4548,7 +4547,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "3.5")
+    (version "3.6")
     (source
      (origin
        (method git-fetch)
@@ -4556,24 +4555,24 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "1d45vhs66r6ig5mvmx52i7c2b638y2zc7wgv3lx0pq7dqgjxxsyz"))
+        (base32 "1ra18c3wczbdqrg9p69k04smjskjkdpxcfff9ff4yi7pmqjaxr8s"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DENABLE_LUAJIT=ON"
                            "-DLOCAL_CONFDIR=/etc/rspamd")))
     (inputs
-     (list openssl
+     (list file
            glib
-           ragel
-           luajit
-           sqlite
-           file
            icu4c
+           libsodium
+           luajit
+           openssl
            pcre2
-           zlib
            perl
-           libsodium))
+           ragel
+           sqlite
+           zlib))
     (native-inputs
      (list pkg-config))
     (synopsis "Spam filtering system")

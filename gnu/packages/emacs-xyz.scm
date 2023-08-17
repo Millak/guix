@@ -9052,6 +9052,30 @@ completion candidate when using the Company text completion framework.")
 @code{company-math}.")
     (license license:gpl3+)))
 
+(define-public emacs-math-preview
+  (package
+    (name "emacs-math-preview")
+    (version "5.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.com/matsievskiysv/math-preview")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ni08900p0pbajw143iw0b7a62qiqcm9b6jy7pqgpn437vydjx1z"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash emacs-s))
+    (home-page "https://gitlab.com/matsievskiysv/math-preview")
+    (synopsis "Preview TeX math equations inline using MathJax")
+    (description
+     "Emacs math-preview uses MathJax for displaying TeX, MathML and AsciiMath
+  math inline in Emacs buffers.")
+    (license license:gpl3+)))
+
 (define-public emacs-company-coq
   (package
     (name "emacs-company-coq")
@@ -23891,7 +23915,7 @@ within Emacs.")
 (define-public emacs-ibrowse
   (package
     (name "emacs-ibrowse")
-    (version "0.1.8")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -23900,9 +23924,9 @@ within Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3imid9byaay0lqvv5n2klwk680w8x3qzdb279rdr08bb36w5ya"))))
+        (base32 "1dm46k67smg2m33c6n68blpw2mw7fx1ymq81kv54jjlpmv3xrdsf"))))
     (build-system emacs-build-system)
-    (inputs (list sqlite))
+    (inputs (list emacs-websocket sqlite))
     (home-page "https://git.sr.ht/~ngraves/ibrowse.el")
     (synopsis "Interact with your browser from emacs")
     (description "This package provides some commands to act on the browser

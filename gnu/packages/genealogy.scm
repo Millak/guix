@@ -63,7 +63,7 @@
            gtk+
            gtkspell3
            graphviz
-           librsvg
+           (librsvg-for-system)
            osm-gps-map
            pango
            python-bsddb3

@@ -23251,17 +23251,15 @@ Git.")
 (define-public python-setuptools-rust
   (package
     (name "python-setuptools-rust")
-    (version "1.1.2")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "setuptools-rust" version))
        (sha256
-        (base32 "1lb57qx1azklgzmalflq960agvwci4bwddw0zvlc9zy00fsvkbd0"))))
-    (build-system python-build-system)
+        (base32 "0qi274r0fcnvxa8vs8vyhcknnzhq8pd0ig5zk1wmjc63x96p6vn8"))))
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f))          ;no tests
-    (native-inputs
-     (list python-setuptools-scm))
     (propagated-inputs
      (list python-semantic-version python-typing-extensions))
     (home-page "https://github.com/PyO3/setuptools-rust")

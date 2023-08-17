@@ -116,7 +116,7 @@
                       ":" (or (getenv "CPATH") ""))))))))
     (inputs
      `(("gtk+" ,gtk+-2)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxml2" ,libxml2)
        ("sdl-mixer" ,sdl-mixer)
        ("sqlite" ,sqlite)
@@ -876,7 +876,7 @@ endless.  For example:
     (inputs
      `(("font-andika" ,font-sil-andika)
        ("libpng" ,libpng)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxml2" ,libxml2)
        ("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-net sdl-pango)))))
     (home-page "https://github.com/tux4kids/t4kcommon")
@@ -932,7 +932,7 @@ TuxMath and TuxType.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("librsvg" ,librsvg)
+     `(("librsvg" ,(librsvg-for-system))
        ("libxml2" ,libxml2)
        ("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-net sdl-pango)))
        ("t4k-common" ,t4k-common)))

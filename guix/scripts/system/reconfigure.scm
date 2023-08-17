@@ -186,22 +186,22 @@ services as defined by OS."
                      #:target-type shepherd-root-service-type))))
 
   (mlet* %store-monad ((live-services (running-services eval)))
-    (let ((to-unload to-restart
-                     (shepherd-service-upgrade live-services target-services)))
-      (let* ((to-unload  (map live-service-canonical-name to-unload))
-             (to-restart (map shepherd-service-canonical-name to-restart))
-             (running    (map live-service-canonical-name
-                              (filter live-service-running live-services)))
-             (to-start   (lset-difference eqv?
-                                          (map shepherd-service-canonical-name
-                                               target-services)
-                                          running))
-             (service-files (map shepherd-service-file target-services)))
-        (eval #~(parameterize ((current-warning-port (%make-void-port "w")))
-                  (primitive-load #$(upgrade-services-program service-files
-                                                              to-start
-                                                              to-unload
-                                                              to-restart))))))))
+    (let* ((to-unload to-restart
+                      (shepherd-service-upgrade live-services target-services))
+           (to-unload  (map live-service-canonical-name to-unload))
+           (to-restart (map shepherd-service-canonical-name to-restart))
+           (running    (map live-service-canonical-name
+                            (filter live-service-running live-services)))
+           (to-start   (lset-difference eqv?
+                                        (map shepherd-service-canonical-name
+                                             target-services)
+                                        running))
+           (service-files (map shepherd-service-file target-services)))
+      (eval #~(parameterize ((current-warning-port (%make-void-port "w")))
+                (primitive-load #$(upgrade-services-program service-files
+                                                            to-start
+                                                            to-unload
+                                                            to-restart)))))))
 
 
 ;;;
