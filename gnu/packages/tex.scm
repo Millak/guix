@@ -14898,6 +14898,27 @@ to be able to create multilingual documents.")
 write games or parts of games and show diagrams with special positions.")
     (license license:lppl)))
 
+(define-public texlive-xskak
+  (package
+    (name "texlive-xskak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xskak/" "source/latex/xskak/"
+                   "tex/latex/xskak/")
+             (base32
+              "0b17y5i24adpb7f8jxf3lc5zwb1q4yf3w2vx9ql73xpi39xg6mcj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xskak")
+    (synopsis "Extension to the @code{skak} package for chess typesetting")
+    (description
+     "Xskak, as its prime function, saves information about a chess game for
+later use (e.g., to loop through a game to make an animated board).  The
+package also extends the input that the parsing commands can handle and offers
+an interface to define and switch between indefinite levels of styles.")
+    (license license:lppl)))
+
 (define-public texlive-xyling
   (package
     (name "texlive-xyling")
