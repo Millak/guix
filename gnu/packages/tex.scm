@@ -7271,6 +7271,26 @@ for Chinese character learning plans, presentations, exercise booklets and
 other documentation work.")
     (license license:lppl1.3c)))
 
+(define-public texlive-havannah
+  (package
+    (name "texlive-havannah")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/havannah/"
+                   "source/latex/havannah/"
+                   "tex/latex/havannah/")
+             (base32
+              "0kw71rr5jhn0gx89jynwxxgd6ddzpmr0wb5qnsh0drljmacq49ai")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/havannah")
+    (synopsis "Diagrams of board positions in the games of Havannah and Hex")
+    (description
+     "This package defines macros for typesetting diagrams of board positions
+in the games of Havannah and Hex.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-helmholtz-ellis-ji-notation
   (package
     (name "texlive-helmholtz-ellis-ji-notation")
