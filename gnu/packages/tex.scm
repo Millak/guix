@@ -9538,6 +9538,67 @@ acknowledged to be challenging to use directly: the @command{pmx} preprocessor
 compiles a simpler input language to MusiXTeX macros.")
     (license license:gpl2+)))
 
+(define-public texlive-musixtnt
+  (package
+    (name "texlive-musixtnt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/musixtnt/"
+                   "doc/man/man1/msxlint.1"
+                   "doc/man/man1/msxlint.man1.pdf"
+                   "tex/generic/musixtnt/")
+             (base32
+              "0z1rfscla1hiibd0gs3lgf8x5yx19pmwdsbzvx2vvz0ikwgjglm9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:modules '((guix build texlive-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-musixtnt-source
+            (lambda _
+              (mkdir-p "build")
+              (with-directory-excursion "build"
+                (invoke "tar" "xvf"
+                        ;; Tarball includes a release date that we ignore.
+                        (first (find-files ".." "^musixtnt-.*\\.tar.gz"))
+                        "--strip-components=1"))))
+          (add-after 'unpack-prerex-source 'build-msxlint
+            (lambda args
+              (with-directory-excursion "build"
+                (for-each (lambda (phase)
+                            (apply (assoc-ref gnu:%standard-phases phase) args))
+                          '(configure
+                            build
+                            check
+                            install
+                            compress-documentation))))))))
+    (propagated-inputs (list texlive-musixtex))
+    (home-page "https://ctan.org/pkg/musixtnt")
+    (synopsis
+     "MusiXTeX extension library enabling transformations of the effect of
+notes commands")
+    (description
+     "This archive contains a MusiXTeX extension library @file{musixtnt.tex}
+and a program, @command{msxlint}.
+
+@file{musixtnt.tex} provides a macro @code{\\TransformNotes} that enables
+transformations of the effect of notes commands such as @code{\\notes}.  In
+general, the effect of @code{\\TransformNotes@{input@}@{output@}} is that
+notes commands in the source will expect their arguments to match the input
+pattern, but the notes will be typeset according to the output pattern.  An
+example is extracting single-instrument parts from a multi-instrument score.
+
+@command{msxlint} detects incorrectly formatted notes lines in a MusiXTeX
+source file.  This should be used before using @code{\\TransformNotes}.")
+    (license license:gpl2)))
+
 (define-public texlive-mwcls
   (package
     (name "texlive-mwcls")
