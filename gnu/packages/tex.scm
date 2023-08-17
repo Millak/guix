@@ -7586,6 +7586,29 @@ card games.")
             "doc/lualatex/hmtrump/nkd04_playing_cards_index/LICENSE")
            license:cc-by-sa4.0))))
 
+(define-public texlive-horoscop
+  (package
+    (name "texlive-horoscop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/horoscop/"
+                   "source/latex/horoscop/"
+                   "tex/latex/horoscop/")
+             (base32
+              "08acv1sg37qzq3h14kxv62xhrzrv4psgpychshj3gmzvp4vz0jsn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/horoscop")
+    (synopsis "Generate astrological charts in LaTeX")
+    (description
+     "The @code{horoscop} package provides a unified interface for
+astrological font packages; typesetting with @code{pict2e} of standard wheel
+charts and some variations, in PostScript- and PDF-generating TeX engines; and
+access to external calculation software (Astrolog and Swiss Ephemeris) for
+computing object positions.")
+    (license license:public-domain)))
+
 (define-public texlive-hrlatex
   (package
     (name "texlive-hrlatex")
