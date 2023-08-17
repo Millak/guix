@@ -4258,6 +4258,45 @@ you cite two entries which share the same booktitle but not the same title,
 the @samp{op.@: cit.}@: mechanism does not work.  This package fixes this.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-oxref
+  (package
+    (name "texlive-biblatex-oxref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-oxref/"
+                   "source/latex/biblatex-oxref/"
+                   "tex/latex/biblatex-oxref/")
+             (base32
+              "0jzmb28h0s2nji23mkj5ich7z5kaifv3snj20rm0dpjk20a087h3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-oxref")
+    (synopsis "BibLaTeX styles inspired by the @emph{Oxford Guide to Style}")
+    (description
+     "This bundle provides four BibLaTeX styles that implement (many of) the
+stipulations and examples provided by the 2014 @emph{New Hart's Rules} and the
+2002 @emph{Oxford Guide to Style}:
+@itemize
+
+@item @code{oxnotes} is a style similar to the standard @code{verbose},
+intended for use with footnotes;
+
+@item @code{oxnum} is a style similar to the standard @code{numeric}, intended
+for use with numeric in-text citations;
+
+@item @code{oxalph} is a style similar to the standard @code{alphabetic},
+intended for use with alphabetic in-text citations;
+
+@item @code{oxyear} is a style similar to the standard @code{author-year},
+intended for use with parenthetical in-text citations.
+
+@end itemize
+
+The bundle provides support for a wide variety of content types, including
+manuscripts, audiovisual resources, social media and legal references.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
