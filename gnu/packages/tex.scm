@@ -27523,6 +27523,29 @@ names, as well as character data, may use any characters allowed in XML, using
 UTF-8 or a suitable 8-bit encoding.")
     (license license:lppl1.0+)))        ;per xmltex/base/readme.txt
 
+(define-public texlive-xpiano
+  (package
+    (name "texlive-xpiano")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xpiano/" "source/latex/xpiano/"
+                   "tex/latex/xpiano/")
+             (base32
+              "1nk8v0d641cr4mg4l2k0fv7pl9b26nyi30k4px5wajwm976f042p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xpiano")
+    (synopsis "Extension of the @code{piano} package")
+    (description
+     "This package provides macros for typesetting virtual keyboards limited
+to two octaves for showing notes represented by a colored circle.  Optionally,
+the number used for pitch analysis can be shown.  It is an extension of
+@file{piano.sty}.  It features extended syntax and several options, like
+setting the color, adding numbers for pitch analysis, one or two octaves, and
+others.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-xpinyin
   (package
     (name "texlive-xpinyin")
