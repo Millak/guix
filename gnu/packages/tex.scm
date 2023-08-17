@@ -3856,6 +3856,25 @@ the future.")
 GOST 7.0.5-2008")
     (license license:lppl1.3c)))
 
+(define-public texlive-biblatex-historian
+  (package
+    (name "texlive-biblatex-historian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-historian/"
+                   "tex/latex/biblatex-historian/")
+             (base32
+              "0y9jvjyji39ly5pf72qhnnlsrixaxjxdx529lyav8bhd2zz3c5s7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-historian")
+    (synopsis "BibLaTeX style based on the @emph{Turabian Manual}")
+    (description
+     "This package provides a BibLaTeX style, based on the @emph{Turabian
+Manual} (a version of Chicago).")
+    (license license:lppl)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
