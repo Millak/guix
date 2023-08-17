@@ -4141,6 +4141,25 @@ BibLaTeX package and includes significantly enhanced optional functionality.
 It requires the use of the multiscript version of Biber (biber-ms).")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-multiple-dm
+  (package
+    (name "texlive-biblatex-multiple-dm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-multiple-dm/"
+                   "tex/latex/biblatex-multiple-dm/")
+             (base32
+              "07dp3ppz8kma5gh0bs98jnk7gvqqcp4l1ag60941myjvfsyqplxv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-multiple-dm")
+    (synopsis "Load multiple datamodels in BibLaTeX")
+    (description
+     "The package adds the possibility to BibLaTeX to load data models from
+multiple sources.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
