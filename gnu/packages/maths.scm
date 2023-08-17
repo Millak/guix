@@ -8549,6 +8549,10 @@ computation is supported via MPI.")
                                   "__threadSignal InterpReady;" "\n"
                                   "__threadSignalLock InterpReadyLock;"
                                   "\n")))
+                ;; Fix CPP compilation errors.
+                (substitute* "modules/output_stream/src/cpp/diary_manager.cpp"
+                  (("if \\(array_size > 0\\)")
+                   "if (*array_size > 0)"))
                 ;; Set SCIHOME to /tmp before macros compilation.
                 (setenv "SCIHOME" "/tmp"))))))
     (home-page "https://scilab.org")
