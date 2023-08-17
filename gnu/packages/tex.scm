@@ -3685,6 +3685,26 @@ field for different claves, and to present all these fields in a consistent
 way.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-cv
+  (package
+    (name "texlive-biblatex-cv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-cv/"
+                   "tex/latex/biblatex-cv/")
+             (base32
+              "17m6lqnr35y6vcfrrhlhxjf55b85py9miksswhkipyiaj3kphhb8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-cv")
+    (synopsis "Create a CV from BibTeX files")
+    (description
+     "This package creates an academic curriculum vitae (CV) from a BibTeX
+@file{.bib} file.  The package makes use of BibLaTeX and Biber to
+automatically format, group, and sort the entries on a CV.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
