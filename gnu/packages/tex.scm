@@ -9141,6 +9141,33 @@ LuaLaTeX.  It calls LilyPond to compile scores, then includes the produced
 files.")
     (license license:expat)))
 
+(define-public texlive-m-tx
+  (package
+    (name "texlive-m-tx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/m-tx/"
+                   "doc/man/man1/prepmx.1"
+                   "doc/man/man1/prepmx.man1.pdf"
+                   "scripts/m-tx/"
+                   "tex/generic/m-tx/"
+                   "tex/latex/m-tx/")
+             (base32
+              "1sakzv7r6mybx0k7k0fi1qb789nf7lvbl0ns8s0hhc9fz37b0br5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "m-tx.lua")))
+    (home-page "https://ctan.org/pkg/m-tx")
+    (synopsis "Preprocessor for @command{pmx}")
+    (description
+     "M-Tx is a preprocessor to @command{pmx}, which is itself a preprocessor
+to MusixTeX, a music typesetting system.  The prime motivation to the
+development of M-Tx was to provide lyrics for music to be typeset.  In fact,
+@command{pmx} now provides a lyrics interface, but M-Tx continues in use by
+those who prefer its language.")
+    (license license:expat)))
+
 (define-public texlive-macros2e
   (package
     (name "texlive-macros2e")
