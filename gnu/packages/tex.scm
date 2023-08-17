@@ -2087,6 +2087,27 @@ extra facilities (including Babel-like language switching, which eases porting
 of LaTeX documents to Lambda).")
     (license license:lppl)))
 
+(define-public texlive-apalike-ejor
+  (package
+    (name "texlive-apalike-ejor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/apalike-ejor/"
+                   "doc/bibtex/apalike-ejor/")
+             (base32
+              "0qq7c81hqi46596zw322w1qd8z341zksi5720f9s75nj1hmjj12g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apalike-ejor")
+    (synopsis
+     "BibTeX style file for the European Journal of Operational Research")
+    (description
+     "This package contains a BibTeX style file, @file{apalike-ejor.bst},
+made to follow the European Journal of Operational Research reference style
+guidelines.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-apnum
   (package
     (name "texlive-apnum")
