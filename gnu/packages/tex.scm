@@ -3209,6 +3209,44 @@ transliteration.")
 files.")
     (license license:lppl)))
 
+(define-public texlive-bib2gls
+  (package
+    (name "texlive-bib2gls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/bib2gls.1"
+                   "doc/man/man1/bib2gls.man1.pdf"
+                   "doc/man/man1/convertgls2bib.1"
+                   "doc/man/man1/convertgls2bib.man1.pdf"
+                   "doc/support/bib2gls/"
+                   "scripts/bib2gls/"
+                   "source/support/bib2gls/src/")
+             (base32
+              "11a3wvyg5anm9hkmlpb6yvls1bmhypyswj55q332ziac6hpi2wd5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "bib2gls.sh" "convertgls2bib.sh")))
+    (propagated-inputs (list texlive-glossaries-extra))
+    (home-page "https://ctan.org/pkg/bib2gls")
+    (synopsis
+     "Convert @file{.bib} files to @file{glossaries-extra.sty} resource files")
+    (description
+     "This Java command line application may be used to extract glossary
+information stored in a @file{.bib} file and convert it into glossary entry
+definition commands.  This application should be used with
+@file{glossaries-extra.sty}'s record package option.  It performs two
+functions in one: it selects entries according to records found in the
+@file{.aux} file (similar to BibTeX), and hierarchically sorts entries and
+collates location lists (similar to MakeIndex or Xindy).  The glossary entries
+can then be managed in a system such as JabRef, and only the entries that are
+actually required will be defined, reducing the resources required by TeX.
+
+The supplementary application @command{convertgls2bib} can be used to convert
+existing @file{.tex} files containing definitions (@code{\\newglossaryentry}
+etc.)#: to the @file{.bib} format required by @command{bib2gls}.")
+    (license license:gpl3+)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
