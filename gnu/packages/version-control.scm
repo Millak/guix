@@ -1136,6 +1136,52 @@ collaboration using typical untrusted file hosts or services.")
 a built-in cache to decrease server I/O pressure.")
     (license license:gpl2)))
 
+(define-public cgit-pink
+  (package
+    (inherit cgit)
+    (name "cgit-pink")
+    (version "1.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.causal.agency/cgit-pink")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yp6rm60pz8pj8wrm1aglix51hhy00al86mm94ag2bifc92q23ar"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments cgit)
+       ((#:tests? _ #f)
+        (not (%current-target-system)))
+       ((#:make-flags _ '())
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PERL_PATH="
+                               (search-input-file %build-inputs "/bin/perl"))
+                ;; It is important to set an absolute path in SHELL_PATH
+                ;; because it is used as the shebang of generated scripts that
+                ;; are invoked during the test phase.
+                (string-append "SHELL_PATH="
+                               (search-input-file %build-inputs "/bin/sh"))))))
+    (inputs
+     (modify-inputs (package-inputs cgit)
+       (replace "git-source"
+         ;; cgit-pink is tightly bound to git. Use GIT_VER from the Makefile,
+         ;; which may not match the current (package-version git).
+         (origin
+           (method url-fetch)
+           (uri "mirror://kernel.org/software/scm/git/git-2.36.1.tar.xz")
+           (sha256
+            (base32
+             "0w43a35mhc2qf2gjkxjlnkf2lq8g0snf34iy5gqx2678yq7llpa0"))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs cgit)
+       (append gnu-gettext perl)))
+    (home-page "https://git.causal.agency/cgit-pink/about/")
+    (description "cgit-pink is a fast web interface for the Git SCM, using a
+built-in cache to decrease server I/O pressure.  cgit-pink is a fork of
+cgit.")))
+
 (define-public python-git-multimail
   (package
     (name "python-git-multimail")
