@@ -2158,6 +2158,51 @@ the @code{yubikey-manager-qt} package and either wholly disable the
 @samp{Applications -> OTP} view, delete the slot 1 configuration, which
 comes pre-configured with the Yubico OTP application.
 
+@subsection Requiring a Yubikey to open a KeePassXC database
+@cindex yubikey, keepassxc integration
+The KeePassXC password manager application has support for Yubikeys, but
+it requires installing a udev rules for your Guix System and some
+configuration of the Yubico OTP application on the key.
+
+The necessary udev rules file comes from the
+@code{yubikey-personalization} package, and can be installed like:
+
+@lisp
+(use-package-modules ... security-token ...)
+...
+(operating-system
+ ...
+ (services
+  (cons*
+   ...
+   (udev-rules-service 'yubikey yubikey-personalization))))
+@end lisp
+
+After reconfiguring your system (and reconnecting your Yubikey), you'll
+then want to configure the OTP challenge/response application of your
+Yubikey on its slot 2, which is what KeePassXC uses.  It's easy to do so
+via the Yubikey Manager graphical configuration tool, which can be
+invoked with:
+
+@example
+guix shell yubikey-manager-qt -- ykman-gui
+@end example
+
+First, ensure @samp{OTP} is enabled under the @samp{Interfaces} tab,
+then navigate to @samp{Applications -> OTP}, and click the
+@samp{Configure} button under the @samp{Long Touch (Slot 2)} section.
+Select @samp{Challenge-response}, input or generate a secret key, and
+click the @samp{Finish} button.  If you have a second Yubikey you'd like
+to use as a backup, you should configure it the same way, using the
+@emph{same} secret key.
+
+Your Yubikey should now be detected by KeePassXC.  It can be added to a
+database by navigating to KeePassXC's @samp{Database -> Database
+Security...}  menu, then clicking the @samp{Add additional
+protection...} button, then @samp{Add Challenge-Response}, selecting the
+security key from the drop-down menu and clicking the @samp{OK} button
+to complete the setup.
+
 @node Dynamic DNS mcron job
 @section Dynamic DNS mcron job
 
