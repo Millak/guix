@@ -4809,6 +4809,25 @@ a simpler and more convenient interface to the functionality of the
 @code{bibleref} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblist
+  (package
+    (name "texlive-biblist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblist/" "tex/latex/biblist/")
+             (base32
+              "1r7cd68yr8pnmqnr39qzp42kxqcx89cqzz81ig9y7qgicznji0i8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblist")
+    (synopsis "Print a BibTeX database")
+    (description
+     "The package provides the means of listing an entire BibTeX database,
+avoiding the potentially large (macro) impact associated with
+@code{\\nocite@{*@}}.")
+    (license license:gpl3+)))
+
 (define-public texlive-bidihl
   (package
     (name "texlive-bidihl")
