@@ -11193,6 +11193,30 @@ your score.  @command{scor2prt} is an auxiliary program that makes parts from
 a score.")
     (license license:gpl2)))
 
+(define-public texlive-pmxchords
+  (package
+    (name "texlive-pmxchords")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pmxchords.1"
+                   "doc/man/man1/pmxchords.man1.pdf"
+                   "doc/pmxchords/" "scripts/pmxchords/"
+                   "tex/generic/pmxchords/")
+             (base32
+              "01dlic0b0fdm41982mqj3xpin0wksmsyz4h53vdckkz2ayyagagk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "pmxchords.lua")))
+    (home-page "https://ctan.org/pkg/pmxchords")
+    (synopsis "Produce chord information to go with @command{pmx} output")
+    (description
+     "The bundle supplements @command{pmx}, providing the means of typesetting
+chords above the notes of a score.  The bundle contains: macros for typing the
+chords; a Lua script to transpose chord macros to the required key signature;
+and support scripts for common requirements.")
+    (license license:gpl2)))
+
 (define-public texlive-poemscol
   (package
     (name "texlive-poemscol")
