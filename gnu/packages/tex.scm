@@ -4307,6 +4307,25 @@ given by Mumbai University.")
                    (license:fsf-free "file://doc/latex/aalok/README.txt")
                    license:fdl1.3+))))
 
+(define-public texlive-chinesechess
+  (package
+    (name "texlive-chinesechess")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chinesechess/"
+                   "tex/latex/chinesechess/")
+             (base32
+              "15sszrrv1viaa74i57a81xhybhjq2vaxb188wl728hjzm8d0n0wm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chinesechess")
+    (synopsis "Typeset Chinese chess with @code{l3draw}")
+    (description
+     "This LaTeX3 package based on @code{l3draw} provides macros and an
+environment for Chinese chess manual writing.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-chordbars
   (package
     (name "texlive-chordbars")
