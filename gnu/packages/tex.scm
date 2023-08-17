@@ -6825,6 +6825,25 @@ diagrams of guitar chord tablatures and scale tablatures.  Both commands know
 a range of options that allow wide customization of the output.")
     (license license:lppl1.3+)))
 
+(define-public texlive-guitartabs
+  (package
+    (name "texlive-guitartabs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/guitartabs/"
+                   "tex/latex/guitartabs/")
+             (base32
+              "1hk5yl7za7mm6cpg9g4z5wnq4m2nwm41sq8w7m8ic38sr85n67zz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/guitartabs")
+    (synopsis "Class for drawing guitar tablatures easily")
+    (description
+     "This package provides is a simple LaTeX2e class that allows guitarists
+to create basic guitar tablatures using LaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gustlib
   (package
     (name "texlive-gustlib")
