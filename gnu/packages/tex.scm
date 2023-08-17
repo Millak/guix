@@ -5055,6 +5055,28 @@ for structuring exercises, aggregating points, and displaying a grading table,
 as well as several macros for easier math mode usage.")
     (license license:expat)))
 
+(define-public texlive-customdice
+  (package
+    (name "texlive-customdice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/customdice/"
+                   "source/latex/customdice/"
+                   "tex/latex/customdice/")
+             (base32
+              "0jwhvg13rla5pav0z4wns4s0x25myiqcinv592g6kqnbgwzj4q7g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/customdice")
+    (synopsis "Simple commands for drawing customisable dice")
+    (description
+     "The @code{customdice} package for LaTeX, LuaLaTeX and XeTeX that
+provides functionality for drawing dice.  The aim is to provide
+highly-customisable but simple-to-use commands, allowing: adding custom text
+to dice faces; control over colouring; control over sizing.")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-cvss
   (package
     (name "texlive-cvss")
