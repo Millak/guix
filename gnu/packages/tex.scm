@@ -3749,6 +3749,29 @@ nationale des chartes (Paris), and may be suitable for a more general use in
 historical and philological works.")
     (license license:lppl1.3+)))
 
+(define-public texlive-biblatex-ext
+  (package
+    (name "texlive-biblatex-ext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biblatex-ext/"
+                   "tex/latex/biblatex-ext/")
+             (base32
+              "09adm378m9laxxb9bs6lqhfprrq0d3l1c627fxp1vcnxqqwd99xc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biblatex-ext")
+    (synopsis "Extended BibLaTeX standard styles")
+    (description
+     "The BibLaTeX-ext bundle provides styles that slightly extend the
+standard styles that ship with BibLaTeX.  The styles offered in this bundle
+provide a simple interface to change some of the stylistic decisions made in
+the standard styles.  At the same time they stay as close to their standard
+counterparts as possible, so that most customisation methods can be applied
+here as well.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bibleref
   (package
     (name "texlive-bibleref")
