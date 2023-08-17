@@ -12769,6 +12769,27 @@ their calculations or simulations into LaTeX projects.  The package is also
 capable of overloading the Sweave User Manual and SASweave packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-schwalbe-chess
+  (package
+    (name "texlive-schwalbe-chess")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/schwalbe-chess/"
+                   "source/latex/schwalbe-chess/"
+                   "tex/latex/schwalbe-chess/")
+             (base32
+              "1i68bl4hb7cagwwb4lyihvdnwgd0irgqp7344m5kmsdxy7z94fmr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schwalbe-chess")
+    (synopsis "Typeset the German chess magazine @emph{Die Schwalbe}")
+    (description
+     "The package is used to typeset the German chess magazine @emph{Die
+Schwalbe}.  It is based on @code{chess-problem-diagrams}, which in its turn
+has a dependency on the @code{bartel-chess-fonts}.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-sciposter
   (package
     (name "texlive-sciposter")
