@@ -42996,9 +42996,9 @@ services)}.
 @node Essential Home Services
 @subsection Essential Home Services
 There are a few essential home services defined in
-@code{(gnu services)}, they are mostly for internal use and are required
-to build a home environment, but some of them will be useful for the end
-user.
+@code{(gnu home services)}, they are mostly for internal use and are
+required to build a home environment, but some of them will be useful
+for the end user.
 
 @cindex environment variables
 
