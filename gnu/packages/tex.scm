@@ -6101,6 +6101,30 @@ exercises and the activities.")
 It can make it easy to write theses both in Chinese and English.")
     (license license:lppl1.3c)))
 
+(define-public texlive-figbas
+  (package
+    (name "texlive-figbas")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/figbas/"
+                   "fonts/afm/public/figbas/"
+                   "fonts/map/dvips/figbas/"
+                   "fonts/tfm/public/figbas/"
+                   "fonts/type1/public/figbas/")
+             (base32
+              "07dc19989sx968hbn3h2m1bbplp8zqh1yj9v92mcp54876rk8bbp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/figbas")
+    (synopsis "Mini-fonts for figured-bass notation in music")
+    (description
+     "This package consists of three mini-fonts (and associated metrics) of
+conventional ligatures for the figured-bass notations 2+, 4+, 5+, 6+ and 9+ in
+music manuscripts.  The fonts are usable with Computer Modern Roman and Sans,
+and Palatino/Palladio, respectively.")
+    (license license:lppl)))
+
 (define-public texlive-filecontentsdef
   (package
     (name "texlive-filecontentsdef")
