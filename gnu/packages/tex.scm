@@ -12377,6 +12377,31 @@ attempts to handle songs in multiple keys, as well as songs in multiple
 languages.")
     (license license:lgpl2.1)))
 
+(define-public texlive-songproj
+  (package
+    (name "texlive-songproj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/songproj/"
+                   "source/latex/songproj/"
+                   "tex/latex/songproj/")
+             (base32
+              "044b9zbm2l1w8flnb5vx99590m65d1nxgys2dj3w79kkbmnhc7jy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/songproj")
+    (synopsis "Generate Beamer slideshows with song lyrics")
+    (description
+     "This package, together with the Beamer class, is used to generate
+slideshows with song lyrics.  This is typically used in religious services in
+churches equipped with a projector, for which this package has been written,
+but it can be useful for any type of singing assembly.  It provides
+environments to describe a song in a natural way, and formatting it into
+slides with overlays.  The package comes with an additional Python script that
+can be used to convert plain-text song lyrics to the expected LaTeX markup.")
+    (license license:bsd-3)))
+
 (define-public texlive-spalign
   (package
     (name "texlive-spalign")
