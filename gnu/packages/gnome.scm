@@ -6672,7 +6672,7 @@ discovery protocols.")
            libxml2
            libsoup
            libpeas
-           librsvg
+           (librsvg-for-system)
            libhandy
            gnome-desktop
            gstreamer
