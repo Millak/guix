@@ -9808,6 +9808,22 @@ prefixes (such as van) according to Dutch rules, together with several styles
 whose authors offer no description of their behaviour.")
     (license license:lppl)))
 
+(define-public texlive-harvmac
+  (package
+    (name "texlive-harvmac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/harvmac/" "tex/plain/harvmac/")
+             (base32
+              "0bxa9vvkg79xk3nakdc5an2py6gwbv9ml66xmz1hp1llbg3562vf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/harvmac")
+    (synopsis "Macros for scientific articles")
+    (description "This package provides macros for scientific articles.")
+    (license license:cc-by3.0)))
+
 (define-public texlive-havannah
   (package
     (name "texlive-havannah")
