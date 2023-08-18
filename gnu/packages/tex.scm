@@ -10631,6 +10631,27 @@ journals, including @emph{Journal of Physics}.")
 proportional width glyphs for Western characters.")
     (license license:ipa)))
 
+(define-public texlive-is-bst
+  (package
+    (name "texlive-is-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/is-bst/" "doc/bibtex/is-bst/")
+             (base32
+              "0bdkk1s5nfqy95h9ia08h4kpij4khj1y5z6byxgn7fsvcxncl1cb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/is-bst")
+    (synopsis "Extended versions of standard BibTeX styles")
+    (description
+     "The bundle contains an extended version (@file{xbtxbst.doc}) of the
+source of the standard BibTeX styles, together with corresponding versions of
+the standard styles.  The styles offer support for CODEN, ISBN, ISSN, LCCN,
+and PRICE fields, extended PAGES fields, the PERIODICAL entry, and extended
+citation label suffixing.")
+    (license license:knuth)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
