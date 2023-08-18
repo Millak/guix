@@ -13404,6 +13404,30 @@ accented letters using ordinary Computer Modern (CM) fonts.  The system is
 distributed as a TeX change file.")
     (license license:knuth)))
 
+(define-public texlive-multibib
+  (package
+    (name "texlive-multibib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/multibib/" "doc/latex/multibib/"
+                   "makeindex/multibib/"
+                   "source/latex/multibib/"
+                   "tex/latex/multibib/")
+             (base32
+              "1m16vi9fj2yc49a6iqcccd7yay26i8zpyzzsgxywlrp4ijrx4hqc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multibib")
+    (synopsis "Multiple bibliographies within one document")
+    (description
+     "The package the creation of references to multiple bibliographies within
+one document.  It thus provides complementary functionality to packages like
+@code{bibunits} and @code{chapterbib}, which allow the creation of one
+bibliography for multiple, but different parts of the document.  Multibib is
+compatible with @code{inlinebib}, @code{natbib}, and @code{koma-script}.")
+    (license license:lppl)))
+
 (define-public texlive-multiobjective
   (package
     (name "texlive-multiobjective")
