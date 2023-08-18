@@ -6085,7 +6085,7 @@ playlists in a variety of formats.")
        ("pkg-config" ,pkg-config)
        ("xmllint" ,libxml2)))
     (inputs
-     (list gtk+ guile-2.2 libcanberra librsvg))
+     (list gtk+ guile-2.2 libcanberra (librsvg-for-system)))
     (home-page "https://wiki.gnome.org/Apps/Aisleriot")
     (synopsis "Solitaire card games")
     (description
