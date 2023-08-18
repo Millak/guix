@@ -10329,6 +10329,24 @@ which are called indices locorum citatorum.  It relies on a specific
 @code{\\icite} command and can operate with either BibTeX or BibLaTeX.")
     (license (list license:gpl3+ license:cc-by-sa4.0))))
 
+(define-public texlive-ietfbibs
+  (package
+    (name "texlive-ietfbibs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/bibtex/ietfbibs/")
+             (base32
+              "18ypa96z1gclq4amka28sv26pm7lycak68zf4b3sf1bx4ldnzmxq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ietfbibs")
+    (synopsis "Generate BibTeX entries for various IETF index files")
+    (description
+     "The package provides scripts to translate IETF index files to BibTeX
+files.")
+    (license license:expat)))
+
 (define-public texlive-impatient
   (package
     (name "texlive-impatient")
