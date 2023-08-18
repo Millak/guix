@@ -13478,6 +13478,25 @@ related to multiobjective optimisation, multiobjective evolutionary
 algorithms, multicriteria decision making and similar fields.")
     (license license:lppl)))
 
+(define-public texlive-munich
+  (package
+    (name "texlive-munich")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/munich/" "doc/latex/munich/")
+             (base32
+              "1w464hiivzccfk0i4hz60x3q14h38y2yzycldckx144q0z6i4c5r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/munich")
+    (synopsis "Alternative author-date bibliography style")
+    (description
+     "The Munich BibTeX style is produced with @code{custom-bib}, as a German
+(and, more generally, Continental European) alternative to such author-date
+styles as @code{harvard} and @code{oxford}.")
+    (license license:lppl)))
+
 (define-public texlive-musical
   (package
     (name "texlive-musical")
