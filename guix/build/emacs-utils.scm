@@ -40,6 +40,7 @@
             emacs-byte-compile-directory
             emacs-compile-directory
             emacs-header-parse
+            ert-number-tests
 
             as-display
             emacs-substitute-sexps
@@ -182,6 +183,19 @@ If native code is not supported, compile to bytecode instead."
              (kill-sexp)
              (insert " ")
              (insert ,(format #f "~s" replacement))))))
+
+(define (ert-number-tests file test-name)
+  "Add a numerically increasing suffix to tests of the same name.
+This fixes test errors of the pattern \"Test TEST_NAME redefined\"."
+  (emacs-batch-edit-file file
+    `(let ((i 0))
+       (while (re-search-forward ,(string-append "ert-deftest " test-name)
+                                 nil t)
+         (goto-char (match-beginning 0))
+         (kill-region (match-beginning 0) (match-end 0))
+         (insert (format "ert-deftest %s-%d" ,test-name i))
+         (setq i (+ i 1)))
+       (basic-save-buffer))))
 
 (define-syntax emacs-substitute-sexps
   (syntax-rules ()
