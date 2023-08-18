@@ -12696,6 +12696,26 @@ Riichi (aka Japanese) Mahjong but can be used to typeset any style of
 mahjong.")
     (license (list license:expat license:cc-by4.0))))
 
+(define-public texlive-margbib
+  (package
+    (name "texlive-margbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/margbib/" "source/latex/margbib/"
+                   "tex/latex/margbib/")
+             (base32
+              "04aa9nfdxc475nyj4cl8gkj2grn7v3rkb3hwhbhff5nr88nx4aqq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/margbib")
+    (synopsis "Display bibitem tags in the margins")
+    (description
+     "The package redefines the @code{thebibliography} environment to place
+the citation key into the margin.")
+    (license license:gpl3+)))
+
 (define-public texlive-matapli
   (package
     (name "texlive-matapli")
