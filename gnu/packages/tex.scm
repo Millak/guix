@@ -8887,6 +8887,32 @@ and complex notation.  Further many macros and shortcuts are added, e.g., for
 spaces, operators, physics unit, etc.")
     (license license:lppl)))
 
+(define-public texlive-footbib
+  (package
+    (name "texlive-footbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/footbib/" "source/latex/footbib/"
+                   "tex/latex/footbib/")
+             (base32
+              "0kv8nh82b16bmhxh2291ahznhjgm5g4qskqwdba66w48wkhzr32j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/footbib")
+    (synopsis "Bibliographic references as footnotes")
+    (description
+     "The package makes bibliographic references appear as footnotes.  It
+defines a command @code{\\footcite} which is similar to the LaTeX
+@code{\\cite} command but the references cited in this way appear at the
+bottom of the pages.  This @code{foot} bibliography does not conflict with the
+standard one and both may exist simultaneously in a document.  The command
+@code{\\cite} may still be used to produce the standard bibliography.  The
+@code{foot} bibliography uses its own style and bibliographic database which
+may be specified independently of the standard one.  Any standard bibliography
+style may be used.")
+    (license license:lppl)))
+
 (define-public texlive-formal-grammar
   (package
     (name "texlive-formal-grammar")
