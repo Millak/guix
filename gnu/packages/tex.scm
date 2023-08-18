@@ -4845,6 +4845,27 @@ avoiding the potentially large (macro) impact associated with
      "This package provides experimental Bidi-aware text highlighting.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bibtexperllibs
+  (package
+    (name "texlive-bibtexperllibs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "scripts/bibtexperllibs/BibTeX/"
+                   "scripts/bibtexperllibs/LaTeX/"
+                   "source/support/bibtexperllibs/")
+             (base32
+              "1p99pg9rvkzi3rqm4kp43zf5sk28q7a2m8ikfckg10ybaws5d3zg")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibtexperllibs")
+    (synopsis "BibTeX Perl Libraries")
+    (description
+     "This package provides BibTeX related Perl libraries.")
+    (license
+     (list license:artistic2.0
+           license:gpl1
+           license:public-domain))))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
