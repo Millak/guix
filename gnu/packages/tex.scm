@@ -13966,6 +13966,27 @@ environments for quickly creating nice mathematical documents.")
      "This LaTeX package provides automatic definite articles for Hungarian.")
     (license license:lppl1.3+)))
 
+(define-public texlive-newcastle-bst
+  (package
+    (name "texlive-newcastle-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/newcastle-bst/"
+                   "doc/bibtex/newcastle-bst/")
+             (base32
+              "0q5mwwiwf6pvlk6xbvrc6rfm87qrkpp7nba4qgdagjkdrn0hs4jz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newcastle-bst")
+    (synopsis
+     "BibTeX style following Harvard at Newcastle style recommendations")
+    (description
+     "This package provides a BibTeX style to format reference lists in the
+Harvard at Newcastle style recommended by Newcastle University.  It should be
+used alongside @code{natbib} for citations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-nicematrix
   (package
     (name "texlive-nicematrix")
