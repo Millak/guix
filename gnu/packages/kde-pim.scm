@@ -954,8 +954,11 @@ package.")
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (setenv "HOME" (getcwd))
-                     ;; XXX: Those tests fails randomly.
-                     (invoke "ctest" "-E" "kgpg-import|kgpg-export")))))))
+                     (invoke "ctest")))))
+           ;; XXX: Tests could fail randomly with:
+           ;;   gpg: can't connect to the agent: IPC connect call failed
+           ;;   gpg process did not finish. Cannot generate a new key pair.
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules
            gnupg ;; TODO: Remove after gpgme uses fixed path
