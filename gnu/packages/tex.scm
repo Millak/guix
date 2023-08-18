@@ -5801,6 +5801,24 @@ distribution), developed from the same author's JMB style.  A supporting LaTeX
 package is also provided.")
     (license license:public-domain)))
 
+(define-public texlive-chbibref
+  (package
+    (name "texlive-chbibref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chbibref/" "tex/latex/chbibref/")
+             (base32
+              "1k4cwy4z0kacikpvxkk3y68apw2x33sh06yccb1s894r1bn3c1qi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chbibref")
+    (synopsis "Change the Bibliography and References title")
+    (description
+     "This package defines a single command, @code{\\setbibref}, which sets
+whichever of @code{\\bibname} and @code{\\refname} is in use.")
+    (license license:lppl)))
+
 (define-public texlive-chemarrow
   (package
     (name "texlive-chemarrow")
