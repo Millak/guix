@@ -449,7 +449,7 @@ GenericDataLocation.")
                  (lambda _
                    ;; XXX: nixpkgs say kdesu need kdeinit5 in PATH, but i can't
                    ;; found in source, need check
-                   (symlink (string-append #$output "/lib/libexec/kf5/kdesu")
+                   (symlink (string-append #$output "/libexec/kf5/kdesu")
                             (string-append #$output "/bin/kdesu")))))))
     (native-inputs (list extra-cmake-modules pkg-config shared-mime-info))
     (inputs (list kconfig
