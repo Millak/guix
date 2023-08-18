@@ -14103,6 +14103,24 @@ be used with @code{natbib} and BibLaTeX as well as plain LaTeX citations.
 Both sorted and unsorted bibliography styles are supported.")
     (license license:lppl1.3c)))
 
+(define-public texlive-notex-bst
+  (package
+    (name "texlive-notex-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/notex-bst/")
+             (base32
+              "14r3q4z35k5n0rl2igjs4lj5ic4yd14xksg1qam5klb6raaf1jkh")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/notex-bst")
+    (synopsis "BibTeX style that outputs HTML")
+    (description
+     "@file{noTeX.bst} produces a number of beautifully formatted HTML
+@samp{P} elements instead of TeX code.  It can be used to automatically
+generate bibliographies to be served on the web starting from BibTeX files.")
+    (license license:public-domain)))
+
 (define-public texlive-nuc
   (package
     (name "texlive-nuc")
