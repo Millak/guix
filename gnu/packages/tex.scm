@@ -12542,6 +12542,28 @@ LaTeX2e}.")
 several languages not included in that package: BUGS, JAGS, and Stan.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ltb2bib
+  (package
+    (name "texlive-ltb2bib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltb2bib/" "source/latex/ltb2bib/"
+                   "tex/latex/ltb2bib/")
+             (base32
+              "1wrm89bynjm4g4a1zpx38v6yd2l3b1gh13h4m5hknvla2lydljfg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltb2bib")
+    (synopsis "Converts @code{amsrefs} bibliographical databases to BibTeX
+format")
+    (description
+     "This package implements a LaTeX command that converts an @code{amsrefs}
+bibliographical database (@file{.ltb}) to a BibTeX bibliographical database
+(@file{.bib}).  @code{ltb2bib} is the reverse of the @samp{amsxport} option in
+@code{amsrefs}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lyluatex
   (package
     (name "texlive-lyluatex")
