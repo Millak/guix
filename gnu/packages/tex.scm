@@ -14036,6 +14036,28 @@ the size and colour of the sticks, and flexibility to draw heaps of different
 objects.")
     (license license:expat)))
 
+(define-public texlive-nmbib
+  (package
+    (name "texlive-nmbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/nmbib/" "doc/latex/nmbib/"
+                   "source/latex/nmbib/" "tex/latex/nmbib/")
+             (base32
+              "17snspchv0yafz062h59gs9px4dwjk99pwfyxcraw9243k2gd79g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nmbib")
+    (synopsis "Multiple versions of a bibliography, with different sort orders")
+    (description
+     "This package is a rewrite of the @code{multibibliography} package
+providing multiple bibliographies with different sorting.  The new version
+offers a number of citation commands, streamlines the creation of
+bibliographies, ensures compatibility with the @code{natbib} package, and
+provides other improvements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-nnext
   (package
     (name "texlive-nnext")
