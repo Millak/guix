@@ -11808,6 +11808,28 @@ grammaticality judgments.  The @code{ps-trees} package provides linguistic
 trees.")
     (license license:lppl)))
 
+(define-public texlive-listbib
+  (package
+    (name "texlive-listbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/listbib/" "doc/latex/listbib/"
+                   "scripts/listbib/" "source/latex/listbib/"
+                   "tex/latex/listbib/")
+             (base32
+              "1k4xwmv6lh1vaggimzmiqib8aai9dm0j586m0hds04485pvhv5ky")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "listbib")))
+    (home-page "https://ctan.org/pkg/listbib")
+    (synopsis "Lists contents of BibTeX files")
+    (description
+     "This package generates listings of bibliographic data bases in BibTeX
+format.  Included is a @file{listbib.bst}, which is better suited for this
+purpose than the standard styles.")
+    (license license:gpl3+)))
+
 (define-public texlive-lithuanian
   (package
     (name "texlive-lithuanian")
