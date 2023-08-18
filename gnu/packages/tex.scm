@@ -8020,6 +8020,26 @@ a @code{bundle} environment, with a set of leaves described by @code{\\chunk}
 macros.  A chunk may have a @code{bundle} environment inside it.")
     (license license:lppl)))
 
+(define-public texlive-ecobiblatex
+  (package
+    (name "texlive-ecobiblatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ecobiblatex/"
+                   "tex/latex/ecobiblatex/")
+             (base32
+              "09569x2dx1h6a63ji44ipkx0nvapc9mgkgrqvc552x62c97zcf21")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ecobiblatex")
+    (synopsis
+     "Global Ecology and Biogeography BibLaTeX styles for the Biber backend")
+    (description
+     "This bundle provides a set of styles for creating bibliographies using
+BibLaTeX in the style of the @emph{Global Ecology and Biogeography} journal.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-econometrics
   (package
     (name "texlive-econometrics")
