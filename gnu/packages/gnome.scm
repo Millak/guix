@@ -5387,7 +5387,7 @@ once.")
      (list gtk+
            json-glib
            libgee
-           librsvg
+           (librsvg-for-system)
            qqwing))
     (home-page "https://wiki.gnome.org/Apps/Sudoku")
     (synopsis "Japanese logic game")
