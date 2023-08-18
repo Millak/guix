@@ -8917,6 +8917,73 @@ and complex notation.  Further many macros and shortcuts are added, e.g., for
 spaces, operators, physics unit, etc.")
     (license license:lppl)))
 
+(define-public texlive-fontsize
+  (package
+    (name "texlive-fontsize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fontsize/"
+                   "source/latex/fontsize/"
+                   "tex/latex/fontsize/")
+             (base32
+              "1y061r4hadb2c26dgch6lrjw6f4j87zj1gj5lgzgx0hyyz58snqy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-circular-dependency
+                 ;; Documentation doesn't build, and generates a circular
+                 ;; dependency with BIBLATEX-PHILOSOPHY package.  Since we're
+                 ;; not interested in re-building the whole documentation,
+                 ;; just skip that part.
+                 (lambda _
+                   (substitute* "source/latex/fontsize/fontsize.dtx"
+                     (("\\[style=philosophy-classic\\]") "")
+                     (("\\\\DocInput\\{fontsize\\.dtx\\}") "")))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-biblatex
+                  texlive-booktabs
+                  texlive-caption
+                  texlive-cochineal
+                  texlive-csquotes
+                  texlive-etoolbox
+                  texlive-fontaxes
+                  texlive-guitlogo
+                  texlive-hologo
+                  texlive-hypdoc
+                  texlive-inconsolata
+                  texlive-libertine
+                  texlive-listings
+                  texlive-ltxdockit
+                  texlive-manfnt
+                  texlive-mathalpha
+                  texlive-mdframed
+                  texlive-metalogo
+                  texlive-microtype
+                  texlive-needspace
+                  texlive-newtx
+                  texlive-parskip
+                  texlive-pgf
+                  texlive-sectsty
+                  texlive-siunitx
+                  texlive-tabu
+                  texlive-upquote
+                  texlive-xcolor
+                  texlive-xkeyval
+                  texlive-xstring
+                  texlive-zref))))
+    (home-page "https://ctan.org/pkg/fontsize")
+    (synopsis
+     "Small package to set arbitrary sizes for the main font of the document")
+    (description
+     "The package allows you to set arbitrary sizes for the main font of the
+document, through the @emph{fontsize=<size>} option.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-footbib
   (package
     (name "texlive-footbib")
