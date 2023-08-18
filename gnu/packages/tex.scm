@@ -14422,6 +14422,30 @@ so on up to 1999th.  Separate counter commands are provided for different
 letter case variants, and for masculine and feminine gender inflections.")
     (license license:lppl)))
 
+(define-public texlive-oscola
+  (package
+    (name "texlive-oscola")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/oscola/" "makeindex/oscola/"
+                   "tex/latex/oscola/")
+             (base32
+              "1lx883rqq9p3f0vfv6i5xp35qpi79jf1jxycyi5j86i1fvk0jz08")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oscola")
+    (synopsis
+     "BibLaTeX style for the Oxford Standard for the Citation of Legal
+Authorities")
+    (description
+     "The package provides a set of style files for use with BibLaTeX and
+Biber to produce citations and bibliographies in accordance with the
+widely-used Oxford Standard for the Citation of Legal Authorities.  It also
+includes facilities for constructing tables of cases and legislation from
+citations (in conjunction with appropriate indexing packages).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ot-tableau
   (package
     (name "texlive-ot-tableau")
