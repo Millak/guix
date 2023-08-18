@@ -9205,6 +9205,32 @@ nets, diagrams, etc., very easily, in the LaTeX @code{picture} environment.")
 glosses, and various other goodies.")
     (license license:lppl1.2+)))
 
+(define-public texlive-gbt7714
+  (package
+    (name "texlive-gbt7714")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/gbt7714/" "doc/bibtex/gbt7714/"
+                   "source/bibtex/gbt7714/"
+                   "tex/latex/gbt7714/")
+             (base32
+              "0pmkbh0axh0qnc08fjn5g7pbw59n543siy4l9q3bihnyid11i5qp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-bibtex texlive-natbib texlive-url))
+    (home-page "https://ctan.org/pkg/gbt7714")
+    (synopsis "China's bibliography style standard GB/T 7714-2015 for BibTeX")
+    (description
+     "The package provides a BibTeX implementation for the Chinese national
+bibliography style standard GB/T 7714-2015.  It consists of two @file{.bst}
+files for numerical and author-year styles as well as a LaTeX package which
+provides the citation style defined in the standard.
+
+The package is compatible with @code{natbib} and supports language
+detection (Chinese and English) for each biblilography entry.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-gchords
   (package
     (name "texlive-gchords")
