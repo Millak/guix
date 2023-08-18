@@ -17791,6 +17791,27 @@ following Korean font families (11 fonts):
 @end itemize")
     (license license:gpl2)))
 
+(define-public texlive-uni-wtal-ger
+  (package
+    (name "texlive-uni-wtal-ger")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uni-wtal-ger/"
+                   "tex/latex/uni-wtal-ger/")
+             (base32
+              "0bxrvl10ccdqarffdf3xzcihnid8h84sv1hcbncjmwq249kf3f96")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uni-wtal-ger")
+    (synopsis
+     "Citation style for literary studies at the University of Wuppertal")
+    (description
+     "The package defines a BibLaTeX citation style based on the author-title
+style of @code{biblatex-dw}.  The citations are optimised for literary studies
+in faculty of humanities at the Bergische Universitat Wuppertal.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-unicode-alphabets
   (package
     (name "texlive-unicode-alphabets")
