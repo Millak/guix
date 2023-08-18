@@ -6370,6 +6370,26 @@ appearance.")
 Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chscite
+  (package
+    (name "texlive-chscite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/chscite/" "doc/latex/chscite/"
+                   "source/latex/chscite/" "tex/latex/chscite/")
+             (base32
+              "0q4mgvrbljbw7pmwjs4qcr91sfhbnbshhmygxqrkriyrfnqy6yfq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chscite")
+    (synopsis "Bibliography style for Chalmers University of Technology")
+    (description
+     "The package, heavily based on the harvard package for Harvard-style
+citations, provides a citation suite for students at Chalmers University of
+Technology that follows given recommendations.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-churchslavonic
   (package
     (name "texlive-churchslavonic")
