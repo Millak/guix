@@ -10592,6 +10592,26 @@ Finally, an @emph{e} starts the exponent of the number.  For example,
 @samp{$21e6$} may be output as @samp{$26\\times10\\,^@{6@}$}.")
     (license license:gpl3+)))
 
+(define-public texlive-iopart-num
+  (package
+    (name "texlive-iopart-num")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/iopart-num/"
+                   "doc/bibtex/iopart-num/")
+             (base32
+              "1n30ncmg0djhpdfa9jl5mv188347xmqsv08vgf2v4ipx7czhjm7v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iopart-num")
+    (synopsis "Numeric citation style for IOP journals")
+    (description
+     "This package provides a BibTeX style providing numeric citation in
+Harvard-like format.  Intended for use with Institute of Physics (IOP)
+journals, including @emph{Journal of Physics}.")
+    (license license:lppl)))
+
 (define-public texlive-ipaex
   (package
     (name "texlive-ipaex")
