@@ -8040,6 +8040,27 @@ macros.  A chunk may have a @code{bundle} environment inside it.")
 BibLaTeX in the style of the @emph{Global Ecology and Biogeography} journal.")
     (license license:lppl1.3+)))
 
+(define-public texlive-econ-bst
+  (package
+    (name "texlive-econ-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/econ-bst/"
+                   "doc/bibtex/econ-bst/")
+             (base32
+              "0nflr827a88yd66bb0mfk86dby1253fxdfrjzx0b4k4zqdljhrbg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/econ-bst")
+    (synopsis "BibTeX style for economics papers")
+    (description
+     "This is a BibTeX style file for papers in economics.  It provides the
+following features: author-year type citation reference style used in
+economics papers highly customizable use of certified random order, as
+proposed by Ray Robson (2018)")
+    (license license:lppl1.3+)))
+
 (define-public texlive-econometrics
   (package
     (name "texlive-econometrics")
