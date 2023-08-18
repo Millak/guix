@@ -7736,6 +7736,27 @@ programming languages.")
     ;; package without any limit".
     (license (license:fsf-free "file://doc/generic/docbytex/README"))))
 
+(define-public texlive-doipubmed
+  (package
+    (name "texlive-doipubmed")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/doipubmed/"
+                   "source/latex/doipubmed/"
+                   "tex/latex/doipubmed/")
+             (base32
+              "1432hh1pr5r6izfcqlbvl1lxpradidrwpfkvjr25ds1rlh240y66")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/doipubmed")
+    (synopsis "Special commands for use in bibliographies")
+    (description
+     "The package provides the commands @code{\\doi}, @code{\\pubmed} and
+@code{\\citeurl}.  These commands are primarily designed for use in
+bibliographies.  A @code{LaTeX2HTML} style file is also provided.")
+    (license license:lppl)))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
