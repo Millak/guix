@@ -11230,6 +11230,25 @@ system that Knuth created.  The central entry point is the index file, with
 links to the individual documents, either in HTML or in PDF format.")
     (license license:public-domain)))
 
+(define-public texlive-ksfh-nat
+  (package
+    (name "texlive-ksfh-nat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/ksfh_nat/")
+             (base32
+              "1qzn0n19lslf2qg8fvm844xx5k7s8a275a77z2ynbb0vs1w4prpw")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ksfh-nat")
+    (synopsis "BibTeX style for KSFH Munich")
+    (description
+     "The package supports bibliographies as standard for
+KSFH (@emph{Katholische Stiftungsfachhochschule}) Munich.  BibTeX entries in
+@code{article}, @code{book}, @code{inbook}, @code{incollection} and
+@code{misc} formats are supported.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-kvmap
   (package
     (name "texlive-kvmap")
