@@ -1407,7 +1407,7 @@ The system types the remote machine supports---e.g., @code{(list
 "x86_64-linux" "i686-linux")}.
 
 @item user
-The user account to use when connecting to the remote machine over SSH.
+The user account on the remote machine to use when connecting over SSH.
 Note that the SSH key pair must @emph{not} be passphrase-protected, to
 allow non-interactive logins.
 
@@ -1500,6 +1500,11 @@ archives of files from the store (@pxref{Invoking guix archive}):
 @example
 # guix archive --generate-key
 @end example
+
+@quotation Note
+This key pair is not related to the SSH key pair that was previously
+mentioned in the description of the @code{build-machine} data type.
+@end quotation
 
 @noindent
 Each build machine must authorize the key of the master machine so that
