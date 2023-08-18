@@ -6700,6 +6700,36 @@ the same way the package's author did when writing the book, and your output
 will look just like the pseudocode in the text.")
     (license license:lppl)))
 
+(define-public texlive-cochineal
+  (package
+    (name "texlive-cochineal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cochineal/"
+                   "fonts/afm/public/cochineal/"
+                   "fonts/enc/dvips/cochineal/"
+                   "fonts/map/dvips/cochineal/"
+                   "fonts/opentype/public/cochineal/"
+                   "fonts/tfm/public/cochineal/"
+                   "fonts/type1/public/cochineal/"
+                   "fonts/vf/public/cochineal/"
+                   "tex/latex/cochineal/")
+             (base32
+              "04kziysq9szhz3brwkqwnjmvy3m0wnb3mhp86h8l7qwgndzx9j8w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cochineal")
+    (synopsis "Cochineal fonts with LaTeX support")
+    (description
+     "Cochineal is a fork from the Crimson fonts (Roman, Italic, Bold,
+@code{BoldItalic} only), which contain roughly 4200 glyphs in the four styles
+mentioned above.  Cochineal adds more than 1500 glyphs in those styles so that
+it is possible to make a TeX support collection that contains essentially all
+glyphs in all styles.  The fonts are provided in OpenType and PostScript
+formats.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-codeanatomy
   (package
     (name "texlive-codeanatomy")
