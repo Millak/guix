@@ -543,7 +543,7 @@ photographic equipment.")
            libjpeg-turbo
            libomp
            libpng
-           librsvg
+           (librsvg-for-system)
            libsecret                    ;optional, for storing passwords
            libsoup-minimal-2
            libtiff
