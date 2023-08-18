@@ -9656,6 +9656,35 @@ a range of options that allow wide customization of the output.")
 to create basic guitar tablatures using LaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-guitlogo
+  (package
+    (name "texlive-guitlogo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/guitlogo/"
+                   "source/latex/guitlogo/"
+                   "tex/latex/guitlogo/")
+             (base32
+              "0fwp3w5b51qs9jr9xq0hl0hsqbx7dkj7qgwjpay88sflycv3qpba")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/guitlogo")
+    (synopsis "Macros for typesetting the GuIT logo")
+    (description
+     "This package provides some commands useful to correctly write the logo
+of @emph{Gruppo Utilizzatori Italiani di TeX} (Italian TeX User Group), using
+the default document color or any other color the user may ever choose, in
+conformity with the logo's scheme as seen on the group's website
+@url{https://www.guitex.org}.  Likewise, commands are provided that simplify
+the writing of the GuIT acronym's complete expansion, of the addresses of the
+group's internet site and public forum, and the meeting GuITmeeting and the
+magazine @emph{Ars TeXnica}'s logo.  Optionally, using @code{hyperref}, the
+outputs of the above cited commands can become hyperlinks to the group's
+website @url{https://www.guitex.org}.  The Documentation is available in
+Italian only.")
+    (license license:lppl1.3a)))
+
 (define-public texlive-gustlib
   (package
     (name "texlive-gustlib")
