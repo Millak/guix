@@ -25708,10 +25708,10 @@ change since last write.
            (package-inputs sbcl-nfiles)))))
 
 (define-public sbcl-nasdf
-  (let ((commit "73c89680ace25929c2a1ccc0809db99e9edffa07"))
+  (let ((commit "dd9fb2df7174464b54561b2a2f3c3e00fdd5d4f7"))
     (package
       (name "sbcl-nasdf")
-      (version "0.1.6")
+      (version "0.1.7")
       (source
        (origin
          (method git-fetch)
@@ -25720,20 +25720,19 @@ change since last write.
                (commit commit)))
          (file-name (git-file-name "cl-ntemplate" version))
          (sha256
-          (base32
-           "193wwcp84pyyv33pkkm41s7ca2limpcqqi41hxd1pm5il5r9q9h7"))))
+          (base32 "1q8ky8hz8xrr37h7yyc6ysvrcwlsp1i6r2x44c060drspgjbqj70"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'cd-sdl
              (lambda _
-               (chdir "nasdf")
-               #t)))))
+               (chdir "nasdf"))))))
       (home-page "https://github.com/atlas-engineer/ntemplate")
       (synopsis "ASDF helpers for system setup, testing and installation")
       (description
-       "NASDF is an ASDF extension providing utilities to ease system setup, testing and installation.
+       "NASDF is an ASDF extension providing utilities to ease system setup,
+testing and installation.
 
 @itemize
 @item Simple way to fetch Git submodules and “do the right thing” for
