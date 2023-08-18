@@ -10477,6 +10477,27 @@ conference proceedings.  The class uses the XePersian package.")
 installed.")
     (license license:lppl1.3c)))
 
+(define-public texlive-inlinebib
+  (package
+    (name "texlive-inlinebib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/inlinebib/"
+                   "doc/bibtex/inlinebib/"
+                   "tex/latex/inlinebib/")
+             (base32
+              "13kfygh2r8s038rnskxnj91h08k8xs6cln16vzsy1j59c82idvkb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inlinebib")
+    (synopsis "Citations in footnotes")
+    (description
+     "This package provides a BibTeX style and a LaTeX package that allow for
+a full bibliography at the end of the document as well as citation details in
+footnotes.")
+    (license license:lppl)))
+
 (define-public texlive-install-latex-guide-zh-cn
   (package
     (name "texlive-install-latex-guide-zh-cn")
