@@ -15827,6 +15827,27 @@ Grammar (RRG).  This package allows the construction of trees with crossing
 lines, as is required by this theory for many languages.")
     (license license:lppl)))
 
+(define-public texlive-rsc
+  (package
+    (name "texlive-rsc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/rsc/" "doc/latex/rsc/"
+                   "source/latex/rsc/" "tex/latex/rsc/")
+             (base32
+              "1fgc54fyikrgx81gfhv7mab6sqj4xjz6pyrkxk8jnlwwqrsk0yxb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rsc")
+    (synopsis "BibTeX style for use with RSC journals")
+    (description
+     "The @code{rsc} package provides a BibTeX style in accordance with the
+requirements of the Royal Society of Chemistry.  It was originally based on
+the file @file{pccp.bst}, but also implements a number of styles from the
+@code{achemso} package.  The package is now a stub for the @code{chemstyle}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-rtklage
   (package
     (name "texlive-rtklage")
