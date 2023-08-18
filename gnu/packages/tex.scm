@@ -17878,6 +17878,30 @@ to define new units and changes the output concerning to the surrounding font
 settings.")
     (license license:lppl)))
 
+(define-public texlive-urlbst
+  (package
+    (name "texlive-urlbst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/urlbst/" "doc/bibtex/urlbst/"
+                   "scripts/urlbst/" "source/bibtex/urlbst/")
+             (base32
+              "0sfs2ybkfcqy8w0wdni3aakpnmk60zkmnlc55xskyzzh4yc69qi7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "urlbst")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/urlbst")
+    (synopsis "Web support for BibTeX")
+    (description
+     "This package supports a new BibTeX @code{webpage} entry type and @code{url},
+@code{lastchecked}, and @code{eprint} and @code{DOI} fields.  The Perl script
+@command{urlbst} can be used to add this support to an arbitrary @file{.bst}
+file which has a reasonably conventional structure.  The result is meant to be
+robust rather than pretty.")
+    (license (list license:gpl2 license:lppl))))
+
 (define-public texlive-velthuis
   (package
     (name "texlive-velthuis")
