@@ -1407,6 +1407,10 @@ on stdout instead of using a socket as the Emacsclient does.")
                 (substitute* "test/submodule-test.el"
                   (("\\(ert-deftest (status|ids) .*" all)
                    (string-append all " (skip-unless nil)")))))
+            (add-after 'unpack 'ert-number-tests
+              (lambda _
+                (ert-number-tests "test/repository-test.el"
+                                  "repository-head-for-worktree")))
             (add-before 'install 'prepare-for-install
               (lambda _
                 (let ((s "../source"))
