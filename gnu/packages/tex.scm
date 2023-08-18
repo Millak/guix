@@ -8978,6 +8978,28 @@ level, as appropriate.  The package provides an alternative to the use of the
 @code{\\sideset} command in the @code{amsmath} package.")
     (license license:lppl)))
 
+(define-public texlive-francais-bst
+  (package
+    (name "texlive-francais-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/francais-bst/"
+                   "doc/bibtex/francais-bst/"
+                   "tex/latex/francais-bst/")
+             (base32
+              "19dz9n5wy2phjzm4kk9axvk00akmj07ccw0avkq644z87ksgzqws")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/francais-bst")
+    (synopsis "Bibliographies conforming to French typographic standards")
+    (description
+     "The package provides bibliographies (in French) conforming to the rules
+in @emph{Guide de la communication ecrite} (Malo, M., Quebec Amerique, 1996).
+The BibTeX styles were generated using @code{custom-bib} and they are
+compatible with @code{natbib}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-frenchmath
   (package
     (name "texlive-frenchmath")
