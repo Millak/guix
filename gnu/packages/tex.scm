@@ -14706,6 +14706,25 @@ customized by means of different @code{\\pascal} macro options or the
 patterns for wide ranges of languages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-perception
+  (package
+    (name "texlive-perception")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/perception/"
+                   "doc/bibtex/perception/")
+             (base32
+              "0958g65hv8fpyhhbkvkd2ybdbp6aiblnc5izbr5z5w8b0v5n0ixx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/perception")
+    (synopsis "BibTeX style for the journal @emph{Perception}")
+    (description
+     "This package provides a BibTeX style for the journal
+@emph{Perception}.")
+    (license license:lppl)))
+
 (define-public texlive-perfectcut
   (package
     (name "texlive-perfectcut")
