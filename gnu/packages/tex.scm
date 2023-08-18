@@ -6273,6 +6273,23 @@ provided.  The style was derived from the @code{newapa} style.")
 in place of the original's annotation.")
     (license license:lppl)))
 
+(define-public texlive-chicagoa
+  (package
+    (name "texlive-chicagoa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/chicagoa/")
+             (base32
+              "1za4fqlpirbr3qs894abnlwmrhsqbahniyyimy1dxal0cp61cfil")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chicagoa")
+    (synopsis "Chicago bibliography style with annotations")
+    (description
+     "This is a modification of the author's @code{chicago} style, to support
+an annotation field in bibliographies.")
+    (license license:knuth)))
+
 (define-public texlive-chinesechess
   (package
     (name "texlive-chinesechess")
