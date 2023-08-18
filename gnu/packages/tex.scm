@@ -9272,6 +9272,26 @@ provides an environment like @code{eqnarray}, a @code{newtheorem}-like
 environment (NewTheorem), and several macros.")
     (license license:isc)))
 
+(define-public texlive-geschichtsfrkl
+  (package
+    (name "texlive-geschichtsfrkl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/geschichtsfrkl/"
+                   "source/latex/geschichtsfrkl/"
+                   "tex/latex/geschichtsfrkl/")
+             (base32
+              "1mplym0rkfl8pxzw31m1p117pbfz1s59180bhbwi2wgj4225p4w7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/geschichtsfrkl")
+    (synopsis "BibLaTeX style for historians")
+    (description
+     "The package provides a BibLaTeX style, (mostly) meeting the requirements
+of the History Faculty of the University of Freiburg (Germany).")
+    (license license:lppl)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
