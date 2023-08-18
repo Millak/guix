@@ -17902,6 +17902,28 @@ file which has a reasonably conventional structure.  The result is meant to be
 robust rather than pretty.")
     (license (list license:gpl2 license:lppl))))
 
+(define-public texlive-usebib
+  (package
+    (name "texlive-usebib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/usebib/" "source/latex/usebib/"
+                   "tex/latex/usebib/")
+             (base32
+              "1qymf8hnp7ilzm030ypbagmw6nicdfy8lhry20viws1v7dibk9l0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/usebib")
+    (synopsis "Simple bibliography processor")
+    (description
+     "The package is described by its author as @emph{a poor person's
+replacement for the more powerful methods provided by BibLaTeX to access data
+from a @file{.bib} file}.  Its principle commands are @code{\\bibinput}, which
+specifies a database to use, and @code{\\usebibdata}, which typesets a single
+field from a specified entry in that database.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-velthuis
   (package
     (name "texlive-velthuis")
