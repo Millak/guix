@@ -14933,6 +14933,23 @@ It is designed as a tool that is easy to use, with a lean syntax, native to
 LaTeX, and directly supporting PDF output format.")
     (license license:lppl1.3c)))
 
+(define-public texlive-plainyr
+  (package
+    (name "texlive-plainyr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/plainyr/")
+             (base32
+              "09py8psdqqnxmq2nkczxz092668zscvf9hbr6fcvrnj0blvz3wxy")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plainyr")
+    (synopsis "Plain bibliography style, sorted by year first")
+    (description
+     "This is a version of the standard plain BibTeX style, modified to sort
+chronologically (by year) first, then by author, title, etc.")
+    (license license:knuth)))
+
 (define-public texlive-plari
   (package
     (name "texlive-plari")
