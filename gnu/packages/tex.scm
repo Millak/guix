@@ -18120,6 +18120,26 @@ package uses TikZ for most things.  The package support exporting the game to
 a VASSAL module.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-windycity
+  (package
+    (name "texlive-windycity")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/windycity/"
+                   "tex/latex/windycity/")
+             (base32
+              "13fw7nnkgnphwm3vjdsn40p7n5j6cfb4c60ga6y16xrcwihzdqpb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/windycity")
+    (synopsis "Chicago style for BibLaTeX")
+    (description
+     "Windy City is a style for BibLaTeX that formats notes, bibliographies,
+parenthetical citations, and reference lists according to the 17th edition of
+@emph{The Chicago Manual of Style}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-witharrows
   (package
     (name "texlive-witharrows")
