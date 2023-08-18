@@ -8084,6 +8084,31 @@ letters statistical distributions constants and symbols matrix operators and
 statistical operators.")
     (license license:lppl1.3+)))
 
+(define-public texlive-economic
+  (package
+    (name "texlive-economic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/economic/"
+                   "doc/bibtex/economic/" "tex/latex/economic/")
+             (base32
+              "1b530sy5bf7f6xa4bakm5agnzx0dckafxkqsy9gv2rk2803qsf6c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/economic")
+    (synopsis "BibTeX support for submitting to economics journals")
+    (description
+     "The bundle offers macros and BibTeX styles for the @emph{American
+Economic Review} (AER), the @emph{American Journal of Agricultural
+Economics} (AJAE), the @emph{Canadian Journal of Economics} (CJE), the
+@emph{European Review of Agricultural Economics} (ERAE), the
+@emph{International Economic Review} (IER) and @emph{Economica}.
+
+The macro sets are based on (and require) the @code{harvard} package, and all
+provide variations of author-date styles of presentation.")
+    (license license:lppl)))
+
 (define-public texlive-edfnotes
   (package
     (name "texlive-edfnotes")
