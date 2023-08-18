@@ -17812,6 +17812,27 @@ style of @code{biblatex-dw}.  The citations are optimised for literary studies
 in faculty of humanities at the Bergische Universitat Wuppertal.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uni-wtal-lin
+  (package
+    (name "texlive-uni-wtal-lin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uni-wtal-lin/"
+                   "tex/latex/uni-wtal-lin/")
+             (base32
+              "07ndzpby3m8ccw3r4sp9plrzmnnpiksvi8plnqyssklalmm406hj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uni-wtal-lin")
+    (synopsis
+     "Citation style for linguistic studies at the University of Wuppertal")
+    (description
+     "The package defines a BibLaTeX citation style based on the standard
+author-year style.  The citations are optimised for linguistic studies at the
+Institute of Linguistics at the Bergische Universitat Wuppertal.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-unicode-alphabets
   (package
     (name "texlive-unicode-alphabets")
