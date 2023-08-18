@@ -7064,6 +7064,66 @@ with a wide array of formats.  For the moment, it works out of the box with
 ConTeXt and LaTeX.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-crossrefware
+  (package
+    (name "texlive-crossrefware")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/bbl2bib.1"
+                   "doc/man/man1/bbl2bib.man1.pdf"
+                   "doc/man/man1/bibdoiadd.1"
+                   "doc/man/man1/bibdoiadd.man1.pdf"
+                   "doc/man/man1/bibmradd.1"
+                   "doc/man/man1/bibmradd.man1.pdf"
+                   "doc/man/man1/biburl2doi.1"
+                   "doc/man/man1/biburl2doi.man1.pdf"
+                   "doc/man/man1/bibzbladd.1"
+                   "doc/man/man1/bibzbladd.man1.pdf"
+                   "doc/man/man1/ltx2crossrefxml.1"
+                   "doc/man/man1/ltx2crossrefxml.man1.pdf"
+                   "doc/support/crossrefware/"
+                   "scripts/crossrefware/"
+                   "tex/latex/crossrefware/")
+             (base32
+              "048405cg5q3fy5vd7xbri8cfgn0wrzc08sb3z30cv79kjwm1xj6w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts
+           #~(list "bbl2bib.pl"
+                   "bibdoiadd.pl"
+                   "bibmradd.pl"
+                   "biburl2doi.pl"
+                   "bibzbladd.pl"
+                   "ltx2crossrefxml.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/crossrefware")
+    (synopsis "Scripts for working with @url{crossref.org}")
+    (description
+     "This bundle contains the following scripts:
+@itemize
+
+@item @file{bibdoiadd.pl}: add DOI numbers to papers in a given @file{.bib}
+file,
+
+@item @file{bibzbladd.pl}: add Zbl numbers to papers in a given @file{.bib}
+file,
+
+@item @file{bibmradd.pl}: add MR numbers to papers in a given @file{.bib}
+file,
+
+@item @file{bbl2bib.pl}: convert @code{thebibliography} environment to
+a @file{.bib} file,
+
+@item @file{biburl2doi.pl}: convert URLs pointing to @url{doi.org} to DOIs,
+
+@item @file{ltx2crossrefxml.pl}: tool for the creation of XML files for
+submitting to @url{crossref.org}.
+
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public texlive-crossword
   (package
     (name "texlive-crossword")
