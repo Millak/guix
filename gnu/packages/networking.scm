@@ -1434,7 +1434,7 @@ files contain direct mappings of the abstractions provided by the ØMQ C API.")
            #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "INSTALLPREFIX=" #$output)
                    (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))))
-    (home-page "http://miniupnp.free.fr/libnatpmp.html")
+    (home-page "https://miniupnp.tuxfamily.org/libnatpmp.html")
     (synopsis "C library implementing NAT-PMP")
     (description
      "@code{libnatpmp} is a portable and asynchronous implementation of
