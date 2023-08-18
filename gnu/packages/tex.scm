@@ -4894,6 +4894,28 @@ have bibliographies specific to one part of a document, see the packages
 @code{bibunits} or @code{chapterbib}.")
     (license license:gpl3+)))
 
+(define-public texlive-bibtopicprefix
+  (package
+    (name "texlive-bibtopicprefix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibtopicprefix/"
+                   "source/latex/bibtopicprefix/"
+                   "tex/latex/bibtopicprefix/")
+             (base32
+              "1fadq51adii1453v31xj7p328h4rvans1ynmxjcmnwhlj4hdjp5n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibtopicprefix")
+    (synopsis "Prefix references to bibliographies produced by
+@code{bibtopic}")
+    (description
+     "The package permits users to apply prefixes (fixed strings) to
+references to entries in bibliographies produced by the @code{bibtopic}
+package.")
+    (license license:lppl)))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
