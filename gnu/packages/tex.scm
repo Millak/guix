@@ -16562,6 +16562,27 @@ scripture references);
 @end itemize")
     (license license:gpl2)))
 
+(define-public texlive-sort-by-letters
+  (package
+    (name "texlive-sort-by-letters")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/sort-by-letters/"
+                   "doc/bibtex/sort-by-letters/")
+             (base32
+              "19zsc6a97q5wjdgxcl7mjlbxzhj5xpfi4zi8ym1962l97dj4a96n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sort-by-letters")
+    (synopsis "Bibliography styles for alphabetic sorting")
+    (description
+     "This bundle contains several bibliography styles for separating
+a document's references by the first letter of the first author/editor in the
+bibliography entry.  The styles are adapted from standard ones or from
+@code{natbib} ones.")
+    (license license:knuth)))
+
 (define-public texlive-soup
   (package
     (name "texlive-soup")
