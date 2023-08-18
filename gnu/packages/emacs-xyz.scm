@@ -27776,6 +27776,8 @@ files are easily readable and they work nicely with version control systems.")
              (url "https://github.com/domtronn/all-the-icons.el")
              (commit version)))
        (file-name (git-file-name name version))
+       (patches
+        (search-patches "emacs-all-the-icons-remove-duplicate-rs.patch"))
        (sha256
         (base32 "0lwgvgnqf7vihglm0c5bwsxbl4x7f641289cji5s7jwy2dbsqk7g"))))
     (build-system emacs-build-system)
