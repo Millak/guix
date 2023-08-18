@@ -4916,6 +4916,30 @@ references to entries in bibliographies produced by the @code{bibtopic}
 package.")
     (license license:lppl)))
 
+(define-public texlive-bibunits
+  (package
+    (name "texlive-bibunits")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibunits/"
+                   "source/latex/bibunits/"
+                   "tex/latex/bibunits/")
+             (base32
+              "0hlz277lskhcs5xr0qn2rram957himj67hkwqqsjjap8khf7fz6v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibunits")
+    (synopsis "Multiple bibliographies in one document")
+    (description
+     "The package provide a mechanism to generate separate bibliographies for
+different units (chapters, sections or bibunit-environments) of a text.  The
+package separates the citations of each unit of text into a separate file to
+be processed by BibTeX.  The global bibliography section produced by LaTeX may
+also appear in the document and citations can be placed in both the local unit
+and the global bibliographies at the same time.")
+    (license license:lppl)))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
