@@ -12831,6 +12831,28 @@ Mathématiques Appliquées et Industrielles (SMAI).")
 4th edition.")
     (license license:public-domain)))
 
+(define-public texlive-mathalpha
+  (package
+    (name "texlive-mathalpha")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathalpha/"
+                   "tex/latex/mathalpha/")
+             (base32
+              "19wniyaba8cz4vk279ashg68bxq9178cvvz53cng2cn6i6rw32rv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathalpha")
+    (synopsis "General package for loading maths alphabets in LaTeX")
+    (description
+     "Package @code{mathalfa} was renamed to @code{mathalpha}.  For backward
+compatibility the old name will continue to be recognized in LaTeX documents.
+The package provides means of loading maths alphabets (such as are normally
+addressed via macros @code{\\mathcal}, @code{\\mathbb}, @code{\\mathfrak} and
+@code{\\mathscr}).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mathcommand
   (package
     (name "texlive-mathcommand")
