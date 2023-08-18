@@ -10347,6 +10347,24 @@ which are called indices locorum citatorum.  It relies on a specific
 files.")
     (license license:expat)))
 
+(define-public texlive-ijqc
+  (package
+    (name "texlive-ijqc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/ijqc/" "doc/bibtex/ijqc/")
+             (base32
+              "18sqc8k21l15zlplpaimdcg8g75z3lrlc0qcb6wx838980gn961r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ijqc")
+    (synopsis "BibTeX style file for the @emph{Intl. J. Quantum Chem}")
+    (description
+     "@file{ijqc.bst} is a BibTeX style file to support publication in Wiley's
+@emph{International Journal of Quantum Chemistry}.")
+    (license license:lppl)))
+
 (define-public texlive-impatient
   (package
     (name "texlive-impatient")
