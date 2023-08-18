@@ -10084,6 +10084,25 @@ Hein and independently by the mathematician John Nash.  This package defines
 an environment that enables the user to draw such a game in a trivial way.")
     (license license:lppl)))
 
+(define-public texlive-historische-zeitschrift
+  (package
+    (name "texlive-historische-zeitschrift")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/historische-zeitschrift/"
+                   "tex/latex/historische-zeitschrift/")
+             (base32
+              "1w8zhk1darw39lrgs4i1p8zk78a1q7skc93ac8qczbrw5pln27k5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/historische-zeitschrift")
+    (synopsis "BibLaTeX style for the journal @emph{Historische Zeitschrift}")
+    (description
+     "The package provides citations according with the house style of the
+@emph{Historische Zeitschrift}, a German historical journal.")
+    (license license:lppl)))
+
 (define-public texlive-hitex
   (package
     (name "texlive-hitex")
