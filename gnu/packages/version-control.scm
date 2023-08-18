@@ -79,6 +79,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)
@@ -1295,7 +1296,7 @@ and additionally allows you to access the Git repository more directly using
 either a pure Python implementation, or the faster, but more resource intensive
  @command{git} command implementation.")
      (license license:bsd-3)))
- 
+
 (define-public savane
   (package
     (name "savane")
@@ -3551,6 +3552,40 @@ RCS.  It shows the status of the files in the current working directory, and
 has tools for tagging, merging, checking in/out, and other user operations.
 TkDiff is included for browsing and merging your changes.")
     (license license:gpl2+)))
+
+(define-public qgit
+  (package
+    (name "qgit")
+    (version "2.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/tibirna/qgit")
+                     (commit (string-append "qgit-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10j5xll7ai1rb2ybyblbgqm762bqspffpf33fdr61qdchnp2gkf4"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (propagated-inputs
+     (list git))
+    (home-page "https://github.com/tibirna/qgit")
+    (synopsis "Graphical front-end for git")
+    (description
+     "Qgit is a graphical front-end for git, with features to:
+@itemize
+@item view revisions, diffs, files history, files annotation and archive tree,
+@item commit changes visually cherry picking modified files,
+@item apply or save patch series from selected commits, drag and drop commits,
+@item associate commands sequences, scripts and anything else executable to a
+ custom action,
+@item push/pop commits,
+@item apply/save/create patches
+@item and cherry pick single modified files.
+@end itemize")
+    (license license:gpl3+)))
 
 (define-public git-filter-repo
   (package
