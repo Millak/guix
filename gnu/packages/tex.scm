@@ -18204,6 +18204,26 @@ Native American languages.")
      "This package provides LaTeX support for the @code{wnri} fonts.")
     (license license:gpl2)))
 
+(define-public texlive-xcite
+  (package
+    (name "texlive-xcite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xcite/" "source/latex/xcite/"
+                   "tex/latex/xcite/")
+             (base32
+              "1r6f4wk7d3na9a8v20kqp24m46rsqgqx0n8k5hv3ynhqhzizhpll")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcite")
+    (synopsis "Use citation keys from a different document")
+    (description
+     "The package @code{xcite} is no longer necessary, because its
+functionality has been taken over by @code{xr}, so this final version is just
+a stub that loads @code{xr}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xecjk
   (package
     (name "texlive-xecjk")
