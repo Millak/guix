@@ -1319,6 +1319,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gpm-glibc-2.26.patch			\
   %D%/packages/patches/gpodder-disable-updater.patch		\
   %D%/packages/patches/gpsbabel-fix-i686-test.patch		\
+  %D%/packages/patches/grantlee-fix-i586-precision.patch	\
   %D%/packages/patches/grep-timing-sensitive-test.patch		\
   %D%/packages/patches/grfcodec-gcc-compat.patch		\
   %D%/packages/patches/gromacs-tinyxml2.patch			\
@@ -1471,7 +1472,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/kobodeluxe-graphics-window-signed-char.patch	\
   %D%/packages/patches/kodi-set-libcurl-ssl-parameters.patch		\
   %D%/packages/patches/kodi-mesa-eglchromium.patch		\
-  %D%/packages/patches/kwayland-skip-flaky-test.patch		\
   %D%/packages/patches/laby-make-install.patch			\
   %D%/packages/patches/laby-use-tmpdir-from-runtime.patch	\
   %D%/packages/patches/ldns-drill-examples.patch		\

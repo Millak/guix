@@ -28,6 +28,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -127,6 +128,31 @@
   #:use-module (srfi srfi-1))
 
 (define %qt-version "5.15.8")
+
+(define-public qcoro-qt5
+  (package
+    (name "qcoro-qt5")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danvratil/qcoro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pk5ybk6zv7m0wnkl6m3m8sjybmfk6wcn22mmgj942hrc3yrdzci"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DUSE_QT_VERSION=5")))
+    (native-inputs (list dbus))         ;for tests
+    (inputs (list qtbase-5 qtdeclarative-5 qtwebsockets-5))
+    (home-page "https://qcoro.dvratil.cz/")
+    (synopsis "C++ Coroutine Library for Qt5")
+    (description "QCoro is a C++ library that provide set of tools to make use
+of C++20 coroutines in connection with certain asynchronous Qt actions.")
+    (license license:expat)))
 
 (define-public qite
   (let ((commit "75fb3b6bbd5c6a5a8fc35e08a6efbfb588ed546a")
@@ -285,7 +311,7 @@ applications on Wayland.")
 (define-public grantlee
   (package
     (name "grantlee")
-    (version "5.2.0")
+    (version "5.3.1")
     (source
       (origin
         (method git-fetch)
@@ -294,7 +320,8 @@ applications on Wayland.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "02dyqxjyxiqxrlz5g7v9ly8f095vs3iha39l75q6s8axs36y01lq"))))
+         (base32 "1ipnkdi8wgv519mvwa5zxlz20wipbypyfixjv2qdfd9vl1pznwvs"))
+        (patches (search-patches "grantlee-fix-i586-precision.patch"))))
     (native-inputs
      ;; Optional: lcov and cccc, both are for code coverage
      (list doxygen))
@@ -302,12 +329,11 @@ applications on Wayland.")
      (list qtbase-5 qtdeclarative-5 qtscript))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'check-setup
+                          (lambda _
+                            ;; make Qt render "offscreen", required for tests
+                            (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://github.com/steveire/grantlee")
     (synopsis "Libraries for text templating with Qt")
     (description "Grantlee Templates can be used for theming and generation of
@@ -2369,6 +2395,50 @@ reason.  The most common use case where text-to-speech comes in handy is when
 the end-user is driving and cannot attend the incoming messages on the phone.
 In such a scenario, the messaging application can read out the incoming
 message.")))
+
+(define-public qtvirtualkeyboard-5
+  (package
+    (inherit qtsvg-5)
+    (name "qtvirtualkeyboard")
+    (version %qt-version)
+    (source (origin
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1skdjh9q4m438wwl8hwx3jc5hg22dmi5pwm3vd2yksxw6ny67rd7"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
+       ((#:tests? _ #f) #f) ; TODO: pass 2 fail test
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'check 'set-display
+             (lambda _
+               ;; Make Qt render "offscreen", required for tests.
+               (setenv "QT_QPA_PLATFORM" "offscreen")
+               (setenv "DISPLAY" ":1")
+               (system "Xvfb +extension GLX :1 &")))
+           (delete 'check)               ;move after the install phase
+           (add-after 'install 'check
+             (assoc-ref %standard-phases 'check))
+           (add-before 'check 'prepare-for-tests
+             (lambda* (#:key outputs #:allow-other-keys)
+               (setenv "QML2_IMPORT_PATH"
+                       (string-append (assoc-ref outputs "out")
+                                      "/lib/qt5/qml:"
+                                      (getenv "QML2_IMPORT_PATH")))
+               (setenv "QT_PLUGIN_PATH"
+                       (string-append (assoc-ref outputs "out")
+                                      "/lib/qt6/plugins:"
+                                      (getenv "QT_PLUGIN_PATH")))))))))
+    (native-inputs (list perl xorg-server-for-tests))
+    (inputs (list qtbase-5 qtdeclarative-5))
+    (propagated-inputs
+     (list qtquickcontrols-5 qtsvg-5))
+    (synopsis "QtQuick virtual keyboard")
+    (description "The Qt Speech module provides a virtual keyboard framework
+that consists of a C++ backend supporting custom input methods as well as a UI
+frontend implemented in QML.")))
 
 (define-public qtspell
   (package

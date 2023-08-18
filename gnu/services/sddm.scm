@@ -171,7 +171,16 @@ Relogin="              (if (sddm-configuration-relogin? config)
          (documentation "SDDM display manager.")
          (requirement '(user-processes elogind pam))
          (provision '(xorg-server display-manager))
-         (start #~(make-forkexec-constructor #$sddm-command))
+         (start #~(make-forkexec-constructor
+                   #$sddm-command
+                   ;; some theme need icon,qml,data so add path to env.
+                   #:environment-variables
+                   (cons*
+                    "XDG_DATA_DIRS=/run/current-system/profile/share"
+                    "XDG_CONFIG_DIRS=/run/current-system/profile/etc/xdg"
+                    "QT_PLUGIN_PATH=/run/current-system/profile/lib/qt5/plugins"
+                    "QML2_IMPORT_PATH=/run/current-system/profile/lib/qt5/qml"
+                    (default-environment-variables))))
          (stop #~(make-kill-destructor)))))
 
 (define (sddm-etc-service config)
