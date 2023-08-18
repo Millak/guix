@@ -27793,10 +27793,12 @@ files are easily readable and they work nicely with version control systems.")
                  (install-file "octicons.ttf" fonts)
                  (install-file "weathericons.ttf" fonts)))))
          (replace 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (apply invoke "ert-runner" "-l"
-                    (append (find-files "data" "\\.el")
-                            '("all-the-icons-faces.el"))))))))
+           (lambda* (#:key tests? outputs #:allow-other-keys)
+             (if tests?
+                 (apply invoke "ert-runner" "-l"
+                        (append (find-files "data" "\\.el")
+                                '("all-the-icons-faces.el")))
+                 (format #t "test suite not run~%")))))))
     (native-inputs
      (list emacs-f emacs-ert-runner))
     (propagated-inputs
