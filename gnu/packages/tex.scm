@@ -12593,6 +12593,26 @@ bibliographical database (@file{.ltb}) to a BibTeX bibliographical database
 @code{amsrefs}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ltxdockit
+  (package
+    (name "texlive-ltxdockit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltxdockit/"
+                   "tex/latex/ltxdockit/")
+             (base32
+              "0n1c8g8kaaazg7kahfkckh86s29bi1p3sw9h8v7hl5zgg6mb3415")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltxdockit")
+    (synopsis "Documentation support")
+    (description
+     "This bundle, consisting of a simple wrapper class and some packages,
+forms a small LaTeX and BibTeX documentation kit; the author uses it for some
+of his own packages.")
+    (license license:lppl)))
+
 (define-public texlive-luabibentry
   (package
     (name "texlive-luabibentry")
