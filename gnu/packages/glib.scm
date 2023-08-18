@@ -1290,6 +1290,46 @@ Some codes examples can be find at:
     (home-page "https://dbus-cxx.github.io/")
     (license license:gpl3)))
 
+(define-public sdbus-c++
+  ;; Use the latest commit, which includes unreleased fixes to the pkg-config
+  ;; file.
+  (package
+    (name "sdbus-c++")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Kistler-Group/sdbus-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03maivi3nj4g5wcydk9ih703ivmqkc93yip47wlyjni6dhikzzsb"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Avoid the integration test, which requires a system bus.
+      #:test-target "sdbus-c++-unit-tests"
+      #:configure-flags #~(list "-DBUILD_CODE_GEN=ON"
+                                "-DBUILD_TESTS=ON"
+                                ;; Do not install tests.
+                                "-DTESTS_INSTALL_PATH=/tmp"
+                                "-DCMAKE_VERBOSE_MAKEFILE=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'do-not-install-tests
+                     (lambda _
+                       (substitute* "tests/CMakeLists.txt"
+                         (("/etc/dbus-1/system.d") "/tmp")))))))
+    (native-inputs (list googletest pkg-config))
+    (inputs (list expat))
+    (propagated-inputs (list elogind)) ;required by sdbus-c++.pc
+    (home-page "https://github.com/Kistler-Group/sdbus-cpp")
+    (synopsis "High-level C++ D-Bus library")
+    (description "@code{sdbus-c++} is a high-level C++ D-Bus library designed
+to provide easy-to-use yet powerful API in modern C++.  It adds another layer
+of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
+    (license license:lgpl2.1+)))
+
 (define-public appstream-glib
   (package
     (name "appstream-glib")
