@@ -5781,6 +5781,26 @@ parameter value for style, another for a property).  User input to
 documents sharing the same notation.")
     (license license:lppl1.3c)))
 
+(define-public texlive-cell
+  (package
+    (name "texlive-cell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/cell/" "doc/latex/cell/"
+                   "tex/latex/cell/")
+             (base32
+              "0x2dw80z0kzisbwnx2xrmsk0biqbanmydzygg9zdymhcx7w5rz52")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cell")
+    (synopsis "Bibliography style for Cell")
+    (description
+     "This is an APA-like style (cf.@: @file{apalike.bst} in the BibTeX
+distribution), developed from the same author's JMB style.  A supporting LaTeX
+package is also provided.")
+    (license license:public-domain)))
+
 (define-public texlive-chemarrow
   (package
     (name "texlive-chemarrow")
