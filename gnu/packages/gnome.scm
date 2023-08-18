@@ -2806,7 +2806,7 @@ and how they are displayed (View).")
            python))
     (inputs
      (list bash-minimal
-           librsvg
+           (librsvg-for-system)
            gsettings-desktop-schemas
            gtk+
            pango
