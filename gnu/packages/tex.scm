@@ -17924,6 +17924,29 @@ specifies a database to use, and @code{\\usebibdata}, which typesets a single
 field from a specified entry in that database.")
     (license license:lppl1.3+)))
 
+(define-public texlive-vak
+  (package
+    (name "texlive-vak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/vak/" "doc/bibtex/vak/")
+             (base32
+              "1v8bg5yvihskx04m1jjmhlykj2azqb0qv4b2a56vqirrwhldks75")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vak")
+    (synopsis "BibTeX style for Russian theses, books, etc")
+    (description
+     "The file can be used to format the bibliographies of PhD theses,
+books etc., according to the latest Russian standards: GOST 7.82 -- 2001 and
+GOST 7.1 -- 2003.  It introduces the minimum number of new entries and styles
+to cover all frequently used situations.  The style file provides an easy way
+to perform a semiautomatic, or a completely manual sort of the list of the
+references.  Processing bibliographies produced by the style requires a 8-bit
+BibTeX system.")
+    (license license:lppl)))
+
 (define-public texlive-velthuis
   (package
     (name "texlive-velthuis")
