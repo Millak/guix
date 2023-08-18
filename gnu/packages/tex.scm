@@ -14080,6 +14080,29 @@ implements the @code{\\Next}, @code{\\NNext}, @code{\\Last}, and
 commands from the @code{expex} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-notes2bib
+  (package
+    (name "texlive-notes2bib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/notes2bib/"
+                   "source/latex/notes2bib/"
+                   "tex/latex/notes2bib/")
+             (base32
+              "0d51xy7hlwdl752yl1sfr7f6r77j41nkpj1mf1l7pycn5nlnii79")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/notes2bib")
+    (synopsis "Integrating notes into the bibliography")
+    (description
+     "The package defines a new type of note, @code{bibnote}, which will
+always be added to the bibliography.  The package allows footnotes and
+endnotes to be moved into the bibliography in the same way.  The package can
+be used with @code{natbib} and BibLaTeX as well as plain LaTeX citations.
+Both sorted and unsorted bibliography styles are supported.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-nuc
   (package
     (name "texlive-nuc")
