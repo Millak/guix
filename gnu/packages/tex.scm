@@ -12564,6 +12564,25 @@ bibliographical database (@file{.ltb}) to a BibTeX bibliographical database
 @code{amsrefs}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luabibentry
+  (package
+    (name "texlive-luabibentry")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luabibentry/"
+                   "source/lualatex/luabibentry/"
+                   "tex/lualatex/luabibentry/")
+             (base32
+              "00f6sxkzmfznjbisicacxd546v8zizm1fz36s05iiyra04cawnw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luabibentry")
+    (synopsis "Repeat BibTeX entries in a LuaLaTeX document body")
+    (description
+     "The package reimplements @code{bibentry}, for use in LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lyluatex
   (package
     (name "texlive-lyluatex")
