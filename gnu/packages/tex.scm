@@ -13869,6 +13869,23 @@ The package provides Type1 subfonts converted from Nanum Myeongjo (Regular and
 TS1 font definition files are also provided.")
     (license license:silofl1.1)))
 
+(define-public texlive-nar
+  (package
+    (name "texlive-nar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/nar/")
+             (base32
+              "1nwk71qirapkg3h6jwlv53fm6zwb2vq0fvmc4xcanf19sm3331mk")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nar")
+    (synopsis "BibTeX style for @emph{Nucleic Acid Research}")
+    (description
+     "This BibTeX bibliography style is for the journal @emph{Nucleic Acid Research}.
+It was adapted from the standard @file{unsrt.bst} style file.")
+    (license license:knuth)))
+
 (define-public texlive-natded
   (package
     (name "texlive-natded")
