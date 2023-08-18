@@ -13428,6 +13428,35 @@ bibliography for multiple, but different parts of the document.  Multibib is
 compatible with @code{inlinebib}, @code{natbib}, and @code{koma-script}.")
     (license license:lppl)))
 
+(define-public texlive-multibibliography
+  (package
+    (name "texlive-multibibliography")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/multibibliography/"
+                   "doc/latex/multibibliography/"
+                   "scripts/multibibliography/"
+                   "source/latex/multibibliography/"
+                   "tex/latex/multibibliography/")
+             (base32
+              "10281fv7xfqmdc08pyk9l9280crklsfqwf5cwd5ysbhdz1r0grcm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "multibibliography.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/multibibliography")
+    (synopsis
+     "Multiple versions of a bibliography, with different sort orders")
+    (description
+     "Conventional standards for bibliography styles impose a forced choice
+between index and name/year citations, and corresponding references.  The
+package avoids this choice, by providing alphabetic, sequenced, and even
+chronological orderings of references.  Inline citations, that integrate these
+heterogeneous styles, are also supported (and work with other bibliography
+packages).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-multiobjective
   (package
     (name "texlive-multiobjective")
