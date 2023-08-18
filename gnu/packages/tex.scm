@@ -9894,6 +9894,28 @@ packages, and a selection of others that are useful in High Energy Physics
 papers, etc.")
     (license license:lppl)))
 
+(define-public texlive-hep-bibliography
+  (package
+    (name "texlive-hep-bibliography")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-bibliography/"
+                   "source/latex/hep-bibliography/"
+                   "tex/latex/hep-bibliography/")
+             (base32
+              "02jf5c920bq42g0z1gnapg1lv20ih2issim5yzf98rvjwh8c0ji9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-bibliography")
+    (synopsis "Acronym extension for glossaries")
+    (description
+     "The @code{hep-bibliography} package extends the BibLaTeX package with
+some functionality mostly useful for high energy physics.  In particular it
+makes full use of all BibTeX fields provided by Discover High-Energy
+Physics.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hep-reference
   (package
     (name "texlive-hep-reference")
