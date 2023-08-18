@@ -8658,6 +8658,23 @@ the chapters.  Each chapter can consist of three sections: the lesson, the
 exercises and the activities.")
     (license license:lppl)))
 
+(define-public texlive-fbs
+  (package
+    (name "texlive-fbs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/fbs/")
+             (base32
+              "18h6n8azrnk2qabv30kpa8gmj2ljkvx0nqs8qb9r8dxxnhng78ch")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fbs")
+    (synopsis "BibTeX style for @emph{Frontiers in Bioscience}")
+    (description
+     "This package provides a BibTeX style file made with @code{custom}-bib to
+fit @emph{Frontiers in Bioscience} requirements.")
+    (license license:lppl)))
+
 (define-public texlive-fduthesis
   (package
     (name "texlive-fduthesis")
