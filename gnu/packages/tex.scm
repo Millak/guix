@@ -18485,6 +18485,26 @@ pgfkeys-enabled options are provided both at package load and configurably.")
 practicing sheets (copybooks).  Currently, only XeTeX is supported.")
     (license license:lppl1.3c)))
 
+(define-public texlive-zootaxa-bst
+  (package
+    (name "texlive-zootaxa-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/zootaxa-bst/"
+                   "doc/bibtex/zootaxa-bst/")
+             (base32
+              "178daki12ky2hxjsdgz6nnc84741hdj0mn30lglp2sazqwjxrbw0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zootaxa-bst")
+    (synopsis "BibTeX style for the journal @emph{Zootaxa}")
+    (description
+     "This package provides a @file{.bst} reference style file for the journal
+@emph{Zootaxa} that publishes contributions in zoology and classification.
+This is a fork of @file{apa.bst}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-zx-calculus
   (package
     (name "texlive-zx-calculus")
