@@ -8719,6 +8719,38 @@ music manuscripts.  The fonts are usable with Computer Modern Roman and Sans,
 and Palatino/Palladio, respectively.")
     (license license:lppl)))
 
+(define-public texlive-figbib
+  (package
+    (name "texlive-figbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/figbib/" "doc/latex/figbib/"
+                   "tex/latex/figbib/")
+             (base32
+              "1wvglj3z86xjz1bi5931hxm9b2kn6r4j7391di26wmsyhdajs2yz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/figbib")
+    (synopsis "Organize figure databases with BibTeX")
+    (description
+     "FigBib lets you organize your figures in BibTeX databases.  Some FigBib
+features are:
+@itemize
+
+@item store and manage figures in a BibTeX database;
+
+@item Include figures in your LaTeX document with one short command;
+
+@item generate a list of figures containing more or other information than the
+figure captions;
+
+@item control with one switch where to output the figures, either as usual
+float objects or in a separate part at the end of your document.
+
+@end itemize")
+    (license license:lppl)))
+
 (define-public texlive-filecontentsdef
   (package
     (name "texlive-filecontentsdef")
