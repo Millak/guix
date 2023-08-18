@@ -6821,6 +6821,23 @@ domain and range, and function operation) and various reference commands.")
 easy to design, parse and tweak.")
     (license license:expat)))
 
+(define-public texlive-compactbib
+  (package
+    (name "texlive-compactbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/compactbib/")
+             (base32
+              "077l73vb0rcxy1n51r3wmcb7gma6nn3xrl543a67n96lpp5xvnnk")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/compactbib")
+    (synopsis "Multiple thebibliography environments")
+    (description
+     "This package allows a second bibliography, optionally with a different
+title, after the main bibliography.")
+    (license license:lppl)))
+
 (define-public texlive-compare
   (package
     (name "texlive-compare")
