@@ -16652,6 +16652,27 @@ can be adjusted with respect to relative position and format, and can be used
 in text and math mode.")
     (license license:cc-by4.0)))
 
+(define-public texlive-splitbib
+  (package
+    (name "texlive-splitbib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/splitbib/"
+                   "source/latex/splitbib/"
+                   "tex/latex/splitbib/")
+             (base32
+              "18jhdrj9zfnqr4wyazxsqng6a88fwgkw2ka03qskjps8s9pc2fw7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/splitbib")
+    (synopsis "Split and reorder your bibliography")
+    (description
+     "This package enables you to split a bibliography into several categories
+and subcategories.  It does not depend on BibTeX: any bibliography may be
+split and reordered.")
+    (license license:lppl)))
+
 (define-public texlive-stage
   (package
     (name "texlive-stage")
