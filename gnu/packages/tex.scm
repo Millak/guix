@@ -7522,6 +7522,26 @@ may be controlled.  The package also provides @code{\\slashbox} and
 package, which it supersedes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-din1505
+  (package
+    (name "texlive-din1505")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/din1505/" "doc/latex/din1505/")
+             (base32
+              "0ggi58kra06k8r4drkhnlap9khvscpji78j8v92s3gzh8qmsjhp4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/din1505")
+    (synopsis "Bibliography styles for German texts")
+    (description
+     "This package provides a set of bibliography styles that conform to DIN
+1505, and match the original BibTeX standard set (@code{plain}, @code{unsrt},
+@code{alpha} and @code{abbrv}), together with a style @code{natdin} to work with
+@code{natbib}.")
+    (license license:knuth)))
+
 (define-public texlive-diffcoeff
   (package
     (name "texlive-diffcoeff")
