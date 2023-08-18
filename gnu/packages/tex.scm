@@ -6473,6 +6473,25 @@ processor.")
 a BibLaTeX (@file{.bbl}) file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-citeref
+  (package
+    (name "texlive-citeref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/citeref/" "tex/latex/citeref/")
+             (base32
+              "0k76msdfsf968cv3m1z8lcf6mlmy90gaaphrgkr7cs67pgyvq6jq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/citeref")
+    (synopsis "Add reference-page-list to bibliography-items")
+    (description
+     "The package adds reference-page-list to bibliography-items.  It does its
+job without using the indexing facilities, and needs no special
+@code{\\cite}-replacement package.")
+    (license license:bsd-4)))
+
 (define-public texlive-cjhebrew
   (package
     (name "texlive-cjhebrew")
