@@ -10826,6 +10826,28 @@ package is a close relative of @code{apalike.sty} in the BibTeX distribution;
 it features author-date references.")
     (license license:knuth)))
 
+(define-public texlive-jneurosci
+  (package
+    (name "texlive-jneurosci")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/jneurosci/"
+                   "doc/latex/jneurosci/"
+                   "tex/latex/jneurosci/")
+             (base32
+              "1y010df0hxqsjb1q571z4s3vnz2q03l2n4lycg6z89b2yyvdplsv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jneurosci")
+    (synopsis "BibTeX style for the @emph{Journal of Neuroscience}")
+    (description
+     "This is a slightly modified version of the @code{namedplus} style, which
+fully conforms with the @emph{Journal of Neuroscience} citation style.  It
+should be characterised as an author-date citation style; a BibTeX style and
+a LaTeX package are provided.")
+    (license license:lppl)))
+
 (define-public texlive-jupynotex
   (package
     (name "texlive-jupynotex")
