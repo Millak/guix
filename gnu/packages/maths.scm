@@ -8457,15 +8457,15 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "5.5.0")
+    (version "5.5.2")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "https://oos.eu-west-2.outscale.com/scilab-releases/"
+        (string-append "https://www.scilab.org/download/"
                        version "/scilab-" version "-src.tar.gz"))
        (sha256
-        (base32 "1hx57aji5d78brwqcf8a34i1hasm3h4nw46xjg7cgxj09s8yz5kq"))))
+        (base32 "0phg9pn24yw98hbh475ik84dnikf1225b2knh7qbhdbdx6fm2d57"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config gfortran))
     (inputs (list libxml2
