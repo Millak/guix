@@ -17658,6 +17658,27 @@ The package @code{lingmacros.sty} defines a few macros for linguists:
 @code{tabular}-based non-connected tree macros, and gloss macros.")
     (license license:lppl1.0+)))
 
+(define-public texlive-turabian-formatting
+  (package
+    (name "texlive-turabian-formatting")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/turabian-formatting/"
+                   "tex/latex/turabian-formatting/")
+             (base32
+              "1h42lrgq59900bhzgw114w1sxi432rbnpb2j5amwz64bsckvd2ry")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/turabian-formatting")
+    (synopsis "Formatting based on @emph{Turabian's Manual}")
+    (description
+     "The @code{turabian-formatting} package provides Chicago-style formatting
+based on Kate L. Turabian's @emph{A Manual for Writers of Research Papers,
+Theses, and Dissertations: Chicago Style for Students and Researchers} (9th
+edition).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-turnstile
   (package
     (name "texlive-turnstile")
