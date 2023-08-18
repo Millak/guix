@@ -1427,19 +1427,13 @@ files contain direct mappings of the abstractions provided by the ØMQ C API.")
                 "0w7wvf4yi8qv659dg9d3ndqvh3bqhgm21gd135spwhq6hhnfv106"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)) ; no tests
-       #:make-flags
-       (let* ((target ,(%current-target-system))
-              (gcc (if target
-                       (string-append target "-gcc")
-                       "gcc")))
-         (list
-          (string-append "CC=" gcc)
-          (string-append "INSTALLPREFIX=" (assoc-ref %outputs "out"))
-          (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (delete 'check)) ; no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "INSTALLPREFIX=" #$output)
+                   (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))))
     (home-page "http://miniupnp.free.fr/libnatpmp.html")
     (synopsis "C library implementing NAT-PMP")
     (description
