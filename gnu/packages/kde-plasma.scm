@@ -2500,7 +2500,7 @@ sensors, process information and other system resources.")
                      (substitute* "startkde/plasma-session/startup.cpp"
                        (("CMAKE_INSTALL_FULL_LIBEXECDIR_KF5..")
                         (string-append "\"" kinit
-                                       "/lib/libexec/kf5")))
+                                       "/libexec/kf5")))
                      (substitute* (list
                                    "startkde/startplasma-wayland.cpp"
                                    "startkde/startplasma-x11.cpp")
