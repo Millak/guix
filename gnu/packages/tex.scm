@@ -15083,6 +15083,24 @@ chords; a Lua script to transpose chord macros to the required key signature;
 and support scripts for common requirements.")
     (license license:gpl2)))
 
+(define-public texlive-pnas2009
+  (package
+    (name "texlive-pnas2009")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/pnas2009/")
+             (base32
+              "0yl475rlfhlnd9d0pyzm1gj2gixrdzyn6858j1ndvkhr8vc055ns")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pnas2009")
+    (synopsis "BibTeX style for PNAS (newer version)")
+    (description
+     "This style produces bibliographies in the format of @emph{Proceedings of
+the National Academy of Sciences, USA}.  The style was derived from the
+standard @file{unsrt.bst} and adapted to the new (2009) formatting rules.")
+    (license license:knuth)))
+
 (define-public texlive-poemscol
   (package
     (name "texlive-poemscol")
