@@ -6236,6 +6236,24 @@ given by Mumbai University.")
                    (license:fsf-free "file://doc/latex/aalok/README.txt")
                    license:fdl1.3+))))
 
+(define-public texlive-chicago
+  (package
+    (name "texlive-chicago")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/chicago/" "tex/latex/chicago/")
+             (base32
+              "0mwrphf2g7v5yc0qij76dkzalgm3fhcm8zs7akgaypyk98cvxw8k")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chicago")
+    (synopsis "Chicago bibliography style")
+    (description
+     "Chicago is a BibTeX style that follows the @samp{B} reference style of
+the 13th Edition of the Chicago manual of style; a LaTeX package is also
+provided.  The style was derived from the @code{newapa} style.")
+    (license license:knuth)))
+
 (define-public texlive-chinesechess
   (package
     (name "texlive-chinesechess")
