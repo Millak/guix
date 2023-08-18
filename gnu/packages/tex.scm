@@ -6455,6 +6455,24 @@ and bibliography according to the selected CSL style.  A LaTeX package
 processor.")
     (license (list license:expat license:cc-by-sa3.0))))
 
+(define-public texlive-citeall
+  (package
+    (name "texlive-citeall")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/citeall/" "tex/latex/citeall/")
+             (base32
+              "0sap2kns1b51zj0dmy70q77rw7dnhdjqab0rmyvpp2hgq5yk3mhq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/citeall")
+    (synopsis "Cite all entries of a @file{.bbl} created with BibLaTeX")
+    (description
+     "This small package allows to cite all entries of
+a BibLaTeX (@file{.bbl}) file.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cjhebrew
   (package
     (name "texlive-cjhebrew")
