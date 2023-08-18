@@ -1428,7 +1428,7 @@ basic input/output.")
        ;; it does not contain "extra" directory with completions, icon, etc.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/jwilm/alacritty")
+             (url "https://github.com/alacritty/alacritty")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -1565,7 +1565,7 @@ basic input/output.")
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (home-page "https://github.com/alacritty/alacritty")
+    (home-page "https://alacritty.org/")
     (synopsis "GPU-accelerated terminal emulator")
     (description
      "Alacritty is a GPU-accelerated terminal emulator with a strong focus on
