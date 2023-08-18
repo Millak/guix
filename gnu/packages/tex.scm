@@ -7673,6 +7673,32 @@ styles, that conform to the requirements of the Russian standard GOST
 R 7.0.11-2011, are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dk-bib
+  (package
+    (name "texlive-dk-bib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/dk-bib/"
+                   "bibtex/bst/dk-bib/"
+                   "bibtex/csf/dk-bib/"
+                   "doc/latex/dk-bib/"
+                   "source/latex/dk-bib/"
+                   "tex/latex/dk-bib/")
+             (base32
+              "1bwmaja41mivsrcx3j9p0yplqccw62fd9wn6v1yx138kg0ayib1n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dk-bib")
+    (synopsis "Danish variants of standard BibTeX styles")
+    (description
+     "Dk-bib is a translation of the four standard BibTeX style files (@code{abbrv},
+@code{alpha}, @code{plain} and @code{unsrt}) and the @code{apalike} style file
+into Danish.  The files have been extended with URL, ISBN, ISSN, annote and
+printing fields which can be enabled through a LaTeX style file.  Dk-bib also
+comes with a couple of Danish sorting order files for BibTeX8.")
+    (license (list license:knuth license:gpl2+))))
+
 (define-public texlive-dnp
   (package
     (name "texlive-dnp")
