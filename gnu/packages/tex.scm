@@ -10308,6 +10308,27 @@ monospaced Arabic font.  The package only works with LuaLaTeX or XeLaTeX.")
 when using for open intervals.")
     (license license:lppl1.3+)))
 
+(define-public texlive-icite
+  (package
+    (name "texlive-icite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/icite/" "source/latex/icite/"
+                   "tex/latex/icite/")
+             (base32
+              "0a3gqnjbyn33ld3j66pfrrsv502zdrsag0glhar82fbba21qlj9w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/icite")
+    (synopsis "Indices locorum citatorum")
+    (description
+     "The package is designed to produce from BibTeX or BibLaTeX
+bibliographical databases the different indices of authors and works cited
+which are called indices locorum citatorum.  It relies on a specific
+@code{\\icite} command and can operate with either BibTeX or BibLaTeX.")
+    (license (list license:gpl3+ license:cc-by-sa4.0))))
+
 (define-public texlive-impatient
   (package
     (name "texlive-impatient")
