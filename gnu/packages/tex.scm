@@ -5243,6 +5243,30 @@ those long IUPAC compound names, and some chemical idioms.  It also supports
 the labelling of compounds and reference to labelled compounds.")
     (license license:lppl)))
 
+(define-public texlive-breakcites
+  (package
+    (name "texlive-breakcites")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/breakcites/"
+                   "tex/latex/breakcites/")
+             (base32
+              "12jiw135xi12k0f46zmza4jw141gq919c6q0ijv8xlic0wra4gyy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/breakcites")
+    (synopsis "Ensure that multiple citations may break at line end")
+    (description
+     "This packages makes a very minor change to the operation of the
+@code{\\cite} command so that multiple citations may break at line end.  Note
+that the change is not necessary in unmodified LaTeX; however, there remain
+packages that restore the undesirable behaviour of the command as provided in
+LaTeX 2.09.  Neither @code{cite} nor @code{natbib} make this mistake.")
+    ;; The file below states: "You may freely use, modify, and/or
+    ;; distribute this package without limitation."
+    (license (license:fsf-free "file://doc/latex/breakcites/README"))))
+
 (define-public texlive-bropd
   (package
     (name "texlive-bropd")
