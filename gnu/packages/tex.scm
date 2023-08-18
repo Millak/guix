@@ -6744,6 +6744,26 @@ quickly verifies the consistency of the fiscal code string, and can therefore
 be useful for lawyers and accountants that use fiscal codes very frequently.")
     (license license:lppl1.3+)))
 
+(define-public texlive-collref
+  (package
+    (name "texlive-collref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/collref/" "source/latex/collref/"
+                   "tex/latex/collref/")
+             (base32
+              "0gvla01fypbdqvjg0zziy4cl2s6z441pvn3s8b45dvz4hy1hkfji")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/collref")
+    (synopsis "Collect blocks of references into a single reference")
+    (description
+     "The package automatically collects multiple @code{\\bibitem} references,
+which always appear in the same sequence in @code{\\cite}, into a single
+@code{\\bibitem} block.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-colorsep
   (package
     (name "texlive-colorsep")
