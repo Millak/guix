@@ -4583,7 +4583,7 @@ tools for styling them, including a built-in real-time video preview.")
            python-pygobject))
     ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
     ;; otherwise pitivi fails to launch.
-    (propagated-inputs (list librsvg))
+    (propagated-inputs (list (librsvg-for-system)))
     (arguments
      `(#:glib-or-gtk? #t
        #:phases
