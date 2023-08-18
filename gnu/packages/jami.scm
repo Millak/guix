@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +38,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -54,6 +55,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
@@ -68,32 +70,33 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20230323.0")
+;;; We use nightlies as stable versions are a bit far in-between, and often
+;;; have bugs anyway.  When the nightly version change, do not forget to
+;;; retrieve the associated daemon submodule commit and update it in
+;;; %jami-daemon-commit variable below.
 
-(define %jami-sources
-  ;; Return an origin object of the tarball release sources archive of the
-  ;; Jami project.
-  (origin
-    (method url-fetch)
-    (uri (string-append "https://dl.jami.net/release/tarballs/jami-"
-                        %jami-version ".tar.gz"))
-    (modules '((guix build utils)))
-    (snippet
-     ;; Delete multiple MiBs of bundled tarballs.  The daemon/contrib
-     ;; directory contains the custom patches for pjproject and other
-     ;; libraries used by Jami.
-     '(delete-file-recursively "daemon/contrib/tarballs"))
-    (sha256
-     (base32
-      "0vjsjr37cb87j9hqbmipyxn4877k1wn3l0vzca3l3ldgknglz7v2"))
-    (patches (search-patches "jami-disable-integration-tests.patch"
-                             "jami-libjami-headers-search.patch"))))
+;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
+;;; to date with those listed in
+;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
+(define %jami-nightly-version "20231222.2")
+(define %jami-daemon-commit "317b7317dcda4afb733ddb9bd5b450d4635941ae")
 
 (define-public libjami
   (package
     (name "libjami")
-    (version %jami-version)
-    (source %jami-sources)
+    (version %jami-nightly-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://review.jami.net/jami-daemon")
+                    (commit %jami-daemon-commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16qx50xz2mkw894irjsvql82iw7wpc5xncxpvw1nqd2sxhgfiq0i"))
+              (patches (search-patches
+                        "libjami-ac-config-files.patch"
+                        "jami-disable-integration-tests.patch"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
@@ -103,13 +106,25 @@
       ;; user scripts too, until more general purpose Scheme bindings are made
       ;; available (see: test/agent/README.md).
       #:configure-flags #~(list "--enable-agent" "--enable-debug")
-      #:make-flags #~(list "V=1")       ;build verbosely
+      #:make-flags
+      #~(list
+         "V=1"                 ;build verbosely
+         ;; The 'ut_media_player' is known to fail (see:
+         ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/935).
+         "XFAIL_TESTS=ut_media_player")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'change-directory/maybe
             (lambda _
               ;; Allow building from the tarball or a git checkout.
               (false-if-exception (chdir "daemon"))))
+          (add-after 'change-directory/maybe 'extend-scheduler-test-timeout
+            (lambda _
+              ;; The ut_scheduler unit test may fail on slower machines (see:
+              ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/939).
+              (substitute* "test/unitTest/scheduler.cpp"
+                (("std::chrono::seconds\\(3)")
+                 "std::chrono::seconds(30)"))))
           (add-after 'install 'delete-static-libraries
             ;; Remove 100+ MiB of static libraries.  "--disable-static" cannot
             ;; be used as the test suite requires access to private symbols
@@ -134,14 +149,14 @@
     (inputs
      (list alsa-lib
            asio
-           dbus-c++
+           dhtnet
            eudev
            ffmpeg-jami
            guile-3.0
            jack-1
            jsoncpp
            libarchive
-           libgit2
+           libgit2-1.6
            libnatpmp
            libsecp256k1
            libupnp
@@ -149,6 +164,7 @@
            openssl
            pjproject-jami
            pulseaudio
+           sdbus-c++
            speex
            speexdsp
            webrtc-audio-processing
@@ -214,15 +230,29 @@ QSortFilterProxyModel conveniently exposed for QML.")
 (define-public jami
   (package
     (name "jami")
-    (version %jami-version)
-    (source %jami-sources)
+    (version %jami-nightly-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://review.jami.net/jami-client-qt")
+                    (commit (string-append "nightly/" %jami-nightly-version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ypbbyqmq6x9zq4sr550k38v8pg7yq685bmwqmigqzhqgfazcg97"))
+              (patches (search-patches
+                        "jami-libjami-headers-search.patch"
+                        "jami-qml-tests-discovery.patch"
+                        "jami-skip-tests-requiring-internet.patch"
+                        "jami-unbundle-dependencies.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
      (list
       #:qtbase qtbase
       #:configure-flags
-      #~(list "-DENABLE_TESTS=ON"
+      #~(list "-DWITH_DAEMON_SUBMODULE=OFF"
+              "-DENABLE_TESTS=ON"
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.
               "-DWITH_WEBENGINE=OFF"
@@ -231,11 +261,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
               "-DENABLE_LIBWRAP=ON")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory/maybe
-            (lambda _
-              ;; Allow building from the tarball or a git checkout.
-              (false-if-exception (chdir "client-qt"))))
-          (add-after 'change-directory/maybe 'fix-version-string
+          (add-after 'unpack 'fix-version-string
             (lambda _
               (substitute* "src/app/version.h"
                 (("VERSION_STRING")
@@ -244,6 +270,17 @@ QSortFilterProxyModel conveniently exposed for QML.")
                  (string-append "const char VERSION_STRING[] = \""
                                 #$version "\";\n"
                                 anchor)))))
+          (add-after 'unpack 'copy-3rdparty-source-dependencies
+            (lambda _
+              (copy-recursively #$(package-source sortfilterproxymodel)
+                                "3rdparty/SortFilterProxyModel")))
+          (add-before 'configure 'fake-x11-environment
+            (lambda _
+              ;; This works around the lack of configuration for the X11
+              ;; push-to-talk feature, which is auto-detected via the
+              ;; XDG_SESSION_TYPE environment variable (see:
+              ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1504).
+              (setenv "XDG_SESSION_TYPE" "x11")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -252,22 +289,13 @@ QSortFilterProxyModel conveniently exposed for QML.")
                 ;; The tests require a writable HOME.
                 (setenv "HOME" "/tmp")
 
-                (display "Running unittests...\n")
-                (invoke "tests/unittests" "-mutejamid")
+                (display "Running unit tests...\n")
+                (invoke "tests/unit_tests")
 
-                ;; XXX: There are currently multiple failures with the
-                ;; functional tests (see:
-                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/883),
-                ;; so the code below is disabled for now.
-                ;;
+                ;; XXX: The QML test suite fails, exiting with status code 1 (see:
+                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/883).
                 ;; (display "Running functional tests...\n")
-                ;; ;; This is to allow building from the source tarball or
-                ;; ;; directly from the git repository.
-                ;; (let  ((tests-qml (if (file-exists? "../client-qt/tests")
-                ;;                       "../client-qt/tests/qml"
-                ;;                       "../tests/qml")))
-                ;;   (invoke "tests/qml_tests" "-mutejamid"
-                ;;           "-input" tests-qml))
+                ;; (invoke "tests/qml_tests")
                 ))))))
     (native-inputs
      (list googletest
@@ -282,6 +310,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
            libnotify
            libxcb
            libxkbcommon
+           md4c
            network-manager
            qrencode
            qt5compat
@@ -290,6 +319,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
            qtnetworkauth
            qtpositioning
            qtsvg
+           tidy-html                    ;used by src/app/htmlparser.h
            vulkan-loader))
     (home-page "https://jami.net")
     (synopsis "Qt Jami client")

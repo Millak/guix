@@ -1,0 +1,51 @@
+Forwarded upstream: https://lists.gnu.org/archive/html/jami/2024-01/msg00010.html
+
+From 1d3b044c85c32341cca392254fe8bbf34a4639e1 Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Tue, 9 Jan 2024 11:14:04 -0500
+Subject: [PATCH] tests: Skip tests that need Internet when there's none.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+* tests/unittests/messageparser_unittest.cpp (ALinkIsParsedCorrectly)
+(YoutubeLinkIsParsedCorrectly): Skip when there is no Internet.
+
+Series-to: jami@gnu.org
+Series-cc: Sébastien Blin <sebastien.blin@savoirfairelinux.com>
+Fixes: <https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1507>
+Change-Id: I0a5b57cd82f93fd7edf3fbeb73fb3db5a04c628c
+---
+ tests/unittests/messageparser_unittest.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/tests/unittests/messageparser_unittest.cpp b/tests/unittests/messageparser_unittest.cpp
+index c10b0d0b..df7a0692 100644
+--- a/tests/unittests/messageparser_unittest.cpp
++++ b/tests/unittests/messageparser_unittest.cpp
+@@ -69,6 +69,9 @@ TEST_F(MessageParserFixture, TextIsParsedCorrectly)
+  */
+ TEST_F(MessageParserFixture, ALinkIsParsedCorrectly)
+ {
++    if (!globalEnv.connectivityMonitor->isOnline())
++        GTEST_SKIP() << "ALinkIsParsedCorrectly requires Internet connectivity";
++
+     auto linkColor = QColor::fromRgb(0, 0, 255);
+     auto backgroundColor = QColor::fromRgb(0, 0, 255);
+ 
+@@ -174,6 +177,9 @@ TEST_F(MessageParserFixture, FencedCodeIsParsedCorrectly)
+  */
+ TEST_F(MessageParserFixture, YoutubeLinkIsParsedCorrectly)
+ {
++    if (!globalEnv.connectivityMonitor->isOnline())
++        GTEST_SKIP() << "YoutubeLinkIsParsedCorrectly requires Internet connectivity";
++
+     auto url = "https://www.youtube.com/watch?v=1234567890";
+     auto msg = "blah blah " + QString(url) + " blah blah";
+ 
+
+base-commit: a4300308dc8d03d59f620bb5fed753df5cf31ed9
+prerequisite-patch-id: 90a419e7de1f4fa5bb68bc58ad0da2817ed268e0
+-- 
+2.41.0
+
