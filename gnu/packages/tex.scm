@@ -5847,6 +5847,30 @@ in the font are designed to look more like those in chemistry text-books than
 do Knuth's originals.")
     (license license:public-domain)))
 
+(define-public texlive-chembst
+  (package
+    (name "texlive-chembst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/chembst/" "doc/latex/chembst/"
+                   "source/latex/chembst/")
+             (base32
+              "026j8lv3kbxmbq6sc1n8rdrr47njgn5mn9im1mmppzk5bi7w6yzz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chembst")
+    (synopsis "Collection of BibTeX files for chemistry journals")
+    (description
+     "The package offers a collection of advanced BibTeX style files suitable
+for publications in chemistry journals.  Currently, style files for journals
+published by the American Chemical Society, Wiley-VCH and The Royal Society of
+Chemistry are available.  The style files support advanced features such as
+automatic formatting of errata or creating an appropriate entry for
+publications in @emph{Angewandte Chemie} where both English and German should
+be cited simultaneously.")
+    (license license:lppl)))
+
 (define-public texlive-chemcompounds
   (package
     (name "texlive-chemcompounds")
