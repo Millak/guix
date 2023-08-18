@@ -10696,6 +10696,26 @@ digit form.  This package provides support for spelling out numbers in Italian
 words, both in cardinal and in ordinal form.")
     (license license:lppl)))
 
+(define-public texlive-jbact
+  (package
+    (name "texlive-jbact")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/jbact/")
+             (base32
+              "0z0x6jrxaayp3w441r1zwlqirvv23g0b8h9xgy6r3ppi71glzqvp")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jbact")
+    (synopsis "BibTeX style for biology journals")
+    (description
+     "The style is a development of @file{apalike.bst} in the BibTeX bundle.
+The style serves two journals --- if the user executes
+@samp{\\nocite@{TitlesOn@}}, the style serves for the @emph{Journal of
+Theoretical Biology}; otherwise it serves for the @emph{Journal of Molecular
+Biology}.")
+    (license license:knuth)))
+
 (define-public texlive-jeuxcartes
   (package
     (name "texlive-jeuxcartes")
