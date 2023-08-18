@@ -9777,6 +9777,37 @@ for Chinese character learning plans, presentations, exercise booklets and
 other documentation work.")
     (license license:lppl1.3c)))
 
+(define-public texlive-harvard
+  (package
+    (name "texlive-harvard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/harvard/" "bibtex/bst/harvard/"
+                   "doc/latex/harvard/" "source/latex/harvard/"
+                   "tex/latex/harvard/")
+             (base32
+              "1qcw1rrvcgcz26pwcmsfd7gs4bzlq1n4zws92xqsr5fi95pr8q7k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/harvard")
+    (synopsis "Harvard citation package for use with LaTeX")
+    (description
+     "This is a re-implementation, for LaTeX, of the original Harvard package.
+The bundle contains the LaTeX package, several BibTeX styles, and a Perl
+package for use with LaTeX2HTML.
+
+Harvard is an author-year citation style (all but the first author are
+suppressed in second and subsequent citations of the same entry); the package
+defines several variant styles: @file{apsr.bst} for the @emph{American
+Political Science Review}; @file{agsm.bst} for Australian government
+publications; @file{dcu.bst} from the Design Computing Unit of the University
+of Sydney; @file{kluwer.bst}, which aims at the format preferred in Kluwer
+publications; @file{nederlands.bst} which deals with sorting Dutch names with
+prefixes (such as van) according to Dutch rules, together with several styles
+whose authors offer no description of their behaviour.")
+    (license license:lppl)))
+
 (define-public texlive-havannah
   (package
     (name "texlive-havannah")
