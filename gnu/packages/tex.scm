@@ -10913,6 +10913,37 @@ helps you to handle abbreviations and creates a list of those (pre-defined)
 abbreviations that have actually been used in the document.")
     (license license:gpl3+)))
 
+(define-public texlive-jurabib
+  (package
+    (name "texlive-jurabib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/jurabib/" "bibtex/bst/jurabib/"
+                   "doc/latex/jurabib/" "source/latex/jurabib/"
+                   "tex/latex/jurabib/")
+             (base32
+              "1z8n654n0f97qayql0111smpydwmdf6i22bg55i6nh5al2jcsbbb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jurabib")
+    (synopsis
+     "Extended BibTeX citation support for the humanities and legal texts")
+    (description
+     "This package enables automated citation with BibTeX for legal studies
+and the humanities.  In addition, the package provides commands for specifying
+editors in a commentary in a convenient way.  Simplified formatting of the
+citation as well as the bibliography entry is also provided.  It is possible
+to display the (short) title of a work only if an authors is cited with
+multiple works.  Giving a full citation in the text, conforming to the
+bibliography entry, is supported.  Several options are provided which might be
+of special interest for those outside legal studies--for instance, displaying
+multiple full citations.  In addition, the format of last names and first
+names of authors may be changed easily.  Cross references to other footnotes
+are possible.  Language dependent handling of bibliography entries is possible
+by the special language field.")
+    (license license:gpl3+)))
+
 (define-public texlive-juramisc
   (package
     (name "texlive-juramisc")
