@@ -6254,6 +6254,25 @@ the 13th Edition of the Chicago manual of style; a LaTeX package is also
 provided.  The style was derived from the @code{newapa} style.")
     (license license:knuth)))
 
+(define-public texlive-chicago-annote
+  (package
+    (name "texlive-chicago-annote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/chicago-annote/"
+                   "doc/bibtex/chicago-annote/")
+             (base32
+              "16hqz4xf7mbnrnx8420ynykxr1l3slfvjq8d8s0mrw42v88965ni")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chicago-annote")
+    (synopsis "Chicago-based annotated BibTeX style")
+    (description
+     "This is a revision of chicagoa.bst, using the commonly-used annote field
+in place of the original's annotation.")
+    (license license:lppl)))
+
 (define-public texlive-chinesechess
   (package
     (name "texlive-chinesechess")
