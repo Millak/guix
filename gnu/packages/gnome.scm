@@ -2801,6 +2801,7 @@ and how they are displayed (View).")
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
+           itstool
            pkg-config
            python))
     (inputs
