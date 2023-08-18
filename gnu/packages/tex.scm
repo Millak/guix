@@ -6415,6 +6415,46 @@ Technology that follows given recommendations.")
 to typeset Church Slavonic texts.")
     (license license:expat)))
 
+(define-public texlive-citation-style-language
+  (package
+    (name "texlive-citation-style-language")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/citation-style-language/"
+                   "doc/man/man1/citeproc-lua.1"
+                   "doc/man/man1/citeproc-lua.man1.pdf"
+                   "scripts/citation-style-language/"
+                   "tex/latex/citation-style-language/")
+             (base32
+              "13342c9kq5zy9a6kag81xfa38dydmimhcnb11jx7d8il6g0pd46w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "citeproc-lua.lua")))
+    (propagated-inputs
+     (list texlive-filehook
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-lua-uca
+           texlive-lualibs
+           texlive-luatex
+           texlive-luaxml
+           texlive-url))
+    (home-page "https://ctan.org/pkg/citation-style-language")
+    (synopsis "Bibliography formatting with Citation Style Language")
+    (description
+     "The Citation Style Language (CSL) is an XML-based language that defines
+the formats of citations and bibliography.  There are currently thousands of
+styles in CSL including the most widely used APA, Chicago, Vancouver, etc.
+The citation-style-language package is aimed to provide another reference
+formatting method for LaTeX that utilizes the CSL styles.  It contains
+a citation processor implemented in pure Lua (@code{citeproc-lua}) which reads
+bibliographic metadata and performs sorting and formatting on both citations
+and bibliography according to the selected CSL style.  A LaTeX package
+(@file{citation-style-language.sty}) is provided to communicate with the
+processor.")
+    (license (list license:expat license:cc-by-sa3.0))))
+
 (define-public texlive-cjhebrew
   (package
     (name "texlive-cjhebrew")
