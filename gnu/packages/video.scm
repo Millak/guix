@@ -2158,7 +2158,7 @@ streaming protocols.")
     (inputs
      (list alsa-lib
            cdparanoia
-           ffmpeg-4
+           ffmpeg-5
            fontconfig
            freetype
            giflib
