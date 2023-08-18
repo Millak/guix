@@ -10807,6 +10807,25 @@ macros for mathematical notation which make the code more readable or allow
 flexibility in typesetting material.")
     (license license:lppl)))
 
+(define-public texlive-jmb
+  (package
+    (name "texlive-jmb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/jmb/" "tex/latex/jmb/")
+             (base32
+              "1a5nz825jppq3pl1263w2sbm0a48kmmndppfpp7vi69n5j2248dy")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jmb")
+    (synopsis "BibTeX style for the @emph{Journal of Theoretical Biology}")
+    (description
+     "This BibTeX bibliography style is for the @emph{Journal of Molecular
+Biology} and @emph{Journal of Theoretical Biology}; the accompanying LaTeX
+package is a close relative of @code{apalike.sty} in the BibTeX distribution;
+it features author-date references.")
+    (license license:knuth)))
+
 (define-public texlive-jupynotex
   (package
     (name "texlive-jupynotex")
