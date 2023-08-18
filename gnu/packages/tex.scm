@@ -4866,6 +4866,34 @@ avoiding the potentially large (macro) impact associated with
            license:gpl1
            license:public-domain))))
 
+(define-public texlive-bibtopic
+  (package
+    (name "texlive-bibtopic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibtopic/"
+                   "source/latex/bibtopic/"
+                   "tex/latex/bibtopic/")
+             (base32
+              "1b4lhlw29y37c7pxmqvy4ahgb85bmxrgnr2jhzvdhzdm5y9md7a3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/bibtopic")
+    (synopsis "Include multiple bibliographies in a document")
+    (description
+     "The package allows the user to include several bibliographies covering
+different topics or bibliographic material into a document (e.g., one
+bibliography for primary literature and one for secondary literature).  The
+package provides commands to include either all references from a @file{.bib}
+file, only the references actually cited or those not cited in your document.
+The user has to construct a separate @file{.bib} file for each bibliographic
+topic, each of which will be processed separately by BibTeX.  If you want to
+have bibliographies specific to one part of a document, see the packages
+@code{bibunits} or @code{chapterbib}.")
+    (license license:gpl3+)))
+
 (define-public texlive-binomexp
   (package
     (name "texlive-binomexp")
