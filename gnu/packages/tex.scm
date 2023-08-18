@@ -5120,6 +5120,26 @@ convert atomic numbers to element symbols or element names and vice versa.")
 characters.")
     (license license:gpl3+)))
 
+(define-public texlive-bookdb
+  (package
+    (name "texlive-bookdb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/bookdb/" "doc/bibtex/bookdb/")
+             (base32
+              "0df6bzmc90af3v4nzv6hp9padpc7h680vm2hy8wzb268z3ld268h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bookdb")
+    (synopsis "BibTeX style file for cataloguing a home library")
+    (description
+     "This package provides an extended book entry for use in cataloguing
+a home library.  The extensions include fields for binding, category,
+collator, condition, copy, illustrations, introduction, location, pages, size,
+value, volumes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-booktabs-de
   (package
     (name "texlive-booktabs-de")
