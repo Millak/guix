@@ -4983,6 +4983,25 @@ settings for the way species names are typeset, but they can be customized.
 Different default styles are used in different situations.")
     (license license:gpl3+)))
 
+(define-public texlive-biolett-bst
+  (package
+    (name "texlive-biolett-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/biolett-bst/"
+                   "doc/bibtex/biolett-bst/")
+             (base32
+              "1xfr79xw0ih61s5qapx2adiyjj0d149nslpmkd1fw29g1v4zrjd2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biolett-bst")
+    (synopsis "BibTeX style for the journal @emph{Biology Letters}")
+    (description
+     "This package provides a BibTeX style (@file{.bst}) file for the journal
+@emph{Biology Letters} published by the Royal Society.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-bitelist
   (package
     (name "texlive-bitelist")
