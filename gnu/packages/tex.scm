@@ -16227,6 +16227,24 @@ around the payoffs, (b) payoff columns of equal width, and (c) payoffs
 vertically centered within the boxes.")
     (license license:lppl)))
 
+(define-public texlive-showtags
+  (package
+    (name "texlive-showtags")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/showtags/" "tex/latex/showtags/")
+             (base32
+              "0690p94mmlwhg06wzisa73w4445yg3ljy98haqf65acrcb09rl6j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/showtags")
+    (synopsis "Print the tags of bibliography entries")
+    (description
+     "This package prints the tag right-aligned on each line of the
+bibliography.")
+    (license license:public-domain)))
+
 (define-public texlive-shuffle
   (package
     (name "texlive-shuffle")
