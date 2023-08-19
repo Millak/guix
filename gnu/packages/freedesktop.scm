@@ -534,8 +534,10 @@ display servers.  It supports many different languages and emoji.")
     (arguments
      (list
       #:configure-flags
-      #~(list #$(format #f "-Dxdgmime-path=~a/bin"
-                        (this-package-native-input "xdgmime"))
+      #~(list (string-append
+               "-Dxdgmime-path="
+               (dirname
+                (search-input-file %build-inputs "/bin/test-mime")))
               "-Dupdate-mimedb=true")
       #:phases
       #~(modify-phases %standard-phases
