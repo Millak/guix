@@ -10,6 +10,11 @@ Content-Transfer-Encoding: 8bit
 - A test that was temporarily broken passes again.
 - The default for ‘org-adapt-indentation’ has changed.
 - buffer-list may be called with arguments when native-comp is enabled.
+
+2023-08-19 Liliana Marie Prikler <liliana.prikler@gmail.com>
+
+	* delete-numberless-inner-snippet-issue-562: Correct value in
+        looking-at.
 ---
  yasnippet-tests.el | 45 ++++++++++++++++++++++++++++-----------------
  1 file changed, 28 insertions(+), 17 deletions(-)
@@ -26,6 +31,15 @@ index f7ca2bb..7618ab7 100644
  
  ;; Author: João Távora <joaot@siscog.pt>
  ;; Keywords: emulations, convenience
+@@ -289,7 +289,7 @@ attention to case differences."
+     (should (looking-at "testblable"))
+     (ert-simulate-command '(yas-next-field-or-maybe-expand))
+     (ert-simulate-command '(yas-skip-and-clear-field))
+-    (should (looking-at "ble"))
++    (should (looking-at "blable"))
+     (should (null (yas-active-snippets)))))
+ 
+ (ert-deftest delete-nested-simple-field-issue-824 ()
 @@ -556,16 +556,19 @@ XXXXX   ------------------------"))))
      (yas-mock-insert "foo bar")
      (ert-simulate-command '(yas-next-field))

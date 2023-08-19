@@ -17117,7 +17117,8 @@ the Emacs TempEl package.")
        (sha256
         (base32 "0via9dzw8m5lzymg1h78xkwjssh39zr3g6ccyamlf1rjzjsyxknv"))
        (patches
-        (search-patches "emacs-yasnippet-fix-tests.patch"))))
+        (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"
+                        "emacs-yasnippet-fix-tests.patch"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t

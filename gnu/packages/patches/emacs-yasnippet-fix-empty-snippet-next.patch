@@ -1,0 +1,59 @@
+From 925292484162bc35c4258e72c36462bb13a5c69a Mon Sep 17 00:00:00 2001
+From: Liliana Marie Prikler <liliana.prikler@gmail.com>
+Date: Sat, 19 Aug 2023 08:38:17 +0200
+Subject: [PATCH] Guard against empty snippet in yas-next-field.
+
+---
+ yasnippet.el | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/yasnippet.el b/yasnippet.el
+index e0b5537..41d86dd 100644
+--- a/yasnippet.el
++++ b/yasnippet.el
+@@ -136,6 +136,7 @@
+ (declare-function cl-progv-after "cl-extra") ; Needed for 23.4.
+ (require 'easymenu)
+ (require 'help-mode)
++(require 'subr-x)
+ 
+ (defvar yas--editing-template)
+ (defvar yas--guessed-modes)
+@@ -3386,20 +3387,20 @@ Otherwise delegate to `yas-next-field'."
+ If there's none, exit the snippet."
+   (interactive)
+   (unless arg (setq arg 1))
+-  (let* ((active-field (overlay-get yas--active-field-overlay 'yas--field))
+-         (snippet (car (yas-active-snippets (yas--field-start active-field)
+-                                            (yas--field-end active-field))))
+-         (target-field (yas--find-next-field arg snippet active-field)))
+-    (yas--letenv (yas--snippet-expand-env snippet)
+-      ;; Apply transform to active field.
+-      (when active-field
+-        (let ((yas-moving-away-p t))
+-          (when (yas--field-update-display active-field)
+-            (yas--update-mirrors snippet))))
+-      ;; Now actually move...
+-      (if target-field
+-          (yas--move-to-field snippet target-field)
+-        (yas-exit-snippet snippet)))))
++  (and-let* ((active-field (overlay-get yas--active-field-overlay 'yas--field))
++             (snippet (car (yas-active-snippets (yas--field-start active-field)
++                                                (yas--field-end active-field)))))
++    (let ((target-field (yas--find-next-field arg snippet active-field)))
++      (yas--letenv (yas--snippet-expand-env snippet)
++        ;; Apply transform to active field.
++        (when active-field
++          (let ((yas-moving-away-p t))
++            (when (yas--field-update-display active-field)
++              (yas--update-mirrors snippet))))
++        ;; Now actually move...
++        (if target-field
++            (yas--move-to-field snippet target-field)
++          (yas-exit-snippet snippet))))))
+ 
+ (defun yas--place-overlays (snippet field)
+   "Correctly place overlays for SNIPPET's FIELD."
+-- 
+2.41.0
+
