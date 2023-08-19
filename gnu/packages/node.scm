@@ -669,7 +669,7 @@ parser definition into a C output.")
 (define-public llhttp-bootstrap
   (package
     (name "llhttp")
-    (version "6.0.10")
+    (version "6.0.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -678,7 +678,7 @@ parser definition into a C output.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0izwqa77y007xdi0bj3ccw821n19rz89mz4hx4lg99fwkwylr6x8"))
+                "16gaylka6nx9bsff9xga3s8xihxm3k7svrb88lr4dj2s4pzlfga9"))
               (modules '((guix build utils)))
               (snippet
                '(begin
