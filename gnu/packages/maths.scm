@@ -82,7 +82,6 @@
   #:use-module (ice-9 match)
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -266,14 +265,14 @@ interactive dialogs to guide them.")
 (define-public calc
   (package
     (name "calc")
-    (version "2.14.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
-                    version ".tar.bz2"))
-              (sha256
-               (base32
-                "0kg7cqhq70dlj7k8mrl0dbps1yvflfhri7c1gvm9nh4g2adlkxkf"))))
+    (version "2.14.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "1swalx3cxjcx4aprnchb2jf0wig89ggvxjzzzx488r115w58lxnr"))))
     (build-system gnu-build-system)
     (inputs (list readline))
     (native-inputs (list util-linux)) ; for col
@@ -2601,82 +2600,81 @@ fixed point (16.16) format.")
       (license license:expat))))
 
 (define-public libflame
-  (package
-    (name "libflame")
-    (version "5.2.0")
-    (outputs '("out" "static"))
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/flame/libflame")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1n6lf0wvpp77lxqlr721h2jbfbzigphdp19wq8ajiccilcksh7ay"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       ;; Sensible defaults: https://github.com/flame/libflame/issues/28
-       (list "--enable-dynamic-build"
-             "--enable-max-arg-list-hack"
-             "--enable-lapack2flame"
-             "--enable-verbose-make-output"
-             "--enable-multithreading=pthreads" ; Openblas isn't built with openmp.
-             ,@(if (any (cute string-prefix? <> (or (%current-target-system)
-                                                    (%current-system)))
-                        '("x86_64" "i686"))
-                 '("--enable-vector-intrinsics=sse")
-                 '())
-             "--enable-supermatrix"
-             "--enable-memory-alignment=16"
-             "--enable-ldim-alignment")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-/usr/bin/env-bash
-           (lambda _
-             (substitute* "build/config.mk.in"
-               (("/usr/bin/env bash") (which "bash")))
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (substitute* "test/Makefile"
-               (("LIBBLAS .*") "LIBBLAS = -lblas\n")
-               (("LIBLAPACK .*") "LIBLAPACK = -llapack\n"))
-             (if tests?
-               (with-directory-excursion "test"
-                 (mkdir "obj")
-                 (invoke "make")
-                 (invoke "./test_libflame.x"))
-               #t)))
-         (add-after 'install 'install-static
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (static (assoc-ref outputs "static")))
-               (mkdir-p (string-append static "/lib"))
-               (rename-file (string-append out "/lib/libflame.a")
-                            (string-append static "/lib/libflame.a"))
-               (install-file (string-append out "/include/FLAME.h")
-                             (string-append static "/include"))
-               #t))))))
-    (inputs
-     (list gfortran))
-    (native-inputs
-     `(("lapack" ,lapack)
-       ("openblas" ,openblas)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)))
-    (home-page "https://github.com/flame/libflame")
-    (synopsis "High-performance object-based library for DLA computations")
-    (description "@code{libflame} is a portable library for dense matrix
+  ;; The latest release (5.2.0) dates back to 2019.  Use a newer one, which
+  ;; among other things provides extra LAPACK symbols, such as 'dgemlq_'
+  ;; (needed by LAPACKe).
+  (let ((commit "70c19e770ead0ae846c59b59216deb16d236b40c")
+        (revision "0"))
+    (package
+      (name "libflame")
+      (version (git-version "5.2.0" revision commit))
+      (outputs '("out" "static"))
+      (home-page "https://github.com/flame/libflame")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rk8ln5p4yybsws6p60w0vkxbqp53jddv90brlgf60mk6lv51sxl"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags
+             ;; Sensible defaults: https://github.com/flame/libflame/issues/28
+             #~(list "--enable-dynamic-build"
+                     "--enable-max-arg-list-hack"
+                     "--enable-lapack2flame"
+                     "--enable-verbose-make-output"
+                     "--enable-multithreading=pthreads" ; Openblas isn't built with openmp.
+                     #$@(if (target-x86?)
+                            #~("--enable-vector-intrinsics=sse")
+                            #~())
+                     "--enable-supermatrix"
+                     "--enable-memory-alignment=16"
+                     "--enable-ldim-alignment")
+             #:make-flags #~(list "FC=gfortran -fPIC")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-/usr/bin/env-bash
+                   (lambda _
+                     (substitute* "build/config.mk.in"
+                       (("/usr/bin/env bash")
+                        (which "bash")))))
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (substitute* "test/Makefile"
+                       (("LIBBLAS .*")
+                        "LIBBLAS = -lblas\n")
+                       (("LIBLAPACK .*")
+                        "LIBLAPACK = -llapack\n"))
+                     (when tests?
+                       (with-directory-excursion "test"
+                         (mkdir "obj")
+                         (invoke "make")
+                         (invoke "./test_libflame.x")))))
+                 (add-after 'install 'install-static
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (static (assoc-ref outputs "static")))
+                       (mkdir-p (string-append static "/lib"))
+                       (rename-file (string-append out
+                                                   "/lib/libflame.a")
+                                    (string-append static
+                                                   "/lib/libflame.a"))
+                       (install-file (string-append out
+                                                    "/include/FLAME.h")
+                                     (string-append static "/include"))))))))
+      (inputs (list gfortran))
+      (native-inputs (list lapack perl python-wrapper))
+      (synopsis "High-performance library for @acronym{DLA, dense linear algebra} computations")
+      (description "@code{libflame} is a portable library for dense matrix
 computations, providing much of the functionality present in LAPACK, developed
 by current and former members of the @acronym{SHPC, Science of High-Performance
 Computing} group in the @url{https://www.ices.utexas.edu/, Institute for
 Computational Engineering and Sciences} at The University of Texas at Austin.
 @code{libflame} includes a compatibility layer, @code{lapack2flame}, which
 includes a complete LAPACK implementation.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public scasp
   (let ((commit "89a427aa04ec6346425a40111c99b310901ffe51")
@@ -4725,6 +4723,7 @@ library.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags #~'("--enable-cblas")
       #:modules
       '((guix build gnu-build-system)
         (guix build utils)
@@ -6560,17 +6559,15 @@ reduction.")
 (define-public mcrl2
   (package
     (name "mcrl2")
-    (version "202206.0")
+    (version "202206.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://www.mcrl2.org/download/release/mcrl2-"
                     version ".tar.gz"))
-              (patches (search-patches "mcrl2-fix-1687.patch"
-                                       "mcrl2-fix-counterexample.patch"))
               (sha256
                (base32
-                "0alpck09pbvwk4axqmrvcjmsabsn20yayq5b3apq284n0hcbf01q"))))
+                "1rbfyw47bi31qla1sa4fd1npryb5kbdr0vijmdc2gg1zhpqfv0ia"))))
     (inputs
      (list boost glu mesa qtbase-5))
     (build-system cmake-build-system)
@@ -7823,7 +7820,7 @@ diagrams.")
 (define-public libpoly
   (package
    (name "libpoly")
-   (version "0.1.11")
+   (version "0.1.12")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -7832,7 +7829,7 @@ diagrams.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0qylmg30rklvg00a0h1b3pb52cj9ki98yd27cylihjhq2klh3dmy"))))
+              "1cgdj7mxjyq4r2n852nxqacml90jm9irbvv27an0fmg7q4v1p2kb"))))
    (build-system cmake-build-system)
    (arguments
     (list #:configure-flags #~(list "-DLIBPOLY_BUILD_PYTHON_API=off")))
@@ -8461,15 +8458,15 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "5.5.0")
+    (version "5.5.2")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "https://oos.eu-west-2.outscale.com/scilab-releases/"
+        (string-append "https://www.scilab.org/download/"
                        version "/scilab-" version "-src.tar.gz"))
        (sha256
-        (base32 "1hx57aji5d78brwqcf8a34i1hasm3h4nw46xjg7cgxj09s8yz5kq"))))
+        (base32 "0phg9pn24yw98hbh475ik84dnikf1225b2knh7qbhdbdx6fm2d57"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config gfortran))
     (inputs (list libxml2
@@ -8553,6 +8550,10 @@ computation is supported via MPI.")
                                   "__threadSignal InterpReady;" "\n"
                                   "__threadSignalLock InterpReadyLock;"
                                   "\n")))
+                ;; Fix CPP compilation errors.
+                (substitute* "modules/output_stream/src/cpp/diary_manager.cpp"
+                  (("if \\(array_size > 0\\)")
+                   "if (*array_size > 0)"))
                 ;; Set SCIHOME to /tmp before macros compilation.
                 (setenv "SCIHOME" "/tmp"))))))
     (home-page "https://scilab.org")

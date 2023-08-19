@@ -19,7 +19,7 @@
 ;;; Copyright © 2019 Nicolò Balzarotti <anothersms@gmail.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Todor Kondić <tk.code@protonmail.com>
 ;;; Copyright © 2020 Danjela Lura <danielaluraa@gmail.com>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
@@ -3432,6 +3432,40 @@ model fitting and error handling.")
      "Functions for modelling that help you seamlessly integrate modelling
 into a pipeline of data manipulation and visualisation.")
     (license license:gpl3)))
+
+(define-public r-morpho
+  (package
+    (name "r-morpho")
+    (version "2.11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "Morpho" version))
+              (sha256
+               (base32
+                "1c69n9284chygd375gkir4nk5bjglamhfyk2lz4z3kzy3z25qw50"))))
+    (properties `((upstream-name . "Morpho")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bezier
+                             r-colorramps
+                             r-doparallel
+                             r-foreach
+                             r-jsonlite
+                             r-mass
+                             r-matrix
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rgl
+                             r-rvcg
+                             r-sf))
+    (home-page "https://github.com/zarquon42b/Morpho")
+    (synopsis
+     "Calculations and visualizations related to geometric morphometrics")
+    (description
+     "This package provides a toolset for Geometric Morphometrics and mesh
+processing.  This includes (among other stuff) mesh deformations based on
+reference points, permutation tests, detection of outliers, processing of
+sliding semi-landmarks and semi-automated surface landmark placement.")
+    (license license:gpl2)))
 
 (define-public r-hgnchelper
   (package
@@ -8630,6 +8664,29 @@ processing is complete data may be written to a VCF file.  It also may be
 converted into other popular R objects.  This package provides a link between
 VCF data and familiar R software.")
    (license license:gpl3)))
+
+(define-public r-rvcg
+  (package
+    (name "r-rvcg")
+    (version "0.22.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "Rvcg" version))
+              (sha256
+               (base32
+                "16rr2kqw7lqb7m01pwn496zf2nr25gm6wcncz44kszjzzmv2xanv"))))
+    (properties `((upstream-name . "Rvcg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppeigen))
+    (home-page "https://github.com/zarquon42b/Rvcg")
+    (synopsis "Manipulations of triangular meshes based on the VCGLIB API")
+    (description
+     "This is a package for operations on triangular meshes based on VCGLIB.
+This package integrates nicely with the R-package rgl to render the meshes
+processed by Rvcg.  The Visualization and Computer Graphics Library (VCG for
+short) is a library for manipulation, processing and displaying with OpenGL of
+triangle and tetrahedral meshes.")
+    (license license:gpl2+)))
 
 (define-public r-ica
   (package
@@ -14594,6 +14651,35 @@ hemoglobin to reticulocytes (OFF-score), as well as example data.")
 based on entropy estimates from k-nearest neighbors distances and algorithms
 for the reconstruction of gene regulatory networks.")
     (license license:agpl3+)))
+
+(define-public r-partr2
+  (package
+    (name "r-partr2")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "partR2" version))
+              (sha256
+               (base32
+                "06ky0hhrq0mcsn9rwrzvwn0rrjj0l8rxs0hqp10668gdq5hjk8bn"))))
+    (properties `((upstream-name . "partR2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-ggplot2
+                             r-lme4
+                             r-magrittr
+                             r-pbapply
+                             r-purrr
+                             r-rlang
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mastoffel/partR2")
+    (synopsis "Partitioning R2 in generalized linear mixed models")
+    (description
+     "This package provides an R tool for estimating and partitioning R2 in
+@dfn{generalized linear mixed models} (GLMMs) based on predictor variance.")
+    (license license:gpl2+)))
 
 (define-public r-pscl
   (package
@@ -29314,7 +29400,7 @@ automatically show a loader when the output is (re)calculating.")
     (properties `((upstream-name . "rsvg")))
     (build-system r-build-system)
     (inputs
-     (list librsvg zlib))
+     (list (librsvg-for-system) zlib))
     (native-inputs
      (list pkg-config r-knitr))
     (home-page "https://github.com/jeroen/rsvg#readme")

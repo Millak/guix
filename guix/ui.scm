@@ -200,6 +200,20 @@ information, or #f if it could not be found."
   (parameterize (((@ (system base compile) default-optimization-level) 1))
     exp))
 
+(define (try-canonicalize-path file)
+  "Like 'canonicalize-path', but return FILE as-is if 'canonicalize-path'
+throws.
+
+This is necessary for corner cases where 'canonicalize-path' fails.  One
+example is on Linux when a /dev/fd/N file denotes a pipe, represented as a
+symlink to a non-existent file like 'pipe:[1234]', as in this example:
+
+  sh -c 'stat $(readlink -f /dev/fd/1)' | cat"
+  (catch 'system-error
+    (lambda ()
+      (canonicalize-path file))
+    (const file)))
+
 (define* (load* file user-module
                 #:key (on-error 'nothing-special))
   "Load the user provided Scheme source code FILE."
@@ -230,7 +244,7 @@ information, or #f if it could not be found."
                ;; 'primitive-load', so that FILE is compiled, which then allows
                ;; us to provide better error reporting with source line numbers.
                (without-compiler-optimizations
-                (load (canonicalize-path file))))
+                (load (try-canonicalize-path file))))
              (const #f))))))
     (lambda _
       ;; XXX: Errors are reported from the pre-unwind handler below, but

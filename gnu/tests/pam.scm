@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,8 +26,7 @@
   #:use-module (gnu system vm)
   #:use-module (guix gexp)
   #:use-module (ice-9 format)
-  #:export (%test-pam-limits
-            %test-pam-limits-deprecated))
+  #:export (%test-pam-limits))
 
 
 ;;;
@@ -35,26 +35,29 @@
 
 (define pam-limit-entries
   (list
-   (pam-limits-entry "@realtime" 'both 'rtprio 99)
-   (pam-limits-entry "@realtime" 'both 'memlock 'unlimited)))
+   ;; make sure the limits apply to root (uid 0)
+   (pam-limits-entry ":0" 'both 'rtprio 99)               ;default is 0
+   (pam-limits-entry ":0" 'both 'memlock 'unlimited)))    ;default is 8192 kbytes
 
 (define (run-test-pam-limits config)
   "Run tests in a os with pam-limits-service-type configured."
   (define os
     (marionette-operating-system
      (simple-operating-system
-      (service pam-limits-service-type config))))
+      (service pam-limits-service-type config))
+     #:imported-modules '((gnu services herd))))
 
   (define vm
     (virtual-machine os))
 
-  (define name (format #f "pam-limit-service~:[~;-deprecated~]"
-                       (file-like? config)))
+  (define name "pam-limits-service")
 
   (define test
-    (with-imported-modules '((gnu build marionette))
+    (with-imported-modules '((gnu build marionette)
+                             (guix build syscalls))
       #~(begin
           (use-modules (gnu build marionette)
+                       (guix build syscalls)
                        (srfi srfi-64))
 
           (let ((marionette (make-marionette (list #$vm))))
@@ -63,18 +66,32 @@
 
             (test-begin #$name)
 
-            (test-assert "/etc/security/limits.conf ready"
-              (wait-for-file "/etc/security/limits.conf" marionette))
+            (test-equal "log in on tty1 and read limits"
+              '(("99")                  ;real-time priority
+                ("unlimited"))          ;max locked memory
 
-            (test-equal "/etc/security/limits.conf content matches"
-              #$(string-join (map pam-limits-entry->string pam-limit-entries)
-                             "\n" 'suffix)
-              (marionette-eval
-               '(begin
-                  (use-modules (rnrs io ports))
-                  (call-with-input-file "/etc/security/limits.conf"
-                    get-string-all))
-               marionette))
+              (begin
+                ;; Wait for tty1.
+                (marionette-eval '(begin
+                                    (use-modules (gnu services herd))
+                                    (start-service 'term-tty1))
+                                 marionette)
+
+                (marionette-control "sendkey ctrl-alt-f1" marionette)
+
+                ;; Now we can type.
+                (marionette-type "root\n" marionette)
+                (marionette-type "ulimit -r > real-time-priority\n" marionette)
+                (marionette-type "ulimit -l > max-locked-memory\n" marionette)
+
+                ;; Read the two files.
+                (marionette-eval '(use-modules (rnrs io ports)) marionette)
+                (let ((guest-file (lambda (file)
+                                    (string-tokenize
+                                     (wait-for-file file marionette
+                                                    #:read 'get-string-all)))))
+                  (list (guest-file "/root/real-time-priority")
+                        (guest-file "/root/max-locked-memory")))))
 
             (test-end)))))
 
@@ -83,17 +100,6 @@
 (define %test-pam-limits
   (system-test
    (name "pam-limits-service")
-   (description "Test that pam-limits-service can serialize its config
-(as a list) to @file{limits.conf}.")
+   (description "Test that pam-limits-service actually sets the limits as
+configured.")
    (value (run-test-pam-limits pam-limit-entries))))
-
-(define %test-pam-limits-deprecated
-  (system-test
-   (name "pam-limits-service-deprecated")
-   (description "Test that pam-limits-service can serialize its config
-(as a file-like object) to @file{limits.conf}.")
-   (value (run-test-pam-limits
-           (plain-file "limits.conf"
-                       (string-join (map pam-limits-entry->string
-                                         pam-limit-entries)
-                                    "\n" 'suffix))))))

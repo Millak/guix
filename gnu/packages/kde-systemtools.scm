@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,31 +26,35 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages search)
   #:use-module (gnu packages vnc)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages xorg))
 
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "07ian9aai9mjygn6bgxanv8h16i83wf69nkl8c9qynwbz4fkwmwf"))))
+        (base32 "0bys24i2a3a65ahq5p3q1zr2px8jqip1gjn5m7rngq4hcddb1ji8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
@@ -77,6 +82,7 @@
            breeze-icons ;; default icon set
            phonon
            qtbase-5
+           qtx11extras
            solid))
     (arguments
      `(#:tests? #f)) ;; TODO: 4/15 tests fail even with offscreen
@@ -99,14 +105,14 @@ The main features of Dolphin are:
 (define-public dolphin-plugins
   (package
     (name "dolphin-plugins")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-plugins-" version ".tar.xz"))
        (sha256
-        (base32 "1ii1xrz22caxcgrr9ibzkh7nvw1h9d8xb5a2fadni0makk02qjif"))))
+        (base32 "0h1b559icj5g3xrx5697a9rncpdcmsjg774c6m36ild56bwc048v"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -128,14 +134,14 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
 (define-public khelpcenter
   (package
     (name "khelpcenter")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/khelpcenter-" version ".tar.xz"))
        (sha256
-        (base32 "0ga270imh1ssifj0w3434z9hgrmn0dqrschygywy1z2hcpyx991d"))))
+        (base32 "10rivj5c14v5hwk87z41gwk830sy35fz0jg1jpay43jzw0ss995y"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -160,17 +166,17 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
            qtbase-5
            xapian))
     (arguments
-     `(#:tests? #f  ;; 1/1 test fails
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               ;; Since qt-wrap selectors do not wrap for /share/kf5
-               ;; directories, we need this so khelpcenter can find html4.css.
-               (wrap-program (string-append out "/bin/khelpcenter")
-                 `("XDG_DATA_DIRS" suffix
-                   (,(string-append (assoc-ref inputs "khtml") "/share"))))))))))
+     (list #:tests? #f ;;1/1 test fails
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'wrap-executable
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            ;; Since qt-wrap selectors do not wrap for /share/kf5
+                            ;; directories, we need this so khelpcenter can find html4.css.
+                            (wrap-program (string-append #$output
+                                                         "/bin/khelpcenter")
+                              `("XDG_DATA_DIRS" suffix
+                                (,(string-append (assoc-ref inputs "khtml")
+                                                 "/share")))))))))
     (home-page "https://apps.kde.org/khelpcenter/")
     (synopsis "KDE documentation viewer")
     (description "KHelpCenter uses meta data files which describe the
@@ -187,14 +193,14 @@ document meta data file.")
 (define-public konsole
   (package
     (name "konsole")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konsole-" version ".tar.xz"))
        (sha256
-        (base32 "19yrhjjbwq7kaip05ig8raqnh87k5dg57jck2zrsdrhq2f4nb3ql"))))
+        (base32 "1k68y1i3g3bsz1dz81jhkx1q2fb13rbm5ywh632bcyln0c6l0vz0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools zlib))
@@ -224,7 +230,9 @@ document meta data file.")
            kxmlgui
            breeze-icons ;; default icon set
            qtbase-5
-           qtscript))
+           qtscript
+           qtmultimedia-5
+           icu4c))
     (arguments
      `(#:tests? #f)) ;; TODO: 2/15 tests fail even with HOME, offscreen, SHELL, debus
     (home-page "https://www.kde.org/")
@@ -241,14 +249,14 @@ This package is part of the KDE base applications module.")
 (define-public krfb
   (package
     (name "krfb")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krfb-" version ".tar.xz"))
        (sha256
-        (base32 "09h05al7ivf9pzf2p6mnja1124746fawmr3vdk6rggjjw0p0wgn1"))))
+        (base32 "0qbrvf2wa3af1z1dpq3pqkngfbrfdgqfz8xs1qpdpyb7jxnphry7"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
@@ -261,6 +269,7 @@ This package is part of the KDE base applications module.")
            kdnssd
            ki18n
            knotifications
+           kpipewire
            kwallet
            kwayland
            kwidgetsaddons
@@ -295,14 +304,14 @@ This package is part of the KDE networking module.")
 (define-public ksystemlog
   (package
     (name "ksystemlog")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksystemlog-" version ".tar.xz"))
        (sha256
-        (base32 "0x9j3m0kndbaxldsk2rh8zawz0nqqdpn1xf36m4zzymm3b034glv"))))
+        (base32 "15c1h1dlcgbx2adhjzry2zwia0alym7vc251zymyzhl2xjacvqlm"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -331,17 +340,70 @@ who want to quickly see problems occurring on their server.
 This package is part of the KDE administration module.")
     (license license:gpl2+)))
 
+(define-public spectacle
+  (package
+    (name "spectacle")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/spectacle-" version ".tar.xz"))
+       (sha256
+        (base32 "1fyklcvz0zndxabflkka75rham6768rp01as7m5dv0ic4lipkf9m"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E"
+                             "filename_test")))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kconfig
+           kcoreaddons
+           kdbusaddons
+           kglobalaccel
+           kguiaddons
+           ki18n
+           kio
+           kirigami
+           knotifications
+           kpipewire
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           libxcb
+           purpose
+           qtdeclarative-5
+           qtquickcontrols2-5
+           qtwayland-5
+           qtx11extras
+           wayland
+           wayland-protocols
+           plasma-wayland-protocols
+           xcb-util
+           xcb-util-cursor
+           xcb-util-image))
+    (home-page "https://apps.kde.org/spectacle/")
+    (synopsis "Screenshot capture utility for KDE")
+    (description "Spectacle is a screenshot taking utility for the KDE.")
+    (license license:gpl2+)))
+
 (define-public yakuake
   (package
     (name "yakuake")
-    (version "22.04.3")
+    (version "23.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/yakuake-" version ".tar.xz"))
               (sha256
                (base32
-                "0h5c8j65m6gylvwrj4sag4rlx92brbfllyrwpi7kwfjbwf7a5j1k"))))
+                "17ylm5z5lzjq5g4d48s0clpl3hg4rym9sc1p5hr0wfs9jx7197jy"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))

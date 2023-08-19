@@ -384,7 +384,6 @@ services.")
 (define-public libcloudproviders
   (package/inherit libcloudproviders-minimal
     (name "libcloudproviders")
-    (version "0.3.1")
     (outputs (cons "doc" (package-outputs libcloudproviders-minimal)))
     (arguments
      (substitute-keyword-arguments (package-arguments libcloudproviders-minimal)
@@ -567,7 +566,7 @@ in JavaScript.")
            vala))
     (inputs
      (list avahi
-           librsvg
+           (librsvg-for-system)
            libgee
            gst-plugins-base
            gtk+))
@@ -871,7 +870,7 @@ tomorrow, the rest of the week and for special occasions.")
            libjpeg-turbo
            libportal
            libpng
-           librsvg
+           (librsvg-for-system)
            python-pygobject
            rest
            tracker
@@ -2787,11 +2786,12 @@ and how they are displayed (View).")
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
+           itstool
            pkg-config
            python))
     (inputs
      (list bash-minimal
-           librsvg
+           (librsvg-for-system)
            gsettings-desktop-schemas
            gtk+
            pango
@@ -4333,7 +4333,7 @@ engineering.")
            python))
     (inputs
      (list bash-minimal
-           librsvg
+           (librsvg-for-system)
            gsettings-desktop-schemas
            gtk+
            pango
@@ -4514,28 +4514,6 @@ editors, IDEs, etc.")
     (propagated-inputs (modify-inputs (package-propagated-inputs vte)
                          (replace "gtk+" gtk)))))
 
-(define-public vte-ng
-  (package
-    (inherit vte)
-    (name "vte-ng")
-    (version "0.59.0")
-    (home-page "https://github.com/thestinger/vte-ng")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03ffhjc0fq9p25y1b2c0a51jn7y2bc0acxsgymhcb3pyijc8ykjm"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-Ddocs=false")))
-  (synopsis "Enhanced VTE terminal widget")
-  (description
-   "VTE is a library (libvte) implementing a terminal emulator widget for
-GTK+, this fork provides additional functions exposed for keyboard text
-selection and URL hints.")))
-
 ;; Stable version for gtk2, required by gnurobots and lxterminal as of 2020-07.
 (define-public vte/gtk+-2
   (package (inherit vte)
@@ -4663,7 +4641,7 @@ and RDP protocols.")
     (propagated-inputs
      ;; In Requires of dconf.pc.
      (list glib))
-    (home-page "https://developer.gnome.org/dconf/")
+    (home-page "https://wiki.gnome.org/action/show/Projects/dconf")
     (synopsis "Low-level GNOME configuration system")
     (description "Dconf is a low-level configuration system.  Its main purpose
 is to provide a backend to GSettings on platforms that don't already have
@@ -5361,7 +5339,7 @@ once.")
      (list gtk+
            json-glib
            libgee
-           librsvg
+           (librsvg-for-system)
            qqwing))
     (home-page "https://wiki.gnome.org/Apps/Sudoku")
     (synopsis "Japanese logic game")
@@ -6059,7 +6037,7 @@ playlists in a variety of formats.")
        ("pkg-config" ,pkg-config)
        ("xmllint" ,libxml2)))
     (inputs
-     (list gtk+ guile-2.2 libcanberra librsvg))
+     (list gtk+ guile-2.2 libcanberra (librsvg-for-system)))
     (home-page "https://wiki.gnome.org/Apps/Aisleriot")
     (synopsis "Solitaire card games")
     (description
@@ -6646,7 +6624,7 @@ discovery protocols.")
            libxml2
            libsoup
            libpeas
-           librsvg
+           (librsvg-for-system)
            libhandy
            gnome-desktop
            gstreamer
@@ -6708,7 +6686,7 @@ which can read a large number of file formats.")
 (define-public rhythmbox
   (package
     (name "rhythmbox")
-    (version "3.4.6")
+    (version "3.4.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/rhythmbox/"
@@ -6716,7 +6694,7 @@ which can read a large number of file formats.")
                                   "rhythmbox-" version ".tar.xz"))
               (sha256
                (base32
-                "0d5hbsdk2p8w567mfzy4kk8xn4d227hrbyy857li3r2mrq884mpr"))))
+                "0zps1k72n7yycw6djgilgdacwdi993xqh1sh9x9lr9n17z0mcv9g"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -6776,7 +6754,7 @@ which can read a large number of file formats.")
            libpeas
            libsecret
            libmtp
-           libsoup-minimal-2
+           libsoup-minimal
            libxml2
            lirc
            pango
@@ -8671,7 +8649,7 @@ the available networks and allows users to easily switch between them.")
 (define-public libxml++
   (package
     (name "libxml++")
-    (version "5.0.2")
+    (version "5.0.3")
     (source
      (origin
        (method git-fetch)
@@ -8680,7 +8658,7 @@ the available networks and allows users to easily switch between them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13jlhz57yjxapplflm8aarczxv6ll3d336y1446mr5n4ylkcc1xz"))))
+        (base32 "07h11vl0rv8b0w31as5xiirpx17lprkx7fimphy3f5mkwhz8njba"))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list libxml2))                    ;required by .pc file
@@ -9083,7 +9061,7 @@ devices using the GNOME desktop.")
            libgtop
            libnma
            libpwquality
-           librsvg                      ;for loading SVG files
+           (librsvg-for-system)             ;for loading SVG files
            libsecret
            libxml2
            libwacom
@@ -10961,7 +10939,7 @@ Bluefish supports many programming and markup languages.")
            gtk+
            gtkmm-3
            libhandy
-           librsvg
+           (librsvg-for-system)
            libxml2
            libwnck))
     (home-page "https://wiki.gnome.org/Apps/SystemMonitor")
@@ -11746,7 +11724,7 @@ functionality.")
        ("libheif" ,libheif)
        ("libjpeg" ,libjpeg-turbo)
        ("libraw" ,libraw)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libtiff" ,libtiff)
        ("libwebp" ,libwebp)))
     (home-page "https://wiki.gnome.org/Apps/Gthumb")
@@ -12131,7 +12109,7 @@ and a high score table.")
      `(("glib" ,glib)
        ("gtk+" ,gtk+)
        ("gtk+-2" ,gtk+-2)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxml2" ,libxml2)))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-themes-extra")
     (synopsis "GNOME Extra Themes")
@@ -12442,7 +12420,7 @@ to.")
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)))
     (inputs
-     (list gtk+ librsvg libxml2))
+     (list gtk+ (librsvg-for-system) libxml2))
     (arguments
      `(#:configure-flags '("CFLAGS=-fcommon")))
     (home-page "https://glabels.org/")

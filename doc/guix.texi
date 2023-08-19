@@ -116,6 +116,9 @@ Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
 Copyright @copyright{} 2023 Tanguy Le Carrour@*
+Copyright @copyright{} 2023 Zheng Junjie@*
+Copyright @copyright{} 2023 Brian Cully@*
+Copyright @copyright{} 2023 Felix Lechner@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -388,6 +391,7 @@ Services
 * Printing Services::           Local and remote printer support.
 * Desktop Services::            D-Bus and desktop services.
 * Sound Services::              ALSA and Pulseaudio services.
+* File Search Services::        Tools to search for files.
 * Database Services::           SQL databases, key-value stores, etc.
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
@@ -4480,7 +4484,9 @@ database, usually under @file{/var/cache/guix/locate}; if it does not
 exist or is too old, it falls back to the per-user database, by default
 under @file{~/.cache/guix/locate}.  On a multi-user system,
 administrators may want to periodically update the system-wide database
-so that all users can benefit from it.
+so that all users can benefit from it, for instance by setting up
+@code{package-database-service-type} (@pxref{File Search Services,
+@code{package-database-service-type}}).
 
 The general syntax is:
 
@@ -4797,9 +4803,11 @@ Specifically, @command{guix pull} downloads code from the @dfn{channels}
 @item
 the @option{--channels} option;
 @item
-the user's @file{~/.config/guix/channels.scm} file;
+the user's @file{~/.config/guix/channels.scm} file, unless @option{-q}
+is passed;
 @item
-the system-wide @file{/etc/guix/channels.scm} file;
+the system-wide @file{/etc/guix/channels.scm} file, unless @option{-q}
+is passed;
 @item
 the built-in default channels specified in the @code{%default-channels}
 variable.
@@ -4900,6 +4908,11 @@ Read the list of channels from @var{file} instead of
 @var{file} must contain Scheme code that
 evaluates to a list of channel objects.  @xref{Channels}, for more
 information.
+
+@item --no-channel-files
+@itemx -q
+Inhibit loading of the user and system channel files,
+@file{~/.config/guix/channels.scm} and @file{/etc/guix/channels.scm}.
 
 @cindex channel news
 @item --news
@@ -5046,7 +5059,9 @@ guix time-machine --commit=v1.2.0 -- \
   environment -C --ad-hoc guile -- guile
 @end example
 
-The command above fetches Guix@tie{}1.2.0 and runs its @command{guix
+The command above fetches Guix@tie{}1.2.0 (and possibly other channels
+specified by your @file{channels.scm} configuration files---see
+below) and runs its @command{guix
 environment} command to spawn an environment in a container running
 @command{guile} (@command{guix environment} has since been subsumed by
 @command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
@@ -5056,6 +5071,21 @@ invocation can be expensive: it may have to download or even build a
 large number of packages; the result is cached though and subsequent
 commands targeting the same commit are almost instantaneous.
 
+As for @command{guix pull}, in the absence of any options,
+@command{time-machine} fetches the latest commits of the channels
+specified in @file{~/.config/guix/channels.scm},
+@file{/etc/guix/channels.scm}, or the default channels; the @option{-q}
+option lets you ignore these configuration files.  The command:
+
+@example
+guix time-machine -q -- build hello
+@end example
+
+will thus build the package @code{hello} as defined in the main branch
+of Guix, without any additional channel, which is in general a newer
+revision of Guix than you have installed.  Time travel works in both
+directions!
+
 @quotation Note
 The history of Guix is immutable and @command{guix time-machine}
 provides the exact same software as they are in a specific Guix
@@ -5063,6 +5093,23 @@ revision.  Naturally, no security fixes are provided for old versions
 of Guix or its channels.  A careless use of @command{guix time-machine}
 opens the door to security vulnerabilities.  @xref{Invoking guix pull,
 @option{--allow-downgrades}}.
+@end quotation
+
+Due to @command{guix time-machine} relying on the ``inferiors''
+mechanism (@pxref{Inferiors}), the oldest commit it can travel to is
+commit @samp{6298c3ff} (``v1.0.0''), dated May 1@sup{st}, 2019, which is
+the first release that included the inferiors mechanism.  An error is
+returned when attempting to navigate to older commits.
+
+@quotation Note
+Although it should technically be possible to travel to such an old
+commit, the ease to do so will largely depend on the availability of
+binary substitutes.  When traveling to a distant past, some packages may
+not easily build from source anymore.  One such example are old versions
+of Python 2 which had time bombs in its test suite, in the form of
+expiring SSL certificates.  This particular problem can be worked around
+by setting the hardware clock to a value in the past before attempting
+the build.
 @end quotation
 
 The general syntax is:
@@ -5088,18 +5135,21 @@ string or the name of a tag), or @var{branch}.
 Read the list of channels from @var{file}.  @var{file} must contain
 Scheme code that evaluates to a list of channel objects.
 @xref{Channels} for more information.
-@end table
 
-As for @command{guix pull}, the absence of any options means that the
-latest commit on the master branch will be used.  The command
+@item --no-channel-files
+@itemx -q
+Inhibit loading of the user and system channel files,
+@file{~/.config/guix/channels.scm} and @file{/etc/guix/channels.scm}.
+
+Thus, @command{guix time-machine -q} is equivalent to the following Bash
+command, using the ``process substitution'' syntax (@pxref{Process
+Substitution,,, bash, The GNU Bash Reference Manual}):
 
 @example
-guix time-machine -- build hello
+guix time-machine -C <(echo %default-channels) @dots{}
 @end example
 
-will thus build the package @code{hello} as defined in the master branch,
-which is in general a newer revision of Guix than you have installed.
-Time travel works in both directions!
+@end table
 
 Note that @command{guix time-machine} can trigger builds of channels and
 their dependencies, and these are controlled by the standard build
@@ -14525,6 +14575,26 @@ gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0
 @dots{}
 @end example
 
+In some specific cases, you may have many packages specified via a
+manifest or a module selection which should all be updated together; for
+these cases, the @option{--target-version} option can be provided to have
+them all refreshed to the same version, as shown in the examples below:
+
+@example
+$ guix refresh qtbase qtdeclarative --target-version=6.5.2
+gnu/packages/qt.scm:1248:13: qtdeclarative would be upgraded from 6.3.2 to 6.5.2
+gnu/packages/qt.scm:584:2: qtbase would be upgraded from 6.3.2 to 6.5.2
+@end example
+
+@example
+$ guix refresh --manifest=qt5-manifest.scm --target-version=5.15.10
+gnu/packages/qt.scm:1173:13: qtxmlpatterns would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1202:13: qtdeclarative would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1762:13: qtserialbus would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:2070:13: qtquickcontrols2 would be upgraded from 5.15.8 to 5.15.10
+@dots{}
+@end example
+
 Sometimes the upstream name differs from the package name used in Guix,
 and @command{guix refresh} needs a little help.  Most updaters honor the
 @code{upstream-name} property in package definitions, which can be used
@@ -16920,6 +16990,13 @@ Alternatively, the @code{modify-services} macro can be used:
   (delete avahi-service-type))
 @end lisp
 
+@quotation Do not panic
+@cindex Scheme programming language, getting started
+Intimidated by the Scheme language or curious about it?  The Cookbook
+has a short section to get started that explains the fundamentals, which
+you will find helpful when hacking your configuration.  @xref{A Scheme
+Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
+@end quotation
 
 @unnumberedsubsec Instantiating the System
 
@@ -18428,6 +18505,7 @@ declaration.
 * Printing Services::           Local and remote printer support.
 * Desktop Services::            D-Bus and desktop services.
 * Sound Services::              ALSA and Pulseaudio services.
+* File Search Services::        Tools to search for files.
 * Database Services::           SQL databases, key-value stores, etc.
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
@@ -23721,6 +23799,23 @@ The GNOME package to use.
 @end table
 @end deftp
 
+@defvar plasma-desktop-service-type
+This is the type of the service that adds the @uref{https://kde.org/plasma-desktop/,
+Plasma} desktop environment.  Its value is a @code{plasma-desktop-configuration}
+object (see below).
+
+This service adds the @code{plasma} package to the system profile.
+@end defvar
+
+@deftp {Data Type} plasma-desktop-configuration
+Configuration record for the Plasma desktop environment.
+
+@table @asis
+@item @code{plasma} (default: @code{plasma})
+The Plasma package to use.
+@end table
+@end deftp
+
 @defvar xfce-desktop-service-type
 This is the type of a service to run the @uref{Xfce, https://xfce.org/}
 desktop environment.  Its value is an @code{xfce-desktop-configuration} object
@@ -24938,6 +25033,111 @@ details.
 
 @end defvar
 
+@node File Search Services
+@subsection File Search Services
+
+@cindex file search
+@cindex searching for a file
+The services in this section populate @dfn{file databases} that let you
+search for files on your machine.  These services are provided by the
+@code{(gnu services admin)} module.
+
+The first one, @code{file-database-service-type}, periodically runs the
+venerable @command{updatedb} command (@pxref{Invoking updatedb,,, find,
+GNU Findutils}).  That command populates a database of file names that
+you can then search with the @command{locate} command (@pxref{Invoing
+locate,,, find, GNU Findutils}), as in this example:
+
+@example
+locate important-notes.txt
+@end example
+
+You can enable this service with its default settings by adding this
+snippet to your operating system services:
+
+@lisp
+(service file-database-service-type)
+@end lisp
+
+This updates the database once a week, excluding files from
+@file{/gnu/store}---these are more usefully handled by @command{guix
+locate} (@pxref{Invoking guix locate}).  You can of course provide a
+custom configuration, as described below.
+
+@defvar file-database-service-type
+This is the type of the file database service, which runs
+@command{updatedb} periodically.  Its associated value must be a
+@code{file-database-configuration} record, as described below.
+@end defvar
+
+@deftp {Data Type} file-database-configuration
+Record type for the @code{file-database-service-type} configuration,
+with the following fields:
+
+@table @asis
+@item @code{package} (default: @code{findutils})
+The GNU@tie{}Findutils package from which the @command{updatedb} command
+is taken.
+
+@item @code{schedule} (default: @code{%default-file-database-update-schedule})
+String or G-exp denoting an mcron schedule for the periodic
+@command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).
+
+@item @code{excluded-directories} (default @code{%default-file-database-excluded-directories})
+List of directories to ignore when building the file database.  By
+default, this includes @file{/tmp} and @file{/gnu/store}, which should
+instead be indexed by @command{guix locate} (@pxref{Invoking guix
+locate}).  This list is passed to the @option{--prunepaths} option of
+@command{updatedb} (@pxref{Invoking updatedb,,, find,
+GNU@tie{}Findutils}).
+@end table
+@end deftp
+
+The second service, @code{package-database-service-type}, builds the
+database used by @command{guix locate}, which lets you search for
+packages that contain a given file (@pxref{Invoking guix locate}).  The
+service periodically updates a system-wide database, which will be
+readily available to anyone running @command{guix locate} on the system.
+To use this service with its default settings, add this snippet to your
+service list:
+
+@lisp
+(service package-database-service-type)
+@end lisp
+
+This will run @command{guix locate --update} once a week.
+
+@defvar package-database-service-type
+This is the service type for periodic @command{guix locate} updates
+(@pxref{Invoking guix locate}).  Its value must be a
+@code{package-database-configuration} record, as shown below.
+@end defvar
+
+@deftp {Data Type} package-database-configuration
+Data type to configure periodic package database updates.  It has the
+following fields:
+
+@table @asis
+@item @code{package} (default: @code{guix})
+The Guix package to use.
+
+@item @code{schedule} (default: @code{%default-package-database-update-schedule})
+String or G-exp denoting an mcron schedule for the periodic
+@command{guix locate --update} job (@pxref{Guile Syntax,,, mcron,
+GNU@tie{}mcron}).
+
+@item @code{method} (default: @code{'store})
+Indexing method for @command{guix locate}.  The default value,
+@code{'store}, yields a more complete database but is relatively
+expensive in terms of CPU and input/output.
+
+@item @code{channels} (default: @code{#~%default-channels})
+G-exp denoting the channels to use when updating the database
+(@pxref{Channels}).
+@end table
+@end deftp
+
+
 @node Database Services
 @subsection Database Services
 
@@ -25040,6 +25240,20 @@ psql -U postgres
 There is no need to add this field for contrib extensions such as hstore or
 dblink as they are already loadable by postgresql.  This field is only
 required to add extensions provided by other packages.
+
+@item @code{create-account?} (default: @code{#t})
+Whether or not the @code{postgres} user and group should be created.
+
+@item @code{uid} (default: @code{#f})
+Explicitly specify the UID of the @code{postgres} daemon account.
+You normally do not need to specify this, in which case a free UID will
+be automatically assigned.
+
+One situation where this option might be useful is if the @var{data-directory}
+is located on a mounted network share.
+
+@item @code{gid} (default: @code{#f})
+Explicitly specify the GID of the @code{postgres} group.
 
 @end table
 @end deftp
@@ -25148,7 +25362,21 @@ The role permissions list.  Supported permissions are @code{bypassrls},
 @code{superuser}.
 
 @item @code{create-database?} (default: @code{#f})
-Whether to create a database with the same name as the role.
+whether to create a database with the same name as the role.
+
+@item @code{encoding} (default: @code{"UTF8"})
+The character set to use for storing text in the database.
+
+@item @code{collation} (default: @code{"en_US.utf8"})
+The string sort order locale setting.
+
+@item @code{ctype} (default: @code{"en_US.utf8"})
+The character classification locale setting.
+
+@item @code{template} (default: @code{"template1"})
+The default template to copy the new database from when creating it.
+Use @code{"template0"} for a pristine database with no system-local
+modifications.
 
 @end table
 @end deftp
@@ -32397,113 +32625,6 @@ network or obtained a DHCP lease from dnsmasq.
 @end table
 @end deftp
 
-@subsubheading ddclient Service
-
-@cindex ddclient
-The ddclient service described below runs the ddclient daemon, which takes
-care of automatically updating DNS entries for service providers such as
-@uref{https://dyn.com/dns/, Dyn}.
-
-The following example show instantiates the service with its default
-configuration:
-
-@lisp
-(service ddclient-service-type)
-@end lisp
-
-Note that ddclient needs to access credentials that are stored in a
-@dfn{secret file}, by default @file{/etc/ddclient/secrets} (see
-@code{secret-file} below).  You are expected to create this file manually, in
-an ``out-of-band'' fashion (you @emph{could} make this file part of the
-service configuration, for instance by using @code{plain-file}, but it will be
-world-readable @i{via} @file{/gnu/store}).  See the examples in the
-@file{share/ddclient} directory of the @code{ddclient} package.
-
-@c %start of fragment
-
-Available @code{ddclient-configuration} fields are:
-
-@deftypevr {@code{ddclient-configuration} parameter} package ddclient
-The ddclient package.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} integer daemon
-The period after which ddclient will retry to check IP and domain name.
-
-Defaults to @samp{300}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} boolean syslog
-Use syslog for the output.
-
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string mail
-Mail to user.
-
-Defaults to @samp{"root"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string mail-failure
-Mail failed update to user.
-
-Defaults to @samp{"root"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string pid
-The ddclient PID file.
-
-Defaults to @samp{"/var/run/ddclient/ddclient.pid"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} boolean ssl
-Enable SSL support.
-
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string user
-Specifies the user name or ID that is used when running ddclient
-program.
-
-Defaults to @samp{"ddclient"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string group
-Group of the user who will run the ddclient program.
-
-Defaults to @samp{"ddclient"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string secret-file
-Secret file which will be appended to @file{ddclient.conf} file.  This
-file contains credentials for use by ddclient.  You are expected to
-create it manually.
-
-Defaults to @samp{"/etc/ddclient/secrets.conf"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} list extra-options
-Extra options will be appended to @file{ddclient.conf} file.
-
-Defaults to @samp{'()}.
-
-@end deftypevr
-
-
-@c %end of fragment
-
 @node VNC Services
 @subsection VNC Services
 @cindex VNC (virtual network computing)
@@ -32964,7 +33085,7 @@ IP address that no longer correspond to their freshly resolved host
 name.  Set this to @code{#t} if one or more endpoints use host names
 provided by a dynamic DNS service to keep the sessions alive.
 
-@item @code{monitor-ips-internal} (default: @code{'(next-minute (range 0 60 5))})
+@item @code{monitor-ips-interval} (default: @code{'(next-minute (range 0 60 5))})
 The time interval at which the IP monitoring job should run, provided as
 an mcron time specification (@pxref{Guile Syntax,,,mcron}).
 
@@ -37818,6 +37939,104 @@ The complete list of possible options can be found in the man page for
 @end table
 @end deftp
 
+@subheading PAM Mount Volume Service
+@cindex pam volume mounting
+
+PAM mount volumes are automatically mounted at login by the PAM login
+service according to a set of per-volume rules.  Because they are
+mounted by PAM the password entered during login may be used directly to
+mount authenticated volumes, such as @code{cifs}, using the same
+credentials.
+
+These volumes will be added in addition to any volumes directly
+specified in @code{pam-mount-rules}.
+
+Here is an example of a rule which will mount a remote CIFS share from
+@file{//remote-server/share} into a sub-directory of @file{/shares}
+named after the user logging in:
+
+@lisp
+(simple-service 'pam-mount-remote-share pam-mount-volume-service-type
+                (list (pam-mount-volume
+                       (secondary-group "users")
+                       (file-system-type "cifs")
+                       (server "remote-server")
+                       (file-name "share")
+                       (mount-point "/shares/%(USER)")
+                       (options "nosuid,nodev,seal,cifsacl"))))
+@end lisp
+
+@deftp {Data Type} pam-mount-volume-service-type
+Configuration for a single volume to be mounted.  Any fields not
+specified will be omitted from the run-time PAM configuration.  See
+@uref{http://pam-mount.sourceforge.net/pam_mount.conf.5.html,
+the man page} for the default values when unspecified.
+
+@table @asis
+@item @code{user-name} (type: maybe-string)
+Mount the volume for the given user.
+
+@item @code{user-id} (type: maybe-integer-or-range)
+Mount the volume for the user with this ID.  This field may also be
+specified as a pair of @code{(start . end)} indicating a range of user
+IDs for whom to mount the volume.
+
+@item @code{primary-group} (type: maybe-string)
+Mount the volume for users with this primary group name.
+
+@item @code{group-id} (type: maybe-integer-or-range)
+Mount the volume for the users with this primary group ID.  This field
+may also be specified as a cons cell of @code{(start . end)} indicating
+a range of group ids for whom to mount the volume.
+
+@item @code{secondary-group} (type: maybe-string)
+Mount the volume for users who are members of this group as either a
+primary or secondary group.
+
+@item @code{file-system-type} (type: maybe-string)
+The file system type for the volume being mounted (e.g., @code{cifs})
+
+@item @code{no-mount-as-root?} (type: maybe-boolean)
+Whether or not to mount the volume with root privileges.  This is
+normally disabled, but may be enabled for mounts of type @code{fuse}, or
+other user-level mounts.
+
+@item @code{server} (type: maybe-string)
+The name of the remote server to mount the volume from, when necessary.
+
+@item @code{file-name} (type: maybe-string)
+The location of the volume, either local or remote, depending on the
+@code{file-system-type}.
+
+@item @code{mount-point} (type: maybe-string)
+Where to mount the volume in the local file-system.  This may be set to
+@file{~} to indicate the home directory of the user logging in.  If this
+field is omitted then @file{/etc/fstab} is consulted for the mount
+destination.
+
+@item @code{options} (type: maybe-string)
+The options to be passed as-is to the underlying mount program.
+
+@item @code{ssh?} (type: maybe-boolean)
+Enable this option to pass the login password to SSH for use with mounts
+involving SSH (e.g., @code{sshfs}).
+
+@item @code{cipher} (type: maybe-string)
+Cryptsetup cipher name for the volume.  To be used with the @code{crypt}
+@code{file-system-type}.
+
+@item @code{file-system-key-cipher} (type: maybe-string)
+Cipher name used by the target volume.
+
+@item @code{file-system-key-hash} (type: maybe-string)
+SSL hash name used by the target volume.
+
+@item @code{file-system-key-file-name} (type: maybe-string)
+File name of the file system key for the target volume.
+
+@end table
+@end deftp
+
 
 @node Guix Services
 @subsection Guix Services
@@ -38409,6 +38628,94 @@ parameters, can be done as follow:
   (kernel-loadable-modules (list ddcci-driver-linux)))
 @end lisp
 @end defvar
+
+@subsubheading Cachefilesd Service
+
+@cindex cachefilesd
+@cindex fscache, file system caching (Linux)
+The Cachefilesd service starts a daemon that caches network file system
+data locally.  It is especially useful for NFS and AFS shares, where it
+reduces latencies for repeated access when reading files.
+
+The daemon can be configured as follows:
+
+@lisp
+(service cachefilesd-service-type
+         (cachefilesd-configuration
+           (cache-directory "/var/cache/fscache")))
+@end lisp
+
+@defvar cachefilesd-service-type
+The service type for starting @command{cachefilesd}.  The value for this
+service type is a @code{cachefilesd-configuration}, whose only required
+field is @var{cache-directory}.
+
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} cachefilesd-configuration
+Available @code{cachefilesd-configuration} fields are:
+
+@table @asis
+@item @code{cachefilesd} (default: @code{cachefilesd}) (type: file-like)
+The cachefilesd package to use.
+
+@item @code{debug-output?} (default: @code{#f}) (type: boolean)
+Print debugging output to stderr.
+
+@item @code{use-syslog?} (default: @code{#t}) (type: boolean)
+Log to syslog facility instead of stdout.
+
+@item @code{scan?} (default: @code{#t}) (type: boolean)
+Scan for cachable objects.
+
+@item @code{cache-directory} (type: maybe-string)
+Location of the cache directory.
+
+@item @code{cache-name} (default: @code{"CacheFiles"}) (type: maybe-string)
+Name of cache (keep unique).
+
+@item @code{security-context} (type: maybe-string)
+SELinux security context.
+
+@item @code{pause-culling-for-block-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available blocks exceed this percentage.
+
+@item @code{pause-culling-for-file-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available files exceed this percentage.
+
+@item @code{resume-culling-for-block-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available blocks drop below this percentage.
+
+@item @code{resume-culling-for-file-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available files drop below this percentage.
+
+@item @code{pause-caching-for-block-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available blocks drop below this
+percentage.
+
+@item @code{pause-caching-for-file-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available files drop below this
+percentage.
+
+@item @code{log2-table-size} (default: @code{12}) (type: maybe-non-negative-integer)
+Size of tables holding cullable objects in logarithm of base 2.
+
+@item @code{cull?} (default: @code{#t}) (type: boolean)
+Create free space by culling (consumes system load).
+
+@item @code{trace-function-entry-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function entry in the kernel module (for debugging).
+
+@item @code{trace-function-exit-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function exit in the kernel module (for debugging).
+
+@item @code{trace-internal-checkpoints-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace internal checkpoints in the kernel module (for debugging).
+
+@end table
+@end deftp
+@c %end of fragment
 
 @cindex rasdaemon
 @cindex Platform Reliability, Availability and Serviceability daemon
@@ -43938,8 +44245,8 @@ font installation path (@file{~/.guix-home/profile/share/fonts}).  If
 you configure this service directly, be sure to include the above
 directory.
 
-A typical extension for adding an additional font directory and setting
-a font as the default monospace font might look like this:
+Here's how you'd extend it to include fonts installed with the Nix
+package manager, and to prefer your favourite monospace font:
 
 @lisp
 (simple-service 'additional-fonts-service

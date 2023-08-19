@@ -99,7 +99,7 @@
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
@@ -5763,6 +5763,28 @@ structures.  In a way, @code{tree} generalizes the builtin @code{map} function
 which only supports flat sequences, and allows you to apply a function to each
 leaf preserving the overall structure.")
     (license license:asl2.0)))
+
+(define-public python-pyment
+  (package
+    (name "python-pyment")
+    (version "0.3.4")
+    (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/dadadel/pyment")
+           (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gbx9wmqsxdx85v5sg79lv2zxmy16j5dwi8bip07i1nyvzc5gvn0"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/dadadel/pyment/")
+    (synopsis "Convert Python docstrings automatically")
+    (description "Pyment is a command line tool and library that can be
+used to convert between several docstring styles.")
+    (license license:gpl3+)))
 
 (define-public python-docstring-parser
   (package
@@ -11443,30 +11465,38 @@ Python style, together with a fast and comfortable execution environment.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "09yrpi9f86r9yvcm2dfjs5zy87c4j31bxama77kfd6y8yfrrjlai"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; For cluster execution Snakemake will call Python.  Since there is
-         ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
-         ;; fix this by calling the snakemake wrapper instead.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; For cluster execution Snakemake will call Python.  Since there is
+          ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+          ;; fix this by calling the snakemake wrapper instead.
 
-         ;; XXX: There is another instance of sys.executable on line 692, but
-         ;; it is not clear how to patch it.
-         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "snakemake/executors/__init__.py"
-               (("\\{sys.executable\\} -m snakemake")
-                (string-append (assoc-ref outputs "out")
-                               "/bin/snakemake")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               ;; This test attempts to change S3 buckets on AWS and fails
-               ;; because there are no AWS credentials.
-               (delete-file "tests/test_tibanna.py")
-               (invoke "pytest")))))))
+          ;; XXX: There is another instance of sys.executable on line 692, but
+          ;; it is not clear how to patch it.
+          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "snakemake/executors/__init__.py"
+                (("\\{sys.executable\\} -m snakemake")
+                 (string-append #$output "/bin/snakemake")))))
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(\\)")
+                 (format #f "version=~s" #$version)))
+              (substitute* '("snakemake/_version.py"
+                             "versioneer.py")
+                (("0\\+unknown") #$version))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                ;; This test attempts to change S3 buckets on AWS and fails
+                ;; because there are no AWS credentials.
+                (delete-file "tests/test_tibanna.py")
+                (invoke "pytest")))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
@@ -11511,32 +11541,41 @@ Python style, together with a fast and comfortable execution environment.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1qrqbmx4cbis0wxr6dl2rdjv9v627sbirsz6v5c31vlbqwkvs04q"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; For cluster execution Snakemake will call Python.  Since there is
-         ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
-         ;; fix this by calling the snakemake wrapper instead.
-         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "snakemake/executors/__init__.py"
-               (("self\\.get_python_executable\\(\\),")
-                "")
-               (("\"-m snakemake\"")
-                (string-append "\"" (assoc-ref outputs "out")
-                               "/bin/snakemake" "\"")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               ;; This test attempts to change S3 buckets on AWS and fails
-               ;; because there are no AWS credentials.
-               (delete-file "tests/test_tibanna.py")
-               ;; It's a similar story with this test, which requires access
-               ;; to the Google Storage service.
-               (delete-file "tests/test_google_lifesciences.py")
-               (invoke "pytest")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; For cluster execution Snakemake will call Python.  Since there is
+          ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+          ;; fix this by calling the snakemake wrapper instead.
+          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "snakemake/executors/__init__.py"
+                (("self\\.get_python_executable\\(\\),")
+                 "")
+                (("\"-m snakemake\"")
+                 (string-append "\"" #$output
+                                "/bin/snakemake" "\"")))))
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(\\)")
+                 (format #f "version=~s" #$version)))
+              (substitute* '("snakemake/_version.py"
+                             "versioneer.py")
+                (("0\\+unknown") #$version))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                ;; This test attempts to change S3 buckets on AWS and fails
+                ;; because there are no AWS credentials.
+                (delete-file "tests/test_tibanna.py")
+                ;; It's a similar story with this test, which requires access
+                ;; to the Google Storage service.
+                (delete-file "tests/test_google_lifesciences.py")
+                (invoke "pytest")))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
@@ -14158,13 +14197,13 @@ implementations of ASN.1-based codecs and protocols.")
 (define-public python-asn1tools
   (package
     (name "python-asn1tools")
-    (version "0.158.0")
+    (version "0.166.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asn1tools" version))
        (sha256
-        (base32 "1k88a1azmyvp2ab6qcf2i40dig5abhyn7cmlyhmwwh8kr3syvma0"))))
+        (base32 "1hragm8dsm10rlyz67xslj01bycprlnimdmq1i2acns6kl6difpn"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-bitstruct python-diskcache python-prompt-toolkit
@@ -23212,17 +23251,15 @@ Git.")
 (define-public python-setuptools-rust
   (package
     (name "python-setuptools-rust")
-    (version "1.1.2")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "setuptools-rust" version))
        (sha256
-        (base32 "1lb57qx1azklgzmalflq960agvwci4bwddw0zvlc9zy00fsvkbd0"))))
-    (build-system python-build-system)
+        (base32 "0qi274r0fcnvxa8vs8vyhcknnzhq8pd0ig5zk1wmjc63x96p6vn8"))))
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f))          ;no tests
-    (native-inputs
-     (list python-setuptools-scm))
     (propagated-inputs
      (list python-semantic-version python-typing-extensions))
     (home-page "https://github.com/PyO3/setuptools-rust")
@@ -32287,13 +32324,13 @@ than trying to just split strings.")
 (define-public python-srsly
   (package
     (name "python-srsly")
-    (version "2.4.6")
+    (version "2.4.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "srsly" version))
               (sha256
                (base32
-                "0vsafkvk4g0p5m0dqrczqvlyza837i20xxmb24rrqk5s78r1zd27"))))
+                "022x0djlkl6pgh9yrd4avlai1n6y4hxm9l1xnb6630kpi12wrhlk"))))
     (build-system pyproject-build-system)
     (arguments
      (list

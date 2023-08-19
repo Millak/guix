@@ -62,6 +62,7 @@
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -130,6 +131,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
+  #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -188,6 +190,7 @@
   #:use-module (gnu packages syncthing)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
@@ -323,7 +326,7 @@ and its related documentation.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.0.44")
+    (version "2.0.46")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -332,21 +335,32 @@ and its related documentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18ggk71nk3zylgkwq32glggdcapgsj772qn2y4i9hbk374l6h61w"))))
+                "1qv95kipjlg374kiq6gssh5jsb5arahq4jsb7vkg3njnx0ldwvkb"))))
     (build-system go-build-system)
     (arguments
      (list #:go go-1.19
            #:install-source? #f
            #:import-path "miniflux.app"
+           #:build-flags
+           #~(list (string-append
+                    "-ldflags= -X miniflux.app/version.Version=" #$version))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'install 'rename-binary
+               (add-before 'build 'disable-cgo
+                 (lambda _
+                   (setenv "CGO_ENABLED" "0")))
+               (add-after 'install 'install-manpage
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (let ((man1 (string-append #$output "/share/man/man1/"))
+                         (page (format #f "src/~a/miniflux.1" import-path)))
+                     (install-file page man1))))
+               (add-after 'install-manpage 'rename-binary
                  (lambda _
                    (let ((bindir (string-append #$output "/bin/")))
                      (rename-file (string-append bindir "miniflux.app")
                                   (string-append bindir "miniflux"))))))))
     (inputs
-     (list go-github-com-coreos-go-oidc
+     (list go-github-com-coreos-go-oidc-v3
            go-github-com-go-telegram-bot-api-telegram-bot-api
            go-github-com-gorilla-mux
            go-github-com-lib-pq
@@ -5914,23 +5928,27 @@ config files---you only have to specify the www root.")
 (define-public goaccess
   (package
     (name "goaccess")
-    (version "1.5.2")
+    (version "1.7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://tar.goaccess.io/goaccess-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "12hwmd9cn7yy7vj92110skjaslpxkn05msb9wj228qmjjf9jzkm0"))
+                "0sqjkla4fjw5h49x675qibp860bk0haajc3i31m1q782kjiap6hf"))
               (modules '((guix build utils)))
-              (snippet '(begin
-                          (substitute* "src/error.h"
-                            (("__DATE__") "\"1970-01-01\"")
-                            (("__TIME__") "\"00:00:00\""))))))
+              (snippet '(substitute* '("src/error.h"
+                                       "src/parser.c")
+                          (("__DATE__") "\"1970-01-01\"")
+                          (("__TIME__") "\"00:00:00\"")))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "--enable-geoip=mmdb"
+             "--enable-utf8")))
     (inputs
-     ;; TODO: Add dependency on geoip-tools.
-     (list glib ncurses))
+     (list glib ncurses libmaxminddb openssl))
     (native-inputs
      (list pkg-config))
     (home-page "https://goaccess.io")
@@ -8564,6 +8582,34 @@ detection.  It delegates TLS support to an external daemon, for example
 @command{stunnel} on @command{inetd}.")
     (license license:bsd-2)))
 
+(define-public kineto
+  (package
+    (name "kineto")
+    (version "0.0.0-20211105093215-857f8c97ebc5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~sircmpwn/kineto")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r17c904i76yy5ilvhjczmhnq5g7r4nkjwmsjcfxcqzly0ia7m2k"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "git.sr.ht/~sircmpwn/kineto/"))
+    (propagated-inputs
+     (list go-git-sr-ht-sircmpwn-getopt go-git-sr-ht-adnano-go-gemini))
+    (home-page "https://git.sr.ht/~sircmpwn/kineto/")
+    (synopsis "HTTP proxy for Gemini")
+    (description
+     "This is an @acronym{HTTP} to
+@url{https://gemini.circumlunar.space/,Gemini} proxy designed to provide
+service for a single domain, i.e.  to make your Gemini site available over
+HTTP.  It can proxy to any domain in order to facilitate linking to the rest
+of Geminispace, but it defaults to a specific domain.")
+    (license license:gpl3+)))
+
 (define-public libzim
   (package
     (name "libzim")
@@ -8855,6 +8901,45 @@ You can feed it URLs one at a time, or schedule regular imports.  It saves
 snapshots of the URLs you feed it in several formats.")
     (home-page "https://archivebox.io/")
     (license license:expat)))
+
+(define-public awslogs
+  (package
+    (name "awslogs")
+    (version "0.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "awslogs" version))
+              (sha256
+               (base32
+                "0zpp72ixxz18mf1kay7l07sbmf80mik30zw6p4wsxpraza3ry90v"))))
+    ;; XXX: doesn't work with pyproject-build-system
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("'jmespath>=0.7.1.*',")
+                "'jmespath>=0.7.1',"))))
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             ;; XXX These tests fail for unknown reasons, and we can't easily
+             ;; figure out why, because stdout is redirected to a string.
+             (substitute* "tests/test_it.py"
+               (("test_main_get_with_color")
+                "_skip_test_main_get_with_color")
+               (("test_main_get_query")
+                "_skip_test_main_get_query")))))))
+    (propagated-inputs
+     (list python-boto3 python-jmespath python-dateutil python-termcolor))
+    (home-page "https://github.com/jorgebastida/awslogs")
+    (synopsis "Command line tool to read AWS CloudWatch logs")
+    (description
+     "This package provides awslogs, a simple command line tool to download
+and read AWS CloudWatch logs.")
+    (license license:bsd-3)))
 
 (define-public orcania
   (package

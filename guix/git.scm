@@ -439,7 +439,7 @@ could not be fetched from Software Heritage~%")
                                    #:recursive? recursive?)))
   "Update the cached checkout of URL to REF in CACHE-DIRECTORY.  Return three
 values: the cache directory name, and the SHA1 commit (a string) corresponding
-to REF, and the relation of the new commit relative to STARTING-COMMIT (if
+to REF, and the relation of STARTING-COMMIT relative to the new commit (if
 provided) as returned by 'commit-relation'.
 
 REF is pair whose key is [branch | commit | tag | tag-or-commit ] and value

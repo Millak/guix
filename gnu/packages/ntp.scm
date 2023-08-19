@@ -47,38 +47,41 @@
 (define-public chrony
   (package
     (name "chrony")
-    (version "4.3")
+    (version "4.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.tuxfamily.org/chrony/"
                            "chrony-" version ".tar.gz"))
        (sha256
-        (base32 "0148bgzymdigkjs66fihrqw98g1yf6vgy40nlajqkw35m24sh3cx"))))
+        (base32 "123h2a9rpc6wbvnysvhl5pmckvynzrnqay7l00i18azrvbk0gyza"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((srfi srfi-26)
-                  (guix build utils)
-                  (guix build gnu-build-system))
-       #:configure-flags
-       (list "--enable-scfilter"
-             "--with-sendmail=sendmail"
-             "--with-user=chrony")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'stay-inside-out
-           ;; Simply setting CHRONYVARDIR to something nonsensical at install
-           ;; time would result in nonsense file names in man pages.
-           (lambda _
-             (substitute* "Makefile.in"
-               (("mkdir -p \\$\\(DESTDIR\\)\\$\\(CHRONYVARDIR\\)") ":"))))
-         (add-after 'install 'install-more-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (for-each (cut install-file <> doc)
-                         (list "README" "FAQ"))
-               (copy-recursively "examples" (string-append doc "/examples"))))))))
+     (list
+      #:modules
+      '((srfi srfi-26)
+        (guix build utils)
+        (guix build gnu-build-system))
+      #:configure-flags
+      #~(list "--enable-scfilter"
+              "--with-sendmail=sendmail"
+              "--with-user=chrony")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'stay-inside-out
+            ;; Simply setting CHRONYVARDIR to something nonsensical at install
+            ;; time would result in nonsense file names in man pages.
+            (lambda _
+              (substitute* "Makefile.in"
+                (("mkdir -p \\$\\(DESTDIR\\)\\$\\(CHRONYVARDIR\\)") ":"))))
+          (add-after 'install 'install-more-documentation
+            (lambda _
+              (let* ((doc (string-append #$output "/share/doc/"
+                                         #$name "-" #$version)))
+                (for-each (cut install-file <> doc)
+                          (list "README" "FAQ"))
+                (copy-recursively "examples"
+                                  (string-append doc "/examples"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -139,8 +142,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
            libevent
            ;; Build with POSIX capabilities support on GNU/Linux.  This allows
            ;; 'ntpd' to run as non-root (when invoked with '-u'.)
-           (if (string-suffix? "-linux"
-                               (or (%current-target-system) (%current-system)))
+           (if (target-linux?)
                (list libcap)
                '())))
    (arguments

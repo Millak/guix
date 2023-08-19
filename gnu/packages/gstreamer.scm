@@ -797,6 +797,9 @@ model to base your own plug-in on, here it is.")
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790).
                   ((".*'elements/shm\\.c'.*") "")
 
+                  ;; The 'elements_curlhttpsrc' test sometimes times out.
+                  ((".*'elements/curlhttpsrc\\.c'.*") "")
+
                   ;; This test is flaky on at least some architectures.
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
                   #$@(if (target-riscv64?)

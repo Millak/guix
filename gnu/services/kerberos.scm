@@ -432,8 +432,8 @@ generates such a file.  It does not cause any daemon to be started.")))
    (transformer
     (lambda (pam)
       (define pam-krb5-module
-        #~(string-append #$(pam-krb5-configuration-pam-krb5 config)
-                         "/lib/security/pam_krb5.so"))
+        (file-append (pam-krb5-configuration-pam-krb5 config)
+                     "/lib/security/pam_krb5.so"))
 
       (let ((pam-krb5-sufficient
              (pam-entry

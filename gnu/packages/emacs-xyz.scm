@@ -9052,6 +9052,30 @@ completion candidate when using the Company text completion framework.")
 @code{company-math}.")
     (license license:gpl3+)))
 
+(define-public emacs-math-preview
+  (package
+    (name "emacs-math-preview")
+    (version "5.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.com/matsievskiysv/math-preview")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ni08900p0pbajw143iw0b7a62qiqcm9b6jy7pqgpn437vydjx1z"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash emacs-s))
+    (home-page "https://gitlab.com/matsievskiysv/math-preview")
+    (synopsis "Preview TeX math equations inline using MathJax")
+    (description
+     "Emacs math-preview uses MathJax for displaying TeX, MathML and AsciiMath
+  math inline in Emacs buffers.")
+    (license license:gpl3+)))
+
 (define-public emacs-company-coq
   (package
     (name "emacs-company-coq")
@@ -12207,6 +12231,32 @@ The following completions are currently available:
 @item Many more.
 @end itemize")
     (license license:gpl3+)))
+
+(define-public emacs-sway
+  ;; Commit from Nicola's fork (dash free version with various improvments)
+  (let ((commit "838ef531a30fe616f0141adbdabc132d4edfd374")
+        (revision "0"))
+    (package
+      (name "emacs-sway")
+      (version (git-version "0.6.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/thblt/sway.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ddaz8my3z4ca2z81kf1h8773pyx8h0l0ra3ssqd1rq5j0041wdh"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/thblt/sway.el")
+      (synopsis "Communication with the Sway window manager")
+      (description
+       "This is a basic library to control the Sway window manager from Emacs.
+Its main use case is in combination with popup managers like Shackle, to
+use frames instead of windows while still giving focus to existing frames
+instead of duplicating them.")
+      (license license:gpl3+))))
 
 (define-public emacs-sweet-theme
   (let ((commit "78f741806ecebe01224bf54d09ad80e306652508")
@@ -16525,7 +16575,7 @@ you to deal with multiple log levels.")
 (define-public emacs-denote
   (package
     (name "emacs-denote")
-    (version "1.2.0")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -16534,7 +16584,7 @@ you to deal with multiple log levels.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cglzccbqpcppb9s3phhszskkxp2wd0582jv85qhawxabfzyzkj3"))))
+        (base32 "0nwqghh73lbw6v6yhkalcwwqjs1fyhxqi53d9y2dcfhfq58g1rb9"))))
     (build-system emacs-build-system)
     (native-inputs (list texinfo))
     (home-page "https://protesilaos.com/emacs/denote/")
@@ -23865,7 +23915,7 @@ within Emacs.")
 (define-public emacs-ibrowse
   (package
     (name "emacs-ibrowse")
-    (version "0.1.8")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -23874,9 +23924,9 @@ within Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3imid9byaay0lqvv5n2klwk680w8x3qzdb279rdr08bb36w5ya"))))
+        (base32 "1dm46k67smg2m33c6n68blpw2mw7fx1ymq81kv54jjlpmv3xrdsf"))))
     (build-system emacs-build-system)
-    (inputs (list sqlite))
+    (inputs (list emacs-websocket sqlite))
     (home-page "https://git.sr.ht/~ngraves/ibrowse.el")
     (synopsis "Interact with your browser from emacs")
     (description "This package provides some commands to act on the browser
@@ -37526,6 +37576,31 @@ clipboard and inserts an Org mode link with a title of a page found by the URL
 into the current buffer.")
       (license license:expat))))
 
+(define-public emacs-org-wild-notifier
+  (let ((commit "cdca8be45b80ab52077a915e77c625bc0ad07dd7")
+        (revision "0"))
+    (package
+      (name "emacs-org-wild-notifier")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/akhramov/org-wild-notifier.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0k37ac752r5whjha4mf9qg74g65kf71a2dlpl4wlxvdml5v1czw1"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-dash emacs-alert emacs-async))
+      (license license:gpl3+)
+      (home-page "https://github.com/akhramov/org-wild-notifier.el")
+      (synopsis "Customizable org-agenda notifications")
+      (description
+       "This package provides notification functions for org-agenda."))))
+
 (define-public emacs-flymake-mypy
   (let ((commit "d79e158f9ed3065ab692cd0d4048aac985c4fecd")
         (revision "0"))
@@ -37612,12 +37687,11 @@ latest Emacs.")
 
 (define-public emacs-flim-lb
   ;; No release since Nov 28, 2007.
-  (let ((version "1.14.9")
-        (revision "136")
-        (commit "2cf5a7891090faca8de725b1d3743dcedf233ea2"))
+  (let ((commit "80b8121f05a5a0d7fcfe3e54085467a646dd2028")
+        (revision "137"))
     (package
       (name "emacs-flim-lb")
-      (version (git-version version revision commit))
+      (version (git-version "1.14.9" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -37626,7 +37700,7 @@ latest Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1wsnipyl3blldcl8ynmpj1mxfvl7kjmxd8gapl83vqd3r0l9cr6q"))))
+                  "02shd2mp9ywncn0wxgrijn0i8fa69kfx1y6nh5jjd64dyiczmskk"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-apel-lb emacs-oauth2))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
@@ -37640,12 +37714,11 @@ Emacs.")
 
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
-  (let ((version "1.14.6")
-        (revision "242")
-        (commit "7d8df0ef2f483e2dc063a72099295f467e6bc2c8"))
+  (let ((commit "9370961ddcee78e389e44b36d38c3d93f8351619")
+        (revision "246"))
     (package
       (name "emacs-semi-epg")
-      (version (git-version version revision commit))
+      (version (git-version "1.14.6" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -37654,9 +37727,10 @@ Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "01dn91xjcl7p5rnbgyh5l4kdlqx31s0gw5vh7hhcapbiq8rihmjd"))))
+                  "13f267j0mrji9cvjhq129nslrj2gwvq7ibsz384a4qilxf5rhccc"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-bbdb-vcard emacs-flim-lb))
+      (propagated-inputs (list emacs-flim-lb))
+      (inputs (list emacs-bbdb-vcard))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
       (synopsis "Library to provide MIME feature for GNU Emacs")
       (description

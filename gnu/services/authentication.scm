@@ -504,7 +504,7 @@ password.")
 (define (pam-ldap-pam-service config)
   "Return a PAM service for LDAP authentication."
   (define pam-ldap-module
-    #~(string-append #$(nslcd-configuration-nss-pam-ldapd config)
+    (file-append (nslcd-configuration-nss-pam-ldapd config)
                      "/lib/security/pam_ldap.so"))
   (pam-extension
     (transformer

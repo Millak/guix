@@ -1277,8 +1277,9 @@
 ;;                               #:guile guile))))
 
 (test-equal "package->bag"
-  `("foo86-hurd" #f (,(package-source gnu-make))
-    (,(canonical-package glibc)) (,(canonical-package coreutils)))
+  (parameterize ((%current-system "foo86-hurd"))
+    `("foo86-hurd" #f (,(package-source gnu-make))
+      (,(canonical-package glibc)) (,(canonical-package coreutils))))
   (let ((bag (package->bag gnu-make "foo86-hurd")))
     (list (bag-system bag) (bag-target bag)
           (assoc-ref (bag-build-inputs bag) "source")

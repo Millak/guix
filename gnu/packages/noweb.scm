@@ -18,6 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages noweb)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
@@ -27,7 +28,7 @@
 (define-public noweb
   (package
     (name "noweb")
-    (version "2.12")
+    (version "2.13")
     (source
      (origin
        (method git-fetch)
@@ -37,63 +38,62 @@
                                                      "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1160i2ghgzqvnb44kgwd6s3p4jnk9668rmc15jlcwl7pdf3xqm95"))))
+        (base32 "0fwngh7zl9mrjz966pskhi4zvk26j6vsm85x99df9194nv51drq8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'bind-early
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (substitute* (list "src/lib/nwmtime"
-                                  "src/shell/htmltoc")
-                 (("exec perl ")
-                  (format #f "exec ~a " (which "perl"))))
-               (substitute* "src/shell/noweb"
-                 ((" cpif ")
-                  (format #f " ~a/cpif " bin)))
-               #t)))
-         (add-before 'install 'pre-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/share/texmf/tex/latex"))
-               #t)))
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (cu  (assoc-ref inputs "coreutils"))
-                   (du  (assoc-ref inputs "diffutils")))
-               (with-directory-excursion out
-                 (for-each (lambda (prog)
-                             (substitute* prog
-                               (("nawk") (which "awk"))))
-                           (append (map (lambda (x)
-                                          (string-append "bin/" x))
-                                        '("noweb" "nountangle"
-                                          "noroots" "noroff"
-                                          "noindex"))
-                                   (map (lambda (x)
-                                          (string-append "lib/" x))
-                                        '("btdefn" "emptydefn" "noidx"
-                                          "pipedocs" "toascii" "tohtml"
-                                          "toroff" "totex" "unmarkup"))))
-                 (substitute* "bin/cpif"
-                   (("^PATH=.*$")
-                    (string-append "PATH=" cu "/bin:" du "/bin\n"))))
-               #t)))
-         (replace 'configure
-           (lambda _
-             ;; Jump in the source.
-             (chdir "src")
-             #t)))
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "BIN=" out "/bin")
-                            (string-append "LIB=" out "/lib")
-                            (string-append "MAN=" out "/share/man")
-                            (string-append "TEXINPUTS=" out
-                                           "/share/texmf/tex/latex")))
-       #:tests? #f))                              ; no tests
+     (list
+      #:make-flags
+      #~(list (string-append "BIN=" #$output "/bin")
+              (string-append "LIB=" #$output "/lib")
+              (string-append "MAN=" #$output "/share/man")
+              (string-append "TEXINPUTS=" #$output
+                             "/share/texmf/tex/latex"))
+      #:modules
+      '((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-source-directory
+            (lambda _
+              (chdir "src")))
+          (add-after 'enter-source-directory 'bind-early
+            (lambda _
+              (substitute* (list "lib/nwmtime"
+                                 "shell/htmltoc")
+                (("exec perl ")
+                 (string-append "exec " (which "perl") " ")))
+              (substitute* "shell/noweb"
+                ((" cpif ")
+                 (string-append " " #$output "/bin/cpif ")))))
+          (delete 'configure)           ; no configure script
+          (add-before 'install 'create-latex-directory
+            (lambda _
+              (mkdir-p (string-append #$output "/share/texmf/tex/latex"))))
+          (add-after 'install 'refer-to-inputs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion #$output
+                (for-each (lambda (program)
+                            (substitute* program
+                              (("nawk")
+                               (search-input-file inputs "bin/awk"))))
+                          (append (map (cut string-append "bin/" <>)
+                                       '("noweb" "nountangle"
+                                         "noroots" "noroff"
+                                         "noindex"))
+                                  (map (cut string-append "lib/" <>)
+                                       '("btdefn" "emptydefn" "noidx"
+                                         "pipedocs" "toascii" "tohtml"
+                                         "toroff" "totex" "unmarkup"))))
+                (substitute* "bin/cpif"
+                  (("^PATH=.*$")
+                   (string-append "PATH="
+                                  (dirname (search-input-file
+                                            inputs"bin/basename")) ":"
+                                  (dirname (search-input-file
+                                            inputs "bin/cmp"))
+                                  "\n")))))))
+      #:tests? #f))                              ; no tests
     (inputs
      (list perl))
     (home-page "https://www.cs.tufts.edu/~nr/noweb/")

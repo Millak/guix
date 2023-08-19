@@ -243,13 +243,20 @@ may also simplify input method development.")
         #~(modify-phases #$phases
             (replace 'wrap-with-additional-paths
               (lambda* (#:key outputs #:allow-other-keys)
-                ;; Make sure 'ibus-setup' runs with the correct
-                ;; GUIX_PYTHONPATH and GI_TYPELIB_PATH.
-                (wrap-program (search-input-file outputs "bin/ibus-setup")
-                  `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-                  `("GI_TYPELIB_PATH" ":" prefix
-                    (,(getenv "GI_TYPELIB_PATH")
-                     ,(string-append #$output "/lib/girepository-1.0"))))))))))
+                ;; Make sure 'ibus-setup' and 'ibus-daemon' runs with the
+                ;; correct GUIX_PYTHONPATH and GI_TYPELIB_PATH.  Wrap
+                ;; 'ibus-daemon' is needed because engines spawned by
+                ;; the daemon need access to those libraries.
+                (for-each
+                  (lambda (prog)
+                    (wrap-program prog
+                      `("GUIX_PYTHONPATH" ":" prefix
+                        (,(getenv "GUIX_PYTHONPATH")))
+                      `("GI_TYPELIB_PATH" ":" prefix
+                        (,(getenv "GI_TYPELIB_PATH")
+                         ,(string-append #$output "/lib/girepository-1.0")))))
+                  (list (search-input-file outputs "bin/ibus-setup")
+                        (search-input-file outputs "bin/ibus-daemon")))))))))
     (inputs (modify-inputs (package-inputs ibus-minimal)
               (prepend gtk
                        pango
@@ -898,6 +905,99 @@ hanja dictionary and small hangul character classification.")
     (description
      "ibus-hangul is a Korean input method engine for IBus.")
     (license gpl2+)))
+
+(define-public ibus-table
+  (package
+    (name "ibus-table")
+    (version "1.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/mike-fabian/ibus-table/releases/download/"
+             version "/ibus-table-" version ".tar.gz"))
+       (sha256
+        (base32 "063ba4fwk04lh0naj8z9r9x15ikckp94pd3f8xn40z3lnwsjx2sj"))
+       (patches (search-patches "ibus-table-paths.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda _
+                   (substitute* "engine/tabcreatedb.py"
+                     (("/usr/share/ibus-table")
+                      (string-append #$output "/share/ibus-table")))
+                   (substitute* "engine/ibus_table_location.py"
+                     (("/usr/share/ibus-table")
+                      (string-append #$output "/share/ibus-table"))
+                     (("/usr/libexec")
+                      (string-append #$output "/libexec")))))
+               (add-before 'check 'pre-check
+                 (lambda _
+                   (setenv "HOME" (getcwd))))))) ; tests write to $HOME
+    (native-inputs (list (list glib "bin") pkg-config))
+    (inputs (list glib gtk+ ibus python python-pygobject))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "IBUS_TABLE_LOCATION")
+            (files '("share/ibus-table"))
+            (separator #f))))
+    (home-page "https://mike-fabian.github.io/ibus-table")
+    (synopsis "Table based input framework for IBus")
+    (description
+     "@code{ibus-table} is a framework for table based input methods using
+IBus.")
+    (license lgpl2.1+)))
+
+(define-public ibus-table-others
+  (package
+    (name "ibus-table-others")
+    (version "1.3.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/moebiuscurve/ibus-table-others/releases/"
+             "download/" version "/ibus-table-others-" version ".tar.gz"))
+       (sha256
+        (base32 "0vllwrjlgcvdjhs7nrg45hfvnivnfhrc05r6rhw8m0c41layl9jg"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pre-build
+                 (lambda _
+                   (setenv "HOME" (getcwd))))))) ; db written in $HOME
+    (native-inputs (list pkg-config python))
+    (inputs (list ibus ibus-table))
+    (home-page "https://github.com/moebiuscurve/ibus-table-others")
+    (synopsis "Various table-based input methods for IBus")
+    (description
+     "@code{ibus-table-others} provides the following input methods on
+IBus-Table on IBus framework:
+
+@itemize
+@item CNS11643
+@item Compose
+@item Emoji
+@item IPA-X-SAMPA
+@item LaTex
+@item Mathwriter
+@item Mongol bichig
+@item RussianTraditional
+@item Telex
+@item Thai
+@item Translit
+@item Ua-Translit
+@item Viqr
+@item VNI
+@item Yawerty
+@end itemize")
+    ;; GPL-3.0-or-later: vni, ipa-x-sampa, telex
+    ;; WTFPL: mongol_bichig
+    ;; LGPL-2.1-or-later: others
+    (license (list lgpl2.1+ gpl3+ wtfpl2))))
 
 (define-public ibus-speech-to-text
   (package

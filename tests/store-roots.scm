@@ -30,13 +30,6 @@
 
 (test-begin "store-roots")
 
-(test-equal "gc-roots, initial"
-  (list (string-append %state-directory "/profiles"))
-  (begin
-    ;; 'gc-roots' should gracefully handle lack of that directory.
-    (delete-file-recursively (string-append %state-directory "/profiles"))
-    (gc-roots)))
-
 ;; The 'open-connection' call below gets guix-daemon to create
 ;; %STATE-DIRECTORY/profiles.
 (set! %store (open-connection))

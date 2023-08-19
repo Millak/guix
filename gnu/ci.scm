@@ -24,6 +24,7 @@
   #:use-module (guix build-system channel)
   #:use-module (guix config)
   #:autoload   (guix describe) (package-channels)
+  #:use-module (guix memoization)
   #:use-module (guix store)
   #:use-module (guix profiles)
   #:use-module (guix packages)
@@ -342,29 +343,32 @@ otherwise use the IMAGE name."
   ;; Return the name of a package's job.
   package-name)
 
+(define base-packages
+  (mlambda (system)
+    "Return the set of packages considered to be part of the base for SYSTEM."
+    (delete-duplicates
+     (append-map (match-lambda
+                   ((_ package _ ...)
+                    (match (package-transitive-inputs package)
+                      (((_ inputs _ ...) ...)
+                       inputs))))
+                 (%final-inputs system)))))
+
 (define package->job
-  (let ((base-packages
-         (delete-duplicates
-          (append-map (match-lambda
-                        ((_ package _ ...)
-                         (match (package-transitive-inputs package)
-                           (((_ inputs _ ...) ...)
-                            inputs))))
-                      (%final-inputs)))))
-    (lambda* (store package system #:key (suffix ""))
-      "Return a job for PACKAGE on SYSTEM, or #f if this combination is not
+  (lambda* (store package system #:key (suffix ""))
+    "Return a job for PACKAGE on SYSTEM, or #f if this combination is not
 valid.  Append SUFFIX to the job name."
-      (cond ((member package base-packages)
-             (package-job store (string-append "base." (job-name package))
-                          package system #:suffix suffix))
-            ((supported-package? package system)
-             (let ((drv (package-derivation store package system
-                                            #:graft? #f)))
-               (and (substitutable-derivation? drv)
-                    (package-job store (job-name package)
-                                 package system #:suffix suffix))))
-            (else
-             #f)))))
+    (cond ((member package (base-packages system))
+           (package-job store (string-append "base." (job-name package))
+                        package system #:suffix suffix))
+          ((supported-package? package system)
+           (let ((drv (package-derivation store package system
+                                          #:graft? #f)))
+             (and (substitutable-derivation? drv)
+                  (package-job store (job-name package)
+                               package system #:suffix suffix))))
+          (else
+           #f))))
 
 (define %x86-64-micro-architectures
   ;; Micro-architectures for which we build tuned variants.

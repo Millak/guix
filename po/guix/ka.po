@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-05-30 05:00+0000\n"
+"PO-Revision-Date: 2023-07-21 05:22+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://translate.fedoraproject.org/projects/guix/guix/ka/>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -5493,10 +5493,8 @@ msgid "database size:\t~9h MiB~%"
 msgstr ""
 
 #: guix/scripts/locate.scm:371
-#, fuzzy
-#| msgid "  packages:\n"
 msgid "indexing ~h packages"
-msgstr "  პაკეტები:\n"
+msgstr "~h პაკეტის დაინდექსება"
 
 #: guix/scripts/locate.scm:444
 #, scheme-format
@@ -5564,10 +5562,8 @@ msgid "~a: unknown indexing method~%"
 msgstr ""
 
 #: guix/scripts/locate.scm:581
-#, fuzzy
-#| msgid "search for packages"
 msgid "search for packages providing a given file"
-msgstr "პაკეტის ძებნა"
+msgstr "მითითებული ფაილის მომწოდებელი პაკეტების ძებნა"
 
 #: guix/scripts/locate.scm:637
 #, scheme-format
@@ -9259,10 +9255,9 @@ msgid "fixed-output derivation and output file name expected~%"
 msgstr ""
 
 #: guix/scripts/refresh.scm:89
-#, fuzzy, scheme-format
-#| msgid "invalid argument: ~a~%"
+#, scheme-format
 msgid "invalid module: ~a~%"
-msgstr "არასწორი არგუმენტი: ~a~%"
+msgstr "არასწორი მოდული: ~a~%"
 
 #: guix/scripts/refresh.scm:92
 #, scheme-format

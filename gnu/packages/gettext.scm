@@ -240,11 +240,13 @@ from Markdown files.")
     (version "0.69")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/mquinson/po4a/releases/download/v"
+              (uri (string-append "https://github.com/mquinson/po4a"
+                                  "/releases/download/v"
                                   version "/po4a-" version ".tar.gz"))
               (sha256
                (base32
-                "15llrfdp4ilbrxy65hmmxka86xj0mrbqfiyzv715wrk16vqszm3w"))))
+                "15llrfdp4ilbrxy65hmmxka86xj0mrbqfiyzv715wrk16vqszm3w"))
+              (patches (search-patches "po4a-partial-texinfo-menu-fix.patch"))))
     (build-system perl-build-system)
     (arguments
      (list

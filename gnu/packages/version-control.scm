@@ -90,6 +90,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cook)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages ed)
   #:use-module (gnu packages file)
@@ -105,6 +106,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
@@ -117,6 +119,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
+  #:use-module (gnu packages php)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -1292,12 +1295,54 @@ high-level like git-porcelain, or low-level like git-plumbing.
 It provides abstractions of Git objects for easy access of repository data,
 and additionally allows you to access the Git repository more directly using
 either a pure Python implementation, or the faster, but more resource intensive
-@command{git} command implementation.")
-    (license license:bsd-3)))
-
-(define-public shflags
+ @command{git} command implementation.")
+     (license license:bsd-3)))
+ 
+(define-public savane
   (package
-    (name "shflags")
+    (name "savane")
+    (version "3.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/administration/savane")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10jg264wqmkc87nz0d8d2pq4hvradwqrvrpvgpz3h409y6c6v78z"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal
+           imagemagick))
+    (inputs
+     (list exim
+           gnupg
+           httpd
+           mariadb
+           php))
+    (propagated-inputs
+     (list perl
+           perl-dbd-mysql
+           perl-dbi
+           perl-date-calc
+           perl-digest-md5
+           perl-mailtools
+           perl-file-find-rule
+           perl-xml-writer))
+    (synopsis "Web-based software hosting system")
+    (description
+     "Savane is a Web-based software hosting system.  It includes issue
+tracking (bugs, tasks, support, news and documentation), project member
+management by roles and individual account maintenance.")
+    (home-page "https://savannah.nongnu.org/p/administration")
+    (license license:agpl3+)))
+
+ (define-public shflags
+   (package
+     (name "shflags")
     (version "1.2.3")
     (source (origin
               (method git-fetch)
@@ -3052,7 +3097,7 @@ will reconstruct the object along its delta-base chain and return it.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "3.3.0")
+    (version "3.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3061,7 +3106,7 @@ will reconstruct the object along its delta-base chain and return it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g268pplld04b9myhlrwc4fd8r1hvfyya5ja8wr558rar3pgsp5g"))))
+                "0ljjs8kyznp2ifkqdcd9q3550sknyx5qxx247icwkd9djjq7x74m"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3126,7 +3171,7 @@ file contents on a remote server.")
 (define-public lfs-s3
   (package
     (name "lfs-s3")
-    (version "0.1.2")
+    (version "0.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3135,7 +3180,7 @@ file contents on a remote server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ncfy3lgc7dik9k71xk9l5f2llsh2jk33aaqb8dkslschc1mx4g6"))))
+                "0yilbxpia2lh36s872hiji77hazy83h2zc0iyqldrf3r18szqniw"))))
     (build-system go-build-system)
     (arguments
      (list

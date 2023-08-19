@@ -41,6 +41,7 @@
 
 (define-module (gnu packages rust-apps)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -74,6 +75,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
@@ -520,6 +523,11 @@ also knows about symlinks, extended attributes, and Git.")
                (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
                (setenv "JEMALLOC_OVERRIDE"
                        (string-append jemalloc "/lib/libjemalloc.so")))))
+         (add-after 'unpack 'adjust-feature-flags
+           (lambda _
+             ;; unstable-grouped was stablized in rust-clap 4.2.0
+             (substitute* "Cargo.toml"
+               ((".*unstable-grouped.*") ""))))
          (add-after 'install 'install-extra
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -728,6 +736,168 @@ replacement for i3status, written in pure Rust.  It provides a way to display
 @code{blocks} of system information (time, battery status, volume, etc) on the i3
 bar.  It is also compatible with sway.")
     (license license:gpl3)))
+
+(define-public maturin
+  (package
+    (name "maturin")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "maturin" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0asdljd396kdsvnx9kbsr5s0x6w73b59kdpx732333dhm13qgn03"))
+              (patches (search-patches "maturin-no-cross-compile.patch"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:modules ((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+       #:imported-modules ((guix build cargo-build-system)
+                           (guix build cargo-utils)
+                           ,@%pyproject-build-system-modules)
+       #:install-source? #f
+       #:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files are included.
+         "--skip=build_options::test::test_find_bridge_bin"
+         "--skip=build_options::test::test_find_bridge_cffi"
+         "--skip=build_options::test::test_find_bridge_pyo3"
+         "--skip=build_options::test::test_find_bridge_pyo3_abi3"
+         "--skip=build_options::test::test_find_bridge_pyo3_feature"
+         "--skip=metadata::test::test_implicit_readme"
+         "--skip=metadata::test::test_merge_metadata_from_pyproject_dynamic_license_test"
+         "--skip=metadata::test::test_merge_metadata_from_pyproject_toml"
+         "--skip=metadata::test::test_merge_metadata_from_pyproject_toml_with_customized_python_source_dir"
+         "--skip=pyproject_toml::tests::test_warn_missing_maturin_version")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-bytesize" ,rust-bytesize-1)
+        ("rust-cargo-config2" ,rust-cargo-config2-0.1)
+        ("rust-cargo-options" ,rust-cargo-options-0.6)
+        ;("rust-cargo-xwin" ,rust-cargo-xwin-0.14)
+        ;("rust-cargo-zigbuild" ,rust-cargo-zigbuild-0.16)
+        ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
+        ("rust-cbindgen" ,rust-cbindgen-0.24)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete-command" ,rust-clap-complete-command-0.5)
+        ("rust-configparser" ,rust-configparser-3)
+        ("rust-console" ,rust-console-0.15)
+        ("rust-dialoguer" ,rust-dialoguer-0.10)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-fat-macho" ,rust-fat-macho-0.4)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-fs-err" ,rust-fs-err-2)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-goblin" ,rust-goblin-0.6)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-keyring" ,rust-keyring-2)
+        ("rust-lddtree" ,rust-lddtree-0.3)
+        ("rust-minijinja" ,rust-minijinja-0.34)
+        ("rust-multipart" ,rust-multipart-0.18)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-normpath" ,rust-normpath-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pep440-rs" ,rust-pep440-rs-0.3)
+        ("rust-pep508-rs" ,rust-pep508-rs-0.2)
+        ("rust-platform-info" ,rust-platform-info-2)
+        ("rust-pyproject-toml" ,rust-pyproject-toml-0.6)
+        ("rust-python-pkginfo" ,rust-python-pkginfo-0.5)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-same-file" ,rust-same-file-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.12)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-textwrap" ,rust-textwrap-0.16)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-toml" ,rust-toml-0.7)
+        ("rust-toml-edit" ,rust-toml-edit-0.19)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-ureq" ,rust-ureq-2)
+        ("rust-url" ,rust-url-2)
+        ("rust-wild" ,rust-wild-2)
+        ("rust-zip" ,rust-zip-0.6))
+       #:cargo-development-inputs
+       (("rust-indoc" ,rust-indoc-2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-trycmd" ,rust-trycmd-0.14)
+        ("rust-which" ,rust-which-4))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-python-module
+           (lambda _
+             ;; Match the features from the cargo-build-system and Cargo.toml.
+             (setenv "MATURIN_SETUP_ARGS" "--features=default")
+             ((assoc-ref py:%standard-phases 'build))))
+
+         ;; We can't use the pyproject install phase because maturin is a
+         ;; binary, not a python script.
+         (add-after 'install 'install-python-module
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (wheel (car (find-files "dist" "\\.whl$")))
+                   (site-dir (py:site-packages inputs outputs))
+                   (pyversion
+                     (string-append "python"
+                                    (py:python-version
+                                      (assoc-ref inputs "python-wrapper")))))
+               (invoke "python" "-m" "zipfile" "-e" wheel site-dir)
+               (mkdir-p (string-append out "/bin"))
+               (for-each delete-file
+                         (find-files (string-append out "/lib/" pyversion)
+                                     "^maturin$")))))
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (maturin (string-append out "/bin/maturin")))
+               ;; TODO? fig, nushell, powershell
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (with-output-to-file
+                 (string-append share "/bash-completion/completions/maturin")
+                 (lambda _ (invoke maturin "completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/maturin.fish")
+                 (lambda _ (invoke maturin "completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_maturin")
+                 (lambda _ (invoke maturin "completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/maturin")
+                 (lambda _ (invoke maturin "completions" "elvish")))))))))
+    (propagated-inputs
+     (list python-tomli))
+    (native-inputs
+     (list perl
+           python-wheel
+           python-wrapper
+           python-setuptools-rust))
+    (home-page "https://github.com/pyo3/maturin")
+    (synopsis "Build and publish crates and python packages")
+    (description
+     "Build and publish crates with @code{pyo3}, @code{rust-cpython} and
+@code{cffi} bindings as well as rust binaries as python packages.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public ripgrep
   (package
@@ -1099,19 +1269,6 @@ rebase.")
               (base32
                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
 
-(define-public rust-cbindgen-0.20
-  (package
-    (inherit rust-cbindgen-0.24)
-    (name "rust-cbindgen")
-    (version "0.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cbindgen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1p67vvjkxh07yfizfkvm6bjlv2bywrnl57hshcsz9h2x2qxrgqsi"))))))
-
 (define-public rust-cbindgen-0.19
   (package
     (inherit rust-cbindgen)
@@ -1126,36 +1283,6 @@ rebase.")
        (sha256
         (base32
          "1yld9fni9g9mzg4r42zfk79aq9mzm2sfzzjrrx4vir4lp4qqqwiq"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-heck" ,rust-heck-0.3)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-toml" ,rust-toml-0.5))
-       #:cargo-development-inputs
-       (("rust-serial-test" ,rust-serial-test-0.5))))
-    (native-inputs
-     (list python-cython))))
-
-(define-public rust-cbindgen-0.17
-  (package
-    (inherit rust-cbindgen)
-    (name "rust-cbindgen")
-    (version "0.17.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cbindgen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1f40hxj6h7wqmsj8dzxjm3m421hjqpz2m5zxasbn8kgnr6scykvl"))))
     (arguments
      `(#:cargo-inputs
        (("rust-clap" ,rust-clap-2)
@@ -1202,63 +1329,6 @@ rebase.")
         ("rust-toml" ,rust-toml-0.5))
        #:cargo-development-inputs
        (("rust-serial-test" ,rust-serial-test-0.5))))))
-
-(define-public rust-cbindgen-0.15
-  (package
-    (inherit rust-cbindgen)
-    (name "rust-cbindgen")
-    (version "0.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cbindgen" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0dgf49zij9rxnf0lv4k5gcmx1mxcz16czkk6q63anz0xp8ds3xhx"))))
-    (arguments
-     `(#:tests? #false                  ;missing files
-       #:cargo-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-heck" ,rust-heck-0.3)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-toml" ,rust-toml-0.5))))))
-
-(define-public rust-cbindgen-0.14
-  (package
-    (inherit rust-cbindgen)
-    (name "rust-cbindgen")
-    (version "0.14.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cbindgen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1ppwqbzydxlg9a24lynzfk60xrvqw4k31mpz1wrk6lbf88zf8nxi"))))))
-
-(define-public rust-cbindgen-0.12
-  (package
-    (inherit rust-cbindgen)
-    (name "rust-cbindgen")
-    (version "0.12.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cbindgen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "13jzbmjz1bmmfr0i80hw6ar484mgabx3hbpb2ynhk0ddqi0yr58m"))))))
 
 (define-public sniffglue
   (package
@@ -1869,7 +1939,7 @@ support for Rust.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.16+cargo-0.68")
+    (version "0.9.18+cargo-0.69")
     (source
       (origin
         (method url-fetch)
@@ -1878,12 +1948,12 @@ support for Rust.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0k2sw67dx06b45qpvckbhz00kn2ingd89y53pwlzky72hnzv075v"))))
+          "191d0813g4m2g1c1h8ykgrfp00blkbds6pg3zl044iyxaclng29h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo" ,rust-cargo-0.68)
+        ("rust-cargo" ,rust-cargo-0.69)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
         ("rust-cbindgen" ,rust-cbindgen-0.24)
         ("rust-cc" ,rust-cc-1)
@@ -1896,7 +1966,7 @@ support for Rust.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.6))))
+        ("rust-toml" ,rust-toml-0.7))))
     (native-inputs
      (list pkg-config))
     (inputs

@@ -1603,38 +1603,36 @@ information on the configuration file syntax."
 
 (define pam-limits-service-type
   (let ((pam-extension
-         (pam-extension
-          (transformer
-           (lambda (pam)
-             (let ((pam-limits (pam-entry
-                                (control "required")
-                                (module "pam_limits.so")
-                                (arguments
-                                 '("conf=/etc/security/limits.conf")))))
-               (if (member (pam-service-name pam)
-                           '("login" "greetd" "su" "slim" "gdm-password"
-                             "sddm" "sudo" "sshd" "lightdm"))
-                   (pam-service
-                    (inherit pam)
-                    (session (cons pam-limits
-                                   (pam-service-session pam))))
-                   pam))))))
-
-        ;; XXX: Using file-like objects is deprecated, use lists instead.
-        ;;      This is to be reduced into the list? case when the deprecated
-        ;;      code gets removed.
-        ;; Create /etc/security containing the provided "limits.conf" file.
-        (security-limits
+         (lambda (limits-file)
+           (pam-extension
+            (transformer
+             (lambda (pam)
+               (let ((pam-limits (pam-entry
+                                  (control "required")
+                                  (module "pam_limits.so")
+                                  (arguments
+                                   (list #~(string-append "conf=" #$limits-file))))))
+                 (if (member (pam-service-name pam)
+                             '("login" "greetd" "su" "slim" "gdm-password"
+                               "sddm" "lightdm" "sudo" "sshd"))
+                     (pam-service
+                      (inherit pam)
+                      (session (cons pam-limits
+                                     (pam-service-session pam))))
+                     pam)))))))
+        (make-limits-file
          (match-lambda
+           ;; XXX: Using file-like objects is deprecated, use lists instead.
+           ;;      This is to be reduced into the list? case when the deprecated
+           ;;      code gets removed.
            ((? file-like? obj)
             (warning (G_ "Using file-like value for \
 'pam-limits-service-type' is deprecated~%"))
-            `(("security/limits.conf" ,obj)))
+            obj)
            ((? list? lst)
-            `(("security/limits.conf"
-               ,(plain-file "limits.conf"
-                            (string-join (map pam-limits-entry->string lst)
-                                         "\n" 'suffix)))))
+            (plain-file "limits.conf"
+                        (string-join (map pam-limits-entry->string lst)
+                                     "\n" 'suffix)))
            (_ (raise
                (formatted-message
                 (G_ "invalid input for 'pam-limits-service-type'~%")))))))
@@ -1642,13 +1640,12 @@ information on the configuration file syntax."
     (service-type
      (name 'limits)
      (extensions
-      (list (service-extension etc-service-type security-limits)
-            (service-extension pam-root-service-type
-                               (lambda _ (list pam-extension)))))
+      (list (service-extension pam-root-service-type
+                               (lambda (config)
+                                 (list (pam-extension (make-limits-file config)))))))
      (description
-      "Install the specified resource usage limits by populating
-@file{/etc/security/limits.conf} and using the @code{pam_limits}
-authentication module.")
+      "Use the @code{pam_limits} authentication module to set the specified
+resource usage limits.")
      (default-value '()))))
 
 (define-deprecated (pam-limits-service #:optional (limits '()))
@@ -3266,7 +3263,7 @@ to handle."
   (define optional-pam-mount
     (pam-entry
      (control "optional")
-     (module #~(string-append #$greetd-pam-mount "/lib/security/pam_mount.so"))
+     (module (file-append greetd-pam-mount "/lib/security/pam_mount.so"))
      (arguments '("disable_interactive"))))
 
   (list

@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2014, 2016-2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2014, 2016-2023 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 #
@@ -396,6 +396,13 @@ guix build -d -m "$module_dir/manifest.scm" \
     | grep 'computed-thingie\.drv$'
 
 rm "$module_dir"/*.scm
+
+if [ -n "$BASH_VERSION" ]
+then
+    # Check whether we can load from a /dev/fd/N denoting a pipe, using this
+    # handy Bash-specific construct.
+    guix build -m <(echo '(specifications->manifest (list "guile"))') -n
+fi
 
 # Using 'GUIX_BUILD_OPTIONS'.
 GUIX_BUILD_OPTIONS="--dry-run --no-grafts"

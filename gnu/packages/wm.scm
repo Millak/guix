@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2016, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2016 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
@@ -63,6 +63,7 @@
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -192,6 +193,27 @@
     (description "bspwm is a tiling window manager that represents windows as
 the leaves of a full binary tree.")
     (license license:bsd-2)))
+
+(define-public cage
+  (package
+    (name "cage")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cage-kiosk/cage")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "11sg9x08zl2nr7a723h462knz5lf58sgvkhv1mgc9z3hhkhvbsja"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config scdoc))
+    (inputs (list wayland wlroots libxkbcommon))
+    (home-page "https://github.com/cage-kiosk/cage")
+    (synopsis "Wayland kiosk")
+    (description "This package provides a Wayland @dfn{kiosk}, which runs a
+single, maximized application.")
+    (license license:expat)))
 
 (define-public herbstluftwm
   (package
@@ -1051,7 +1073,8 @@ drags, snap-to-border support, and virtual desktops.")
                (base32
                 "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))
               (patches
-               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"))))
+               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"
+                               "fluxbox-1.3.7-gcc.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("CPPFLAGS=-U__TIME__") ;ugly, but for reproducibility
@@ -2838,7 +2861,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "2.1.2")
+    (version "2.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2847,11 +2870,11 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09ky8wili3ym8qi4dasckdcdcvn4g6ak08dg0yccnwmnlwxiyps6"))))
+                "0yhn77hdy7c80hd6r8nmvs206pmp76bx4zr94imfvgs8fh5gb8cy"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-Dxwayland=true")
+      #:configure-flags #~(list "-Dxwayland=true" "-Dman-pages=true")
       ;; XXX: Running cagebreak tests need more tools, such as: clang-format,
       ;; shellcheck, git, gnupg ...
       #:tests? #f
@@ -2862,7 +2885,7 @@ shows a notification for the user on the screen.")
               (substitute* '("cagebreak.c" "meson.build")
                 (("/etc/") (string-append #$output "/etc/"))
                 (("/usr/share/") (string-append #$output "/usr/share/"))))))))
-    (native-inputs (list pandoc pkg-config))
+    (native-inputs (list pkg-config scdoc))
     (inputs (list libevdev pango wlroots))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
@@ -3023,7 +3046,7 @@ capabilities.  It is heavily inspired by the Calm Window manager(cwm).")
      (list cairo
            libjpeg-turbo
            libpng
-           librsvg
+           (librsvg-for-system)
            libxext
            libxinerama
            libxmu

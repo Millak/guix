@@ -1,0 +1,37 @@
+See <https://github.com/kovidgoyal/kitty/issues/6422> for details.
+
+Modified with further fixes from <https://github.com/kovidgoyal/kitty/issues/6422#issuecomment-1622071032>.
+
+From 95d15648fa375bb131ff897f0db03b764dabaf65 Mon Sep 17 00:00:00 2001
+From: Kovid Goyal <kovid@kovidgoyal.net>
+Date: Wed, 5 Jul 2023 10:29:33 +0530
+Subject: [PATCH] Fix not building with wayland-protocols 1.32
+
+Fix #6422
+
+diff --git a/glfw/wl_platform.h b/glfw/wl_platform.h
+index f35b55e94..42c90b1fa 100644
+--- a/glfw/wl_platform.h
++++ b/glfw/wl_platform.h
+@@ -122,6 +122,7 @@ typedef enum WaylandWindowState {
+ 	TOPLEVEL_STATE_TILED_RIGHT = 32,
+ 	TOPLEVEL_STATE_TILED_TOP = 64,
+ 	TOPLEVEL_STATE_TILED_BOTTOM = 128,
++        TOPLEVEL_STATE_SUSPENDED = 256,
+ } WaylandWindowState;
+ 
+ 
+diff --git a/glfw/wl_window.c b/glfw/wl_window.c
+index f7e329609..23868154f 100644
+--- a/glfw/wl_window.c
++++ b/glfw/wl_window.c
+@@ -420,6 +420,9 @@ static void xdgToplevelHandleConfigure(void* data,
+             C(TOPLEVEL_STATE_TILED_RIGHT);
+             C(TOPLEVEL_STATE_TILED_TOP);
+             C(TOPLEVEL_STATE_TILED_BOTTOM);
++#ifdef XDG_TOPLEVEL_STATE_SUSPENDED_SINCE_VERSION
++            C(TOPLEVEL_STATE_SUSPENDED);
++ #endif
+ #undef C
+         }
+     }

@@ -734,33 +734,40 @@ information is written to standard error.")
 (define-public asunder
   (package
     (name "asunder")
-    (version "2.9.7")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "http://www.littlesvr.ca/asunder/releases/asunder-"
+        (string-append "https://www.littlesvr.ca/asunder/releases/asunder-"
                        version ".tar.bz2"))
        (sha256
-        (base32 "1x3l308ss0iqhz90qyjb94gyd8b4piyrm2nzjmg5kf049k9prjf1"))))
+        (base32 "0srpag9bca76iiv8766kxmbvhsri58k15xp70348frkvp7hy4s48"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:out-of-source? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'wrap
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let ((program (string-append (assoc-ref outputs "out")
-                                                    "/bin/asunder")))
-                        (define (bin-directory input-name)
-                          (string-append (assoc-ref inputs input-name) "/bin"))
-                        (wrap-program program
-                          `("PATH" ":" prefix
-                            ,(map bin-directory (list "cdparanoia"
-                                                      "lame"
-                                                      "vorbis-tools"
-                                                      "flac"
-                                                      "opus-tools"
-                                                      "wavpack"))))))))))
+     (list
+      #:out-of-source? #f
+       #:phases
+       #~(modify-phases %standard-phases
+         (add-before 'check 'fix-tests
+           ;; As of 3.0.1, there are no ‘real’ tests under src/, and the linty
+           ;; test under po/ is broken.  Still, it's trivial to fix.
+           (lambda _
+             (let ((file (open-file "po/POTFILES.in" "a")))
+               (format file "~%src/upload.c~%")
+               (close-port file))))
+         (add-after 'install 'wrap
+           (lambda _
+             (wrap-program (string-append #$output "/bin/asunder")
+               `("PATH" ":" prefix
+                 ,(map (lambda (input) (string-append input "/bin"))
+                       '#$(map (lambda (label) (this-package-input label))
+                               (list "cdparanoia"
+                                     "flac"
+                                     "lame"
+                                     "opus-tools"
+                                     "vorbis-tools"
+                                     "wavpack"))))))))))
     (native-inputs (list intltool pkg-config))
     ;; TODO: Add the necessary packages for Musepack encoding.
     (inputs `(("gtk+-2" ,gtk+-2)

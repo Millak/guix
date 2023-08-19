@@ -476,14 +476,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "40.0.1")
+    (version "40.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "0hd0ppss5xg0kzf36q8cdaxh1xw8ry4k7jkianlf832xbdmp0q44"))))
+         "16hcprw919f2rl3jipsy2996bnsz170inway3lishqi30xwqf6x8"))))
     (build-system python-build-system)
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
@@ -495,14 +495,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "40.0.1")
+    (version "40.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "0wilrilfcyl78caxcpna2k3aya6qamppwv4j35262pz9n7wg40r8"))))
+         "16awbsm13vdksm98dybwvmpy2y1l636bq7g0s93scksrp0r0sg63"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -557,11 +557,6 @@ ciphers, message digests and key derivation functions.")
                   (guix build utils)
                   (srfi srfi-1)
                   (ice-9 match))
-      ;; XXX: Building the test objects appear to fail due to a missing link
-      ;; directive to Python's shared library (e.g.: "ld:
-      ;; cryptography_rust.c950d742-cgu.11:(.text._ZN3...+0x57): undefined
-      ;; reference to `PyLong_FromLong'").
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -579,12 +574,18 @@ ciphers, message digests and key derivation functions.")
               (apply (assoc-ref %standard-phases 'configure)
                      (append args
                              (list #:inputs (alist-delete "source" inputs))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; As seen in tox.ini
+                (invoke "cargo" "test" "--no-default-features"))))
           (add-after 'install 'install-shared-library
             (lambda _
               (install-file "target/release/libcryptography_rust.so"
                             (string-append #$output "/lib")))))
       #:cargo-inputs
       `(("rust-asn1-0.13" ,rust-asn1-0.13)
+        ("rust-cc" ,rust-cc-1)
         ("rust-chrono-0.4" ,rust-chrono-0.4)
         ("rust-foreign-types-shared-0.1" ,rust-foreign-types-shared-0.1)
         ("rust-once-cell-1" ,rust-once-cell-1)
@@ -592,9 +593,7 @@ ciphers, message digests and key derivation functions.")
         ("rust-openssl-sys-0.9" ,rust-openssl-sys-0.9)
         ("rust-ouroboros-0.15" ,rust-ouroboros-0.15)
         ("rust-pem-1" ,rust-pem-1)
-        ("rust-pyo3-0.15" ,rust-pyo3-0.15))
-      #:cargo-development-inputs
-      `(("rust-cc" ,rust-cc-1))))
+        ("rust-pyo3-0.15" ,rust-pyo3-0.15))))
     (native-inputs (list pkg-config python python-cffi))
     ;; XXX: Adding rust-openssl-sys-0.9 is needed because #:cargo-inputs
     ;; doesn't honor propagated-inputs.

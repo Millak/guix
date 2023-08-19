@@ -586,7 +586,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "3.5.0")
+    (version "3.6.0")
     (source
      (origin
        (method git-fetch)
@@ -595,7 +595,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "13ldi191ccxyxr3hjxyhnjl2vw365v0fhb1pqia7rg1gl3id47gz"))
+         "1difs5hw4avzfn2f33gi0w8nz9ja9fvwsl5m9f8izr8zsqlw98qd"))
        (file-name (git-file-name "nyxt" version))
        (modules '((guix build utils)))
        (snippet
@@ -656,6 +656,7 @@ driven and does not detract you from your daily work.")
                   sbcl-cl-ppcre
                   sbcl-cl-prevalence
                   sbcl-cl-qrencode
+                  sbcl-cl-sqlite
                   sbcl-cl-str
                   sbcl-cl-tld
                   sbcl-closer-mop
@@ -723,7 +724,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.16.3")
+    (version "1.16.7")
     (source
      (origin
        (method url-fetch)
@@ -731,7 +732,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "1kmhxacka0rixxv1r5vqjhxmdxll73b5w5ja18m1qpbk2sk00bg8"))
+        (base32 "0ig7xdsihq7wc8h7n1af275z3kjxq5iiy0x4dwjahgligrdmj7vm"))
        (modules '((guix build utils)))
        (snippet
         '(begin

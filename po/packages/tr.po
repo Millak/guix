@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the GNU guix package.
 # Muha Aliss <muhaaliss@gmail.com>, 2021.
 # Ferhat Gecdogan <ferhatgectao@gmail.com>, 2022.
-# MY NAME <wonasal634@iconzap.com>, 2022.
+# MY NAME <wonasal634@iconzap.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2022-06-14 17:22+0000\n"
+"PO-Revision-Date: 2023-07-26 15:21+0000\n"
 "Last-Translator: MY NAME <wonasal634@iconzap.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/guix/packages/tr/>\n"
 "Language: tr\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: gnu/packages/abiword.scm:124
 msgid "Word processing program"
-msgstr ""
+msgstr "Word processing program"
 
 #. TRANSLATORS: Dear translator, We would like to inform you that package
 #. descriptions may occasionally include Texinfo markup.  Texinfo markup
@@ -39,7 +39,7 @@ msgstr ""
 
 #: gnu/packages/aspell.scm:90
 msgid "Spell checker"
-msgstr ""
+msgstr "Yazım denetleyicisi"
 
 #: gnu/packages/aspell.scm:92
 msgid ""
@@ -77,7 +77,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:205
 msgid "Embedded Audio Acceleration"
-msgstr ""
+msgstr "Gömülü Ses Hızlandırma"
 
 #: gnu/packages/audio.scm:206
 msgid ""
@@ -92,7 +92,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:241
 msgid "Software Synthesizer"
-msgstr ""
+msgstr "Yazılım Sentezleyici"
 
 #: gnu/packages/audio.scm:242
 msgid ""
@@ -102,7 +102,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:304
 msgid "WebRTC's Audio Processing Library"
-msgstr ""
+msgstr "WebRTC'nin Ses İşleme Kitaplığı"
 
 #: gnu/packages/audio.scm:305
 msgid ""
@@ -114,7 +114,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:324
 msgid "VisualOn AAC Encoder"
-msgstr ""
+msgstr "VisualOn AAC Kodlayıcı"
 
 #: gnu/packages/audio.scm:325
 msgid ""
@@ -126,17 +126,19 @@ msgstr ""
 
 #: gnu/packages/audio.scm:353
 msgid "ALSA interfacing library"
-msgstr ""
+msgstr "ALSA arabirim kitaplığı"
 
 #: gnu/packages/audio.scm:354
 msgid ""
 "TinyALSA is a small library to interface with ALSA in the\n"
 "Linux kernel."
 msgstr ""
+"TinyALSA, ALSA ile arabirim oluşturmak için küçük bir kitaplıktır.\n"
+"Linux çekirdeği."
 
 #: gnu/packages/audio.scm:380
 msgid "Video game music file playback library"
-msgstr ""
+msgstr "Video oyunu müzik dosyası oynatma kitaplığı"
 
 #: gnu/packages/audio.scm:382
 msgid ""
@@ -166,7 +168,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:445
 msgid "Audio tracking library"
-msgstr ""
+msgstr "Ses takip kütüphanesi"
 
 #: gnu/packages/audio.scm:446
 msgid ""
@@ -176,7 +178,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:476
 msgid "Open Fingerprint Architecture"
-msgstr ""
+msgstr "Açık Parmak İzi Mimarisi"
 
 #: gnu/packages/audio.scm:477
 msgid ""
@@ -186,7 +188,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:501
 msgid "MIDI to WAVE converter library"
-msgstr ""
+msgstr "MIDI'den WAVE'ye dönüştürücü kütüphanesi"
 
 #: gnu/packages/audio.scm:502
 msgid ""
@@ -199,7 +201,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:526 gnu/packages/audio.scm:545
 msgid "Adaptive Multi Rate Codec"
-msgstr ""
+msgstr "Uyarlanabilir Çoklu Hız Codec'i"
 
 #: gnu/packages/audio.scm:527
 msgid ""
@@ -221,7 +223,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:577
 msgid "Realtime modular synthesizer and effect processor"
-msgstr ""
+msgstr "Gerçek zamanlı modüler sentezleyici ve efekt işlemcisi"
 
 #: gnu/packages/audio.scm:579
 msgid ""
@@ -239,7 +241,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:617
 msgid "Library for audio labelling"
-msgstr ""
+msgstr "Ses etiketleme için kitaplık"
 
 #: gnu/packages/audio.scm:619
 msgid ""
@@ -254,15 +256,15 @@ msgstr ""
 
 #: gnu/packages/audio.scm:664
 msgid "Audio processing program with an interactive mode"
-msgstr ""
+msgstr "İnteraktif moda sahip ses işleme programı"
 
 #: gnu/packages/audio.scm:666
 msgid "dsp is an audio processing program with an interactive mode."
-msgstr ""
+msgstr "dsp, interaktif moda sahip bir ses işleme programıdır."
 
 #: gnu/packages/audio.scm:713
 msgid "C++ library of functions for DSP and Music Informatics purposes"
-msgstr ""
+msgstr "DSP ve Müzik Bilişimi amaçlarına yönelik C++ işlev kitaplığı"
 
 #: gnu/packages/audio.scm:715
 msgid ""
@@ -272,7 +274,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:849
 msgid "Digital audio workstation"
-msgstr ""
+msgstr "Dijital ses iş istasyonu"
 
 #: gnu/packages/audio.scm:851
 msgid ""
@@ -286,7 +288,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:986 gnu/packages/audio.scm:1097
 msgid "Software for recording and editing sounds"
-msgstr ""
+msgstr "Sesleri kaydetmek ve düzenlemek için yazılım"
 
 #: gnu/packages/audio.scm:988
 msgid ""
@@ -304,7 +306,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1154
 msgid "Library to handle various audio file formats"
-msgstr ""
+msgstr "Çeşitli ses dosyası formatlarını işlemek için kütüphane"
 
 #: gnu/packages/audio.scm:1155
 msgid ""
@@ -326,7 +328,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1195
 msgid "Pitch-correction LADSPA audio plugin"
-msgstr ""
+msgstr "Ses perdesi düzeltme LADSPA ses eklentisi"
 
 #: gnu/packages/audio.scm:1197
 msgid ""
@@ -337,7 +339,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1247
 msgid "Tonewheel organ synthesizer"
-msgstr ""
+msgstr "Tonewheel organ sentezleyici"
 
 #: gnu/packages/audio.scm:1249
 msgid ""
@@ -350,7 +352,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1285
 msgid "Audio plug-in pack for LV2 and JACK environments"
-msgstr ""
+msgstr "LV2 ve JACK ortamları için ses eklenti paketi"
 
 #: gnu/packages/audio.scm:1287
 msgid ""
@@ -363,7 +365,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1327
 msgid "LV2 port of the CAPS audio plugin collection"
-msgstr ""
+msgstr "CAPS ses eklenti koleksiyonunun LV2 bağlantı noktası"
 
 #: gnu/packages/audio.scm:1329
 msgid ""
@@ -374,7 +376,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1358
 msgid "Real-time C++ @acronym{IIR, infinite impulse response} filter library"
-msgstr ""
+msgstr "Gerçek zamanlı C++ @acronym{IIR, sonsuz dürtü yanıtı} filtre kütüphanesi"
 
 #: gnu/packages/audio.scm:1360
 msgid ""
@@ -387,7 +389,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1401
 msgid "LV2 plugins for live use"
-msgstr ""
+msgstr "Canlı kullanım için LV2 eklentileri"
 
 #: gnu/packages/audio.scm:1403
 msgid ""
@@ -398,7 +400,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1436
 msgid "Synchronous multiroom audio player"
-msgstr ""
+msgstr "Eşzamanlı çok odalı müzik çalar"
 
 #: gnu/packages/audio.scm:1438
 msgid ""
@@ -418,7 +420,7 @@ msgstr "Bu paket Steve Harris'in LADSPA eklentilerini sağlar."
 
 #: gnu/packages/audio.scm:1506
 msgid "SWH plugins in LV2 format"
-msgstr ""
+msgstr "LV2 formatında SWH eklentileri"
 
 #: gnu/packages/audio.scm:1508
 msgid ""
@@ -434,7 +436,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1540
 msgid "C++ library for access to DJ record libraries"
-msgstr ""
+msgstr "DJ kayıt kütüphanelerine erişim için C++ kütüphanesi"
 
 #: gnu/packages/audio.scm:1542
 msgid ""
@@ -446,7 +448,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1603
 msgid "Sound Synthesis with Physical Models"
-msgstr ""
+msgstr "Fiziksel Modellerle Ses Sentezi"
 
 #: gnu/packages/audio.scm:1604 gnu/packages/audio.scm:1635
 msgid ""
@@ -460,11 +462,11 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1634
 msgid "Sound synthesis with physical models"
-msgstr ""
+msgstr "Fiziksel modellerle ses sentezi"
 
 #: gnu/packages/audio.scm:1668
 msgid "Sound and music computing system"
-msgstr ""
+msgstr "Ses ve müzik hesaplama sistemi"
 
 #: gnu/packages/audio.scm:1670
 msgid ""
@@ -489,7 +491,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1742 gnu/packages/audio.scm:4497
 msgid "C++ wrapper around the ALSA API"
-msgstr ""
+msgstr "ALSA API'si etrafında C++ sarıcı"
 
 #: gnu/packages/audio.scm:1744
 msgid ""
@@ -501,7 +503,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1781
 msgid "LADSPA ambisonics plugins"
-msgstr ""
+msgstr "LADSPA ambisonics eklentileri"
 
 #: gnu/packages/audio.scm:1783
 msgid ""
@@ -529,7 +531,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1858
 msgid "LADSPA reverb plugin"
-msgstr ""
+msgstr "LADSPA yankı eklentisi"
 
 #: gnu/packages/audio.scm:1860
 msgid ""
@@ -541,7 +543,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1894
 msgid "LADSPA four-band parametric equalizer plugin"
-msgstr ""
+msgstr "LADSPA dört bantlı parametrik ekolayzır eklentisi"
 
 #: gnu/packages/audio.scm:1896
 msgid ""
@@ -560,7 +562,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1939
 msgid "LADSPA stereo width plugin"
-msgstr ""
+msgstr "LADSPA stereo genişlik eklentisi"
 
 #: gnu/packages/audio.scm:1941
 msgid ""

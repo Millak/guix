@@ -5,7 +5,7 @@
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,12 +35,13 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system guile)
+  #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -49,6 +51,7 @@
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -66,6 +69,10 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
+  #:use-module (gnu packages haskell-check)
+  #:use-module (gnu packages haskell-crypto)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
   #:use-module (gnu packages man)
@@ -92,6 +99,65 @@
   #:use-module (gnu packages web)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
+
+(define-public glirc
+  (package
+  (name "glirc")
+  (version "2.39.0.1")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "glirc" version))
+     (sha256
+      (base32 "0jaywb43jfv6kzyz540k02mxdgw1shc6hn7kia21alssszkilh4r"))))
+  (build-system haskell-build-system)
+  (arguments
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+      (add-after 'install 'install-extra-documentation
+        (lambda _
+          (install-file "glirc.1"
+                        (string-append #$output "/share/man/man1"))
+          ;; The man page is very terse and punts to the GitHub wiki for real
+          ;; information.  Some of that is also in the README, so install it.
+          (install-file "README.md"
+                        (string-append #$output "/share/doc/"
+                                       #$name "-" #$version)))))))
+  (native-inputs
+   (list ghc-hunit))
+  (inputs
+   (list ghc-async
+         ghc-attoparsec
+         ghc-base64-bytestring
+         ghc-config-schema
+         ghc-config-value
+         ghc-curve25519
+         ghc-free
+         ghc-githash
+         ghc-hashable
+         ghc-hookup
+         ghc-hsopenssl
+         ghc-irc-core
+         ghc-kan-extensions
+         ghc-lens
+         ghc-network
+         ghc-psqueues
+         ghc-random
+         ghc-regex-tdfa
+         ghc-split
+         ghc-unordered-containers
+         ghc-vector
+         ghc-vty))
+  (home-page "https://github.com/glguy/irc-core")
+  (synopsis "Console IRC client")
+  (description
+   "Glirc is a console IRC client that focuses on providing both high-detail
+and concise views of an IRC connection.  All views and transformation are
+dynamic and don't change the underlying model.  It also provides advanced
+line-editing features including syntax-highlighting, multi-line buffering,
+and argument placeholders.")
+  (license license:isc)))
 
 (define-public quassel
   (package
@@ -347,19 +413,23 @@ for the IRCv3 protocol.")
 (define-public catgirl
   (package
     (name "catgirl")
-    (version "2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://git.causal.agency/catgirl/snapshot/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "13pfphcfkdzqfb4x7w21xp6rnmg3ix9f39mpqmxxzg15ys1gp2x6"))))
+    (version "2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.causal.agency/catgirl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r1h10qdhhgy3359ndbjh269daivm126qc0c23db7bffv0xs4bff"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))))
+     (list
+      #:tests? #f                       ; no tests
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              (string-append "CC=" #$(cc-for-target)))))
     (native-inputs
      (list universal-ctags pkg-config))
     (inputs
@@ -764,3 +834,80 @@ but can also be used independently as a logging bot.")
 server written in C++ for Unix-like operating systems.")
     (home-page "https://www.inspircd.org/")
     (license license:gpl2)))
+
+(define-public snuik
+  (package
+    (name "snuik")
+    (version "0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dezyne.org/download/snuik/"
+                           name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lm6mbgfjzjk3pvzp1y9wkdz9dr2qyl1c6ib1hqxrnvkmlciy5p5"))))
+    (native-inputs (list guile-3.0))
+    (inputs (list bash-minimal guile-3.0 guile-8sync))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:not-compiled-file-regexp "(guix|guix/.*)[.]scm$"
+      #:modules '((srfi srfi-1)
+                  (ice-9 popen)
+                  (guix build guile-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 #~()
+                 #~((add-after 'build 'check
+                      (lambda _
+                        (let* ((tests (find-files "test" "[.]scm$"))
+                               (guile #$(this-package-input "guile"))
+                               (guile (string-append guile "/bin/guile")))
+                          (fold (lambda (test result)
+                                  (and
+                                   result
+                                   (invoke guile "--no-auto-compile" test)))
+                                #t
+                                tests))))))
+          (add-after 'install 'install-script
+            (lambda _
+              (let* ((bash #$(this-package-input "bash-minimal"))
+                     (bash (string-append bash "/bin/bash"))
+                     (guile #$(this-package-input "guile"))
+                     (guile (string-append guile "/bin/guile"))
+                     (build-guile #$(this-package-native-input "guile"))
+                     (build-guile (string-append build-guile "/bin/guile"))
+                     (guile-8sync #$(this-package-input "guile-8sync"))
+                     (out #$output)
+                     (bin (string-append out "/bin"))
+                     (effective (read
+                                 (open-pipe* OPEN_READ
+                                             build-guile "-c"
+                                             "(write (effective-version))")))
+                     (path (list (string-append guile "/bin")))
+                     (scm-dir (string-append "/share/guile/site/" effective))
+                     (scm-path (list (string-append out scm-dir)
+                                     (string-append guile-8sync scm-dir)))
+                     (go-dir (string-append "/lib/guile/" effective
+                                            "/site-ccache/"))
+                     (go-path (list (string-append out go-dir)
+                                    (string-append guile-8sync go-dir))))
+                (mkdir-p "bin")
+                (copy-file "snuik.sh" "bin/snuik")
+                (substitute* "bin/snuik"
+                  (("@SHELL@") bash))
+                (chmod "snuik" #o755)
+                (install-file "bin/snuik" bin)
+                (wrap-script (string-append out "/bin/snuik")
+                  `("PATH" ":" prefix ,path)
+                  `("GUILE_AUTO_COMPILE" ":" = ("0"))
+                  `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
+                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))))))))
+    (home-page "https://gitlab.com/janneke/snuik")
+    (synopsis "IRC bot using Guile-8sync")
+    (description "@code{Snuik} is an IRC bot using the GNU 8sync (for
+now).  It has some basic functionality only, such as seen, tell, and
+what.")
+    (license license:gpl3+)))

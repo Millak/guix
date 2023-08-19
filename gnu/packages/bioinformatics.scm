@@ -1680,11 +1680,11 @@ and sequence consensus.")
 
 (define-public python-decoupler-py
   ;; This latest commit fixes a bug in test_omnip.py.
-  (let ((commit "b84c524ec4a9280a56c0db963e2c7b010316ce8f")
+  (let ((commit "459b235348ddd9135217a3722d9dd1caa9a14ace")
         (revision "1"))
     (package
       (name "python-decoupler-py")
-      (version (git-version "1.3.1" revision commit))
+      (version (git-version "1.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1693,7 +1693,7 @@ and sequence consensus.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0d74yr5jqc52vcxaca84kxqw7m5rbazpmvnrcp2y4xxrj6yr1sfc"))))
+                  "1c0xk006iilyffdaqar2d05qdhik22fbkny387zx0bndkgqifxhl"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -1704,6 +1704,10 @@ and sequence consensus.")
                               " and not test_show_resources"
                               " and not test_get_dorothea"
                               " and not test_get_progeny"
+                              " and not test_get_ksn_omnipath"
+                              ;; XXX module 'omnipath.interactions' has no
+                              ;; attribute 'CollecTRI'
+                              " and not test_get_collectri"
                               ;; XXX This one fails because the "texts" list
                               ;; is empty, so there are no texts to adjust.
                               ;; It is not clear whether this a compatibility
@@ -1862,6 +1866,61 @@ to produce high quality figures that can be used in publications.")
 protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
+
+(define-public python-liana-py
+  (package
+    (name "python-liana-py")
+    (version "0.1.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/saezlab/liana-py")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00lqrmi38wmdpjlcafgmrnkwsbp0yvm2rya6qs8y6jfizww9ff8i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests require internet access.
+             (string-append "not test_generate_lr_resource"
+                            " and not test_generate_nondefault_lr_resource"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable directory to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs (list python-anndata
+                             python-cell2cell
+                             python-decoupler-py
+                             python-hypothesis
+                             python-ipykernel
+                             python-ipython
+                             python-mofax
+                             python-mudata
+                             python-nbconvert
+                             python-nbsphinx
+                             python-numpydoc
+                             python-omnipath
+                             python-pandas
+                             python-plotnine
+                             python-pypandoc
+                             python-scipy
+                             python-requests
+                             python-scanpy
+                             python-statsmodels
+                             python-tqdm
+                             tzdata))
+    (native-inputs
+     (list python-black python-pytest python-pytest-cov python-numpy))
+    (home-page "https://github.com/saezlab/liana-py")
+    (synopsis "LIANA is a ligand-receptor analysis framework")
+    (description "This is a Ligand-Receptor inference framework.  The
+framework enables the use of any LR method with any resources.")
+    (license license:gpl3+)))
 
 (define-public python-logomaker
   (package
@@ -4997,6 +5056,54 @@ software to answer ad hoc questions.")
            go-golang-org-x-image
            go-golang-org-x-text))))
 
+(define-public python-baltica
+  (package
+    (name "python-baltica")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dieterich-lab/Baltica")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "001ac03v9pbqqzf9pv7v8gf0296ksa4f0v3wdmpa6m9701skqi4r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; The tests need to be run from elsewhere...
+               (mkdir-p "/tmp/test")
+               (copy-recursively ".tests" "/tmp/test")
+               (with-directory-excursion "/tmp/test"
+                 (invoke "pytest" "-v" "--doctest-modules"))))))))
+    (propagated-inputs
+     (list gunicorn
+           python-anndata
+           python-click
+           python-flask
+           python-flask-wtf
+           python-h5py
+           python-numpy
+           python-psutil
+           python-pysam
+           python-pyyaml
+           python-scipy
+           snakemake-7))
+    (native-inputs (list python-cython python-pyfakefs python-pytest))
+    (home-page "https://github.com/dieterich-lab/Baltica")
+    (synopsis "Integrated splice junction usage analysis")
+    (description
+     "This framework facilitates the execution of @dfn{differential junction
+usage} (DJU) methods. Additionally, it enables the integration of results from
+multiple DJU methods.")
+    (license license:expat)))
+
 (define-public python-bamnostic
   (package
     (name "python-bamnostic")
@@ -7077,22 +7184,22 @@ sequences).")
        #:make-flags (list "CC=gcc")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           ;; The bootstrap script is missing a shebang.
+           (lambda _
+             (invoke "bash" "./bootstrap.sh")))
          (add-after 'unpack 'fix-includes
            (lambda _
              (substitute* '("src/mash/Sketch.cpp"
                             "src/mash/CommandFind.cpp"
                             "src/mash/CommandScreen.cpp")
                (("^#include \"kseq\\.h\"")
-                "#include \"htslib/kseq.h\""))
-             #t))
+                "#include \"htslib/kseq.h\""))))
          (add-after 'fix-includes 'use-c++14
            (lambda _
-             ;; capnproto 0.7 requires c++14 to build
-             (substitute* "configure.ac"
-               (("c\\+\\+11") "c++14"))
-             (substitute* "Makefile.in"
-               (("c\\+\\+11") "c++14"))
-             #t)))))
+             ;; capnproto 1.0 requires c++14 to build.
+             (substitute* (list "configure.ac" "Makefile.in")
+               (("c\\+\\+11") "c++14")))))))
     (native-inputs
      (list autoconf))
     (inputs
@@ -8325,7 +8432,7 @@ accessed/downloaded on demand across HTTP.")
     (inputs
      (list zlib lapack))
     (native-inputs
-     (list unzip))
+     (list unzip gcc-8))
     (home-page "http://pngu.mgh.harvard.edu/~purcell/plink/")
     (synopsis "Whole genome association analysis toolset")
     (description
@@ -14950,11 +15057,11 @@ activity prediction from transcriptomics data, and its R implementation
       (license license:expat))))
 
 (define-public r-liana
-  (let ((commit "efb1249af46f576d1d620956053cfa93b2cee961")
+  (let ((commit "10d81773e0874de676eb106ce56e3cf9d4fe01d3")
         (revision "1"))
     (package
       (name "r-liana")
-      (version (git-version "0.1.5" revision commit))
+      (version (git-version "0.1.11" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -14963,13 +15070,13 @@ activity prediction from transcriptomics data, and its R implementation
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0z645k26kqrfj5f1s412vwclw1q47h1zfxxrh9ijr30pxhpv6cv0"))))
+                  "0b0m8i9kava36s3cn6vnn5vmiwvqwxmcq8jacy6ccshsji3kgp09"))))
       (properties `((upstream-name . "liana")))
       (build-system r-build-system)
       (arguments
        (list
         #:phases
-        `(modify-phases %standard-phases
+        '(modify-phases %standard-phases
            ;; This is needed to find ~/.config/OmnipathR/omnipathr.yml
            (add-after 'unpack 'set-HOME
              (lambda _ (setenv "HOME" "/tmp"))))))

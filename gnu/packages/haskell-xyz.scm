@@ -12,7 +12,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 rsiddharth <s@ricketyspace.net>
-;;; Copyright © 2017–2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2019, 2021, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Tonton <tonton@riseup.net>
 ;;; Copyright © 2018, 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -2377,6 +2377,60 @@ differ only in the field we changed and @emph{that's it}: field order, comments,
 and incidental whitespace will remain unchanged.  The library aims to produce
 human-readable error messages when things go wrong.")
     (license license:bsd-3)))
+
+(define-public ghc-config-schema
+  (package
+    (name "ghc-config-schema")
+    (version "1.2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "config-schema" version))
+       (sha256
+        (base32 "10mp76j2gxcb51865lb6cf3nkc2nc7fwarkghb6yz71q6sbrg3yx"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("3"
+                         "16rwj3vcafq4fqqh5rq1na1g4syk63kki2gjinb6yj3h8s59vpp7")))
+    (inputs
+     (list ghc-config-value
+           ghc-free
+           ghc-kan-extensions
+           ghc-semigroupoids))
+    (properties '((upstream-name . "config-schema")))
+    (home-page "https://github.com/glguy/config-schema")
+    (synopsis "Schema definitions for the config-value package")
+    (description
+     "This package makes it possible to define schemas for use when loading
+configuration files using the config-value format.  These schemas can be used to
+process a configuration file into a Haskell value or to automatically generate
+documentation for the file format.")
+    (license license:isc)))
+
+(define-public ghc-config-value
+  (package
+    (name "ghc-config-value")
+    (version "0.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "config-value" version))
+       (sha256
+        (base32 "0pkcwxg91wali7986k03d7q940hb078hlsxfknqhkp2spr3d1f3w"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("3"
+                         "1qiqaad3zpgvwpcb5p1q9aaska82bfm75qrsfdcdlwc70r7w57gj")))
+    (native-inputs
+     (list ghc-alex ghc-happy))
+    (properties '((upstream-name . "config-value")))
+    (home-page "https://github.com/glguy/config-value")
+    (synopsis "Simple, layout-based value language similar to YAML or JSON")
+    (description
+     "This package implements a language similar to YAML or JSON but with fewer
+special cases and fewer dependencies.  It emphasizes layout structure for
+sections and lists, and requires quotes around strings.")
+    (license license:expat)))
 
 (define-public ghc-configurator
   (package
@@ -5339,6 +5393,35 @@ interface for statistics based on hmatrix and GSL.")
 functions for Haskell.")
     (license license:gpl3+)))
 
+(define-public ghc-hookup
+  (package
+    (name "ghc-hookup")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "hookup" version))
+       (sha256
+        (base32 "02prkwj4rj8g330z17bpjh7hpwfdvasaxsk74mcvbi03gjpydrib"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1x4hxcb81rczpywcda3s9jbh2gs1sfwvd7wzv3cxxkbd4smlrh1r")))
+    (inputs
+     (list ghc-async
+           ghc-network
+           ghc-attoparsec
+           ghc-hsopenssl
+           ghc-hsopenssl-x509-system))
+    (properties '((upstream-name . "hookup")))
+    (home-page "https://github.com/glguy/irc-core")
+    (synopsis "Abstracts network connections over SOCKS5 and TLS")
+    (description
+     "This package provides an abstraction for communicating with line-oriented
+network services while abstracting over the use of SOCKS5 and TLS (via
+OpenSSL)")
+    (license license:isc)))
+
 (define-public ghc-hostname
   (package
     (name "ghc-hostname")
@@ -6088,6 +6171,32 @@ removed.  Both IPv4 and IPv6 are supported.")
 Jupyter notebooks, along with @code{ToJSON} and @code{FromJSON}
 instances for conversion to and from JSON .ipynb files.")
     (license license:bsd-3)))
+
+(define-public ghc-irc-core
+  (package
+  (name "ghc-irc-core")
+  (version "2.11")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "irc-core" version))
+     (sha256
+      (base32 "13jkfb30kynqd55c2slxjg98lr076rn1ymsxniwp0bssjzizgnfc"))))
+  (build-system haskell-build-system)
+  (native-inputs
+   (list ghc-hunit))
+  (inputs
+   (list ghc-base64-bytestring
+         ghc-attoparsec
+         ghc-hashable
+         ghc-primitive ghc-vector))
+  (properties '((upstream-name . "irc-core")))
+  (home-page "https://github.com/glguy/irc-core")
+  (synopsis "IRC core library for glirc")
+  (description
+   "This is the IRC core library for glirc.  The client is available in its own
+glirc package.")
+  (license license:isc)))
 
 (define-public ghc-iwlib
   (package
@@ -13774,6 +13883,48 @@ and from some existing type with an Unbox instance.")
      "A Haskell 98 logically uninhabited data type, used to indicate that a
 given term should not exist.")
     (license license:bsd-3)))
+
+(define-public ghc-vty
+  (package
+  (name "ghc-vty")
+  (version "5.35.1")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (hackage-uri "vty" version))
+     (sha256
+      (base32 "062dpz8fxrnggzpl041zpbph0xj56jki98ajm2s78dldg5vy0c9k"))))
+  (build-system haskell-build-system)
+  (native-inputs
+   (list ghc-hunit
+         ghc-quickcheck
+         ghc-quickcheck-assertions
+         ghc-random
+         ghc-smallcheck
+         ghc-string-qq
+         ghc-test-framework
+         ghc-test-framework-smallcheck
+         ghc-test-framework-hunit))
+  (inputs
+   (list ghc-ansi-terminal
+         ghc-blaze-builder
+         ghc-hashable
+         ghc-microlens
+         ghc-microlens-mtl
+         ghc-microlens-th
+         ghc-parallel
+         ghc-utf8-string
+         ghc-vector))
+  (arguments
+   `(#:cabal-revision ("1"
+                       "1zqcvgqhcij92241g20zn3c3a4033biid3f3cqg05q1ygrmznxb5")))
+  (properties '((upstream-name . "vty")))
+  (home-page "https://github.com/jtdaugherty/vty")
+  (synopsis "Simple terminal UI library")
+  (description
+   "vty is a terminal GUI library in the niche of ncurses, intended to be easy
+to use and to provide good support for common terminal types.")
+  (license license:bsd-3)))
 
 (define-public ghc-wave
   (package

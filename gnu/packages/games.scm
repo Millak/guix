@@ -1160,7 +1160,7 @@ allows users to brew while offline.")
 (define-public corsix-th
   (package
     (name "corsix-th")
-    (version "0.66")
+    (version "0.67")
     (source
      (origin
        (method git-fetch)
@@ -1169,29 +1169,28 @@ allows users to brew while offline.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sgsvhqgiq6v1v5am7ghja8blhlrj0y1arvq6xq1j5fwa7c59ihs"))))
+        (base32 "14996kbrwdrd0gpz19il2i4p650qdhjw8v8ka3aigk6pl4kda3sq"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-binary
-           (lambda _
-             ;; Set Lua module paths and default MIDI soundfont on startup.
-             (let* ((out (assoc-ref %outputs "out"))
-                    (fluid (assoc-ref %build-inputs "fluid-3"))
-                    (lua-version ,(version-major+minor (package-version lua)))
-                    (lua-cpath
-                     (map (lambda (lib)
-                            (string-append
-                             (assoc-ref %build-inputs (string-append "lua-" lib))
-                             "/lib/lua/" lua-version "/?.so"))
-                          '("filesystem" "lpeg"))))
-               (wrap-program (string-append out "/bin/corsix-th")
-                 `("LUA_CPATH" ";" = ,lua-cpath)
-                 `("SDL_SOUNDFONTS" ":" suffix
-                   (,(string-append fluid "/share/soundfonts/FluidR3Mono_GM.sf3")))))
-             #t)))
-       #:tests? #f)) ; TODO need busted package to run tests
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-binary
+            (lambda _
+              ;; Set Lua module paths and default MIDI soundfont on startup.
+              (let* ((fluid #$(this-package-input "fluid-3"))
+                     (lua-version #$(version-major+minor (package-version lua)))
+                     (lua-cpath
+                      (map (lambda (lib)
+                             (string-append
+                              (assoc-ref %build-inputs (string-append "lua-" lib))
+                              "/lib/lua/" lua-version "/?.so"))
+                           '("filesystem" "lpeg"))))
+                (wrap-program (string-append #$output "/bin/corsix-th")
+                  `("LUA_CPATH" ";" = ,lua-cpath)
+                  `("SDL_SOUNDFONTS" ":" suffix
+                    (,(string-append fluid "/share/soundfonts/FluidR3Mono_GM.sf3"))))))))
+      #:tests? #f)) ; TODO need busted package to run tests
     ;; Omit Lua-Socket dependency to disable automatic updates.
     (inputs
      (list ffmpeg
@@ -3740,7 +3739,7 @@ object-oriented programming.")
                                (assoc-ref inputs "chess")
                                "/bin/gnuchessx"))))))))
     (inputs
-     (list alsa-utils chess gtk+-2 librsvg))
+     (list alsa-utils chess gtk+-2 (librsvg-for-system)))
     (native-inputs
      (list texinfo pkg-config))
     (home-page "https://www.gnu.org/software/xboard/")
@@ -4684,14 +4683,14 @@ world}, @uref{http://evolonline.org, Evol Online} and
 (define openttd-engine
   (package
     (name "openttd-engine")
-    (version "13.3")
+    (version "13.4")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://cdn.openttd.org/openttd-releases/"
                                  version "/openttd-" version "-source.tar.xz"))
              (sha256
               (base32
-               "14kiksw9qb37ryg6xkq4gahpvvd5yxwqz21sqws525k7zg91dyma"))))
+               "0vql1l25ym36vm4g76xl38kijf2gzb1m1x3ri0cf4n7y3fhfn79a"))))
     (build-system cmake-build-system)
     (inputs
      (list allegro
@@ -4789,7 +4788,7 @@ OpenGFX provides you with...
 (define openttd-opensfx
   (package
     (name "openttd-opensfx")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
@@ -4797,8 +4796,7 @@ OpenGFX provides you with...
              "https://cdn.openttd.org/opensfx-releases/"
              version "/opensfx-" version "-source.tar.xz"))
        (sha256
-        (base32
-         "0aym026lg0r7dp3jxxs9c0rj8lwy1fz3v9hmk3mml6sycsg3fv42"))))
+        (base32 "0p336bn6brnbyrf537x36ad9rfz16cjwyzwws4lmfvnql8ycpjj3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list catcodec
@@ -5167,7 +5165,7 @@ are only two levels to play with, but they are very addictive.")
                (("\"beep\"")
                 (string-append "\"" (assoc-ref inputs "beep") "/bin/beep\"")))
              #t)))))
-    (inputs (list avahi beep gtk+ librsvg))
+    (inputs (list avahi beep gtk+ (librsvg-for-system)))
     (native-inputs (list intltool itstool libxml2 pkg-config))
     (synopsis "Board game inspired by The Settlers of Catan")
     (description "Pioneers is an emulation of the board game The Settlers of
@@ -5816,7 +5814,7 @@ safety of the Chromium vessel.")
        ("fribidi" ,fribidi)
        ("gettext" ,gettext-minimal)
        ("libpng" ,libpng)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libpaper" ,libpaper)
        ("netpbm" ,netpbm)
        ("sdl" ,(sdl-union (list sdl sdl-mixer sdl-ttf sdl-image)))))
@@ -7756,7 +7754,7 @@ Github or Gitlab.")
             (base32
              "1s86cd36rwkff329mb1ay1wi5qqyi35564ppgr3f4qqz9wj9vs2m"))))
        ("gettext" ,gettext-minimal)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("po4a" ,po4a)
        ("python" ,python-wrapper)))
     (inputs
@@ -7979,7 +7977,7 @@ original.")
 (define xonotic-data
   (package
     (name "xonotic-data")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
@@ -7987,7 +7985,7 @@ original.")
                            version ".zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1r9pdrrki7mkdw99zh9m7911fqldsfdnl0nrp5cv1bk2hcism4hg"))))
+        (base32 "0kcnps65k81sm56s5dclahvllilnir3ix9kf5xr9jx0fh26hz1ah"))))
     (build-system trivial-build-system)
     (native-inputs (list unzip))
     (arguments

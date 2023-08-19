@@ -1372,7 +1372,7 @@ Encryption to Gajim.")
            at-spi2-core
            bash-minimal
            cairo
-           librsvg
+           (librsvg-for-system)
            glib
            glib-networking
            gpgme
@@ -2089,7 +2089,7 @@ is also scriptable and extensible via Guile.")
 (define-public libstrophe
   (package
     (name "libstrophe")
-    (version "0.12.2")
+    (version "0.12.3")
     (source
      (origin
        (method git-fetch)
@@ -2098,7 +2098,7 @@ is also scriptable and extensible via Guile.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ispq6sf7pq02irrqfga4i1xhrg1pg0f86qvvnix15clm8i1agld"))))
+        (base32 "17wxaqdcwhm34bl31g9fmsgmnsd7znyxcb9dhw9lmaghkql1sf0h"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags '(list "--disable-static")
@@ -2107,8 +2107,7 @@ is also scriptable and extensible via Guile.")
          (add-after 'unpack 'patch-make
            (lambda _
              (substitute* "Makefile.am"
-               (("'\\^xmpp_'") "'.'"))
-             #t))
+               (("'\\^xmpp_'") "'.'"))))
          (add-after 'install-licence-files 'install-extra-licence-files
            (lambda _
             (let ((license-directory (string-append #$output

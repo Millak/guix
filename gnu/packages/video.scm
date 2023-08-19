@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen@protonmail.com>
-;;; Copyright © 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021, 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -138,6 +138,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -164,7 +165,9 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages music)
   #:use-module (gnu packages mp3)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
@@ -193,6 +196,7 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages spice)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
@@ -1110,7 +1114,7 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public pipe-viewer
   (package
     (name "pipe-viewer")
-    (version "0.4.4")
+    (version "0.4.8")
     (source
      (origin
        (method git-fetch)
@@ -1120,7 +1124,7 @@ H.264 (MPEG-4 AVC) video streams.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ka5az3aq2khql9nlxnrbkbs7afmp07r2fkx5pvmh6mqnriaimq3"))))
+        (base32 "0x5jq9vr6qr2zckz509wscbf3gblifcksf7vpzq9iy3jma5fnmkc"))))
     (build-system perl-build-system)
     (arguments
      `(#:imported-modules
@@ -2154,7 +2158,7 @@ streaming protocols.")
     (inputs
      (list alsa-lib
            cdparanoia
-           ffmpeg-4
+           ffmpeg-5
            fontconfig
            freetype
            giflib
@@ -3524,6 +3528,81 @@ and JACK.")
     (home-page "https://obsproject.com")
     (license license:gpl2+)))
 
+(define-public obs-looking-glass
+  (package
+    (name "obs-looking-glass")
+    (version "B5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gnif/LookingGlass")
+             (commit version)
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09mn544x5hg1z31l92ksk7fi7yj9r8xdk0dcl9fk56ivcr452ylm"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no test target
+      #:make-flags #~(list "CC=gcc")
+      #:configure-flags
+      #~(list "-DGLOBAL_INSTALLATION=ON"
+              "-DUSE_CMAKE_LIBDIR=ON"
+              (string-append "-DOBS_PLUGIN_PREFIX="
+                             #$output "/lib/obs-plugins"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'chdir-to-source
+            (lambda* (#:key outputs #:allow-other-keys)
+              (chdir "obs")
+              #t))
+          (add-after 'chdir-to-source 'substitute-output
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("\\$\\{OBS_PLUGIN_PREFIX\\}/\\$\\{CMAKE_PROJECT_NAME\\}/bin/\\$\\{OBS_PLUGIN_DIR\\}")
+                 (string-append (string-append #$output "/lib/obs-plugins"))))
+              #t)))))
+    (native-inputs (list libconfig nettle pkg-config))
+    (inputs
+     (list bash-minimal
+           fontconfig
+           freetype
+           glu
+           gmp
+           libglvnd
+           libiberty
+           libx11
+           libxcursor
+           libxfixes
+           libxi
+           libxinerama
+           libxkbcommon
+           libxpresent
+           libxrandr
+           libxscrnsaver
+           mesa
+           obs
+           openssl
+           sdl2
+           sdl2-ttf
+           spice-protocol
+           wayland
+           wayland-protocols
+           `(,zlib "static")))
+    (home-page "https://looking-glass.io/")
+    (synopsis "Looking Glass video feed to OBS as a video source")
+    (description "This OBS plugin allows a Looking Glass video feed to OBS as
+a video source with the included OBS plugin.  This provides a lower-latency
+alternative to capturing the Looking Glass client window with a Screen or
+Window Capture source.
+
+This may help improve your viewers watching experience, and allows you to use
+your host privately.")
+    (license license:gpl2+)))
+
 (define-public obs-websocket
   ;; Functionality was merged into OBS.
   (deprecated-package "obs-websocket" obs))
@@ -4504,7 +4583,7 @@ tools for styling them, including a built-in real-time video preview.")
            python-pygobject))
     ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
     ;; otherwise pitivi fails to launch.
-    (propagated-inputs (list librsvg))
+    (propagated-inputs (list (librsvg-for-system)))
     (arguments
      `(#:glib-or-gtk? #t
        #:phases

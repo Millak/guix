@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2022 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Meiyo Peng <meiyo@riseup.net>
@@ -909,7 +909,7 @@ image viewer.")
     (inputs
      (list imlib2
            libsm
-           librsvg
+           (librsvg-for-system)
            libxft
            libxml2
            openbox
@@ -1078,7 +1078,7 @@ like @command{tar} and @command{zip}.")
     (license license:gpl2+)))
 
 (define-public lxqt-connman-applet
-  ;; since the main developers didn't release any version yet,  their 
+  ;; since the main developers didn't release any version yet,  their
   ;; latest commit on `master` branch at the moment used for this version.
   (let ((commit "db1618d58fd3439142c4e44b24cba0dbb68b7141")
         (revision "0"))

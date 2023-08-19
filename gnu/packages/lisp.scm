@@ -24,6 +24,7 @@
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -993,7 +994,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "289")
+    (version "291")
     (source
      (origin
        (method git-fetch)
@@ -1002,7 +1003,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jcz5iggp4mz5bzgnifr4xdpvz0sxa8cminynhdcs2jqr073xy8b"))))
+        (base32 "0nsb302arpd2mw2z2l12j6yg9pp94lfb79h3sym72ih7rmklnfx7"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1240,7 +1241,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.27.0")
+    (version "1.29.1")
     (source
      (origin
        (method git-fetch)
@@ -1249,7 +1250,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fd5z9xviwfv635wxil20qjjigb275p3ns9cvxhfx27ca8kkphsj"))))
+        (base32 "18684mxnb0jk63mkzi36zlmd8rjjv0msx3xxpmn67mhrnwz4x861"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

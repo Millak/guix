@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2019, 2020, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -35,14 +35,14 @@
 (define-public entr
   (package
     (name "entr")
-    (version "5.2")
+    (version "5.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://eradman.com/entrproject/code/entr-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1063b33bqggyqd0h7cvcvznpgiy9s2zqkdsc1q622xdh8sfk0zi3"))))
+                "17hz4aca6dsh6z58625jg8fbk5m9ng3s95pl4s6ws79zrk9dw7a9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -64,18 +64,19 @@
                (("/bin/cat" command)
                 (search-input-file inputs command))
                (("/usr(/bin/clear)" _ command)
-                (search-input-file inputs command)))
-             #t)))))
+                (search-input-file inputs command))))))))
     (inputs
      (list bash coreutils ncurses))
     (home-page "https://eradman.com/entrproject/")
     (synopsis "Run arbitrary commands when files change")
     (description
-     "entr is a zero-configuration tool with no external build or run-time
-dependencies.  The interface to entr is not only minimal, it aims to be simple
-enough to create a new category of ad hoc automation.  These micro-tests
-reduce keystrokes, but more importantly they emphasize the utility of
-automated checks.")
+     "@acronym{entr, event notify test runner} reads a list of file names from
+standard input and executes a given command (including arguments) whenever any
+of them change.  It aims to facilitate rapid feedback and automated testing.
+
+For example, you can use @command{entr} to automatically invoke @command{make}
+each time you modify a source code file.  It supports interactive utilities and
+doesn't waste resources by polling for changes.")
 
     ;; Per 'LICENSE', portability code under missing/ is under BSD-2.
     (license isc)))

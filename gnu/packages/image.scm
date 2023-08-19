@@ -1432,6 +1432,7 @@ language bindings to VIGRA.")
   (package
     (name "libwebp")
     (version "1.2.4")
+    (replacement libwebp/fixed)
     (source
      (origin
        ;; No tarballs are provided for >0.6.1.
@@ -1469,6 +1470,22 @@ with lossy compression and typically provides 3x smaller file sizes compared
 to PNG when lossy compression is acceptable for the red/green/blue color
 channels.")
     (license license:bsd-3)))
+
+(define libwebp/fixed
+  (package
+    (inherit libwebp)
+    (name "libwebp")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://chromium.googlesource.com/webm/libwebp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1aas6gwy7kfcq34cil781kcsl286khh9grwcx7k4d2n1g7zcpl3m"))))))
 
 (define-public libmng
   (package
@@ -2571,7 +2588,7 @@ GIF, TIFF, WEBP, BMP, PNG, XPM formats.")
        ("gettext" ,gettext-minimal)))
     (inputs
      (list gtk+
-           librsvg
+           (librsvg-for-system)
            hicolor-icon-theme
            libmypaint
            mypaint-brushes

@@ -3261,6 +3261,23 @@ Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-jose-go-jose-v3
+  (package
+    (inherit go-gopkg-in-square-go-jose-v2)
+    (name "go-github-com-go-jose-go-jose-v3")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-jose/go-jose")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fnw0p49wc9gmd2xcji2x9jf97dgg9igagd5m6bmq3nw9jjfqdc5"))))
+    (arguments
+     (list #:import-path "github.com/go-jose/go-jose/v3"))))
+
 (define-public go-gopkg.in-tomb.v2
   (let ((commit "d5d1b5820637886def9eef33e03a27a9f166942c")
         (revision "0"))
@@ -9571,6 +9588,28 @@ use one of our glamorous default themes.")
      "This package enables OpenID Connect support for the
 @code{go-golang-org-x-oauth2} package.")
     (license license:asl2.0)))
+
+(define-public go-github-com-coreos-go-oidc-v3
+  (package
+    (inherit go-github-com-coreos-go-oidc)
+    (name "go-github-com-coreos-go-oidc-v3")
+    (version "3.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/coreos/go-oidc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sbm6n3lp48lymn0g921afhq2j6inb38w3wy5rhyx9h8gpzhnxx9"))))
+    (arguments
+     (list ;; no Go files in [...]/src/github.com/coreos/go-oidc/v3.
+           #:import-path "github.com/coreos/go-oidc/v3/oidc"
+           #:unpack-path "github.com/coreos/go-oidc/v3"))
+    (propagated-inputs
+     (list go-github-com-go-jose-go-jose-v3
+           go-golang-org-x-oauth2))))
 
 (define-public go-github-com-coreos-go-semver
   (package

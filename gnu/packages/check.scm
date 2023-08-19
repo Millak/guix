@@ -785,7 +785,7 @@ favourite continuous integration framework.  Among Cukinia features are:
                #t))))))
     (propagated-inputs
      (list python-ply))
-    (home-page "https://cxxtest.com/")
+    (home-page "https://web.archive.org/web/20230604070022/http://cxxtest.com/")
     (synopsis "Unit testing framework for C++")
     (description "CxxTest is a unit testing framework for C++ that is similar
 in spirit to JUnit, CppUnit, and xUnit.  CxxTest does not require precompiling

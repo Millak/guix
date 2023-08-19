@@ -180,17 +180,30 @@ host	all	all	::1/128 	md5"))
   (data-directory     postgresql-configuration-data-directory
                       (default "/var/lib/postgresql/data"))
   (extension-packages postgresql-configuration-extension-packages
-                      (default '())))
+                      (default '()))
+  (create-account?    postgresql-configuration-create-account?
+                      (default #t))
+  (uid                postgresql-configuration-uid
+                      (default #f))
+  (gid                postgresql-configuration-gid
+                      (default #f)))
 
-(define %postgresql-accounts
-  (list (user-group (name "postgres") (system? #t))
-        (user-account
-         (name "postgres")
-         (group "postgres")
-         (system? #t)
-         (comment "PostgreSQL server user")
-         (home-directory "/var/empty")
-         (shell (file-append shadow "/sbin/nologin")))))
+(define (create-postgresql-account config)
+  (match-record config <postgresql-configuration>
+    (create-account? uid gid)
+    (if (not create-account?) '()
+        (list (user-group
+               (name "postgres")
+               (id gid)
+               (system? #t))
+              (user-account
+               (name "postgres")
+               (group "postgres")
+               (system? #t)
+               (uid uid)
+               (comment "PostgreSQL server user")
+               (home-directory "/var/empty")
+               (shell (file-append shadow "/sbin/nologin")))))))
 
 (define (final-postgresql postgresql extension-packages)
   (if (null? extension-packages)
@@ -327,7 +340,7 @@ host	all	all	::1/128 	md5"))
           (service-extension activation-service-type
                              postgresql-activation)
           (service-extension account-service-type
-                             (const %postgresql-accounts))
+                             create-postgresql-account)
           (service-extension
            profile-service-type
            (compose list postgresql-configuration-postgresql))))
@@ -363,7 +376,15 @@ and stores the database cluster in @var{data-directory}."
   (permissions      postgresql-role-permissions
                     (default '(createdb login))) ;list
   (create-database? postgresql-role-create-database?  ;boolean
-                    (default #f)))
+                    (default #f))
+  (encoding postgresql-role-encoding ;string
+            (default "UTF8"))
+  (collation postgresql-role-collation ;string
+             (default "en_US.utf8"))
+  (ctype postgresql-role-ctype ;string
+         (default "en_US.utf8"))
+  (template postgresql-role-template ;string
+            (default "template1")))
 
 (define-record-type* <postgresql-role-configuration>
   postgresql-role-configuration make-postgresql-role-configuration
@@ -392,7 +413,8 @@ and stores the database cluster in @var{data-directory}."
            (append-map
             (lambda (role)
               (match-record role <postgresql-role>
-                (name permissions create-database?)
+                (name permissions create-database? encoding collation ctype
+                      template)
                 `("SELECT NOT(EXISTS(SELECT 1 FROM pg_catalog.pg_roles WHERE \
 rolname = '" ,name "')) as not_exists;\n"
 "\\gset\n"
@@ -402,7 +424,11 @@ rolname = '" ,name "')) as not_exists;\n"
 ";\n"
 ,@(if create-database?
       `("CREATE DATABASE \"" ,name "\""
-        " OWNER \"" ,name "\";\n")
+        " OWNER \"" ,name "\"\n"
+        " ENCODING '" ,encoding "'\n"
+        " LC_COLLATE '" ,collation "'\n"
+        " LC_CTYPE '" ,ctype "'\n"
+        " TEMPLATE " ,template ";")
       '())
 "\\endif\n")))
             roles)))
