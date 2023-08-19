@@ -754,10 +754,14 @@ OpenGL graphics API.")
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((mesa (dirname (search-input-file inputs "lib/libGL.so"))))
+              (let ((mesa-lib
+                     (lambda (file)
+                       (search-input-file inputs (string-append "lib/" file)))))
                 (substitute* (find-files "." "\\.[ch]$")
-                  (("libGL.so.1") (string-append mesa "/libGL.so.1"))
-                  (("libEGL.so.1") (string-append mesa "/libEGL.so.1")))))))))
+                  (("libGL.so.1") (mesa-lib "libGL.so.1"))
+                  (("libEGL.so.1") (mesa-lib "libEGL.so.1"))
+                  (("libGLESv1_CM.so.1") (mesa-lib "libGLESv1_CM.so.1"))
+                  (("libGLESv2.so.2") (mesa-lib "libGLESv2.so.2")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python))
