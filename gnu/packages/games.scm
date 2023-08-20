@@ -430,7 +430,7 @@ mouse and joystick control, and original music.")
      `(#:tests? #f                      ; no check target
        #:make-flags
        (list "CC=gcc"
-             "CFLAGS=-D_FILE_OFFSET_BITS=64"
+             "CFLAGS=-D_FILE_OFFSET_BITS=64 -fcommon"
              (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
