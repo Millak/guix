@@ -713,7 +713,8 @@ canyons and wait for the long I-shaped block to clear four rows at a time.")
      (list ncurses))
     (arguments
      `(#:tests? #f                      ;no tests
-       #:make-flags '("CC=gcc")
+       #:make-flags '("CC=gcc"
+                      "CFLAGS=-O2 -DHAVE_IPV6 -g -Wall -fcommon")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ;no configure script
