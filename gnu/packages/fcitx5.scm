@@ -87,7 +87,7 @@ client.")
 (define-public fcitx5
   (package
     (name "fcitx5")
-    (version "5.0.23")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
@@ -95,13 +95,10 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5/fcitx5-"
              version "_dict.tar.xz"))
        (sha256
-        (base32 "1w26v0a8qizv8flpkmg04b42kwym6ca1a1chng7j2j1xizjhiw0p"))))
-    (build-system cmake-build-system)
+        (base32 "1a1d3bcxddv3hsmffgf608arhamia17bq82q932sy5zl9j8s423y"))))
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DCLDR_DIR="
-                            (assoc-ref %build-inputs "unicode-cldr-common")
-                            "/share/unicode/cldr"))))
+     (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF")))
+    (build-system cmake-build-system)
     (inputs
      `(("cairo" ,cairo)
        ("cairo-xcb" ,cairo-xcb)
@@ -115,16 +112,11 @@ client.")
        ("iso-codes" ,iso-codes)
        ("json-c" ,json-c)
        ("libevent" ,libevent)
-       ("libpthread-stubs" ,libpthread-stubs)
        ("libuuid" ,util-linux "lib")
-       ("libx11" ,libx11)
        ("libxcb" ,libxcb)
-       ("libxfixes" ,libxfixes)
-       ("libxinerama" ,libxinerama)
        ("libxkbcommon" ,libxkbcommon)
        ("libxkbfile" ,libxkbfile)
        ("pango" ,pango)
-       ("unicode-cldr-common" ,unicode-cldr-common)
        ("wayland" ,wayland)
        ("wayland-protocols" ,wayland-protocols)
        ("xcb-imdkit" ,xcb-imdkit)
