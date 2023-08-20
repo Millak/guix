@@ -1913,7 +1913,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.41.7")
+    (version "0.41.8")
     (source
      (origin
        (method url-fetch)
@@ -1921,7 +1921,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "01sg5fag8hc115ff7y7k3n060271akh66g96hmrz45mhls5d40n6"))))
+        (base32 "0m2c3g8c6wxgyyvmraln4bx0qn949j9rin593s1c01hzah435cac"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
