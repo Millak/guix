@@ -164,14 +164,14 @@ client.")
 (define-public libime
   (package
     (name "libime")
-    (version "1.0.17")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.fcitx-im.org/fcitx5/libime/libime-"
                            version "_dict.tar.xz"))
        (sha256
-        (base32 "00d191nghqkcxky5i2j5v8105ckhfh0bdjbkk8swyndjp35bn54f"))))
+        (base32 "0jqr9riwygr3c9qzs8hx46smhgys68bf6m70fmam819903a9gpf0"))))
     (build-system cmake-build-system)
     (inputs
      (list fcitx5 boost))
