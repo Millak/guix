@@ -2018,7 +2018,7 @@ such as chess or stockfish.")
 (define-public gnubg
   (package
     (name "gnubg")
-    (version "1.06.002")
+    (version "1.07.001")
     (source
      (origin
        (method url-fetch)
@@ -2026,10 +2026,10 @@ such as chess or stockfish.")
                            version "-sources.tar.gz"))
        (sha256
         (base32
-         "11xwhcli1h12k6rnhhyq4jphzrhfik7i8ah3k32pqw803460n6yf"))))
+         "07l2srlm05c99l4pppba8l54bnh000ns2rih5h8rzbcw84lrffbj"))))
     (build-system gnu-build-system)
     (inputs (list ;; XXX: Build with an older Pango for 'pango_font_get_hb_font' and
-                  ;; 'pango_coverage_get_type'.  Try removing this for versions > 1.06.002.
+                  ;; 'pango_coverage_get_type'.  Try removing this for versions > 1.07.001.
                   pango-1.42
                   glib
                   readline
