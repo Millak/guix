@@ -1542,7 +1542,7 @@ effects and music to make a completely free game.")
 (define-public freedroidrpg
   (package
     (name "freedroidrpg")
-    (version "1.0rc2")
+    (version "1.0")
     (source
      (origin
        (method url-fetch)
@@ -1553,7 +1553,7 @@ effects and music to make a completely free game.")
                              "freedroidRPG-" major+minor "/"
                              "freedroidRPG-" version ".tar.gz")))
        (sha256
-        (base32 "10jknaad2ph9j5bs4jxvpnl8rq5yjlq0nasv98f4mki2hh8yiczy"))))
+        (base32 "1kxvyg70r9x8q40kn5lr3h1q60d6jx9mkvxls4aflj22b45vg5br"))))
     (build-system gnu-build-system)
     (arguments
      (list
