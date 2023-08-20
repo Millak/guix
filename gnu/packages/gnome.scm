@@ -1775,7 +1775,7 @@ client devices can handle.")
            pkg-config
            vala))
     (inputs
-     (list gcr
+     (list gcr-3
            (if (supported-package? gtk) gtk gtk+)
            iso-codes
            mobile-broadband-provider-info
@@ -2021,7 +2021,7 @@ formats like PNG, SVG, PDF and EPS.")
     (inputs
      (list cyrus-sasl glib-networking vala))
     (propagated-inputs
-     `(("gcr" ,gcr)
+     `(("gcr" ,gcr-3)
        ("glib" ,glib)
        ("gnome-online-accounts" ,gnome-online-accounts)
        ("json-glib" ,json-glib)
@@ -2373,7 +2373,7 @@ the font would look under various sizes.")
 (define-public gcr
   (package
     (name "gcr")
-    (version "3.41.1")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2381,7 +2381,7 @@ the font would look under various sizes.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kx2pv272p0qc0nq1287gciyn34d95yxg41vq3lzxfzyqaijhwdv"))))
+                "0z7cviri25qy2v042hw6x731bj1azpx8plrd7ssbmrqf9y95an64"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2394,11 +2394,11 @@ the font would look under various sizes.")
               (substitute* (find-files "." "^meson\\.build$")
                 ((".*'--fatal-warnings',.*") ""))))
           (add-after 'unpack 'skip-gtk-update-icon-cache
-            ;; Don't create 'icon-theme.cache'.
             (lambda _
-              (substitute* "meson_post_install.py"
-                (("gtk-update-icon-cache") "true"))))
-          (add-before 'check 'pre-check
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+                    (add-before 'check 'pre-check
             (lambda _
               ;; Some tests expect to write to $HOME.
               (setenv "HOME" "/tmp")))
@@ -2432,11 +2432,9 @@ the font would look under various sizes.")
            pkg-config
            python-wrapper
            vala))
-    ;; mentioned in gck.pc, gcr.pc and gcr-ui.pc
-    (propagated-inputs
-     (list glib
-           gtk+
-           p11-kit))
+    ;; GLib and p11-kit are mentioned in gck.pc and gcr.pc
+    ;; GTK is kept for symmetry with gcr-3, which propagates gtk+.
+    (propagated-inputs (list glib gtk p11-kit))
     (home-page "https://www.gnome.org")
     (synopsis "Libraries for displaying certificates and accessing key stores")
     (description
@@ -2444,6 +2442,31 @@ the font would look under various sizes.")
 accessing key stores.  It also provides the viewer for crypto files on the
 GNOME Desktop.")
     (license license:lgpl2.1+)))
+
+(define-public gcr-3
+  (package
+    (inherit gcr)
+    (name "gcr")
+    (version "3.41.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version)  "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0kx2pv272p0qc0nq1287gciyn34d95yxg41vq3lzxfzyqaijhwdv"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gcr)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'skip-gtk-update-icon-cache
+              ;; Don't create 'icon-theme.cache'.
+              (lambda _
+                (substitute* "meson_post_install.py"
+                  (("gtk-update-icon-cache") "true"))))))))
+    ;; mentioned in gck.pc, gcr.pc and gcr-ui.pc
+    (propagated-inputs (list glib gtk+ p11-kit))))
 
 (define-public gdl
   (package
@@ -2570,7 +2593,7 @@ GNOME Desktop.")
                             "1"))))))))
     (inputs
      (list dbus
-           gcr
+           gcr-3
            libgcrypt
            linux-pam
            openssh))
@@ -2587,7 +2610,7 @@ GNOME Desktop.")
            pkg-config
            python-wrapper))             ;for tests
     (propagated-inputs
-     (list gcr))
+     (list gcr-3))
 
     ;; XXX: There are concerning test failures on i686-linux and other 32-bit
     ;; platforms: <https://gitlab.gnome.org/GNOME/gnome-keyring/-/issues/124>.
@@ -4374,7 +4397,7 @@ engineering.")
              (setenv "HOME" (getcwd)))))))
     (inputs
      (list gtk+
-           gcr
+           gcr-3
            gnupg
            gpgme
            openldap
@@ -5952,7 +5975,7 @@ services for numerous locations.")
            baobab
            colord
            cups
-           gcr
+           gcr-3
            geoclue
            geocode-glib-with-libsoup2
            gnome-desktop
@@ -6939,7 +6962,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
            dbus
            elogind
            fuse
-           gcr
+           gcr-3
            glib
            gnome-online-accounts
            gsettings-desktop-schemas
@@ -7117,7 +7140,7 @@ almost all of them.")
            xorg-server-for-tests))
     (inputs
      (list avahi
-           gcr
+           gcr-3
            glib-networking
            gnome-desktop
            gsettings-desktop-schemas
@@ -7402,7 +7425,7 @@ classes for commonly used data structures.")
                              (python:site-packages %build-inputs %outputs)
                              "/gi/overrides"))))
     (native-inputs
-     (list gcr
+     (list gcr-3
            `(,glib "bin")
            pkg-config
            python
@@ -7454,7 +7477,7 @@ metadata in photo and video files of various formats.")
            python
            vala))
     (inputs
-     (list gcr
+     (list gcr-3
            gexiv2
            gst-plugins-base
            gstreamer
@@ -7981,7 +8004,7 @@ window manager.")
            gtk+))                       ; required by goa-backend-1.0.pc
     (inputs
      (list docbook-xsl
-           gcr
+           gcr-3
            json-glib
            libsecret
            mit-krb5
@@ -8097,7 +8120,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
     (inputs
      (list bdb
            boost
-           gcr
+           gcr-3
            gnome-online-accounts
            json-glib
            libcanberra
@@ -8503,7 +8526,7 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
            libnma
            pkg-config))
     (inputs
-     (list gcr
+     (list gcr-3
            gtk
            gtk+
            kmod
@@ -8634,7 +8657,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
            ;; nm-applet need by org.gnome.nm-applet.gschema.xml
            libnma))
     (inputs
-     (list gcr
+     (list gcr-3
            libappindicator
            libgudev
            libsecret
@@ -9047,7 +9070,7 @@ devices using the GNOME desktop.")
            colord-gtk
            cups
            dconf
-           gcr
+           gcr-3
            gnome-bluetooth
            gnome-desktop
            gnome-online-accounts
@@ -9226,7 +9249,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            caribou
            docbook-xsl
            evolution-data-server
-           gcr
+           gcr-3
            gdm
            librsvg
            gjs
@@ -11659,7 +11682,7 @@ generic enough to work for everyone.")
      (list cmark
            enchant
            evolution-data-server        ;must be the same version
-           gcr
+           gcr-3
            gsettings-desktop-schemas
            gnome-autoar
            gnome-desktop
@@ -12346,7 +12369,7 @@ non-privileged user.")
     (inputs
      (list enchant
            folks
-           gcr
+           gcr-3
            glib
            gmime
            gnome-online-accounts

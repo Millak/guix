@@ -1030,7 +1030,7 @@ notebooks and tiling window managers.")
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
     (native-inputs
-     (list gcr
+     (list gcr-3
            gettext-minimal
            gobject-introspection
            (list glib "bin")            ; for glib-compile-resources
