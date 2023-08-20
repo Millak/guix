@@ -8250,7 +8250,8 @@ ncurses for text display.")
            physfs
            python
            python-pyyaml
-           (sdl-union (list sdl2 sdl2-image sdl2-mixer))
+           sdl2
+           sdl2-image
            suitesparse))
     (home-page "https://naev.org/")
     (synopsis "Game about space exploration, trade and combat")
