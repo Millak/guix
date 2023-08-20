@@ -5923,7 +5923,7 @@ services for numerous locations.")
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
-    (version "42.2")
+    (version "44.1")
     (source
      (origin
        (method url-fetch)
@@ -5932,7 +5932,7 @@ services for numerous locations.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "005b1dvrfcyr6n4srl6c0lzr95c18prps4xm1lf2ghcfm8a9fi4w"))
+         "129rjhr2kvfd37fingz8737brh8a874hlw3xlh01658zv1r3nr8j"))
        (patches (search-patches "gnome-settings-daemon-gc.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -5975,15 +5975,15 @@ services for numerous locations.")
            baobab
            colord
            cups
-           gcr-3
+           gcr
            geoclue
-           geocode-glib-with-libsoup2
+           geocode-glib
            gnome-desktop
            gsettings-desktop-schemas
            lcms
            libcanberra
            libgudev
-           libgweather4-with-libsoup2
+           libgweather4
            libnotify
            (librsvg-for-system)
            libwacom
