@@ -7949,7 +7949,7 @@ window manager.")
 (define-public gnome-online-accounts
   (package
     (name "gnome-online-accounts")
-    (version "3.45.2")
+    (version "3.48.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7957,16 +7957,18 @@ window manager.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15zzzndbfba8a497vxb6cmy1y22l3lfn4sx9s9r59kwzd83i6fxn"))))
+                "1gvmc4k5vm4qd97yfkd5a4sixz0pfq9nblss42c2mmyvzzybk2s1"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'disable-gtk-update-icon-cache
+          (add-after 'unpack 'disable-gtk-update-icon-cache
             (lambda _
-              (setenv "DESTDIR" "/"))))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ; for glib-compile-schemas, etc.
