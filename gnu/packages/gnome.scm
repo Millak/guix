@@ -9693,7 +9693,7 @@ files.")
 (define-public baobab
   (package
     (name "baobab")
-    (version "42.0")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -9702,24 +9702,28 @@ files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1p2hg8qxbvdfax9z4qjhdsxia93zrsdq58krx8zjnn5ipbkan6jb"))))
+                "1h5zl7pvpp8yryi7j0cjzy1k89vlphdmfv0jr1l4bmr3j6xn6nw4"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t))
+     '(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           ;; Don't create 'icon-theme.cache'.
+           (lambda _
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            gettext-minimal
            `(,glib "bin")
-           `(,gtk+ "bin")               ;for gtk-update-icon-cache
            itstool
            libxml2
            pkg-config
            python
            vala))
-    (inputs
-     (list gtk
-           libadwaita
-           libhandy))
+    (inputs (list gtk libadwaita))
     (synopsis "Disk usage analyzer for GNOME")
     (description
      "Baobab (Disk Usage Analyzer) is a graphical application to analyse disk
