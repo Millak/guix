@@ -8024,7 +8024,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
 (define-public evolution-data-server
   (package
     (name "evolution-data-server")
-    (version "3.46.4")
+    (version "3.48.4")
     (source
      (origin
        (method url-fetch)
@@ -8032,7 +8032,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1j0c7kwmjng7spkqz6vfd8gyvw65invjsf5mqzbsr7y58m0jb6x5"))))
+        (base32 "0q3d5masw20sr6xm2rg3170a4pxsh23ywyq1rkzhmyvyn69kyzlr"))))
     (build-system cmake-build-system)
     (arguments
      (list
