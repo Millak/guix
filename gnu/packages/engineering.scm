@@ -4214,7 +4214,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.5.2")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4222,7 +4222,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "18zca3iwdif200wiivm065fs0a5g520q6380205cijca7ky81avi"))))
+                "14bcmjx64pgi9zj4zb7yppx69l1ykjwgf2q41s5672m7z354f1kn"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -4250,13 +4250,10 @@ form, numpad.
             (lambda _
               ;; Skip integration tests, which require prebuilt binaries at:
               ;; <https://github.com/rizinorg/rizin-testbins>.
-              ;; And 2 of them are failing, reported upstream:
-              ;; <https://github.com/rizinorg/rizin/issues/2905>.
               (substitute* "test/meson.build"
                 (("subdir\\('integration'\\)") ""))
               ;;; Skip failing tests.
               (substitute* "test/unit/meson.build"
-                (("'analysis_var',\n") "")
                 (("'bin_mach0',\n") "")
                 (("'hash',\n") "")))))))
     (native-inputs (list pkg-config))
