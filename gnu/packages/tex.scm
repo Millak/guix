@@ -3296,6 +3296,30 @@ increase character recognition, ultimately improving readability.")
            (license:fsdg-compatible
             "file://doc/Atkinson-Hyperlegible-Font-License-2020-1104.pdf")))))
 
+(define-public texlive-augie
+  (package
+    (name "texlive-augie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/augie/"
+                   "fonts/afm/public/augie/"
+                   "fonts/map/dvips/augie/"
+                   "fonts/tfm/public/augie/"
+                   "fonts/type1/public/augie/"
+                   "fonts/vf/public/augie/"
+                   "tex/latex/augie/")
+             (base32
+              "1fvl04lcvi4vsx547gx349dbld4hf7k2j08adqlnszs23p95yj3f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/augie")
+    (synopsis "Calligraphic font for typesetting handwriting")
+    (description
+     "This package provides a calligraphic font for simulating American-style
+informal handwriting.  The font is distributed in Adobe Type 1 format.")
+    (license license:lppl)))
+
 (define-public texlive-authordate
   (package
     (name "texlive-authordate")
