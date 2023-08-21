@@ -10654,6 +10654,28 @@ XeLaTeX and LuaLaTeX users; configuration files for use with @code{microtype}
 are provided.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-ebgaramond-maths
+  (package
+    (name "texlive-ebgaramond-maths")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ebgaramond-maths/"
+                   "fonts/enc/dvips/ebgaramond-maths/"
+                   "fonts/map/dvips/ebgaramond-maths/"
+                   "fonts/tfm/public/ebgaramond-maths/"
+                   "tex/latex/ebgaramond-maths/")
+             (base32
+              "0rjrf360d7nsny4cxn5fa0gwpph28cx0v9mrr20sbx1vrv9aqvp9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ebgaramond-maths")
+    (synopsis "LaTeX support for EBGaramond fonts in mathematics")
+    (description
+     "This package provides some LaTeX support for the use of EBGaramond12 in
+mathematics.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ecltree
   (package
     (name "texlive-ecltree")
