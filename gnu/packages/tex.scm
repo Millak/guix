@@ -9104,6 +9104,31 @@ scale factor (in the same way as the @code{helvet} package for Helvetica works
 for sans serif).")
     (license license:lppl1.2+)))
 
+(define-public texlive-courierten
+  (package
+    (name "texlive-courierten")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/courierten/"
+                   "fonts/enc/dvips/courierten/"
+                   "fonts/map/dvips/courierten/"
+                   "fonts/opentype/public/courierten/"
+                   "fonts/tfm/public/courierten/"
+                   "fonts/type1/public/courierten/"
+                   "fonts/vf/public/courierten/"
+                   "tex/latex/courierten/")
+             (base32
+              "0xfra9x03zjx7jsk48kj7mmjng3rs45ydj258c4s6inl91m7i9w0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/courierten")
+    (synopsis "Courier 10 Pitch BT with LaTeX support")
+    (description
+     "This is the font Courier 10 Pitch BT, with LaTeX support and an OpenType
+conversion as well.")
+    (license license:expat)))
+
 (define-public texlive-covington
   (package
     (name "texlive-covington")
