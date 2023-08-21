@@ -3055,6 +3055,31 @@ package.")
 Koovit, with support for LaTeX and pdfLaTeX.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-asapsym
+  (package
+    (name "texlive-asapsym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/asapsym/"
+                   "fonts/opentype/omnibus-type/asapsym/"
+                   "source/fonts/asapsym/"
+                   "tex/generic/asapsym/"
+                   "tex/latex/asapsym/"
+                   "tex/plain/asapsym/")
+             (base32
+              "038adcagkzy1bj5y9i5a4i5kbyr3wg7w0lfhbbg9z7glqmivilic")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asapsym")
+    (synopsis "Using the ASAP Symbol font with LaTeX and Plain TeX")
+    (description
+     "The package provides macros (usable with LaTeX or Plain TeX) for using
+the ASAP Symbol font, which is also included.  The font is distributed in
+OpenType format, and makes extensive use of OpenType features.  Therefore, at
+this time, only XeTeX and LuaTeX are supported.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ascii-chart
   (package
     (name "texlive-ascii-chart")
