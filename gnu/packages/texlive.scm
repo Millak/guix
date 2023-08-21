@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -313,8 +313,9 @@ This package contains the binaries.")
                      (texlive-bin (assoc-ref inputs "texlive-bin"))
                      (texbin (string-append texlive-bin "/bin"))
                      (tlpkg (string-append texlive-bin "/share/tlpkg")))
-                ;; LuaJIT is not ported to powerpc64* yet.
-                (if ,(target-ppc64le?)
+                ;; LuaJIT is not ported to some systems yet.
+                (if ,(or (target-ppc64le?)
+                         (target-riscv64?))
                     (substitute* fmtutilcnf
                       (("^(luajittex|luajithbtex|mfluajit)" m)
                        (string-append "#! " m))))
