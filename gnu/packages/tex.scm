@@ -6973,6 +6973,31 @@ font in LaTeX. It includes Type 1 versions of the fonts, converted for this
 package using FontForge from its sources, for full support with Dvips.")
     (license (list license:silofl1.1 license:lppl1.3c))))
 
+(define-public texlive-carlito
+  (package
+    (name "texlive-carlito")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/carlito/"
+                   "fonts/enc/dvips/carlito/"
+                   "fonts/map/dvips/carlito/"
+                   "fonts/tfm/google/carlito/"
+                   "fonts/truetype/google/carlito/"
+                   "fonts/type1/google/carlito/"
+                   "fonts/vf/google/carlito/"
+                   "tex/latex/carlito/")
+             (base32
+              "14hk51bgwpn4wr843g7w8wjwmadq0ca86gviayhwsz4zax68jhx6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/carlito")
+    (synopsis "Support for Carlito sans-serif fonts")
+    (description
+     "The package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Carlito family of sans serif fonts, designed by Lukasz Dziedzic.")
+    (license license:silofl1.1)))
+
 (define-public texlive-cartonaugh
   (package
     (name "texlive-cartonaugh")
