@@ -14710,6 +14710,30 @@ which are called indices locorum citatorum.  It relies on a specific
 files.")
     (license license:expat)))
 
+(define-public texlive-ifsym
+  (package
+    (name "texlive-ifsym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ifsym/"
+                   "fonts/source/public/ifsym/"
+                   "fonts/tfm/public/ifsym/" "tex/latex/ifsym/")
+             (base32
+              "07r16sgqc65wf8c8ijgmnmwq50yrlvjlmzbnk0czgnwqrbdz642g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/ifsym")
+    (synopsis "Collection of symbols")
+    (description
+     "This package provides a set of symbol fonts, written in Metafont, offering
+(respectively) clock-face symbols, geometrical symbols, weather symbols,
+mountaineering symbols, electronic circuit symbols and a set of miscellaneous
+symbols.  A LaTeX package is provided, that allows the user to load only those
+symbols needed in a document.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-ijqc
   (package
     (name "texlive-ijqc")
