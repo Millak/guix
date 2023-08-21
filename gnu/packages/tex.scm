@@ -17933,6 +17933,26 @@ support macros.  A version of the fonts, in Adobe Type 1 format, is also
 available.")
     (license license:lppl)))
 
+(define-public texlive-mathabx-type1
+  (package
+    (name "texlive-mathabx-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mathabx-type1/"
+                   "fonts/map/dvips/mathabx-type1/"
+                   "fonts/type1/public/mathabx-type1/")
+             (base32
+              "1j9aiwxq512bnwjvah06rygd8m6b68dpfkynagad627sfyrblcaa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-mathabx))
+    (home-page "https://ctan.org/pkg/mathabx-type1")
+    (synopsis "Outline version of the @code{mathabx} fonts")
+    (description
+     "This is an Adobe Type 1 outline version of the @code{mathabx} fonts.")
+    (license license:lppl)))
+
 (define-public texlive-mathalpha
   (package
     (name "texlive-mathalpha")
