@@ -25721,6 +25721,61 @@ fonts, in both Metafont and Type 1 formats.")
     (description "This package provides MetaPost macros for Venn diagrams.")
     (license license:lppl)))
 
+(define-public texlive-venturisadf
+  (package
+    (name "texlive-venturisadf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/venturisadf/"
+                   "fonts/afm/arkandis/venturis/"
+                   "fonts/afm/arkandis/venturis2/"
+                   "fonts/afm/arkandis/venturisold/"
+                   "fonts/afm/arkandis/venturissans/"
+                   "fonts/afm/arkandis/venturissans2/"
+                   "fonts/enc/dvips/venturisadf/"
+                   "fonts/map/dvips/venturis/"
+                   "fonts/map/dvips/venturis2/"
+                   "fonts/map/dvips/venturisold/"
+                   "fonts/map/dvips/venturissans/"
+                   "fonts/map/dvips/venturissans2/"
+                   "fonts/tfm/arkandis/venturis/"
+                   "fonts/tfm/arkandis/venturis2/"
+                   "fonts/tfm/arkandis/venturisold/"
+                   "fonts/tfm/arkandis/venturissans/"
+                   "fonts/tfm/arkandis/venturissans2/"
+                   "fonts/type1/arkandis/venturis/"
+                   "fonts/type1/arkandis/venturis2/"
+                   "fonts/type1/arkandis/venturisold/"
+                   "fonts/type1/arkandis/venturissans/"
+                   "fonts/type1/arkandis/venturissans2/"
+                   "fonts/vf/arkandis/venturis/"
+                   "fonts/vf/arkandis/venturis2/"
+                   "fonts/vf/arkandis/venturisold/"
+                   "fonts/vf/arkandis/venturissans/"
+                   "fonts/vf/arkandis/venturissans2/"
+                   "source/fonts/venturisadf/"
+                   "tex/latex/venturis/"
+                   "tex/latex/venturis2/"
+                   "tex/latex/venturisadf/"
+                   "tex/latex/venturisold/"
+                   "tex/latex/venturissans/"
+                   "tex/latex/venturissans2/")
+             (base32
+              "0nvr9g1zzm51zjws52y8cyyi3y1z77q8s7iwgcb6jq4s9n4b4xbc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/venturisadf")
+    (synopsis "Venturis ADF fonts collection")
+    (description
+     "This package provides Venturis ADF fonts collection, serif and sans
+serif complete text font families, in both Adobe Type 1 and OpenType formats
+for publication.  The family is based on Utopia family.  Support for using the
+fonts, in LaTeX, is also provided.")
+    (license (list license:lppl1.3+
+                   (license:fsf-free
+                    "http://mirrors.ctan.org/fonts/utopia/README")))))
+
 (define-public texlive-verse
   (package
     (name "texlive-verse")
