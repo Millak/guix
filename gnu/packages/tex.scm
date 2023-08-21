@@ -21892,6 +21892,27 @@ Although that bundle also offers support within LaTeX; the present package is
 to be preferred.")
     (license license:gpl3+)))
 
+(define-public texlive-punknova
+  (package
+    (name "texlive-punknova")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/punknova/"
+                   "fonts/opentype/public/punknova/")
+             (base32
+              "07g0j329bgyzn3f3ac8gf9m6jh6zpwirw5l72mzzm8n32sgajym0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/punknova")
+    (synopsis "OpenType version of Knuth's Punk font")
+    (description
+     "Knuth's original Punk fonts generated different shapes at random.
+This isn't actually possible in an OpenType font; rather, the font contains
+several variants of each glyph, and uses the OpenType randomize function to
+select a variant for each invocation.")
+    (license license:knuth)))
+
 (define-public texlive-pythonhighlight
   (package
     (name "texlive-pythonhighlight")
