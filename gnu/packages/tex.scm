@@ -9011,6 +9011,33 @@ defined using Metafont.")
 modified-geometric curves and arches, by Chester Jenkins.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-cormorantgaramond
+  (package
+    (name "texlive-cormorantgaramond")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cormorantgaramond/"
+                   "fonts/enc/dvips/cormorantgaramond/"
+                   "fonts/map/dvips/cormorantgaramond/"
+                   "fonts/tfm/catharsis/cormorantgaramond/"
+                   "fonts/truetype/catharsis/cormorantgaramond/"
+                   "fonts/type1/catharsis/cormorantgaramond/"
+                   "fonts/vf/catharsis/cormorantgaramond/"
+                   "tex/latex/cormorantgaramond/")
+             (base32
+              "0sd4g4s3d3nk4wrav3szzbihdj6saznnzm6kiyr4qqqgi5ib3ami")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cormorantgaramond")
+    (synopsis "Cormorant Garamond family of fonts")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Cormorant Garamond family of fonts, designed by Christian Thalman.  The
+family includes light, regular, medium, semi-bold, and bold weights, with
+italics.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-correctmathalign
   (package
     (name "texlive-correctmathalign")
