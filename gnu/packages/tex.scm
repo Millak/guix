@@ -6903,6 +6903,28 @@ at the side opposite to the equation numbers.  Calculations are allowed inside
 hints although numbering and commenting is then disabled.")
     (license license:lppl1.3+)))
 
+(define-public texlive-calligra
+  (package
+    (name "texlive-calligra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/calligra/"
+                   "fonts/source/public/calligra/"
+                   "fonts/tfm/public/calligra/")
+             (base32
+              "1h9w2qifsd0sjr2czy6zbyvgvdl72nd1sn2hmxv0jsmbcjqak1ib")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/calligra")
+    (synopsis "Calligraphic font")
+    (description
+     "This package provides a calligraphic font in the handwriting style.
+The font is supplied as Metafont source.  LaTeX support of the font is
+provided in the @code{calligra} package in the @code{fundus} bundle.")
+    (license license:expat)))
+
 (define-public texlive-cartonaugh
   (package
     (name "texlive-cartonaugh")
