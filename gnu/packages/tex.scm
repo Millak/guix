@@ -4133,6 +4133,34 @@ characters into your document using the commonly used Beta Code
 transliteration.")
     (license license:lppl)))
 
+(define-public texlive-beuron
+  (package
+    (name "texlive-beuron")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/beuron/"
+                   "fonts/map/dvips/beuron/"
+                   "fonts/opentype/public/beuron/"
+                   "fonts/source/public/beuron/"
+                   "fonts/tfm/public/beuron/"
+                   "fonts/type1/public/beuron/"
+                   "tex/latex/beuron/")
+             (base32
+              "06hk60z0s2rdbj1iard10zxw7zvvm2xds755r4mqh0p70qhkpjzx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/beuron")
+    (synopsis "Script of the Beuronese art school")
+    (description
+     "This package provides the script used in the works of the Beuron art
+school for use with TeX and LaTeX.  It is a monumental script consisting of
+capital letters only.  The fonts are provided as Metafont sources, in the
+Type1 and in the OpenType format.  The package includes suitable font
+selection commands for use with LaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bib-fr
   (package
     (name "texlive-bib-fr")
