@@ -20169,6 +20169,34 @@ Irish and Pictish carvings dating from the 4th century AD.  The font is
 distributed as Metafont source.")
     (license license:public-domain)))
 
+(define-public texlive-oinuit
+  (package
+    (name "texlive-oinuit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/oinuit/"
+                   "fonts/map/dvips/oinuit/"
+                   "fonts/ofm/public/oinuit/"
+                   "fonts/ovf/public/oinuit/"
+                   "fonts/tfm/public/oinuit/"
+                   "fonts/type1/public/oinuit/"
+                   "omega/ocp/oinuit/"
+                   "omega/otp/oinuit/"
+                   "source/lambda/oinuit/"
+                   "tex/lambda/oinuit/")
+             (base32
+              "1f5rlqgdz4r93z5prxjq7z7591frqz89gplj3y0dscjnlc98wxy4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oinuit")
+    (synopsis "LaTeX Support for the Inuktitut Language")
+    (description
+     "The package provides a set of Lambda (Omega LaTeX) typesetting tools for
+the Inuktitut language.  Five different input methods are supported and with
+the necessary fonts are also provided.")
+    (license license:lppl)))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
