@@ -19987,6 +19987,31 @@ terms of recurrence relations.")
 mathematical function values.")
     (license license:lppl1.3c)))
 
+(define-public texlive-nunito
+  (package
+    (name "texlive-nunito")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/nunito/"
+                   "fonts/enc/dvips/nunito/"
+                   "fonts/map/dvips/nunito/"
+                   "fonts/opentype/public/nunito/"
+                   "fonts/tfm/public/nunito/"
+                   "fonts/type1/public/nunito/"
+                   "fonts/vf/public/nunito/"
+                   "tex/latex/nunito/")
+             (base32
+              "0arx54h5hw50rlikw3sdxgqwhn1sr2jss30103cjip9wff606pa7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nunito")
+    (synopsis "The Nunito font face with support for LaTeX and pdfLaTeX")
+    (description
+     "This package provides LaTeX and pdfLaTeX support for the Nunito family
+of fonts, designed by Vernon Adams.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-objectz
   (package
     (name "texlive-objectz")
