@@ -20982,6 +20982,28 @@ The font is available in Adobe Type 1 and OpenType formats (the latter using
 the Unicode positions for the symbols).")
     (license license:lppl)))
 
+(define-public texlive-phonetic
+  (package
+    (name "texlive-phonetic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/phonetic/"
+                   "fonts/source/public/phonetic/"
+                   "fonts/tfm/public/phonetic/"
+                   "tex/latex/phonetic/")
+             (base32
+              "0f1z1kzfyxap4hbmpjfhy417n3jcg3rv0m8f5ab1wlil64jn0rgb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/phonetic")
+    (synopsis "Metafont Phonetic fonts, based on Computer Modern")
+    (description
+     "The Phonetic fonts are based on Computer Modern, and specified in
+Metafont.  Macros for the fonts use are provided for LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-physconst
   (package
     (name "texlive-physconst")
