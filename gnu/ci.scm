@@ -421,9 +421,9 @@ valid.  Append SUFFIX to the job name."
               (map channel-url channels)))
        arguments))
 
-(define (manifests->jobs store manifests)
+(define (manifests->jobs store manifests systems)
   "Return the list of jobs for the entries in MANIFESTS, a list of file
-names."
+names, for each one of SYSTEMS."
   (define (load-manifest manifest)
     (save-module-excursion
      (lambda ()
@@ -434,11 +434,12 @@ names."
     (string-append (manifest-entry-name entry) "-"
                    (manifest-entry-version entry)))
 
-  (define (manifest-entry->job entry)
+  (define (manifest-entry->job entry system)
     (let* ((obj (manifest-entry-item entry))
            (drv (parameterize ((%graft? #f))
                   (run-with-store store
-                    (lower-object obj))))
+                    (lower-object obj)
+                    #:system system)))
            (max-silent-time (or (and (package? obj)
                                      (assoc-ref (package-properties obj)
                                                 'max-silent-time))
@@ -450,11 +451,13 @@ names."
                        #:max-silent-time max-silent-time
                        #:timeout timeout)))
 
-  (map manifest-entry->job
-       (delete-duplicates
-        (append-map (compose manifest-entries load-manifest)
-                    manifests)
-        manifest-entry=?)))
+  (let ((entries (delete-duplicates
+                  (append-map (compose manifest-entries load-manifest)
+                              manifests)
+                  manifest-entry=?)))
+    (append-map (lambda (system)
+                  (map (cut manifest-entry->job <> system) entries))
+                systems)))
 
 (define (arguments->systems arguments)
   "Return the systems list from ARGUMENTS."
@@ -576,7 +579,7 @@ names."
          (('manifests . rest)
           ;; Build packages in the list of manifests.
           (let ((manifests (arguments->manifests rest channels)))
-            (manifests->jobs store manifests)))
+            (manifests->jobs store manifests systems)))
          (else
           (error "unknown subset" subset))))
      systems)))
