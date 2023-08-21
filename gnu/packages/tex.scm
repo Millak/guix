@@ -18626,6 +18626,32 @@ equation number if and only if the equation actually has a label, which
 reduces visual clutter.")
     (license license:public-domain)))
 
+(define-public texlive-miama
+  (package
+    (name "texlive-miama")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/miama/"
+                   "fonts/afm/public/miama/"
+                   "fonts/enc/dvips/miama/"
+                   "fonts/map/dvips/miama/"
+                   "fonts/opentype/public/miama/"
+                   "fonts/tfm/public/miama/"
+                   "fonts/type1/public/miama/"
+                   "source/fonts/miama/"
+                   "tex/latex/miama/")
+             (base32
+              "07a2i250himdjnphq39kq08ycl7mgi9v1w3cnsg1q2c7qwwizrkw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/miama")
+    (synopsis "Miama Nueva handwriting font with LaTeX support")
+    (description
+     "Miama Nueva is a handwriting and script font with over 1300 glyphs that
+supports Latin, Cyrillic, and Greek.  It comes complete with LaTeX support.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-miller
   (package
     (name "texlive-miller")
