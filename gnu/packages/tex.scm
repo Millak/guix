@@ -16566,6 +16566,31 @@ primarily intended to be a web font but is also attractive as a text font.
 A BoldItalic variant has been artificially generated.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-librebodoni
+  (package
+    (name "texlive-librebodoni")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/librebodoni/"
+                   "fonts/enc/dvips/librebodoni/"
+                   "fonts/map/dvips/librebodoni/"
+                   "fonts/opentype/impallari/librebodoni/"
+                   "fonts/tfm/impallari/librebodoni/"
+                   "fonts/type1/impallari/librebodoni/"
+                   "fonts/vf/impallari/librebodoni/"
+                   "tex/latex/librebodoni/")
+             (base32
+              "1skyjmb0drrs6z8bhmdyx7q9wqz9vbyi6nkif5rj95kqxxwznkyz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/librebodoni")
+    (synopsis "Libre Bodoni fonts with LaTeX support")
+    (description
+     "The Libre Bodoni fonts are designed by Pablo Impallari and Rodrigo
+Fuenzalida, based on the 19th century Morris Fuller Benton's.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
