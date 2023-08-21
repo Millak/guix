@@ -22416,6 +22416,39 @@ the Roboto Sans, Roboto Condensed, Roboto Mono, Roboto Slab and Roboto Serif
 families of fonts, designed by Christian Robertson and Greg Gazdowicz.")
     (license (list license:asl2.0 license:silofl1.1 license:lppl))))
 
+(define-public texlive-romande
+  (package
+    (name "texlive-romande")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/romande/"
+                   "fonts/afm/arkandis/romande/"
+                   "fonts/enc/dvips/romande/"
+                   "fonts/map/dvips/romande/"
+                   "fonts/tfm/arkandis/romande/"
+                   "fonts/type1/arkandis/romande/"
+                   "fonts/vf/arkandis/romande/"
+                   "source/fonts/romande/"
+                   "tex/latex/romande/")
+             (base32
+              "0xvahacjs8g5bl7yy89wi50m894r2402d5203ai79fk9d7rbc116")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/romandeadf")
+    (synopsis "Romande ADF fonts and LaTeX support")
+    (description
+     "Romande ADF is a serif font family with oldstyle figures, designed as
+a substitute for Times, Tiffany or Caslon.  The family currently includes
+upright, italic and small-caps shapes in each of regular and demi-bold weights
+and an italic script in regular.  The support package renames the fonts
+according to the Karl Berry fontname scheme and defines four families.  Two of
+these primarily provide access to the standard, or default, characters while
+the alternate families support alternate characters, additional ligatures and
+the long @emph{s}.  The included package files provide access to these
+features in LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-rrgtrees
   (package
     (name "texlive-rrgtrees")
