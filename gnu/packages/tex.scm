@@ -24830,6 +24830,33 @@ to introduce characters lines, to render stage directions, to divide a play
 into acts and scenes and to build the dramatis personae automatically.")
     (license license:lppl1.3+)))
 
+(define-public texlive-theanodidot
+  (package
+    (name "texlive-theanodidot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/theanodidot/"
+                   "fonts/enc/dvips/theanodidot/"
+                   "fonts/map/dvips/theanodidot/"
+                   "fonts/tfm/public/theanodidot/"
+                   "fonts/truetype/public/theanodidot/"
+                   "fonts/type1/public/theanodidot/"
+                   "fonts/vf/public/theanodidot/"
+                   "tex/latex/theanodidot/")
+             (base32
+              "00qf03ssh7ncpl6l33zcmqkhbylv77w3d0jdvxv9pcbbsn3rzk7v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/theanodidot")
+    (synopsis "TheanoDidot fonts with LaTeX support")
+    (description
+     "This package provides the TheanoDidot font designed by Alexey Kryukov,
+in both TrueType and Type1 formats, with support for both traditional and
+modern LaTeX processors.  An artificially-emboldened variant has been provided
+but there are no italic variants.")
+    (license (list license:lppl license:silofl1.1))))
+
 (define-public texlive-theatre
   (package
     (name "texlive-theatre")
