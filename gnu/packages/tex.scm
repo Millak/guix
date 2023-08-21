@@ -17025,6 +17025,29 @@ Great Wall of China, Loop the Loop, Rundweg, Gartenzaun, ...),
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-logix
+  (package
+    (name "texlive-logix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/logix/"
+                   "fonts/opentype/public/logix/"
+                   "fonts/truetype/public/logix/"
+                   "tex/latex/logix/")
+             (base32
+              "19ak3zfqnx04rb5wcmzc5z3g8sp2wphi83lx9i58y41y3lp2z4kq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/logix")
+    (synopsis "Supplement to the Unicode math symbols")
+    (description
+     "The package provides a Unicode font with over 4,000 symbols to
+supplement the Unicode math symbols.  It is compatible with and
+complements the AMS STIX2 math fonts, but focuses on new symbols and
+symbol variants more suited to work in logic.")
+    (license (list license:silofl1.1 license:lppl1.3c))))
+
 (define-public texlive-lollipop
   (package
     (name "texlive-lollipop")
