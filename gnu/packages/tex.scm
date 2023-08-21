@@ -10462,6 +10462,29 @@ was inspired by the STIX double struck fonts, which are sans serif, but
 starting from a Courier-like base.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-duerer
+  (package
+    (name "texlive-duerer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/duerer/"
+                   "fonts/source/public/duerer/"
+                   "fonts/tfm/public/duerer/")
+             (base32
+              "1x5s9qnmhhpj54l6cd0pzd9gmd0ipr95j60rcs73c66wwfjw0xki")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/duerer")
+    (synopsis "Computer Duerer fonts")
+    (description
+     "These fonts are designed for titling use, and consist of capital roman
+letters only.  Together with the normal set of base shapes, the family also
+offers an informal shape.  The distribution is as Metafont source.  LaTeX
+support is available in the @code{duerer-latex} bundle.")
+    (license license:public-domain)))
+
 (define-public texlive-dvgloss
   (package
     (name "texlive-dvgloss")
