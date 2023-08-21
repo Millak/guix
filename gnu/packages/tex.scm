@@ -10717,6 +10717,28 @@ a @code{bundle} environment, with a set of leaves described by @code{\\chunk}
 macros.  A chunk may have a @code{bundle} environment inside it.")
     (license license:lppl)))
 
+(define-public texlive-eco
+  (package
+    (name "texlive-eco")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/eco/" "fonts/tfm/public/eco/"
+                   "fonts/vf/public/eco/" "source/fonts/eco/"
+                   "tex/latex/eco/")
+             (base32
+              "0b2g3bmldad4vfx9qd3sakhayl9knijwn26xwysxrzc3rnfnz5w2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eco")
+    (synopsis "Old style numerals using EC fonts")
+    (description
+     "This package provides a set of font metric files and virtual fonts for
+using the EC fonts with old-style numerals.  The style file @file{eco.sty} is
+sufficient to use the @code{eco} fonts but if you intend to use other font
+families as well, e.g., PostScript fonts, try @code{altfont}.")
+    (license license:gpl3+)))
+
 (define-public texlive-ecobiblatex
   (package
     (name "texlive-ecobiblatex")
