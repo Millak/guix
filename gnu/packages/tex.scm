@@ -25232,6 +25232,34 @@ logic, between a collection of formulas and a derived formula.")
 collection of emoji images.")
     (license (list license:cc-by-sa4.0 license:asl2.0))))
 
+(define-public texlive-txfontsb
+  (package
+    (name "texlive-txfontsb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/txfontsb/"
+                   "fonts/afm/public/txfontsb/"
+                   "fonts/enc/dvips/txfontsb/"
+                   "fonts/map/dvips/txfontsb/"
+                   "fonts/opentype/public/txfontsb/"
+                   "fonts/tfm/public/txfontsb/"
+                   "fonts/type1/public/txfontsb/"
+                   "fonts/vf/public/txfontsb/"
+                   "source/fonts/txfontsb/"
+                   "tex/latex/txfontsb/")
+             (base32
+              "0y7af1n1dymi6723jvn01rcjfwr6p47wr5y4c33wa4cgaa9m39hn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/txfontsb")
+    (synopsis "Extensions to @code{txfonts}, using GNU Freefont")
+    (description
+     "This package provides a set of fonts that extend the @code{txfonts}
+bundle with small caps and old style numbers, together with Greek support.
+The extensions are made with modifications of the GNU Freefont.")
+    (license (list license:gpl3+ license:lppl1.0+))))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
