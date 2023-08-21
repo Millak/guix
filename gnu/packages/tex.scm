@@ -23538,6 +23538,33 @@ can be adjusted with respect to relative position and format, and can be used
 in text and math mode.")
     (license license:cc-by4.0)))
 
+(define-public texlive-spectral
+  (package
+    (name "texlive-spectral")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/spectral/"
+                   "fonts/enc/dvips/spectral/"
+                   "fonts/map/dvips/spectral/"
+                   "fonts/tfm/production/spectral/"
+                   "fonts/truetype/production/spectral/"
+                   "fonts/type1/production/spectral/"
+                   "fonts/vf/production/spectral/"
+                   "tex/latex/spectral/")
+             (base32
+              "1i5ijzzk18m65ibf8igll22992wgfxrgr4qpxki0dpynfm0wiwjj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spectral")
+    (synopsis "Spectral fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Spectral family of fonts, designed by Jean-Baptiste Levee.  Spectral is
+a new and versatile serif face available in seven weights of roman and italic,
+with small caps.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-splitbib
   (package
     (name "texlive-splitbib")
