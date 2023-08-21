@@ -25260,6 +25260,29 @@ bundle with small caps and old style numbers, together with Greek support.
 The extensions are made with modifications of the GNU Freefont.")
     (license (list license:gpl3+ license:lppl1.0+))))
 
+(define-public texlive-txuprcal
+  (package
+    (name "texlive-txuprcal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/txuprcal/"
+                   "fonts/map/dvips/txuprcal/"
+                   "fonts/tfm/public/txuprcal/"
+                   "fonts/type1/public/txuprcal/"
+                   "tex/latex/txuprcal/")
+             (base32
+              "033h3rqj7kf0rx0kdy9s1kwhk1hkrc6z70ga6ky7xy79mc3k2vgp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/txuprcal")
+    (synopsis "Upright calligraphic font based on TX calligraphic")
+    (description
+     "This small package provides a means of loading as @code{\\mathcal} an
+uprighted version of the calligraphic fonts from the TX font package.
+A scaled option is provided to allow arbitrary scaling.")
+    (license license:gpl3)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
