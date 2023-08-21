@@ -9833,6 +9833,31 @@ package, which it supersedes.")
 or with various 3D effects.")
     (license license:lppl)))
 
+(define-public texlive-dictsym
+  (package
+    (name "texlive-dictsym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dictsym/"
+                   "fonts/afm/public/dictsym/"
+                   "fonts/map/dvips/dictsym/"
+                   "fonts/tfm/public/dictsym/"
+                   "fonts/type1/public/dictsym/"
+                   "tex/latex/dictsym/")
+             (base32
+              "0wycv2i0pgmjs9al5zzxa8s5lj13sj6rlhga1271xypxpcyf3804")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dictsym")
+    (synopsis "DictSym font and macro package")
+    (description
+     "This directory contains the DictSym Type1 font designed by Georg
+Verweyen and all files required to use it with LaTeX.  The font provides
+a number of symbols commonly used in dictionaries.  The accompanying macro
+package makes the symbols accessible as LaTeX commands.")
+    (license license:lppl)))
+
 (define-public texlive-din1505
   (package
     (name "texlive-din1505")
