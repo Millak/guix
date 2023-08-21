@@ -2431,6 +2431,31 @@ mocking nonsense phrases from the movie series @emph{Amici Miei} (``My
 friends'', in English), directed by Mario Monicelli.")
     (license license:lppl1.3c)))
 
+(define-public texlive-antiqua
+  (package
+    (name "texlive-antiqua")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/antiqua/"
+                   "fonts/afm/urw/antiqua/"
+                   "fonts/map/dvips/antiqua/"
+                   "fonts/map/vtex/antiqua/"
+                   "fonts/tfm/urw/antiqua/"
+                   "fonts/type1/urw/antiqua/"
+                   "fonts/vf/urw/antiqua/"
+                   "tex/latex/antiqua/")
+             (base32
+              "0agnibj98zx2f2r40gqcfm2f1x06389wd2qrlf6b4pl8pgay42z2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urw-antiqua")
+    (synopsis "URW Antiqua condensed font, for use with TeX")
+    (description
+     "The package contains a copy of the Type 1 font URW Antiqua 2051 Regular
+Condensed, with supporting files for use with (La)TeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-antomega
   (package
     (name "texlive-antomega")
