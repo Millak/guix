@@ -23650,6 +23650,31 @@ engineering, those small structures are a key part for teaching.  This package
 permits to create such 2D and 3D structures in a very fast and simple way.")
     (license (list license:gpl3+ license:lppl1.3+))))
 
+(define-public texlive-starfont
+  (package
+    (name "texlive-starfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/starfont/"
+                   "fonts/afm/public/starfont/"
+                   "fonts/map/dvips/starfont/"
+                   "fonts/tfm/public/starfont/"
+                   "fonts/type1/public/starfont/"
+                   "tex/latex/starfont/")
+             (base32
+              "1c2vnd5mycr6mnhwxz9gkjvfxwq0l91h2lhvpf49fjlfc3hdnd3l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/starfont")
+    (synopsis "StarFont Sans astrological font")
+    (description
+     "The package contains StarFontSans and StarFontSerif, two astrological
+fonts designed by Anthony I.P. Owen, and the appropriate macros to use them
+with TeX and LaTeX.  The fonts are supplied both in the original TrueType
+Format and in Adobe Type 1 format.")
+    (license license:public-domain)))
+
 (define-public texlive-startex
   (package
     (name "texlive-startex")
