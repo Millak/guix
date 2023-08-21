@@ -26399,6 +26399,24 @@ pgfkeys-enabled options are provided both at package load and configurably.")
 practicing sheets (copybooks).  Currently, only XeTeX is supported.")
     (license license:lppl1.3c)))
 
+(define-public texlive-zlmtt
+  (package
+    (name "texlive-zlmtt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/zlmtt/" "tex/latex/zlmtt/")
+             (base32
+              "014zchb0s9fj33d6h8r851v7v4cvpqzd97xaq4nv2l1lnxlii536")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zlmtt")
+    (synopsis "Use Latin Modern Typewriter fonts")
+    (description
+     "The package allows selection of Latin Modern Typewriter fonts with
+scaling and access to all its features.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-zootaxa-bst
   (package
     (name "texlive-zootaxa-bst")
