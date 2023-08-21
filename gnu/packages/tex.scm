@@ -7206,6 +7206,26 @@ distribution), developed from the same author's JMB style.  A supporting LaTeX
 package is also provided.")
     (license license:public-domain)))
 
+(define-public texlive-cfr-initials
+  (package
+    (name "texlive-cfr-initials")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cfr-initials/"
+                   "tex/latex/cfr-initials/")
+             (base32
+              "03isx6wck9q2nmn2gm6zmd1830d2v9bps5g1k9qw6y02wdac8az9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cfr-initials")
+    (synopsis "LaTeX packages for use of initials")
+    (description
+     "This is a set of 23 tiny packages designed to make it easier to use
+fonts from the initials package in LaTeX, e.g., with the @code{lettrine}
+package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chbibref
   (package
     (name "texlive-chbibref")
