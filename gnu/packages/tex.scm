@@ -12242,6 +12242,30 @@ weights.  LaTeX support is provided.")
 provided by the FontAwesome font.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fontawesome5
+  (package
+    (name "texlive-fontawesome5")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fontawesome5/"
+                   "fonts/enc/dvips/fontawesome5/"
+                   "fonts/map/dvips/fontawesome5/"
+                   "fonts/opentype/public/fontawesome5/"
+                   "fonts/tfm/public/fontawesome5/"
+                   "fonts/type1/public/fontawesome5/"
+                   "tex/latex/fontawesome5/")
+             (base32
+              "17cfqa2jjg3lp0damwy8kfdihmchx55994rrc897kcdba865rrwg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontawesome5")
+    (synopsis "Font Awesome 5 with LaTeX support")
+    (description
+     "This package provides LaTeX support for the included Font Awesome 5 icon
+set.")
+    (license (list license:silofl1.1 license:lppl1.3c))))
+
 (define-public texlive-fontsize
   (package
     (name "texlive-fontsize")
