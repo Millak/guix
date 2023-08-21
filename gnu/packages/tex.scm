@@ -21118,6 +21118,32 @@ project.  When used, it draws a small 2 octaves piano keyboard on your
 document, with up to 7 keys highlighted.")
     (license license:lppl)))
 
+(define-public texlive-pigpen
+  (package
+    (name "texlive-pigpen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pigpen/"
+                   "fonts/map/dvips/pigpen/"
+                   "fonts/source/public/pigpen/"
+                   "fonts/tfm/public/pigpen/"
+                   "fonts/type1/public/pigpen/"
+                   "tex/latex/pigpen/")
+             (base32
+              "0cvccvk3yhjpv9kxdzwaq8a2ql0vramlpzpd4l4my6g44k6cf2yf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/pigpen")
+    (synopsis "Font for the Pigpen (or masonic) cipher")
+    (description
+     "The Pigpen cipher package provides the font and the necessary
+wrappers (style file, etc.) in order to write Pigpen ciphers, a simple
+substitution cipher.  The package provides a font (available both as Metafont
+source, and as an Adobe Type 1 file), and macros for its use.")
+    (license license:lppl)))
+
 (define-public texlive-pinoutikz
   (package
     (name "texlive-pinoutikz")
