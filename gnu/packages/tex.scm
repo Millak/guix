@@ -35857,6 +35857,32 @@ mathematics both upright and slanted shapes for Greek letters, as well as
 default and narrow versions of multiple integrals.")
     (license license:gpl3+)))
 
+(define-public texlive-kpfonts-otf
+  (package
+    (name "texlive-kpfonts-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/kpfonts-otf/"
+                   "fonts/opentype/public/kpfonts-otf/"
+                   "tex/latex/kpfonts-otf/")
+             (base32
+              "1byad0cjpp7np6xsqs71hkxn7aali5r77qv1n280p8b5w3z788iy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kpfonts-otf")
+    (synopsis "OTF version of the Kp-fonts")
+    (description
+     "This bundle provides OpenType versions of the Type1 Kp-fonts designed by
+Christophe Caignaert.  It is usable with LuaTeX or XeTeX engines only.  It
+consists of sixteen Text fonts (eight Serif, four Sans-Serif, four Monotype)
+and six Math fonts.  Serif and Sans-Serif families have small caps available
+in two sizes (SmallCaps and PetitesCaps), upper and lowercase digits, real
+superscripts and subscripts; ancient ligatures (@samp{ct} and @samp{st}),
+ancient long-@samp{s} and a long-tailed capital @samp{Q} are available via
+font features.  Math fonts cover all usual symbols including AMS'.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-latexconfig
   (package
     (name "texlive-latexconfig")
