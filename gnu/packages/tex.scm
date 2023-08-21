@@ -22475,6 +22475,28 @@ features in LaTeX.")
 LaTeX.  Rosario is a set of four fonts provided by Hector Gatti.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rsfso
+  (package
+    (name "texlive-rsfso")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/rsfso/" "fonts/map/dvips/rsfso/"
+                   "fonts/tfm/public/rsfso/"
+                   "fonts/vf/public/rsfso/" "tex/latex/rsfso/")
+             (base32
+              "1fm65p7k0kfiksap2f2g8lqmgdykmhq80ff5qgma4cnqa4sa3jza")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rsfso")
+    (synopsis "Mathematical calligraphic font based on @code{rsfs}")
+    (description
+     "The package provides virtual fonts and LaTeX support files for
+mathematical calligraphic fonts based on the @code{rsfs} Adobe Type 1 fonts,
+with the slant substantially reduced.  The output is quite similar to that
+from the Adobe Mathematical Pi script font.")
+    (license license:lppl)))
+
 (define-public texlive-rrgtrees
   (package
     (name "texlive-rrgtrees")
