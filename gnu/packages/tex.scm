@@ -11494,6 +11494,34 @@ arrows.  The package consists of the relevant Metafont code and a package to
 use it.")
     (license license:gpl3+)))
 
+(define-public texlive-etbb
+  (package
+    (name "texlive-etbb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/etbb/"
+                   "fonts/afm/public/etbb/"
+                   "fonts/enc/dvips/etbb/"
+                   "fonts/map/dvips/etbb/"
+                   "fonts/opentype/public/etbb/"
+                   "fonts/tfm/public/etbb/"
+                   "fonts/type1/public/etbb/"
+                   "fonts/vf/public/etbb/"
+                   "tex/latex/etbb/")
+             (base32
+              "1mbzbcj0dl6wzl3x8rq9nxsjf8i240zcz3gahhpy273yj42n8313")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/etbb")
+    (synopsis "Expansion of Edward Tufte's ET-Bembo family")
+    (description
+     "The Bembo-like font family, ETbb, expands ET-Bembo features to include
+a full set of figure styles, small caps in all styles, superior letters and
+figures, inferior figures, a new capital Sharp @samp{S} with small caps
+version, along with macros to activate these features in LaTeX.")
+    (license (list license:expat license:lppl1.3+))))
+
 (define-public texlive-euclideangeometry
   (package
     (name "texlive-euclideangeometry")
