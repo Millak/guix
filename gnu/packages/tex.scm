@@ -21219,6 +21219,37 @@ paragraphs vertically separated rather than indented.")
 typesetting of plays, including options for line numbering.")
     (license license:lppl)))
 
+(define-public texlive-playfair
+  (package
+    (name "texlive-playfair")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/playfair/"
+                   "fonts/enc/dvips/playfair/"
+                   "fonts/map/dvips/playfair/"
+                   "fonts/opentype/public/playfair/"
+                   "fonts/tfm/public/playfair/"
+                   "fonts/type1/public/playfair/"
+                   "fonts/vf/public/playfair/"
+                   "tex/latex/playfair/")
+             (base32
+              "060l6q6m410nn31mn09v3gy5nvbimplraifqcqlp3h8pzcrc3akf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/playfair")
+    (synopsis "Playfair Display fonts with LaTeX support")
+    (description
+     "This package provides the PlayFairDisplay family of fonts, designed by
+Claus Eggers Sorensen, for use with LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX.
+PlayFairDisplay is well suited for titling and headlines.  It has an extra
+large x-height and short descenders.  It can be set with no leading if space
+is tight, for instance in news headlines, or for stylistic effect in titles.
+Capitals are extra short, and only very slightly heavier than the lowercase
+characters.  This helps achieve a more even typographical colour when
+typesetting proper nouns and initialisms.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-pm-isomath
   (package
     (name "texlive-pm-isomath")
