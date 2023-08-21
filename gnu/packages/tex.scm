@@ -8380,6 +8380,35 @@ and LuaTeX.")
 for the Computer Modern font family in blackboard bold.")
     (license license:lppl1.3c)))
 
+(define-public texlive-cmll
+  (package
+    (name "texlive-cmll")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cmll/"
+                   "fonts/map/dvips/cmll/"
+                   "fonts/source/public/cmll/"
+                   "fonts/tfm/public/cmll/"
+                   "fonts/type1/public/cmll/"
+                   "source/latex/cmll/"
+                   "tex/latex/cmll/")
+             (base32
+              "13q5ar2zaf7h6f2mzgxxqzaraziwl6asicbnyq6anfv2ky38rd72")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list texlive-euxm texlive-metafont))
+    (home-page "https://ctan.org/pkg/cmll")
+    (synopsis "Symbols for linear logic")
+    (description
+     "This is a very small font set that contain some symbols useful in linear
+logic, which are apparently not available elsewhere.  Variants are included
+for use with Computer Modern serif and sans-serif and with the AMS Euler
+series.  The font is provided both as Metafont source, and in Adobe Type
+1 format.  LaTeX support is provided.")
+    (license license:lppl)))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
