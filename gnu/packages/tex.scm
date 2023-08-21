@@ -8492,6 +8492,31 @@ implemented as a set of @file{.vf} files; a package for support in LaTeX is
 provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cmupint
+  (package
+    (name "texlive-cmupint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cmupint/"
+                   "fonts/afm/public/cmupint/"
+                   "fonts/map/dvips/cmupint/"
+                   "fonts/source/public/cmupint/"
+                   "fonts/tfm/public/cmupint/"
+                   "fonts/type1/public/cmupint/"
+                   "tex/latex/cmupint/")
+             (base32
+              "1acgzx5b02900vzwvaq0j8w6x8jc1650kfhp992f3bcyd658aj62")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cmupint")
+    (synopsis "Upright integral symbols for Computer Modern")
+    (description
+     "This package contains various upright integral symbols to match the
+Computer Modern font.")
+    (license license:lppl)))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
