@@ -21847,6 +21847,31 @@ as a result, some of the descriptions of limitations look rather quaint to
 modern eyes.")
     (license license:lppl)))
 
+(define-public texlive-punk
+  (package
+    (name "texlive-punk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/punk/"
+                   "fonts/source/public/punk/"
+                   "fonts/tfm/public/punk/")
+             (base32
+              "0ncarqjmwrsiw65p7mr44gjy0h90q5hw5n4jb5y2fxr1kgbzmz1p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/punk")
+    (synopsis "Donald Knuth's Punk font")
+    (description
+     "This package provides a response to the assertion in a lecture that
+``typography tends to lag behind other stylistic changes by about 10 years''.
+Knuth felt it was (in 1988) time to design a replacement for his designs of
+the 1970s, and came up with the Punk font!  The fonts are distributed as
+Metafont source.  The package also offers LaTeX support for them, although
+@code{punk-latex} is a better choice.")
+    (license license:knuth)))
+
 (define-public texlive-pythonhighlight
   (package
     (name "texlive-pythonhighlight")
