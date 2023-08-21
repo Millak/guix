@@ -20421,6 +20421,27 @@ so on up to 1999th.  Separate counter commands are provided for different
 letter case variants, and for masculine and feminine gender inflections.")
     (license license:lppl)))
 
+(define-public texlive-orkhun
+  (package
+    (name "texlive-orkhun")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/orkhun/"
+                   "fonts/source/public/orkhun/"
+                   "fonts/tfm/public/orkhun/")
+             (base32
+              "18p78sprnig93iq74y1vb1ai3ixqqj1pssrqczr1fiy0rnxsjdig")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/orkhun")
+    (synopsis "Font for Orkhun script")
+    (description
+     "The Orkhun font covers an old Turkic script.  It is provided as Metafont
+source.")
+    (license license:lppl)))
+
 (define-public texlive-oscola
   (package
     (name "texlive-oscola")
