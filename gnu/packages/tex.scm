@@ -16643,6 +16643,33 @@ Morris Fuller Benton's classic, designed by Pablo Impallari, Rodrigo
 Fuenzalida and Nhung Nguyen.")
     (license (list license:lppl license:silofl1.1))))
 
+(define-public texlive-libris
+  (package
+    (name "texlive-libris")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libris/"
+                   "fonts/afm/arkandis/libris/"
+                   "fonts/enc/dvips/libris/"
+                   "fonts/map/dvips/libris/"
+                   "fonts/tfm/arkandis/libris/"
+                   "fonts/type1/arkandis/libris/"
+                   "fonts/vf/arkandis/libris/"
+                   "source/fonts/libris/"
+                   "tex/latex/libris/")
+             (base32
+              "0ky2b4knhfd51yz6ycsly6q5rz2fk4h3rhnxmcx3qnhnai6cf9fc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libris")
+    (synopsis "Libris ADF fonts, with LaTeX support")
+    (description
+     "LibrisADF is a sans-serif family designed to mimic Lydian.  The bundle
+includes: fonts, in Adobe Type 1, TrueType and OpenType formats, and LaTeX
+support macros, for use with the Type 1 versions of the fonts.")
+    (license license:gpl3+)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
@@ -16694,6 +16721,32 @@ notation, including symbols from Lilypond's Emmentaler font, in a LaTeX
 document.  The package uses OpenType fonts, and as a result must be compiled
 with LuaLaTeX or XeLaTeX.")
     (license license:lppl1.3c)))
+
+(define-public texlive-lineara
+  (package
+    (name "texlive-lineara")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lineara/"
+                   "fonts/afm/public/lineara/"
+                   "fonts/map/dvips/lineara/"
+                   "fonts/tfm/public/lineara/"
+                   "fonts/type1/public/lineara/"
+                   "source/fonts/lineara/"
+                   "tex/latex/lineara/")
+             (base32
+              "1k3frdshsc2cj1y61bcpz9fcs1rw1rkzh8fk3fzbaqyqmyka3yl7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lineara")
+    (synopsis "Linear A script fonts")
+    (description
+     "The @code{lineara} package provides a simple interface to two fonts
+which include all known symbols, simple and complex, of the Linear A script.
+This way one can easily replicate Linear A texts using modern typographic
+technology.")
+    (license license:lppl)))
 
 (define-public texlive-ling-macros
   (package
