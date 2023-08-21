@@ -20466,6 +20466,30 @@ includes facilities for constructing tables of cases and legislation from
 citations (in conjunction with appropriate indexing packages).")
     (license license:lppl1.3+)))
 
+(define-public texlive-oswald
+  (package
+    (name "texlive-oswald")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/oswald/"
+                   "fonts/enc/dvips/oswald/"
+                   "fonts/map/dvips/oswald/"
+                   "fonts/tfm/public/oswald/"
+                   "fonts/type1/public/oswald/"
+                   "fonts/vf/public/oswald/"
+                   "tex/latex/oswald/")
+             (base32
+              "0ib7k3vgzmsjaxhfb3zcpy3m0yx8p5yyc2hr8x7b8ik7n1ik5sgm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oswald")
+    (synopsis "Oswald family of fonts with support for LaTeX and pdfLaTeX")
+    (description
+     "This package provides the Oswald family of fonts, designed by Vernon Adams,
+Kalapi Gajjar, Cyreal, with support for LaTeX and pdfLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-ot-tableau
   (package
     (name "texlive-ot-tableau")
