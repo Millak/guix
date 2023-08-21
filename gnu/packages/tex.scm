@@ -12423,6 +12423,35 @@ and templates for an introductory LaTeX course (in French) prepared for
 Universite Laval, Quebec, Canada.")
     (license license:cc-by4.0)))
 
+(define-public texlive-forum
+  (package
+    (name "texlive-forum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/forum/"
+                   "fonts/enc/dvips/forum/"
+                   "fonts/map/dvips/forum/"
+                   "fonts/opentype/public/forum/"
+                   "fonts/tfm/public/forum/"
+                   "fonts/type1/public/forum/"
+                   "fonts/vf/public/forum/"
+                   "tex/latex/forum/")
+             (base32
+              "07sbzd2da3i5adlbgrrxd7igyailzjwxvr3pcwmb9wl9jry1gg9m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/forum")
+    (synopsis "Forum fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Forum font, designed by Denis Masharov.  Forum has antique, classic Roman
+proportions.  It can be used to set body texts and works well in titles and
+headlines too.  It is truly multilingual, with glyphs for Central and Eastern
+Europe, Baltics, Cyrillic and Asian Cyrillic communities.  There is currently
+just a regular weight and an artificially emboldened bold.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-fouridx
   (package
     (name "texlive-fouridx")
