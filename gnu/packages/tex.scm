@@ -17660,6 +17660,34 @@ of his own packages.")
      "The package reimplements @code{bibentry}, for use in LuaLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lxfonts
+  (package
+    (name "texlive-lxfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lxfonts/"
+                   "fonts/map/dvips/lxfonts/"
+                   "fonts/source/public/lxfonts/"
+                   "fonts/tfm/public/lxfonts/"
+                   "fonts/type1/public/lxfonts/"
+                   "source/fonts/lxfonts/"
+                   "tex/latex/lxfonts/")
+             (base32
+              "1n7bznkcc1ma2k977306rjg1mlpcspc46xg14abnc2d4k2970bfg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ec texlive-metafont))
+    (home-page "https://ctan.org/pkg/lxfonts")
+    (synopsis "Set of slide fonts based on CM")
+    (description
+     "The bundle contains the traditional slides fonts revised to be
+completely usable both as text fonts and mathematics fonts; they are fully
+integrate with the new operators, letters, symbols and extensible delimiter
+fonts, as well as with the AMS fonts, all redone with the same stylistic
+parameters.")
+    (license license:lppl)))
+
 (define-public texlive-lyluatex
   (package
     (name "texlive-lyluatex")
