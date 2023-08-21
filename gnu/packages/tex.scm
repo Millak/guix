@@ -25983,6 +25983,35 @@ Native American languages.")
      "This package provides LaTeX support for the @code{wnri} fonts.")
     (license license:gpl2)))
 
+(define-public texlive-wsuipa
+  (package
+    (name "texlive-wsuipa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/wsuipa/"
+                   "fonts/source/public/wsuipa/"
+                   "fonts/tfm/public/wsuipa/"
+                   "tex/latex/wsuipa/")
+             (base32
+              "0gj7d68gb82dxmrbz69ibgpw2q2h6sb22k8nl569r27m2sli60jy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    ;; FIXME: Font metrics generation fails with "! Strange path (turning
+    ;; number is zero)" error.
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/wsuipa")
+    (synopsis "International Phonetic Alphabet fonts")
+    (description
+     "The package provides a 7-bit IPA font, as Metafont source, and macros
+for support under TeXt1 and LaTeX.  The fonts (and macros) are now largely
+superseded by the @code{tipa} fonts.")
+    (license license:knuth)))
+
 (define-public texlive-xcite
   (package
     (name "texlive-xcite")
