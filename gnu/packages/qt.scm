@@ -2484,13 +2484,13 @@ message.")))
   (package
     (inherit qtsvg-5)
     (name "qtvirtualkeyboard")
-    (version %qt-version)
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
-              (uri (qt-urls name version))
+              (uri (qt-url name version))
               (sha256
                (base32
-                "1skdjh9q4m438wwl8hwx3jc5hg22dmi5pwm3vd2yksxw6ny67rd7"))))
+                "1a1xnk1kmq1k8r1rsa29fq7m3vy2f0fqhy8k46q3ssn32skzlwa5"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f) ; TODO: pass 2 fail test
@@ -2510,15 +2510,10 @@ message.")))
                (setenv "QML2_IMPORT_PATH"
                        (string-append (assoc-ref outputs "out")
                                       "/lib/qt5/qml:"
-                                      (getenv "QML2_IMPORT_PATH")))
-               (setenv "QT_PLUGIN_PATH"
-                       (string-append (assoc-ref outputs "out")
-                                      "/lib/qt6/plugins:"
-                                      (getenv "QT_PLUGIN_PATH")))))))))
+                                      (getenv "QML2_IMPORT_PATH")))))))))
     (native-inputs (list perl xorg-server-for-tests))
     (inputs (list qtbase-5 qtdeclarative-5))
-    (propagated-inputs
-     (list qtquickcontrols-5 qtsvg-5))
+    (propagated-inputs (list qtquickcontrols-5 qtsvg-5))
     (synopsis "QtQuick virtual keyboard")
     (description "The Qt Speech module provides a virtual keyboard framework
 that consists of a C++ backend supporting custom input methods as well as a UI
