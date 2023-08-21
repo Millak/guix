@@ -19819,6 +19819,29 @@ generate bibliographies to be served on the web starting from BibTeX files.")
 version.")
     (license license:silofl1.1)))
 
+(define-public texlive-notomath
+  (package
+    (name "texlive-notomath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/notomath/"
+                   "fonts/map/dvips/notomath/"
+                   "fonts/tfm/public/notomath/"
+                   "fonts/type1/public/notomath/"
+                   "fonts/vf/public/notomath/"
+                   "tex/latex/notomath/")
+             (base32
+              "1m7b7blmbc6ypv737qhav6np3ri1a7cl14wnhpd5bgs89v9mkafd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/notomath")
+    (synopsis "Math support for Noto fonts")
+    (description
+     "This package provides math support via @code{newtxmath} for NotoSerif
+and NotoSans.  (Regular and Bold weights only.)")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-nuc
   (package
     (name "texlive-nuc")
