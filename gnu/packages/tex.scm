@@ -12191,6 +12191,33 @@ spaces, operators, physics unit, etc.")
 support for its use.")
     (license license:gpl3+)))
 
+(define-public texlive-fonetika
+  (package
+    (name "texlive-fonetika")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fonetika/"
+                   "fonts/afm/public/fonetika/"
+                   "fonts/map/dvips/fonetika/"
+                   "fonts/tfm/public/fonetika/"
+                   "fonts/truetype/public/fonetika/"
+                   "fonts/type1/public/fonetika/"
+                   "tex/latex/fonetika/")
+             (base32
+              "1d19a9v3innfq9602w8rd2ffn0yd52fz4wmdva6qnix0jgadc1ka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fonetika")
+    (synopsis "Support for the Danish Dania phonetic system")
+    (description
+     "Fonetika Dania is a font bundle with a serif font and a sans serif font
+for the Danish phonetic system Dania.  Both fonts exist in regular and bold
+weights.  LaTeX support is provided.")
+    ;; The license is GPL3+, except for the fonts and metrics of the Fonetika
+    ;; Dania Iwonae, which are under GUST Font Nosource License.
+    (license (list license:gpl3+ license:gfl1.0))))
+
 (define-public texlive-fontsize
   (package
     (name "texlive-fontsize")
