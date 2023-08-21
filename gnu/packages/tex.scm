@@ -11803,6 +11803,34 @@ all necessary support files are provided.  The font works well with
 fit @emph{Frontiers in Bioscience} requirements.")
     (license license:lppl)))
 
+(define-public texlive-fdsymbol
+  (package
+    (name "texlive-fdsymbol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fdsymbol/"
+                   "doc/latex/fdsymbol/"
+                   "fonts/enc/dvips/fdsymbol/"
+                   "fonts/map/dvips/fdsymbol/"
+                   "fonts/opentype/public/fdsymbol/"
+                   "fonts/source/public/fdsymbol/"
+                   "fonts/tfm/public/fdsymbol/"
+                   "fonts/type1/public/fdsymbol/"
+                   "source/latex/fdsymbol/"
+                   "tex/latex/fdsymbol/")
+             (base32
+              "1qw2bmw48xppn9jj5m46l3lr1zja6nall0a3vvpcfjd66ai3hmca")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/fdsymbol")
+    (synopsis "Maths symbol font")
+    (description
+     "FdSymbol is a maths symbol font, designed as a companion to the Fedra
+family, but it might also fit other contemporary typefaces.")
+    (license license:silofl1.1)))
+
 (define-public texlive-fduthesis
   (package
     (name "texlive-fduthesis")
