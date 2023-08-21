@@ -26203,6 +26203,25 @@ structural formulas in a way that reflects their structure.  The package
 provides three output modes: LaTeX, PostScript and PDF.")
     (license license:lppl1.3+)))
 
+(define-public texlive-yfonts
+  (package
+    (name "texlive-yfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yfonts/" "source/latex/yfonts/"
+                   "tex/latex/yfonts/")
+             (base32
+              "021sb52516ksxs1pb8nb1gchaagb0hblx55yyxzpywrryfkjd3rx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yfonts")
+    (synopsis "Support for old German fonts")
+    (description
+     "This package provides a LaTeX interface to the old German Gothic,
+Schwabacher, Fraktur and the baroque initials.")
+    (license license:lppl)))
+
 (define-public texlive-yhmath
   (package
     (name "texlive-yhmath")
