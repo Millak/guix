@@ -13543,6 +13543,30 @@ representation of a score) into a GregorioTeX file, which makes TeX able to
 create a PDF of your score.")
     (license license:gpl3)))
 
+(define-public texlive-grotesq
+  (package
+    (name "texlive-grotesq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/grotesq/"
+                   "fonts/afm/urw/grotesq/"
+                   "fonts/map/dvips/grotesq/"
+                   "fonts/tfm/urw/grotesq/"
+                   "fonts/type1/urw/grotesq/"
+                   "fonts/vf/urw/grotesq/"
+                   "tex/latex/grotesq/")
+             (base32
+              "12q0n6z442j725drp3919k2qk7kg9fas4cqz415a8lj1nmvg60i4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urw-grotesq")
+    (synopsis "URW Grotesq font pack for LaTeX")
+    (description
+     "The directory contains a copy of the Type 1 font URW Grotesq 2031
+Bold, with supporting files for use with (La)TeX.")
+    (license license:gpl3+)))
+
 (define-public texlive-grundgesetze
   (package
     (name "texlive-grundgesetze")
