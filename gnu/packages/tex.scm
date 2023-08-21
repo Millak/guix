@@ -3844,6 +3844,30 @@ Basque according to the correct forms ruled by The Basque Language Academy
 issues of numbers in Basque.")
     (license license:lppl1.2+)))
 
+(define-public texlive-bbding
+  (package
+    (name "texlive-bbding")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bbding/"
+                   "fonts/source/public/bbding/"
+                   "fonts/tfm/public/bbding/"
+                   "source/latex/bbding/" "tex/latex/bbding/")
+             (base32
+              "0l507nxnnh880h5kg8q0ww6sl93k441l0lsplr5ldrngxvx1vrsc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/bbding")
+    (synopsis "Symbol (dingbat) font and LaTeX macros for its use")
+    (description
+     "This package provides a symbol font (distributed as Metafont source)
+that contains many of the symbols of the Zapf dingbats set, together with an
+NFSS interface for using the font.  An Adobe Type 1 version of the fonts is
+available in the @code{niceframe} fonts bundle.")
+    (license license:lppl)))
+
 (define-public texlive-bclogo
   (package
     (name "texlive-bclogo")
