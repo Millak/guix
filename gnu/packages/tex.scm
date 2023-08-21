@@ -11192,6 +11192,31 @@ you use any special symbols inside your command.")
 @url{https://www.eolang.org, EO} programming language.")
     (license license:expat)))
 
+(define-public texlive-epigrafica
+  (package
+    (name "texlive-epigrafica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/epigrafica/"
+                   "fonts/afm/public/epigrafica/"
+                   "fonts/enc/dvips/epigrafica/"
+                   "fonts/map/dvips/epigrafica/"
+                   "fonts/tfm/public/epigrafica/"
+                   "fonts/type1/public/epigrafica/"
+                   "fonts/vf/public/epigrafica/"
+                   "tex/latex/epigrafica/")
+             (base32
+              "1s18ykapm50xyvrw5ls9gzc3m8r6pnjaplryr7q469k69455fh6z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epigrafica")
+    (synopsis "Greek and Latin font")
+    (description
+     "Epigrafica is a Greek and Latin font, forked from the development of the
+Cosmetica font, which is a similar design to Optima and includes Greek.")
+    (license license:gpl3+)))
+
 (define-public texlive-eplain
   (package
     (name "texlive-eplain")
