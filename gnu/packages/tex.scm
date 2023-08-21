@@ -13390,6 +13390,34 @@ modulated stroke).")
 19x19 board; the fonts are written in Metafont.")
     (license license:public-domain)))
 
+(define-public texlive-gofonts
+  (package
+    (name "texlive-gofonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gofonts/"
+                   "fonts/enc/dvips/gofonts/"
+                   "fonts/map/dvips/gofonts/"
+                   "fonts/tfm/bh/gofonts/"
+                   "fonts/truetype/bh/gofonts/"
+                   "fonts/type1/bh/gofonts/"
+                   "fonts/vf/bh/gofonts/"
+                   "tex/latex/gofonts/")
+             (base32
+              "07ysxm10xwg6cc781gdppidq1s87bqli4x6shkarjl29pxcncn61")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gofonts")
+    (synopsis "GoSans and GoMono fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the GoSans and GoMono families of fonts designed by the Bigelow & Holmes
+foundry.  GoSans is available in three weights: Regular, Medium, and
+Bold (with corresponding italics).  GoMono is available in regular and bold,
+with italics.")
+    (license (list license:bsd-3 license:lppl))))
+
 (define-public texlive-gost
   (package
     (name "texlive-gost")
