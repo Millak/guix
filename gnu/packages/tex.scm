@@ -17825,6 +17825,34 @@ Riichi (aka Japanese) Mahjong but can be used to typeset any style of
 mahjong.")
     (license (list license:expat license:cc-by4.0))))
 
+(define-public texlive-marcellus
+  (package
+    (name "texlive-marcellus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/marcellus/"
+                   "fonts/enc/dvips/marcellus/"
+                   "fonts/map/dvips/marcellus/"
+                   "fonts/tfm/public/marcellus/"
+                   "fonts/truetype/public/marcellus/"
+                   "fonts/type1/public/marcellus/"
+                   "fonts/vf/public/marcellus/"
+                   "tex/latex/marcellus/")
+             (base32
+              "1nnc0v15sjwzivy504lvrrfyzjhha7p42nwp0qqy7pwspb7cqsm5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/marcellus")
+    (synopsis "Marcellus fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Marcellus family of fonts, designed by Brian J. Bonislawsky.  Marcellus is
+a flared-serif family, inspired by classic Roman inscription letterforms.
+There is currently just a regular weight and small-caps.  The regular weight
+will be silently substituted for bold.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-margbib
   (package
     (name "texlive-margbib")
