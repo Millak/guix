@@ -15206,6 +15206,29 @@ words, both in cardinal and in ordinal form.")
 Slavik Jablan. ")
     (license license:public-domain)))
 
+(define-public texlive-jamtimes
+  (package
+    (name "texlive-jamtimes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jamtimes/"
+                   "fonts/map/dvips/jamtimes/"
+                   "fonts/tfm/public/jamtimes/"
+                   "fonts/vf/public/jamtimes/"
+                   "tex/latex/jamtimes/")
+             (base32
+              "03ww7w963hgsxazlrabg4f0h35rd8jbr9ga11lrhqf66b6zvpyv1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jamtimes")
+    (synopsis "Expanded Times Roman fonts")
+    (description
+     "The package offers LaTeX support for the expanded Times Roman font,
+which has been used for many years in the @emph{Journal d'Analyse
+Mathematique}.  Mathematics support is based on the Belleek fonts.")
+    (license license:bsd-3)))
+
 (define-public texlive-jbact
   (package
     (name "texlive-jbact")
