@@ -18723,6 +18723,38 @@ systems of equations and small matrices, @code{displaymath} in double columns
 for long calculations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-missaali
+  (package
+    (name "texlive-missaali")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/missaali/"
+                   "fonts/opentype/public/missaali/"
+                   "tex/latex/missaali/")
+             (base32
+              "1wa6knx1s82q86rl2icd9nqlh5ppa3636f28ns6g1l5fag6wd283")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/missaali")
+    (synopsis "Late medieval OpenType Textura font")
+    (description
+     "This package contains the OpenType Textura font Missaali and a style
+file for using it with XeLaTeX.  Textura is a typeface based on the
+@emph{textus quadratus} form of the @emph{textualis formata} that late
+medieval scribes used for the most valuable manuscripts.  The font Missaali is
+based on Textura that German printer Bartholomew Ghotan used for printing
+missals and psalters in the 1480s.
+
+This font has two intended use cases: as a Gothic display font; and for
+emulating late-medieval manuscripts.  In addition to the basic Textura
+letters, the font contains a large number of abbreviation sigla as well as
+a set of Lombardic initials.  As modern typesetting algorithms are not
+intended for creating 15th century style layout, the package contains
+a XeLaTeX style file that makes it easier to achieve the classic incunabula
+look.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-mltex
   (package
     (name "texlive-mltex")
