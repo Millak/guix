@@ -8591,6 +8591,34 @@ quickly verifies the consistency of the fiscal code string, and can therefore
 be useful for lawyers and accountants that use fiscal codes very frequently.")
     (license license:lppl1.3+)))
 
+(define-public texlive-coelacanth
+  (package
+    (name "texlive-coelacanth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/coelacanth/"
+                   "fonts/enc/dvips/coelacanth/"
+                   "fonts/map/dvips/coelacanth/"
+                   "fonts/opentype/public/coelacanth/"
+                   "fonts/tfm/public/coelacanth/"
+                   "fonts/type1/public/coelacanth/"
+                   "fonts/vf/public/coelacanth/"
+                   "tex/latex/coelacanth/")
+             (base32
+              "1cwk36rm1m2qaphwlpnw6rhmsmkvsdpzqs7sv1c39qcyq853q4yj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coelacanth")
+    (synopsis "Coelacanth fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX, and LuaLaTeX support for
+Coelecanth fonts, designed by Ben Whitmore.  Coelacanth is inspired by the
+classic Centaur type design of Bruce Rogers, described by some as the most
+beautiful typeface ever designed.  It aims to be a professional quality type
+family for general book typesetting.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-collref
   (package
     (name "texlive-collref")
