@@ -22620,6 +22620,30 @@ diagrams, i.e., flow diagrams in which the width of the arrows is proportional
 to the flow rate.")
     (license (list license:lppl1.3+ license:gpl3+))))
 
+(define-public texlive-sansmathaccent
+  (package
+    (name "texlive-sansmathaccent")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/sansmathaccent/"
+                   "fonts/map/dvips/sansmathaccent/"
+                   "fonts/tfm/public/sansmathaccent/"
+                   "fonts/vf/public/sansmathaccent/"
+                   "tex/latex/sansmathaccent/")
+             (base32
+              "03xd3wpmzrggpmjrff4ka56v2zycbznlcdfyvz74xxjnngxz81qm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sansmathaccent")
+    (synopsis "Correct placement of accents in sans-serif maths")
+    (description
+     "Sans serif maths (produced by the @code{beamer} class or the
+@code{sfmath} package) often has accents positioned incorrectly.  This package
+fixes the positioning of such accents when the default font (@code{cmssi}) is
+used for sans serif maths.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sasnrdisplay
   (package
     (name "texlive-sasnrdisplay")
