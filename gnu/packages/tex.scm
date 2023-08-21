@@ -24209,6 +24209,32 @@ Times, the other matching Libertine.")
 abbreviations of longer expressions.")
     (license license:lppl)))
 
+(define-public texlive-svrsymbols
+  (package
+    (name "texlive-svrsymbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/svrsymbols/"
+                   "fonts/afm/public/svrsymbols/"
+                   "fonts/map/dvips/svrsymbols/"
+                   "fonts/opentype/public/svrsymbols/"
+                   "fonts/tfm/public/svrsymbols/"
+                   "fonts/type1/public/svrsymbols/"
+                   "source/fonts/svrsymbols/"
+                   "tex/latex/svrsymbols/")
+             (base32
+              "0l1pj97pqlh9mq3m3zswnxm2vws916yjlx0pq1gr3bc23kwvhhl3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/svrsymbols")
+    (synopsis "Font with symbols for use in physics texts")
+    (description
+     "The @code{svrsymbols} package is a LaTeX interface to the SVRsymbols
+font.  The glyphs of this font are ideograms that have been designed for use
+in physics texts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-syllogism
   (package
     (name "texlive-syllogism")
