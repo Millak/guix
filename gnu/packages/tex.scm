@@ -20655,6 +20655,30 @@ weights (Regular, Bold, Black) with italic variants for each of them.  There
 are also small-caps and old-style figures in the Regular weight.")
     (license license:silofl1.1)))
 
+(define-public texlive-pacioli
+  (package
+    (name "texlive-pacioli")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/pacioli/"
+                   "fonts/source/public/pacioli/"
+                   "fonts/tfm/public/pacioli/"
+                   "source/fonts/pacioli/" "tex/latex/pacioli/")
+             (base32
+              "100fs89b2nfybnjdg8b4v3z8q982b6x0azn0sc31533pkkkp19i3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/pacioli")
+    (synopsis "Fonts designed by Fra Luca de Pacioli in 1497")
+    (description
+     "Pacioli was a 15th century mathematician, and his font was designed
+according to the divine proportion.  The font consists of uppercase letters
+together with punctuation and some analphabetics; no lowercase or digits.  The
+package provides Metafont source for the font together with LaTeX support.")
+    (license license:lppl)))
+
 (define-public texlive-padauk
   (package
     (name "texlive-padauk")
