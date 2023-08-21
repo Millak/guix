@@ -1308,6 +1308,42 @@ convert your notation to PostScript (using the established utility
 document.")
     (license license:lppl1.2+)))
 
+(define-public texlive-aboensis
+  (package
+    (name "texlive-aboensis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/aboensis/"
+                   "fonts/opentype/public/aboensis/"
+                   "tex/latex/aboensis/")
+             (base32
+              "14333k6bkfywdka3h2a2yd2nw0521q0lwl3x38612j7cb82izyi3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aboensis")
+    (synopsis "Late medieval OpenType cursive font")
+    (description
+     "The package contains the OpenType medieval cursive font Aboensis and
+a style file to use it in XeLaTeX documents.  The font is based on @emph{Codex
+Aboensis}, that is a law book written in Sweden in the 1430s.  Since medieval
+cursive is very difficult to read for modern people, the font is not suitable
+for use as an ordinary book font, but is intended for emulating late medieval
+manuscripts.
+
+The font contains two sets of initials: lombardic and cursive to go with the
+basic alphabet, and there is support for writing two-colored initials and
+capitals.  There are also a large number of abbreviation sigla that can be
+accessed as ligature substitutions.  The style file contains macros that help
+to use the extended features of the font such as initials and two-colored
+capitals.  There are also macros to help achieve even pages with consistent
+line spacing.")
+    (license
+     (list license:silofl1.1
+           license:lppl1.3c
+           license:cc-by4.0
+           license:public-domain))))
+
 (define-public texlive-accents
   (package
     (name "texlive-accents")
