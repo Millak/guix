@@ -6433,6 +6433,27 @@ those long IUPAC compound names, and some chemical idioms.  It also supports
 the labelling of compounds and reference to labelled compounds.")
     (license license:lppl)))
 
+(define-public texlive-braille
+  (package
+    (name "texlive-braille")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/braille/" "tex/latex/braille/")
+             (base32
+              "021nxjz23gn8zjrrzxggjaqq3gv894c512x15kffywm8h5k0bzy5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/braille")
+    (synopsis "Support for Braille")
+    (description
+     "This package allows the user to produce Braille documents on paper for
+the blind without knowing Braille.  Python scripts @file{grade1.py} and
+@file{grade2.py} convert ordinary text to grade 1 and 2 Braille tags; then,
+the LaTeX package takes the tags and prints out corresponding Braille
+symbols.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-breakcites
   (package
     (name "texlive-breakcites")
