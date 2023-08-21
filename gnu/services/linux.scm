@@ -193,7 +193,8 @@ representation."
                              (compose list earlyoom-shepherd-service))
           (service-extension rottlog-service-type
                              (const %earlyoom-log-rotation))))
-   (description "Run @command{earlyoom}, the Early OOM daemon.")))
+   (description "Run @command{earlyoom}, a daemon that quickly responds to
+@acronym{OOM, out-of-memory} conditions by terminating relevant processes.")))
 
 
 ;;;
