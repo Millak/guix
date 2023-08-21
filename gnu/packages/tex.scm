@@ -8850,6 +8850,28 @@ access the Concrete mathematics fonts, which were derived from Computer Modern
 math fonts using parameters from Concrete Roman text fonts.")
     (license license:lppl)))
 
+(define-public texlive-concmath-fonts
+  (package
+    (name "texlive-concmath-fonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/concmath-fonts/"
+                   "fonts/source/public/concmath-fonts/"
+                   "fonts/tfm/public/concmath-fonts/")
+             (base32
+              "09frgpcwpfkj9j9aaj5psb8kr12vgbr10plcvcipn0mjahdw9nnz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-amsfonts texlive-metafont))
+    (home-page "https://ctan.org/pkg/concmath-fonts")
+    (synopsis "Concrete mathematics fonts")
+    (description
+     "The fonts are derived from the Computer Modern Mathematics fonts and
+from Knuth's Concrete Roman fonts; they are distributed as Metafont source.
+LaTeX support is offered by the @code{concmath} package.")
+    (license license:lppl)))
+
 (define-public texlive-concrete
   (package
     (name "texlive-concrete")
