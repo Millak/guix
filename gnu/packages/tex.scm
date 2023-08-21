@@ -19692,6 +19692,29 @@ the size and colour of the sticks, and flexibility to draw heaps of different
 objects.")
     (license license:expat)))
 
+(define-public texlive-nkarta
+  (package
+    (name "texlive-nkarta")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/nkarta/"
+                   "fonts/source/public/nkarta/"
+                   "fonts/tfm/public/nkarta/"
+                   "metapost/nkarta/" "source/latex/nkarta/")
+             (base32
+              "0x5rdacf3d2jm4rgcvmpz76icga4gis4ykmsmp745xb7kh99npjv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/nkarta")
+    (synopsis "New version of the Karta cartographic fonts")
+    (description
+     "This package provides a development of the Karta font, offering more
+mathematical stability in Metafont.  A version that will produce the glyphs as
+Encapsulated PostScript is also provided.")
+    (license license:public-domain)))
+
 (define-public texlive-nmbib
   (package
     (name "texlive-nmbib")
