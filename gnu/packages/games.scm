@@ -6523,7 +6523,15 @@ emerges from a sewer hole and pulls her below ground.")
      (list
       #:configure-flags
       #~(list (string-append "-DCDOGS_DATA_DIR=" #$output
-                             "/share/cdogs-sdl/"))))
+                             "/share/cdogs-sdl/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-install-directory
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set\\(DATA_INSTALL_DIR \".\"\\)")
+                 (string-append "set(DATA_INSTALL_DIR \""
+                                #$output "/share/cdogs-sdl\")"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
