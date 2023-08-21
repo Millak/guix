@@ -24744,6 +24744,30 @@ symbols.")
 membrane protein topology plots and helical wheels.")
     (license license:gpl3+)))
 
+(define-public texlive-tfrupee
+  (package
+    (name "texlive-tfrupee")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/tfrupee/"
+                   "fonts/afm/public/tfrupee/"
+                   "fonts/map/dvips/tfrupee/"
+                   "fonts/tfm/public/tfrupee/"
+                   "fonts/type1/public/tfrupee/"
+                   "source/fonts/tfrupee/"
+                   "tex/latex/tfrupee/")
+             (base32
+              "0qhgxn5g4wzhi81xgb30giw542nprlmf0ryyq6jy752jccl07b7j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tfrupee")
+    (synopsis "Font offering the new (Indian) Rupee symbol")
+    (description
+     "The package provides LaTeX support for the (Indian) Rupee symbol font.
+Simple LaTeX support written for its use.")
+    (license license:gpl3)))
+
 (define-public texlive-thaienum
   (package
     (name "texlive-thaienum")
