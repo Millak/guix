@@ -13012,6 +13012,35 @@ encodings.  The fonts themselves are provided in Adobe Type 1 and OpenType
 formats.")
     (license license:silofl1.1)))
 
+(define-public texlive-gfscomplutum
+  (package
+    (name "texlive-gfscomplutum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfscomplutum/"
+                   "fonts/afm/public/gfscomplutum/"
+                   "fonts/enc/dvips/gfscomplutum/"
+                   "fonts/map/dvips/gfscomplutum/"
+                   "fonts/opentype/public/gfscomplutum/"
+                   "fonts/tfm/public/gfscomplutum/"
+                   "fonts/type1/public/gfscomplutum/"
+                   "fonts/vf/public/gfscomplutum/"
+                   "tex/latex/gfscomplutum/")
+             (base32
+              "018hpaijnky23brhqmqsq2zm7h5w4y42vdfawba62qlz5m1zijn1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfscomplutum")
+    (synopsis "Greek font with a long history")
+    (description
+     "GFS Complutum derives from a minuscule-only font cut in the 16th
+century.  An unsatisfactory set of majuscules were added in the early 20th
+century, but its author died before he could complete the revival of the font.
+The Greek Font Society has released this version, which has a new set of
+majuscules.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
