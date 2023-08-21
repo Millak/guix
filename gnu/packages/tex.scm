@@ -19544,6 +19544,30 @@ enhancements to that package, and splits it in two parts (@code{newpxtext} and
 scaling, improved metrics, and other options.")
     (license (list license:lppl license:silofl1.1))))
 
+(define-public texlive-newtxsf
+  (package
+    (name "texlive-newtxsf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/newtxsf/"
+                   "fonts/map/dvips/newtxsf/"
+                   "fonts/tfm/public/newtxsf/"
+                   "fonts/type1/public/newtxsf/"
+                   "fonts/vf/public/newtxsf/"
+                   "tex/latex/newtxsf/")
+             (base32
+              "1nmbh566ifkglk4wdgp297q5nab52ykda4xfi9q5w3c5rzw53y0v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newtxsf")
+    (synopsis "Sans-math fonts for use with @code{newtx}")
+    (description
+     "The package provides a maths support that amounts to modifications of
+the STIX sans serif Roman and Greek letters with most symbols taken from
+@code{newtxmath}.")
+    (license license:silofl1.1)))
+
 (define-public texlive-nicematrix
   (package
     (name "texlive-nicematrix")
