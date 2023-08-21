@@ -12787,6 +12787,26 @@ and inferior figures, historical ligatures, Byzantine musical symbols, the IPA
 and swash capitals.")
     (license (list license:expat license:lppl))))
 
+(define-public texlive-garamond-math
+  (package
+    (name "texlive-garamond-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/garamond-math/"
+                   "fonts/opentype/public/garamond-math/")
+             (base32
+              "1ay8qmcn8glzn0bpg4qqs3k6dr9h7lljal239qvxfvg1fzj76h4n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/garamond-math")
+    (synopsis "An OTF math font matching EB Garamond")
+    (description
+     "Garamond-Math is an OpenType math font matching EB Garamond (Octavio
+Pardo) and EB Garamond (Georg Mayr-Duffner).  Many mathematical symbols are
+derived from other fonts, others are made from scratch.")
+    (license license:silofl1.1)))
+
 (define-public texlive-gastex
   (package
     (name "texlive-gastex")
