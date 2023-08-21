@@ -3266,6 +3266,36 @@ Chinese.")
 manual.")
     (license license:lgpl3+)))
 
+(define-public texlive-atkinson
+  (package
+    (name "texlive-atkinson")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/atkinson/"
+                   "fonts/enc/dvips/atkinson/"
+                   "fonts/map/dvips/atkinson/"
+                   "fonts/opentype/public/atkinson/"
+                   "fonts/tfm/public/atkinson/"
+                   "fonts/type1/public/atkinson/"
+                   "fonts/vf/public/atkinson/"
+                   "tex/latex/atkinson/")
+             (base32
+              "00wg21v7jiaw3qajdxp2jih5xjpv7h8d0n1d6zjnzkxzk0p8zcj0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/atkinson")
+    (synopsis "Support for the Atkinson Hyperlegible family of fonts")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Atkinson Hyperlegible family of fonts.  What makes it different from
+traditional typography design is that it focuses on letterform distinction to
+increase character recognition, ultimately improving readability.")
+    (license
+     (list license:lppl
+           (license:fsdg-compatible
+            "file://doc/Atkinson-Hyperlegible-Font-License-2020-1104.pdf")))))
+
 (define-public texlive-authordate
   (package
     (name "texlive-authordate")
