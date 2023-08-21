@@ -16444,6 +16444,28 @@ engine")
 fonts are similiar to Libertine and Biolinum, but come with math symbols.")
     (license license:lppl1.3+)))
 
+(define-public texlive-libertinus-fonts
+  (package
+    (name "texlive-libertinus-fonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libertinus-fonts/"
+                   "fonts/opentype/public/libertinus-fonts/")
+             (base32
+              "1g4y3v7i8bs1677rj56v3kw5q3nkl9ksljmly4m7n42dlpggxiaj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libertinus-fonts")
+    (synopsis "Libertinus font family")
+    (description
+     "This is a fork of the Linux Libertine and Linux Biolinum fonts that
+started as an OpenType math companion of the Libertine font family, but grown
+as a full fork.  The family consists of Libertinus Serif, Libertinus Sans,
+Libertinus Mono, and Libertinus Math, an OpenType math font for use in
+OpenType math-capable applications.")
+    (license license:silofl1.1)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
