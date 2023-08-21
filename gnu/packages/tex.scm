@@ -20628,6 +20628,33 @@ kerning when a subscript follows.  Some predefined commands are also
 provided.")
     (license license:lppl1.3c)))
 
+(define-public texlive-overlock
+  (package
+    (name "texlive-overlock")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/overlock/"
+                   "fonts/enc/dvips/overlock/"
+                   "fonts/map/dvips/overlock/"
+                   "fonts/opentype/tipo/overlock/"
+                   "fonts/tfm/tipo/overlock/"
+                   "fonts/type1/tipo/overlock/"
+                   "fonts/vf/tipo/overlock/"
+                   "tex/latex/overlock/")
+             (base32
+              "0rpqpd5ja32i44lf8szr2hn0dz5dh2p238iid0dnkpylf006wni2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/overlock")
+    (synopsis "Overlock sans fonts with LaTeX support")
+    (description
+     "The package provides the Overlock and OverlockSC families of fonts,
+designed by Dario Manuel Muhafara, rounded sans-serif fonts in three
+weights (Regular, Bold, Black) with italic variants for each of them.  There
+are also small-caps and old-style figures in the Regular weight.")
+    (license license:silofl1.1)))
+
 (define-public texlive-padauk
   (package
     (name "texlive-padauk")
