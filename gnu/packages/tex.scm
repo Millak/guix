@@ -9568,6 +9568,35 @@ allowing the user to choose the most appropriate approach for every
 situation.")
     (license license:lppl)))
 
+(define-public texlive-dancers
+  (package
+    (name "texlive-dancers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/dancers/"
+                   "fonts/tfm/public/dancers/")
+             (base32
+              "0nni21f6y9gynx1lsymb3pmh6w761q21idq60fib90hvv9jjd85q")))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/dancers")
+    (synopsis "Font for Conan Doyle's @emph{The Dancing Men}")
+    (description
+     "The (Sherlock Holmes) book contains a code which uses dancing men as
+glyphs.  The alphabet as given is not complete, lacking @samp{f}, @samp{j},
+@samp{k}, @samp{q}, @samp{u}, @samp{w}, @samp{x} and @samp{z}, so those
+letters in the font are not due to Conan Doyle.
+
+The code required word endings to be marked by the dancing man representing
+the last letter to be holding a flag: these are coded as A-Z.  In some cases,
+the man has no arms, making it impossible for him to hold a flag.  In these
+cases, he is wearing a flag on his hat in the character.  The font is
+distributed as Metafont source.")
+    ;; "This font may be freely used, modified and distributed."
+    (license
+     (license:fsf-free "file://fonts/source/public/dancers/dancers.mf"))))
+
 (define-public texlive-decision-table
   (package
     (name "texlive-decision-table")
