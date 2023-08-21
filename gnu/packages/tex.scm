@@ -17909,6 +17909,30 @@ Mathématiques Appliquées et Industrielles (SMAI).")
 4th edition.")
     (license license:public-domain)))
 
+(define-public texlive-mathabx
+  (package
+    (name "texlive-mathabx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mathabx/"
+                   "fonts/source/public/mathabx/"
+                   "fonts/tfm/public/mathabx/"
+                   "tex/generic/mathabx/")
+             (base32
+              "0kj95jl89wh43b9mfqp05hpa5jqyxca7hp9pfk21js2dhysr7x18")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/mathabx")
+    (synopsis "Three series of mathematical symbols")
+    (description
+     "Mathabx is a set of three mathematical symbols font series.
+They are defined by Metafont code.  The package includes Plain TeX and LaTeX
+support macros.  A version of the fonts, in Adobe Type 1 format, is also
+available.")
+    (license license:lppl)))
+
 (define-public texlive-mathalpha
   (package
     (name "texlive-mathalpha")
