@@ -12911,6 +12911,29 @@ provides an environment like @code{eqnarray}, a @code{newtheorem}-like
 environment (NewTheorem), and several macros.")
     (license license:isc)))
 
+(define-public texlive-genealogy
+  (package
+    (name "texlive-genealogy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/genealogy/"
+                   "fonts/source/public/genealogy/"
+                   "fonts/tfm/public/genealogy/")
+             (base32
+              "155ifff77s5cwjk1gkib7gcdx1mcrzzbca35mm8f9w5rzg1d5x7k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/genealogy")
+    (synopsis "Compilation of genealogy fonts")
+    (description
+     "This package provides a simple compilation of the genealogical symbols
+found in the @code{wasy} and @code{gen} fonts, adding the male and female
+symbols to Knuth's @code{gen} font, and so avoiding loading two fonts when you
+need only genealogical symbols.  The font is distributed as Metafont source.")
+    (license license:lppl)))
+
 (define-public texlive-geschichtsfrkl
   (package
     (name "texlive-geschichtsfrkl")
