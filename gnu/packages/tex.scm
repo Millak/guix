@@ -1718,6 +1718,33 @@ Devanagari characters and syllables in a more correct way.")
 a given (Unicode) glyph.  It relies on Fontconfig.")
     (license license:bsd-3)))
 
+(define-public texlive-alegreya
+  (package
+    (name "texlive-alegreya")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/alegreya/"
+                   "fonts/enc/dvips/alegreya/"
+                   "fonts/map/dvips/alegreya/"
+                   "fonts/opentype/huerta/alegreya/"
+                   "fonts/tfm/huerta/alegreya/"
+                   "fonts/type1/huerta/alegreya/"
+                   "fonts/vf/huerta/alegreya/"
+                   "tex/latex/alegreya/")
+             (base32
+              "1n09fq89nxw3jaglmvjfl7ysflqi0rh6mmp6q0zn57m72sza9rra")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alegreya")
+    (synopsis "Alegreya fonts with LaTeX support")
+    (description
+     "Alegreya, designed by Juan Pablo del Peral, is a typeface originally
+intended for literature.  It conveys a dynamic and varied rhythm which
+facilitates the reading of long texts.  Bold, black, small caps and five
+number styles are available.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-aleph
   (package
     (name "texlive-aleph")
