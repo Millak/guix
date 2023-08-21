@@ -2489,6 +2489,29 @@ TrueType font files in your system's user and system font directories.")
      "gofpdi allows you to import an existing PDF into a new PDF.")
     (license license:expat)))
 
+(define-public go-github-com-signintech-gopdf
+  (package
+    (name "go-github-com-signintech-gopdf")
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/signintech/gopdf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jf8a896qh871mdr1i7f0fdpqki5pkk1sp6p5dq404zqxpd7lq5l"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/signintech/gopdf"))
+    (propagated-inputs (list go-github-com-pkg-errors
+                             go-github-com-phpdave11-gofpdi))
+    (home-page "https://github.com/signintech/gopdf")
+    (synopsis "Generating PDF documents")
+    (description "gopdf is a Go library for generating PDF documents.")
+    (license license:expat)))
+
 (define-public go-torproject-org-pluggable-transports-goptlib
   (package
     (name "go-torproject-org-pluggable-transports-goptlib")
