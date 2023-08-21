@@ -12474,6 +12474,28 @@ level, as appropriate.  The package provides an alternative to the use of the
 @code{\\sideset} command in the @code{amsmath} package.")
     (license license:lppl)))
 
+(define-public texlive-fouriernc
+  (package
+    (name "texlive-fouriernc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fouriernc/"
+                   "fonts/afm/public/fouriernc/"
+                   "fonts/tfm/public/fouriernc/"
+                   "fonts/vf/public/fouriernc/"
+                   "tex/latex/fouriernc/")
+             (base32
+              "1gg9l6zvyi98jg1w7z33pxsnmh7lqjcs2zakhj3pbv2q7ysxnppw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fouriernc")
+    (synopsis "Use New Century Schoolbook text with Fourier maths fonts")
+    (description
+     "This package provides a LaTeX mathematics font setup for use with New
+Century Schoolbook text.")
+    (license license:lppl)))
+
 (define-public texlive-francais-bst
   (package
     (name "texlive-francais-bst")
