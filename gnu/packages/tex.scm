@@ -9057,6 +9057,33 @@ italics.")
 mathematical environments.")
     (license license:bsd-2)))
 
+(define-public texlive-countriesofeurope
+  (package
+    (name "texlive-countriesofeurope")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/countriesofeurope/"
+                   "fonts/afm/public/countriesofeurope/"
+                   "fonts/enc/dvips/countriesofeurope/"
+                   "fonts/map/dvips/countriesofeurope/"
+                   "fonts/opentype/public/countriesofeurope/"
+                   "fonts/tfm/public/countriesofeurope/"
+                   "fonts/type1/public/countriesofeurope/"
+                   "tex/latex/countriesofeurope/")
+             (base32
+              "07q0hrrlvadcc3vcl97gsgp1pbkmfhy60zm8ib65qd79m81kyxs0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/countriesofeurope")
+    (synopsis "Font with the images of the countries of Europe")
+    (description
+     "The bundle provides a font CountriesOfEurope (in Adobe Type 1 format)
+and the necessary metrics, together with LaTeX macros for its use.  The font
+provides glyphs with a filled outline of the shape of each country; each glyph
+is at the same cartographic scale.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-covington
   (package
     (name "texlive-covington")
