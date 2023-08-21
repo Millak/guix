@@ -16466,6 +16466,27 @@ Libertinus Mono, and Libertinus Math, an OpenType math font for use in
 OpenType math-capable applications.")
     (license license:silofl1.1)))
 
+(define-public texlive-libertinus-otf
+  (package
+    (name "texlive-libertinus-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libertinus-otf/"
+                   "tex/latex/libertinus-otf/")
+             (base32
+              "0rd4jr67j9744fm18vps0brwsa9880jdq4vj4s7dl80aylp8djz4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libertinus-otf")
+    (synopsis "Support for Libertinus OpenType")
+    (description
+     "This package offers LuaLaTeX and XeLaTeX support for the Libertinus
+OpenType fonts.  Missing fonts are defined via several font feature settings.
+The Libertinus fonts are similiar to Libertine and Biolinum, but come with
+math symbols.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
