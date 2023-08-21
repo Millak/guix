@@ -7798,6 +7798,33 @@ an annotation field in bibliographies.")
 environment for Chinese chess manual writing.")
     (license license:lppl1.3c)))
 
+(define-public texlive-chivo
+  (package
+    (name "texlive-chivo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/chivo/"
+                   "fonts/enc/dvips/chivo/"
+                   "fonts/map/dvips/chivo/"
+                   "fonts/opentype/public/chivo/"
+                   "fonts/tfm/public/chivo/"
+                   "fonts/type1/public/chivo/"
+                   "fonts/vf/public/chivo/"
+                   "source/fonts/chivo/"
+                   "tex/latex/chivo/")
+             (base32
+              "0dvcz42rw2y33amrjikgicy9r4c6m0c4cvv2h0sm7k5bympnj8w0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chivo")
+    (synopsis "Using the Chivo fonts with LaTeX")
+    (description
+     "This work provides the necessary files to use the Chivo fonts with
+LaTeX.  Chivo is a set of eight fonts provided by Hector Gatti and Omnibus
+Team.")
+    (license (list license:silofl1.1 license:lppl1.3c))))
+
 (define-public texlive-chordbars
   (package
     (name "texlive-chordbars")
