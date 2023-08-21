@@ -23146,6 +23146,31 @@ The included @code{bnfgrammar} environment parses BNF expressions (possibly
 annotated), so users can write readable BNF expressions in their documents.")
     (license license:expat)))
 
+(define-public texlive-simpleicons
+  (package
+    (name "texlive-simpleicons")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/simpleicons/"
+                   "fonts/enc/dvips/simpleicons/"
+                   "fonts/map/dvips/simpleicons/"
+                   "fonts/opentype/public/simpleicons/"
+                   "fonts/tfm/public/simpleicons/"
+                   "fonts/type1/public/simpleicons/"
+                   "tex/latex/simpleicons/")
+             (base32
+              "0ngjx0z1ldpc6a31maw9kbsxf910qkgcndsqibfanc5mb8ygb6zn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simpleicons")
+    (synopsis "Simple Icons for LaTeX")
+    (description
+     "Similar to FontAwesome icons being provided on LaTeX by the
+@code{fontawesome} package, this package aims to do the same with
+@url{https://simpleicons.org/, Simple Icons}.")
+    (license license:cc0)))
+
 (define-public texlive-simpler-wick
   (package
     (name "texlive-simpler-wick")
