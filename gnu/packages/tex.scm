@@ -14349,6 +14349,28 @@ Hein and independently by the mathematician John Nash.  This package defines
 an environment that enables the user to draw such a game in a trivial way.")
     (license license:lppl)))
 
+(define-public texlive-hfbright
+  (package
+    (name "texlive-hfbright")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/hfbright/"
+                   "fonts/afm/public/hfbright/"
+                   "fonts/enc/dvips/hfbright/"
+                   "fonts/map/dvips/hfbright/"
+                   "fonts/type1/public/hfbright/")
+             (base32
+              "1aw4h2law9q7sn2ppf3pxdazsk9kypss3chvca3741w8bzhxq5qr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hfbright")
+    (synopsis "@code{hfbright} fonts")
+    (description
+     "These are Adobe Type 1 versions of the OT1-encoded and maths parts of
+the Computer Modern Bright fonts.")
+    (license license:lppl)))
+
 (define-public texlive-historische-zeitschrift
   (package
     (name "texlive-historische-zeitschrift")
