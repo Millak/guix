@@ -25019,6 +25019,35 @@ metrically compatible with Times New Roman.")
 display calculators, specifically the TI-82 STATS.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tpslifonts
+  (package
+    (name "texlive-tpslifonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tpslifonts/"
+                   "source/latex/tpslifonts/"
+                   "tex/latex/tpslifonts/")
+             (base32
+              "1i713qbhbv6yhax667igabfal1p2f8r6w0hgvs4y4pbpv4ffyqf6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tpslifonts")
+    (synopsis "LaTeX package for configuring presentation fonts")
+    (description
+     "This package aims to improve of font readability in presentations,
+especially with maths.  The standard CM maths fonts at large design sizes are
+difficult to read from far away, especially at low resolutions and low
+contrast color choice.  Using this package leads to much better overall
+readability of some font combinations.  The package offers a couple of
+harmonising combinations of text and maths fonts from the (distant) relatives
+of Computer Modern fonts, with a couple of extras for optimising readability.
+Text fonts from Computer Modern roman, Computer Modern sans serif, SliTeX
+Computer Modern sans serif, Computer Modern Bright, or Concrete Roman are
+available, in addition to maths fonts from Computer Modern maths, Computer
+Modern Bright maths, or Euler fonts.")
+    (license license:gpl3+)))
+
 (define-public texlive-translation-array-fr
   (package
     (name "texlive-translation-array-fr")
