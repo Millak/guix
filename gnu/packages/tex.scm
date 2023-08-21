@@ -20102,6 +20102,28 @@ traditional system (with prime symbols).  The system can also be changed
 mid-document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ocr-b
+  (package
+    (name "texlive-ocr-b")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ocr-b/"
+                   "fonts/source/public/ocr-b/"
+                   "fonts/tfm/public/ocr-b/")
+             (base32
+              "089y4hihxdln1rvn87lmmiamcy8xc0niiv4gqxivahwkdjl8w0zw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/ocr-b")
+    (synopsis "Fonts for OCR-B")
+    (description
+     "This package includes Metafont source for OCR-B at several sizes.")
+    ;; "you may freely use, modify, and/or distribute any of these files or
+    ;; the resulting fonts, without limitation."
+    (license (license:fsf-free "file://doc/fonts/ocr-b-outline/README"))))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
