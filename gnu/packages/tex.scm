@@ -13828,6 +13828,29 @@ constructed language Arka.  The bundle provides nine official fonts, in Adobe
 Type 1 format.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hamnosys
+  (package
+    (name "texlive-hamnosys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/hamnosys/"
+                   "fonts/truetype/public/hamnosys/"
+                   "source/fonts/hamnosys/"
+                   "tex/latex/hamnosys/")
+             (base32
+              "1iilp1npy23azk7gjb3m6g9p9f853lbpn9cvply90g2s9jdw0bd9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hamnosys")
+    (synopsis "Font for sign languages")
+    (description
+     "The Hamburg Notation System, HamNoSys for short, is a system for the
+phonetic transcription of signed languages.  This package makes HamNoSys
+available in XeLaTeX and LuaLaTeX.  The package provides a Unicode font for
+rendering HamNoSys symbols as well as three methods for entering them.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hanoi
   (package
     (name "texlive-hanoi")
