@@ -11567,6 +11567,25 @@ maths font.  A style file @file{euler-math.sty} is provided as a replacement
 of the @code{eulervm} package for LuaLaTeX and XeLaTeX users.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-euxm
+  (package
+    (name "texlive-euxm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/euxm/"
+                   "fonts/tfm/public/euxm/")
+             (base32
+              "10dqknqlqrga9m2lgd74zx5hk4qcbkfvlzjgr304p94w3k7pclqc")))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/euxm")
+    (synopsis "Extended Euler")
+    (description
+     "This package extends Euler font to include two additional characters
+needed for Concrete Math.")
+    (license license:knuth)))
+
 (define-public texlive-evangelion-jfm
   (package
     (name "texlive-evangelion-jfm")
