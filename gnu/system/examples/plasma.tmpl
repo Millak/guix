@@ -1,7 +1,7 @@
 ;; This is an operating system configuration template
 ;; for a "desktop" setup with Plasma.
 
-(use-modules (gnu) (gnu system nss))
+(use-modules (gnu) (gnu system nss) (srfi srfi-1))
 (use-service-modules desktop sddm xorg ssh)
 (use-package-modules certs gnome ssh admin fonts)
 (use-package-modules qt xorg tmux linux)
@@ -57,8 +57,12 @@
              (service sddm-service-type
                       (sddm-configuration
                        (theme "breeze")))
-             (modify-services %desktop-services
-               (delete gdm-service-type))))
+
+             ;; Remove GDM if it's among %DESKTOP-SERVICES (on some
+             ;; architectures it's not there).
+             (remove (lambda (service)
+                       (eq? (service-kind service) gdm-service-type))
+                     %desktop-services)))
   ;; Allow resolution of '.local' host names with mDNS.
   (name-service-switch %mdns-host-lookup-nss))
 
