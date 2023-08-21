@@ -15099,6 +15099,29 @@ journals, including @emph{Journal of Physics}.")
 proportional width glyphs for Western characters.")
     (license license:ipa)))
 
+(define-public texlive-ipaex-type1
+  (package
+    (name "texlive-ipaex-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ipaex-type1/"
+                   "fonts/enc/dvips/ipaex-type1/"
+                   "fonts/map/dvips/ipaex-type1/"
+                   "fonts/tfm/public/ipaex-type1/"
+                   "fonts/type1/public/ipaex-type1/"
+                   "tex/latex/ipaex-type1/")
+             (base32
+              "123m8i8gvyq3cncn8s11qzk976ml89aqcyapx2zs6phg9h090bc8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ipaex-type1")
+    (synopsis "IPAex fonts converted to Type-1 format Unicode sub-fonts")
+    (description
+     "The package contains the IPAex Fonts converted into Unicode sub-fonts in
+Type 1 format, which is most suitable for use with the CJK package.")
+    (license license:ipa)))
+
 (define-public texlive-is-bst
   (package
     (name "texlive-is-bst")
