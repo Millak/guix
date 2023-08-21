@@ -22665,6 +22665,29 @@ their calculations or simulations into LaTeX projects.  The package is also
 capable of overloading the Sweave User Manual and SASweave packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sauterfonts
+  (package
+    (name "texlive-sauterfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sauterfonts/"
+                   "source/latex/sauterfonts/"
+                   "tex/latex/sauterfonts/")
+             (base32
+              "0h34vp94i16al0z8zw5xn3igk2hg4nnb507kiv87qxrr3gl11zy4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sauterfonts")
+    (synopsis "Use Sauter's fonts in LaTeX")
+    (description
+     "The package provides font definition files (plus a replacement for the
+package @code{exscale}) to access many of the fonts in Sauter's collection.
+These fonts are available in all point sizes and look nicer for such
+intermediate document sizes as 11pt.  Also included is the package
+@code{sbbm}, an alternative to access the BBM fonts.")
+    (license license:gpl3+)))
+
 (define-public texlive-schwalbe-chess
   (package
     (name "texlive-schwalbe-chess")
