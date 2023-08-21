@@ -10436,6 +10436,32 @@ responses and DFTs, while the package DSPBlocks (@file{dspblocks.sty})
 supports DSP block diagrams.")
     (license license:lppl)))
 
+(define-public texlive-dsserif
+  (package
+    (name "texlive-dsserif")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dsserif/"
+                   "fonts/afm/public/dsserif/"
+                   "fonts/map/dvips/dsserif/"
+                   "fonts/tfm/public/dsserif/"
+                   "fonts/type1/public/dsserif/"
+                   "source/fonts/dsserif/"
+                   "tex/latex/dsserif/")
+             (base32
+              "0dl8380lyv8r5kfrlhi5r4iwadb52m1397z68qwa65c5p2px1y3i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dsserif")
+    (synopsis "Double-struck serifed font for mathematical use")
+    (description
+     "DSSerif is a mathematical font package with double struck serifed
+digits, upper and lower case letters, in regular and bold weights.  The design
+was inspired by the STIX double struck fonts, which are sans serif, but
+starting from a Courier-like base.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-dvgloss
   (package
     (name "texlive-dvgloss")
