@@ -3075,6 +3075,29 @@ dissimilarity analysis.  Most of its multivariate tools can be used for other
 data types as well.")
     (license license:gpl2+)))
 
+(define-public r-tgp
+  (package
+    (name "r-tgp")
+    (version "2.4-21")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "tgp" version))
+              (sha256
+               (base32
+                "12ifd7rm3wskhbpnhfvz92z3graxzryq0iy1jiqmdk6bvhxkiww8"))))
+    (properties `((upstream-name . "tgp")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-maptree))
+    (home-page "https://bobby.gramacy.com/r_packages/tgp/")
+    (synopsis "Bayesian treed Gaussian process models")
+    (description
+     "R-tgb provides Bayesian nonstationary regression and treed Gaussian
+processes.  In addition, it provides visualization functions, tree drawing,
+sensitivity analysis, multi-resolution models, and sequential experimental
+design tools, including ALM, ALC, and expected improvement for optimizing
+noisy black-box functions.")
+    (license license:lgpl2.0+)))
+
 (define-public r-tidyft
   (package
     (name "r-tidyft")
