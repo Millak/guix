@@ -7,7 +7,7 @@
 # Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 # Copyright © 2017 Leo Famulari <leo@famulari.name>
 # Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
-# Copyright © 2017, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2017, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 # Copyright © 2018 Nikita <nikita@n0.is>
 # Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
@@ -698,8 +698,7 @@ EXTRA_DIST +=						\
   build-aux/compile-all.scm				\
   build-aux/compile-as-derivation.scm			\
   build-aux/config.rpath				\
-  build-aux/convert-xref.scm			\
-  build-aux/cuirass/hurd-manifest.scm			\
+  build-aux/convert-xref.scm				\
   build-aux/generate-authors.scm			\
   build-aux/test-driver.scm				\
   build-aux/update-NEWS.scm				\
@@ -709,6 +708,7 @@ EXTRA_DIST +=						\
   etc/guix-install.sh					\
   etc/historical-authorizations				\
   etc/news.scm						\
+  etc/hurd-manifest.scm					\
   etc/kernels-manifest.scm				\
   etc/release-manifest.scm				\
   etc/source-manifest.scm				\
