@@ -14752,6 +14752,33 @@ symbols needed in a document.")
 @emph{International Journal of Quantum Chemistry}.")
     (license license:lppl)))
 
+(define-public texlive-imfellenglish
+  (package
+    (name "texlive-imfellenglish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/imfellenglish/"
+                   "fonts/enc/dvips/imfellenglish/"
+                   "fonts/map/dvips/imfellenglish/"
+                   "fonts/opentype/iginomarini/imfellenglish/"
+                   "fonts/tfm/iginomarini/imfellenglish/"
+                   "fonts/type1/iginomarini/imfellenglish/"
+                   "fonts/vf/iginomarini/imfellenglish/"
+                   "tex/latex/imfellenglish/")
+             (base32
+              "0pw4nsw4pl1nf99j58sy37064712by6kqcb40xkrcl5d9czx45bh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/imfellenglish")
+    (synopsis "IM Fell English fonts with LaTeX support")
+    (description
+     "Igino Marini has implemented digital revivals of fonts bequeathed to
+Oxford University by Dr.@: John Fell, Bishop of Oxford and Dean of Christ
+Church in 1686.  This package provides the English family, consisting of
+Roman, Italic and Small-Cap fonts.")
+    (license license:silofl1.1)))
+
 (define-public texlive-impatient
   (package
     (name "texlive-impatient")
