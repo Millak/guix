@@ -16788,6 +16788,32 @@ grammaticality judgments.  The @code{ps-trees} package provides linguistic
 trees.")
     (license license:lppl)))
 
+(define-public texlive-linguisticspro
+  (package
+    (name "texlive-linguisticspro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/linguisticspro/"
+                   "fonts/enc/dvips/linguisticspro/"
+                   "fonts/map/dvips/linguisticspro/"
+                   "fonts/opentype/public/linguisticspro/"
+                   "fonts/tfm/public/linguisticspro/"
+                   "fonts/type1/public/linguisticspro/"
+                   "fonts/vf/public/linguisticspro/"
+                   "tex/latex/linguisticspro/")
+             (base32
+              "0yyclkwsa4ibsdc60mw22f2skq2wify9ic4lzvkjsaigvq28zj3y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/linguisticspro")
+    (synopsis "LinguisticsPro fonts with LaTeX support")
+    (description
+     "The package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the LinguisticsPro family of fonts.  This family is derived from the Utopia
+Nova font family, by Andreas Nolda.")
+    (license (list license:lppl license:silofl1.1))))
+
 (define-public texlive-listbib
   (package
     (name "texlive-listbib")
