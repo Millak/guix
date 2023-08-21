@@ -6201,6 +6201,35 @@ atoms up to the atomic number 112.  In addition, commands are provided to
 convert atomic numbers to element symbols or element names and vice versa.")
     (license license:lppl1.3+)))
 
+(define-public texlive-boisik
+  (package
+    (name "texlive-boisik")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/boisik/"
+                   "fonts/source/public/boisik/"
+                   "fonts/tfm/public/boisik/"
+                   "tex/latex/boisik/")
+             (base32
+              "1xg00nb28dgc8ch85n1mgj5n0cshkvyvgv98qawxn2xvx14vqw89")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     ;; FIXME: Font metrics generation fails for "bskmab10" font, with error:
+     ;; "! Strange path (turning number is zero)".
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/boisik")
+    (synopsis "Font inspired by Baskerville design")
+    (description
+     "Boisik is a serif font set (inspired by the Baskerville typeface),
+written in Metafont.  The set comprises roman and italic text fonts and maths
+fonts.  LaTeX support is offered for use with OT1, IL2 and OM* encodings.")
+    (license license:gpl2)))
+
 (define-public texlive-boldtensors
   (package
     (name "texlive-boldtensors")
