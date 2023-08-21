@@ -16889,6 +16889,34 @@ texts, particularly @code{Missal} and @code{Breviary} texts.  The package
 assumes availability of Latin typesetting packages.")
     (license license:lppl)))
 
+(define-public texlive-lobster2
+  (package
+    (name "texlive-lobster2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lobster2/"
+                   "fonts/enc/dvips/lobster2/"
+                   "fonts/map/dvips/lobster2/"
+                   "fonts/opentype/impallari/lobster2/"
+                   "fonts/tfm/impallari/lobster2/"
+                   "fonts/type1/impallari/lobster2/"
+                   "fonts/vf/impallari/lobster2/"
+                   "tex/latex/lobster2/")
+             (base32
+              "0jq6287n0c0qzcx6jch0d9k7axg119z2p2mw6i3s40jdyg67m3a4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lobster2")
+    (synopsis "Lobster Two fonts, with support for all LaTeX engines")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Lobster Two family of fonts, designed by Pablo Impallari.  This is
+a family of script fonts with many ligatures and terminal forms; for the best
+results, use XeLaTeX or LuaLaTeX.  There are two weights and italic variants
+for both.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-logicproof
   (package
     (name "texlive-logicproof")
