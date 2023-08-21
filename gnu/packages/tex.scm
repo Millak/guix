@@ -8409,6 +8409,30 @@ series.  The font is provided both as Metafont source, and in Adobe Type
 1 format.  LaTeX support is provided.")
     (license license:lppl)))
 
+(define-public texlive-cmpica
+  (package
+    (name "texlive-cmpica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cmpica/"
+                   "fonts/source/public/cmpica/"
+                   "fonts/tfm/public/cmpica/")
+             (base32
+              "0gpj2i588h6d0b5cl4xaik9nyx7w1sd8wik5q4mgmzspbkdk5a04")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cmpica")
+    (synopsis "Computer Modern Pica variant")
+    (description
+     "This is an approximate equivalent of the Xerox Pica typeface; the font
+is optimised for submitting fiction manuscripts to mainline publishers.  The
+font is a fixed-width one, rather less heavy than Computer Modern typewriter.
+Emphasis for bold-face comes from a wavy underline of each letter.  The two
+fonts are supplied as Metafont source.")
+    (license license:public-domain)))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
