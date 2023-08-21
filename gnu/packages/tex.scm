@@ -22390,6 +22390,32 @@ package solves the problem by extending ideas described in M. I. Grinchuk
 mathematical packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-roboto
+  (package
+    (name "texlive-roboto")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/roboto/"
+                   "fonts/enc/dvips/roboto/"
+                   "fonts/map/dvips/roboto/"
+                   "fonts/opentype/google/roboto/"
+                   "fonts/tfm/google/roboto/"
+                   "fonts/type1/google/roboto/"
+                   "fonts/vf/google/roboto/"
+                   "tex/latex/roboto/")
+             (base32
+              "1gbg9p9y6a2fis88qfcsscksrkkcnqvsrhdkak2jm2dfjnq6v2n8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/roboto")
+    (synopsis "Support for the Roboto family of fonts")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Roboto Sans, Roboto Condensed, Roboto Mono, Roboto Slab and Roboto Serif
+families of fonts, designed by Christian Robertson and Greg Gazdowicz.")
+    (license (list license:asl2.0 license:silofl1.1 license:lppl))))
+
 (define-public texlive-rrgtrees
   (package
     (name "texlive-rrgtrees")
