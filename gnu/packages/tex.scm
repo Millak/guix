@@ -9149,6 +9149,31 @@ including multiple accents on the same letter, interline glosses (word-by-word
 translations), Discourse Representation Structures, and example numbering.")
     (license license:lppl1.3+)))
 
+(define-public texlive-crimson
+  (package
+    (name "texlive-crimson")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/crimson/"
+                   "fonts/enc/dvips/crimson/"
+                   "fonts/map/dvips/crimson/"
+                   "fonts/opentype/kosch/crimson/"
+                   "fonts/tfm/kosch/crimson/"
+                   "fonts/type1/kosch/crimson/"
+                   "fonts/vf/kosch/crimson/"
+                   "tex/latex/crimson/")
+             (base32
+              "14zrb015cs5f5kdyjy987mx4jdvi7vr1830dvnnygvkpcacvc3mc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crimson")
+    (synopsis "Crimson fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX, and LuaLaTeX support for
+the Crimson family of fonts, designed by Sebastian Kosch.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
