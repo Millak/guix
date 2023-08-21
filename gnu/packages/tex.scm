@@ -8681,6 +8681,32 @@ Johan Aakerlund.  This package provides support for this font in LaTeX, and
 includes both the TrueType fonts, and conversions to Adobe Type 1 format.")
     (license (list license:silofl1.1 license:lppl1.3c))))
 
+(define-public texlive-comicneue
+  (package
+    (name "texlive-comicneue")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/comicneue/"
+                   "fonts/enc/dvips/comicneue/"
+                   "fonts/map/dvips/comicneue/"
+                   "fonts/opentype/rozynski/comicneue/"
+                   "fonts/tfm/rozynski/comicneue/"
+                   "fonts/type1/rozynski/comicneue/"
+                   "fonts/vf/rozynski/comicneue/"
+                   "tex/latex/comicneue/")
+             (base32
+              "0q9ckbypx5hn9004pgfyqnf1ddniqwq0fixps0acmifz8qspjih6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/comicneue")
+    (synopsis "Use Comic Neue with TeX(-alike) systems")
+    (description
+     "Comic Neue is a well-known redesign of the (in)famous Comic Sans font.
+The package provides the original OpenType font for XeTeX and LuaTeX users,
+and also has converted Type1 files for pdfTeX users.")
+    (license license:silofl1.1)))
+
 (define-public texlive-commath
   (package
     (name "texlive-commath")
