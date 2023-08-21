@@ -17777,6 +17777,30 @@ classes, @code{fiche} and @code{cours}, useful to create short high school
 documents such as tests or lessons.  The documentation is in French.")
     (license license:gpl3+)))
 
+(define-public texlive-magra
+  (package
+    (name "texlive-magra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/magra/"
+                   "fonts/enc/dvips/magra/"
+                   "fonts/map/dvips/magra/"
+                   "fonts/tfm/public/magra/"
+                   "fonts/type1/public/magra/"
+                   "fonts/vf/public/magra/"
+                   "tex/latex/magra/")
+             (base32
+              "0bbybiv6v05886qydj1c7l2ja520j15jgz6jz4g8qa58ycrls4kl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/magra")
+    (synopsis "Magra font face with support for LaTeX and pdfLaTeX")
+    (description
+     "This package provides the Magra family of fonts designed by FontFuror,
+with support for LaTeX and pdfLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-mahjong
   (package
     (name "texlive-mahjong")
