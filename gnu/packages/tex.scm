@@ -8985,6 +8985,32 @@ topheat, fanoven, gloves and dish symbol (among others).  The symbols are
 defined using Metafont.")
     (license license:lppl)))
 
+
+(define-public texlive-cooperhewitt
+  (package
+    (name "texlive-cooperhewitt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cooperhewitt/"
+                   "fonts/enc/dvips/cooperhewitt/"
+                   "fonts/map/dvips/cooperhewitt/"
+                   "fonts/opentype/public/cooperhewitt/"
+                   "fonts/tfm/public/cooperhewitt/"
+                   "fonts/type1/public/cooperhewitt/"
+                   "fonts/vf/public/cooperhewitt/"
+                   "tex/latex/cooperhewitt/")
+             (base32
+              "1m81sxrwwsmzsan4iln2lsf16pijay7w9k29gjwlwikivvy21kj7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cooperhewitt")
+    (synopsis "Cooper Hewitt family of sans serif fonts")
+    (description
+     "Cooper Hewitt is a contemporary sans serif, with characters composed of
+modified-geometric curves and arches, by Chester Jenkins.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-correctmathalign
   (package
     (name "texlive-correctmathalign")
