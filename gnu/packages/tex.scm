@@ -22738,6 +22738,31 @@ provided by one of two options to @code{newtxmath}, one of which uses an
 adaptation of the Fourier math Greek letters.")
     (license license:lppl)))
 
+(define-public texlive-schulschriften
+  (package
+    (name "texlive-schulschriften")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/schulschriften/"
+                   "fonts/source/public/schulschriften/"
+                   "fonts/tfm/public/schulschriften/"
+                   "tex/latex/schulschriften/")
+             (base32
+              "14nbgqr213zfm1y50bh0ggs40zpi1lfjmc4yc5mprwf7q174zrbr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/schulschriften")
+    (synopsis "German school scripts from Suetterlin to the present day")
+    (description
+     "This package provides the Metafont sources for the following school
+fonts: Das Paket enthalt im wesentlichen die Metafont-Quellfiles fur die
+folgenden Schulausgangsschriften: Suetterlinschrift, Deutsche Normalschrift,
+Lateinische Ausgangsschrift, Schulausgangsschrift, and Vereinfachte
+Ausgangsschrift.")
+    (license license:lppl)))
+
 (define-public texlive-schwalbe-chess
   (package
     (name "texlive-schwalbe-chess")
