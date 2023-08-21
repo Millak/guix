@@ -8961,6 +8961,30 @@ the equalities are provided, and the user may define their own.")
 files created by pLaTeX or upLaTeX, using @code{hyperref}.")
     (license license:expat)))
 
+(define-public texlive-cookingsymbols
+  (package
+    (name "texlive-cookingsymbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cookingsymbols/"
+                   "fonts/source/public/cookingsymbols/"
+                   "fonts/tfm/public/cookingsymbols/"
+                   "source/latex/cookingsymbols/"
+                   "tex/latex/cookingsymbols/")
+             (base32
+              "1cqz5hvb1vcf4mgk7i960kjdbg9cbxkik62riy6l2n1ld2cnl81x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cookingsymbols")
+    (synopsis "Symbols for recipes")
+    (description
+     "The package provides 11 symbols for typesetting recipes: oven, gasstove,
+topheat, fanoven, gloves and dish symbol (among others).  The symbols are
+defined using Metafont.")
+    (license license:lppl)))
+
 (define-public texlive-correctmathalign
   (package
     (name "texlive-correctmathalign")
