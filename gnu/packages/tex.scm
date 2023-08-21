@@ -10929,6 +10929,28 @@ remaining characters (digits, punctuation and accents) are inherited from the
 Computer Modern family of fonts.")
     (license license:public-domain)))
 
+(define-public texlive-eiad-ltx
+  (package
+    (name "texlive-eiad-ltx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eiad-ltx/"
+                   "fonts/source/public/eiad-ltx/"
+                   "source/latex/eiad-ltx/"
+                   "tex/latex/eiad-ltx/")
+             (base32
+              "0qqwzl345v6hn0gp46flvhhzacgv810qjn575bhigqq726zl4kz7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eiad-ltx")
+    (synopsis "LaTeX support for the @code{eiad} font")
+    (description
+     "The package provides macros to support use of the @code{eiad} fonts in
+OT1 encoding.  Also offered are a couple of Metafont files described in the
+font package, but not provided there.")
+    (license license:lppl)))
+
 (define-public texlive-eledform
   (package
     (name "texlive-eledform")
