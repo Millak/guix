@@ -23874,6 +23874,33 @@ Linotype Times, commonly used in publishing.  Type 1 support is provided for
 legacy TeX engines.")
     (license license:silofl1.1)))
 
+(define-public texlive-stepgreek
+  (package
+    (name "texlive-stepgreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/stepgreek/"
+                   "fonts/enc/dvips/stepgreek/"
+                   "fonts/map/dvips/stepgreek/"
+                   "fonts/tfm/public/stepgreek/"
+                   "fonts/type1/public/stepgreek/"
+                   "fonts/vf/public/stepgreek/"
+                   "tex/latex/stepgreek/")
+             (base32
+              "00yh96gdk854yg61hgl7n938lyw11v9kdmwl7klriyq7wjy0zcaw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stepgreek")
+    (synopsis "Times/Elsevier-style Greek font")
+    (description
+     "This is a beta version of the STEP Greek font.  Only a regular face is
+available at present, though there are plans to add italic, bold and bold
+italic in the future.  The font only supports LGR in TeX and is meant to serve
+as a Greek complement to a Times-like font such as STEP.  The font supports
+polytonic Greek.")
+    (license license:silofl1.1)))
+
 (define-public texlive-structmech
   (package
     (name "texlive-structmech")
