@@ -11910,6 +11910,32 @@ diagrams within equations or text, at a matching size.  The fonts are
 distributed as Metafont source, and macros for their use are also provided.")
     (license license:bsd-2)))
 
+(define-public texlive-fge
+  (package
+    (name "texlive-fge")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fge/"
+                   "fonts/map/dvips/fge/"
+                   "fonts/source/public/fge/"
+                   "fonts/tfm/public/fge/"
+                   "fonts/type1/public/fge/"
+                   "source/fonts/fge/"
+                   "tex/latex/fge/")
+             (base32
+              "00q9rf8jrb6jl5c10kn6axnlza6q02xan2gf88rd736v0wpi4936")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/fge")
+    (synopsis "Font for Frege's @emph{Grundgesetze der Arithmetik}")
+    (description
+     "The package provides fonts for Frege's @emph{Grundgesetze der
+Arithmetik}.  The fonts are provided as Metafont source and Adobe Type 1 (pfb)
+files.  A small LaTeX package (@code{fge}) is included.")
+    (license license:lppl)))
+
 (define-public texlive-figbas
   (package
     (name "texlive-figbas")
