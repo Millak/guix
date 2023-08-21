@@ -74,6 +74,7 @@
   #:use-module (gnu packages base)
   #:use-module ((gnu packages bootstrap) #:select (glibc-dynamic-linker))
   #:use-module (gnu packages check)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
@@ -2511,6 +2512,57 @@ TrueType font files in your system's user and system font directories.")
     (synopsis "Generating PDF documents")
     (description "gopdf is a Go library for generating PDF documents.")
     (license license:expat)))
+
+(define-public go-github-com-wraparound-wrap
+  (package
+    (name "go-github-com-wraparound-wrap")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Wraparound/wrap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0scf7v83p40r9k7k5v41rwiy9yyanfv3jm6jxs9bspxpywgjrk77"))
+              (patches (search-patches
+                        "go-github-com-wraparound-wrap-free-fonts.patch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Wraparound/wrap/"
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (invoke "go" "install" "-v" "-x"
+                      "-ldflags=-s -w"
+                      (string-append import-path "cmd/wrap"))))
+          (add-after 'wrap 'wrap-fonts
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each
+               (lambda (program)
+                 (wrap-program program
+                   `("XDG_DATA_DIRS" suffix
+                     ,(map dirname
+                           (search-path-as-list '("share/fonts")
+                                                (map cdr inputs))))))
+               (find-files (string-append (assoc-ref outputs "out")
+                                          "/bin"))))))))
+    (propagated-inputs (list go-github-com-spf13-cobra
+                             go-github-com-signintech-gopdf
+                             go-github-com-flopp-go-findfont))
+    (inputs (list font-liberation font-gnu-freefont))
+    (home-page "https://github.com/Wraparound/wrap")
+    (synopsis "Format Fountain screenplays")
+    (description
+     "Wrap is a command line tool that is able to convert Fountain files into a
+correctly formatted screen- or stageplay as an HTML or a PDF.  It supports
+standard Fountain, but also has some custom syntax extensions such as
+translated keywords and acts.")
+    (license license:gpl3)))
 
 (define-public go-torproject-org-pluggable-transports-goptlib
   (package
