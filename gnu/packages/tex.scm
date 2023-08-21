@@ -26012,6 +26012,27 @@ for support under TeXt1 and LaTeX.  The fonts (and macros) are now largely
 superseded by the @code{tipa} fonts.")
     (license license:knuth)))
 
+(define-public texlive-xcharter-math
+  (package
+    (name "texlive-xcharter-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/xcharter-math/"
+                   "fonts/opentype/public/xcharter-math/"
+                   "tex/latex/xcharter-math/")
+             (base32
+              "1p0wqn9877xshwlayba8v62dvx4m0widl9pd42aixll0snc6p67s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcharter-math")
+    (synopsis "XCharter-based OpenType Math font for LuaTeX and XeTeX")
+    (description
+     "This package provides an Unicode Math font XCharter-Math.otf meant to be
+used together with XCharter Opentype Text fonts (extension of Bitstream
+Charter) in LuaLaTeX or XeLaTeX documents.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-xcite
   (package
     (name "texlive-xcite")
