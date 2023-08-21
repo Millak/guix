@@ -16591,6 +16591,32 @@ A BoldItalic variant has been artificially generated.")
 Fuenzalida, based on the 19th century Morris Fuller Benton's.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-librecaslon
+  (package
+    (name "texlive-librecaslon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/librecaslon/"
+                   "fonts/enc/dvips/librecaslon/"
+                   "fonts/map/dvips/librecaslon/"
+                   "fonts/opentype/impallari/librecaslon/"
+                   "fonts/tfm/impallari/librecaslon/"
+                   "fonts/type1/impallari/librecaslon/"
+                   "fonts/vf/impallari/librecaslon/"
+                   "tex/latex/librecaslon/")
+             (base32
+              "16lmaa0rsrgrib00r8rsj9librkybq2zf1as11l3hiw5zcq3wj0w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/librecaslon")
+    (synopsis "Libre Caslon fonts, with LaTeX support")
+    (description
+     "The Libre Caslon fonts are designed by Pablo Impallari.  Although they
+have been designed for use as web fonts, they work well as conventional text
+fonts.  An artificially generated BoldItalic variant has been added.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
