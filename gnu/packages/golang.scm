@@ -2460,6 +2460,35 @@ parsing and encoding support for STUN and TURN protocols.")
 TrueType font files in your system's user and system font directories.")
     (license license:expat)))
 
+(define-public go-github-com-phpdave11-gofpdi
+  (package
+    (name "go-github-com-phpdave11-gofpdi")
+    (version "1.0.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/phpdave11/gofpdi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01r8a3k2d48fxmhyvix0ry2dc1z5xankd14yxlm496a26vfnc9nq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/phpdave11/gofpdi"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-source
+                     (lambda _
+                       (substitute* (find-files "." "writer\\.go$")
+                         (("%s-%s") "%d-%s")))))))
+    (propagated-inputs (list go-github-com-pkg-errors))
+    (home-page "https://github.com/phpdave11/gofpdi")
+    (synopsis "PDF document importer")
+    (description
+     "gofpdi allows you to import an existing PDF into a new PDF.")
+    (license license:expat)))
+
 (define-public go-torproject-org-pluggable-transports-goptlib
   (package
     (name "go-torproject-org-pluggable-transports-goptlib")
