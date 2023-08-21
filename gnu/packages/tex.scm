@@ -9174,6 +9174,32 @@ translations), Discourse Representation Structures, and example numbering.")
 the Crimson family of fonts, designed by Sebastian Kosch.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-crimsonpro
+  (package
+    (name "texlive-crimsonpro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/crimsonpro/"
+                   "fonts/enc/dvips/crimsonpro/"
+                   "fonts/map/dvips/crimsonpro/"
+                   "fonts/tfm/public/crimsonpro/"
+                   "fonts/truetype/public/crimsonpro/"
+                   "fonts/type1/public/crimsonpro/"
+                   "fonts/vf/public/crimsonpro/"
+                   "tex/latex/crimsonpro/")
+             (base32
+              "1pzsdm4i32pgwf726q5waga8lr37xfj1qj417kkblw3q3fgb4jsd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crimsonpro")
+    (synopsis "CrimsonPro fonts with LaTeX support")
+    (description
+     "The CrimsonPro fonts are designed by Jacques Le Bailly and derived
+from the Crimson Text fonts designed by Sebastian Kosch.  The family
+includes eight weights and italics for each weight.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-crossrefenum
   (package
     (name "texlive-crossrefenum")
