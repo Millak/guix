@@ -18882,6 +18882,35 @@ shapes that are much more rounded than the default version, reflecting the
 signage in the neighborhood of Montserrat.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-mpfonts
+  (package
+    (name "texlive-mpfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mpfonts/"
+                   "fonts/map/dvips/mpfonts/"
+                   "fonts/type3/mpfonts/")
+             (base32
+              "1z6pdjwi14fq6y1s39gxyqlpg6p5j09psjv1cyp7xjwjffdikgaf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mpfonts")
+    (synopsis "Computer Modern Type 3 fonts converted using MetaPost")
+    (description
+     "The Computer Modern fonts are available in Type 1 format, but these
+renditions are somewhat thin and spindly, and produce much lighter results
+than the originals.  These fonts are conversions to Type 3 fonts, done
+entirely in MetaPost; they are vector fonts which are a direct conversion from
+the original Metafont files, so they are the design most authentic to the
+originals.  However, these fonts, because they are PostScript Type 3 fonts,
+are not suitable for on-screen reading, and should probably only be used for
+printing.")
+    (license (list license:knuth
+                   license:lppl1.2+
+                   license:silofl1.1
+                   license:public-domain))))
+
 (define-public texlive-multibib
   (package
     (name "texlive-multibib")
