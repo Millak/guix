@@ -10177,6 +10177,34 @@ package provides a Perl program that will extract any of the sections of such
 a file, in particular providing a text'-form EPS file for use with (La)TeX.")
     (license license:artistic2.0)))
 
+(define-public texlive-doublestroke
+  (package
+    (name "texlive-doublestroke")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/doublestroke/"
+                   "fonts/map/dvips/doublestroke/"
+                   "fonts/source/public/doublestroke/"
+                   "fonts/tfm/public/doublestroke/"
+                   "fonts/type1/public/doublestroke/"
+                   "tex/latex/doublestroke/")
+             (base32
+              "0v9g025l0qfw4zrjkm9yypcsramwl2di997jgnznxpxms0v6ib7c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/doublestroke")
+    (synopsis "Typeset mathematical double stroke symbols")
+    (description
+     "This package provides a font based on Computer Modern Roman useful for
+typesetting the mathematical symbols for the natural numbers, whole numbers,
+rational numbers, real numbers and complex numbers; coverage includes all
+Roman capital letters, @samp{1}, @samp{h} and @samp{k}.  The font is available
+both as Metafont source and in Adobe Type 1 format, and LaTeX macros for its
+use are provided.")
+    (license license:knuth)))
+
 (define-public texlive-dowith
   (package
     (name "texlive-dowith")
