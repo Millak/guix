@@ -11885,6 +11885,31 @@ It can make it easy to write theses both in Chinese and English.")
 Logo fonts to complete the Type 1 encoding.")
     (license license:lppl1.3+)))
 
+(define-public texlive-feyn
+  (package
+    (name "texlive-feyn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/feyn/"
+                   "fonts/source/public/feyn/"
+                   "fonts/tfm/public/feyn/"
+                   "source/fonts/feyn/" "tex/latex/feyn/")
+             (base32
+              "0kd5xs1xffgplpapj6rjv4aaz7pfjfh8rspy2xrabbf03npkdqz5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont texlive-sauter))
+    (home-page "https://ctan.org/pkg/feyn")
+    (synopsis "Font for in-text Feynman diagrams")
+    (description
+     "Feyn may be used to produce relatively simple Feynman diagrams within
+equations in a LaTeX document.  While the @code{feynmf} package is good at
+drawing large diagrams for figures, the present package and its fonts allow
+diagrams within equations or text, at a matching size.  The fonts are
+distributed as Metafont source, and macros for their use are also provided.")
+    (license license:bsd-2)))
+
 (define-public texlive-figbas
   (package
     (name "texlive-figbas")
