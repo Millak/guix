@@ -25553,6 +25553,31 @@ is suitable as an alternative to fonts such as Adrian Frutiger's Univers and
 Frutiger.")
     (license (list license:gpl2+ license:lppl))))
 
+(define-public texlive-uppunctlm
+  (package
+    (name "texlive-uppunctlm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/uppunctlm/"
+                   "fonts/tfm/public/uppunctlm/"
+                   "fonts/vf/public/uppunctlm/"
+                   "tex/latex/uppunctlm/")
+             (base32
+              "0d9x56rlxjavamx361582khj5idhy692hxm5wwwcc5y5i3xsc4pp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uppunctlm")
+    (synopsis
+     "Always keep upright shape for some punctuation marks and Arabic numerals")
+    (description
+     "The package provides a mechanism to keep punctuation always in upright
+shape even if italic was specified.  It is directed to Latin Modern fonts, and
+provides @file{.tfm}, @file{.vf}, @file{.fd}, and @file{.sty} files.  Here
+a list of punctuation characters always presented in upright shapes: comma,
+period, semicolon, colon, parentheses, square brackets, and Arabic numerals.")
+    (license license:gfl1.0)))
+
 (define-public texlive-urlbst
   (package
     (name "texlive-urlbst")
