@@ -3347,6 +3347,34 @@ appropriate period punctuation marks.  Both normal and bold versions are
 provided, and the font is distributed in Adobe Type 1 format.")
     (license license:lppl)))
 
+(define-public texlive-aurical
+  (package
+    (name "texlive-aurical")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aurical/"
+                   "fonts/afm/public/aurical/"
+                   "fonts/map/dvips/aurical/"
+                   "fonts/source/public/aurical/"
+                   "fonts/tfm/public/aurical/"
+                   "fonts/type1/public/aurical/"
+                   "tex/latex/aurical/")
+             (base32
+              "1jaqr4gdywnjn7hclinjyydndxsa1f2j7382ygl0jnj35kxz0pkr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aurical")
+    (synopsis "Calligraphic fonts for use with LaTeX in T1 encoding")
+    (description
+     "The package that implements a set (AuriocusKalligraphicus) of three
+calligraphic fonts derived from the author's handwriting in Adobe Type
+1 Format, T1 encoding for use with LaTeX: Auriocus Kalligraphicus; Lukas
+Svatba; and Jana Skrivana.  Each font features old style digits
+and (machine-generated) boldface and slanted versions.  A variant of Lukas
+Svatba offers a long @samp{s}.")
+    (license license:lppl)))
+
 (define-public texlive-authordate
   (package
     (name "texlive-authordate")
