@@ -20352,6 +20352,32 @@ LuaTeX.")
      "This package provides the documentation for Omega executables.")
     (license license:gpl3+)))
 
+(define-public texlive-opensans
+  (package
+    (name "texlive-opensans")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/opensans/"
+                   "fonts/enc/dvips/opensans/"
+                   "fonts/map/dvips/opensans/"
+                   "fonts/tfm/ascender/opensans/"
+                   "fonts/truetype/ascender/opensans/"
+                   "fonts/type1/ascender/opensans/"
+                   "fonts/vf/ascender/opensans/"
+                   "tex/latex/opensans/")
+             (base32
+              "1l81y548cslwsy7m06pckf5w33gq53ly3a35zkd9jzfz6yg6w4bq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/opensans")
+    (synopsis "Open Sans font family, and LaTeX support")
+    (description
+     "Open Sans is a humanist sans serif typeface designed by Steve Matteson.
+The package provides support for this font family in LaTeX. It includes the
+original TrueType fonts, as well as Type 1 versions.")
+    (license (list license:asl2.0 license:lppl1.3c))))
+
 (define-public texlive-oplotsymbl
   (package
     (name "texlive-oplotsymbl")
