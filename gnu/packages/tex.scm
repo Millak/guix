@@ -6271,6 +6271,40 @@ collator, condition, copy, illustrations, introduction, location, pages, size,
 value, volumes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bookhands
+  (package
+    (name "texlive-bookhands")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bookhands/"
+                   "fonts/afm/public/bookhands/"
+                   "fonts/map/dvips/bookhands/"
+                   "fonts/source/public/bookhands/"
+                   "fonts/tfm/public/bookhands/"
+                   "fonts/type1/public/bookhands/"
+                   "source/fonts/bookhands/"
+                   "tex/latex/bookhands/")
+             (base32
+              "0ssz80jwmd00x7d1x1xc6i61kbs30bc875bvakd5gymdw2kv7s3z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/bookhands")
+    (synopsis "Collection of book-hand fonts")
+    (description
+     "This is a set of book-hand (Metafont) fonts and packages covering
+manuscript scripts from the 1st century until Gutenberg and Caxton.  The
+included hands are: Square Capitals (1st century onwards); Roman
+Rustic (1st-6th centuries); Insular Minuscule (6th cenury onwards);
+Carolingian Minuscule (8th-12th centuries); Early Gothic (11th-12th
+centuries); Gothic Textura Quadrata (13th-15th centuries); Gothic Textura
+Prescisus vel sine pedibus (13th century onwards); Rotunda (13-15th
+centuries); Humanist Minuscule (14th century onwards); Uncial (3rd-6th
+centuries); Half Uncial (3rd-9th centuries); Artificial Uncial (6th-10th
+centuries); and Insular Majuscule (6th-9th centuries).")
+    (license license:lppl)))
+
 (define-public texlive-booktabs-de
   (package
     (name "texlive-booktabs-de")
