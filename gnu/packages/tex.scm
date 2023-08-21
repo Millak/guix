@@ -11062,6 +11062,30 @@ appropriate for drawing for school materials.  The circuit symbols accord to
 the various parts of the standard IEC 617.")
     (license license:lppl)))
 
+(define-public texlive-elvish
+  (package
+    (name "texlive-elvish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/elvish/"
+                   "fonts/source/public/elvish/"
+                   "fonts/tfm/public/elvish/")
+             (base32
+              "1vmvkc97a7j93jhdp0wbz4mqvk5q2kxjy5dlklwl5jawggagm7r4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/elvish")
+    (synopsis "Fonts for typesetting Tolkien Elvish scripts")
+    (description
+     "The bundle provides fonts for Cirth and for Tengwar.  The Tengwar fonts
+are supported by macros in @file{teng.tex}, or by the (better documented)
+@code{tengtex} package.")
+    ;; "If you produce modifications that seem useful, you are asked to send
+    ;; them to me, so that they can be incorporated into the master files."
+    (license (license:non-copyleft "file://doc/fonts/elvish/README"))))
+
 (define-public texlive-emf
   (package
     (name "texlive-emf")
