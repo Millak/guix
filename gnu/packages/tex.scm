@@ -13851,6 +13851,26 @@ available in XeLaTeX and LuaLaTeX.  The package provides a Unicode font for
 rendering HamNoSys symbols as well as three methods for entering them.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hands
+  (package
+    (name "texlive-hands")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/hands/"
+                   "fonts/tfm/public/hands/")
+             (base32
+              "0x0vdn7hq6k7wr7yxn8pnkvjhjq3mfl781ijrs2mpvjqygqffzag")))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/hands")
+    (synopsis "Pointing hand font")
+    (description
+     "This package provides right- and left-pointing hands in both
+black-on-white and white-on-black realisation.  The font is distributed as
+Metafont source.")
+    (license license:public-domain)))
+
 (define-public texlive-hanoi
   (package
     (name "texlive-hanoi")
