@@ -2382,6 +2382,34 @@ equations and add annotation labels using TikZ.  It should work with pdfLaTeX
 as well as LuaLaTeX.")
     (license license:expat)))
 
+(define-public texlive-anonymouspro
+  (package
+    (name "texlive-anonymouspro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/anonymouspro/"
+                   "fonts/afm/public/anonymouspro/"
+                   "fonts/enc/dvips/anonymouspro/"
+                   "fonts/map/dvips/anonymouspro/"
+                   "fonts/tfm/public/anonymouspro/"
+                   "fonts/truetype/public/anonymouspro/"
+                   "fonts/type1/public/anonymouspro/"
+                   "fonts/vf/public/anonymouspro/"
+                   "source/fonts/anonymouspro/"
+                   "tex/latex/anonymouspro/")
+             (base32
+              "1qfhsbq3ab72k9d023pa70vs1807djijg84l888nwsf3ylfwg7mf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/anonymouspro")
+    (synopsis "Use AnonymousPro fonts with LaTeX")
+    (description
+     "The fonts are a monowidth set, designed for use by coders.  They appear
+as a set of four TrueType, or Adobe Type 1 font files, and LaTeX support is
+also provided.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-antanilipsum
   (package
     (name "texlive-antanilipsum")
