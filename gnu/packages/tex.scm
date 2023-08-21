@@ -14111,6 +14111,28 @@ usual Latin Modern implementations by replacing missing fonts with Computer
 Modern counterparts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hep-math-font
+  (package
+    (name "texlive-hep-math-font")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/hep-math-font/"
+                   "source/fonts/hep-math-font/"
+                   "tex/latex/hep-math-font/")
+             (base32
+              "07lb2sxzdff9arpfksz186dvpgr6slfz637xinhf95npbylpyww3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-math-font")
+    (synopsis "Extended Greek and sans-serif math")
+    (description
+     "The @code{hep-math-font} package adjust the math fonts to be sans-serif
+if the document is sans-serif.  Additionally Greek letters are redefined to be
+always italic and upright in math and text mode respectively.  Some math font
+macros are adjusted to give more consistently the naively expected results.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hep-reference
   (package
     (name "texlive-hep-reference")
