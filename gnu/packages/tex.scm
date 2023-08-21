@@ -12543,6 +12543,26 @@ academic running-hand.  The font was written in Metafont and has been
 converted to Adobe Type 1 format.  LaTeX support is provided.")
     (license license:lppl1.2+)))
 
+(define-public texlive-frederika2016
+  (package
+    (name "texlive-frederika2016")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/frederika2016/"
+                   "fonts/opentype/public/frederika2016/")
+             (base32
+              "10pvx4n4ahn8b251fzz8crg9pijpclan5w4b6jc7m7jjsykzw8xj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frederika2016")
+    (synopsis "OpenType Greek calligraphy font")
+    (description
+     "Frederika2016 is an attempt to digitize Hermann Zapf's Frederika font.
+The font is the Greek companion of Virtuosa by the same designer.  This font
+is a calligraphy font and this is an initial release.")
+    (license license:silofl1.1)))
+
 (define-public texlive-frenchmath
   (package
     (name "texlive-frenchmath")
