@@ -16511,6 +16511,34 @@ math symbols.")
 traditional processing engines (LaTeX with Dvips or Dvipdfmx, or pdfLaTeX).")
     (license (list license:gpl2 license:silofl1.1 license:lppl))))
 
+(define-public texlive-libertinust1math
+  (package
+    (name "texlive-libertinust1math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libertinust1math/"
+                   "fonts/afm/public/libertinust1math/"
+                   "fonts/enc/dvips/libertinust1math/"
+                   "fonts/map/dvips/libertinust1math/"
+                   "fonts/tfm/public/libertinust1math/"
+                   "fonts/type1/public/libertinust1math/"
+                   "fonts/vf/public/libertinust1math/"
+                   "tex/latex/libertinust1math/")
+             (base32
+              "0hjv2p2sj1wmxg727490m8jn08p1alc9gyfigvy0k65c5lghhs7s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libertinust1math")
+    (synopsis "Type 1 font and LaTeX support for Libertinus Math")
+    (description
+     "The package provides a Type 1 version of Libertinus Math, with a number
+of additions and changes, plus LaTeX support files that allow it to serve as
+a math accompaniment to Libertine under LaTeX.  In addition, with option
+@code{sansmath}, it can function as a standalone math font with sans serif
+Roman and Greek letters.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
