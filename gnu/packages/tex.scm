@@ -1344,6 +1344,31 @@ line spacing.")
            license:cc-by4.0
            license:public-domain))))
 
+(define-public texlive-academicons
+  (package
+    (name "texlive-academicons")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/academicons/"
+                   "fonts/truetype/public/academicons/"
+                   "tex/latex/academicons/")
+             (base32
+              "1gxgj0ppyrf6pj9qvhk02ybwf68yzlh2110r41iwsai5by2iczhm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/academicons")
+    (synopsis "Font containing high quality icons of online academic profiles")
+    (description
+     "The @code{academicons} package provides access in (La)TeX to 124 high
+quality icons of online academic profiles included in the free Academicons
+font.  This package requires either the Xe(La)TeX or Lua(La)TeX engine to load
+the Academicons font from the system.  The @code{academicons} package provides
+the generic @code{\\aiicon} command to access icons, which takes as mandatory
+argument the name of the desired icon.  It also provides individual direct
+commands for each specific icon.")
+    (license (list license:lppl1.3c license:silofl1.1))))
+
 (define-public texlive-accents
   (package
     (name "texlive-accents")
