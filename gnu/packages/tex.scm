@@ -12354,6 +12354,27 @@ seen as an extension to FontAwesome.")
 document, through the @emph{fontsize=<size>} option.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fonttable
+  (package
+    (name "texlive-fonttable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fonttable/"
+                   "source/latex/fonttable/"
+                   "tex/latex/fonttable/")
+             (base32
+              "1mb83zzx5wk92x6zz28k42wmi82hyd1h7fb3p9imjssn6qb73356")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fonttable")
+    (synopsis "Print font tables from a LaTeX document")
+    (description
+     "This is a package version of @file{nfssfont.tex}; it enables you to
+print a table of the characters of a font and/or some text (for demonstration
+or testing purposes), from within a document.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-footbib
   (package
     (name "texlive-footbib")
