@@ -9878,6 +9878,30 @@ package makes the symbols accessible as LaTeX commands.")
 @code{natbib}.")
     (license license:knuth)))
 
+(define-public texlive-dingbat
+  (package
+    (name "texlive-dingbat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dingbat/"
+                   "fonts/source/public/dingbat/"
+                   "fonts/tfm/public/dingbat/"
+                   "source/latex/dingbat/" "tex/latex/dingbat/")
+             (base32
+              "12vhykmz1xzvrdzp61qy0q69fnxjjvc9m8v8kras92v49f6m4z7a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/dingbat")
+    (synopsis "Two dingbat symbol fonts")
+    (description
+     "The package provides the fonts (@code{ark10} and @code{dingbat}),
+specified in Metafont; support macros are also provided for use in LaTeX.  An
+Adobe Type 1 version of the fonts is available in the @code{niceframe} fonts
+bundle.")
+    (license license:lppl)))
+
 (define-public texlive-diffcoeff
   (package
     (name "texlive-diffcoeff")
