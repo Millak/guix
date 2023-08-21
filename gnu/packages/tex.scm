@@ -3148,6 +3148,31 @@ writing support.  It uses only native picture macros and fonts for drawing
 boxes and is thus driver independent.")
     (license license:bsd-3)))
 
+(define-public texlive-aspectratio
+  (package
+    (name "texlive-aspectratio")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aspectratio/"
+                   "fonts/map/dvips/aspectratio/"
+                   "fonts/source/public/aspectratio/"
+                   "fonts/tfm/public/aspectratio/"
+                   "fonts/type1/public/aspectratio/"
+                   "tex/latex/aspectratio/")
+             (base32
+              "1vm1aj4mm2rn2p032nakg16gmyzv43149h2v1l18dw72sayqqg2s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/aspectratio")
+    (synopsis "Capital @samp{A} and capital @samp{R} ligature for Aspect Ratio")
+    (description
+     "The package provides fonts (both as Adobe Type 1 format, and as Metafont
+source) for the AR symbol (for Aspect Ratio) used by aeronautical scientists
+and engineers.  Note that the package supersedes the package @code{ar}.")
+    (license license:lppl)))
+
 (define-public texlive-asternote
   (package
     (name "texlive-asternote")
