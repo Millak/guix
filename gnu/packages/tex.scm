@@ -18755,6 +18755,30 @@ a XeLaTeX style file that makes it easier to achieve the classic incunabula
 look.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-mlmodern
+  (package
+    (name "texlive-mlmodern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mlmodern/"
+                   "fonts/map/dvips/mlmodern/"
+                   "fonts/tfm/public/mlmodern/"
+                   "fonts/type1/public/mlmodern/"
+                   "tex/latex/mlmodern/")
+             (base32
+              "0cw802x67yqh6zlkf89pdjlx0r5lmwdca5vcqxmv24c5gx2bc666")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mlmodern")
+    (synopsis
+     "Blacker Type 1 version of Computer Modern, with multilingual support")
+    (description
+     "MLModern is a text and math font family with (La)TeX support, based on
+the design of Donald Knuth's Computer Modern and the Latin Modern project.  It
+avoids the spindliness of most other Type 1 versions of Computer Modern.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mltex
   (package
     (name "texlive-mltex")
