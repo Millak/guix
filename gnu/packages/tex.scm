@@ -24976,6 +24976,31 @@ aesthetic features.  The standard macro @code{\\newtheorem} may be redefined
 to use the environment.")
     (license license:lppl)))
 
+(define-public texlive-tinos
+  (package
+    (name "texlive-tinos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/tinos/"
+                   "fonts/enc/dvips/tinos/"
+                   "fonts/map/dvips/tinos/"
+                   "fonts/tfm/google/tinos/"
+                   "fonts/truetype/google/tinos/"
+                   "fonts/type1/google/tinos/"
+                   "fonts/vf/google/tinos/"
+                   "tex/latex/tinos/")
+             (base32
+              "06cckhcjxrg1x2jb8w1y3k0sb5bb6nfs3k9qdjc9mywji4a20g18")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tinos")
+    (synopsis "Tinos fonts with LaTeX support")
+    (description
+     "Tinos, designed by Steve Matteson, is an innovative serif design that is
+metrically compatible with Times New Roman.")
+    (license (list license:asl2.0 license:lppl))))
+
 (define-public texlive-tiscreen
   (package
     (name "texlive-tiscreen")
