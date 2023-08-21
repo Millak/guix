@@ -11467,6 +11467,33 @@ allow their use as @code{calligraphic}, @code{fraktur} and
 @code{double-struck} (blackboard bold) in maths mode.")
     (license license:silofl1.1)))
 
+(define-public texlive-esvect
+  (package
+    (name "texlive-esvect")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/esvect/"
+                   "fonts/map/dvips/esvect/"
+                   "fonts/source/public/esvect/"
+                   "fonts/tfm/public/esvect/"
+                   "fonts/type1/public/esvect/"
+                   "source/latex/esvect/"
+                   "tex/latex/esvect/")
+             (base32
+              "15sr1rm86aamfy186v2zvvcjsw5rhcq6ph5ckpfn275vjp3fazrf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/esvect")
+    (synopsis "Vector arrows")
+    (description
+     "This package can be used to write vectors using an arrow which differs
+from the Computer Modern one.  You have the choice between several kinds of
+arrows.  The package consists of the relevant Metafont code and a package to
+use it.")
+    (license license:gpl3+)))
+
 (define-public texlive-euclideangeometry
   (package
     (name "texlive-euclideangeometry")
