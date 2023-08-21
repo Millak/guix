@@ -10377,6 +10377,40 @@ extensible decorative rules to be used with ornaments from itself or other
 fonts, along with an extremely flexible ellipsis package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-droid
+  (package
+    (name "texlive-droid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/droid/"
+                   "fonts/enc/dvips/droid/"
+                   "fonts/map/dvips/droid/"
+                   "fonts/tfm/ascender/droid/droidsans/"
+                   "fonts/tfm/ascender/droid/droidsansmono/"
+                   "fonts/tfm/ascender/droid/droidserif/"
+                   "fonts/truetype/ascender/droid/droidsans/"
+                   "fonts/truetype/ascender/droid/droidsansmono/"
+                   "fonts/truetype/ascender/droid/droidserif/"
+                   "fonts/type1/ascender/droid/droidsans/"
+                   "fonts/type1/ascender/droid/droidsansmono/"
+                   "fonts/type1/ascender/droid/droidserif/"
+                   "fonts/vf/ascender/droid/droidsans/"
+                   "fonts/vf/ascender/droid/droidsansmono/"
+                   "fonts/vf/ascender/droid/droidserif/"
+                   "tex/latex/droid/")
+             (base32
+              "10lgw5yv0s48rwydycq6lxj5dfyna7iflnhz1zq42akg21n595vx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/droid")
+    (synopsis "LaTeX support for the Droid font families")
+    (description
+     "The Droid typeface family was designed by Steve Matteson.  The Droid
+family consists of Droid Serif, Droid Sans and Droid Sans Mono fonts.  The
+bundle includes the fonts in both TrueType and Adobe Type 1 formats.")
+    (license (list license:lppl1.3c license:asl2.0))))
+
 (define-public texlive-dsptricks
   (package
     (name "texlive-dsptricks")
