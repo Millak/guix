@@ -15381,6 +15381,32 @@ should be characterised as an author-date citation style; a BibTeX style and
 a LaTeX package are provided.")
     (license license:lppl)))
 
+(define-public texlive-josefin
+  (package
+    (name "texlive-josefin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/josefin/"
+                   "fonts/enc/dvips/josefin/"
+                   "fonts/map/dvips/josefin/"
+                   "fonts/tfm/public/josefin/"
+                   "fonts/truetype/public/josefin/"
+                   "fonts/type1/public/josefin/"
+                   "fonts/vf/public/josefin/"
+                   "tex/latex/josefin/")
+             (base32
+              "1ja91mkcpgvdycqxlfa1xfay427b3d7akq8pcdwvgakzgf9bkb1s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/josefin")
+    (synopsis "Josefin fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Josefin Sans family of fonts, designed by Santiago Orozco.  Josefin Sans
+is available in seven weights, with corresponding italics.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-jupynotex
   (package
     (name "texlive-jupynotex")
