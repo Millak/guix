@@ -11395,6 +11395,26 @@ numerator, denominator) and superior letters.  The size is 6% smaller than
 Heuristica, matching that of UtopiaStd.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-erewhon-math
+  (package
+    (name "texlive-erewhon-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/erewhon-math/"
+                   "fonts/opentype/public/erewhon-math/"
+                   "tex/latex/erewhon-math/")
+             (base32
+              "03p3aiw4ha3rkb6z4z2nwmwv18krkii989a8dvqgignbh9100ck8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/erewhon-math")
+    (synopsis "Utopia based OpenType math font")
+    (description
+     "Erewhon Math is an OpenType version of the Fourier Type1 fonts designed
+by Michel Bovani.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-euclideangeometry
   (package
     (name "texlive-euclideangeometry")
