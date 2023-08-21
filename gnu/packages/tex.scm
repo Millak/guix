@@ -10951,6 +10951,25 @@ OT1 encoding.  Also offered are a couple of Metafont files described in the
 font package, but not provided there.")
     (license license:lppl)))
 
+(define-public texlive-ektype-tanka
+  (package
+    (name "texlive-ektype-tanka")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ektype-tanka/"
+                   "fonts/truetype/public/ektype-tanka/")
+             (base32
+              "05jyx7dgbi19n6g8f4a5f8lkalld2p7lrlrfy1pj961hx65zbj80")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ektype-tanka")
+    (synopsis "Devanagari fonts by EkType")
+    (description
+     "This package provides a collection of some Devanagari fonts by EkType:
+Mukta, Baloo, Modak, and Jaini.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-eledform
   (package
     (name "texlive-eledform")
