@@ -24255,6 +24255,24 @@ syllogisms and syllogistic-like arguments, composed of two premises and
 a conclusion.")
     (license license:lppl)))
 
+(define-public texlive-symbats3
+  (package
+    (name "texlive-symbats3")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/symbats3/" "tex/latex/symbats3/")
+             (base32
+              "0xr5m2irkbv376im1m5vms6gcpq3asj03dpfck2x1ccrywn4k3w2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/symbats3")
+    (synopsis "Macros to use the Symbats3 dingbats fonts")
+    (description
+     "This package makes available for LaTeX the glyphs in Feorag's OpenType
+Symbats3 neopagan dingbats fonts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-sympytexpackage
   (package
     (name "texlive-sympytexpackage")
