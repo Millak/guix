@@ -18672,6 +18672,34 @@ with an easy syntax.  Minus signs are printed as bar above the corresponding
 number.")
     (license license:lppl)))
 
+(define-public texlive-mintspirit
+  (package
+    (name "texlive-mintspirit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mintspirit/"
+                   "fonts/enc/dvips/mintspirit/"
+                   "fonts/map/dvips/mintspirit/"
+                   "fonts/opentype/arkandis/mintspirit/"
+                   "fonts/tfm/arkandis/mintspirit/"
+                   "fonts/type1/arkandis/mintspirit/"
+                   "fonts/vf/arkandis/mintspirit/"
+                   "tex/latex/mintspirit/")
+             (base32
+              "0rh8xjrxm996k2qkd42r27fz8ir8cg8bpy1fgbdbbjyd3a6xpic3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mintspirit")
+    (synopsis "LaTeX support for MintSpirit font families")
+    (description
+     "The package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the MintSpirit and MintSpiritNo2 families of fonts, designed by Hirwen
+Harendal.  MintSpirit was originally designed for use as a system font on
+a Linux Mint system.  The No.@: 2 variant provides more conventional shapes
+for some glyphs.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-mismath
   (package
     (name "texlive-mismath")
