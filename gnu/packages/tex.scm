@@ -26246,6 +26246,28 @@ older forms of umlauts (small @samp{e} over the letter).  A style file
 of @file{yfonts.sty} or @file{oldgerm.sty}.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-yfonts-t1
+  (package
+    (name "texlive-yfonts-t1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/yfonts-t1/" "dvips/yfonts-t1/"
+                   "fonts/afm/public/yfonts-t1/"
+                   "fonts/map/dvips/yfonts-t1/"
+                   "fonts/type1/public/yfonts-t1/")
+             (base32
+              "1w92sgkarqx7z2ai6z059bml0kbh05fjyy9fl12x3nb0f5agjs7n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yfonts-t1")
+    (synopsis "Old German-style fonts, in Adobe type 1 format")
+    (description
+     "This package comprises type 1 versions of the Gothic, Schwabacher and
+Fraktur fonts of Yannis Haralambous set of old German fonts.")
+    ;; "Freely available for general use."
+    (license (license:fsf-free "file://doc/fonts/yfonts-otf/README.md"))))
+
 (define-public texlive-yhmath
   (package
     (name "texlive-yhmath")
