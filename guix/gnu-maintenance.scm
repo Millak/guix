@@ -846,7 +846,11 @@ Optionally include a VERSION string to fetch a specific version."
                           (let ((scheme (uri-scheme uri))
                                 (host   (uri-host uri)))
                             (and (memq scheme '(http https))
-                                 (not (member host hosting-sites)))))))))
+                                 ;; HOST may contain prefixes,
+                                 ;; e.g. "profanity-im.github.io", hence the
+                                 ;; suffix-based test below.
+                                 (not (any (cut string-suffix? <> host)
+                                           hosting-sites)))))))))
 
     (lambda (package)
       (or (assoc-ref (package-properties package) 'release-monitoring-url)
