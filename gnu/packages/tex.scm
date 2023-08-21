@@ -2024,6 +2024,30 @@ math environments.")
 region of Nigeria and Niger.")
     (license license:silofl1.1)))
 
+(define-public texlive-allrunes
+  (package
+    (name "texlive-allrunes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/allrunes/"
+                   "fonts/map/dvips/allrunes/"
+                   "fonts/source/public/allrunes/"
+                   "fonts/type1/public/allrunes/"
+                   "source/fonts/allrunes/"
+                   "tex/latex/allrunes/")
+             (base32
+              "14a1qaa30s4dzmg4dlrjd3faa3bcrl2gdpp700i8pghj3pjk7gp4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/allrunes")
+    (synopsis "Fonts and LaTeX package for almost all runes")
+    (description
+     "This large collection of fonts (in Adobe Type 1 format), with the LaTeX
+package gives access to almost all runes ever used in Europe.  The bundle
+covers not only the main forms but also a lot of varieties.")
+    (license license:lppl)))
+
 (define-public texlive-alpha-persian
   (package
     (name "texlive-alpha-persian")
