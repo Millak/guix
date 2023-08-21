@@ -6925,6 +6925,27 @@ The font is supplied as Metafont source.  LaTeX support of the font is
 provided in the @code{calligra} package in the @code{fundus} bundle.")
     (license license:expat)))
 
+(define-public texlive-calligra-type1
+  (package
+    (name "texlive-calligra-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/calligra-type1/"
+                   "fonts/afm/public/calligra-type1/"
+                   "fonts/map/dvips/calligra-type1/"
+                   "fonts/type1/public/calligra-type1/")
+             (base32
+              "1v6zwghf8q70lls3hmwj8gc0n6d4ffjf1xjvq1k6w71shiga8bqi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/calligra-type1")
+    (synopsis "Type 1 version of Calligra")
+    (description
+     "This is a Type 1 conversion of Peter Vanroose's Calligra handwriting
+font.")
+    (license license:expat)))
+
 (define-public texlive-cartonaugh
   (package
     (name "texlive-cartonaugh")
