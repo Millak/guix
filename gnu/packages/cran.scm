@@ -11460,6 +11460,29 @@ exchanging spatial objects with other R packages.")
     (license (list license:gpl2+
                    license:expat))))
 
+(define-public r-maptree
+  (package
+    (name "r-maptree")
+    (version "1.4-8")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "maptree" version))
+              (sha256
+               (base32
+                "1x35nk4fi2b62krcvcv187n5sbqrgvw4pbm7r19ps3jlanpi5ksm"))))
+    (properties `((upstream-name . "maptree")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cluster r-rpart))
+    (home-page "https://cran.r-project.org/package=maptree")
+    (synopsis "Mapping, pruning, and graphing tree models")
+    (description
+     "This package provides a set of functions with example data for graphing,
+pruning, and mapping models.  These models are from hierarchical clustering,
+and classification and regression trees.")
+    ;; Unlimited distribution; see
+    ;; https://cran.r-project.org/web/packages/maptree/index.html
+    (license (license:non-copyleft "file://DESCRIPTION"))))
+
 (define-public r-later
   (package
     (name "r-later")
