@@ -12594,6 +12594,30 @@ writing french operator names like @emph{pgcd}, @emph{ppcm}, @emph{Card},
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-frimurer
+  (package
+    (name "texlive-frimurer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/frimurer/"
+                   "fonts/afm/public/frimurer/"
+                   "fonts/enc/dvips/frimurer/"
+                   "fonts/tfm/public/frimurer/"
+                   "fonts/type1/public/frimurer/"
+                   "source/fonts/frimurer/"
+                   "tex/latex/frimurer/")
+             (base32
+              "072mbcn6272rs1sw85xznk0f7psqh3dkz8y0hayn8y7a83vcrfgr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frimurer")
+    (synopsis "Access to the @emph{frimurer} cipher for use with LaTeX")
+    (description
+     "This package provides access to the @emph{frimurer} cipher for use with
+LaTeX.")
+    (license license:gpl3)))
+
 (define-public texlive-frletter
   (package
     (name "texlive-frletter")
