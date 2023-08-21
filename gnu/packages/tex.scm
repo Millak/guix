@@ -15187,6 +15187,25 @@ digit form.  This package provides support for spelling out numbers in Italian
 words, both in cardinal and in ordinal form.")
     (license license:lppl)))
 
+(define-public texlive-jablantile
+  (package
+    (name "texlive-jablantile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/jablantile/"
+                   "fonts/source/public/jablantile/")
+             (base32
+              "14cxmph6hhzvb06jdqr6d428p1kg3mvbgw2nk133ggrr2k3wjppg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jablantile")
+    (synopsis "Metafont version of tiles in the style of Slavik Jablan")
+    (description
+     "This is a Metafont font to implement the modular tiles described by
+Slavik Jablan. ")
+    (license license:public-domain)))
+
 (define-public texlive-jbact
   (package
     (name "texlive-jbact")
