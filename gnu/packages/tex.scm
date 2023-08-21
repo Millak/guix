@@ -19568,6 +19568,30 @@ the STIX sans serif Roman and Greek letters with most symbols taken from
 @code{newtxmath}.")
     (license license:silofl1.1)))
 
+(define-public texlive-newtxtt
+  (package
+    (name "texlive-newtxtt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/newtxtt/"
+                   "fonts/enc/dvips/newtxtt/"
+                   "fonts/map/dvips/newtxtt/"
+                   "fonts/tfm/public/newtxtt/"
+                   "fonts/type1/public/newtxtt/"
+                   "tex/latex/newtxtt/")
+             (base32
+              "0x53dqf1mflh00r9v3zj2jqqbabk084zgcbz92x5icvmysrvk92a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newtxtt")
+    (synopsis "Enhancement of typewriter fonts from @code{newtx}")
+    (description
+     "The package provides enhanced fonts with LaTeX support files providing
+access to the typewriter fonts from @code{newtx}.  Regular and bold weights,
+slanted variants and a choice of four different styles for zero.")
+    (license (list license:gpl3 license:lppl))))
+
 (define-public texlive-nicematrix
   (package
     (name "texlive-nicematrix")
