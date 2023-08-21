@@ -13494,6 +13494,29 @@ The package also provides an interface to control various settings including
 algorithm parameters.")
     (license license:expat)))
 
+(define-public texlive-greenpoint
+  (package
+    (name "texlive-greenpoint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/greenpoint/"
+                   "fonts/source/public/greenpoint/"
+                   "fonts/tfm/public/greenpoint/")
+             (base32
+              "1y5an7lgx975ppb8s1abx494s4m115k137f82hy08iwdx9l1plj5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/greenpoint")
+    (synopsis "Green Point logo")
+    (description
+     "This package provides a Metafont-implementation of the logo commonly
+known as @emph{Der Grune Punkt} (``The Green Point'').  In Austria, it can be
+found on nearly every bottle.  It should not be confused with the Recycle
+logo.")
+    (license license:gpl3+)))
+
 (define-public texlive-gregoriotex
   (package
     (name "texlive-gregoriotex")
