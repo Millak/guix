@@ -25339,6 +25339,27 @@ providing the LaTeX user with macros which are used to markup textual
 information.")
     (license license:lppl)))
 
+(define-public texlive-umtypewriter
+  (package
+    (name "texlive-umtypewriter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/umtypewriter/"
+                   "fonts/opentype/public/umtypewriter/")
+             (base32
+              "19skqmchglac4lrk4qhvb4rabi73qmypdi20sbjxnvb8abw0pf3i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/umtypewriter")
+    (synopsis "Fonts to typeset with the @code{xgreek} package")
+    (description
+     "The UMTypewriter font family is a monospaced font family that was built
+from glyphs from the CB Greek fonts, the CyrTUG Cyrillic alphabet fonts (LH),
+and the standard Computer Modern font family.  It contains four OpenType fonts
+which are required for use of the @code{xgreek} package for XeLaTeX.")
+    (license license:silofl1.1)))
+
 (define-public texlive-unfonts-core
   (package
     (name "texlive-unfonts-core")
