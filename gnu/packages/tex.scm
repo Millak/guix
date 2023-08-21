@@ -10970,6 +10970,36 @@ font package, but not provided there.")
 Mukta, Baloo, Modak, and Jaini.")
     (license license:lppl1.3c)))
 
+(define-public texlive-electrum
+  (package
+    (name "texlive-electrum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/electrum/"
+                   "fonts/afm/arkandis/electrum/"
+                   "fonts/enc/dvips/electrum/"
+                   "fonts/map/dvips/electrum/"
+                   "fonts/tfm/arkandis/electrum/"
+                   "fonts/type1/arkandis/electrum/"
+                   "fonts/vf/arkandis/electrum/"
+                   "source/fonts/electrum/"
+                   "tex/latex/electrum/")
+             (base32
+              "0k8yckfh7pw2p3gy2j4ss9l42dmdbdnb7nsliz0j05g7wkkcp05w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/electrumadf")
+    (synopsis "Electrum ADF fonts collection")
+    (description
+     "Electrum ADF is a slab-serif font featuring optical and italic
+small-caps; additional ligatures and an alternate @samp{Q}; lining, hanging,
+inferior and superior digits; and four weights.  The fonts are provided in
+Adobe Type 1 format and the support material enables use with LaTeX. Licence
+is mixed: LPPL for LaTeX support; GPL with font exception for the fonts.")
+    ;; LPPL for LaTeX support, GPL with font exception for the fonts.
+    (license (list license:lppl license:gpl2+))))
+
 (define-public texlive-eledform
   (package
     (name "texlive-eledform")
