@@ -10905,6 +10905,30 @@ editions.")
 with relative ease.  The facilities of PSTricks are used for graphics.")
     (license license:lppl)))
 
+(define-public texlive-eiad
+  (package
+    (name "texlive-eiad")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/eiad/"
+                   "fonts/source/public/eiad/"
+                   "fonts/tfm/public/eiad/" "tex/latex/eiad/")
+             (base32
+              "0il058v1x79w5faxyalysdmfsgbxc3a1nq8kraffawpqw6wjcrbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont texlive-sauter))
+    (home-page "https://ctan.org/pkg/eiad")
+    (synopsis "Traditional style Irish fonts")
+    (description
+     "This package provides traditional style Irish fonts, in both lower and
+upper case 32 letters are defined (18 plain ones, 5 long vowels and
+9 aspirated consonants).  The ligature agus is also made available.  The
+remaining characters (digits, punctuation and accents) are inherited from the
+Computer Modern family of fonts.")
+    (license license:public-domain)))
+
 (define-public texlive-eledform
   (package
     (name "texlive-eledform")
