@@ -6125,6 +6125,30 @@ the Bitter family of fonts.  Bitter is a contemporary slab-serif typeface for
 text.  There are regular and bold weights and an italic, but no bold italic.")
     (license (list license:lppl license:silofl1.1))))
 
+(define-public texlive-blacklettert1
+  (package
+    (name "texlive-blacklettert1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/blacklettert1/"
+                   "fonts/tfm/public/blacklettert1/"
+                   "fonts/vf/public/blacklettert1/"
+                   "source/fonts/blacklettert1/"
+                   "tex/latex/blacklettert1/")
+             (base32
+              "0fvrz3rbcdgzrg3rg3nfvdb52zxn9vhsx0xd8rc6xryzrqaib7q0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/blacklettert1")
+    (synopsis "T1-encoded versions of Haralambous old German fonts")
+    (description
+     "This package contains virtual fonts that offer T1-alike encoded variants
+of old German fonts Gothic, Schwabacher and Fraktur (which are also available
+in Adobe type 1 format).  The package includes LaTeX macros to embed the fonts
+into the LaTeX font selection scheme.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-bodeplot
   (package
     (name "texlive-bodeplot")
