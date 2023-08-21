@@ -13071,6 +13071,25 @@ Latin alphabet based on Zapf's Palatino.  LaTeX support is provided, using the
 OT1, T1, TS1, and LGR encodings.")
     (license license:silofl1.1)))
 
+(define-public texlive-gfsdidotclassic
+  (package
+    (name "texlive-gfsdidotclassic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsdidotclassic/"
+                   "fonts/opentype/public/gfsdidotclassic/")
+             (base32
+              "1cpsmgrq2x6ym9xb63msvm6pc4p2qyi2k40hmxmzhi979ch8gkaz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsdidotclassic")
+    (synopsis "Classic version of GFSDidot")
+    (description
+     "This is the classic version of GFSDidot provided for Unicode TeX
+engines.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
