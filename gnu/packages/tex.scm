@@ -11415,6 +11415,31 @@ Heuristica, matching that of UtopiaStd.")
 by Michel Bovani.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-esrelation
+  (package
+    (name "texlive-esrelation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/esrelation/"
+                   "fonts/map/dvips/esrelation/"
+                   "fonts/source/public/esrelation/"
+                   "fonts/tfm/public/esrelation/"
+                   "fonts/type1/public/esrelation/"
+                   "source/fonts/esrelation/"
+                   "tex/latex/esrelation/")
+             (base32
+              "168pjrn3pgyqb79nvwk4rykb214jj1fvygnlb18rx7nrnzdmagjw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/esrelation")
+    (synopsis "Symbol set for describing relations between ordered pairs")
+    (description
+     "This package provides an math symbol font, by Tauba Auerbach, for
+describing relations between ordered pairs, using Metafont.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-euclideangeometry
   (package
     (name "texlive-euclideangeometry")
