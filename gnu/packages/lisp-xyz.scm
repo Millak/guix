@@ -5487,25 +5487,25 @@ client and server.")
   (sbcl-package->cl-source-package sbcl-trivial-arguments))
 
 (define-public sbcl-trivial-clipboard
-  (let ((commit "13b53720306c0e6a13eccf4674d28ee5361127ae"))
+  (let ((commit "6ddf8d5dff8f5c2102af7cd1a1751cbe6408377b")
+        (revision "6"))
     (package
       (name "sbcl-trivial-clipboard")
-      (version (git-version "0.0.0.0" "5" commit))
+      (version (git-version "0.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/snmsts/trivial-clipboard")
                (commit commit)))
-         (file-name (git-file-name "trivial-clipboard" version))
+         (file-name (git-file-name "cl-trivial-clipboard" version))
          (sha256
-          (base32
-           "0l198m1gg2ixc43lqjq1ffd80s1sjxhqf1w83qqa1cn51rra2jp8"))))
+          (base32 "04qmm69zyx8rs23pfhgzgxn0j108byv3b7skfdv0h01a76wlhplz"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        ;; Pick xsel instead of xclip because its closure size is slightly
        ;; smaller.
-       (list xsel))
+       (list wl-clipboard xsel))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
@@ -5515,7 +5515,15 @@ client and server.")
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "src/text.lisp"
                  (("\"xsel\"")
-                  (string-append "\"" (assoc-ref inputs "xsel") "/bin/xsel\""))))))))
+                  (string-append "\"" (assoc-ref inputs "xsel") "/bin/xsel\""))
+                 (("\"wl-copy\"")
+                  (string-append "\""
+                                 (assoc-ref inputs "wl-clipboard")
+                                 "/bin/wl-copy\""))
+                 (("\"wl-paste\"")
+                  (string-append "\""
+                                 (assoc-ref inputs "wl-clipboard")
+                                 "/bin/wl-paste\""))))))))
       (home-page "https://github.com/snmsts/trivial-clipboard")
       (synopsis "Access system clipboard in Common Lisp")
       (description
