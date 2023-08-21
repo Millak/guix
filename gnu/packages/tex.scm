@@ -24433,6 +24433,29 @@ work with tangram puzzles: @code{\\begin{EnvTangramTikz}} and
 a predefined tangram.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tapir
+  (package
+    (name "texlive-tapir")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/tapir/"
+                   "fonts/source/public/tapir/"
+                   "fonts/type1/public/tapir/")
+             (base32
+              "1b1r2zg8m46zd2cb8l3vglncvixzhcfq75s0s86pyn9f88b17w57")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tapir")
+    (synopsis "Simple geometrical font")
+    (description
+     "Tapir is a simple geometrical font mostly created of line and circular
+segments with constant thickness.  The font is available as Metafont source
+and in Adobe Type 1 format.  The character set contains all ASCII characters
+in the range 0-127 (as in @code{cmr10}), accented characters used in the
+Czech, Slovak and Polish languages.")
+    (license license:gpl3+)))
+
 (define-public texlive-tdsfrmath
   (package
     (name "texlive-tdsfrmath")
