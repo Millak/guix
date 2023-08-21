@@ -24167,6 +24167,31 @@ of parameters that the user sets via macros.
 The bundle comes with a set of ready-prepared puzzle files.")
     (license license:lppl)))
 
+(define-public texlive-superiors
+  (package
+    (name "texlive-superiors")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/superiors/"
+                   "fonts/enc/dvips/superiors/"
+                   "fonts/map/dvips/superiors/"
+                   "fonts/tfm/public/superiors/"
+                   "fonts/type1/public/superiors/"
+                   "tex/latex/superiors/")
+             (base32
+              "0f50v8dal93vq8mfxs6m5n9d56ciy7f88343s6g1jsv2zf1xb7ng")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/superiors")
+    (synopsis "Attach superior figures to a font family")
+    (description
+     "The package allows the attachment of an arbitrary superior figures font
+to a font family that lacks one. (Superior figures are commonly used as
+footnote markers.)  Two superior figures fonts are provided --- one matching
+Times, the other matching Libertine.")
+    (license license:lppl)))
+
 (define-public texlive-susy
   (package
     (name "texlive-susy")
