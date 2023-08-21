@@ -25502,6 +25502,30 @@ to define new units and changes the output concerning to the surrounding font
 settings.")
     (license license:lppl)))
 
+(define-public texlive-universa
+  (package
+    (name "texlive-universa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/universa/"
+                   "fonts/source/public/universa/"
+                   "fonts/tfm/public/universa/"
+                   "source/fonts/universa/"
+                   "tex/latex/universa/")
+             (base32
+              "1w1cw2236aj37iggxck1drsfbwsiap8mc3lrkqrimmz2rgixycdp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/universa")
+    (synopsis "Herbert Bayer's Universal font")
+    (description
+     "This package provides an implementation of the Universal by Herbert
+Bayer.  The Metafont sources of the fonts, and their LaTeX support, are
+supplied.")
+    (license license:gpl3+)))
+
 (define-public texlive-urlbst
   (package
     (name "texlive-urlbst")
