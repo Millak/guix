@@ -24506,6 +24506,35 @@ LaTeX support files giving essentially complete LGR coverage of monotonic,
 polytonic and ancient Greek, and almost full T2A coverage of Cyrillic.")
     (license license:gpl2)))
 
+(define-public texlive-tengwarscript
+  (package
+    (name "texlive-tengwarscript")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tengwarscript/"
+                   "fonts/enc/dvips/tengwarscript/"
+                   "fonts/map/dvips/tengwarscript/"
+                   "fonts/tfm/public/tengwarscript/"
+                   "fonts/vf/public/tengwarscript/"
+                   "source/latex/tengwarscript/"
+                   "tex/latex/tengwarscript/")
+             (base32
+              "1k3wgg8cj9n4ijj5qdbm74snwzdyabh1c93zm75p4x9pmawlpaa4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tengwarscript")
+    (synopsis "LaTeX support for using Tengwar fonts")
+    (description
+     "The package provides mid-level access to Tengwar fonts, providing good
+quality output.  Each tengwar sign is represented by a command, which will
+place the sign nicely in relation to previous signs.  A transcription package
+is available from the package's home page: writing all those tengwar commands
+would quickly become untenable.  The package supports the use of a wide
+variety of tengwar fonts that are available from the net; metric and map files
+are provided for all the supported fonts.")
+    (license license:lppl)))
+
 (define-public texlive-tensind
   (package
     (name "texlive-tensind")
