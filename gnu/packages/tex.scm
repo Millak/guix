@@ -19494,6 +19494,28 @@ Harvard at Newcastle style recommended by Newcastle University.  It should be
 used alongside @code{natbib} for citations.")
     (license license:lppl1.3c)))
 
+(define-public texlive-newcomputermodern
+  (package
+    (name "texlive-newcomputermodern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/newcomputermodern/"
+                   "fonts/opentype/public/newcomputermodern/"
+                   "tex/latex/newcomputermodern/")
+             (base32
+              "0b2iingsax99r551150w26zwmlr6a8yjwb00amfa2id390r1yjp5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newcomputermodern")
+    (synopsis "Computer Modern fonts including matching non-Latin alphabets")
+    (description
+     "This is a new assembly of Computer Modern fonts including extensions in
+many directions for both Latin based languages, non-Latin based languages and
+Mathematics, all compatible in style to CM fonts.  In addition to the Regular
+weight of Computer Modern, it provides a Book weight for heavier printing.")
+    (license license:gfl1.0)))
+
 (define-public texlive-nicematrix
   (package
     (name "texlive-nicematrix")
