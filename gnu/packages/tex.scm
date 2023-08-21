@@ -1369,6 +1369,32 @@ argument the name of the desired icon.  It also provides individual direct
 commands for each specific icon.")
     (license (list license:lppl1.3c license:silofl1.1))))
 
+(define-public texlive-accanthis
+  (package
+    (name "texlive-accanthis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/accanthis/"
+                   "fonts/enc/dvips/accanthis/"
+                   "fonts/map/dvips/accanthis/"
+                   "fonts/opentype/arkandis/accanthis/"
+                   "fonts/tfm/arkandis/accanthis/"
+                   "fonts/type1/arkandis/accanthis/"
+                   "fonts/vf/arkandis/accanthis/"
+                   "tex/latex/accanthis/")
+             (base32
+              "1xpy3bs8wwb6ncw4c8kc5vvddl77rmjwfjq66xw12sc8mgg9grmv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/accanthis")
+    (synopsis "Accanthis fonts, with LaTeX support")
+    (description
+     "Accanthis No.@: 3, designed by Hirwin Harendal, is suitable as an
+alternative to fonts such as Garamond, Galliard, Horley old style, Sabon, and
+Bembo.  The package provides support files for use with all LaTeX engines.")
+    (license (list license:gpl2+ license:lppl))))
+
 (define-public texlive-accents
   (package
     (name "texlive-accents")
