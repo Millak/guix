@@ -2076,6 +2076,34 @@ and Gothic hands.  There are regular and bold weights with matching italics.
 There is also a regular-weight small-caps.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-almfixed
+  (package
+    (name "texlive-almfixed")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/almfixed/"
+                   "fonts/opentype/public/almfixed/"
+                   "fonts/truetype/public/almfixed/")
+             (base32
+              "1ihyldbdz89swj8lm75kb3n3nqqgzkydwlppsndfpib74pvp6s97")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/almfixed")
+    (synopsis "Extend TeX-Gyre Latin Modern to full Arabic Unicode support")
+    (description
+     "Arabic-Latin Modern Fixed is an extension of TeX-Gyre Latin Modern Mono
+10 Regular.  Every glyph and OpenType feature of the Latin Modern Mono has
+been retained, with minor improvements.  On the other hand, we have changed
+the vertical metrics of the font.
+
+The unique feature of Arabic-Latin Modern is its treatment of vowels and
+diacritics.  Each vowel and diacritic (ALM Fixed contains a total of 68 such
+glyphs) may now be edited horizontally within any text editor or processor.
+Editing complex Arabic texts will now be much easier to input and to
+proofread.")
+    (license license:gfl1.0)))
+
 (define-public texlive-alpha-persian
   (package
     (name "texlive-alpha-persian")
