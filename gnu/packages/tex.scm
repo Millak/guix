@@ -20054,6 +20054,34 @@ encoding, rather than a TeX/LaTeX encoding).  To use the fonts, the user needs
 Cyrillic font support.")
     (license license:lppl)))
 
+(define-public texlive-ocherokee
+  (package
+    (name "texlive-ocherokee")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/omega/ocherokee/"
+                   "fonts/afm/public/ocherokee/"
+                   "fonts/map/dvips/ocherokee/"
+                   "fonts/ofm/public/ocherokee/"
+                   "fonts/ovf/public/ocherokee/"
+                   "fonts/ovp/public/ocherokee/"
+                   "fonts/tfm/public/ocherokee/"
+                   "fonts/type1/public/ocherokee/"
+                   "omega/ocp/ocherokee/"
+                   "omega/otp/ocherokee/"
+                   "tex/lambda/ocherokee/")
+             (base32
+              "1j2giz3rjr8hdzca5hny31zklnl721mhsgxm575fhh82qrpvdx26")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ocherokee")
+    (synopsis "LaTeX Support for the Cherokee language")
+    (description
+     "This package provides macros and Type 1 fonts for Typesetting the
+Cherokee language with the Omega version of LaTeX (known as Lambda).")
+    (license license:lppl)))
+
 (define-public texlive-octave
   (package
     (name "texlive-octave")
