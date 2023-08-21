@@ -2377,7 +2377,7 @@ Every puzzle has a complete solution, although there may be more than one.")
                 #t))))
    (build-system gnu-build-system)
    (arguments
-    '(#:configure-flags '("--disable-cpu-opt")
+    '(#:configure-flags '("--disable-cpu-opt" "CFLAGS=-fcommon")
       #:make-flags `(,(string-append "gamesdir="
                                      (assoc-ref %outputs "out") "/bin"))
       #:phases
