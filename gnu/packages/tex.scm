@@ -10117,6 +10117,36 @@ programming languages.")
 bibliographies.  A @code{LaTeX2HTML} style file is also provided.")
     (license license:lppl)))
 
+(define-public texlive-domitian
+  (package
+    (name "texlive-domitian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/domitian/"
+                   "fonts/enc/dvips/domitian/"
+                   "fonts/map/dvips/domitian/"
+                   "fonts/opentype/public/domitian/"
+                   "fonts/tfm/public/domitian/"
+                   "fonts/type1/public/domitian/"
+                   "fonts/vf/public/domitian/"
+                   "tex/latex/domitian/")
+             (base32
+              "10pg90kdwklz2rsbcafhcld4zdchmxzr6cszrajwrky8hfz67dkg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/domitian")
+    (synopsis "Drop-in replacement for Palatino")
+    (description
+     "The Domitian fonts are an OpenType font family, based on the Palatino
+design by Hermann Zapf (1918-2015), as implemented in Palladio.  Domitian is
+meant as a drop-in replacement for Adobe's version of Palatino.  It extends
+Palladio with small capitals, old-style figures and scientific inferiors.  The
+metrics have been adjusted to more closely match Adobe Palatino, and hinting
+has been improved.")
+    ;; Use any of the three licenses.
+    (license (list license:lppl1.3c license:silofl1.1 license:agpl3))))
+
 (define-public texlive-dosepsbin
   (package
     (name "texlive-dosepsbin")
