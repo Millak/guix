@@ -6998,6 +6998,29 @@ package using FontForge from its sources, for full support with Dvips.")
 the Carlito family of sans serif fonts, designed by Lukasz Dziedzic.")
     (license license:silofl1.1)))
 
+(define-public texlive-carolmin-ps
+  (package
+    (name "texlive-carolmin-ps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/carolmin-ps/"
+                   "fonts/afm/public/carolmin-ps/"
+                   "fonts/map/dvips/carolmin-ps/"
+                   "fonts/type1/public/carolmin-ps/")
+             (base32
+              "1867h17l0ms2schmbrsjm4gajfmckm2x7ny2ijd9vf232l7s1b53")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/carolmin-t1")
+    (synopsis "Adobe Type 1 format of Carolingian Minuscule fonts")
+    (description
+     "The bundle offers Adobe Type 1 format versions of Peter Wilson's
+Carolingian Minuscule font set (part of the @code{bookhands} collection).  The
+fonts in the bundle are ready-to-use replacements for the Metafont
+originals.")
+    (license license:lppl)))
+
 (define-public texlive-cartonaugh
   (package
     (name "texlive-cartonaugh")
