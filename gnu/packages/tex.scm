@@ -15654,6 +15654,30 @@ document author needs.  So it can be a useful guide for beginners as well as
 a reference manual for advanced users.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-kixfont
+  (package
+    (name "texlive-kixfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/kixfont/"
+                   "fonts/source/public/kixfont/"
+                   "fonts/tfm/public/kixfont/")
+             (base32
+              "0w6fjsws26plm9p74c3qcvvgx5hhlabfbhpc046rb31183f7h0q5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/kixfont")
+    (synopsis "Font for KIX codes")
+    (description
+     "The KIX code is a barcode-like format used by the Dutch PTT to encode
+country codes, zip codes and street numbers in a machine-readable format.  If
+printed below the address line on bulk mailings, a discount can be obtained.
+The font is distributed in Metafont format, and covers the numbers and
+upper-case letters.")
+    (license license:public-domain)))
+
 (define-public texlive-kotex-oblivoir
   (package
     (name "texlive-kotex-oblivoir")
