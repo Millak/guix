@@ -23901,6 +23901,34 @@ as a Greek complement to a Times-like font such as STEP.  The font supports
 polytonic Greek.")
     (license license:silofl1.1)))
 
+(define-public texlive-stickstoo
+  (package
+    (name "texlive-stickstoo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/stickstoo/"
+                   "fonts/afm/public/stickstoo/"
+                   "fonts/enc/dvips/stickstoo/"
+                   "fonts/map/dvips/stickstoo/"
+                   "fonts/tfm/public/stickstoo/"
+                   "fonts/type1/public/stickstoo/"
+                   "fonts/vf/public/stickstoo/"
+                   "tex/latex/stickstoo/")
+             (base32
+              "15hmplphlg5vc3a966x379bkn74vb39pv73w0py65nd9zbb7z27i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stickstoo")
+    (synopsis "Reworking of STIX2")
+    (description
+     "SticksToo is a reworking of the STIX2 fonts with support files focussing
+on enhancements of support for LaTeX users wishing to be able to access more
+of its features.  A companion addition to the @code{newtxmath} package
+provides a matching math package using STIX2 letters (Roman and Greek) with
+@code{newtxmath} symbols.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-structmech
   (package
     (name "texlive-structmech")
