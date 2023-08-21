@@ -14262,6 +14262,27 @@ adds a collection of useful @acronym{HEP, High Energy Physics} units to the
 existing SIunits set.")
     (license license:lppl)))
 
+(define-public texlive-heros-otf
+  (package
+    (name "texlive-heros-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/heros-otf/"
+                   "tex/latex/heros-otf/")
+             (base32
+              "17ac8a8r5hvf76lifap070c4746jdhva9arcn1s0bqrs6kydfm56")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/heros-otf")
+    (synopsis "Using the OpenType fonts TeX Gyre Heros")
+    (description
+     "This package can only be used with LuaLaTeX or XeLaTeX.  It does the
+font setting for the OpenType font TeX Gyre Heros.  The condensed versions of
+the fonts are also supported.  The missing typefaces for slanted text are
+defined.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-hexboard
   (package
     (name "texlive-hexboard")
