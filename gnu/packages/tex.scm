@@ -16373,6 +16373,31 @@ add cited Acts to a nomenclature list (automatically), and to build specific
 indexes for each cited Act.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lfb
+  (package
+    (name "texlive-lfb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lfb/" "fonts/source/public/lfb/"
+                   "fonts/tfm/public/lfb/")
+             (base32
+              "1n0cf7igvhqnmdk8hjj1lahzr3iaiaqsq01pxkphg6myab127x71")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/lfb")
+    (synopsis "Greek font with normal and bold variants")
+    (description
+     "This is a Greek font written in Metafont, with inspiration from the
+Bodoni typefaces in old books.  It is stylistically a little more exotic than
+the standard textbook Greek fonts, particularly in glyphs like the lowercase
+rho and kappa.  It aims for a rather calligraphic feel, but seems to blend
+well with Computer Modern.  There is a ligature scheme which automatically
+inserts the breathings required for ancient texts, making the input text more
+readable than in some schemes.")
+    (license license:lppl)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
