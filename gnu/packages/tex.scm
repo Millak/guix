@@ -24574,6 +24574,26 @@ with mixed upper and lower indices with spacing, also typeset preposed
 indices.")
     (license license:lppl)))
 
+(define-public texlive-termes-otf
+  (package
+    (name "texlive-termes-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/termes-otf/"
+                   "tex/latex/termes-otf/")
+             (base32
+              "1z8a1d2k4170n14hf8faimwfd26cshsww1ypa8im937lna7c0j39")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/termes-otf")
+    (synopsis "Using the OpenType fonts TeX Gyre Termes")
+    (description
+     "This package provides the OpenType version of the TeX Gyre Termes font,
+including text and math fonts.  The package needs LuaLaTeX or XeLaTeX.  The
+missing typefaces like bold math and slanted text are also defined.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tex-ewd
   (package
     (name "texlive-tex-ewd")
