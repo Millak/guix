@@ -20245,6 +20245,38 @@ arrows together with the old-style ones.")
 order to generate long @emph{s}, which was used in old text.")
     (license license:lppl)))
 
+(define-public texlive-oldstandard
+  (package
+    (name "texlive-oldstandard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/oldstandard/"
+                   "fonts/enc/dvips/oldstandard/"
+                   "fonts/map/dvips/oldstandard/"
+                   "fonts/opentype/public/oldstandard/"
+                   "fonts/tfm/public/oldstandard/"
+                   "fonts/type1/public/oldstandard/"
+                   "fonts/vf/public/oldstandard/"
+                   "tex/latex/oldstandard/")
+             (base32
+              "0rqx0i13q5axcnilggy9zgi28z2c3xl23dfxjdlsjdkyxvpfl44y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oldstandard")
+    (synopsis "OldStandard fonts with LaTeX support")
+    (description
+     "Old Standard is designed to reproduce the actual printing style of the
+early 20th century, reviving a specific type of Modern (classicist) style of
+serif typefaces, very commonly used in various editions of the late 19th and
+early 20th century.
+
+The font supports typesetting of Old and Middle English, Old Icelandic,
+Cyrillic (with historical characters, extensions for Old Slavonic and
+localised forms), Gothic transliterations, critical editions of Classical
+Greek and Latin, and many more.")
+    (license (list license:silofl1.1 license:lppl license:gpl3+))))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
