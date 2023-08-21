@@ -11757,6 +11757,35 @@ the chapters.  Each chapter can consist of three sections: the lesson, the
 exercises and the activities.")
     (license license:lppl)))
 
+(define-public texlive-fbb
+  (package
+    (name "texlive-fbb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fbb/"
+                   "fonts/enc/dvips/fbb/"
+                   "fonts/map/dvips/fbb/"
+                   "fonts/opentype/public/fbb/"
+                   "fonts/tfm/public/fbb/"
+                   "fonts/type1/public/fbb/"
+                   "fonts/vf/public/fbb/"
+                   "tex/latex/fbb/")
+             (base32
+              "012zfxq6hdz9m4pn6dxqv3lsbr809r10mj795w96cijzrys4zww1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fbb")
+    (synopsis "Bembo-like font")
+    (description
+     "The package provides a Bembo-like font package based on Cardo but with
+many modifications, adding Bold Italic, small caps in all styles, six figure
+choices in all styles, updated kerning tables, added figure tables and
+corrected f-ligatures.  Both OpenType and Adobe Type 1 versions are provided;
+all necessary support files are provided.  The font works well with
+@code{newtxmath}'s @code{libertine} option.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-fbs
   (package
     (name "texlive-fbs")
