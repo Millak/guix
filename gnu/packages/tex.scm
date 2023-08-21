@@ -3098,6 +3098,30 @@ this time, only XeTeX and LuaTeX are supported.")
 converted between Plain TeX and LaTeX by a simple editing action.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ascii-font
+  (package
+    (name "texlive-ascii-font")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ascii-font/"
+                   "fonts/map/dvips/ascii-font/"
+                   "fonts/tfm/public/ascii-font/"
+                   "fonts/type1/public/ascii-font/"
+                   "source/fonts/ascii-font/"
+                   "tex/latex/ascii-font/")
+             (base32
+              "0cbzvbszxyv552z1274m3bf5k40xr8w12da17db0w2w02y47nyq5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ascii-font")
+    (synopsis "Use the ASCII font in LaTeX")
+    (description
+     "The package provides glyph and font access commands so that LaTeX users
+can use the ASCII glyphs in their documents.  The ASCII font is encoded
+according to the IBM PC Code Page 437 C0 Graphics.")
+    (license license:lppl)))
+
 (define-public texlive-ascmac
   (package
     (name "texlive-ascmac")
