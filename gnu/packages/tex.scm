@@ -22193,6 +22193,37 @@ for recorders in both C and F, along with methods to create and display
 alternate fingerings for trills, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-recycle
+  (package
+    (name "texlive-recycle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/recycle/"
+                   "fonts/map/dvips/recycle/"
+                   "fonts/source/public/recycle/"
+                   "fonts/tfm/public/recycle/"
+                   "fonts/type1/public/recycle/"
+                   "tex/latex/recycle/")
+             (base32
+              "16kmi7a75vrv3pfnxydxb21pafvi98q39jrdd10a94vxx6fdlx7s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    ;; FIXME: Font metrics generation fails with "! Inconsistent equation (off
+    ;; by 0.00162)." errors.
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/recycle")
+    (synopsis "Font providing the ``recyclable'' logo")
+    (description
+     "This single-character font is provided as Metafont source, and in Adobe
+Type 1 format.  It is accompanied by a trivial LaTeX package to use the logo
+at various sizes.")
+    (license license:gpl3+)))
+
 (define-public texlive-reledmac
   (package
     (name "texlive-reledmac")
