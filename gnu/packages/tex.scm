@@ -7065,6 +7065,31 @@ constructions to present mathematical demonstrations with successive braces
 for the deductions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cascadia-code
+  (package
+    (name "texlive-cascadia-code")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cascadia-code/"
+                   "fonts/enc/dvips/cascadia-code/"
+                   "fonts/map/dvips/cascadia-code/"
+                   "fonts/opentype/public/cascadia-code/"
+                   "fonts/tfm/public/cascadia-code/"
+                   "fonts/type1/public/cascadia-code/"
+                   "fonts/vf/public/cascadia-code/"
+                   "tex/latex/cascadia-code/")
+             (base32
+              "1bcp2zw71aka47nc5wmi3196ypyr430ws1j63jnbzjaxnk2r63yw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cascadia-code")
+    (synopsis "Cascadia Code font with support for LaTeX and pdfLaTeX")
+    (description
+     "Cascadia Code is a monospaced font by Microsoft.  This package provides
+the Cascadia Code family of fonts with support for LaTeX and pdfLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-catcodes
   (package
     (name "texlive-catcodes")
