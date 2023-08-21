@@ -16314,6 +16314,27 @@ with the symbols.  While it is possible to set arrows over longer strings of
 symbols, the focus lies on single characters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lexend
+  (package
+    (name "texlive-lexend")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lexend/"
+                   "fonts/truetype/public/lexend/"
+                   "tex/latex/lexend/")
+             (base32
+              "0jk9m3zb3xik463nwsjh003ly3xrrph7kam519b9lyqybyxb16xs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lexend")
+    (synopsis "Lexend fonts for XeLaTeX and LuaLaTeX")
+    (description
+     "The purpose of this package is pretty straightforward: the Lexend font
+collection has been designed by Dr.@: Bonnie Shaver-Troup and Thomas Jockin to
+make reading easier for everyone.")
+    (license (list license:lppl1.3c license:silofl1.1))))
+
 (define-public texlive-lexikon
   (package
     (name "texlive-lexikon")
