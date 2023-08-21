@@ -16487,6 +16487,30 @@ The Libertinus fonts are similiar to Libertine and Biolinum, but come with
 math symbols.")
     (license license:lppl1.3+)))
 
+(define-public texlive-libertinus-type1
+  (package
+    (name "texlive-libertinus-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libertinus-type1/"
+                   "fonts/enc/dvips/libertinus-type1/"
+                   "fonts/map/dvips/libertinus-type1/"
+                   "fonts/tfm/public/libertinus-type1/"
+                   "fonts/type1/public/libertinus-type1/"
+                   "fonts/vf/public/libertinus-type1/"
+                   "tex/latex/libertinus-type1/")
+             (base32
+              "1vzvli3sbyxdsqzb3qk03mbl0qg4q7ihipddd1n6bdbjriv67zz6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libertinus-type1")
+    (synopsis "Support for using Libertinus fonts with LaTeX")
+    (description
+     "This package provides support for use of Libertinus fonts with
+traditional processing engines (LaTeX with Dvips or Dvipdfmx, or pdfLaTeX).")
+    (license (list license:gpl2 license:silofl1.1 license:lppl))))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
