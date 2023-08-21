@@ -22708,6 +22708,36 @@ font setting for the OpenType font TeX Gyre Schola for text and math.  The
 missing typefaces like bold math and slanted text are also defined.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scholax
+  (package
+    (name "texlive-scholax")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/scholax/"
+                   "fonts/afm/public/scholax/"
+                   "fonts/enc/dvips/scholax/"
+                   "fonts/map/dvips/scholax/"
+                   "fonts/opentype/public/scholax/"
+                   "fonts/tfm/public/scholax/"
+                   "fonts/type1/public/scholax/"
+                   "fonts/vf/public/scholax/"
+                   "tex/latex/scholax/")
+             (base32
+              "1jw09a75gw9favzpfkp4kmwf6wz9kp4jsk8f838rk1x76q213rrw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scholax")
+    (synopsis
+     "Extension of TeXGyreSchola (New Century Schoolbook) with math support")
+    (description
+     "This package contains an extension of TeXGyreSchola with extensive
+superiors, inferior figures, upright punctuation glyphs added to the Italic
+face for a theorem font, plus slanted and bold slanted faces.  Math support is
+provided by one of two options to @code{newtxmath}, one of which uses an
+adaptation of the Fourier math Greek letters.")
+    (license license:lppl)))
+
 (define-public texlive-schwalbe-chess
   (package
     (name "texlive-schwalbe-chess")
