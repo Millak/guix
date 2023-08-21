@@ -20742,6 +20742,46 @@ arrangement of text is commonly used when typesetting translations, but it can
 have value when comparing any two texts.")
     (license license:lppl)))
 
+(define-public texlive-paratype
+  (package
+    (name "texlive-paratype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/paratype/"
+                   "fonts/afm/paratype/ptmono/"
+                   "fonts/afm/paratype/ptsans/"
+                   "fonts/afm/paratype/ptserif/"
+                   "fonts/enc/dvips/paratype/"
+                   "fonts/map/dvips/paratype/"
+                   "fonts/tfm/paratype/ptmono/"
+                   "fonts/tfm/paratype/ptsans/"
+                   "fonts/tfm/paratype/ptserif/"
+                   "fonts/truetype/paratype/ptmono/"
+                   "fonts/truetype/paratype/ptsans/"
+                   "fonts/truetype/paratype/ptserif/"
+                   "fonts/type1/paratype/ptmono/"
+                   "fonts/type1/paratype/ptsans/"
+                   "fonts/type1/paratype/ptserif/"
+                   "fonts/vf/paratype/ptmono/"
+                   "fonts/vf/paratype/ptsans/"
+                   "fonts/vf/paratype/ptserif/"
+                   "tex/latex/paratype/")
+             (base32
+              "0k93y4xlng9b9cwa9mk7bdxj2zzbyigv02z358lm0vpr7nw8vxig")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/paratype")
+    (synopsis "LaTeX support for ParaType fonts")
+    (description
+     "The package offers LaTeX support for the fonts PT Sans, PT Serif and PT
+Mono developed by ParaType for the project @emph{Public Types of Russian
+Federation}.  The fonts themselves are provided in both the TrueType and Type
+1 formats.  The fonts provide encodings OT1, T1, IL2, TS1, T2* and X2.  The
+package provides a convenient replacement of the two packages @code{ptsans}
+and @code{ptserif}.")
+    (license license:lppl)))
+
 (define-public texlive-parrun
   (package
     (name "texlive-parrun")
