@@ -9652,6 +9652,25 @@ labels and captions to be added seamlessly.  It is also possible to place
 multiple DMN tables in one table/figure environment.")
     (license license:lppl1.3c)))
 
+(define-public texlive-dejavu-otf
+  (package
+    (name "texlive-dejavu-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dejavu-otf/"
+                   "tex/latex/dejavu-otf/")
+             (base32
+              "0vn16rb816w7kdqkyqxr01w1qd654s1f3k368q0cj0ab1247q7q8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dejavu-otf")
+    (synopsis "Support for the TTF and OTF DejaVu fonts")
+    (description
+     "The @code{dejavu-otf} package supports the TTF fonts from the DejaVu
+project and the OpenType version of the TeXGyre Math.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-delim
   (package
     (name "texlive-delim")
