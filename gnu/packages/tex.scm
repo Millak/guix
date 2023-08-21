@@ -3549,6 +3549,27 @@ the pdf code inserted in the output file.  The processing involves a run of
 @command{pdflatex}.")
     (license license:gpl3+)))
 
+(define-public texlive-b1encoding
+  (package
+    (name "texlive-b1encoding")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/b1encoding/"
+                   "fonts/enc/dvips/b1encoding/"
+                   "source/latex/b1encoding/"
+                   "tex/latex/b1encoding/")
+             (base32
+              "1lzsa0k5rr0n50d31dh4ghww329qjpg39w843zmh05z0jir6rg79")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/b1encoding")
+    (synopsis "LaTeX encoding tools for Bookhands fonts")
+    (description
+     "The package characterises and defines the author's B1 encoding for use
+with LaTeX when typesetting things using his Bookhands fonts.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-backnaur
   (package
     (name "texlive-backnaur")
