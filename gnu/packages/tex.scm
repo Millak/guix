@@ -9084,6 +9084,26 @@ provides glyphs with a filled outline of the shape of each country; each glyph
 is at the same cartographic scale.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-courier-scaled
+  (package
+    (name "texlive-courier-scaled")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/courier-scaled/"
+                   "tex/latex/courier-scaled/")
+             (base32
+              "1d61afhvx9s70mg9d97m0zyzqfdlwbgljwgkv0z87khxy4z33wy6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/courier-scaled")
+    (synopsis "Provides a scaled Courier font")
+    (description
+     "This package sets the default typewriter font to Courier with a possible
+scale factor (in the same way as the @code{helvet} package for Helvetica works
+for sans serif).")
+    (license license:lppl1.2+)))
+
 (define-public texlive-covington
   (package
     (name "texlive-covington")
