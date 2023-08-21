@@ -18403,6 +18403,35 @@ that represent the memory of a computer program during its execution.")
 processor).")
     (license license:bsd-3)))
 
+(define-public texlive-merriweather
+  (package
+    (name "texlive-merriweather")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/merriweather/"
+                   "fonts/enc/dvips/merriweather/"
+                   "fonts/map/dvips/merriweather/"
+                   "fonts/opentype/sorkin/merriweather/"
+                   "fonts/tfm/sorkin/merriweather/"
+                   "fonts/type1/sorkin/merriweather/"
+                   "fonts/vf/sorkin/merriweather/"
+                   "tex/latex/merriweather/")
+             (base32
+              "1dgjw3ld1srv2irnhn6b592y9q9917y6w1x1kcqb4a7dv8s7wpzj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/merriweather")
+    (synopsis "Merriweather and MerriweatherSans fonts, with LaTeX support")
+    (description
+     "This package provides the Merriweather and MerriweatherSans families of
+fonts, designed by Eben Sorkin, with support for LaTeX, pdfLaTeX, XeLaTeX, and
+LuaLaTeX.  Merriweather features a very large x-height, slightly condensed
+letterforms, a mild diagonal stress, sturdy serifs and open forms.  The Sans
+family closely harmonizes with the weights and styles of the serif family.
+There are four weights and italics for each.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-messagepassing
   (package
     (name "texlive-messagepassing")
