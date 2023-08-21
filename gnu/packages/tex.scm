@@ -16398,6 +16398,30 @@ inserts the breathings required for ancient texts, making the input text more
 readable than in some schemes.")
     (license license:lppl)))
 
+(define-public texlive-libertinegc
+  (package
+    (name "texlive-libertinegc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libertinegc/"
+                   "fonts/enc/dvips/libertinegc/"
+                   "fonts/map/dvips/libertinegc/"
+                   "fonts/tfm/public/libertinegc/"
+                   "tex/latex/libertinegc/")
+             (base32
+              "17712j1gb38l4c5b2br7db8ix36kc8kwfpa7d6ass32wz5jck656")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libertinegc")
+    (synopsis "Libertine add-on to support Greek and Cyrillic")
+    (description
+     "The package provides LaTeX support files to access the Greek and
+Cyrillic glyphs in Linux Libertine.  It functions as an add-on to the
+@code{libertine} package, using filenames and macro names that are compatible
+with that package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
