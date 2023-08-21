@@ -25602,6 +25602,30 @@ file which has a reasonably conventional structure.  The result is meant to be
 robust rather than pretty.")
     (license (list license:gpl2 license:lppl))))
 
+(define-public texlive-urwchancal
+  (package
+    (name "texlive-urwchancal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/urwchancal/"
+                   "fonts/tfm/urw/urwchancal/"
+                   "fonts/vf/urw/urwchancal/"
+                   "tex/latex/urwchancal/")
+             (base32
+              "05mwicyb46hjlqpq432z4b3f0q566xplzp1fjiw1ijmns5xhvig9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urwchancal")
+    (synopsis "Use URW's clone of Zapf Chancery as a maths alphabet")
+    (description
+     "The package allows (the URW clone of) Zapf Chancery to function as
+a maths alphabet, the target of @code{\\mathcal} or @code{\\mathscr}, with
+accents appearing where they should, and other spacing parameters set to
+reasonable (not very tight) values.  The font itself may be found in the URW
+basic fonts collection.  This package supersedes the @code{pzccal} package.")
+    (license license:lppl)))
+
 (define-public texlive-usebib
   (package
     (name "texlive-usebib")
