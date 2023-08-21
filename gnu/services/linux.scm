@@ -173,7 +173,8 @@ representation."
 (define (earlyoom-shepherd-service config)
   (shepherd-service
    (documentation "Run the Early OOM daemon.")
-   (provision '(earlyoom user-processes))
+   (provision '(earlyoom))
+   (requirement '(user-processes))
    (start #~(make-forkexec-constructor
              '#$(earlyoom-configuration->command-line-args config)
              #:log-file "/var/log/earlyoom.log"))
