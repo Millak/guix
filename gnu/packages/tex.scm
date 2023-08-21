@@ -3192,6 +3192,29 @@ and engineers.  Note that the package supersedes the package @code{ar}.")
 brackets and marked with an asterisk.")
     (license license:expat)))
 
+(define-public texlive-astro
+  (package
+    (name "texlive-astro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/astro/"
+                   "fonts/source/public/astro/"
+                   "fonts/tfm/public/astro/")
+             (base32
+              "1pdmn93wiarwplha6r59ap9nvhdm9ir4aa4az93w3b189g316g2c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/astro")
+    (synopsis "Astronomical (planetary) symbols")
+    (description
+     "Astrosym is a font containing astronomical symbols, including those used
+for the planets, four planetoids, the phases of the moon, the signs of the
+zodiac, and some additional symbols.  The font is distributed as Metafont
+source.")
+    (license license:lppl)))
+
 (define-public texlive-asymptote-by-example-zh-cn
   (package
     (name "texlive-asymptote-by-example-zh-cn")
