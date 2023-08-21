@@ -7931,6 +7931,36 @@ Technology that follows given recommendations.")
 to typeset Church Slavonic texts.")
     (license license:expat)))
 
+(define-public texlive-cinzel
+  (package
+    (name "texlive-cinzel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cinzel/"
+                   "fonts/enc/dvips/cinzel/"
+                   "fonts/map/dvips/cinzel/"
+                   "fonts/tfm/ndiscovered/cinzel/"
+                   "fonts/truetype/ndiscovered/cinzel/"
+                   "fonts/type1/ndiscovered/cinzel/"
+                   "fonts/vf/ndiscovered/cinzel/"
+                   "tex/latex/cinzel/")
+             (base32
+              "0qik1ji23w35350ajjxz5w39w1cy4lg582343nrhr9y8jl18kfap")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cinzel")
+    (synopsis "LaTeX support for Cinzel and Cinzel Decorative fonts")
+    (description
+     "Cinzel and Cinzel Decorative fonts, designed by Natanael Gama,
+find their inspiration in first century roman inscriptions, and are based on
+classical proportions.  Cinzel is all-caps (similar to Trajan and
+Michelangelo), but is available in three weights (Regular, Bold, Black).
+There are no italic fonts, but there are Decorative variants, which can be
+selected by the usual italic-selection commands in the package's LaTeX
+support.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-citation-style-language
   (package
     (name "texlive-citation-style-language")
