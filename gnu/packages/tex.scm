@@ -22763,6 +22763,31 @@ Lateinische Ausgangsschrift, Schulausgangsschrift, and Vereinfachte
 Ausgangsschrift.")
     (license license:lppl)))
 
+(define-public texlive-shobhika
+  (package
+    (name "texlive-shobhika")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/shobhika/"
+                   "fonts/opentype/public/shobhika/")
+             (base32
+              "0a9l8gdn9ddz334dwfdn7vjgrq9jz6b41wph9sgchank4yj0sc64")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shobhika")
+    (synopsis "OpenType Devanagari font designed for scholars")
+    (description
+     "This package provides a Unicode compliant OpenType font with support for
+Devanagari, Latin, and Cyrillic scripts.  It is available in two
+weights--regular and bold.  The font is designed with over 1600 Devanagari
+glyphs, including support for over 1100 conjunct consonants, as well as vedic
+accents.  The Latin component of the font not only supports a wide range of
+characters required for Roman transliteration of Sanskrit, but also provides
+a subset of regularly used mathematical symbols for scholars working with
+scientific and technical documents.")
+    (license license:silofl1.1)))
+
 (define-public texlive-schwalbe-chess
   (package
     (name "texlive-schwalbe-chess")
