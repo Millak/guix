@@ -22065,6 +22065,32 @@ use.  Quattrocento Sans is the perfect sans-serif companion for
 Quattrocento.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-raleway
+  (package
+    (name "texlive-raleway")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/raleway/"
+                   "fonts/enc/dvips/raleway/"
+                   "fonts/map/dvips/raleway/"
+                   "fonts/opentype/impallari/raleway/"
+                   "fonts/tfm/impallari/raleway/"
+                   "fonts/type1/impallari/raleway/"
+                   "fonts/vf/impallari/raleway/"
+                   "tex/latex/raleway/")
+             (base32
+              "1pp5m31rr4lww0z92q3vsaz1l01nb78ll5mn2l9w469hpghf2gd3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/raleway")
+    (synopsis "Use Raleway with TeX(-alike) systems")
+    (description
+     "The package provides the Raleway family in an easy to use way.  For
+XeLaTeX and LuaLaTeX users the original OpenType fonts are used.  The entire
+font family is included.")
+    (license license:silofl1.1)))
+
 (define-public texlive-rank-2-roots
   (package
     (name "texlive-rank-2-roots")
