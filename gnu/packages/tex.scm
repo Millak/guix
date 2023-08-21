@@ -19800,6 +19800,25 @@ Both sorted and unsorted bibliography styles are supported.")
 generate bibliographies to be served on the web starting from BibTeX files.")
     (license license:public-domain)))
 
+(define-public texlive-noto-emoji
+  (package
+    (name "texlive-noto-emoji")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/noto-emoji/"
+                   "fonts/truetype/google/noto-emoji/")
+             (base32
+              "117mj4w0gvbndhm7mcxbxzxscd73np5s35467jr2sq2pwbv87i8r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/noto-emoji")
+    (synopsis "Noto Emoji fonts")
+    (description
+     "Noto Color Emoji supports all emoji defined in the latest Unicode
+version.")
+    (license license:silofl1.1)))
+
 (define-public texlive-nuc
   (package
     (name "texlive-nuc")
