@@ -14090,6 +14090,27 @@ makes full use of all BibTeX fields provided by Discover High-Energy
 Physics.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hep-font
+  (package
+    (name "texlive-hep-font")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/hep-font/"
+                   "source/fonts/hep-font/"
+                   "tex/latex/hep-font/")
+             (base32
+              "0wf39qf896abj0ypgz0655pm055ywch3jlpnxd8pgaip6igbs5g9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-font")
+    (synopsis "Latin modern extended by Computer Modern")
+    (description
+     "The @code{hep-font} package loads standard font packages and extends the
+usual Latin Modern implementations by replacing missing fonts with Computer
+Modern counterparts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hep-reference
   (package
     (name "texlive-hep-reference")
