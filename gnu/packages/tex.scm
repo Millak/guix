@@ -10828,6 +10828,25 @@ The macro sets are based on (and require) the @code{harvard} package, and all
 provide variations of author-date styles of presentation.")
     (license license:lppl)))
 
+(define-public texlive-eczar
+  (package
+    (name "texlive-eczar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/eczar/"
+                   "fonts/opentype/public/eczar/")
+             (base32
+              "1r7alay4g12gn7sr6d584y04qzi77qiialmsq1wfxay7a2h8c3rn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eczar")
+    (synopsis "Font family supporting Devanagari and Latin script")
+    (description
+     "Eczar is a type family designed by Vaibhav Singh.  The fonts support
+over 45+3 languages in Latin and Devanagari scripts in 5 weights.")
+    (license license:silofl1.1)))
+
 (define-public texlive-edfnotes
   (package
     (name "texlive-edfnotes")
