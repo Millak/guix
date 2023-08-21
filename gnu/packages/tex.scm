@@ -8356,6 +8356,30 @@ works with TeX engines that directly support OpenType features, such as XeTeX
 and LuaTeX.")
     (license license:silofl1.1)))
 
+(define-public texlive-cmathbb
+  (package
+    (name "texlive-cmathbb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cmathbb/"
+                   "fonts/enc/dvips/cmathbb/"
+                   "fonts/map/dvips/cmathbb/"
+                   "fonts/tfm/public/cmathbb/"
+                   "fonts/type1/public/cmathbb/"
+                   "fonts/vf/public/cmathbb/"
+                   "tex/latex/cmathbb/")
+             (base32
+              "1pmzsaskwcbyjihidy7hvz7s2cixhl7ccy0c9cbh2cm3md6gdrqh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmathbb")
+    (synopsis "Computer modern mathematical blackboard bold font")
+    (description
+     "This font contains all digits and latin letters uppercase and lowercase
+for the Computer Modern font family in blackboard bold.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
