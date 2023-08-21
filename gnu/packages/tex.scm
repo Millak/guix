@@ -23802,6 +23802,30 @@ applied and theoretical papers in statistics which are currently lacking in
 the popular @code{amsmath} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-staves
+  (package
+    (name "texlive-staves")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/staves/"
+                   "fonts/map/dvips/staves/"
+                   "fonts/tfm/public/staves/"
+                   "fonts/type1/public/staves/"
+                   "source/latex/staves/"
+                   "tex/latex/staves/")
+             (base32
+              "1wa4zx4c439q6ahs1fwa55dcxzrx382ksrj0bv1jnck6j3iw2dlc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/staves")
+    (synopsis "Typeset Icelandic staves and runic letters")
+    (description
+     "This package contains all the necessary tools to typeset the magical
+Icelandic staves plus the runic letters used in Iceland.  Included are a font
+in Adobe Type 1 format and LaTeX support.")
+    (license license:lppl)))
+
 (define-public texlive-steinmetz
   (package
     (name "texlive-steinmetz")
