@@ -1772,6 +1772,32 @@ number styles are available.")
 extensions of TeX, itself developed for e-TeX.")
     (license license:gpl3+)))
 
+(define-public texlive-alfaslabone
+  (package
+    (name "texlive-alfaslabone")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/alfaslabone/"
+                   "fonts/enc/dvips/alfaslabone/"
+                   "fonts/map/dvips/alfaslabone/"
+                   "fonts/opentype/public/alfaslabone/"
+                   "fonts/tfm/public/alfaslabone/"
+                   "fonts/type1/public/alfaslabone/"
+                   "fonts/vf/public/alfaslabone/"
+                   "tex/latex/alfaslabone/")
+             (base32
+              "1wpn96dd1rca52dqwngvyyvnmvak32sjz2id6lcra2jnz5jhk01g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alfaslabone")
+    (synopsis "Alfa Slab One font face with support for LaTeX and pdfLaTeX")
+    (description
+     "The @code{alfaslabone} package supports the Alfa Slab One font face for
+LaTeX.  There is only a Regular font face.  It's useful for book-chapter
+headlines.")
+    (license license:silofl1.1)))
+
 (define-public texlive-alg
   (package
     (name "texlive-alg")
