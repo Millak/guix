@@ -9379,6 +9379,29 @@ advantage terms but also flexible and powerful environments to layout
 game-based proofs or black-box reductions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cryst
+  (package
+    (name "texlive-cryst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cryst/" "fonts/afm/public/cryst/"
+                   "fonts/source/public/cryst/"
+                   "fonts/tfm/public/cryst/"
+                   "fonts/type1/public/cryst/")
+             (base32
+              "05lbldwghpdrmw0ffncs86k5pn04zi0shkk40ycca3kb0h3fa3h8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cryst")
+    (synopsis "Font for graphical symbols used in crystallography")
+    (description
+     "This package provides the Cryst font, which contains graphical symbols
+used in crystallography.  It provided as an Adobe Type 1 font, and as Metafont
+source.")
+    (license license:lppl)))
+
 (define-public texlive-csassignments
   (package
     (name "texlive-csassignments")
