@@ -58,10 +58,11 @@
                       (sddm-configuration
                        (theme "breeze")))
 
-             ;; Remove GDM if it's among %DESKTOP-SERVICES (on some
-             ;; architectures it's not there).
+             ;; Remove GDM if it's among %DESKTOP-SERVICES; on other
+             ;; architectures, %DESKTOP-SERVICES contains SDDM instead.
              (remove (lambda (service)
-                       (eq? (service-kind service) gdm-service-type))
+                       (memq (service-kind service)
+                             (list gdm-service-type sddm-service-type)))
                      %desktop-services)))
   ;; Allow resolution of '.local' host names with mDNS.
   (name-service-switch %mdns-host-lookup-nss))
