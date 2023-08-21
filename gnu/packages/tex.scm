@@ -12954,6 +12954,34 @@ need only genealogical symbols.  The font is distributed as Metafont source.")
 of the History Faculty of the University of Freiburg (Germany).")
     (license license:lppl)))
 
+(define-public texlive-gfsartemisia
+  (package
+    (name "texlive-gfsartemisia")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsartemisia/"
+                   "fonts/afm/public/gfsartemisia/"
+                   "fonts/enc/dvips/gfsartemisia/"
+                   "fonts/map/dvips/gfsartemisia/"
+                   "fonts/opentype/public/gfsartemisia/"
+                   "fonts/tfm/public/gfsartemisia/"
+                   "fonts/type1/public/gfsartemisia/"
+                   "fonts/vf/public/gfsartemisia/"
+                   "tex/latex/gfsartemisia/")
+             (base32
+              "09kk65sn5wj70dksrywszdbwg2gg9wzdy9m25xj09d8k7hdirayn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsartemisia")
+    (synopsis "Modern Greek font design")
+    (description
+     "GFS Artemisia is a relatively modern font, designed as a general purpose
+font in the same sense as Times is nowadays treated.  The font supports the
+Greek and Latin alphabets.  LaTeX support is provided, using the OT1, T1 and
+LGR encodings.")
+    (license (list license:silofl1.1 license:lppl1.0+))))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
