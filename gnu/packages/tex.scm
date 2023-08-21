@@ -21277,6 +21277,27 @@ in eight weights: Regular, Light, ExtraLight, Thin, Bold, Text, Medium and
 SemiBold (with corresponding italics).")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-plex-otf
+  (package
+    (name "texlive-plex-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/plex-otf/" "tex/latex/plex-otf/")
+             (base32
+              "0xasayka8lhkn01l1535a2jy7xsp7s01hvw3kn3jk4h569dvp21g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plex-otf")
+    (synopsis "Support for the OpenType font IBM Plex")
+    (description
+     "This package supports the OTF fonts from the IBM Plex project.  This
+package supports only XeLaTeX or LuaLaTeX; for pdfLaTeX use
+@code{}plex-mono.sty}, @code{}plex-sans.sty}, and @code{plex-serif.sty} from
+the @code{plex} package.  IBM Plex has no math symbols.  You will have to use
+one of the existing math fonts if you need them.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pm-isomath
   (package
     (name "texlive-pm-isomath")
