@@ -1508,6 +1508,30 @@ adaptation for working with Babel.")
 with TeX and LaTeX support files.")
     (license (list license:lppl license:gpl2+))))
 
+(define-public texlive-adfsymbols
+  (package
+    (name "texlive-adfsymbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/adfsymbols/"
+                   "fonts/afm/arkandis/adfsymbols/"
+                   "fonts/enc/dvips/adfsymbols/"
+                   "fonts/map/dvips/adfsymbols/"
+                   "fonts/tfm/arkandis/adfsymbols/"
+                   "fonts/type1/arkandis/adfsymbols/"
+                   "tex/latex/adfsymbols/")
+             (base32
+              "188is31d2zcd8kk339x4wvhhm98gbfkvq6pi25d9mva4vz3w1vf5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adfsymbols")
+    (synopsis "SymbolsADF with TeX and LaTeX support")
+    (description
+     "The package provides Arkandis foundry's ArrowsADF and BulletsADF fonts
+in Adobe Type 1 format, together with TeX and LaTeX support files.")
+    (license (list license:lppl license:gpl2))))
+
 (define-public texlive-adhocfilelist
   (package
     (name "texlive-adhocfilelist")
