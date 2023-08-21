@@ -8308,6 +8308,26 @@ the same way the package's author did when writing the book, and your output
 will look just like the pseudocode in the text.")
     (license license:lppl)))
 
+(define-public texlive-cm-mf-extra-bold
+  (package
+    (name "texlive-cm-mf-extra-bold")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/cm-mf-extra-bold/"
+                   "fonts/tfm/public/cm-mf-extra-bold/")
+             (base32
+              "1l1cm32z8wcpj0cl7czqkhnwil3ail7a2bbzn70dnswpj0ka8k9n")))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cm-mf-extra-bold")
+    (synopsis "Extra Metafont files for CM")
+    (description
+     "The bundle provides bold versions of @code{cmcsc}, @code{cmex},
+@code{cmtex} and @code{cmtt} fonts (all parts of the standard Computer Modern
+font distribution), as Metafont base files.")
+    (license (list license:gpl3+ license:public-domain))))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
