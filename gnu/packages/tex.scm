@@ -10504,6 +10504,30 @@ support is available in the @code{duerer-latex} bundle.")
 using their standard fontname names.")
     (license license:gpl3+)))
 
+(define-public texlive-dutchcal
+  (package
+    (name "texlive-dutchcal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dutchcal/"
+                   "fonts/afm/public/dutchcal/"
+                   "fonts/map/dvips/dutchcal/"
+                   "fonts/tfm/public/dutchcal/"
+                   "fonts/type1/public/dutchcal/"
+                   "fonts/vf/public/dutchcal/"
+                   "tex/latex/dutchcal/")
+             (base32
+              "173c5k6q35ljbqdi00kplxss0n1aiss8nvigdv33mlkqpg7i74qg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dutchcal")
+    (synopsis "Reworking of ESSTIX13, adding a bold version")
+    (description
+     "This package reworks the mathematical calligraphic font ESSTIX13,
+adding a bold version.  LaTeX support files are included.")
+    (license license:lppl)))
+
 (define-public texlive-dvgloss
   (package
     (name "texlive-dvgloss")
