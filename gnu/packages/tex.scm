@@ -13041,6 +13041,36 @@ The Greek Font Society has released this version, which has a new set of
 majuscules.")
     (license license:silofl1.1)))
 
+(define-public texlive-gfsdidot
+  (package
+    (name "texlive-gfsdidot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsdidot/"
+                   "fonts/afm/public/gfsdidot/"
+                   "fonts/enc/dvips/gfsdidot/"
+                   "fonts/map/dvips/gfsdidot/"
+                   "fonts/opentype/public/gfsdidot/"
+                   "fonts/tfm/public/gfsdidot/"
+                   "fonts/type1/public/gfsdidot/"
+                   "fonts/vf/public/gfsdidot/"
+                   "tex/latex/gfsdidot/")
+             (base32
+              "1cnl5m6g3c7brkx9jfwx6lw83ypl5a7cjqjj4hyf65q12m4250db")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsdidot")
+    (synopsis "Greek font based on Didot's work")
+    (description
+     "The design of Didot's 1805 Greek typeface was influenced by the
+neoclassical ideals of the late 18th century.  The font was brought to Greece
+at the time of the 1821 Greek Revolution, by Didot's son, and was very widely
+used.  The font supports the Greek alphabet, and is accompanied by a matching
+Latin alphabet based on Zapf's Palatino.  LaTeX support is provided, using the
+OT1, T1, TS1, and LGR encodings.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
