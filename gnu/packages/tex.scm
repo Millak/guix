@@ -20699,6 +20699,26 @@ package provides Metafont source for the font together with LaTeX support.")
 systems that use the Myanmar script.")
     (license license:silofl1.1)))
 
+(define-public texlive-pagella-otf
+  (package
+    (name "texlive-pagella-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/pagella-otf/"
+                   "tex/latex/pagella-otf/")
+             (base32
+              "0yi5d5wffqcrlslk9gxifnx4imhpi1hqya6x7k1qq9znvlf97inl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pagella-otf")
+    (synopsis "Using the OpenType fonts TeX Gyre Pagella")
+    (description
+     "This package can only be used with LuaLaTeX or XeLaTeX.  It does the
+font setting for the OpenType font TeX Gyre Pagella for text and math.  The
+missing typefaces like bold math and slanted text are also defined.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-parallel
   (package
     (name "texlive-parallel")
