@@ -3977,6 +3977,26 @@ with.  A similar @code{\\greektxt} command does a similar action for shorter
 texts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-belleek
+  (package
+    (name "texlive-belleek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/belleek/"
+                   "fonts/map/dvips/belleek/"
+                   "fonts/truetype/public/belleek/"
+                   "fonts/type1/public/belleek/"
+                   "source/latex/belleek/")
+             (base32
+              "12jigkk2xlnfllwaj6qsisgvl5b2kcwnv5j921cvm7gjn9x1i941")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/belleek")
+    (synopsis "Replacement for basic MathTime fonts")
+    (description "This package replaces the original MathTime fonts.")
+    (license license:public-domain)))
+
 (define-public texlive-begriff
   (package
     (name "texlive-begriff")
