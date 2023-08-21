@@ -440,7 +440,7 @@
      (shepherd-service
       (documentation "Guix Build Coordinator Agent")
       (provision '(guix-build-coordinator-agent))
-      (requirement '(networking))
+      (requirement '(networking user-processes))
       (start
        #~(lambda _
            (parameterize ((%current-logfile-date-format ""))
