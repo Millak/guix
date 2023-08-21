@@ -23988,6 +23988,36 @@ a complete set of mathematical glyphs.  This package is considered obsolete.
 See @code{stix2-otf} and @code{stix2-type1} instead.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-stix2-type1
+  (package
+    (name "texlive-stix2-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/stix2-type1/"
+                   "fonts/enc/dvips/stix2-type1/"
+                   "fonts/map/dvips/stix2-type1/"
+                   "fonts/tfm/public/stix2-type1/"
+                   "fonts/type1/public/stix2-type1/"
+                   "source/fonts/stix2-type1/"
+                   "tex/latex/stix2-type1/")
+             (base32
+              "0jsnyxbi5054fw0j5jw9cisj9xm8i8gf1f48m9l77bkybq0qviwp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stix2-type1")
+    (synopsis "Type1 versions of the STIX Two OpenType fonts")
+    (description
+     "The @code{stix2} package provides minimal support for using the STIX Two
+fonts with versions of TeX that are limited to TFM files, Type 1 PostScript
+fonts, and 8-bit font encodings.
+
+Some glyphs that are traditionally available in TeX math fonts are not yet
+available in the STIX Two OpenType fonts.  In such cases, we have chosen to
+omit them from the @code{stix2} package rather than create incompatibilities
+between the OpenType and Type 1 versions.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-structmech
   (package
     (name "texlive-structmech")
