@@ -23950,6 +23950,44 @@ provides a matching math package using STIX2 letters (Roman and Greek) with
 @code{newtxmath} symbols.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-stix
+  (package
+    (name "texlive-stix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/stix/"
+                   "fonts/enc/dvips/stix/"
+                   "fonts/map/dvips/stix/"
+                   "fonts/opentype/public/stix/"
+                   "fonts/tfm/public/stix/"
+                   "fonts/type1/public/stix/"
+                   "fonts/vf/public/stix/"
+                   "source/fonts/stix/"
+                   "tex/latex/stix/")
+             (base32
+              "1ixxglx4azdnppiqhlkgyahj9a67zamljzv98n6hycp7y6jbd1x0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"
+           ;; FIXME: I cannot build this package from source.
+           #:phases #~(modify-phases %standard-phases (delete 'build))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-accents
+                  texlive-caption
+                  texlive-enumitem
+                  texlive-fonttable
+                  texlive-hypdoc))))
+    (home-page "https://ctan.org/pkg/stix")
+    (synopsis "OpenType Unicode maths fonts")
+    (description
+     "The STIX fonts are a suite of unicode OpenType fonts containing
+a complete set of mathematical glyphs.  This package is considered obsolete.
+See @code{stix2-otf} and @code{stix2-type1} instead.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-structmech
   (package
     (name "texlive-structmech")
