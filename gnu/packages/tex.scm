@@ -3716,6 +3716,34 @@ of mathematical disciplines.")
     (description "This package provides fonts supporting chess diagrams.")
     (license license:gpl3+)))
 
+(define-public texlive-baskervald
+  (package
+    (name "texlive-baskervald")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/baskervald/"
+                   "fonts/afm/arkandis/baskervald/"
+                   "fonts/enc/dvips/baskervald/"
+                   "fonts/map/dvips/baskervald/"
+                   "fonts/tfm/arkandis/baskervald/"
+                   "fonts/type1/arkandis/baskervald/"
+                   "fonts/vf/arkandis/baskervald/"
+                   "source/fonts/baskervald/"
+                   "tex/latex/baskervald/")
+             (base32
+              "1alny6nsxm43mn84w16vp2whlhnmqkr7pfx8jsmgkz8bkxzh9pg9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/baskervaldadf")
+    (synopsis "Baskervald ADF fonts collection with TeX and LaTeX support")
+    (description
+     "Baskervald ADF is a serif family with lining figures designed as
+a substitute for Baskerville.  The family currently includes upright and
+italic or oblique shapes in each of regular, bold and heavy weights.  All
+fonts include the slashed zero and additional non-standard ligatures.")
+    (license license:lppl)))
+
 (define-public texlive-basque-book
   (package
     (name "texlive-basque-book")
