@@ -12755,6 +12755,38 @@ the formatting of entries rather than their order.  The two packages can be
 used together or separately.")
     (license license:lppl1.3+)))
 
+(define-public texlive-garamond-libre
+  (package
+    (name "texlive-garamond-libre")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/garamond-libre/"
+                   "fonts/enc/dvips/garamond-libre/"
+                   "fonts/map/dvips/garamond-libre/"
+                   "fonts/opentype/public/garamond-libre/"
+                   "fonts/tfm/public/garamond-libre/"
+                   "fonts/type1/public/garamond-libre/"
+                   "fonts/vf/public/garamond-libre/"
+                   "tex/latex/garamond-libre/")
+             (base32
+              "0mmfxpdy2r5wd51b8f2l0qb7d6nncypzfs4bmimcm68s4l0rzsw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/garamond-libre")
+    (synopsis "Garamond Libre font face")
+    (description
+     "Garamond Libre is an old-style font family.  It is a true Garamond,
+i.e., it is based off the designs of 16th-century French engraver Claude
+Garamond (also spelled Garamont).  The Roman design is Garamond's; the italics
+are from a design by Robert Granjon.  The upright Greek font is after a design
+by Firmin Didot; the italic Greek font is after a design by Alexander Wilson.
+The font family includes support for Latin, Greek (monotonic and polytonic)
+and Cyrillic scripts, as well as small capitals, old-style figures, superior
+and inferior figures, historical ligatures, Byzantine musical symbols, the IPA
+and swash capitals.")
+    (license (list license:expat license:lppl))))
+
 (define-public texlive-gastex
   (package
     (name "texlive-gastex")
