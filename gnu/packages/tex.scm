@@ -24884,6 +24884,33 @@ modern LaTeX processors.  An artificially-emboldened variant has been provided
 but there are no italic variants.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-theanooldstyle
+  (package
+    (name "texlive-theanooldstyle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/theanooldstyle/"
+                   "fonts/enc/dvips/theanooldstyle/"
+                   "fonts/map/dvips/theanooldstyle/"
+                   "fonts/tfm/public/theanooldstyle/"
+                   "fonts/truetype/public/theanooldstyle/"
+                   "fonts/type1/public/theanooldstyle/"
+                   "fonts/vf/public/theanooldstyle/"
+                   "tex/latex/theanooldstyle/")
+             (base32
+              "1jkfdfrpp6v12mw5khw51ib9dsjnc5bz3y6bazyabx8z7lgksig5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/theanooldstyle")
+    (synopsis "Theano OldStyle fonts with LaTeX support")
+    (description
+     "This package provides the Theano OldStyle font designed by Alexey
+Kryukov, in both TrueType and Type1 formats, with support for both traditional
+and modern LaTeX processors.  An artificially-emboldened variant has been
+provided but there are no italic variants.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-theatre
   (package
     (name "texlive-theatre")
