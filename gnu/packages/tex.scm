@@ -19516,6 +19516,34 @@ Mathematics, all compatible in style to CM fonts.  In addition to the Regular
 weight of Computer Modern, it provides a Book weight for heavier printing.")
     (license license:gfl1.0)))
 
+(define-public texlive-newpx
+  (package
+    (name "texlive-newpx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/newpx/"
+                   "fonts/afm/public/newpx/"
+                   "fonts/enc/dvips/newpx/"
+                   "fonts/map/dvips/newpx/"
+                   "fonts/opentype/public/newpx/"
+                   "fonts/tfm/public/newpx/"
+                   "fonts/type1/public/newpx/"
+                   "fonts/vf/public/newpx/"
+                   "tex/latex/newpx/")
+             (base32
+              "1c58073pzqa9sl69rfqy8b4j8i3fy3hil57fh51icvr5ggq5vyfn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newpx")
+    (synopsis "Alternative uses of the PX fonts, with improved metrics")
+    (description
+     "This package, initially based on @code{pxfonts}, provides many fixes and
+enhancements to that package, and splits it in two parts (@code{newpxtext} and
+@code{newpxmath}) which may be run independently of one another.  It provides
+scaling, improved metrics, and other options.")
+    (license (list license:lppl license:silofl1.1))))
+
 (define-public texlive-nicematrix
   (package
     (name "texlive-nicematrix")
