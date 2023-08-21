@@ -13441,6 +13441,39 @@ styles (which do not conform to current standards) are retained for backwards
 compatibility.")
     (license license:lppl1.3c)))
 
+(define-public texlive-gothic
+  (package
+    (name "texlive-gothic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gothic/"
+                   "fonts/source/public/gothic/"
+                   "fonts/tfm/public/gothic/"
+                   "source/fonts/gothic/")
+             (base32
+              "08hqp2a0ch67d38p2jca6cvx72vc6dagb04a9w6ff7dniqp6gps2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    ;; FIXME: Font metrics generation fails with "! Strange path (turning
+    ;; number is zero)." error.
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/gothic")
+    (synopsis "Collection of old German-style fonts")
+    (description
+     "This package provides a collection of fonts that reproduce those used in
+old German printing and handwriting.  The set comprises Gothic, Schwabacher
+and Fraktur fonts, a pair of handwriting fonts, Sutterlin and Schwell, and
+a font containing decorative initials.  In addition, there are two re-encoding
+packages for Haralambous's fonts, providing T1, using virtual fonts, and OT1
+and T1, using Metafont.")
+    ;; This is a collection of packages, with various licenses.
+    (license (list license:lppl1.2+ license:lppl1.3c license:public-domain))))
+
 (define-public texlive-gotoh
   (package
     (name "texlive-gotoh")
