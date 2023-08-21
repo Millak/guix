@@ -24194,34 +24194,47 @@ their meaning for the current Emacs major-mode.")
     (license license:gpl3+)))
 
 (define-public emacs-org-ref
-  (package
-    (name "emacs-org-ref")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jkitchin/org-ref")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0xd1qp8dfy8n8b2n3rsdzm8vrfl7dii142kw330s8jp3pavww1f6"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash
-           emacs-f
-           emacs-helm
-           emacs-helm-bibtex
-           emacs-htmlize
-           emacs-hydra
-           emacs-ivy
-           emacs-key-chord
-           emacs-pdf-tools
-           emacs-s))
-    (home-page "https://github.com/jkitchin/org-ref")
-    (synopsis "Citations, cross-references and bibliographies in Org mode")
-    (description
-     "Org Ref is an Emacs library that provides rich support for citations,
+  (let ((commit "bb375f366f883e5b60e3bb625f2acd026811fb55")
+        (revision "0"))
+    (package
+      (name "emacs-org-ref")
+      (version (git-version "3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jkitchin/org-ref")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "01wxcyzdrx6ysv9rjd64fr7kkvm4fjr03ib4mmpchraxxm8g8z43"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons* "org-ref.org" "org-ref.bib" %default-include)
+        #:exclude #~(list
+                     ;; github.com/jkitchin/org-ref/issues/1085
+                     "openalex.el"
+                     ;; author doesn't recommend using it
+                     "org-ref-pdf.el")))
+      (propagated-inputs
+       (list emacs-avy
+             emacs-citeproc-el
+             emacs-dash
+             emacs-f
+             emacs-helm
+             emacs-helm-bibtex
+             emacs-htmlize
+             emacs-hydra
+             emacs-ivy
+             emacs-ox-pandoc
+             emacs-parsebib
+             emacs-s))
+      (home-page "https://github.com/jkitchin/org-ref")
+      (synopsis "Citations, cross-references and bibliographies in Org mode")
+      (description
+       "Org Ref is an Emacs library that provides rich support for citations,
 labels and cross-references in Org mode.
 
 The basic idea of Org Ref is that it defines a convenient interface to insert
@@ -24239,7 +24252,7 @@ a DOI.
 Org Ref is especially suitable for Org documents destined for LaTeX export and
 scientific publication.  Org Ref is also useful for research documents and
 notes.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-reveal
   (let ((commit "f55c851bf6aeb1bb2a7f6cf0f2b7bd0e79c4a5a0"))
