@@ -22449,6 +22449,32 @@ the long @emph{s}.  The included package files provide access to these
 features in LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-rosario
+  (package
+    (name "texlive-rosario")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/rosario/"
+                   "fonts/enc/dvips/rosario/"
+                   "fonts/map/dvips/rosario/"
+                   "fonts/opentype/public/rosario/"
+                   "fonts/tfm/public/rosario/"
+                   "fonts/type1/public/rosario/"
+                   "fonts/vf/public/rosario/"
+                   "source/fonts/rosario/"
+                   "tex/latex/rosario/")
+             (base32
+              "0bmz2xzx1xi3vn9s4wqij65nq54k9bc0kbxgnzd0p6q030g5yqby")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rosario")
+    (synopsis "Using the Rosario fonts with LaTeX")
+    (description
+     "The package provides the files required to use the Rosario fonts with
+LaTeX.  Rosario is a set of four fonts provided by Hector Gatti.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-rrgtrees
   (package
     (name "texlive-rrgtrees")
