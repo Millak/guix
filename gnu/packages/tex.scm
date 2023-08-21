@@ -6341,6 +6341,31 @@ documentation.")
 documentation.")
     (license license:lppl)))
 
+(define-public texlive-boondox
+  (package
+    (name "texlive-boondox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/boondox/"
+                   "fonts/map/dvips/boondox/"
+                   "fonts/tfm/public/boondox/"
+                   "fonts/type1/public/boondox/"
+                   "fonts/vf/public/boondox/"
+                   "tex/latex/boondox/")
+             (base32
+              "0rsid25qlsbj3z60h8n22m8l6gyk4nbr598c6z9azldpxn88dz91")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/boondox")
+    (synopsis "Mathematical alphabets derived from the STIX fonts")
+    (description
+     "The package contains a number of PostScript fonts derived from the STIX
+OpenType fonts that may be used in maths mode in regular and bold weights for
+Calligraphic, Fraktur and Double-struck alphabets.  Virtual fonts with metrics
+suitable for maths mode are provided, as are LaTeX support files.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-borceux
   (package
     (name "texlive-borceux")
