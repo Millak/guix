@@ -6852,6 +6852,31 @@ in Python, C and Pascal.  Program source files may also be input.")
     (description "This package provides C90 font encoding for Thai.")
     (license license:gpl2+)))
 
+(define-public texlive-caladea
+  (package
+    (name "texlive-caladea")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/caladea/"
+                   "fonts/enc/dvips/caladea/"
+                   "fonts/map/dvips/caladea/"
+                   "fonts/tfm/huerta/caladea/"
+                   "fonts/truetype/huerta/caladea/"
+                   "fonts/type1/huerta/caladea/"
+                   "fonts/vf/huerta/caladea/"
+                   "tex/latex/caladea/")
+             (base32
+              "02pw132njvk23iwfwlfq5cbamqmgxap2h5pq23x3r8dbym1zpk9f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/caladea")
+    (synopsis "Support for the Caladea family of fonts")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Caladea family of fonts.")
+    (license (list license:asl2.0 license:lppl))))
+
 (define-public texlive-calculation
   (package
     (name "texlive-calculation")
