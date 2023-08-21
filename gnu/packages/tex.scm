@@ -10676,6 +10676,28 @@ are provided.")
 mathematics.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ecc
+  (package
+    (name "texlive-ecc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ecc/" "fonts/source/public/ecc/"
+                   "fonts/tfm/public/ecc/")
+             (base32
+              "06mznqh1k9ff8rpifxkphv3yk9ym6zcvz3x1ksk677n6fp5a5jkh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ec texlive-metafont))
+    (home-page "https://ctan.org/pkg/ecc")
+    (synopsis "Sources for the European Concrete fonts")
+    (description
+     "The Metafont sources and TFM files of the European Concrete Fonts.
+This is the T1-encoded extension of Knuth's Concrete fonts, including also the
+corresponding text companion fonts.  Adobe Type 1 versions of the fonts are
+available as part of the @code{cm-super} font bundle.")
+    (license license:lppl)))
+
 (define-public texlive-ecltree
   (package
     (name "texlive-ecltree")
