@@ -26222,6 +26222,30 @@ provides three output modes: LaTeX, PostScript and PDF.")
 Schwabacher, Fraktur and the baroque initials.")
     (license license:lppl)))
 
+(define-public texlive-yfonts-otf
+  (package
+    (name "texlive-yfonts-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/yfonts-otf/"
+                   "fonts/opentype/public/yfonts-otf/"
+                   "tex/latex/yfonts-otf/")
+             (base32
+              "0dnif4hiwqri67cx6bjzs0rvz3ayrkn6fs99qn4q9qggs6s25l0j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yfonts-otf")
+    (synopsis "OpenType version of the Old German fonts")
+    (description
+     "This is an OpenType version of the Old German fonts @code{yfrak},
+@code{ygoth}, @code{yswab} designed by Yannis Haralambous in Metafont.  The
+OpenType features make it easier to deal with the long/round @samp{s} and with
+older forms of umlauts (small @samp{e} over the letter).  A style file
+@file{yfonts-otf.sty} is provided as a replacement, for LuaLaTeX and XeLaTeX,
+of @file{yfonts.sty} or @file{oldgerm.sty}.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-yhmath
   (package
     (name "texlive-yhmath")
