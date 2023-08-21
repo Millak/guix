@@ -12982,6 +12982,36 @@ Greek and Latin alphabets.  LaTeX support is provided, using the OT1, T1 and
 LGR encodings.")
     (license (list license:silofl1.1 license:lppl1.0+))))
 
+(define-public texlive-gfsbodoni
+  (package
+    (name "texlive-gfsbodoni")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsbodoni/"
+                   "fonts/afm/public/gfsbodoni/"
+                   "fonts/enc/dvips/gfsbodoni/"
+                   "fonts/map/dvips/gfsbodoni/"
+                   "fonts/opentype/public/gfsbodoni/"
+                   "fonts/tfm/public/gfsbodoni/"
+                   "fonts/type1/public/gfsbodoni/"
+                   "fonts/vf/public/gfsbodoni/"
+                   "tex/latex/gfsbodoni/")
+             (base32
+              "0a4l6ijf7lqb8g7cz1fly3c73aq14pybr0cvpn86lsw3sg7cy9jk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsbodoni")
+    (synopsis "Greek and Latin font based on Bodoni")
+    (description
+     "Bodoni's Greek fonts in the 18th century broke, for the first time,
+with the Byzantine cursive tradition of Greek fonts.  GFS Bodoni resurrects
+his work for general use.  The font family supports both Greek and Latin
+letters.  LaTeX support of the fonts is provided, offering OT1, T1 and LGR
+encodings.  The fonts themselves are provided in Adobe Type 1 and OpenType
+formats.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
