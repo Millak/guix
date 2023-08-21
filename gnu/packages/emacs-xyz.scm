@@ -37917,6 +37917,29 @@ In particular, it saves and restores project files and window configurations
 across sessions.")
       (license license:gpl3+))))
 
+(define-public emacs-vcard-mode
+  ;; Use the latest commit, as there are no tagged releases.
+  (let ((commit "ab1a2885a5720d7fb02d9b6583ee908ba2260b78")
+        (revision "0"))
+    (package
+      (name "emacs-vcard-mode")
+      (home-page "https://github.com/dochang/vcard-mode")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0w44ax9dxkj8mh4np9mg3yp2yakjwrgy13izq53p0vimrhywza0w"))))
+      (build-system emacs-build-system)
+      (synopsis "Emacs major mode to edit vCard files")
+      (description "This package provides a major mode for editing vCard files
+in Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-vertico-posframe
   (package
     (name "emacs-vertico-posframe")
