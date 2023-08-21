@@ -23345,6 +23345,27 @@ Metafont source by the @code{skak} bundle.")
 re-definitions of existing commands.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skull
+  (package
+    (name "texlive-skull")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/skull/"
+                   "fonts/tfm/public/skull/"
+                   "source/fonts/skull/" "tex/latex/skull/")
+             (base32
+              "0vnqi8c5f1a78naa9pvsl43748bm52i3qhjcv96bwcf59miih730")))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/skull")
+    (synopsis "Font to draw a skull")
+    (description
+     "The font (defined in Metafont) defines a single character, a black solid
+skull.  A package is supplied to make this character available as a symbol in
+maths mode.")
+    (license license:gpl3+)))
+
 (define-public texlive-songbook
   (package
     (name "texlive-songbook")
