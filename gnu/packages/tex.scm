@@ -22688,6 +22688,26 @@ intermediate document sizes as 11pt.  Also included is the package
 @code{sbbm}, an alternative to access the BBM fonts.")
     (license license:gpl3+)))
 
+(define-public texlive-schola-otf
+  (package
+    (name "texlive-schola-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/schola-otf/"
+                   "tex/latex/schola-otf/")
+             (base32
+              "1ygc9bhdc9qgp20r17am8k7zmc1c1rdra0a56davw5y93zjvyzji")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schola-otf")
+    (synopsis "Using the OpenType fonts TeX Gyre Schola")
+    (description
+     "This package can only be used with LuaLaTeX or XeLaTeX.  It does the
+font setting for the OpenType font TeX Gyre Schola for text and math.  The
+missing typefaces like bold math and slanted text are also defined.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-schwalbe-chess
   (package
     (name "texlive-schwalbe-chess")
