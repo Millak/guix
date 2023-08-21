@@ -11851,6 +11851,40 @@ family, but it might also fit other contemporary typefaces.")
 It can make it easy to write theses both in Chinese and English.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fetamont
+  (package
+    (name "texlive-fetamont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fetamont/"
+                   "fonts/afm/public/fetamont/"
+                   "fonts/map/dvips/fetamont/"
+                   "fonts/opentype/public/fetamont/"
+                   "fonts/source/public/fetamont/"
+                   "fonts/tfm/public/fetamont/"
+                   "fonts/type1/public/fetamont/"
+                   "metapost/fetamont/"
+                   "source/fonts/fetamont/"
+                   "tex/latex/fetamont/")
+             (base32
+              "0bs911vyn54i61vv3rhr0xcp6myap2s8ww6p1fd30ld1ha6nsrf6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    ;; FIXME: Generating font metrics require unpackaged "mf2outline.py"
+    ;; script.
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/fetamont")
+    (synopsis "Extended version of Knuth's Logo typeface")
+    (description
+     "The @code{fetamont} typeface was designed in Metafont and extends the
+Logo fonts to complete the Type 1 encoding.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-figbas
   (package
     (name "texlive-figbas")
