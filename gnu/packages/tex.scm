@@ -14371,6 +14371,31 @@ an environment that enables the user to draw such a game in a trivial way.")
 the Computer Modern Bright fonts.")
     (license license:lppl)))
 
+(define-public texlive-hfoldsty
+  (package
+    (name "texlive-hfoldsty")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/hfoldsty/"
+                   "fonts/tfm/public/hfoldsty/"
+                   "fonts/vf/public/hfoldsty/"
+                   "source/fonts/hfoldsty/"
+                   "tex/latex/hfoldsty/")
+             (base32
+              "0skzw845i1b3lq76m4an4mpkm2w82hlpirnx4pckz3138nr1rlpf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hfoldsty")
+    (synopsis "Old style numerals with EC fonts")
+    (description
+     "The @code{hfoldsty} package provides virtual fonts for using old-style
+figures with the European Computer Modern fonts.  It does a similar job as the
+@code{eco} package but includes a couple of improvements, i.e., better kerning
+with guillemets, and support for character protruding using the
+@code{pdfcprot} package.")
+    (license license:gpl3+)))
+
 (define-public texlive-historische-zeitschrift
   (package
     (name "texlive-historische-zeitschrift")
