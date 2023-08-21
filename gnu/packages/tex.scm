@@ -14283,6 +14283,33 @@ the fonts are also supported.  The missing typefaces for slanted text are
 defined.")
     (license license:lppl1.3+)))
 
+(define-public texlive-heuristica
+  (package
+    (name "texlive-heuristica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/heuristica/"
+                   "fonts/enc/dvips/heuristica/"
+                   "fonts/map/dvips/heuristica/"
+                   "fonts/opentype/public/heuristica/"
+                   "fonts/tfm/public/heuristica/"
+                   "fonts/type1/public/heuristica/"
+                   "fonts/vf/public/heuristica/"
+                   "tex/latex/heuristica/")
+             (base32
+              "0jl7mrhbm5z8dncin65qlpdrmkix5cff8h307h4gg5bzcjgsbb4a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/heuristica")
+    (synopsis "Fonts extending Utopia, with LaTeX support files")
+    (description
+     "The fonts extend the Utopia set with Cyrillic glyphs, additional figure
+styles, ligatures and Small Caps in Regular style only.  Macro support, and
+maths fonts that match the Utopia family, are provided by the Fourier and the
+Mathdesign font packages.")
+    (license license:silofl1.1)))
+
 (define-public texlive-hexboard
   (package
     (name "texlive-hexboard")
