@@ -10485,6 +10485,25 @@ offers an informal shape.  The distribution is as Metafont source.  LaTeX
 support is available in the @code{duerer-latex} bundle.")
     (license license:public-domain)))
 
+(define-public texlive-duerer-latex
+  (package
+    (name "texlive-duerer-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/duerer-latex/"
+                   "tex/latex/duerer-latex/")
+             (base32
+              "17ni6hrcblkbzn1f8cn2mvrc01sjqmi8qi2dxy82z14llr23qmbh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/duerer-latex")
+    (synopsis "LaTeX support for the Duerer fonts")
+    (description
+     "This package provides LaTeX support for Hoenig's Computer Duerer fonts,
+using their standard fontname names.")
+    (license license:gpl3+)))
+
 (define-public texlive-dvgloss
   (package
     (name "texlive-dvgloss")
