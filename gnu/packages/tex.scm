@@ -21872,6 +21872,26 @@ Metafont source.  The package also offers LaTeX support for them, although
 @code{punk-latex} is a better choice.")
     (license license:knuth)))
 
+(define-public texlive-punk-latex
+  (package
+    (name "texlive-punk-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/punk-latex/"
+                   "tex/latex/punk-latex/")
+             (base32
+              "1gkbv3fwlfq8f3nn9zibhzwa5xw2scaf3xnkvlbxqcslmi129b2l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/punk-latex")
+    (synopsis "LaTeX support for Punk fonts")
+    (description
+     "The package and @file{.fd} file provide support for Knuth's Punk fonts.
+Although that bundle also offers support within LaTeX; the present package is
+to be preferred.")
+    (license license:gpl3+)))
+
 (define-public texlive-pythonhighlight
   (package
     (name "texlive-pythonhighlight")
