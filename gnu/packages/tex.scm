@@ -13804,6 +13804,30 @@ programs are provided as sources, not installed in the @file{bin}
 directories.")
     (license license:public-domain)))
 
+(define-public texlive-hacm
+  (package
+    (name "texlive-hacm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/hacm/"
+                   "fonts/map/dvips/hacm/"
+                   "fonts/tfm/public/hacm/"
+                   "fonts/type1/public/hacm/"
+                   "fonts/vf/public/hacm/"
+                   "tex/latex/hacm/")
+             (base32
+              "19n0mlb96ix4vlqaw95fgwah7mbn80l6jm1dim8sigagmhh3bimd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hacm")
+    (synopsis "Font support for the Arka language")
+    (description
+     "The package supports typesetting @emph{hacm}, the alphabet of the
+constructed language Arka.  The bundle provides nine official fonts, in Adobe
+Type 1 format.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-hanoi
   (package
     (name "texlive-hanoi")
