@@ -11546,6 +11546,27 @@ ellipsograph.  This package extends the functionalities of the @code{curve2e}
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-euler-math
+  (package
+    (name "texlive-euler-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/euler-math/"
+                   "fonts/opentype/public/euler-math/"
+                   "tex/latex/euler-math/")
+             (base32
+              "01vj4nqmac078176m3cj97lx4nnrs395208vxc6671c90fvirg1s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/euler-math")
+    (synopsis "OpenType version of Hermann Zapf's Euler maths font")
+    (description
+     "@file{Euler-Math.otf} is an OpenType version of Hermann Zapf's Euler
+maths font.  A style file @file{euler-math.sty} is provided as a replacement
+of the @code{eulervm} package for LuaLaTeX and XeLaTeX users.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-evangelion-jfm
   (package
     (name "texlive-evangelion-jfm")
