@@ -13207,6 +13207,28 @@ precautionary statements and pictograms in a straightforward way.  The
 statements are taken from EU regulation 1272/2008.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gillcm
+  (package
+    (name "texlive-gillcm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gillcm/"
+                   "fonts/map/dvips/gillcm/"
+                   "fonts/tfm/public/gillcm/"
+                   "fonts/vf/public/gillcm/"
+                   "tex/latex/gillcm/")
+             (base32
+              "0cz6aqcq2fv6hb2yv2ymc3j6myb8y73gyqbyigabwc909fmh5qdm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gillcm")
+    (synopsis "Alternative unslanted italic Computer Modern fonts")
+    (description
+     "This is a demonstration of the use of virtual fonts for unusual effects:
+the package implements unslanted italic Computer Modern fonts.")
+    (license license:bsd-3)))
+
 (define-public texlive-glosmathtools
   (package
     (name "texlive-glosmathtools")
