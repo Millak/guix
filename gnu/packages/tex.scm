@@ -10343,6 +10343,40 @@ BibLaTeX package, a practical example of french thesis document, and
 documentation.  The class assumes use of Biber and BibLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-drm
+  (package
+    (name "texlive-drm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/drm/"
+                   "fonts/afm/public/drm/"
+                   "fonts/map/dvips/drm/"
+                   "fonts/opentype/public/drm/"
+                   "fonts/source/public/drm/"
+                   "fonts/tfm/public/drm/"
+                   "fonts/type1/public/drm/"
+                   "source/fonts/drm/"
+                   "tex/latex/drm/")
+             (base32
+              "0fxmwakgy7inin85pjad5rdqg11flrw8mlsh86ga6ghqcw69zhwq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/drm")
+    (synopsis "Complete family of fonts written in Metafont")
+    (description
+     "The package provides access to the DRM (Don's Revised Modern) family of
+fonts, which includes a variety of optical sizes in Roman (in four weights),
+italic, and small caps, among other shapes, along with a set of symbols and
+ornaments.  It is intended to be a full-body text font, but its larger sizes
+can also be used for simple display purposes, and its significant body of
+symbols can stand on its own.  It comes complete with textual (old-style) and
+lining figures, and even has small-caps figures.  It also comes with
+extensible decorative rules to be used with ornaments from itself or other
+fonts, along with an extremely flexible ellipsis package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dsptricks
   (package
     (name "texlive-dsptricks")
