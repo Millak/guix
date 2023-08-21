@@ -6520,10 +6520,10 @@ emerges from a sewer hole and pulls her below ground.")
         (base32 "1505z8rli59i1ych4rzwbf4dvhv72icdj22n1xarb8xfyz0wyp3b"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DCDOGS_DATA_DIR="
-                            (assoc-ref %outputs "out")
-                            "/share/cdogs-sdl/"))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCDOGS_DATA_DIR=" #$output
+                             "/share/cdogs-sdl/"))))
     (native-inputs
      (list pkg-config))
     (inputs
