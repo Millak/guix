@@ -7581,6 +7581,36 @@ formatting chemistry documents according to the conventions of a number of
 leading journals.  It also provides some handy chemistry-related macros.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cherokee
+  (package
+    (name "texlive-cherokee")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cherokee/"
+                   "fonts/source/public/cherokee/"
+                   "fonts/tfm/public/cherokee/"
+                   "tex/latex/cherokee/")
+             (base32
+              "0cganm5d4gnkkhandancyd915w2x9kskj9qg81y54jcfyjz8gp51")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cherokee")
+    (synopsis "Font for the Cherokee script")
+    (description
+     "The Cherokee script was designed in 1821 by Segwoya.  The alphabet is
+essentially syllabic, only 6 characters (a e i o s u) correspond to Roman
+letters: the font encodes these to the corresponding roman letter.  The
+remaining 79 characters have been arbitrarily encoded in the range 38-122; the
+@code{cherokee} package provides commands that map each such syllable to the
+appropriate character.")
+    ;; "You may freely use, modify, and/or distribute this file, without
+    ;; limitation.  If you make significant additions or improvements,
+    ;; I request that you email me an updated version."
+    (license
+     (license:fsf-free "file://fonts/source/public/cherokee/cherokee.mf"))))
+
 (define-public texlive-chess
   (package
     (name "texlive-chess")
