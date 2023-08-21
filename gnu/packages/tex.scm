@@ -14891,6 +14891,31 @@ conference proceedings.  The class uses the XePersian package.")
 installed.")
     (license license:lppl1.3c)))
 
+(define-public texlive-initials
+  (package
+    (name "texlive-initials")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/initials/"
+                   "dvips/initials/"
+                   "fonts/afm/public/initials/"
+                   "fonts/map/dvips/initials/"
+                   "fonts/tfm/public/initials/"
+                   "fonts/type1/public/initials/"
+                   "tex/latex/initials/")
+             (base32
+              "0hbvk2qjrhcx2l8nkca1s5lj65k5xd2v2fnk4zjxjpwdcwxf09zp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/initials")
+    (synopsis "Adobe Type 1 decorative initial fonts")
+    (description
+     "This package provides Adobe Type 1 decorative initial fonts.  For each
+font, at least a @file{.pfb} and a @file{.tfm} file is provided, with an
+@file{.fd} file for use with LaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-inlinebib
   (package
     (name "texlive-inlinebib")
