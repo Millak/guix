@@ -21529,6 +21529,34 @@ anthologies of poetry and other writings; it does not concern itself with
 actually typesetting the verse itself.")
     (license license:lppl1.3+)))
 
+(define-public texlive-poiretone
+  (package
+    (name "texlive-poiretone")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/poiretone/"
+                   "fonts/enc/dvips/poiretone/"
+                   "fonts/map/dvips/poiretone/"
+                   "fonts/tfm/public/poiretone/"
+                   "fonts/truetype/public/poiretone/"
+                   "fonts/type1/public/poiretone/"
+                   "fonts/vf/public/poiretone/"
+                   "tex/latex/poiretone/")
+             (base32
+              "1zdncw8pj0x8nwgk7b5lgqldiifqjnsci57jnkf5vyhzsxx1c8kr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/poiretone")
+    (synopsis "PoiretOne family of fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the PoiretOne family of fonts, designed by Denis Masharov.  PoiretOne is
+a decorative geometric grotesque with a hint of Art Deco and constructivism.
+There is currently just a regular weight and an artificially emboldened
+bold.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-polexpr
   (package
     (name "texlive-polexpr")
