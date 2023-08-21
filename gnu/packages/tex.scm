@@ -25526,6 +25526,33 @@ Bayer.  The Metafont sources of the fonts, and their LaTeX support, are
 supplied.")
     (license license:gpl3+)))
 
+(define-public texlive-universalis
+  (package
+    (name "texlive-universalis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/universalis/"
+                   "fonts/enc/dvips/universalis/"
+                   "fonts/map/dvips/universalis/"
+                   "fonts/opentype/arkandis/universalis/"
+                   "fonts/tfm/arkandis/universalis/"
+                   "fonts/type1/arkandis/universalis/"
+                   "fonts/vf/arkandis/universalis/"
+                   "tex/latex/universalis/")
+             (base32
+              "1hqlpyh3g682vwdxbgyp7jrswvf16ds8i4mqb6yyv00h3rv11cxk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/universalis")
+    (synopsis "Universalis font, with support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the UniversalisADFStd family of fonts, designed by Hirwin Harendal.  The font
+is suitable as an alternative to fonts such as Adrian Frutiger's Univers and
+Frutiger.")
+    (license (list license:gpl2+ license:lppl))))
+
 (define-public texlive-urlbst
   (package
     (name "texlive-urlbst")
