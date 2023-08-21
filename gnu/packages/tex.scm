@@ -10593,6 +10593,22 @@ Gaulle (now deceased), under a free licence.  It replaces the old full
 @code{frenchle} packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ean
+  (package
+    (name "texlive-ean")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/ean/" "tex/generic/ean/")
+             (base32
+              "1zyxjpc0ggas43lpvl1l1mknqmd94q0cqgw6w2by29w3r8wafjh9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ean")
+    (synopsis "Macros for making EAN barcodes")
+    (description "This package provides EAN-8 and EAN-13 forms.")
+    (license license:gpl3+)))
+
 (define-public texlive-easing
   (package
     (name "texlive-easing")
