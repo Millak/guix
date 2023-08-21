@@ -11366,6 +11366,35 @@ standard @code{amsmath} numbered equation environments to throw a warning
 whenever this occurs.")
     (license license:lppl1.3+)))
 
+(define-public texlive-erewhon
+  (package
+    (name "texlive-erewhon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/erewhon/"
+                   "fonts/afm/public/erewhon/"
+                   "fonts/enc/dvips/erewhon/"
+                   "fonts/map/dvips/erewhon/"
+                   "fonts/opentype/public/erewhon/"
+                   "fonts/tfm/public/erewhon/"
+                   "fonts/type1/public/erewhon/"
+                   "fonts/vf/public/erewhon/"
+                   "tex/latex/erewhon/")
+             (base32
+              "02qhg27y24b533gnx90f8a1b7j06i369qswmpccq5a6gaaab8xcv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/erewhon")
+    (synopsis "Font package derived from Heuristica and Utopia")
+    (description
+     "Erewhon is based on the Heuristica package, which is based in turn on
+Utopia.  Erewhon adds a number of new features --- small caps in all styles
+rather than just regular, added figure styles (proportional, inferior,
+numerator, denominator) and superior letters.  The size is 6% smaller than
+Heuristica, matching that of UtopiaStd.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-euclideangeometry
   (package
     (name "texlive-euclideangeometry")
