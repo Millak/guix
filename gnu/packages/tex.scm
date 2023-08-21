@@ -2868,6 +2868,31 @@ also includes a small font for use in phonetic transcription of the archaic
 writings.")
     (license license:lppl)))
 
+(define-public texlive-archivo
+  (package
+    (name "texlive-archivo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/archivo/"
+                   "fonts/enc/dvips/archivo/"
+                   "fonts/map/dvips/archivo/"
+                   "fonts/opentype/public/archivo/"
+                   "fonts/tfm/public/archivo/"
+                   "fonts/type1/public/archivo/"
+                   "fonts/vf/public/archivo/"
+                   "tex/latex/archivo/")
+             (base32
+              "1wdvr7ch2ydj41yd0xniwppb5wh1m9w97d839fhmp21lgyhss0jl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/archivo")
+    (synopsis "Archivo font face with support for LaTeX and pdfLaTeX")
+    (description
+     "This package provides the Archivo family of fonts designed by
+Omnibus-Type, with support for LaTeX and pdfLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-armtex
   (package
     (name "texlive-armtex")
