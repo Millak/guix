@@ -6946,6 +6946,33 @@ provided in the @code{calligra} package in the @code{fundus} bundle.")
 font.")
     (license license:expat)))
 
+(define-public texlive-cantarell
+  (package
+    (name "texlive-cantarell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cantarell/"
+                   "fonts/enc/dvips/cantarell/"
+                   "fonts/map/dvips/cantarell/"
+                   "fonts/opentype/gnome/cantarell/"
+                   "fonts/tfm/gnome/cantarell/"
+                   "fonts/type1/gnome/cantarell/"
+                   "fonts/vf/gnome/cantarell/"
+                   "tex/latex/cantarell/")
+             (base32
+              "11cj8z6wyzq92x66alas88qgrs4ap0xgvf0yr7h62vg5ym3618c8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cantarell")
+    (synopsis "LaTeX support for the Cantarell font family")
+    (description
+     "Cantarell is a contemporary Humanist sans serif designed by Dave
+Crossland and Jakub Steiner.  The present package provides support for this
+font in LaTeX. It includes Type 1 versions of the fonts, converted for this
+package using FontForge from its sources, for full support with Dvips.")
+    (license (list license:silofl1.1 license:lppl1.3c))))
+
 (define-public texlive-cartonaugh
   (package
     (name "texlive-cartonaugh")
