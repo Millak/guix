@@ -8328,6 +8328,34 @@ will look just like the pseudocode in the text.")
 font distribution), as Metafont base files.")
     (license (list license:gpl3+ license:public-domain))))
 
+(define-public texlive-cm-unicode
+  (package
+    (name "texlive-cm-unicode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cm-unicode/"
+                   "fonts/afm/public/cm-unicode/"
+                   "fonts/enc/dvips/cm-unicode/"
+                   "fonts/map/dvips/cm-unicode/"
+                   "fonts/opentype/public/cm-unicode/"
+                   "fonts/type1/public/cm-unicode/")
+             (base32
+              "15ysic6vah1wircybhpm9915mr1bbc8b2jalia86ajiqbxn2l9h0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cm-unicode")
+    (synopsis "Computer Modern Unicode font family")
+    (description
+     "This package provides Computer Modern Unicode fonts.  Some characters in
+several fonts are copied from Blue Sky Type 1 fonts released by AMS.
+Currently the fonts contain glyphs from Latin, Cyrillic, Greek code sets and
+IPA extensions.  This font set contains 33 fonts.  This archive contains AFM,
+PFB and OTF versions; the OTF version of the Computer Modern Unicode fonts
+works with TeX engines that directly support OpenType features, such as XeTeX
+and LuaTeX.")
+    (license license:silofl1.1)))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
