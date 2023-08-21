@@ -8203,6 +8203,36 @@ the above --- Cyrillic, Greek, Latin-based scripts, Russian and Vietnamese are
 supported.")
     (license license:gpl2)))
 
+(define-public texlive-clara
+  (package
+    (name "texlive-clara")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/clara/"
+                   "fonts/enc/dvips/clara/"
+                   "fonts/map/dvips/clara/"
+                   "fonts/opentype/public/clara/"
+                   "fonts/tfm/public/clara/"
+                   "fonts/type1/public/clara/"
+                   "fonts/vf/public/clara/"
+                   "tex/latex/clara/")
+             (base32
+              "182iw362irf247frsy0dzrswnh1341jlwrlwhvx1hcrbrvhpbz42")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clara")
+    (synopsis "Clara serif font family")
+    (description
+     "Clara is a type family created specially by Seamas O Brogain.  The
+family includes italic, bold, bold italic, and small capitals, while the
+character set includes (monotonic) Greek, Cyrillic, ogham, phonetic and
+mathematical ranges, scribal abbreviations and other specialist characters.
+The fonts also include some OpenType features (such as ligature substitution,
+small capitals, and old-style numerals) and variant forms for particular
+languages.")
+    (license (list license:silofl1.1 license:gpl2+))))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
