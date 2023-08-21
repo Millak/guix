@@ -14955,6 +14955,35 @@ footnotes.")
 Live and mainly introducing command line operations, in Chinese.")
     (license license:lppl1.3c)))
 
+(define-public texlive-inter
+  (package
+    (name "texlive-inter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/inter/"
+                   "fonts/enc/dvips/inter/"
+                   "fonts/map/dvips/inter/"
+                   "fonts/opentype/public/inter/"
+                   "fonts/tfm/public/inter/"
+                   "fonts/type1/public/inter/"
+                   "fonts/vf/public/inter/"
+                   "tex/latex/inter/")
+             (base32
+              "1rvh2f066lkdbr8754r0a016k9imcjpia9wdi46x70d96wgcb5vm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inter")
+    (synopsis "Inter font face with support for LaTeX, XeLaTeX, and LuaLaTeX")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Inter Sans family of fonts, designed by Rasmus Andersson.  Inter is
+a typeface specially designed for user interfaces with focus on high
+legibility of small-to-medium sized text on computer screens.  The family
+features a tall x-height to aid in readability of mixed-case and lower-case
+text.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-interval
   (package
     (name "texlive-interval")
