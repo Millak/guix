@@ -18253,6 +18253,35 @@ mathematics.  This package provides virtual fonts with italics and upright
 digits and punctuation, as an extension to Mathdesign's Utopia bundle.")
     (license license:bsd-3)))
 
+(define-public texlive-mdsymbol
+  (package
+    (name "texlive-mdsymbol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mdsymbol/"
+                   "doc/latex/mdsymbol/"
+                   "fonts/enc/dvips/mdsymbol/"
+                   "fonts/map/dvips/mdsymbol/"
+                   "fonts/opentype/public/mdsymbol/"
+                   "fonts/source/public/mdsymbol/"
+                   "fonts/tfm/public/mdsymbol/"
+                   "fonts/type1/public/mdsymbol/"
+                   "source/latex/mdsymbol/"
+                   "tex/latex/mdsymbol/")
+             (base32
+              "1ssvyqyh3k8q2snj8wk0xdbxgnafacsyj4iyh14hrxybknxxqh22")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/mdsymbol")
+    (synopsis "Symbol fonts to match Adobe Myriad Pro")
+    (description
+     "The package provides a font of mathematical symbols, MyriadPro.  The
+font is designed as a companion to Adobe Myriad Pro, but it might also fit
+well with other contemporary typefaces.")
+    (license license:silofl1.1)))
+
 (define-public texlive-mecaso
   (package
     (name "texlive-mecaso")
