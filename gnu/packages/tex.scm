@@ -24857,6 +24857,33 @@ modern LaTeX processors.  An artificially-emboldened variant has been provided
 but there are no italic variants.")
     (license (list license:lppl license:silofl1.1))))
 
+(define-public texlive-theanomodern
+  (package
+    (name "texlive-theanomodern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/theanomodern/"
+                   "fonts/enc/dvips/theanomodern/"
+                   "fonts/map/dvips/theanomodern/"
+                   "fonts/tfm/public/theanomodern/"
+                   "fonts/truetype/public/theanomodern/"
+                   "fonts/type1/public/theanomodern/"
+                   "fonts/vf/public/theanomodern/"
+                   "tex/latex/theanomodern/")
+             (base32
+              "17s04wcliqn5sgg5d6axc5ky3wg7xzh62c83hgrf3fq3pbykwm77")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/theanomodern")
+    (synopsis "Theano Modern fonts with LaTeX support")
+    (description
+     "This package provides the TheanoModern font designed by Alexey Kryukov,
+in both TrueType and Type1 formats, with support for both traditional and
+modern LaTeX processors.  An artificially-emboldened variant has been provided
+but there are no italic variants.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-theatre
   (package
     (name "texlive-theatre")
