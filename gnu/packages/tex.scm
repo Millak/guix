@@ -25283,6 +25283,26 @@ uprighted version of the calligraphic fonts from the TX font package.
 A scaled option is provided to allow arbitrary scaling.")
     (license license:gpl3)))
 
+(define-public texlive-typicons
+  (package
+    (name "texlive-typicons")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/typicons/"
+                   "fonts/truetype/public/typicons/"
+                   "tex/latex/typicons/")
+             (base32
+              "1p82gq8jy0brvps6y6qdw8bldfsck9fw1qy84vrzfjz65435dzvh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/typicons")
+    (synopsis "Font containing a set of web-related icons")
+    (description
+     "This package grants access to 336 web-related icons provided by the
+included Typicons font, designed by Stephen Hutchings.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
