@@ -12041,6 +12041,25 @@ XeLaTeX or LuaLaTeX.  More support is offered by the @code{firamath-otf}
 package.")
     (license license:silofl1.1)))
 
+(define-public texlive-firamath-otf
+  (package
+    (name "texlive-firamath-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/firamath-otf/"
+                   "tex/latex/firamath-otf/")
+             (base32
+              "1ai8qsxx6laxl12n2fivl08xywzf1y8rd2n839v8z5bjfsjznqk6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/firamath-otf")
+    (synopsis "Use OpenType math font Fira Math")
+    (description
+     "The package offers XeTeX and LuaTeX support for the sans serif OpenType
+Fira Math font.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fixdif
   (package
     (name "texlive-fixdif")
