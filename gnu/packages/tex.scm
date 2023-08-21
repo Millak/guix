@@ -13346,6 +13346,29 @@ a possibility of optical centering and right-hanging alignment of lines broken
 because of length.")
     (license license:lppl)))
 
+(define-public texlive-gnu-freefont
+  (package
+    (name "texlive-gnu-freefont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gnu-freefont/"
+                   "fonts/opentype/public/gnu-freefont/"
+                   "fonts/truetype/public/gnu-freefont/"
+                   "source/fonts/gnu-freefont/")
+             (base32
+              "14bq8i7n6zhy8352pmhd5d9l4p152c6bgarz17wfp2p00kzs47aw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gnu-freefont")
+    (synopsis "Unicode font, with rather wide coverage")
+    (description
+     "The package provides a set of outline (i.e., OpenType} fonts covering as
+much as possible of the Unicode character set.  The set consists of three
+typefaces: one monospaced and two proportional (one with uniform and one with
+modulated stroke).")
+    (license license:gpl3)))
+
 (define-public texlive-go
   (package
     (name "texlive-go")
