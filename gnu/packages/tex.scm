@@ -13090,6 +13090,35 @@ OT1, T1, TS1, and LGR encodings.")
 engines.")
     (license license:silofl1.1)))
 
+(define-public texlive-gfsneohellenic
+  (package
+    (name "texlive-gfsneohellenic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsneohellenic/"
+                   "fonts/afm/public/gfsneohellenic/"
+                   "fonts/enc/dvips/gfsneohellenic/"
+                   "fonts/map/dvips/gfsneohellenic/"
+                   "fonts/opentype/public/gfsneohellenic/"
+                   "fonts/tfm/public/gfsneohellenic/"
+                   "fonts/type1/public/gfsneohellenic/"
+                   "fonts/vf/public/gfsneohellenic/"
+                   "tex/latex/gfsneohellenic/")
+             (base32
+              "109zgqj63ffryy42zi64p6r37jmzj5ma3d8bgn7mz3gc2scr1bpc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsneohellenic")
+    (synopsis "Font in the Neo-Hellenic style")
+    (description
+     "The Neo-Hellenic style evolved in academic circles in the 19th and 20th
+century; the present font follows a cut commissioned from Monotype in 1927.
+The font supports both Greek and Latin characters, and has been adjusted to
+work well with the @code{cmbright} fonts for mathematics support.  LaTeX
+support of the fonts is provided, offering OT1, T1 and LGR encodings.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
