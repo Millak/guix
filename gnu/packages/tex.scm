@@ -6501,6 +6501,32 @@ involving brackets and allow partial differentials to be expressed in an
 alternate form.")
     (license license:lppl1.3+)))
 
+(define-public texlive-brushscr
+  (package
+    (name "texlive-brushscr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/brushscr/"
+                   "dvips/brushscr/"
+                   "fonts/afm/public/brushscr/"
+                   "fonts/map/dvips/brushscr/"
+                   "fonts/tfm/public/brushscr/"
+                   "fonts/type1/public/brushscr/"
+                   "fonts/vf/public/brushscr/"
+                   "tex/latex/brushscr/")
+             (base32
+              "0kdikrlhbqfcnb42y5pz93l8wkzbrn7hx5gjf05vkchcxq24nj5x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/brushscr")
+    (synopsis "Handwriting script font")
+    (description
+     "The BrushScript font simulates hand-written characters; it is
+distributed in Adobe Type 1 format (but is available in italic shape only).
+The package includes the files needed by LaTeX in order to use that font.")
+    (license license:public-domain)))
+
 (define-public texlive-burmese
   (package
     (name "texlive-burmese")
