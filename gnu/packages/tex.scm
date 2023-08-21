@@ -12266,6 +12266,27 @@ provided by the FontAwesome font.")
 set.")
     (license (list license:silofl1.1 license:lppl1.3c))))
 
+(define-public texlive-fontmfizz
+  (package
+    (name "texlive-fontmfizz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fontmfizz/"
+                   "fonts/truetype/public/fontmfizz/"
+                   "tex/latex/fontmfizz/")
+             (base32
+              "1z0k7n1yyisv3igw77bj3r8hywyz55ciylb3fjx9dpdcrwv3kngd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontmfizz")
+    (synopsis "Font Mfizz icons for use in LaTeX")
+    (description
+     "The MFizz font provides scalable vector icons representing programming
+languages, operating systems, software engineering, and technology.  It can be
+seen as an extension to FontAwesome.")
+    (license license:expat)))
+
 (define-public texlive-fontsize
   (package
     (name "texlive-fontsize")
