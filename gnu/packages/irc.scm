@@ -484,14 +484,14 @@ highlighted.
 (define-public sic
   (package
     (name "sic")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dl.suckless.org/tools/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "11aiavxp44yayibc58bvimi8mrxvbw1plbci8cnbl4syk42zj1xc"))))
+                "1lk57mrrqgky37bjsnp72s8libywzsrbbjq8bpmz4xdw7smqyirh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
