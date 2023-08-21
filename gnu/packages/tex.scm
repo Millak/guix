@@ -2838,6 +2838,36 @@ German Archaeological Institute (DAI).  Various options are available to
 change and adjust the outcome according to one's own preferences.")
     (license license:lppl1.3+)))
 
+(define-public texlive-archaic
+  (package
+    (name "texlive-archaic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/archaic/"
+                   "fonts/afm/public/archaic/"
+                   "fonts/map/dvips/archaic/"
+                   "fonts/source/public/archaic/"
+                   "fonts/tfm/public/archaic/"
+                   "fonts/type1/public/archaic/"
+                   "source/fonts/archaic/"
+                   "tex/latex/archaic/")
+             (base32
+              "0a6lp4w9b76q1w30a58205b1n7jf61n58ps2hdxrhpg9nxqwy1w0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/archaic")
+    (synopsis "Collection of archaic fonts")
+    (description
+     "The collection contains fonts to represent Aramaic, Cypriot,
+Etruscan, Greek of the 6th and 4th centuries BCE, Egyptian hieroglyphics,
+Linear A, Linear B, Nabatean old Persian, the Phaistos disc, Phoenician,
+proto-Semitic, runic, South Arabian Ugaritic and Viking scripts.  The bundle
+also includes a small font for use in phonetic transcription of the archaic
+writings.")
+    (license license:lppl)))
+
 (define-public texlive-armtex
   (package
     (name "texlive-armtex")
