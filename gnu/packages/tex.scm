@@ -11440,6 +11440,33 @@ by Michel Bovani.")
 describing relations between ordered pairs, using Metafont.")
     (license license:lppl1.3+)))
 
+(define-public texlive-esstix
+  (package
+    (name "texlive-esstix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/esstix/"
+                   "fonts/afm/esstix/"
+                   "fonts/map/dvips/esstix/"
+                   "fonts/tfm/public/esstix/"
+                   "fonts/type1/public/esstix/"
+                   "fonts/vf/public/esstix/"
+                   "tex/latex/esstix/")
+             (base32
+              "1wfl7q6yx7pflzy402ldx7p3zw3xgvgvilrdzv7pm0w937a3qkm9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/esstix")
+    (synopsis "PostScript versions of the ESSTIX, with macro support")
+    (description
+     "These fonts represent translation to PostScript Type 1 of the ESSTIX
+fonts.  ESSTIX seem to have been a precursor to the STIX project.  The
+accompanying virtual fonts with customized metrics and LaTeX support files
+allow their use as @code{calligraphic}, @code{fraktur} and
+@code{double-struck} (blackboard bold) in maths mode.")
+    (license license:silofl1.1)))
+
 (define-public texlive-euclideangeometry
   (package
     (name "texlive-euclideangeometry")
