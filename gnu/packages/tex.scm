@@ -21638,6 +21638,32 @@ includes some short commands for set (blackboard) or
 filtrations (calligraphic).")
     (license license:lppl)))
 
+(define-public texlive-prodint
+  (package
+    (name "texlive-prodint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/prodint/"
+                   "fonts/afm/public/prodint/"
+                   "fonts/map/dvips/prodint/"
+                   "fonts/tfm/public/prodint/"
+                   "fonts/type1/public/prodint/"
+                   "tex/latex/prodint/")
+             (base32
+              "0k354qidij22mwxafh2zbam7qb4jd5pb8jakw0c660xdxaxrdxx3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/prodint")
+    (synopsis "Font that provides the product integral symbol")
+    (description
+     "Product integrals are to products, as integrals are to sums.  They have
+been around for more than a hundred years, they have not become part of the
+standard mathematician's toolbox, possibly because no-one invented the right
+mathematical symbol for them.  The authors have remedied that situation by
+proposing the symbol and providing this font.")
+    (license license:silofl1.1)))
+
 (define-public texlive-profcollege
   (package
     (name "texlive-profcollege")
