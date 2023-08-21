@@ -3868,6 +3868,29 @@ NFSS interface for using the font.  An Adobe Type 1 version of the fonts is
 available in the @code{niceframe} fonts bundle.")
     (license license:lppl)))
 
+(define-public texlive-bbold-type1
+  (package
+    (name "texlive-bbold-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bbold-type1/"
+                   "fonts/afm/public/bbold-type1/"
+                   "fonts/map/dvips/bbold-type1/"
+                   "fonts/type1/public/bbold-type1/")
+             (base32
+              "1flccfh58w977j9w62mcn7xzspmg68gb6h5nwh2mfbz7l0015fsz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bbold-type1")
+    (synopsis "Adobe Type 1 format version of the @code{bbold} font")
+    (description
+     "The files offer an Adobe Type 1 format version of the 5pt, 7pt and 10pt
+versions of the @code{bbold} fonts.")
+    ;; The README states: "You may freely use, modify and/or
+    ;; distribute this file".
+    (license (license:fsf-free "file:doc/fonts/bbold-type1/README"))))
+
 (define-public texlive-bclogo
   (package
     (name "texlive-bclogo")
