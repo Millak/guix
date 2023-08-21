@@ -26294,6 +26294,26 @@ Fraktur fonts of Yannis Haralambous set of old German fonts.")
 and a LaTeX package for using them.")
     (license license:lppl1.3c)))
 
+(define-public texlive-yinit-otf
+  (package
+    (name "texlive-yinit-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/yinit-otf/"
+                   "fonts/opentype/public/yinit-otf/")
+             (base32
+              "0p3a56kg63smsgwr0vlfzjxrdw11j3777y09gdbdd1cc50r9p3zx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yinit-otf")
+    (synopsis
+     "OTF conversion of Yannis Haralambous' Old German decorative initials")
+    (description
+     "This package is a conversion of the @code{yinit} font into OTF.
+Original Metafont files for @code{yinit} are in the @code{yinit} package.")
+    (license license:public-domain)))
+
 (define-public texlive-youngtab
   (package
     (name "texlive-youngtab")
