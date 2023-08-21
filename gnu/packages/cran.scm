@@ -603,6 +603,39 @@ edition of the book \"Data Mining with R, learning with case studies\"
 by Luis Torgo, published by CRC Press.")
     (license license:gpl2+)))
 
+(define-public r-earlywarnings
+  (package
+    (name "r-earlywarnings")
+    (version "1.1.29")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "earlywarnings" version))
+              (sha256
+               (base32
+                "1xa9rijqqxa5l253dg8dn1jjhdakf8krl5rflq5v9gybfyrq1885"))))
+    (properties `((upstream-name . "earlywarnings")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-fields
+                             r-ggplot2
+                             r-kendall
+                             r-kernsmooth
+                             r-knitr
+                             r-lmtest
+                             r-moments
+                             r-nortest
+                             r-quadprog
+                             r-som
+                             r-spam
+                             r-tgp
+                             r-tseries))
+    (native-inputs (list r-knitr))
+    (home-page "https://www.early-warning-signals.org")
+    (synopsis "Early warning signals for critical transitions in time series")
+    (description
+     "This package offers methods for estimating statistical changes in time
+series.  These are used for identifying nearby critical transitions.")
+    (license license:bsd-2)))
+
 (define-public r-embedsom
   (package
     (name "r-embedsom")
