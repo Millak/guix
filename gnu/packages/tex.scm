@@ -16617,6 +16617,32 @@ have been designed for use as web fonts, they work well as conventional text
 fonts.  An artificially generated BoldItalic variant has been added.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-librefranklin
+  (package
+    (name "texlive-librefranklin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/librefranklin/"
+                   "fonts/enc/dvips/librefranklin/"
+                   "fonts/map/dvips/librefranklin/"
+                   "fonts/opentype/impallari/librefranklin/"
+                   "fonts/tfm/impallari/librefranklin/"
+                   "fonts/type1/impallari/librefranklin/"
+                   "fonts/vf/impallari/librefranklin/"
+                   "tex/latex/librefranklin/")
+             (base32
+              "1vkc2sj7689zn2rxc03q2spvs10865jrnv37s9dgw35hifb69m5s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/librefranklin")
+    (synopsis "LaTeX support for the Libre-Franklin family of fonts")
+    (description
+     "Libre Franklin is an interpretation and expansion based on the 1912
+Morris Fuller Benton's classic, designed by Pablo Impallari, Rodrigo
+Fuenzalida and Nhung Nguyen.")
+    (license (list license:lppl license:silofl1.1))))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
