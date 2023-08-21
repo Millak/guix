@@ -13630,6 +13630,30 @@ Afterwards all necessary dimensions are calculated and the scheme is drawn.
 Currently two steps of symmetry reduction are supported.")
     (license license:lppl)))
 
+(define-public texlive-gudea
+  (package
+    (name "texlive-gudea")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gudea/"
+                   "fonts/enc/dvips/gudea/"
+                   "fonts/map/dvips/gudea/"
+                   "fonts/tfm/public/gudea/"
+                   "fonts/type1/public/gudea/"
+                   "fonts/vf/public/gudea/"
+                   "tex/latex/gudea/")
+             (base32
+              "0kj53idgxyqwishg0vibhhrj443016z61c0jl7rx91a508vbwbn2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gudea")
+    (synopsis "Gudea font face with support for LaTeX and pdfLaTeX")
+    (description
+     "This package provides the Gudea family of fonts designed by Agustina
+Mingote, with support for LaTeX and pdfLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-guide-to-latex
   (package
     (name "texlive-guide-to-latex")
