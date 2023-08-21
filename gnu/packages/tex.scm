@@ -3320,6 +3320,33 @@ increase character recognition, ultimately improving readability.")
 informal handwriting.  The font is distributed in Adobe Type 1 format.")
     (license license:lppl)))
 
+(define-public texlive-auncial-new
+  (package
+    (name "texlive-auncial-new")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/auncial-new/"
+                   "fonts/afm/public/auncial-new/"
+                   "fonts/map/dvips/auncial-new/"
+                   "fonts/tfm/public/auncial-new/"
+                   "fonts/type1/public/auncial-new/"
+                   "source/fonts/auncial-new/"
+                   "tex/latex/auncial-new/")
+             (base32
+              "1644ank81l1qlijmld88k1qq3qk4x6an0qvyqz1da2dgwdhjap00")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/auncial-new")
+    (synopsis "Artificial Uncial font and LaTeX support macros")
+    (description
+     "The @code{auncial-new} bundle provides packages and fonts for a script
+based on the Artificial Uncial manuscript book-hand used between the 6th &
+10th century AD.  The script consists of minuscules and digits, with some
+appropriate period punctuation marks.  Both normal and bold versions are
+provided, and the font is distributed in Adobe Type 1 format.")
+    (license license:lppl)))
+
 (define-public texlive-authordate
   (package
     (name "texlive-authordate")
