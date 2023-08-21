@@ -6099,6 +6099,32 @@ retains outer braces.")
 used to describe hardware, data format or protocols.")
     (license license:lppl)))
 
+(define-public texlive-bitter
+  (package
+    (name "texlive-bitter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bitter/"
+                   "fonts/enc/dvips/bitter/"
+                   "fonts/map/dvips/bitter/"
+                   "fonts/tfm/huerta/bitter/"
+                   "fonts/truetype/huerta/bitter/"
+                   "fonts/type1/huerta/bitter/"
+                   "fonts/vf/huerta/bitter/"
+                   "tex/latex/bitter/")
+             (base32
+              "07fb0dw1g1faz05naf53rinjrk0pngpfpcq4fxd1fy6580h7446f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bitter")
+    (synopsis "Bitter family of fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX, and LuaLaTeX support for
+the Bitter family of fonts.  Bitter is a contemporary slab-serif typeface for
+text.  There are regular and bold weights and an italic, but no bold italic.")
+    (license (list license:lppl license:silofl1.1))))
+
 (define-public texlive-bodeplot
   (package
     (name "texlive-bodeplot")
