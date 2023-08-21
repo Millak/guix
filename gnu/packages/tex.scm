@@ -8233,6 +8233,38 @@ small capitals, and old-style numerals) and variant forms for particular
 languages.")
     (license (list license:silofl1.1 license:gpl2+))))
 
+(define-public texlive-clearsans
+  (package
+    (name "texlive-clearsans")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/clearsans/"
+                   "fonts/enc/dvips/clearsans/"
+                   "fonts/map/dvips/clearsans/"
+                   "fonts/tfm/intel/clearsans/"
+                   "fonts/truetype/intel/clearsans/"
+                   "fonts/type1/intel/clearsans/"
+                   "fonts/vf/intel/clearsans/"
+                   "tex/latex/clearsans/")
+             (base32
+              "1sf84xxvq9rxb3n5nsggfswvdagynnz6clazk86w4k2a5r0qf8yw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clearsans")
+    (synopsis "Clear Sans fonts with LaTeX support")
+    (description
+     "Clear Sans was designed by Daniel Ratighan.  It is available in three
+weights (regular, medium, and bold) with corresponding italics, plus light and
+thin upright (without italics).
+
+It has minimized, unambiguous characters and slightly narrow proportions,
+making it ideal for UI design.  Its strong, recognizable forms avoid
+distracting ambiguity, making Clear Sans comfortable for reading short UI
+labels and long passages in both screen and print.  The fonts are available in
+both TrueType and Type 1 formats.")
+    (license (list license:asl2.0 license:lppl))))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
