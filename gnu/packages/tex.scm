@@ -21298,6 +21298,33 @@ the @code{plex} package.  IBM Plex has no math symbols.  You will have to use
 one of the existing math fonts if you need them.")
     (license license:lppl1.3+)))
 
+(define-public texlive-plimsoll
+  (package
+    (name "texlive-plimsoll")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/plimsoll/"
+                   "fonts/afm/public/plimsoll/"
+                   "fonts/enc/dvips/plimsoll/"
+                   "fonts/map/dvips/plimsoll/"
+                   "fonts/tfm/public/plimsoll/"
+                   "fonts/type1/public/plimsoll/"
+                   "source/fonts/plimsoll/"
+                   "tex/latex/plimsoll/")
+             (base32
+              "1cxvlpb7z83ajyqh5nw1596i7ak582pp2mmqmfjqk2bffv6jqay1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plimsoll")
+    (synopsis "Fonts with the Plimsoll symbol and LaTeX support")
+    (description
+     "This package provides access to the Plimsoll symbol for use with LaTeX.
+The Plimsoll symbol is sometimes used in chemistry for denoting standard
+states and values.  The LaTeX package provides access to this notation as
+well.")
+    (license license:gpl3+)))
+
 (define-public texlive-pm-isomath
   (package
     (name "texlive-pm-isomath")
