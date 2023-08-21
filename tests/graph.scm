@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -377,7 +377,8 @@ edges."
                               (((labels packages _ ...) ...)
                                packages)))))))))
 
-(test-assert "node-transitive-edges + node-back-edges"
+(test-equal "node-transitive-edges + node-back-edges"
+  '()
   (run-with-store %store
     (let ((packages   (fold-packages cons '()))
           (bootstrap? (lambda (package)
@@ -386,17 +387,22 @@ edges."
                          "bootstrap.scm")))
           (trivial?   (lambda (package)
                         (eq? (package-build-system package)
-                             trivial-build-system))))
+                             trivial-build-system)))
+          (system-specific? (lambda (package)
+                              (memq #:system (package-arguments package)))))
       (mlet %store-monad ((edges (node-back-edges %bag-node-type packages)))
         (let* ((glibc      (canonical-package glibc))
                (dependents (node-transitive-edges (list glibc) edges))
                (diff       (lset-difference eq? packages dependents)))
-          ;; All the packages depend on libc, except bootstrap packages and
-          ;; some that use TRIVIAL-BUILD-SYSTEM.
-          (return (null? (remove (lambda (package)
-                                   (or (trivial? package)
-                                       (bootstrap? package)))
-                                 diff))))))))
+          ;; All the packages depend on libc, except bootstrap packages, some
+          ;; packages that use TRIVIAL-BUILD-SYSTEM, and some that target a
+          ;; specific system and thus may depend on a different libc package
+          ;; object.
+          (return (remove (lambda (package)
+                            (or (trivial? package)
+                                (bootstrap? package)
+                                (system-specific? package)))
+                          diff)))))))
 
 (test-assert "node-transitive-edges, no duplicates"
   (run-with-store %store
