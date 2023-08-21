@@ -22034,6 +22034,37 @@ end.")
      "This is a collection of 45 fonts, created by QualiType.")
     (license (list license:silofl1.1 license:gpl2+))))
 
+(define-public texlive-quattrocento
+  (package
+    (name "texlive-quattrocento")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/quattrocento/"
+                   "fonts/enc/dvips/quattrocento/"
+                   "fonts/map/dvips/quattrocento/"
+                   "fonts/tfm/impallari/quattrocento/"
+                   "fonts/truetype/impallari/quattrocento/"
+                   "fonts/type1/impallari/quattrocento/"
+                   "fonts/vf/impallari/quattrocento/"
+                   "tex/latex/quattrocento/")
+             (base32
+              "1mgsyl3xc9274mdh3ssd9ifxb0d9rlv0y33nlw9pwnl9y9f9gd9a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quattrocento")
+    (synopsis "Quattrocento and Quattrocento Sans fonts with LaTeX support")
+    (description
+     "The package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Quattrocento and Quattrocento Sans families of fonts, designed by Pablo
+Impallari; the fonts themselves are also provided, in both TrueType and Type1
+format.  Quattrocento is a classic typeface with wide and open letterforms,
+and great x-height, which makes it very legible for body text at small sizes.
+Tiny details that only show up at bigger sizes make it also great for display
+use.  Quattrocento Sans is the perfect sans-serif companion for
+Quattrocento.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-rank-2-roots
   (package
     (name "texlive-rank-2-roots")
