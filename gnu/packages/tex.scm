@@ -3891,6 +3891,33 @@ versions of the @code{bbold} fonts.")
     ;; distribute this file".
     (license (license:fsf-free "file:doc/fonts/bbold-type1/README"))))
 
+(define-public texlive-bboldx
+  (package
+    (name "texlive-bboldx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bboldx/"
+                   "fonts/afm/public/bboldx/"
+                   "fonts/enc/dvips/bboldx/"
+                   "fonts/map/dvips/bboldx/"
+                   "fonts/tfm/public/bboldx/"
+                   "fonts/type1/public/bboldx/"
+                   "tex/latex/bboldx/")
+             (base32
+              "1r4s3yyah0iqwhzss52wjv3wml5r4bywp3fbanjzkv16f2pk51yb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bboldx")
+    (synopsis "Extend the @code{bbold} package with a Blackboard Bold alphabet")
+    (description
+     "This is an extension of @code{bbold} to a package with three weights,
+of which the original is considered as light and the additions as regular and
+bold.")
+    ;; The README states: "You may freely use, modify and/or
+    ;; distribute this file".
+    (license (license:fsf-free "file://doc/fonts/bboldx/README"))))
+
 (define-public texlive-bclogo
   (package
     (name "texlive-bclogo")
