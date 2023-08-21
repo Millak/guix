@@ -25048,6 +25048,32 @@ available, in addition to maths fonts from Computer Modern maths, Computer
 Modern Bright maths, or Euler fonts.")
     (license license:gpl3+)))
 
+(define-public texlive-trajan
+  (package
+    (name "texlive-trajan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/trajan/"
+                   "fonts/afm/public/trajan/"
+                   "fonts/map/dvips/trajan/"
+                   "fonts/tfm/public/trajan/"
+                   "fonts/type1/public/trajan/"
+                   "source/latex/trajan/"
+                   "tex/latex/trajan/")
+             (base32
+              "1yjx252c6a3bf1k2646sqf3n3s09x2gxya3ypn1zz9scn5kkh1wa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/trajan")
+    (synopsis "Fonts from the Trajan's Column in Rome")
+    (description
+     "This package provides fonts (both as Metafont source and in Adobe Type
+1 format) based on the capitals carved on the Trajan's Column in Rome in 114
+AD, together with macros to access the fonts.  The font is uppercase letters
+together with some punctuation and analphabetics; no lowercase or digits.")
+    (license license:lppl)))
+
 (define-public texlive-translation-array-fr
   (package
     (name "texlive-translation-array-fr")
