@@ -2291,6 +2291,34 @@ prepare submissions for the AMS.")
     ;; Use same license as `amscls'.
     (license license:lppl1.3c)))
 
+(define-public texlive-andika
+  (package
+    (name "texlive-andika")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/andika/"
+                   "fonts/enc/dvips/andika/"
+                   "fonts/map/dvips/andika/"
+                   "fonts/tfm/SIL/andika/"
+                   "fonts/truetype/SIL/andika/"
+                   "fonts/type1/SIL/andika/"
+                   "fonts/vf/SIL/andika/"
+                   "tex/latex/andika/")
+             (base32
+              "1gjahg3xwzwrj9cp6l0zmhfqxwzl4m89vvngmpq4ym0f6rg5pb4i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/andika")
+    (synopsis "Andika fonts with support for all LaTeX engines")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Andika family of fonts designed by SIL International especially for
+literacy use, taking into account the needs of beginning readers.  The focus
+is on clear, easy-to-perceive letterforms that will not be readily confused
+with one another.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-annee-scolaire
   (package
     (name "texlive-annee-scolaire")
