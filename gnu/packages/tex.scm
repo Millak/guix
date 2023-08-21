@@ -12019,6 +12019,28 @@ the PDF as file attachment annotations (by using Scott Pakin's package
 @code{attachfile}).")
     (license license:lppl1.3+)))
 
+(define-public texlive-firamath
+  (package
+    (name "texlive-firamath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/firamath/"
+                   "fonts/opentype/public/firamath/")
+             (base32
+              "0sc3ip9mvyqlbsj7vfcb1yaxlc32w18kqrqm051v5y2bbvp53s0p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/firamath")
+    (synopsis "Fira sans serif font with Unicode math support")
+    (description
+     "Fira Math is a sans-serif font with Unicode math support.  The design of
+this font is based on Fira Sans and FiraGO.  Fira Math is distributed in
+OpenType format and can be used with the @code{unicode-math} package under
+XeLaTeX or LuaLaTeX.  More support is offered by the @code{firamath-otf}
+package.")
+    (license license:silofl1.1)))
+
 (define-public texlive-fixdif
   (package
     (name "texlive-fixdif")
