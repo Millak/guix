@@ -13140,6 +13140,33 @@ Scholderer, now has native support for Mathematics.  A useful application is
 in Beamer documents since this is a sans math font.")
     (license license:silofl1.1)))
 
+(define-public texlive-gfssolomos
+  (package
+    (name "texlive-gfssolomos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfssolomos/"
+                   "fonts/afm/public/gfssolomos/"
+                   "fonts/enc/dvips/gfssolomos/"
+                   "fonts/map/dvips/gfssolomos/"
+                   "fonts/opentype/public/gfssolomos/"
+                   "fonts/tfm/public/gfssolomos/"
+                   "fonts/type1/public/gfssolomos/"
+                   "fonts/vf/public/gfssolomos/"
+                   "tex/latex/gfssolomos/")
+             (base32
+              "0zjbmnkfnaiq7pmpv0xhp5vag2dww70049knf759lf2s0ygnmaaa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfssolomos")
+    (synopsis "Greek-alphabet font")
+    (description
+     "Solomos is a font which traces its descent from
+a calligraphically-inspired font of the mid-19th century.  LaTeX support, for
+use with the LGR encoding only, is provided.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
