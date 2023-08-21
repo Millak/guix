@@ -10227,6 +10227,38 @@ such lists.  Applications in mind belonged to LaTeX, but the package should
 work with other formats as well.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dozenal
+  (package
+    (name "texlive-dozenal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dozenal/"
+                   "fonts/afm/public/dozenal/"
+                   "fonts/map/dvips/dozenal/"
+                   "fonts/source/public/dozenal/"
+                   "fonts/tfm/public/dozenal/"
+                   "fonts/type1/public/dozenal/"
+                   "source/fonts/dozenal/"
+                   "tex/latex/dozenal/")
+             (base32
+              "0fhdcnpjpfxaqshddw6vxy0f8c1c3yn8p11aab8fkhnfg3pnllck")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/dozenal")
+    (synopsis "Typeset documents using base twelve numbering")
+    (description
+     "The package supports typesetting documents whose counters are
+represented in base twelve, also called @dfn{dozenal}.  It includes a macro
+for converting positive whole numbers to dozenal from decimal (base ten)
+representation.  The package also includes a few other macros and redefines
+all the standard counters to produce dozenal output.  Fonts, in Roman, italic,
+slanted, and boldface versions, provide ten and eleven.  The fonts were
+designed to blend well with the Computer Modern fonts, and are available both
+as Metafont source and in Adobe Type 1 format.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-dramatist
   (package
     (name "texlive-dramatist")
