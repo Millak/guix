@@ -16539,6 +16539,33 @@ a math accompaniment to Libertine under LaTeX.  In addition, with option
 Roman and Greek letters.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-librebaskerville
+  (package
+    (name "texlive-librebaskerville")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/librebaskerville/"
+                   "fonts/enc/dvips/librebaskerville/"
+                   "fonts/map/dvips/librebaskerville/"
+                   "fonts/tfm/impallari/librebaskerville/"
+                   "fonts/truetype/impallari/librebaskerville/"
+                   "fonts/type1/impallari/librebaskerville/"
+                   "fonts/vf/impallari/librebaskerville/"
+                   "tex/latex/librebaskerville/")
+             (base32
+              "1rjac2w8q0m4a6qcdjphv3rgws19vbg65wv6gk1frl0d14bijqdy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/librebaskerville")
+    (synopsis "Libre Baskerville family of fonts with LaTeX support")
+    (description
+     "This package provides the Libre Baskerville family of fonts, designed by
+Pablo Impallari, for use with LaTeX, pdfLaTeX, XeLaTeX or LuaLaTeX.  It is
+primarily intended to be a web font but is also attractive as a text font.
+A BoldItalic variant has been artificially generated.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
