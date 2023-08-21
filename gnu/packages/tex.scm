@@ -13119,6 +13119,27 @@ work well with the @code{cmbright} fonts for mathematics support.  LaTeX
 support of the fonts is provided, offering OT1, T1 and LGR encodings.")
     (license license:silofl1.1)))
 
+(define-public texlive-gfsneohellenicmath
+  (package
+    (name "texlive-gfsneohellenicmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gfsneohellenicmath/"
+                   "fonts/opentype/public/gfsneohellenicmath/"
+                   "tex/latex/gfsneohellenicmath/")
+             (base32
+              "08yzv6qww3qvbg8bp4k8ibd46j1a41ysw4k8fi5nazchf3py7qb0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfsneohellenicmath")
+    (synopsis "Math font in the Neo-Hellenic style")
+    (description
+     "The GFSNeohellenic font, a historic font first designed by Victor
+Scholderer, now has native support for Mathematics.  A useful application is
+in Beamer documents since this is a sans math font.")
+    (license license:silofl1.1)))
+
 (define-public texlive-ghab
   (package
     (name "texlive-ghab")
