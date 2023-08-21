@@ -14396,6 +14396,31 @@ with guillemets, and support for character protruding using the
 @code{pdfcprot} package.")
     (license license:gpl3+)))
 
+(define-public texlive-hindmadurai
+  (package
+    (name "texlive-hindmadurai")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/hindmadurai/"
+                   "fonts/enc/dvips/hindmadurai/"
+                   "fonts/map/dvips/hindmadurai/"
+                   "fonts/opentype/public/hindmadurai/"
+                   "fonts/tfm/public/hindmadurai/"
+                   "fonts/type1/public/hindmadurai/"
+                   "fonts/vf/public/hindmadurai/"
+                   "tex/latex/hindmadurai/")
+             (base32
+              "15bf8hka7f04l7zpkaav1azbailjv21w15iidbaxx9n2d4plf2kk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hindmadurai")
+    (synopsis "HindMadurai font face with support for LaTeX and pdfLaTeX")
+    (description
+     "This package provides the HindMadurai family of fonts designed by the
+Indian Type Foundry, with support for LaTeX and pdfLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-historische-zeitschrift
   (package
     (name "texlive-historische-zeitschrift")
