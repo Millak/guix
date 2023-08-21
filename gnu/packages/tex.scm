@@ -2048,6 +2048,34 @@ package gives access to almost all runes ever used in Europe.  The bundle
 covers not only the main forms but also a lot of varieties.")
     (license license:lppl)))
 
+(define-public texlive-almendra
+  (package
+    (name "texlive-almendra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/almendra/"
+                   "fonts/enc/dvips/almendra/"
+                   "fonts/map/dvips/almendra/"
+                   "fonts/tfm/public/almendra/"
+                   "fonts/truetype/public/almendra/"
+                   "fonts/type1/public/almendra/"
+                   "fonts/vf/public/almendra/"
+                   "tex/latex/almendra/")
+             (base32
+              "1mkj0cjpry0hdynlpf719haczm1csv0yvla6nhlgp3dq5k28hvp2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/almendra")
+    (synopsis "Almendra fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX, and LuaLaTeX support for
+the Almendra family of fonts, designed by Ana Sanfelippo.  Almendra is
+a typeface design based on calligraphy.  Its style is related to the Chancery
+and Gothic hands.  There are regular and bold weights with matching italics.
+There is also a regular-weight small-caps.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-alpha-persian
   (package
     (name "texlive-alpha-persian")
