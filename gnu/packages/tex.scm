@@ -20030,6 +20030,30 @@ of fonts, designed by Vernon Adams.")
      "The package will typeset both Z and Object-Z specifications.")
     (license license:lppl)))
 
+(define-public texlive-obnov
+  (package
+    (name "texlive-obnov")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/obnov/"
+                   "fonts/source/public/obnov/"
+                   "fonts/tfm/public/obnov/" "tex/latex/obnov/")
+             (base32
+              "0hjc381fw38qr7rkj137d5rp2jjv002g29bx5g3jjaxl9civvplq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/obnov")
+    (synopsis "Obyknovennaya Novaya fonts")
+    (description
+     "The Obyknovennaya Novaya (Ordinary New Face) typeface was widely used in
+the USSR for scientific and technical publications, as well as textbooks.  The
+fonts are encoded to KOI8-R (which is a long-established Russian font
+encoding, rather than a TeX/LaTeX encoding).  To use the fonts, the user needs
+Cyrillic font support.")
+    (license license:lppl)))
+
 (define-public texlive-octave
   (package
     (name "texlive-octave")
