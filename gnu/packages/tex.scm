@@ -1484,6 +1484,30 @@ adaptation for working with Babel.")
            license:knuth                ;bxabst
            license:public-domain))))    ;docmac
 
+(define-public texlive-adforn
+  (package
+    (name "texlive-adforn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/adforn/"
+                   "fonts/afm/arkandis/adforn/"
+                   "fonts/enc/dvips/adforn/"
+                   "fonts/map/dvips/adforn/"
+                   "fonts/tfm/arkandis/adforn/"
+                   "fonts/type1/arkandis/adforn/"
+                   "tex/latex/adforn/")
+             (base32
+              "0dpdbqlc7p3mwm1bj1m5sbkwi5qjsvsfzfb0wnq4flvz1gc09245")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adforn")
+    (synopsis "OrnementsADF font with TeX and LaTeX support")
+    (description
+     "The bundle provides the Ornements ADF font in PostScript Type 1 format
+with TeX and LaTeX support files.")
+    (license (list license:lppl license:gpl2+))))
+
 (define-public texlive-adhocfilelist
   (package
     (name "texlive-adhocfilelist")
