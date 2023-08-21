@@ -8872,6 +8872,28 @@ from Knuth's Concrete Roman fonts; they are distributed as Metafont source.
 LaTeX support is offered by the @code{concmath} package.")
     (license license:lppl)))
 
+(define-public texlive-concmath-otf
+  (package
+    (name "texlive-concmath-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/concmath-otf/"
+                   "fonts/opentype/public/concmath-otf/"
+                   "tex/latex/concmath-otf/")
+             (base32
+              "00vs2c2lxdrqiwf4scni0yv4kz0mkigqv5kpsrak62j8vb7piv7b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/concmath-otf")
+    (synopsis "Concrete based OpenType Math font")
+    (description
+     "This package provides an OpenType version of the Concrete Math font
+created by Ulrik Vieth in Metafont.  @file{concmath-otf.sty} is a replacement
+for the original @file{concmath.sty} package to be used with LuaTeX or XeTeX
+engines.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-concrete
   (package
     (name "texlive-concrete")
