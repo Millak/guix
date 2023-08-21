@@ -10627,6 +10627,33 @@ Gaulle (now deceased), under a free licence.  It replaces the old full
 to the PGF mathematical engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ebgaramond
+  (package
+    (name "texlive-ebgaramond")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ebgaramond/"
+                   "fonts/enc/dvips/ebgaramond/"
+                   "fonts/map/dvips/ebgaramond/"
+                   "fonts/opentype/public/ebgaramond/"
+                   "fonts/tfm/public/ebgaramond/"
+                   "fonts/type1/public/ebgaramond/"
+                   "fonts/vf/public/ebgaramond/"
+                   "tex/latex/ebgaramond/")
+             (base32
+              "1pa3zrlp9pr31mqir22nfz3rpvv63qnc85xi1bc8vw71pgfymdws")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ebgaramond")
+    (synopsis "LaTeX support for EBGaramond fonts")
+    (description
+     "EB Garamond is a revival by Georg Duffner of the 16th century fonts
+designed by Claude Garamond.  The LaTeX support package works for (pdf)LaTeX,
+XeLaTeX and LuaLaTeX users; configuration files for use with @code{microtype}
+are provided.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-ecltree
   (package
     (name "texlive-ecltree")
