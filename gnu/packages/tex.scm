@@ -15880,6 +15880,33 @@ It provides a tabular-like input syntax and support for drawing bundles
 (implicants) around adjacent values.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lato
+  (package
+    (name "texlive-lato")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lato/"
+                   "fonts/enc/dvips/lato/"
+                   "fonts/map/dvips/lato/"
+                   "fonts/tfm/typoland/lato/"
+                   "fonts/truetype/typoland/lato/"
+                   "fonts/type1/typoland/lato/"
+                   "fonts/vf/typoland/lato/"
+                   "tex/latex/lato/")
+             (base32
+              "1ykwm108zh79dv96axl74izzhzvmbx74pcl46i99ix2qpicyvcf7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lato")
+    (synopsis "Lato font family and LaTeX support")
+    (description
+     "Lato is a sanserif typeface family designed by Lukasz Dziedzic.  This
+font, which includes five weights (hairline, light, regular, bold and black),
+is available as TrueType files.  The package provides support for this font in
+LaTeX.")
+    (license (list license:silofl1.1 license:lppl1.3c))))
+
 (define-public texlive-l2picfaq
   (package
     (name "texlive-l2picfaq")
