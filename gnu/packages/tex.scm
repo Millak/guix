@@ -12218,6 +12218,30 @@ weights.  LaTeX support is provided.")
     ;; Dania Iwonae, which are under GUST Font Nosource License.
     (license (list license:gpl3+ license:gfl1.0))))
 
+(define-public texlive-fontawesome
+  (package
+    (name "texlive-fontawesome")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fontawesome/"
+                   "fonts/enc/dvips/fontawesome/"
+                   "fonts/map/dvips/fontawesome/"
+                   "fonts/opentype/public/fontawesome/"
+                   "fonts/tfm/public/fontawesome/"
+                   "fonts/type1/public/fontawesome/"
+                   "tex/latex/fontawesome/")
+             (base32
+              "0m3wl0jc00h8r4w3fa5vkf062hmaadb2rvf3x9lm4pb0c99ia5x9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontawesome")
+    (synopsis "Font containing web-related icons")
+    (description
+     "The package offers access to the large number of web-related icons
+provided by the FontAwesome font.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fontsize
   (package
     (name "texlive-fontsize")
