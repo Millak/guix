@@ -438,7 +438,7 @@ names, for each one of SYSTEMS."
     (let* ((obj (manifest-entry-item entry))
            (drv (parameterize ((%graft? #f))
                   (run-with-store store
-                    (lower-object obj)
+                    (lower-object obj system)
                     #:system system)))
            (max-silent-time (or (and (package? obj)
                                      (assoc-ref (package-properties obj)
