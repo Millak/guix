@@ -3031,6 +3031,30 @@ pdfLaTeX and the @code{cjk} package, are provided by the @code{arphic}
 package.")
     (license license:arphic-1999)))
 
+(define-public texlive-arvo
+  (package
+    (name "texlive-arvo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/arvo/"
+                   "fonts/enc/dvips/arvo/"
+                   "fonts/map/dvips/arvo/"
+                   "fonts/tfm/public/arvo/"
+                   "fonts/truetype/public/arvo/"
+                   "fonts/vf/public/arvo/"
+                   "tex/latex/arvo/")
+             (base32
+              "1dc52n81wxz06vfbxzmfdp9j6a217v8yf8bczqlnx5vgzy8wlmi3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arvo")
+    (synopsis "Arvo font face with support for LaTeX and pdfLaTeX")
+    (description
+     "This package provides the Arvo family of fonts, designed by Anton
+Koovit, with support for LaTeX and pdfLaTeX.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-ascii-chart
   (package
     (name "texlive-ascii-chart")
