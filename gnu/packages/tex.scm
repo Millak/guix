@@ -20124,6 +20124,29 @@ mid-document.")
     ;; the resulting fonts, without limitation."
     (license (license:fsf-free "file://doc/fonts/ocr-b-outline/README"))))
 
+(define-public texlive-ocr-b-outline
+  (package
+    (name "texlive-ocr-b-outline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ocr-b-outline/"
+                   "fonts/map/dvips/ocr-b-outline/"
+                   "fonts/opentype/public/ocr-b-outline/"
+                   "fonts/type1/public/ocr-b-outline/"
+                   "source/fonts/ocr-b-outline/")
+             (base32
+              "1wlgwz91iv3ck8qmwgqda1kmijs3076hccfvbk6v7dkrcy726014")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ocr-b-outline")
+    (synopsis "OCR-B fonts in Type 1 and OpenType")
+    (description
+     "The package contains OCR-B fonts in Type1 and OpenType formats.")
+    ;; "You may freely use, modify, and/or distribute any of these files,
+    ;; without limitation."
+    (license (license:fsf-free "file://doc/fonts/ocr-b-outline/README"))))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
