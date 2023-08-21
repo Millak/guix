@@ -7226,6 +7226,40 @@ fonts from the initials package in LaTeX, e.g., with the @code{lettrine}
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cfr-lm
+  (package
+    (name "texlive-cfr-lm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cfr-lm/"
+                   "fonts/enc/dvips/cfr-lm/"
+                   "fonts/map/dvips/cfr-lm/"
+                   "fonts/tfm/public/cfr-lm/"
+                   "fonts/vf/public/cfr-lm/"
+                   "source/fonts/cfr-lm/"
+                   "tex/latex/cfr-lm/")
+             (base32
+              "06zsvbnpg93gw7m0nfsxc1hcqi6idgdc3xwwwy954fx13dpvrqfi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cfr-lm")
+    (synopsis "Enhanced support for the Latin Modern fonts")
+    (description
+     "The package supports a number of features of the Latin Modern fonts
+which are not easily accessible via the default (La)TeX support.  In
+particular, the package supports the use of the various styles of digits
+available, small-caps and upright italic shapes, and alternative weights and
+widths.  It also supports variable width typewriter and the @code{quotation}
+font.
+
+By default, the package uses proportional oldstyle digits and variable width
+typewriter but this can be changed by passing appropriate options to the
+package.  The package also supports using (for example) different styles of
+digits within a document so it is possible to use proportional oldstyle digits
+by default, say, but tabular lining digits within a particular table.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chbibref
   (package
     (name "texlive-chbibref")
