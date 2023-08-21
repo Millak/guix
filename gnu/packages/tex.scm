@@ -22016,6 +22016,24 @@ is a development of the existing @code{qobitree} package, offering a new front
 end.")
     (license license:lppl)))
 
+(define-public texlive-qualitype
+  (package
+    (name "texlive-qualitype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/qualitype/"
+                   "fonts/opentype/public/qualitype/")
+             (base32
+              "027n3i9cy4p7wkbj1zrlsvagplxk74gz5cwv7mr4yl8gqzd41058")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qualitype")
+    (synopsis "QualiType font collection")
+    (description
+     "This is a collection of 45 fonts, created by QualiType.")
+    (license (list license:silofl1.1 license:gpl2+))))
+
 (define-public texlive-rank-2-roots
   (package
     (name "texlive-rank-2-roots")
