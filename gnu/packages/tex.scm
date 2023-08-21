@@ -20224,6 +20224,27 @@ arrowheads.  It is also possible to use the usual new-style Computer Modern
 arrows together with the old-style ones.")
     (license license:lppl1.3+)))
 
+(define-public texlive-oldlatin
+  (package
+    (name "texlive-oldlatin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/oldlatin/"
+                   "fonts/source/public/oldlatin/"
+                   "fonts/tfm/public/oldlatin/")
+             (base32
+              "1fvy8myxxa3a5g2s8b5m57a9ijg1qanwcrf701s9lix5yxaqn474")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/oldlatin")
+    (synopsis "Compute Modern-like font with long @emph{s}")
+    (description
+     "This package provides Metafont sources modified from Computer Modern in
+order to generate long @emph{s}, which was used in old text.")
+    (license license:lppl)))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
