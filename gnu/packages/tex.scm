@@ -8433,6 +8433,38 @@ Emphasis for bold-face comes from a wavy underline of each letter.  The two
 fonts are supplied as Metafont source.")
     (license license:public-domain)))
 
+(define-public texlive-cmsrb
+  (package
+    (name "texlive-cmsrb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cmsrb/"
+                   "fonts/afm/public/cmsrb/"
+                   "fonts/enc/dvips/cmsrb/"
+                   "fonts/map/dvips/cmsrb/"
+                   "fonts/tfm/public/cmsrb/"
+                   "fonts/type1/public/cmsrb/"
+                   "fonts/vf/public/cmsrb/"
+                   "tex/latex/cmsrb/")
+             (base32
+              "0f6ylk8n881sl0njbz7yqy98pbk51s6m73zldcsz2w62qnghd1x0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmsrb")
+    (synopsis "Computer Modern for Serbian and Macedonian")
+    (description
+     "This package provides provides Adobe Type 1 Computer Modern fonts for
+the Serbian and Macedonian languages.  Although the @code{cm-super} package
+provides great support for Cyrillic script in various languages, there remains
+a problem with italic variants of some letters for Serbian and Macedonian.
+This package includes the correct shapes for italic letters @code{\\cyrb},
+@code{\\cyrg}, @code{\\cyrd}, @code{\\cyrp}, and @code{\\cyrt}.  It also
+offers some improvements in letters and accents used in the Serbian language.
+Supported encodings are: T1, T2A, TS1, X2 and OT2.  The OT2 encoding is
+modified so that it is now easy to transcribe Latin text to Cyrillic.")
+    (license license:gpl3+)))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
