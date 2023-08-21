@@ -18850,6 +18850,38 @@ as Metafont source and as Adobe Type 1 format, and a comprehensive support
 package is provided.")
     (license license:public-domain)))
 
+(define-public texlive-montserrat
+  (package
+    (name "texlive-montserrat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/montserrat/"
+                   "fonts/enc/dvips/montserrat/"
+                   "fonts/map/dvips/montserrat/"
+                   "fonts/opentype/public/montserrat/"
+                   "fonts/tfm/public/montserrat/"
+                   "fonts/type1/public/montserrat/"
+                   "fonts/vf/public/montserrat/"
+                   "tex/latex/montserrat/")
+             (base32
+              "08aaypw8l30sb0rvv2s9jcw15k3909xam98z2c6vj2x5jyi9wzn7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/montserrat")
+    (synopsis "Montserrat sans serif, with LaTeX support files")
+    (description
+     "Montserrat is a geometric sans-serif typeface designed by Julieta
+Ulanovsky.  It is rather close in spirit to Gotham and Proxima Nova, but has
+its own individual appearance --- more informal, less extended, and more
+idiosyncratic.  It is provided in a total of nine different weights, each
+having eight figure styles and small caps in both upright and italic shapes.
+There are two quite different versions that don't fit into the usual LaTeX
+classifications.  The version having the appellation Alternates has letter
+shapes that are much more rounded than the default version, reflecting the
+signage in the neighborhood of Montserrat.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-multibib
   (package
     (name "texlive-multibib")
