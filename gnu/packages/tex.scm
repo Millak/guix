@@ -15407,6 +15407,32 @@ the Josefin Sans family of fonts, designed by Santiago Orozco.  Josefin Sans
 is available in seven weights, with corresponding italics.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-junicode
+  (package
+    (name "texlive-junicode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/junicode/"
+                   "fonts/enc/dvips/junicode/"
+                   "fonts/map/dvips/junicode/"
+                   "fonts/tfm/public/junicode/"
+                   "fonts/truetype/public/junicode/"
+                   "fonts/vf/public/junicode/"
+                   "tex/latex/junicode/")
+             (base32
+              "0i19bycw48mygvjm6ysawghj7wgb7md7gsvnrbhhfprmabl47j49")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/junicode")
+    (synopsis "TrueType font for medievalists")
+    (description
+     "Junicode is a TrueType font with many OpenType features for
+antiquarians (especially medievalists) based on typefaces used by the Oxford
+Press in the late 17th and early 18th centuries.  It works well with
+Xe(La)TeX.")
+    (license license:silofl1.1)))
+
 (define-public texlive-jupynotex
   (package
     (name "texlive-jupynotex")
