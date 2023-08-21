@@ -3772,6 +3772,34 @@ all shapes.  It includes OpenType and PostScript fonts, as well as LaTeX
 support files.")
     (license (list license:gpl2+ license:lppl1.3+))))
 
+(define-public texlive-baskervillef
+  (package
+    (name "texlive-baskervillef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/baskervillef/"
+                   "fonts/enc/dvips/baskervillef/"
+                   "fonts/map/dvips/baskervillef/"
+                   "fonts/opentype/public/baskervillef/"
+                   "fonts/tfm/public/baskervillef/"
+                   "fonts/type1/public/baskervillef/"
+                   "fonts/vf/public/baskervillef/"
+                   "tex/latex/baskervillef/")
+             (base32
+              "107lqn684kgr7fk3zh1lgi6q7hqz9gs18kkg3fbbrg9qjva1j4xv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/baskervillef")
+    (synopsis "Fry's Baskerville look-alike, with math support")
+    (description
+     "BaskervilleF is a fork from the Libre Baskerville fonts (Roman, Italic,
+Bold only).  Their fonts are optimized for web usage, while BaskervilleF is
+optimized for traditional TeX usage, normally destined for production of PDF
+files.  A bold italic style was added and mathematical support is offered as
+an option to @code{newtxmath}.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-basque-book
   (package
     (name "texlive-basque-book")
