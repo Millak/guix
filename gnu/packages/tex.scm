@@ -3744,6 +3744,34 @@ italic or oblique shapes in each of regular, bold and heavy weights.  All
 fonts include the slashed zero and additional non-standard ligatures.")
     (license license:lppl)))
 
+(define-public texlive-baskervaldx
+  (package
+    (name "texlive-baskervaldx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/baskervaldx/"
+                   "fonts/afm/public/baskervaldx/"
+                   "fonts/enc/dvips/baskervaldx/"
+                   "fonts/map/dvips/baskervaldx/"
+                   "fonts/opentype/public/baskervaldx/"
+                   "fonts/tfm/public/baskervaldx/"
+                   "fonts/type1/public/baskervaldx/"
+                   "fonts/vf/public/baskervaldx/"
+                   "tex/latex/baskervaldx/")
+             (base32
+              "1qszqzpy9bdqajd1h7cha0xm0kgy21q9yzsrrgwygchkz9zv6r66")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/baskervaldx")
+    (synopsis "Extension and modification of BaskervaldADF with LaTeX support")
+    (description
+     "This package extends and modifies the BaskervaldADF font (a Baskerville
+substitute) with more accented glyphs, with small caps and oldstyle figures in
+all shapes.  It includes OpenType and PostScript fonts, as well as LaTeX
+support files.")
+    (license (list license:gpl2+ license:lppl1.3+))))
+
 (define-public texlive-basque-book
   (package
     (name "texlive-basque-book")
