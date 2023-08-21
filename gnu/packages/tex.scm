@@ -20147,6 +20147,28 @@ mid-document.")
     ;; without limitation."
     (license (license:fsf-free "file://doc/fonts/ocr-b-outline/README"))))
 
+(define-public texlive-ogham
+  (package
+    (name "texlive-ogham")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ogham/"
+                   "fonts/source/public/ogham/"
+                   "fonts/tfm/public/ogham/")
+             (base32
+              "0lk419jbg3ahgcrmffl7snbgv521fccjpsx5i0nq55cs9vrsnav1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/ogham")
+    (synopsis "Fonts for typesetting Ogham script")
+    (description
+     "The font provides the Ogham alphabet, which is found on a number of
+Irish and Pictish carvings dating from the 4th century AD.  The font is
+distributed as Metafont source.")
+    (license license:public-domain)))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
