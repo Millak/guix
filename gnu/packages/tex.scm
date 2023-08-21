@@ -9597,6 +9597,33 @@ distributed as Metafont source.")
     (license
      (license:fsf-free "file://fonts/source/public/dancers/dancers.mf"))))
 
+(define-public texlive-dantelogo
+  (package
+    (name "texlive-dantelogo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dantelogo/"
+                   "fonts/enc/dvips/dantelogo/"
+                   "fonts/map/dvips/dantelogo/"
+                   "fonts/opentype/public/dantelogo/"
+                   "fonts/tfm/public/dantelogo/"
+                   "fonts/type1/public/dantelogo/"
+                   "fonts/vf/public/dantelogo/"
+                   "tex/latex/dantelogo/")
+             (base32
+              "19wz5qyr4bhd0dwp0y38ql87s3103yimg5b6r2mjz4mz0dsiyy1b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dantelogo")
+    (synopsis "Font for DANTE's logo")
+    (description
+     "The DANTE font for the logo of @url{https://www.dante.de, DANTE}, the
+German speaking TeX users group.  The font includes only the five characters
+@samp{d}, @samp{a}, @samp{n}, @samp{t}, and @samp{e}.  @file{dantelogo.sty}
+provides an interface for LuaLaTeX, XeLaTeX, and pdfLaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-decision-table
   (package
     (name "texlive-decision-table")
