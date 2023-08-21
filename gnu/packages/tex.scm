@@ -18818,6 +18818,38 @@ accented letters using ordinary Computer Modern (CM) fonts.  The system is
 distributed as a TeX change file.")
     (license license:knuth)))
 
+(define-public texlive-mnsymbol
+  (package
+    (name "texlive-mnsymbol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mnsymbol/"
+                   "fonts/enc/dvips/mnsymbol/"
+                   "fonts/map/dvips/mnsymbol/"
+                   "fonts/map/vtex/mnsymbol/"
+                   "fonts/opentype/public/mnsymbol/"
+                   "fonts/source/public/mnsymbol/"
+                   "fonts/tfm/public/mnsymbol/"
+                   "fonts/type1/public/mnsymbol/"
+                   "source/latex/mnsymbol/"
+                   "tex/latex/mnsymbol/")
+             (base32
+              "164zspl0wcpmba9j0kl6wy8k46xaafjvwjp0dn82dzh73r85jdk2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/mnsymbol")
+    (synopsis "Mathematical symbol font for Adobe MinionPro")
+    (description
+     "MnSymbol is a symbol font family, designed to be used in conjunction
+with Adobe Minion Pro (via the MinionPro package).  Almost all of LaTeX and
+AMS mathematical symbols are provided; remaining coverage is available from
+the MinionPro font with the MinionPro package.  The fonts are available both
+as Metafont source and as Adobe Type 1 format, and a comprehensive support
+package is provided.")
+    (license license:public-domain)))
+
 (define-public texlive-multibib
   (package
     (name "texlive-multibib")
