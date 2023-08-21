@@ -1844,6 +1844,34 @@ standalone documents cumbersome to customize, and has arbitrary and
 inconsistent differences between the input syntax and the program text.")
     (license license:gpl3+)))
 
+(define-public texlive-algolrevived
+  (package
+    (name "texlive-algolrevived")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/algolrevived/"
+                   "fonts/enc/dvips/algolrevived/"
+                   "fonts/map/dvips/algolrevived/"
+                   "fonts/opentype/public/algolrevived/"
+                   "fonts/tfm/public/algolrevived/"
+                   "fonts/type1/public/algolrevived/"
+                   "fonts/vf/public/algolrevived/"
+                   "tex/latex/algolrevived/")
+             (base32
+              "0709ijp5jqajwdc9ryhjp4jky0pqynj9wj3rryxk9z6sm63pbq1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/algolrevived")
+    (synopsis "Revival of Frutiger's Algol alphabet")
+    (description
+     "The package revives Frutiger's Algol alphabet, designed in 1963 for the
+code segments in an ALGOL manual.  It provides OpenType and Type 1, regular
+and medium weights, upright and slanted variations.  Albeit not monospaced,
+this font is good for listings if you don't need code to be aligned with
+specific columns.  It also makes a passable but limited text font.")
+    (license (list license:silofl1.1 license:lppl1.3c))))
+
 (define-public texlive-algorithm2e
   (package
     (name "texlive-algorithm2e")
