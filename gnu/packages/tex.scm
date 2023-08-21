@@ -23586,6 +23586,30 @@ and subcategories.  It does not depend on BibTeX: any bibliography may be
 split and reordered.")
     (license license:lppl)))
 
+(define-public texlive-srbtiks
+  (package
+    (name "texlive-srbtiks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/srbtiks/"
+                   "fonts/enc/dvips/srbtiks/"
+                   "fonts/map/dvips/srbtiks/"
+                   "fonts/tfm/public/srbtiks/"
+                   "fonts/vf/public/srbtiks/"
+                   "tex/latex/srbtiks/")
+             (base32
+              "12b4xigicn259ghi5kc6nyk0bqr81kdiqfg0hql9fpwrldvbj4k6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/srbtiks")
+    (synopsis "Font STIX2 for Serbian and Macedonian")
+    (description
+     "The @code{srbtiks} package is the extension of the @code{stix2-type1}
+package that enables usage of the STIX2 font in LaTeX for the Serbian and
+Macedonian languages.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 (define-public texlive-stage
   (package
     (name "texlive-stage")
