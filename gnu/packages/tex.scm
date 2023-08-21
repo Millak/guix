@@ -8655,6 +8655,32 @@ which always appear in the same sequence in @code{\\cite}, into a single
      "This package provides support for colour separation when using Dvips.")
     (license license:public-domain)))
 
+(define-public texlive-comfortaa
+  (package
+    (name "texlive-comfortaa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/comfortaa/"
+                   "fonts/enc/dvips/comfortaa/"
+                   "fonts/map/dvips/comfortaa/"
+                   "fonts/tfm/aajohan/comfortaa/"
+                   "fonts/truetype/aajohan/comfortaa/"
+                   "fonts/type1/aajohan/comfortaa/"
+                   "fonts/vf/aajohan/comfortaa/"
+                   "tex/latex/comfortaa/")
+             (base32
+              "1ayh1f0f1a0qkngsk84zwzyx5kidb2n5wq2ksk0d7r68m8cbs981")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/comfortaa")
+    (synopsis "Sans serif font, with LaTeX support")
+    (description
+     "Comfortaa is a sans-serif font, comfortable in every aspect, designed by
+Johan Aakerlund.  This package provides support for this font in LaTeX, and
+includes both the TrueType fonts, and conversions to Adobe Type 1 format.")
+    (license (list license:silofl1.1 license:lppl1.3c))))
+
 (define-public texlive-commath
   (package
     (name "texlive-commath")
