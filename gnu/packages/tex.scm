@@ -1590,6 +1590,34 @@ devoted to representing natural language expressions.")
 available for distribution by Adobe.")
     (license license:bsd-3)))
 
+(define-public texlive-aesupp
+  (package
+    (name "texlive-aesupp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/aesupp/"
+                   "fonts/enc/dvips/aesupp/"
+                   "fonts/map/dvips/aesupp/"
+                   "fonts/opentype/public/aesupp/"
+                   "fonts/tfm/public/aesupp/"
+                   "fonts/type1/public/aesupp/"
+                   "source/fonts/aesupp/"
+                   "tex/latex/aesupp/")
+             (base32
+              "1sx5802d1ib72i0ssjpr0c54pgq1s980wg3q1685pjniw68ns1vj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aesupp")
+    (synopsis "Special support for the @samp{ae} character")
+    (description
+     "This package provides special support for the italic @samp{ae} character
+in some fonts, due to design flaws (in the author's opinion) regarding this
+character.  At the moment only the fonts TeX Gyre Bonum, TeX Gyre Schola, TeX
+Gyre Pagella, and the Latin Modern fonts are supported.  The other fonts in
+the TeX Gyre bundle do not need this support.")
+    (license (list license:gfl1.0 license:gpl3+))))
+
 (define-public texlive-afm2pl
   (package
     (name "texlive-afm2pl")
