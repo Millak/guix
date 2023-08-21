@@ -20197,6 +20197,33 @@ the Inuktitut language.  Five different input methods are supported and with
 the necessary fonts are also provided.")
     (license license:lppl)))
 
+(define-public texlive-old-arrows
+  (package
+    (name "texlive-old-arrows")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/old-arrows/"
+                   "fonts/afm/public/old-arrows/"
+                   "fonts/enc/dvips/old-arrows/"
+                   "fonts/map/dvips/old-arrows/"
+                   "fonts/tfm/public/old-arrows/"
+                   "fonts/type1/public/old-arrows/"
+                   "tex/latex/old-arrows/")
+             (base32
+              "0lrw3r982646pdp5nf9y9s8w85c2zw7cvbq3lqa3d3lsnykvn3y7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/old-arrows")
+    (synopsis "Computer Modern old-style arrows with smaller arrowheads")
+    (description
+     "This package provides Computer Modern old-style arrows with smaller
+arrowheads, associated with the usual LaTeX commands.  It can be used in
+documents that contain other amssymb arrow characters that also have small
+arrowheads.  It is also possible to use the usual new-style Computer Modern
+arrows together with the old-style ones.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-omega
   (package
     (name "texlive-omega")
