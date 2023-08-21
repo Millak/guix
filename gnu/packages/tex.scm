@@ -20954,6 +20954,34 @@ number of units provided should cover--in Turton's estimate--about 90 percent
 of all fluid processing operations.")
     (license license:lppl1.3c)))
 
+(define-public texlive-phaistos
+  (package
+    (name "texlive-phaistos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/phaistos/"
+                   "fonts/afm/public/phaistos/"
+                   "fonts/map/dvips/phaistos/"
+                   "fonts/opentype/public/phaistos/"
+                   "fonts/tfm/public/phaistos/"
+                   "fonts/type1/public/phaistos/"
+                   "source/fonts/phaistos/"
+                   "tex/latex/phaistos/")
+             (base32
+              "0b5mjfzmhr6dw6i90mjym2hwi4cm2jfwfagl41dm6grnznwcn8bb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phaistos")
+    (synopsis "Disk of Phaistos font")
+    (description
+     "This package provides a font that contains all the symbols of the famous
+Disc of Phaistos, together with a LaTeX package.  The disc was printed by
+stamping the wet clay with some sort of punches, probably around 1700 BCE.
+The font is available in Adobe Type 1 and OpenType formats (the latter using
+the Unicode positions for the symbols).")
+    (license license:lppl)))
+
 (define-public texlive-physconst
   (package
     (name "texlive-physconst")
