@@ -9812,6 +9812,27 @@ may be controlled.  The package also provides @code{\\slashbox} and
 package, which it supersedes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dice
+  (package
+    (name "texlive-dice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dice/"
+                   "fonts/source/public/dice/"
+                   "fonts/tfm/public/dice/")
+             (base32
+              "0ky33hg66d0x8bcjmdq4ilynpb25mm82x93wzwnz11y59nv4cvsl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/dice")
+    (synopsis "Font for die faces")
+    (description
+     "This package provides a Metafont font that can produce die faces in 2D
+or with various 3D effects.")
+    (license license:lppl)))
+
 (define-public texlive-din1505
   (package
     (name "texlive-din1505")
