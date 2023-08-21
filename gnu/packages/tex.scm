@@ -24477,6 +24477,35 @@ in colleges and lycées (and perhaps elsewhere).  It is hoped that the package
 will facilitate the everyday use of LaTeX by mathematics teachers.")
     (license license:lppl)))
 
+(define-public texlive-tempora
+  (package
+    (name "texlive-tempora")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/tempora/"
+                   "fonts/afm/public/tempora/"
+                   "fonts/enc/dvips/tempora/"
+                   "fonts/map/dvips/tempora/"
+                   "fonts/opentype/public/tempora/"
+                   "fonts/tfm/public/tempora/"
+                   "fonts/type1/public/tempora/"
+                   "fonts/vf/public/tempora/"
+                   "tex/latex/tempora/")
+             (base32
+              "0vcg6al4navxhaha78zxigpwaj631hgm47z3ic36335rb80p8b83")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tempora")
+    (synopsis "Greek and Cyrillic to accompany Times")
+    (description
+     "This package, derived from TemporaLGCUni by Alexej Kryukov, is meant as
+a companion to Times text font packages, providing Greek and Cyrillic in
+matching weights and styles.  OpenType and Type1 fonts are provided, with
+LaTeX support files giving essentially complete LGR coverage of monotonic,
+polytonic and ancient Greek, and almost full T2A coverage of Cyrillic.")
+    (license license:gpl2)))
+
 (define-public texlive-tensind
   (package
     (name "texlive-tensind")
