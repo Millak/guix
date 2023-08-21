@@ -19638,6 +19638,36 @@ the columns; tools to color rows and columns with a good PDF result; blocks of
 cells; etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nimbus15
+  (package
+    (name "texlive-nimbus15")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/nimbus15/"
+                   "fonts/afm/public/nimbus15/"
+                   "fonts/enc/dvips/nimbus15/"
+                   "fonts/map/dvips/nimbus15/"
+                   "fonts/opentype/public/nimbus15/"
+                   "fonts/tfm/public/nimbus15/"
+                   "fonts/type1/public/nimbus15/"
+                   "fonts/vf/public/nimbus15/"
+                   "tex/latex/nimbus15/")
+             (base32
+              "1x5y8jcwg3ns4jdz3rqzmd1xsfsdjbab70dnlm3n7lgs64ljlzyk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-fontools))
+    (home-page "https://ctan.org/pkg/nimbus15")
+    (synopsis "Support files for Nimbus 2015 Core fonts")
+    (description
+     "The Nimbus 2015 Core fonts added Greek and Cyrillic glyphs.  This
+package may be best suited as an add-on to the comprehensive Times package,
+providing support for Greek and Cyrillic.  A new intermediate weight of
+NimbusMono (AKA Courier) is provided, along with a narrower version which may
+be useful for rendering code.")
+    (license (list license:agpl3 license:lppl1.3+))))
+
 (define-public texlive-nimsticks
   (package
     (name "texlive-nimsticks")
