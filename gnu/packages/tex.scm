@@ -8465,6 +8465,33 @@ Supported encodings are: T1, T2A, TS1, X2 and OT2.  The OT2 encoding is
 modified so that it is now easy to transcribe Latin text to Cyrillic.")
     (license license:gpl3+)))
 
+(define-public texlive-cmtiup
+  (package
+    (name "texlive-cmtiup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cmtiup/"
+                   "fonts/source/public/cmtiup/"
+                   "fonts/tfm/public/cmtiup/"
+                   "fonts/vf/public/cmtiup/"
+                   "tex/latex/cmtiup/")
+             (base32
+              "0cdm10aybgc8ifi11fahl3hb18blmibk08b4b5m8q88150ic563r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cmtiup")
+    (synopsis "Upright punctuation with CM italic")
+    (description
+     "The @code{cmtiup} fonts address a problem with the appearance of
+punctuation in italic text in mathematical documents.  To achieve this, all
+punctuation characters are upright, and kerning between letters and
+punctuation is adjusted to allow for the italic correction.  The fonts are
+implemented as a set of @file{.vf} files; a package for support in LaTeX is
+provided.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-cochineal
   (package
     (name "texlive-cochineal")
