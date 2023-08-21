@@ -11265,6 +11265,27 @@ load some of the more useful LaTeX packages, notably @code{graphics},
 and @code{url}.")
     (license license:gpl2+)))
 
+(define-public texlive-epsdice
+  (package
+    (name "texlive-epsdice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/epsdice/" "source/latex/epsdice/"
+                   "tex/latex/epsdice/")
+             (base32
+              "09h3jqb44vl1jpb3hf6gbpfpbvfv6lvdvjmp4xpzhl1zs672wccj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epsdice")
+    (synopsis "Scalable dice font")
+    (description
+     "The @code{epsdice} package defines a single command @code{\\epsdice}
+that takes a numeric argument (in the range 1-6), and selects a face image
+from a file that contains each of the 6 possible die faces.  The graphic file
+is provided in both Encapsulated PostScript and PDF formats.")
+    (license license:lppl)))
+
 (define-public texlive-epslatex-fr
   (package
     (name "texlive-epslatex-fr")
