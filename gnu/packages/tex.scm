@@ -13229,6 +13229,32 @@ statements are taken from EU regulation 1272/2008.")
 the package implements unslanted italic Computer Modern fonts.")
     (license license:bsd-3)))
 
+(define-public texlive-gillius
+  (package
+    (name "texlive-gillius")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/gillius/"
+                   "fonts/enc/dvips/gillius/"
+                   "fonts/map/dvips/gillius/"
+                   "fonts/opentype/arkandis/gillius/"
+                   "fonts/tfm/arkandis/gillius/"
+                   "fonts/type1/arkandis/gillius/"
+                   "fonts/vf/arkandis/gillius/"
+                   "tex/latex/gillius/")
+             (base32
+              "0f2jr70ab5qnmla1n7iwhiw9x9q5fdzw9lcgjzji8rdqlsgq1451")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gillius")
+    (synopsis "Gillius fonts with LaTeX support")
+    (description
+     "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the Gillius and Gillius No.@: 2 families of sans serif fonts and condensed
+versions of them, designed by Hirwen Harendal.")
+    (license (list license:gpl2+ license:lppl))))
+
 (define-public texlive-glosmathtools
   (package
     (name "texlive-glosmathtools")
