@@ -2893,6 +2893,31 @@ writings.")
 Omnibus-Type, with support for LaTeX and pdfLaTeX.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-arimo
+  (package
+    (name "texlive-arimo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/arimo/"
+                   "fonts/enc/dvips/arimo/"
+                   "fonts/map/dvips/arimo/"
+                   "fonts/tfm/google/arimo/"
+                   "fonts/truetype/google/arimo/"
+                   "fonts/type1/google/arimo/"
+                   "fonts/vf/google/arimo/"
+                   "tex/latex/arimo/")
+             (base32
+              "06m23slsvcp0pm2ds2rxmgj0qrrvy8qknda4yjhvcz9almwb4syx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arimo")
+    (synopsis "Arimo sans serif fonts with LaTeX support")
+    (description
+     "The Arimo family, designed by Steve Matteson, is a refreshing sans serif
+design which is metrically compatible with Arial.")
+    (license license:asl2.0)))
+
 (define-public texlive-armtex
   (package
     (name "texlive-armtex")
