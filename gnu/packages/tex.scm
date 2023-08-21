@@ -25213,6 +25213,25 @@ is used by logicians for denoting a consequence relation, related to a given
 logic, between a collection of formulas and a derived formula.")
     (license license:lppl)))
 
+(define-public texlive-twemoji-colr
+  (package
+    (name "texlive-twemoji-colr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/twemoji-colr/"
+                   "fonts/truetype/public/twemoji-colr/")
+             (base32
+              "0qadwv7malbji28pxjpz3r53kb94grp435yk8h7i93x143vd8p9n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/twemoji-colr")
+    (synopsis "Twemoji font in COLR/CPAL layered format")
+    (description
+     "This is a COLR/CPAL-based color OpenType font from the Twemoji
+collection of emoji images.")
+    (license (list license:cc-by-sa4.0 license:asl2.0))))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
