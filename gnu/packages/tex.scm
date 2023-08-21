@@ -21913,6 +21913,29 @@ several variants of each glyph, and uses the OpenType randomize function to
 select a variant for each invocation.")
     (license license:knuth)))
 
+(define-public texlive-pxtxalfa
+  (package
+    (name "texlive-pxtxalfa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/pxtxalfa/"
+                   "fonts/tfm/public/pxtxalfa/"
+                   "fonts/vf/public/pxtxalfa/"
+                   "tex/latex/pxtxalfa/")
+             (base32
+              "1zanrgazaffpby6jmfncyq2g4sgi23p27wi2dx18zp0350ai55ia")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxtxalfa")
+    (synopsis
+     "Virtual maths alphabets based on @code{pxfonts} and @code{txfonts}")
+    (description
+     "The package provides virtual math alphabets based on @code{pxfonts} and
+@code{txfonts}, with LaTeX support files and adjusted metrics.  The
+@code{mathalpha} package offers support for this collection.")
+    (license license:lppl)))
+
 (define-public texlive-pythonhighlight
   (package
     (name "texlive-pythonhighlight")
