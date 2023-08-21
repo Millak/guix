@@ -12169,6 +12169,28 @@ and complex notation.  Further many macros and shortcuts are added, e.g., for
 spaces, operators, physics unit, etc.")
     (license license:lppl)))
 
+(define-public texlive-foekfont
+  (package
+    (name "texlive-foekfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/foekfont/"
+                   "fonts/map/dvips/foekfont/"
+                   "fonts/tfm/public/foekfont/"
+                   "fonts/type1/public/foekfont/"
+                   "tex/latex/foekfont/")
+             (base32
+              "01l6mj5dh52cdaqdkv74j8qw2pfd6w7x53n856vsjgdha4r8362y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/foekfont")
+    (synopsis "Title font of the @emph{Mads Fok} magazine")
+    (description
+     "The bundle provides the Foek font, an Adobe Type 1 font, and LaTeX
+support for its use.")
+    (license license:gpl3+)))
+
 (define-public texlive-fontsize
   (package
     (name "texlive-fontsize")
