@@ -4161,6 +4161,33 @@ Type1 and in the OpenType format.  The package includes suitable font
 selection commands for use with LaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bguq
+  (package
+    (name "texlive-bguq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bguq/"
+                   "fonts/map/dvips/bguq/"
+                   "fonts/source/public/bguq/"
+                   "fonts/tfm/public/bguq/"
+                   "fonts/type1/public/bguq/"
+                   "source/fonts/bguq/"
+                   "tex/latex/bguq/")
+             (base32
+              "0d87ihzwq3lxhr28yaj1wpkvl4jgcfw8859g9mamrprkm7klm2rb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/bguq")
+    (synopsis "Improved quantifier stroke for Begriffsschrift packages")
+    (description
+     "The font contains a single character: the Begriffsschrift quantifier (in
+several sizes), as used to set the Begriffsschrift (concept notation) of
+Frege.  The font is not intended for end users; instead it is expected that it
+will be used by other packages which implement the Begriffsschrift.")
+    (license license:lppl)))
+
 (define-public texlive-bib-fr
   (package
     (name "texlive-bib-fr")
