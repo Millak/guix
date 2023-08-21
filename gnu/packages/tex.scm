@@ -14624,6 +14624,32 @@ uses by default the Arabic fonts Scheherazade and ALM fixed, the only
 monospaced Arabic font.  The package only works with LuaLaTeX or XeLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ibarra
+  (package
+    (name "texlive-ibarra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ibarra/"
+                   "fonts/enc/dvips/ibarra/"
+                   "fonts/map/dvips/ibarra/"
+                   "fonts/opentype/public/ibarra/"
+                   "fonts/tfm/public/ibarra/"
+                   "fonts/type1/public/ibarra/"
+                   "fonts/vf/public/ibarra/"
+                   "tex/latex/ibarra/")
+             (base32
+              "0gfvrb1dm2hw8j10l93xv0rrd7kar2009lycsvmw66m1a31c0yd9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ibarra")
+    (synopsis "LaTeX support for the Ibarra Real Nova family of fonts")
+    (description
+     "The Ibarra Real Nova is a revival of a typeface designed by Geronimo Gil
+for the publication of @emph{Don Quixote} for the Real Academia de la Lengua
+in 1780.")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-ibrackets
   (package
     (name "texlive-ibrackets")
