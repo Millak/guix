@@ -21250,6 +21250,33 @@ characters.  This helps achieve a more even typographical colour when
 typesetting proper nouns and initialisms.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-plex
+  (package
+    (name "texlive-plex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/plex/"
+                   "fonts/enc/dvips/plex/"
+                   "fonts/map/dvips/plex/"
+                   "fonts/opentype/ibm/plex/"
+                   "fonts/tfm/ibm/plex/"
+                   "fonts/type1/ibm/plex/"
+                   "fonts/vf/ibm/plex/"
+                   "tex/latex/plex/")
+             (base32
+              "0lvv5p2jmkr7cb0rml4iyzr5pf7bfks0a44sv49v1d2492j57jmv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plex")
+    (synopsis "Support for IBM Plex fonts")
+    (description
+     "The package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
+the IBM Plex families of fonts.  Serif, Sans and Mono families are available
+in eight weights: Regular, Light, ExtraLight, Thin, Bold, Text, Medium and
+SemiBold (with corresponding italics).")
+    (license (list license:silofl1.1 license:lppl))))
+
 (define-public texlive-pm-isomath
   (package
     (name "texlive-pm-isomath")
