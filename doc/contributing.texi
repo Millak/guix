@@ -77,6 +77,12 @@ hack on Guix:
 guix shell -D guix --pure
 @end example
 
+or even, from within a Git worktree for Guix:
+
+@example
+guix shell --pure
+@end example
+
 @xref{Invoking guix shell}, for more information on that command.
 
 If you are unable to use Guix when building Guix from a checkout, the
