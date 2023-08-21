@@ -19592,6 +19592,27 @@ access to the typewriter fonts from @code{newtx}.  Regular and bold weights,
 slanted variants and a choice of four different styles for zero.")
     (license (list license:gpl3 license:lppl))))
 
+(define-public texlive-niceframe-type1
+  (package
+    (name "texlive-niceframe-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/niceframe-type1/"
+                   "fonts/afm/public/niceframe-type1/"
+                   "fonts/map/dvips/niceframe-type1/"
+                   "fonts/type1/public/niceframe-type1/")
+             (base32
+              "0np6m165d5xa4y68hy62q39wp069darx63snzl168flj0j1q6qbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/niceframe-type1")
+    (synopsis "Type 1 versions of the fonts recommended in @code{niceframe}")
+    (description
+     "The bundle provides Adobe Type 1 versions of the fonts @code{bbding10},
+@code{dingbat}, @code{karta15}, @code{umranda} and @code{umrandb}.")
+    (license license:lppl)))
+
 (define-public texlive-nicematrix
   (package
     (name "texlive-nicematrix")
