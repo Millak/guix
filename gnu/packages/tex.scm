@@ -4038,6 +4038,34 @@ to deal with the Bengali letters that are not in Devanagari.  The package also
 supports Assamese.")
     (license license:lppl)))
 
+(define-public texlive-berenisadf
+  (package
+    (name "texlive-berenisadf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/berenisadf/"
+                   "fonts/afm/arkandis/berenisadf/"
+                   "fonts/enc/dvips/berenisadf/"
+                   "fonts/map/dvips/berenisadf/"
+                   "fonts/opentype/arkandis/berenisadf/"
+                   "fonts/tfm/arkandis/berenisadf/"
+                   "fonts/type1/arkandis/berenisadf/"
+                   "tex/latex/berenisadf/")
+             (base32
+              "11daizsls1zhwdfy78s2rjk76zwkziv33xrvrqbxybs2hdbg261d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/berenisadf")
+    (synopsis "Berenis ADF fonts and TeX/LaTeX support")
+    (description
+     "The bundle provides the BerenisADF Pro font collection, in OpenType and
+PostScript Type 1 formats, together with support files to use the fonts in
+TeXnANSI (LY1) and LaTeX standard T1 and TS1 encodings.")
+    ;; (La)TeX support is released under LPPL 1.3+ terms.  Fonts themselves
+    ;; use GPL 2+ with exceptions.
+    (license (list license:lppl1.3+ license:gpl2+))))
+
 (define-public texlive-besjournals
   (package
     (name "texlive-besjournals")
