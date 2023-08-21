@@ -23846,6 +23846,34 @@ in Adobe Type 1 format and LaTeX support.")
 numbers in the Steinmetz notation used in electrotechnics.")
     (license license:lppl)))
 
+(define-public texlive-step
+  (package
+    (name "texlive-step")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/step/"
+                   "fonts/enc/dvips/step/"
+                   "fonts/map/dvips/step/"
+                   "fonts/opentype/public/step/"
+                   "fonts/tfm/public/step/"
+                   "fonts/type1/public/step/"
+                   "fonts/vf/public/step/"
+                   "tex/latex/step/")
+             (base32
+              "1p2fzbsxrq98hlykw23j26xi936vnnd95qggjcn5a4jjwfrzbx1g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/step")
+    (synopsis "Times-like font")
+    (description
+     "The STEP fonts are a Times-like (i.e., Times replacement) font family,
+implementing a design first created for The Times of London in 1932.  These
+fonts are meant to be compatible in design with Adobe's digitization of
+Linotype Times, commonly used in publishing.  Type 1 support is provided for
+legacy TeX engines.")
+    (license license:silofl1.1)))
+
 (define-public texlive-structmech
   (package
     (name "texlive-structmech")
