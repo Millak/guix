@@ -9426,6 +9426,27 @@ for structuring exercises, aggregating points, and displaying a grading table,
 as well as several macros for easier math mode usage.")
     (license license:expat)))
 
+(define-public texlive-cuprum
+  (package
+    (name "texlive-cuprum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cuprum/"
+                   "fonts/map/dvips/cuprum/"
+                   "fonts/tfm/public/cuprum/"
+                   "fonts/truetype/public/cuprum/"
+                   "tex/latex/cuprum/")
+             (base32
+              "1wimmwjpx6dg41ncpjbrsxfv41ayppy87f1b8r38vyg0vw6vcsz5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cuprum")
+    (synopsis "Cuprum font family support for LaTeX")
+    (description
+     "This package provides support for the Cuprum font family.")
+    (license license:silofl1.1)))
+
 (define-public texlive-custom-bib
   (package
     (name "texlive-custom-bib")
