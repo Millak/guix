@@ -16422,6 +16422,28 @@ Cyrillic glyphs in Linux Libertine.  It functions as an add-on to the
 with that package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-libertinus
+  (package
+    (name "texlive-libertinus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libertinus/"
+                   "tex/latex/libertinus/")
+             (base32
+              "13m20jkrf0sp39f0ihc0fw7spzc3gys5xdc720r5gzdnbdqdvih4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libertinus")
+    (synopsis
+     "Use the correct @code{libertinus} package according to current TeX
+engine")
+    (description
+     "This package is only a wrapper for the two packages @code{libertinus-type1}
+(pdfLaTeX) and @code{libertinus-otf} (LuaLaTeX and XeLaTeX).  The Libertinus
+fonts are similiar to Libertine and Biolinum, but come with math symbols.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lie-hasse
   (package
     (name "texlive-lie-hasse")
