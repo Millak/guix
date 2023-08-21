@@ -12518,6 +12518,31 @@ The BibTeX styles were generated using @code{custom-bib} and they are
 compatible with @code{natbib}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-frcursive
+  (package
+    (name "texlive-frcursive")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/frcursive/"
+                   "fonts/map/dvips/frcursive/"
+                   "fonts/source/public/frcursive/"
+                   "fonts/tfm/public/frcursive/"
+                   "fonts/type1/public/frcursive/"
+                   "tex/latex/frcursive/")
+             (base32
+              "04pqic407b0pfri5sydhbani0fxw0bxy3fl6x4isg2m2z73p4qqa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/frcursive")
+    (synopsis "French cursive hand fonts")
+    (description
+     "This package provides a hand-writing font in the style of the French
+academic running-hand.  The font was written in Metafont and has been
+converted to Adobe Type 1 format.  LaTeX support is provided.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-frenchmath
   (package
     (name "texlive-frenchmath")
