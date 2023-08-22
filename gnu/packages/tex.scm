@@ -27961,6 +27961,25 @@ However, modifying the class for conformation to a different guideline should
 not be difficult.")
     (license license:public-domain)))
 
+(define-public texlive-spie
+  (package
+    (name "texlive-spie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/spie/" "bibtex/bst/spie/"
+                   "doc/latex/spie/" "tex/latex/spie/")
+             (base32
+              "1z4nbm2w96lvwfcj8ghnzarv5f5klriyr3b6jjnb34wd3kw52xg8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spie")
+    (synopsis "Support for formatting SPIE Proceedings manuscripts")
+    (description
+     "This package provides support for formatting SPIE Proceedings
+manuscripts.  A class and a BibTeX style are provided.")
+    (license license:lppl)))
+
 (define-public texlive-splitbib
   (package
     (name "texlive-splitbib")
