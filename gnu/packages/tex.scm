@@ -17785,6 +17785,25 @@ preparing the necessary ingredients for the cover letter;
 @end itemize")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-jpsj
+  (package
+    (name "texlive-jpsj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jpsj/" "tex/latex/jpsj/")
+             (base32
+              "0gvszj0igklm8b0p268j59ysfbahh03c6nbm6gpzkan3p4ijabdi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jpsj")
+    (synopsis
+     "Document class for @emph{Journal of the Physical Society of Japan}")
+    (description
+     "This package provides a document class for @emph{Journal of the Physical
+Society of Japan}.")
+    (license license:lppl)))
+
 (define-public texlive-junicode
   (package
     (name "texlive-junicode")
