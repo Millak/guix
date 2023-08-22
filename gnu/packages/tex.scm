@@ -2607,6 +2607,31 @@ equations and add annotation labels using TikZ.  It should work with pdfLaTeX
 as well as LuaLaTeX.")
     (license license:expat)))
 
+(define-public texlive-anonymous-acm
+  (package
+    (name "texlive-anonymous-acm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/anonymous-acm/"
+                   "tex/latex/anonymous-acm/")
+             (base32
+              "05csmx485sjky64d2hwlb5f7mrkixhw1gn3nl7p7lng9sd8qh25k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/anonymous-acm")
+    (synopsis "Typeset anonymous versions for ACM articles")
+    (description
+     "Academics often need to submit anonymous versions of their papers for
+peer-review.  This often requires anonymization which at some future date
+needs to be reversed.  However de-anonymizing an anonymized paper can be
+laborious and error-prone.  This LaTeX package allows anonymization options to
+be specified at the time of writing for authors using @code{acmart.cls}, the
+official @acronym{ACM, Association of Computing Machinery} master
+@code{article} template.  Anonymization or deanonymization is carried out by
+simply changing one option and recompiling.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-anonymouspro
   (package
     (name "texlive-anonymouspro")
