@@ -12196,6 +12196,29 @@ OT1 encoding.  Also offered are a couple of Metafont files described in the
 font package, but not provided there.")
     (license license:lppl)))
 
+(define-public texlive-einfart
+  (package
+    (name "texlive-einfart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/einfart/" "tex/latex/einfart/")
+             (base32
+              "11ibc51y76s1awp2flzfgkcbz26a6gr1dwl1d29jm4r9452acgnm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-minimalist))
+    (home-page "https://ctan.org/pkg/einfart")
+    (synopsis "Write your articles in a simple and clear way")
+    (description
+     "This package provides a LaTeX class for typesetting articles with a
+simple and clear design.  Currently, it has native support for Chinese
+(simplified and traditional), English, French, German, Italian, Japanese,
+Portuguese (European and Brazilian), Russian and Spanish typesetting.  It
+compiles with either XeLaTeX or LuaLaTeX.  This is part of the
+@code{minimalist} class series and depends on that package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ejpecp
   (package
     (name "texlive-ejpecp")
