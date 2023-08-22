@@ -25224,6 +25224,25 @@ Users may use the class itself (FUpowerdot) or use the package in the usual
 way with @code{\\style=BerlinFU} as a class option.")
     (license license:lppl)))
 
+(define-public texlive-powerdot-tuliplab
+  (package
+    (name "texlive-powerdot-tuliplab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/powerdot-tuliplab/"
+                   "tex/latex/powerdot-tuliplab/")
+             (base32
+              "0wwml3n7lrfm4m9xw3a14ksa8mcrrp2gbwi9y4m5pgz1r92jmph3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/powerdot-tuliplab")
+    (synopsis "Style package for Powerdot to provide the design of TULIP Lab")
+    (description
+     "@code{powerdot-tuliplab} is the LaTeX package used in TULIP Lab for
+presentation drafting.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-prftree
   (package
     (name "texlive-prftree")
