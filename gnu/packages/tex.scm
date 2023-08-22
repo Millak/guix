@@ -23283,6 +23283,29 @@ Nanjing University, saves the vector logos as TikZ pictures and provides
 a user-friendly interface to display them in documents and beamers.")
     (license license:lppl1.3c)))
 
+(define-public texlive-nostarch
+  (package
+    (name "texlive-nostarch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/nostarch/" "doc/latex/nostarch/"
+                   "makeindex/nostarch/"
+                   "source/latex/nostarch/"
+                   "tex/latex/nostarch/")
+             (base32
+              "06r1nmwg59ai6v2f80ndkwrcz2ssp1g03g3k5mq0wyyzs1rg4m9q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nostarch")
+    (synopsis "LaTeX class for No Starch Press")
+    (description
+     "The package provides the official LaTeX style for No Starch Press.
+Provided are a class, a package for interfacing to @code{hyperref} and an
+index style file.  The style serves both for printed and for electronic
+books.")
+    (license license:lppl)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
