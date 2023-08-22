@@ -18505,6 +18505,26 @@ packages in order to provide a document layout that should be compatible with
 the requirements by KSP.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ku-template
+  (package
+    (name "texlive-ku-template")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ku-template/"
+                   "tex/latex/ku-template/")
+             (base32
+              "1aa3rday97l1b7vca6sq1jwj81bqx6j7d0ijz0jr4vp3r27pxgs9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ku-template")
+    (synopsis "Copenhagen University or faculty logo for front page")
+    (description
+     "This package provides a comprehensive package for adding University of
+Copenhagen or faculty logo to your front page.  For use by student or staff at
+University of Copenhagen (Kobenhavns Universitet).")
+    (license license:expat)))
+
 (define-public texlive-kvmap
   (package
     (name "texlive-kvmap")
