@@ -26131,6 +26131,27 @@ solution of a linear system;
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-resphilosophica
+  (package
+    (name "texlive-resphilosophica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/resphilosophica/"
+                   "doc/latex/resphilosophica/"
+                   "source/latex/resphilosophica/"
+                   "tex/latex/resphilosophica/")
+             (base32
+              "12a0pnksxh3b0w9iwhly9sb8j6jhhmk9r1957mb7m01h435n9yb4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/resphilosophica")
+    (synopsis "Typeset articles for the journal @emph{Res Philosophica}")
+    (description
+     "The bundle provides a class for typesetting articles for the journal
+@emph{Res Philosophica}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-rest-api
   (package
     (name "texlive-rest-api")
