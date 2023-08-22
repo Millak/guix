@@ -24142,6 +24142,29 @@ also supported.")
     ;; condition for use are retained".
     (license (license:fsf-free "file://tex/latex/oubraces/oubraces.sty"))))
 
+(define-public texlive-oup-authoring-template
+  (package
+    (name "texlive-oup-authoring-template")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/oup-authoring-template/"
+                   "tex/latex/oup-authoring-template/")
+             (base32
+              "1fbkrka650pv2k5n0fcdcgmzlfpj2kzlg9d72d145b24zza79qh0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oup-authoring-template")
+    (synopsis
+     "General template for journals published by Oxford University
+Press (OUP)")
+    (description
+     "This package provides a general LaTeX template for journals published by
+@acronym{OUP, Oxford University Press}.  The template outputs to the three
+official page designs (traditional, contemporary, modern) used by many
+journals published by OUP, with large, medium and small page options.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-overarrows
   (package
     (name "texlive-overarrows")
