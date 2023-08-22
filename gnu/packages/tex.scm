@@ -19545,6 +19545,32 @@ the LinguisticsPro family of fonts.  This family is derived from the Utopia
 Nova font family, by Andreas Nolda.")
     (license (list license:lppl license:silofl1.1))))
 
+(define-public texlive-lion-msc
+  (package
+    (name "texlive-lion-msc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/lion-msc/" "doc/latex/lion-msc/"
+                   "tex/latex/lion-msc/")
+             (base32
+              "1yj3xwbd4lb5vjkfqhwhy82pc9p59vffah6zmiqbgjaj10q1ihb5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lion-msc")
+    (synopsis
+     "LaTeX class for B.Sc.@: and M.Sc.@: reports at Leiden Institute of
+Physics (LION)")
+    (description
+     "This is a LaTeX class for B.Sc.@: and M.Sc.@: reports at Leiden
+Institute of Physics (LION).  The purpose of this class is twofold.  It
+creates a uniform layout of the student theses from our department.  More
+importantly, it contains several fields on the front-page that the user needs
+to fill that are used in the university administration (name, student number
+and name of supervisor).  Students are free to change the layout of the text
+but should leave the title page as it is.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-listbib
   (package
     (name "texlive-listbib")
