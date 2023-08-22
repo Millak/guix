@@ -10245,6 +10245,29 @@ bearing the ability to support bachelor, master, doctor dissertations with
 grace and speed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-create-theorem
+  (package
+    (name "texlive-create-theorem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/create-theorem/"
+                   "tex/latex/create-theorem/")
+             (base32
+              "0pnb2n79qyipa2izj5v81rk973psvcmslkqxpivzm9gghrajkk9m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-crefthe))
+    (home-page "https://ctan.org/pkg/create-theorem")
+    (synopsis "Multilingual support for @code{theorem}-like environments")
+    (description
+     "This package provides commands for naming, initializing and configuring
+@code{theorem}-like environments.  These commands have key-value based
+interfaces and are especially useful in multilingual documents, allowing the
+easy declaration of @code{theorem}-like environments that can automatically
+adapt to the language settings.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-crefthe
   (package
     (name "texlive-crefthe")
