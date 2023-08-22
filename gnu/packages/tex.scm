@@ -17401,6 +17401,25 @@ of the package is the quick creation of a basic framework without much
 effort.")
     (license license:lppl1.3+)))
 
+(define-public texlive-iscram
+  (package
+    (name "texlive-iscram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iscram/" "tex/latex/iscram/")
+             (base32
+              "13p0nr6cwkchykdllf0ii035yjq7hxczb1g7qc7l7jaywfszr5ph")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iscram")
+    (synopsis "LaTeX class to publish article to ISCRAM conferences")
+    (description
+     "This is a LaTeX class to publish article to @acronym{ISCRAM,
+International Conference on Information Systems for Crisis Response and
+Management}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
