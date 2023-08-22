@@ -30804,6 +30804,27 @@ Please note that the documentation for the class and the comments in the
 templates are all written in French, the language of the target audience.")
     (license license:lppl1.3c)))
 
+(define-public texlive-umbclegislation
+  (package
+    (name "texlive-umbclegislation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/umbclegislation/"
+                   "tex/latex/umbclegislation/")
+             (base32
+              "0znzm0ymvz43f4kgvww79mnr7nl78xcmi7yw2vlwx332kq8hcw2v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/umbclegislation")
+    (synopsis
+     "LaTeX class for legislation files for UMBC Student Government
+Association Bills")
+    (description
+     "This is a LaTeX class for building legislation files for UMBC Student
+Government Association Bills.")
+    (license license:gpl3)))
+
 (define-public texlive-umtypewriter
   (package
     (name "texlive-umtypewriter")
