@@ -31293,6 +31293,30 @@ may also (optionally) provide other required sheets such as Originality,
 Copyright and Authenticity statements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uol-physics-report
+  (package
+    (name "texlive-uol-physics-report")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uol-physics-report/"
+                   "source/latex/uol-physics-report/"
+                   "tex/latex/uol-physics-report/")
+             (base32
+              "00rvqmrc1k67136748vq4j5c90iqa2ry65jkaqarazvlv8x77m4d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uol-physics-report")
+    (synopsis "LaTeX document class for writing lab reports")
+    (description
+     "The package provides physics students at the University of Oldenburg
+with a prepared document class for writing laboratory reports for the
+laboratory courses conducted by the Institute of Physics.  The document class
+consists of predefinded margins and heading formats.  Furthermore, it presets
+the headers of the pages and excludes the titlepage and table of contents from
+the page numbering.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-uppunctlm
   (package
     (name "texlive-uppunctlm")
