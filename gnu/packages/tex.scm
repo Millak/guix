@@ -27036,6 +27036,29 @@ class in the form of a package so that screenplay fragments can be included
 within another document class.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scripture
+  (package
+    (name "texlive-scripture")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scripture/"
+                   "source/latex/scripture/"
+                   "tex/latex/scripture/")
+             (base32
+              "05qw58is7qhs5nfmj1d576wc5wx5cg6aihnm8hm8npvqd4njl2gj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scripture")
+    (synopsis "LaTeX style for typesetting @emph{Bible} quotations")
+    (description
+     "The @code{scripture} package provides a set of macros for typesetting
+quotations from the @emph{Bible}.  It provides many features commonly seen in
+bibles such as dropped text for chapter numbers, superscripts for verse
+numbers, indented lines for poetry sections, narrow sections and hanging
+paragraphs.  A reference for the quotation can optionally be added.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-serbian-apostrophe
   (package
     (name "texlive-serbian-apostrophe")
