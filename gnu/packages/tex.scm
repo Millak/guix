@@ -17657,6 +17657,27 @@ package is a close relative of @code{apalike.sty} in the BibTeX distribution;
 it features author-date references.")
     (license license:knuth)))
 
+(define-public texlive-jmlr
+  (package
+    (name "texlive-jmlr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jmlr/" "source/latex/jmlr/"
+                   "tex/latex/jmlr/")
+             (base32
+              "125zcy1363xlay5ss411x1rl7nyidbh5aygvcr8q8j3qp4yqajrn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jmlr")
+    (synopsis "Class files for the @emph{Journal of Machine Learning Research}")
+    (description
+     "The @code{jmlr} bundle provides a class for authors (@code{jmlr}) and
+a class for production editors (@code{jmlrbook}) for the @emph{Journal of
+Machine Learning Research}.  The @code{jmlrbook} class can be used to combine
+articles written using the @code{jmlr} class into a book.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-jneurosci
   (package
     (name "texlive-jneurosci")
