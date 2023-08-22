@@ -22624,6 +22624,26 @@ adapt their size to the material enclosed, rendering @code{\\left} and
 @code{\\right} almost obsolete.")
     (license license:gpl3+)))
 
+(define-public texlive-nature
+  (package
+    (name "texlive-nature")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/nature/" "doc/latex/nature/"
+                   "tex/latex/nature/")
+             (base32
+              "04jxf6i83qnhy6i3rpqzm4nzqvc7r56ygx37741ii8yckz58xiah")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nature")
+    (synopsis "Prepare papers for the journal @emph{Nature}")
+    (description
+     "@emph{Nature} does not accept papers in LaTeX, but it does accept PDF.
+This class and BibTeX style provide what seems to be necessary to produce
+papers in a format acceptable to the publisher.")
+    (license license:lppl)))
+
 (define-public texlive-nchairx
   (package
     (name "texlive-nchairx")
