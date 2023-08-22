@@ -13268,6 +13268,27 @@ is adjusted to these cover pages.")
 fit @emph{Frontiers in Bioscience} requirements.")
     (license license:lppl)))
 
+(define-public texlive-fcavtex
+  (package
+    (name "texlive-fcavtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/fcavtex/" "doc/latex/fcavtex/"
+                   "tex/latex/fcavtex/")
+             (base32
+              "0l87wlh9mzh0hysfw35mlx3asqw7lvwc55yiqr01jbmv1hwgfnl6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fcavtex")
+    (synopsis "Thesis class for the FCAV/UNESP, Brazil")
+    (description
+     "This package provides a class and a bibliography style for the
+@acronym{FCAV-UNESP, Faculdade de Ciencias Agrarias e Veterinarias de
+Jaboticabal UNESP} Brazilian university, written based on the institution
+rules for thesis publications.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fdsymbol
   (package
     (name "texlive-fdsymbol")
