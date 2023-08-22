@@ -1586,6 +1586,28 @@ and workshops.  The layout produced by the @code{acmconf} class is based on
 the ACM's own specification.")
     (license license:lppl)))
 
+(define-public texlive-active-conf
+  (package
+    (name "texlive-active-conf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/active-conf/"
+                   "source/latex/active-conf/"
+                   "tex/latex/active-conf/")
+             (base32
+              "12krmwspwkhcwk5q0qf2hldnsk44vd2jfssfdiwm97alicc3cpj1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/active-conf")
+    (synopsis "Class for typesetting ACTIVE conference papers")
+    (description
+     "Active-conf is a class for typesetting papers for the Active conference
+on noise and vibration control.  The class is based on @code{article} with
+more flexible front-matter, and can be customised for conferences in future
+years with a header file.")
+    (license license:lppl)))
+
 (define-public texlive-adforn
   (package
     (name "texlive-adforn")
