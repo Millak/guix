@@ -49972,6 +49972,28 @@ to starred sectional commands) and the entries in the table of contents on
 a section by section basis.")
     (license license:lppl1.3+)))
 
+(define-public texlive-transparent
+  (package
+    (name "texlive-transparent")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/transparent/"
+                   "source/latex/transparent/"
+                   "tex/latex/transparent/")
+             (base32
+              "161lfx6yv8qgk76lz0j375swrk6012djay3sjxggrsx7l92qjvhd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/transparent")
+    (synopsis "Using a color stack for transparency with pdfTeX")
+    (description
+     "This package shows how a separate color stack can be used for
+transparency, a property besides color that works across page breaks.  If the
+PDF management is used it can also be used with other engines, but without
+support for page breaks.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-trimspaces
   (package
     (name "texlive-trimspaces")
