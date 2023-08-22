@@ -12844,6 +12844,26 @@ allow their use as @code{calligraphic}, @code{fraktur} and
 @code{double-struck} (blackboard bold) in maths mode.")
     (license license:silofl1.1)))
 
+(define-public texlive-estcpmm
+  (package
+    (name "texlive-estcpmm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/estcpmm/" "source/latex/estcpmm/"
+                   "tex/latex/estcpmm/")
+             (base32
+              "09fp8vidb9wzdsm05nira4p8dyjn75i1jhhwnr6k17pdrad1sqrj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/estcpmm")
+    (synopsis "Style for Munitions Management Project Reports")
+    (description
+     "This package provides a class which supports typesetting Cost and
+Performance Reports and Final Reports for Munitions Management Reports, US
+Environmental Security Technology Certification Program.")
+    (license license:lppl)))
+
 (define-public texlive-esvect
   (package
     (name "texlive-esvect")
