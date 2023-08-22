@@ -29732,6 +29732,54 @@ of Applied Sciences}.  These Logos are available in English and in Dutch.")
      "This package provides a Beamer theme designed for Tsinghua University.")
     (license license:lppl1.3c)))
 
+(define-public texlive-thucoursework
+  (package
+    (name "texlive-thucoursework")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thucoursework/"
+                   "source/latex/thucoursework/"
+                   "tex/latex/thucoursework/")
+             (base32
+              "1cv2kadwzwwrw3q98wy7cjjl3084qqp55ki50v7m2ylrjxinwkv4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "xelatex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-documentation-build
+            ;; Only extract the ".sty" files.
+            (lambda _
+              (substitute* "source/latex/thucoursework/thucoursework.dtx"
+                (("\\\\DocInput\\{\\\\jobname\\.dtx\\}") "")))))))
+    (native-inputs
+     (list texlive-booktabs
+           texlive-carlisle
+           texlive-ctex
+           texlive-enumitem
+           texlive-etoolbox
+           texlive-fancyhdr
+           texlive-hypdoc
+           texlive-kastrup
+           texlive-listings
+           texlive-metalogo
+           texlive-newpx
+           texlive-newtx
+           texlive-oberdiek
+           texlive-realscripts
+           texlive-xcolor
+           texlive-xstring))
+    (home-page "https://ctan.org/pkg/thucoursework")
+    (synopsis "Coursework template for Tsinghua University")
+    (description
+     "This package provides a LaTeX package for students of Tsinghua
+University to write coursework more efficiently.  It can also be used by
+students from other universities.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tinos
   (package
     (name "texlive-tinos")
