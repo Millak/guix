@@ -15295,6 +15295,29 @@ concept-script in the style of his @emph{Grundgesetze der Arithmetik} (Basic
 Laws of Arithmetic).")
     (license license:gpl2)))
 
+(define-public texlive-gsemthesis
+  (package
+    (name "texlive-gsemthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gsemthesis/"
+                   "source/latex/gsemthesis/"
+                   "tex/latex/gsemthesis/")
+             (base32
+              "0wwd6pddxb91gj6jr6zc0xy0sr0s0mbdjzyw856w9ds0lp0k6cl9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gsemthesis")
+    (synopsis "Geneva School of Economics and Management PhD thesis format")
+    (description
+     "The class provides a PhD thesis template for the @acronym{GSEM,
+Geneva School of Economics and Management}, University of Geneva, Switzerland.
+The class provides utilities to easily set up the cover page, the front matter
+pages, the page headers, etc., conformant to the official guidelines of the
+GSEM Faculty for writing PhD dissertations.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-gtrcrd
   (package
     (name "texlive-gtrcrd")
