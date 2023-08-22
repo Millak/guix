@@ -27059,6 +27059,25 @@ numbers, indented lines for poetry sections, narrow sections and hanging
 paragraphs.  A reference for the quotation can optionally be added.")
     (license license:lppl1.3c)))
 
+(define-public texlive-scrjrnl
+  (package
+    (name "texlive-scrjrnl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scrjrnl/" "source/latex/scrjrnl/"
+                   "tex/latex/scrjrnl/")
+             (base32
+              "10smy8cq2papzv63q5lsharxcn1l1ln97fhrd39wm2jf48967lbn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scrjrnl")
+    (synopsis "Typeset diaries or journals")
+    (description
+     "This package provides a class, based on @code{scrbook}, designed for
+typesetting diaries, journals or devotionals.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-serbian-apostrophe
   (package
     (name "texlive-serbian-apostrophe")
