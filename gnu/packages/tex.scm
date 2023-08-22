@@ -31273,6 +31273,26 @@ component of the University, but is designed as an idea for linking and
 uniformizing the look of all graduate papers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-unswcover
+  (package
+    (name "texlive-unswcover")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unswcover/"
+                   "tex/latex/unswcover/")
+             (base32
+              "0vdi90i07s8914sm7axn1pzks9d0w3qrsijynx5hxr7a36byafhp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unswcover")
+    (synopsis "Typeset a dissertation cover page following UNSW guidelines")
+    (description
+     "The package an UNSW cover sheet following the 2011 GRS guidelines.  It
+may also (optionally) provide other required sheets such as Originality,
+Copyright and Authenticity statements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-uppunctlm
   (package
     (name "texlive-uppunctlm")
