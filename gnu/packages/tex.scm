@@ -20734,6 +20734,25 @@ the citation key into the margin.")
 Mathématiques Appliquées et Industrielles (SMAI).")
     (license license:lppl1.3c)))
 
+(define-public texlive-matc3
+  (package
+    (name "texlive-matc3")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/matc3/" "source/latex/matc3/"
+                   "tex/latex/matc3/")
+             (base32
+              "1rmrkdcda87pjl1lvyvzky0vdhghx0j6z1vdi9fdz2122f2drmpm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/matc3")
+    (synopsis "Commands for Matematica C3 textbooks")
+    (description
+     "The package provides support for the Matematica C3 project to produce
+mathematical textbooks for use in Italian high schools.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-math-into-latex-4
   (package
     (name "texlive-math-into-latex-4")
