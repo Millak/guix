@@ -1824,6 +1824,27 @@ access journal @emph{Archives of Forensic Psychology}.")
 Of Technology.")
     (license license:public-domain)))
 
+(define-public texlive-aguplus
+  (package
+    (name "texlive-aguplus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/aguplus/" "doc/latex/aguplus/"
+                   "tex/latex/aguplus/")
+             (base32
+              "0qpi5r4y70cmxinr9y46rw6dfd337l5xhnqfvbkz27nw98j87fi3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aguplus")
+    (synopsis "Styles for American Geophysical Union")
+    (description
+     "This bundle started as an extension to the @acronym{AGU, American
+Geophysical Union}'s own published styles, providing extra facilities and
+improved usability.  The AGU now publishes satisfactory LaTeX materials of its
+own; it is recommended to switch to the official distribution.")
+    (license license:lppl)))
+
 (define-public texlive-aichej
   (package
     (name "texlive-aichej")
