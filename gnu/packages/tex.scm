@@ -30532,6 +30532,28 @@ of masters theses and PhD dissertations at the University of
 California, Berkeley.  It is based on the @code{memoir} class.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ucdavisthesis
+  (package
+    (name "texlive-ucdavisthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ucdavisthesis/"
+                   "source/latex/ucdavisthesis/"
+                   "tex/latex/ucdavisthesis/")
+             (base32
+              "0ymgnb2q77j5gfhcb4w4hvsafvs3vyygvzbq7zl9zgzzb02ml35j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ucdavisthesis")
+    (synopsis
+     "Thesis and dissertation class for University of California at Davis")
+    (description
+     "The @code{ucdavisthesis} class is a LaTeX class that allows you to
+create a dissertation or thesis conforming to UC Davis formatting
+requirements as of April 2016.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
