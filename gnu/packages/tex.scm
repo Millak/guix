@@ -27939,6 +27939,28 @@ a new and versatile serif face available in seven weights of roman and italic,
 with small caps.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-sphdthesis
+  (package
+    (name "texlive-sphdthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sphdthesis/"
+                   "tex/latex/sphdthesis/")
+             (base32
+              "05ncll9vd2yh15vp6gqzidrp011d1i2hsmlzfrfz954f9449ydx4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sphdthesis")
+    (synopsis "LaTeX template for writing PhD thesis")
+    (description
+     "The package provides a LaTeX document class for writing a PhD thesis.
+By default, the class adheres to the @acronym{NUS, National University of
+Singapore} Guidelines on Format of Research Thesis Submitted For Examination.
+However, modifying the class for conformation to a different guideline should
+not be difficult.")
+    (license license:public-domain)))
+
 (define-public texlive-splitbib
   (package
     (name "texlive-splitbib")
