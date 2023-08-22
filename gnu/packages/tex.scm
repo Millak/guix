@@ -26581,6 +26581,25 @@ Radboud University, Nijmegen.  It uses official vector logos from the
 university.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ryersonsgsthesis
+  (package
+    (name "texlive-ryersonsgsthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ryersonsgsthesis/"
+                   "tex/latex/ryersonsgsthesis/")
+             (base32
+              "170z5xqxwbx999dxlxhwf7mbml6j4pak6a8lgi4vbj8ii4njlygb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ryersonsgsthesis")
+    (synopsis "Ryerson School of Graduate Studies thesis template")
+    (description
+     "This package provides a LaTeX class and template files for Ryerson
+School of Graduate Studies (SGS) theses.")
+    (license license:asl2.0)))
+
 (define-public texlive-sankey
   (package
     (name "texlive-sankey")
