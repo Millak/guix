@@ -23154,6 +23154,32 @@ for the bachelor's curriculum.")
 be in compliance with North Dakota State University requirements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ndsu-thesis-2022
+  (package
+    (name "texlive-ndsu-thesis-2022")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ndsu-thesis-2022/"
+                   "tex/latex/ndsu-thesis-2022/")
+             (base32
+              "0dpkqwl7w2rqv0k0a3s72incfp9qg04m1ql3mc1hsjnn8f9dysq2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ndsu-thesis-2022")
+    (synopsis "North Dakota State University disquisition class 2022")
+    (description
+     "This package provides a class for generating disquisitions intended to
+be in compliance with North Dakota State University requirements.
+Updated (2022) North Dakota State University LaTeX thesis class features
+several functionalities, including not limited to, numbered and non-numbered
+versions, overall justification, document point sizes, fonts options, SI
+units, show frames, URL breaking, long tables, subfigures, multi-page figures,
+chapter styles, sub-files, algorithm listing, BibTeX and BibLaTeX support,
+individual chapter and whole document bibliography, @code{natbib} citations,
+and clever references.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
