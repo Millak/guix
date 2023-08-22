@@ -3595,6 +3595,30 @@ writing support.  It uses only native picture macros and fonts for drawing
 boxes and is thus driver independent.")
     (license license:bsd-3)))
 
+(define-public texlive-asmeconf
+  (package
+    (name "texlive-asmeconf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/asmeconf/" "doc/latex/asmeconf/"
+                   "tex/latex/asmeconf/")
+             (base32
+              "05wic7mb1flxdnl27lbhkjnbalnc8bqy4xj1w2rk5kzxmw525288")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asmeconf")
+    (synopsis "LaTeX template for ASME conference papers")
+    (description
+     "The @code{asmeconf} class provides a LaTeX template for ASME conference
+papers, following ASME's guidelines for margins, fonts, headings, captions,
+and reference formats as of 2022.  This LaTeX template is intended to be used
+with the @file{asmeconf.bst} BibTeX style, for reference formatting, which is
+part of this distribution.  The code is compatible with pdfLaTeX or LuaLaTeX.
+
+This LaTeX template is not a publication of ASME.")
+    (license license:expat)))
+
 (define-public texlive-aspectratio
   (package
     (name "texlive-aspectratio")
