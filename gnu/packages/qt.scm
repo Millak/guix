@@ -392,7 +392,7 @@ system, and the core design of Django is reused in Grantlee.")
            fontconfig
            freetype
            glib
-           gtk+               ;for GTK theme support
+           gtk+                         ;for GTK theme support
            harfbuzz
            icu4c
            libinput-minimal
@@ -437,7 +437,8 @@ system, and the core design of Django is reused in Grantlee.")
            vulkan-headers
            ruby-2.7))
     (arguments
-     `(#:configure-flags
+     `(#:disallowed-references ,(list python)
+       #:configure-flags
        (let ((out (assoc-ref %outputs "out")))
          (list "-verbose"
                "-prefix" out
@@ -583,7 +584,16 @@ system, and the core design of Django is reused in Grantlee.")
                (("^\\s*(QLibrary xcursorLib\\(QLatin1String\\(\")(Xcursor\"\\), 1\\);)" _ a b)
                 (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))
                (("^\\s*(xcursorLib.setFileName\\(QLatin1String\\(\")(Xcursor\"\\)\\);)" _ a b)
-                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))))))))
+                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b)))))
+         (add-after 'install 'do-not-capture-python
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; For some reason, patching the file after the
+             ;; patch-source-shebangs phase doesn't work for Qt 5.
+             (substitute*
+                 (search-input-file
+                  outputs "lib/qt5/mkspecs/features/uikit/devices.py")
+               (((which "python3"))
+                "/usr/bin/env python3")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "QMAKEPATH")
@@ -724,10 +734,12 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 (substitute* "src/corelib/CMakeLists.txt"
                   (("/bin/ls")
                    (search-input-file inputs "bin/ls")))))
+            (delete 'do-not-capture-python) ;move after patch-source-shebangs
             (add-after 'patch-source-shebangs 'do-not-capture-python
               (lambda _
                 (substitute* '("mkspecs/features/uikit/devices.py"
-                               "util/testrunner/qt-testrunner.py")
+                               "util/testrunner/qt-testrunner.py"
+                               "util/testrunner/sanitizer-testrunner.py")
                   (((which "python3"))
                    "/usr/bin/env python3"))))
             (replace 'configure
