@@ -23262,6 +23262,27 @@ and doctoral theses as well as postdoctoral reports.  Compilation of this
 class requires either XeLaTeX or LuaLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-njuvisual
+  (package
+    (name "texlive-njuvisual")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/njuvisual/"
+                   "source/latex/njuvisual/"
+                   "tex/latex/njuvisual/")
+             (base32
+              "1v5iv44wi0hh77j56jjccgyrh9kyyfvzbl305vqryphq0r73bk36")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/njuvisual")
+    (synopsis "Display logos related to Nanjing University")
+    (description
+     "The njuvisual package collects standard colors and logos related to
+Nanjing University, saves the vector logos as TikZ pictures and provides
+a user-friendly interface to display them in documents and beamers.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
