@@ -22,7 +22,7 @@
 (define-module (gnu services admin)
   #:use-module (gnu packages admin)
   #:use-module ((gnu packages base)
-                #:select (canonical-package findutils))
+                #:select (canonical-package findutils coreutils sed))
   #:use-module (gnu packages certs)
   #:use-module (gnu packages package-management)
   #:use-module (gnu services)
@@ -330,11 +330,20 @@ is passed to the @option{--prunepaths} option of
     (package schedule excluded-directories)
     (let ((updatedb (program-file
                      "updatedb"
-                     #~(execl #$(file-append package "/bin/updatedb")
-                              "updatedb"
-                              #$(string-append "--prunepaths="
-                                               (string-join
-                                                excluded-directories))))))
+                     #~(begin
+                         ;; 'updatedb' is a shell script that expects various
+                         ;; commands in $PATH.
+                         (setenv "PATH"
+                                 (string-append #$package "/bin:"
+                                                #$(canonical-package coreutils)
+                                                "/bin:"
+                                                #$(canonical-package sed)
+                                                "/bin"))
+                         (execl #$(file-append package "/bin/updatedb")
+                                "updatedb"
+                                #$(string-append "--prunepaths="
+                                                 (string-join
+                                                  excluded-directories)))))))
       (list #~(job #$schedule #$updatedb)))))
 
 (define file-database-service-type
