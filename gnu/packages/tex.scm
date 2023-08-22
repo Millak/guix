@@ -16462,6 +16462,32 @@ TeX to format a document for nearly-arbitrary values of @code{\\hsize} and
 Technology, ShenZhen).")
     (license license:lppl1.3c)))
 
+(define-public texlive-hitszthesis
+  (package
+    (name "texlive-hitszthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/hitszthesis/"
+                   "doc/latex/hitszthesis/"
+                   "makeindex/hitszthesis/"
+                   "source/latex/hitszthesis/"
+                   "tex/latex/hitszthesis/")
+             (base32
+              "0m1wr3iq1nzcymvnamgna0iiqb3ndllflgawzjjv85aay9jszra0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hitszthesis")
+    (synopsis
+     "Dissertation template for Harbin Institute of Technology, ShenZhen")
+    (description
+     ;; XXX: Cannot use @acronym and @comma here, because Guile Texinfo does
+     ;; not support this combination.
+     "This package provides a dissertation template for HITSZ (Harbin
+Institute of Technology, ShenZhen), including bachelor, master and doctor
+dissertations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hmtrump
   (package
     (name "texlive-hmtrump")
