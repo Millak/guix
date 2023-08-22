@@ -23914,6 +23914,27 @@ easily available.  Especially, these symbols are used in scientific plots, but
 the potential user is allowed to use them in other ways.")
     (license license:lppl1.3+)))
 
+(define-public texlive-opteng
+  (package
+    (name "texlive-opteng")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/opteng/" "tex/latex/opteng/")
+             (base32
+              "1svis9n0ssrc6pnvlshwprfjimdfrbisb0jjnlhhys343dv95jqs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/opteng")
+    (synopsis "SPIE Optical Engineering and OE Letters manuscript template")
+    (description
+     "With this template, and associated style and LaTeX packages, it is
+possible to estimate the page length of manuscripts for submission to the SPIE
+journals @emph{Optical Engineering} and @emph{Optical Engineering Letters}.
+With a strict three-page limit, this is particularly important for the latter.
+The template gives simple instructions on how to prepare the manuscript.")
+    (license license:lppl)))
+
 (define-public texlive-ordinalpt
   (package
     (name "texlive-ordinalpt")
