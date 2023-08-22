@@ -29248,6 +29248,23 @@ descriptions, etc.")
 chapter headings in standard classes into a Texi-like smaller format.")
     (license license:lppl)))
 
+(define-public texlive-texilikecover
+  (package
+    (name "texlive-texilikecover")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/texilikecover/")
+             (base32
+              "04bljvhvmrxh1a4sfqw57yysaw03c5ldi1bq63mlqqvd9p3hmyck")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texilikecover")
+    (synopsis "Cover-page package, like TeXinfo")
+    (description
+     "The package creates document cover pages, like those that TeXinfo
+produces.")
+    (license license:lppl)))
+
 (define-public texlive-texsis
   (package
     (name "texlive-texsis")
