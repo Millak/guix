@@ -11836,6 +11836,28 @@ fonts, and font-sizes for documents to be rendered as PDF-ebooks on small
 ebook-readers.")
     (license license:public-domain)))
 
+(define-public texlive-ebsthesis
+  (package
+    (name "texlive-ebsthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ebsthesis/"
+                   "source/latex/ebsthesis/"
+                   "tex/latex/ebsthesis/")
+             (base32
+              "0vmnkjnpg840rdgbim7gz2frzgr9dycmzqyj9kylicz5nvc4nk5x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ebsthesis")
+    (synopsis "Typesetting theses for economics")
+    (description
+     "The @code{ebsthesis} class and @code{ebstools} package facilitate the
+production of camera-ready manuscripts in conformance with the guidelines of
+Gabler Verlag and typographical rules established by the European Business
+School.")
+    (license license:lppl)))
+
 (define-public texlive-ecc
   (package
     (name "texlive-ecc")
