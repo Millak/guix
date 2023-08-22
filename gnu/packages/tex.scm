@@ -30902,6 +30902,24 @@ which are required for use of the @code{xgreek} package for XeLaTeX.")
 National Autonomous University of Mexico (UNAM) guidelines.")
     (license license:gpl3+)))
 
+(define-public texlive-unamth-template
+  (package
+    (name "texlive-unamth-template")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unamth-template/")
+             (base32
+              "018vpcbxfzch8qsrrqakcxxir53nalvj39l2kn45kn26p5nfkfbn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unamth-template")
+    (synopsis "UNAM thesis LaTeX Template")
+    (description
+     "The bundle provides a template for UNAM's College of Engineering
+Theses.")
+    (license license:gpl3)))
+
 (define-public texlive-unfonts-core
   (package
     (name "texlive-unfonts-core")
