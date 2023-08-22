@@ -12171,6 +12171,28 @@ research periodicals @emph{Electronic Journal of Probability} (EJP) and
 @emph{Electronic Communications in Probability} (ECP).")
     (license license:lppl1.2+)))
 
+(define-public texlive-ekaia
+  (package
+    (name "texlive-ekaia")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ekaia/" "source/latex/ekaia/"
+                   "tex/latex/ekaia/")
+             (base32
+              "1n6zinzcg3win9nn86ljf8fcwsxxn6dq1gjnnw1si8ca01zdyx45")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ekaia")
+    (synopsis
+     "Article format for the Basque Country Science and Technology Journal
+@emph{Ekaia}")
+    (description
+     "The package provides the article format for publishing the Basque
+Country Science and Technology Journal @emph{Ekaia} at the University of the
+Basque Country.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-ektype-tanka
   (package
     (name "texlive-ektype-tanka")
