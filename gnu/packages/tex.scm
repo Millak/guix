@@ -6824,6 +6824,26 @@ the Bitter family of fonts.  Bitter is a contemporary slab-serif typeface for
 text.  There are regular and bold weights and an italic, but no bold italic.")
     (license (list license:lppl license:silofl1.1))))
 
+(define-public texlive-bjfuthesis
+  (package
+    (name "texlive-bjfuthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bjfuthesis/"
+                   "tex/latex/bjfuthesis/")
+             (base32
+              "0qhb9kighs4ljmnn94qaihpllhwvmi76j3p8yylyjw2hzip102wr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bjfuthesis")
+    (synopsis "Thesis class for Beijing Forestry University")
+    (description
+     "This is a class file for producing dissertations and theses according to
+the @acronym{BJFU, Beijing Forestry University} guidelines for undergraduate
+theses and dissertations.")
+    (license license:gpl3)))
+
 (define-public texlive-blacklettert1
   (package
     (name "texlive-blacklettert1")
