@@ -17381,6 +17381,26 @@ of Freiburg (Germany).  The class is based on the KOMA-Script class
 for mathematics students, ZJGS students, and magazine editors.")
     (license license:gpl3)))
 
+(define-public texlive-iodhbwm
+  (package
+    (name "texlive-iodhbwm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iodhbwm/" "tex/latex/iodhbwm/")
+             (base32
+              "10zqg2cyz7vcnsbgqajwlilakjzr23nhn49sqy82555zkqi27gsa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iodhbwm")
+    (synopsis "Unofficial template of the DHBW Mannheim")
+    (description
+     "This package provides an unofficial template of the DHBW Mannheim for
+the creation of bachelor thesis, studies or project work with LaTeX.  The aim
+of the package is the quick creation of a basic framework without much
+effort.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
