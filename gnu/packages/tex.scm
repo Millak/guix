@@ -29780,6 +29780,28 @@ University to write coursework more efficiently.  It can also be used by
 students from other universities.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thuthesis
+  (package
+    (name "texlive-thuthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/thuthesis/"
+                   "doc/latex/thuthesis/"
+                   "source/latex/thuthesis/"
+                   "tex/latex/thuthesis/")
+             (base32
+              "11l434c6v0sdhk4y776nrswj53sj2hba4i3dwbspgkh61ckxxhyx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thuthesis")
+    (synopsis "Thesis template for Tsinghua University")
+    (description
+     "This package establishes a simple and easy-to-use LaTeX template for
+Tsinghua dissertations, including general undergraduate research papers,
+masters theses, doctoral dissertations, and postdoctoral reports.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tinos
   (package
     (name "texlive-tinos")
