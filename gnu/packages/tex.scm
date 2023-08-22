@@ -23481,6 +23481,31 @@ a normative format, as well as a hackable class for the users.  At present, it
 only supports XeTeX and LuaTeX engines.")
     (license license:lppl1.3c)))
 
+(define-public texlive-nwejm
+  (package
+    (name "texlive-nwejm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nwejm/" "source/latex/nwejm/"
+                   "tex/latex/nwejm/")
+             (base32
+              "16amdv0zzh9aax6c4adqai7zi2zknh168x4awsi1b8gbbspp2vbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list  #:build-targets #~(list "nwejm.dtx")))
+    (home-page "https://ctan.org/pkg/nwejm")
+    (synopsis
+     "Support for the journal @emph{North-Western European Journal of
+Mathematics}")
+    (description
+     "The bundle includes LaTeX classes and BibLaTeX styles files dedicated to
+the new journal @emph{North-Western European Journal of Mathematics}:
+@code{nwejm} for the complete issues of the journal, aimed at the NWEJM's
+team, @code{nwejmart}, intended for the authors who wish to publish an article
+in the NWEJM.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-objectz
   (package
     (name "texlive-objectz")
