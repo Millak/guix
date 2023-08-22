@@ -12723,6 +12723,26 @@ standard @code{amsmath} numbered equation environments to throw a warning
 whenever this occurs.")
     (license license:lppl1.3+)))
 
+(define-public texlive-erdc
+  (package
+    (name "texlive-erdc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/erdc/" "source/latex/erdc/"
+                   "tex/latex/erdc/")
+             (base32
+              "0sqq0zd89jx2l4n1hpas4c4y4p3mh1mbnfigjbal9xg2h5pijkv1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/erdc")
+    (synopsis "Style for reports by US Army Corps of Engineers")
+    (description
+     "This package provides a class for typesetting Technical Information
+Reports of the Engineer Research and Development Center, US Army Corps of
+Engineers.")
+    (license license:lppl)))
+
 (define-public texlive-erewhon
   (package
     (name "texlive-erewhon")
