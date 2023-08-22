@@ -1329,6 +1329,25 @@ convert your notation to PostScript (using the established utility
 document.")
     (license license:lppl1.2+)))
 
+(define-public texlive-abnt
+  (package
+    (name "texlive-abnt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/abnt/" "tex/latex/abnt/")
+             (base32
+              "1zjsvp6ng6vf87mmnv18q435h6p3ygs512pk0m05yd8gyrmhmrxr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abnt")
+    (synopsis "Typesetting academic works according to ABNT rules")
+    (description
+     "The ABNT package provides a clean and practical implementation of the
+@acronym{ABNT, Associacao Brasileira de Normas Tecnicas} rules for academic
+texts.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-aboensis
   (package
     (name "texlive-aboensis")
