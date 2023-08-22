@@ -4167,6 +4167,27 @@ package provides specialized and re-defined macros to simplify this task.")
 language and comes with some fonts of its own.")
     (license (list license:lppl1.3c license:silofl1.1))))
 
+(define-public texlive-bangorcsthesis
+  (package
+    (name "texlive-bangorcsthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bangorcsthesis/"
+                   "source/latex/bangorcsthesis/"
+                   "tex/latex/bangorcsthesis/")
+             (base32
+              "138h5q8060z7frb6krrzcx49pd0ifqh1lizi465gs6x7q7cdagz8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bangorcsthesis")
+    (synopsis "Typeset a thesis at Bangor University")
+    (description
+     "The class typesets thesis or dissertation documents for all
+levels (i.e., both undergraduate and graduate students may use the class).  It
+also provides macros designed to optimise the process of producing a thesis.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bangtex
   (package
     (name "texlive-bangtex")
