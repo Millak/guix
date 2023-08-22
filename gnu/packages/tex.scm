@@ -13289,6 +13289,27 @@ Jaboticabal UNESP} Brazilian university, written based on the institution
 rules for thesis publications.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fcltxdoc
+  (package
+    (name "texlive-fcltxdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fcltxdoc/"
+                   "source/latex/fcltxdoc/"
+                   "tex/latex/fcltxdoc/")
+             (base32
+              "0qb0l622svj1bqs0p05mcf30f4xy432aa4qzk6w4rlckssdfiwva")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fcltxdoc")
+    (synopsis "Macros for use in the author's documentation")
+    (description
+     "The package is not advertised for public use, but is necessary for the
+support of others of the author's packages (which are compiled under the
+@code{ltxdoc} class).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fdsymbol
   (package
     (name "texlive-fdsymbol")
