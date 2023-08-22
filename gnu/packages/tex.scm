@@ -1370,6 +1370,25 @@ and others) based on the @acronym{ABNT, Associacao Brasileira de Normas
 Tecnicas} rules.  It replaces the old @code{abntex}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-abntexto
+  (package
+    (name "texlive-abntexto")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/abntexto/" "tex/latex/abntexto/")
+             (base32
+              "1c560h2555hx1pcq70yg9qdgqp1bkxidabp53fd0gyvb141s3d79")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abntexto")
+    (synopsis "LaTeX class for formatting academic papers in ABNT standards")
+    (description
+     "This is a LaTeX class created for Brazilian students to facilitate the
+use of standards from the @acronym{ABNT, Associacao Brasileira de Normas
+Tecnicas} in academic works like TCCs, dissertations, theses.")
+    (license license:public-domain)))
+
 (define-public texlive-aboensis
   (package
     (name "texlive-aboensis")
