@@ -30237,6 +30237,25 @@ proceedings issues of the @emph{TUGboat} journal.  It also provides a BibTeX
 style, @file{tugboat.bst}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tugboat-plain
+  (package
+    (name "texlive-tugboat-plain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/plain/tugboat-plain/"
+                   "tex/plain/tugboat-plain/")
+             (base32
+              "0bzjkhgzf9zp1p6knkdnpcr2hp9hr5fj6v3781i1y0f13qv63axg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tugboat-plain")
+    (synopsis "Plain TeX macros for @emph{TUGboat}")
+    (description
+     "The macros defined in this package are used in papers written in Plain
+TeX for publication in @emph{TUGboat}.")
+    (license license:knuth)))
+
 (define-public texlive-turabian-formatting
   (package
     (name "texlive-turabian-formatting")
