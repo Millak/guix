@@ -25631,6 +25631,25 @@ as a result, some of the descriptions of limitations look rather quaint to
 modern eyes.")
     (license license:lppl)))
 
+(define-public texlive-ptptex
+  (package
+    (name "texlive-ptptex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ptptex/" "tex/latex/ptptex/")
+             (base32
+              "1f040dv31g8bdn0awa40mvhzp095glsfsxcg28cbslckbdds5k6c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ptptex")
+    (synopsis "Macros for @emph{Progress of Theoretical Physics}")
+    (description
+     "The distribution contains the class (which offers an option file for
+preprints), a template, and macros for writing articles in @emph{Progress of
+Theoretical Physics}.")
+    (license license:lppl)))
+
 (define-public texlive-punk
   (package
     (name "texlive-punk")
