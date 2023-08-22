@@ -31675,6 +31675,22 @@ and uses the Calibri fonts by default.  The class works with XeLaTeX and
 LuaLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uwthesis
+  (package
+    (name "texlive-uwthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uwthesis/" "tex/latex/uwthesis/")
+             (base32
+              "0wcxpvr86556gxbcprwcv6ipdq3flyfwbcmjkxhy6x6220sfwp56")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uwthesis")
+    (synopsis "University of Washington thesis class")
+    (description "This is a thesis class for the University of Washington.")
+    (license license:asl2.0)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
