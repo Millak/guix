@@ -12212,6 +12212,27 @@ Basque Country.")
 Mukta, Baloo, Modak, and Jaini.")
     (license license:lppl1.3c)))
 
+(define-public texlive-elbioimp
+  (package
+    (name "texlive-elbioimp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/elbioimp/"
+                   "source/latex/elbioimp/"
+                   "tex/latex/elbioimp/")
+             (base32
+              "1iwsahllfw975cs11llr0ghx80wf5kmw5zrbs4iqviai12ipnkd2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/elbioimp")
+    (synopsis
+     "LaTeX document class for the @emph{Journal of Electrical Bioimpedance}")
+    (description
+     "This package provides a document class for writing articles to the
+@emph{Journal of Electrical Bioimpedance}.")
+    (license license:lppl)))
+
 (define-public texlive-electrum
   (package
     (name "texlive-electrum")
