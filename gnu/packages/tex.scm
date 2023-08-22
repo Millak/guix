@@ -31521,6 +31521,26 @@ a beautifully formatted, consistent U.S. Patent Application using LaTeX and/or
 LyX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ut-thesis
+  (package
+    (name "texlive-ut-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ut-thesis/"
+                   "source/latex/ut-thesis/"
+                   "tex/latex/ut-thesis/")
+             (base32
+              "0z1rvgy4d2zdagb7x5ymdid02fwnpv2x4dd4jxxkhg9mgq0lscyn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ut-thesis")
+    (synopsis "University of Toronto thesis style")
+    (description
+     "This LaTeX document class implements the formatting requirements of the
+University of Toronto School of Graduate Studies (SGS), as of Fall 2020.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
