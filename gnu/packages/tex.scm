@@ -1608,6 +1608,26 @@ more flexible front-matter, and can be customised for conferences in future
 years with a header file.")
     (license license:lppl)))
 
+(define-public texlive-adfathesis
+  (package
+    (name "texlive-adfathesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/adfathesis/"
+                   "doc/latex/adfathesis/"
+                   "source/latex/adfathesis/"
+                   "tex/latex/adfathesis/")
+             (base32
+              "0zi91xc3sbdjvp87zgrb7g3l5hxqig33fchlhg2i8gjya9ij67p6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adfathesis")
+    (synopsis "Australian Defence Force Academy thesis format")
+    (description "The package provides the Australian Defence Force Academy
+thesis format.  The bundle also includes a BibTeX style file.")
+    (license license:public-domain)))
+
 (define-public texlive-adforn
   (package
     (name "texlive-adforn")
