@@ -31560,6 +31560,25 @@ University of Toronto School of Graduate Studies (SGS), as of Fall 2020.")
 masters and PhD thesis submissions of the University of Texas at Austin.")
     (license license:cc0)))
 
+(define-public texlive-uvaletter
+  (package
+    (name "texlive-uvaletter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uvaletter/"
+                   "tex/latex/uvaletter/")
+             (base32
+              "12y57x4np1asfcbm6izn31rzqbxdxmsfc8gibgz6sh7nj2vvhf22")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uvaletter")
+    (synopsis "Unofficial letterhead template for the University of Amsterdam")
+    (description
+     "This is an unofficial LaTeX package that provides a letterhead template
+for the University of Amsterdam.")
+    (license license:expat)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
