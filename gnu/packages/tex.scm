@@ -8094,6 +8094,25 @@ distribution), developed from the same author's JMB style.  A supporting LaTeX
 package is also provided.")
     (license license:public-domain)))
 
+(define-public texlive-cesenaexam
+  (package
+    (name "texlive-cesenaexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cesenaexam/"
+                   "source/latex/cesenaexam/"
+                   "tex/latex/cesenaexam/")
+             (base32
+              "05n61y7lqycnj22a80p5pa0ajr8c4zc5b73cc3c2x40w8yx85xcf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cesenaexam")
+    (synopsis "Class file to typeset exams")
+    (description
+     "This LaTeX document class has been designed to typeset exams.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-cfr-initials
   (package
     (name "texlive-cfr-initials")
