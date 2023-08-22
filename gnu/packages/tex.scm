@@ -29653,6 +29653,24 @@ following fonts: XB Niloofar, IranNastaliq, IRlotus, XB Zar, XB Titre, and
 Yas.")
     (license license:lppl1.3c)))
 
+(define-public texlive-thesis-titlepage-fhac
+  (package
+    (name "texlive-thesis-titlepage-fhac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thesis-titlepage-fhac/"
+                   "source/latex/thesis-titlepage-fhac/"
+                   "tex/latex/thesis-titlepage-fhac/")
+             (base32
+              "1zs1k43q4br29vyxk007ld0rmiz8z803i6xhlc6rmhmb1nb594nj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thesis-titlepage-fhac")
+    (synopsis "Style to create a standard titlepage for diploma thesis")
+    (description "This is yet another thesis titlepage style.")
+    (license license:lppl)))
+
 (define-public texlive-thmbox
   (package
     (name "texlive-thmbox")
