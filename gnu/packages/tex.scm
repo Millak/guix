@@ -18547,6 +18547,27 @@ It provides a tabular-like input syntax and support for drawing bundles
 (implicants) around adjacent values.")
     (license license:lppl1.3c)))
 
+(define-public texlive-langsci
+  (package
+    (name "texlive-langsci")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/langsci/"
+                   "tex/xelatex/langsci/")
+             (base32
+              "1kz8gf5w7xrgld5jpf1csdy334ng89hp5lbkgmgaal4m31svw03z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/langsci")
+    (synopsis "Typeset books for publication with Language Science Press")
+    (description
+     "This package allows you to typeset monographs and edited volumes for
+publication with @url{https://www.langsci-press.org, Language Science Press}.
+It includes all necessary files for title pages, frontmatter, main content,
+list of references and indexes.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lato
   (package
     (name "texlive-lato")
