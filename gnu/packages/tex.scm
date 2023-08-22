@@ -13129,6 +13129,30 @@ with or without VAT; different addresses for delivery and for billing are
 permitted.")
     (license license:cc-by-sa2.0)))
 
+(define-public texlive-facture-belge-simple-sans-tva
+  (package
+    (name "texlive-facture-belge-simple-sans-tva")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/facture-belge-simple-sans-tva/"
+                   "tex/xelatex/facture-belge-simple-sans-tva/")
+             (base32
+              "1zs2hcc5lhzvfkv83wym1rax58mryylq9b7i358ln0pklnm2gncx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/facture-belge-simple-sans-tva")
+    (synopsis "Simple Belgian invoice without VAT")
+    (description
+     "This package can be used to generate invoices for Belgian individuals
+who do not have a VAT number and who wish to do occasional work, or to carry
+out paid additional activities during their free time up to 6,000 euros per
+calendar year (amount indexed annually) without having to pay tax or social
+security contributions (see the website Activites complementaires).  The
+package can also generate expense reports.  All totals are calculated
+automatically, in the invoice and in the expense report.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-faktor
   (package
     (name "texlive-faktor")
