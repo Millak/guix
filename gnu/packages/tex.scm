@@ -10223,6 +10223,28 @@ including multiple accents on the same letter, interline glosses (word-by-word
 translations), Discourse Representation Structures, and example numbering.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cquthesis
+  (package
+    (name "texlive-cquthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/cquthesis/"
+                   "doc/latex/cquthesis/"
+                   "source/latex/cquthesis/"
+                   "tex/latex/cquthesis/")
+             (base32
+              "0591wd88zp4sgnv2avwqv8127c2g5zbhjr7y15xaahiy7s404hn2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cquthesis")
+    (synopsis "LaTeX thesis template for Chongqing University")
+    (description
+     "CQUThesis stands for Chongqing University thesis template for LaTeX,
+bearing the ability to support bachelor, master, doctor dissertations with
+grace and speed.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-crimson
   (package
     (name "texlive-crimson")
