@@ -3416,6 +3416,26 @@ style.  It enables the user to reproduce the look of the guide @emph{The art
 of writing with LaTeX} (the web page is in Italian).")
     (license license:lppl)))
 
+(define-public texlive-articleingud
+  (package
+    (name "texlive-articleingud")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/articleingud/"
+                   "source/latex/articleingud/"
+                   "tex/latex/articleingud/")
+             (base32
+              "1iprjpjr3yav8afmgirrfmdipxb1fmdwa3b0ss5y8l7wspijmmp8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/articleingud")
+    (synopsis "LaTeX class for articles published in INGENIERIA review")
+    (description
+     "The package provides a class for articles published in INGENIERIA
+review.  This class is derived from the standard LaTeX class @code{article}.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-arvo
   (package
     (name "texlive-arvo")
