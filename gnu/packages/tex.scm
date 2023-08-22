@@ -1845,6 +1845,27 @@ improved usability.  The AGU now publishes satisfactory LaTeX materials of its
 own; it is recommended to switch to the official distribution.")
     (license license:lppl)))
 
+(define-public texlive-aiaa
+  (package
+    (name "texlive-aiaa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/aiaa/" "doc/latex/aiaa/"
+                   "source/latex/aiaa/" "tex/latex/aiaa/")
+             (base32
+              "0l6sp7q53nr1ppxaynfc0q3kf1hg5v22yxyvzjdg028rf1nvbhww")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aiaa")
+    (synopsis "Typeset AIAA conference papers")
+    (description
+     "This package provides a bundle of LaTeX and BibTeX files and sample
+documents to aid those producing papers and journal articles according to the
+guidelines of the @acronym{AIAA, American Institute of Aeronautics and
+Astronautics}.")
+    (license license:lppl)))
+
 (define-public texlive-aichej
   (package
     (name "texlive-aichej")
