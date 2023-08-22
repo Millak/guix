@@ -19433,6 +19433,26 @@ document.  The package uses OpenType fonts, and as a result must be compiled
 with LuaLaTeX or XeLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-limecv
+  (package
+    (name "texlive-limecv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/limecv/" "source/latex/limecv/"
+                   "tex/latex/limecv/")
+             (base32
+              "1bqqkbxzayb8wwlkj1vkf01lx78i7pq2kb9clrir0paxjm8xa6ja")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/limecv")
+    (synopsis "(Xe/Lua)LaTeX document class for curriculum vitae")
+    (description
+     "@code{limecv} is a LaTeX document class to write curriculum vitae.  It
+is designed with the following design rules: simple, elegant and clean.  To
+this end, it offers several environments and macros for convenience.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lineara
   (package
     (name "texlive-lineara")
