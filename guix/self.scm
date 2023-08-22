@@ -1,7 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1211,12 +1210,9 @@ containing MODULE-FILES and possibly other files as well."
                             '((guix build compile)
                               (guix build utils)))
       #~(begin
-          (use-modules (srfi srfi-1)
-                       (srfi srfi-26)
-                       (srfi srfi-71)
+          (use-modules (srfi srfi-26)
                        (ice-9 match)
                        (ice-9 format)
-                       (ice-9 regex)
                        (ice-9 threads)
                        (guix build compile)
                        (guix build utils))
@@ -1248,27 +1244,12 @@ containing MODULE-FILES and possibly other files as well."
             (force-output))
 
           (define (process-directory directory files output)
-            ;; Split gnu/packages in 26 chunks to avoid OOM errors
-            (let* ((chunks (map (compose
-                                 (cute partition <> files)
-                                 (lambda (regex)
-                                   (cute string-match regex <>))
-                                 (cute string-append "^gnu/packages/" <>)
-                                 (cute make-string 1 <>)
-                                 integer->char
-                                 (cute + (char->integer #\a) <>))
-                                (iota 26)))
-                   (chunks (filter pair? chunks)))
-              (for-each
-               (lambda (chunck)
-                 ;; Hide compilation warnings.
-                 (parameterize ((current-warning-port (%make-void-port "w")))
-                   (compile-files directory #$output chunck
-                                  #:workers (parallel-job-count)
-                                  #:report-load report-load
-                                  #:report-compilation report-compilation))
-                 (gc))
-               chunks)))
+            ;; Hide compilation warnings.
+            (parameterize ((current-warning-port (%make-void-port "w")))
+              (compile-files directory #$output files
+                             #:workers (parallel-job-count)
+                             #:report-load report-load
+                             #:report-compilation report-compilation)))
 
           (setvbuf (current-output-port) 'line)
           (setvbuf (current-error-port) 'line)
