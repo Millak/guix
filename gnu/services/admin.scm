@@ -290,7 +290,7 @@ Old log files are removed or compressed according to the configuration.")
   "10 23 * * 0")
 
 (define %default-file-database-excluded-directories
-  ;; Directories excluded from the 'locate' database.
+  ;; Regexps of directories excluded from the 'locate' database.
   (list (%store-prefix)
         "/tmp" "/var/tmp" "/var/cache" ".*/\\.cache"
         "/run/udev"))
@@ -319,10 +319,10 @@ is taken.")
 @command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).")
   (excluded-directories
    (string-list %default-file-database-excluded-directories)
-   "List of directories to ignore when building the file database.  By
-default, this includes @file{/tmp} and @file{/gnu/store}, which should instead
-be indexed by @command{guix locate} (@pxref{Invoking guix locate}).  This list
-is passed to the @option{--prunepaths} option of
+   "List of regular expressions of directories to ignore when building the
+file database.  By default, this includes @file{/tmp} and @file{/gnu/store};
+the latter should instead be indexed by @command{guix locate} (@pxref{Invoking
+guix locate}).  This list is passed to the @option{--prunepaths} option of
 @command{updatedb} (@pxref{Invoking updatedb,,, find, GNU@tie{}Findutils})."))
 
 (define (file-database-mcron-jobs configuration)

@@ -25099,12 +25099,11 @@ String or G-exp denoting an mcron schedule for the periodic
 @command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).
 
 @item @code{excluded-directories} (default @code{%default-file-database-excluded-directories})
-List of directories to ignore when building the file database.  By
-default, this includes @file{/tmp} and @file{/gnu/store}, which should
-instead be indexed by @command{guix locate} (@pxref{Invoking guix
-locate}).  This list is passed to the @option{--prunepaths} option of
-@command{updatedb} (@pxref{Invoking updatedb,,, find,
-GNU@tie{}Findutils}).
+List of regular expressions of directories to ignore when building the
+file database.  By default, this includes @file{/tmp} and @file{/gnu/store};
+the latter should instead be indexed by @command{guix locate} (@pxref{Invoking
+guix locate}).  This list is passed to the @option{--prunepaths} option of
+@command{updatedb} (@pxref{Invoking updatedb,,, find, GNU@tie{}Findutils}).
 @end table
 @end deftp
 
