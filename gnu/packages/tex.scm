@@ -31127,6 +31127,29 @@ Florence (Italy).")
 of the Library Publishing Services of University of Graz.")
     (license license:lppl1.3c)))
 
+(define-public texlive-unitn-bimrep
+  (package
+    (name "texlive-unitn-bimrep")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unitn-bimrep/"
+                   "tex/latex/unitn-bimrep/")
+             (base32
+              "0id55sfi9bzj7vp7dm9wxy355ca6k6dmxq488r4dwmndy2z4v8hl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unitn-bimrep")
+    (synopsis
+     "Bimonthly report class for the PhD School of Materials,
+Mechatronics and System Engineering")
+    (description
+     "This package allows to rapidly write the bimonthly report for The PhD
+School in Materials, Mechatronics and System Engineering.  It allows to define
+the research activities, the participation to school and congress, and the
+publication performed by a student.")
+    (license license:expat)))
+
 (define-public texlive-unitsdef
   (package
     (name "texlive-unitsdef")
