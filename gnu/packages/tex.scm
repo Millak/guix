@@ -17363,6 +17363,24 @@ of Freiburg (Germany).  The class is based on the KOMA-Script class
 @code{scrbook}.")
     (license license:lppl)))
 
+(define-public texlive-inkpaper
+  (package
+    (name "texlive-inkpaper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inkpaper/" "tex/latex/inkpaper/")
+             (base32
+              "0yybzasv4708cw139k2dcqgi85lm6ard4ra9j78hrcdbnpnkqmw0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inkpaper")
+    (synopsis "Mathematical paper template")
+    (description
+     "InkPaper is designed to write mathematical papers, especially designed
+for mathematics students, ZJGS students, and magazine editors.")
+    (license license:gpl3)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
