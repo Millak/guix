@@ -27261,6 +27261,28 @@ a colorful theme that makes it look elegant and attractive.")
 China.")
     (license license:gpl3)))
 
+(define-public texlive-seuthesix
+  (package
+    (name "texlive-seuthesix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/seuthesix/"
+                   "doc/latex/seuthesix/"
+                   "source/latex/seuthesix/"
+                   "tex/latex/seuthesix/")
+             (base32
+              "0k87ib96pbihph399rc3kl1c3ncb4w4ljmwmvw880vvrxvz8mxjs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/seuthesix")
+    (synopsis "LaTeX class for theses at Southeast University, Nanjing, China")
+    (description
+     "This project provides a LaTeX document class as well as a bibliography
+style file for typesetting theses at the Southeast University, Nanjing, China.
+It is based on the @code{seuthesis}.")
+    (license license:gpl3)))
+
 (define-public texlive-sfg
   (package
     (name "texlive-sfg")
