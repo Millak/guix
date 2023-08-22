@@ -16439,6 +16439,29 @@ TeX to format a document for nearly-arbitrary values of @code{\\hsize} and
 @code{\\vsize}.")
     (license license:x11)))
 
+(define-public texlive-hitszbeamer
+  (package
+    (name "texlive-hitszbeamer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/hitszbeamer/"
+                   "doc/latex/hitszbeamer/"
+                   "source/latex/hitszbeamer/"
+                   "tex/latex/hitszbeamer/")
+             (base32
+              "00c23sdhkvr79lzag8v1j5hyzf5iwmkr07xnz0s0n3haicbfzz44")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hitszbeamer")
+    (synopsis "Beamer theme for Harbin Institute of Technology, ShenZhen")
+    (description
+     ;; XXX: Cannot use @acronym and @comma here, because Guile Texinfo does
+     ;; not support this combination.
+     "This is a Beamer theme designed for HITSZ (Harbin Institute of
+Technology, ShenZhen).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hmtrump
   (package
     (name "texlive-hmtrump")
