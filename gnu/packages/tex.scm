@@ -31317,6 +31317,27 @@ the headers of the pages and excludes the titlepage and table of contents from
 the page numbering.")
     (license license:lppl1.3c)))
 
+(define-public texlive-uothesis
+  (package
+    (name "texlive-uothesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uothesis/"
+                   "source/latex/uothesis/"
+                   "tex/latex/uothesis/")
+             (base32
+              "04md5wkh11hpczvl7gpi2a5k2j5yalssjw5azpbr2g9q8fc99zp3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uothesis")
+    (synopsis "Class for dissertations and theses at the University of Oregon")
+    (description
+     "The class generates documents that are suitable for submission to the
+Graduate School and conform with the style requirements for dissertations and
+theses as laid out in the Fall 2010 UO graduate school student manual.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-uppunctlm
   (package
     (name "texlive-uppunctlm")
