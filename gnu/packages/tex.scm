@@ -30151,6 +30151,72 @@ some helper packages and config files together with some templates for
 user documentation, which currently are only available in German.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tudscr
+  (package
+    (name "texlive-tudscr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tudscr/" "source/latex/tudscr/"
+                   "tex/latex/tudscr/")
+             (base32
+              "1whwmablazz41hy1p99ls8l4lk80h202ynzhabpwcmhk7mj60ikn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-cbfonts
+           texlive-environ
+           texlive-etoolbox
+           texlive-geometry
+           texlive-graphics
+           texlive-greek-inputenc
+           texlive-iwona
+           texlive-koma-script
+           texlive-mathastext
+           texlive-mweights
+           texlive-oberdiek
+           texlive-opensans
+           texlive-trimspaces
+           texlive-xcolor
+           texlive-xpatch))
+    (home-page "https://ctan.org/pkg/tudscr")
+    (synopsis "Corporate design of Technische Universitat Dresden")
+    (description
+     "The TUD-Script bundle provides both classes and packages in order to
+create LaTeX documents in the corporate design of the Technische Universitat
+Dresden.  It bases on the KOMA-Script bundle.
+
+The bundle offers:
+
+@itemize
+
+@item the three document classes @code{tudscrartcl}, @code{tudscrreprt}, and
+@code{tudscrbook};
+
+@item the class @code{tudscrposter} for creating posters;
+
+@item the package @code{tudscrsupervisor} providing environments and macros to
+create tasks, evaluations and notices for scientific theses;
+
+@item the package @code{tudscrfonts}, which makes the corporate design fonts
+of the Technische Universitat Dresden available for LaTeX standard classes and
+KOMA-Script classes;
+
+@item the package @code{fix-tudscrfonts}, which provides the same fonts to
+additional corporate design classes not related to TUD-Script;
+
+@item the package @code{tudscrcomp}, which simplifies the switch to TUD-Script
+from external corporate design classes,
+
+@item the package @code{mathswap} for swapping math delimiters within
+numbers (similar to @code{ionumbers}),
+
+@item and the package @code{twocolfix} for fixing the positioning bug of
+headings in @code{twocolumn} layout.
+
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-turabian-formatting
   (package
     (name "texlive-turabian-formatting")
