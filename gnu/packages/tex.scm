@@ -18183,6 +18183,40 @@ for writing course texts, and @code{kdgmasterthesis} for writing master's
 theses.")
     (license license:lppl1.3+)))
 
+(define-public texlive-kdpcover
+  (package
+    (name "texlive-kdpcover")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kdpcover/"
+                   "source/latex/kdpcover/"
+                   "tex/latex/kdpcover/")
+             (base32
+              "116pzg0bdrj78vs2sq196jcwnv16b734kqnhfcg3fka4mf6jk2d1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-anyfontsize
+           texlive-geometry
+           texlive-graphics
+           texlive-microtype
+           texlive-pgf
+           texlive-setspace
+           texlive-textpos
+           texlive-tools
+           texlive-xcolor
+           texlive-xifthen
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/kdpcover")
+    (synopsis "Covers for books published by Kindle Direct Publishing")
+    (description
+     "The problem this class solves is the necessity to change the size of the
+cover PDF according to the number of pages in the book --- the bigger the
+book, the larger the spine of the book must be.  The provided class makes the
+necessary calculations on-the-fly, using the @code{qpdf} tool.")
+    (license license:expat)))
+
 (define-public texlive-kixfont
   (package
     (name "texlive-kixfont")
