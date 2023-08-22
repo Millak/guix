@@ -31222,6 +31222,34 @@ is suitable as an alternative to fonts such as Adrian Frutiger's Univers and
 Frutiger.")
     (license (list license:gpl2+ license:lppl))))
 
+(define-public texlive-univie-ling
+  (package
+    (name "texlive-univie-ling")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/univie-ling/"
+                   "tex/latex/univie-ling/")
+             (base32
+              "1678hl6bzpvsa9h8hlap84cnl82g5kkpg9kkwpq4r4zrj90fhgda")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/univie-ling")
+    (synopsis
+     "Papers, theses and research proposals in (Applied) Linguistics at Vienna
+University")
+    (description
+     "This bundle provides LaTeX2e classes, BibLaTeX files, and templates
+suitable for student papers, PhD research proposals (Exposes), and theses
+in (Applied) Linguistics at the University of Vienna.  The classes implement
+some standards for these types of text, such as suitable title pages.  They
+are particularly suited for the field of (Applied) Linguistics and pre-load
+some packages that are considered useful in this context.  The classes can
+also be used for General and Historical Linguistics as well as for other
+fields of study at Vienna University.  In this case, however, some settings
+may have to be adjusted.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-uppunctlm
   (package
     (name "texlive-uppunctlm")
