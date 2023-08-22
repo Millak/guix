@@ -30104,6 +30104,26 @@ The package @code{lingmacros.sty} defines a few macros for linguists:
 @code{tabular}-based non-connected tree macros, and gloss macros.")
     (license license:lppl1.0+)))
 
+(define-public texlive-tuda-ci
+  (package
+    (name "texlive-tuda-ci")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tuda-ci/" "tex/latex/tuda-ci/")
+             (base32
+              "0bga3v6byk8v18xzj3vp7hp10wmapil5snqj1qp721a5lakwx0w9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tuda-ci")
+    (synopsis "LaTeX templates of Technische Universitat Darmstadt")
+    (description
+     "The TUDa-CI-Bundle provides a possibility to use the corporate design
+of TU Darmstadt in LaTeX.  It contains document classes as well as
+some helper packages and config files together with some templates for
+user documentation, which currently are only available in German.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-turabian-formatting
   (package
     (name "texlive-turabian-formatting")
