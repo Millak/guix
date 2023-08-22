@@ -8705,6 +8705,26 @@ in place of the original's annotation.")
 an annotation field in bibliographies.")
     (license license:knuth)))
 
+(define-public texlive-chifoot
+  (package
+    (name "texlive-chifoot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chifoot/" "tex/latex/chifoot/")
+             (base32
+              "07hxfiasfbnmvq367nnjg56n21wxdw0r6i7bl5l4gxa0j9jvmpf0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chifoot")
+    (synopsis "Chicago-style footnote formatting")
+    (description
+     "This package provides a very short snippet that sets the footnotes to be
+conformant with the Chicago style, so the footnotes at the bottom of the page
+are now marked with a full-sized number, rather than with a superscript
+number.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-chinesechess
   (package
     (name "texlive-chinesechess")
