@@ -26799,6 +26799,32 @@ provided by one of two options to @code{newtxmath}, one of which uses an
 adaptation of the Fourier math Greek letters.")
     (license license:lppl)))
 
+(define-public texlive-schule
+  (package
+    (name "texlive-schule")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/schule/" "tex/latex/schule/")
+             (base32
+              "0pwc75s9r95rcq9xh2wjzv3hd2xqhkls39pgagg7gvdvax11dbvh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schule")
+    (synopsis "Support for teachers at German schools")
+    (description
+     "The @code{schule} bundle was built to provide packages and commands that
+could be useful for documents in German schools.  At the moment, its main
+focus lies on documents for informatics as a school subject.  An extension for
+physics is currently in progress.
+
+For the time being, the whole package splits up into individual packages for
+informatics (including syntax diagrams, Nassi-Shneiderman diagrams, sequence
+diagrams, object diagrams, and class diagrams) as well as classes for written
+exams (tests, quizzes, teaching observations, information sheets, worksheets,
+and answer keys).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-schulschriften
   (package
     (name "texlive-schulschriften")
