@@ -25323,6 +25323,27 @@ includes some short commands for set (blackboard) or
 filtrations (calligraphic).")
     (license license:lppl)))
 
+(define-public texlive-prociagssymp
+  (package
+    (name "texlive-prociagssymp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prociagssymp/"
+                   "tex/latex/prociagssymp/")
+             (base32
+              "1c8fa2d0rsq5drrrckvm1b9mfdfn3p0b9wwwzr263lw7qdqhnlwj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/prociagssymp")
+    (synopsis "Macros for IAG symposium papers")
+    (description
+     "This package provides (re-)definitions of some LaTeX commands that can
+be useful for the preparation of papers with the style of the proceedings of
+symposia sponsored by the @acronym{IAG, International Association of Geodesy}
+published by Springer-Verlag.")
+    (license license:lppl)))
+
 (define-public texlive-prodint
   (package
     (name "texlive-prodint")
