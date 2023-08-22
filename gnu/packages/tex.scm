@@ -31433,6 +31433,29 @@ file which has a reasonably conventional structure.  The result is meant to be
 robust rather than pretty.")
     (license (list license:gpl2 license:lppl))))
 
+(define-public texlive-urcls
+  (package
+    (name "texlive-urcls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/urcls/" "tex/latex/urcls/")
+             (base32
+              "1fkz3jqrfay9kzaq1iyyz95n1m7xg6cw8rar878dlgb1rmkds1fb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/urcls")
+    (synopsis
+     "Beamer and @code{scrlttr2} classes and styles for the University of
+Regensburg")
+    (description
+     "The bundle provides a Beamer-derived class and a theme style file for
+the corporate design of the @acronym{UR, University of Regensburg}.  It also
+contains a @code{scrlttr2}-derived class for letters using the corporate
+design of the UR. Users may use the class itself (URbeamer) or use the theme
+in the usual way with @code{\\usetheme@{UR@}}.")
+    (license license:lppl)))
+
 (define-public texlive-urwchancal
   (package
     (name "texlive-urwchancal")
