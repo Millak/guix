@@ -24766,6 +24766,27 @@ LaTeX, and directly supporting PDF output format.")
 the University of Pittsburgh.")
     (license license:lppl)))
 
+(define-public texlive-pkuthss
+  (package
+    (name "texlive-pkuthss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pkuthss/" "tex/latex/pkuthss/")
+             (base32
+              "046r1m8bgif6mvm2cln95whh3nnwnwwpzs9hd6szaz91xa1dwyd9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pkuthss")
+    (synopsis "LaTeX template for dissertations in Peking University")
+    (description
+     "The package provides a simple, clear and flexible LaTeX template for
+dissertations in Peking University.")
+    (license
+     (list license:lppl1.3+
+           license:bsd-3
+           license:public-domain))))
+
 (define-public texlive-plainyr
   (package
     (name "texlive-plainyr")
