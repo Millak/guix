@@ -29820,6 +29820,28 @@ masters theses, doctoral dissertations, and postdoctoral reports.")
 create multi-column formal resumes.")
     (license license:cc-by4.0)))
 
+(define-public texlive-timbreicmc
+  (package
+    (name "texlive-timbreicmc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/timbreicmc/"
+                   "source/latex/timbreicmc/"
+                   "tex/latex/timbreicmc/")
+             (base32
+              "0nd44car7vksfrz53h54r7cz1flgkgmyjri5ai1k7s9g2fn16x2n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/timbreicmc")
+    (synopsis "Typeset documents with ICMC/USP watermarks")
+    (description
+     "With this package you can typeset documents with ICMC/USP Sao Carlos
+watermarks.  ICMC is acronym for @emph{Instituto de Ciencias Matematicas e de
+Computacao} of the @emph{Universidade de Sao Paulo} (USP), in the city of Sao
+Carlos-SP, Brazil.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tinos
   (package
     (name "texlive-tinos")
