@@ -30883,6 +30883,25 @@ and the standard Computer Modern font family.  It contains four OpenType fonts
 which are required for use of the @code{xgreek} package for XeLaTeX.")
     (license license:silofl1.1)))
 
+(define-public texlive-unam-thesis
+  (package
+    (name "texlive-unam-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unam-thesis/"
+                   "tex/latex/unam-thesis/")
+             (base32
+              "1cn4qd3rvh9z8sp7g94fh11khij2vykv89inbmy7g52hxgxzkdhh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unam-thesis")
+    (synopsis "Create documents according to the UNAM guidelines")
+    (description
+     "This is a class for creating dissertation documents according to the
+National Autonomous University of Mexico (UNAM) guidelines.")
+    (license license:gpl3+)))
+
 (define-public texlive-unfonts-core
   (package
     (name "texlive-unfonts-core")
