@@ -30468,6 +30468,29 @@ any document class.")
      "This is document class for theses at University of Alaska Fairbanks.")
     (license license:lppl)))
 
+(define-public texlive-uantwerpendocs
+  (package
+    (name "texlive-uantwerpendocs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uantwerpendocs/"
+                   "source/latex/uantwerpendocs/"
+                   "tex/latex/uantwerpendocs/")
+             (base32
+              "0v1fj5bbx6whzp5csljf0hqlxhib6ajdc3diygxjr4pkv5156zxn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uantwerpendocs")
+    (synopsis
+     "Course texts, master theses, and exams in University of Antwerp style")
+    (description
+     "These class files implement the house style of the University of
+Antwerp.  Using these class files will make it easy for you to make and keep
+your documents compliant to this version and future versions of the house
+style of the University of Antwerp.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
