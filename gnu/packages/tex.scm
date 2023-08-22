@@ -1565,6 +1565,27 @@ adaptation for working with Babel.")
            license:knuth                ;bxabst
            license:public-domain))))    ;docmac
 
+(define-public texlive-acmconf
+  (package
+    (name "texlive-acmconf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/acmconf/" "source/latex/acmconf/"
+                   "tex/latex/acmconf/")
+             (base32
+              "0j30krvxzps7ka3xzv0qifrzxhxzkr3b3f9gska6najp1dvygs3a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/acmconf")
+    (synopsis "Class for ACM conference proceedings")
+    (description
+     "This class may be used to typeset articles to be published in the
+proceedings of @acronym{ACM, Association for Computing Machinery} conferences
+and workshops.  The layout produced by the @code{acmconf} class is based on
+the ACM's own specification.")
+    (license license:lppl)))
+
 (define-public texlive-adforn
   (package
     (name "texlive-adforn")
