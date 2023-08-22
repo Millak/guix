@@ -24542,6 +24542,28 @@ The font is available in Adobe Type 1 and OpenType formats (the latter using
 the Unicode positions for the symbols).")
     (license license:lppl)))
 
+(define-public texlive-philosophersimprint
+  (package
+    (name "texlive-philosophersimprint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/philosophersimprint/"
+                   "source/latex/philosophersimprint/"
+                   "tex/latex/philosophersimprint/")
+             (base32
+              "12rflr3w8lxk9yg1fx3kpyz52002571lh4g3m6hcp73mb393fq1w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/philosophersimprint")
+    (synopsis "Typesetting articles for @emph{Philosophers' Imprint}")
+    (description
+     "The @emph{Philosophers' Imprint} is a series of original papers in
+philosophy, edited by philosophy faculty at the University of Michigan, and
+published on the World Wide Web by the University of Michigan Digital Library.
+The class helps authors to typeset their own articles in Web-ready format.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-phonetic
   (package
     (name "texlive-phonetic")
