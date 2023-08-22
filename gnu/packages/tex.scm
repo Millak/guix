@@ -25857,6 +25857,37 @@ end.")
      "This is a collection of 45 fonts, created by QualiType.")
     (license (list license:silofl1.1 license:gpl2+))))
 
+(define-public texlive-quantumarticle
+  (package
+    (name "texlive-quantumarticle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/quantumarticle/"
+                   "doc/latex/quantumarticle/"
+                   "tex/latex/quantumarticle/")
+             (base32
+              "00v04n109mbi7w0xcmfdzs8f1fabwd2qhf53fqps99k3dj4z5f0a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quantumarticle")
+    (synopsis "Document class for submissions to the @emph{Quantum} journal")
+    (description
+     "This package provides the preferred document class for papers to be
+submitted to @emph{Quantum --- the open journal of quantum science}.  It is
+based on the @code{article} document class.
+
+As a service to authors, the document class comes with a predefined
+bibliography style @file{quantum.bst} that is optimized to be used with the
+@code{quantumarticle} document class.  Additionally, the @code{quantumview}
+document class is provided, which can be used as a proxy to typeset the
+HTML-only editorial pieces in @emph{Quantum Views}.
+
+The @code{quantumarticle} document class also offers an option to remove the
+@emph{Quantum}-related branding.  In that way, users can use it for their
+notes as well.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-quattrocento
   (package
     (name "texlive-quattrocento")
