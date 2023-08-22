@@ -26685,6 +26685,26 @@ fixes the positioning of such accents when the default font (@code{cmssi}) is
 used for sans serif maths.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sapthesis
+  (package
+    (name "texlive-sapthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/sapthesis/"
+                   "doc/latex/sapthesis/"
+                   "tex/latex/sapthesis/")
+             (base32
+              "15livlw0xbc6ys408pqqvh3qvzphigar9cr57dd0is4zrh4c2y36")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sapthesis")
+    (synopsis "Typeset theses for Sapienza-University, Rome")
+    (description
+     "The class will typeset PhD, master, and bachelor theses that adhere to
+the publishing guidelines of the Sapienza University of Rome.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sasnrdisplay
   (package
     (name "texlive-sasnrdisplay")
