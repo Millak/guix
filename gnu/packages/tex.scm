@@ -27097,6 +27097,31 @@ typesetting diaries, journals or devotionals.")
      "This package provides a thesis template of Shandong University.")
     (license license:lppl1.3+)))
 
+(define-public texlive-se2thesis
+  (package
+    (name "texlive-se2thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/se2thesis/"
+                   "source/latex/se2thesis/"
+                   "tex/latex/se2thesis/")
+             (base32
+              "0ixdj8klgj9i7hcrmwrxngyc5pgxpfkw3awkn5s0dcppz88rid1n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/se2thesis")
+    (synopsis
+     "Thesis class for the Chair of Software Engineering II at the
+University of Passau, Germany")
+    (description
+     "The @code{se2thesis} bundle provides a document class for writing
+a theses with the Chair of Software Engineering II at the University of
+Passau, Germany.  The class is based on KOMA-Script classes.  While the class
+provides some basic settings, mostly regrading the type area, fonts, and the
+title page, it still provides large degrees of freedom to its users.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-serbian-apostrophe
   (package
     (name "texlive-serbian-apostrophe")
