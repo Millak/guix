@@ -4596,6 +4596,29 @@ with.  A similar @code{\\greektxt} command does a similar action for shorter
 texts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-beilstein
+  (package
+    (name "texlive-beilstein")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/beilstein/"
+                   "doc/latex/beilstein/"
+                   "source/latex/beilstein/"
+                   "tex/latex/beilstein/")
+             (base32
+              "0gr4fb0g3449jx6mbwfl2g00anss6xbj9xiak83hkc7797jzmg2b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beilstein")
+    (synopsis
+     "Support for submissions to the @emph{Beilstein Journal of Nanotechnology}")
+    (description
+     "The package provides a LaTeX class file and a BibTeX style file in
+accordance with the requirements of submissions to the @emph{Beilstein Journal
+of Nanotechnology}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-belleek
   (package
     (name "texlive-belleek")
