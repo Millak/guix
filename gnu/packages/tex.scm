@@ -30595,6 +30595,32 @@ style that is accepted for use with University of California PhD dissertations
 and masters theses.")
     (license license:lppl1.3+)))
 
+(define-public texlive-udes-genie-these
+  (package
+    (name "texlive-udes-genie-these")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/udes-genie-these/"
+                   "source/latex/udes-genie-these/"
+                   "tex/latex/udes-genie-these/")
+             (base32
+              "0hhc8d0cmc6miylkc137cxlkw44z23zi17sz31f68im5rl94a4m6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/udes-genie-these")
+    (synopsis
+     "Thesis class for the @emph{Faculte de genie} at the Universite de
+Sherbrooke")
+    (description
+     "The @code{udes-genie-these} class can be used for PhD theses,
+master's theses and project definitions at the @emph{Faculte de genie} of the
+Universite de Sherbrooke (Quebec, Canada).  The class file is coherent with
+the latest version of the @emph{Protocole de redaction aux etudes superieures}
+which is available on the faculte's intranet.  The class file documentation is
+in French, the language of the typical user at the Universite de Sherbrooke.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
