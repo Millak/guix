@@ -31714,6 +31714,26 @@ references.  Processing bibliographies produced by the style requires a 8-bit
 BibTeX system.")
     (license license:lppl)))
 
+(define-public texlive-vancouver
+  (package
+    (name "texlive-vancouver")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/vancouver/"
+                   "doc/bibtex/vancouver/")
+             (base32
+              "1r8x945cx32zn6ky4qqrki4xrj8ipbmkgm2dijmws5m0bkkh276r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vancouver")
+    (synopsis "Bibliographic style file for Biomedical journals")
+    (description
+     "This BibTeX style file is expected to meet the Uniform Requirements for
+Manuscripts Submitted to Biomedical Journals (also known as the Vancouver
+style).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-velthuis
   (package
     (name "texlive-velthuis")
