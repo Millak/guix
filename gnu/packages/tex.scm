@@ -30512,6 +30512,26 @@ according to the thesis guidelines of the University of Calgary Faculty of
 Graduate Studies.  It uses the @code{memoir} class.")
     (license license:expat)))
 
+(define-public texlive-ucbthesis
+  (package
+    (name "texlive-ucbthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ucbthesis/"
+                   "tex/latex/ucbthesis/")
+             (base32
+              "0kwy84r7vz5nvq8nrar1ykik4ycpvgl1kwiyi0da6wjn4cazxxh9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ucbthesis")
+    (synopsis "Thesis and dissertation class supporting UCB requirements")
+    (description
+     "The class provides the necessary framework for electronic submission
+of masters theses and PhD dissertations at the University of
+California, Berkeley.  It is based on the @code{memoir} class.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
