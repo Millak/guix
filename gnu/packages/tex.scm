@@ -17217,6 +17217,26 @@ citation label suffixing.")
 conference.")
     (license license:lppl)))
 
+(define-public texlive-ieeeconf
+  (package
+    (name "texlive-ieeeconf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ieeeconf/"
+                   "source/latex/ieeeconf/"
+                   "tex/latex/ieeeconf/")
+             (base32
+              "1f7v199mc1dw2fhp30qdkx48dyzk5mqmbqr91c1jm235isgs4fam")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ieeeconf")
+    (synopsis "Macros for IEEE conference proceedings")
+    (description
+     "The IEEEconf class implements the formatting dictated by the IEEE
+Computer Society Press for conference proceedings.")
+    (license license:lppl)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
