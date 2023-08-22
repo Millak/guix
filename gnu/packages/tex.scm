@@ -4188,6 +4188,27 @@ levels (i.e., both undergraduate and graduate students may use the class).  It
 also provides macros designed to optimise the process of producing a thesis.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bangorexam
+  (package
+    (name "texlive-bangorexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bangorexam/"
+                   "source/latex/bangorexam/"
+                   "tex/latex/bangorexam/")
+             (base32
+              "09pp88415mba65icf6cx4vqn3an54hrgkd8s677ndlf2ml7n0lhs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bangorexam")
+    (synopsis "Typeset an examination at Bangor University")
+    (description
+     "The package allows typesetting of Bangor Univesity's exam style.  It
+currently supports a standard A/B choice, A-only compulsory and n from m exam
+styles.  Marks are totalled and checked automatically.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-bangtex
   (package
     (name "texlive-bangtex")
