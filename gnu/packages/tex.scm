@@ -30725,6 +30725,24 @@ doctoral dissertations --- your thesis committee members.")
 the University's Handbook for Graduate Students Preparing to Deposit.")
     (license license:lppl)))
 
+(define-public texlive-ukbill
+  (package
+    (name "texlive-ukbill")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ukbill/" "tex/latex/ukbill/")
+             (base32
+              "1kdz2dfa9y5gjm61k3l9cyc95fc8ibq8c1vlap3gfzwadl4fggp1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ukbill")
+    (synopsis "Class for typesetting UK legislation")
+    (description
+     "This package provides formatting to easily typeset draft UK legislation.
+The font Palatine Parliamentary is required to use this package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
