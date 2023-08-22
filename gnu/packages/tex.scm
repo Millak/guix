@@ -28047,6 +28047,29 @@ package that enables usage of the STIX2 font in LaTeX for the Serbian and
 Macedonian languages.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-srdp-mathematik
+  (package
+    (name "texlive-srdp-mathematik")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/srdp-mathematik/"
+                   "tex/latex/srdp-mathematik/")
+             (base32
+              "0pbsj6gkk5zblvhwgpymz64gwzf84mzciybm2m9jqf7x9va2xqp0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/srdp-mathematik")
+    (synopsis "Typeset Austrian SRDP in mathematics")
+    (description
+     "This package provides basic commands for the defined formats of the
+Austrian @acronym{sRDP, Standardisierte Reife- und Diplomprufung} in
+mathematics.  Furthermore, it includes ways to implement answers in the
+@file{.tex} file which can optionally be displayed in the PDF file, and it
+offers a way to vary the answers in order to create different groups (e.g.,
+for tests) easily.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-stage
   (package
     (name "texlive-stage")
