@@ -29629,6 +29629,30 @@ SEAS, George Washington University School of Engineering and Applied Science}
 dissertations and theses.")
     (license license:gpl3)))
 
+(define-public texlive-thesis-qom
+  (package
+    (name "texlive-thesis-qom")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/thesis-qom/"
+                   "tex/xelatex/thesis-qom/")
+             (base32
+              "0cjx3yqnx6ijm664i747sxd19g7pmwpqsw24mh4bvdf0k1wqjj2a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thesis-qom")
+    (synopsis "Thesis style of the University of Qom, Iran")
+    (description
+     "This package provides a class file for writing theses and dissertations
+according to the University of Qom Graduate Schools's guidelines for the
+electronic submission of master theses and PhD dissertations.  The class
+should meet all the current requirements and is updated whenever the
+university guidelines change.  The class needs XeLaTeX in conjunction with the
+following fonts: XB Niloofar, IranNastaliq, IRlotus, XB Zar, XB Titre, and
+Yas.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-thmbox
   (package
     (name "texlive-thmbox")
