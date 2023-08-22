@@ -7198,6 +7198,24 @@ those long IUPAC compound names, and some chemical idioms.  It also supports
 the labelling of compounds and reference to labelled compounds.")
     (license license:lppl)))
 
+(define-public texlive-br-lex
+  (package
+    (name "texlive-br-lex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/br-lex/" "tex/latex/br-lex/")
+             (base32
+              "154mjkywvyif57zvqbq5wxs84357148km2x0lqqdx6nanr3vwmxb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/br-lex")
+    (synopsis "Class for typesetting Brazilian legal texts")
+    (description
+     "This class implements rules to typeset Brazilian legal texts.  Its
+purpose is to be an easy-to-use implementation for the end-user.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-braille
   (package
     (name "texlive-braille")
