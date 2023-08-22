@@ -17257,6 +17257,27 @@ discussions and closures, for the IEEE Power Engineering Society Transactions
 journals.")
     (license license:lppl)))
 
+(define-public texlive-ieeetran
+  (package
+    (name "texlive-ieeetran")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/ieeetran/"
+                   "bibtex/bst/ieeetran/" "doc/latex/ieeetran/"
+                   "tex/latex/ieeetran/")
+             (base32
+              "0j7vv8hp0ymzmclyrk23zmixcclhlm1g241y8dk3dl18zsj00f1c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ieeetran")
+    (synopsis "Document class for IEEE Transactions journals and conferences")
+    (description
+     "The class and its BibTeX style enable authors to produce
+officially-correct output for the @acronym{IEEE, Institute of Electrical and
+Electronics Engineers} transactions, journals and conferences.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
