@@ -16311,6 +16311,36 @@ University of Technology Graduate Dissertation Writing Specifications} and
 Work Implementation Rules}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hithesis
+  (package
+    (name "texlive-hithesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/hithesis/"
+                   "doc/xelatex/hithesis/"
+                   "makeindex/hithesis/"
+                   "source/xelatex/hithesis/"
+                   "tex/xelatex/hithesis/")
+             (base32
+              "0w701f0ivf7k8jb2jiy5lhns4qiflyrslyiplm6aca67g2rcqgwn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; "hithesis.ins" writes files to "./figures" Create these
+               ;; directories first to prevent an error.
+               (add-before 'build 'prepare-build
+                 (lambda _
+                   (mkdir-p "build/figures"))))))
+    (home-page "https://ctan.org/pkg/hithesis")
+    (synopsis "Harbin Institute of Technology thesis template")
+    (description
+     "@code{hithesis} is a LaTeX thesis template package for Harbin Institute
+of Technology supporting bachelor, master, doctor dissertations.")
+    (license license:lppl1.3a)))
+
 (define-public texlive-hindmadurai
   (package
     (name "texlive-hindmadurai")
