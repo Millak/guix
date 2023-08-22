@@ -17433,6 +17433,31 @@ documents for the International Modal Analysis Conference.  The bundle
 provides a LaTeX package and a BibTeX style file.")
     (license license:gpl3+)))
 
+(define-public texlive-imakeidx
+  (package
+    (name "texlive-imakeidx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/imakeidx/"
+                   "source/latex/imakeidx/"
+                   "tex/latex/imakeidx/")
+             (base32
+              "1s65kbzafx5q7519pbxjldb87flws0mgg76yxi7a5mgxrnkfy961")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/imakeidx")
+    (synopsis "Package for producing multiple indexes")
+    (description
+     "The package enables the user to produce and typeset one or more indexes
+simultaneously with a document.  The package is known to work in LaTeX
+documents processed with pdfLaTeX, XeLaTeX and LuaLaTeX.  If
+@command{makeindex} is used for processing the index entries, no particular
+setting up is needed.  When using Xindy or other programs, it is necessary to
+enable shell escape; shell escape is also needed if @command{splitindex} is
+used.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-imtekda
   (package
     (name "texlive-imtekda")
