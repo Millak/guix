@@ -13227,6 +13227,30 @@ all necessary support files are provided.  The font works well with
 @code{newtxmath}'s @code{libertine} option.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-fbithesis
+  (package
+    (name "texlive-fbithesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fbithesis/"
+                   "source/latex/fbithesis/"
+                   "tex/latex/fbithesis/")
+             (base32
+              "1650ilscm47x606piwx7a8z08lhkq87g8k0z40ii3ig0c3p9isgl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/fbithesis")
+    (synopsis "Computer Science thesis class for University of Dortmund")
+    (description
+     "At the department of computer science at the University of Dortmund
+there are cardboard cover pages for research or internal reports like master
+and phd theses.  The main function of this LaTeX2e document-class is
+a replacement for the @code{\\maketitle} command to typeset a title page that
+is adjusted to these cover pages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fbs
   (package
     (name "texlive-fbs")
