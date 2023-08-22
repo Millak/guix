@@ -25243,6 +25243,28 @@ way with @code{\\style=BerlinFU} as a class option.")
 presentation drafting.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pracjourn
+  (package
+    (name "texlive-pracjourn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pracjourn/"
+                   "source/latex/pracjourn/"
+                   "tex/latex/pracjourn/")
+             (base32
+              "0pavlcxv7jqni6rl2hdqfmmns566151rvsaa1p5xhgfb6qa4l1b1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pracjourn")
+    (synopsis "Typeset articles for PracTeX")
+    (description
+     "The @code{pracjourn} class is used for typesetting articles in the
+@emph{PracTeX Journal}.  It is based on the @code{article} class with
+modifications to allow for more flexible front-matter and revision control,
+among other small changes.")
+    (license license:gpl3+)))
+
 (define-public texlive-prftree
   (package
     (name "texlive-prftree")
