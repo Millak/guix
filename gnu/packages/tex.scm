@@ -17743,6 +17743,48 @@ the Josefin Sans family of fonts, designed by Santiago Orozco.  Josefin Sans
 is available in seven weights, with corresponding italics.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-jourcl
+  (package
+    (name "texlive-jourcl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jourcl/" "tex/latex/jourcl/")
+             (base32
+              "1wbq0mjl6931267qiw0nrfqxa4blpddqyv27m3wggbpbrz9hvakb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jourcl")
+    (synopsis "Cover letter for journal submissions")
+    (description
+     "Paper submissions to journals are usually accompanied by a cover letter.
+This package provides a LaTeX class and a template for such a cover letter
+with the following main features:
+
+@itemize
+
+@item minimalistic design,
+
+@item custom image,
+
+@item pre-defined commands for journal name, author, date, etc.
+
+@item many macros contained in this package speed up the process of
+preparing the necessary ingredients for the cover letter;
+
+@item macros for recommending up to three reviewers and editors;
+
+@item ORCID logo and link to the submitting author's ORCID page;
+
+@item controls for adding a ``conflict of interest'' statement and declaration;
+
+@item custom greeting;
+
+@item predefined valedictions for different types of submissions.
+
+@end itemize")
+    (license license:cc-by-sa4.0)))
+
 (define-public texlive-junicode
   (package
     (name "texlive-junicode")
