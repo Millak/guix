@@ -11817,6 +11817,25 @@ are provided.")
 mathematics.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ebook
+  (package
+    (name "texlive-ebook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ebook/" "tex/latex/ebook/")
+             (base32
+              "1i9zixl8wiwmfrhrzwm2adgwm5kzqk5xaq5nq9bks9i2ayvmiij2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ebook")
+    (synopsis "Helps creating an ebook by providing an @code{ebook} class")
+    (description
+     "The package defines a command @code{\\ebook} that defines page layout,
+fonts, and font-sizes for documents to be rendered as PDF-ebooks on small
+ebook-readers.")
+    (license license:public-domain)))
+
 (define-public texlive-ecc
   (package
     (name "texlive-ecc")
