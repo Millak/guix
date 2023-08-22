@@ -32249,6 +32249,25 @@ Cyrillic Mongolian using either XeLaTeX or LuaLaTeX.  The command
 to be able to create multilingual documents.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xmuthesis
+  (package
+    (name "texlive-xmuthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xmuthesis/"
+                   "source/latex/xmuthesis/"
+                   "tex/latex/xmuthesis/")
+             (base32
+              "1qnsh0q61zv4jrh92zkhgdk1lzk3fksa2iiv2c2hkyk55sjza6ac")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ctex))
+    (home-page "https://ctan.org/pkg/xmuthesis")
+    (synopsis "XMU thesis style")
+    (description "This class is designed for XMU thesis's writing.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xq
   (package
     (name "texlive-xq")
