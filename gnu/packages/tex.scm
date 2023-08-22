@@ -8185,6 +8185,25 @@ by default, say, but tabular lining digits within a particular table.")
 whichever of @code{\\bibname} and @code{\\refname} is in use.")
     (license license:lppl)))
 
+(define-public texlive-chem-journal
+  (package
+    (name "texlive-chem-journal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/chem-journal/")
+             (base32
+              "01s4sbmc4g96cmnbhx9a6bqjskkrr6saq91cly2pfy5gr256vmnq")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chem-journal")
+    (synopsis "Various BibTeX formats for journals in chemistry")
+    (description
+     "This package provides various BibTeX formats for journals in chemistry,
+including @emph{Reviews in Computational Chemistry}, @emph{Journal of Physical
+Chemistry}, @emph{Journal of Computational Chemistry}, and @emph{Physical
+Chemistry Chemical Physics}.")
+    (license license:gpl3+)))
+
 (define-public texlive-chemarrow
   (package
     (name "texlive-chemarrow")
