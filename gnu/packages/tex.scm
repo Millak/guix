@@ -17342,6 +17342,27 @@ documents for the International Modal Analysis Conference.  The bundle
 provides a LaTeX package and a BibTeX style file.")
     (license license:gpl3+)))
 
+(define-public texlive-imtekda
+  (package
+    (name "texlive-imtekda")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/imtekda/" "source/latex/imtekda/"
+                   "tex/latex/imtekda/")
+             (base32
+              "0pbv50c6g024dhyw8mpnnyafp18pvf0cqy7j1fvhrbqwf13bn37x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/imtekda")
+    (synopsis "IMTEK thesis class")
+    (description
+     "The class permits typesetting of diploma, bachelor's and master's theses
+for the @acronym{IMTEK, Institute of Microsystem Technology} at the University
+of Freiburg (Germany).  The class is based on the KOMA-Script class
+@code{scrbook}.")
+    (license license:lppl)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
