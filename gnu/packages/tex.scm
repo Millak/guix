@@ -32353,6 +32353,25 @@ structural formulas in a way that reflects their structure.  The package
 provides three output modes: LaTeX, PostScript and PDF.")
     (license license:lppl1.3+)))
 
+(define-public texlive-yazd-thesis
+  (package
+    (name "texlive-yazd-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/yazd-thesis/"
+                   "tex/xelatex/yazd-thesis/")
+             (base32
+              "0zwzzzf8z0p0cl6l3wjqnfj80pym4wx5halb3rl1i6bmvyypgafz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yazd-thesis")
+    (synopsis "Template for the Yazd University")
+    (description
+     "This package offers a document class for typesetting theses and
+dissertations at the Yazd University.  The class requires use of XeLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-yfonts
   (package
     (name "texlive-yfonts")
