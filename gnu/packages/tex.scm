@@ -31649,6 +31649,32 @@ and uses the Arial and UWA Slab fonts by default.  The class works with
 XeLaTeX and LuaLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uwa-pif
+  (package
+    (name "texlive-uwa-pif")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uwa-pif/" "source/latex/uwa-pif/"
+                   "tex/latex/uwa-pif/")
+             (base32
+              "048367w14wnk8h517xc914xvp0g10ysk0kziikk2s4q70qk2jci0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uwa-pif")
+    (synopsis
+     "@acronym{PIF, Participant Information Form} for a human research
+protocol at the University of Western Australia")
+    (description
+     "This package generates a @acronym{PIF, Participant Information Form} for
+a human research protocol at the @acronym{UWA, University of Western
+Australia}.  It requires the UWA logo in PDF format, which is available in SVG
+format at
+@url{https://static-listing.weboffice.uwa.edu.au/visualid/core-rebrand/img/uwacrest/},
+and uses the Calibri fonts by default.  The class works with XeLaTeX and
+LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
