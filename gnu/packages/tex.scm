@@ -2760,6 +2760,29 @@ of LaTeX documents to Lambda).")
 final exams in the @acronym{ANU, Australian National University}.")
     (license license:gpl3+)))
 
+(define-public texlive-anyfontsize
+  (package
+    (name "texlive-anyfontsize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/anyfontsize/"
+                   "tex/latex/anyfontsize/")
+             (base32
+              "0wr4brhggmkb1rwzmcc2r5ygzqp6090z0bp3sfbarwvwz903wpdn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/anyfontsize")
+    (synopsis "Select any font size in LaTeX")
+    (description
+     "The package allows the to user select any font size , even those sizes
+that are not listed in the @file{.fd} file.  If such a size is requested,
+LaTeX will search for and select the nearest listed size; @code{anyfontsize}
+will then scale the font to the size actually requested.  Similar
+functionality is available for the CM family, for the EC family, or for either
+Computer Modern encoding; the present package generalises the facility.")
+    (license license:lppl)))
+
 (define-public texlive-aomart
   (package
     (name "texlive-aomart")
