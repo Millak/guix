@@ -2779,6 +2779,32 @@ final exams in the @acronym{ANU, Australian National University}.")
 @emph{Annals of Mathematics}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-apa
+  (package
+    (name "texlive-apa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/apa/" "tex/latex/apa/")
+             (base32
+              "0slrvw7awva4d2zf7a6qyvh85qhrp8ml4ncdzjfizr5xz4ki6gs2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apa")
+    (synopsis "American Psychological Association format")
+    (description
+     "This package provides a LaTeX class to format text according to the
+@emph{American Psychological Association Publication Manual} (5th ed.)
+specifications for manuscripts or to the @acronym{APA, Americal Psychological
+Association} journal look found in journals like the @emph{Journal of
+Experimental Psychology} etc.  In addition, it provides regular LaTeX-like
+output with a few enhancements and APA-motivated changes.  Note that the
+@code{apa7} class (covering the 7th edition of the manual) and
+@code{apa6} (covering the 6th edition of the manual) are now commonly in use.
+Apacite, which used to work with this class, has been updated for use with
+@code{apa6}.")
+    (license license:lppl)))
+
 (define-public texlive-apalike-ejor
   (package
     (name "texlive-apalike-ejor")
