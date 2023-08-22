@@ -31623,6 +31623,32 @@ and uses the Arial and UWA Slab fonts by default.  The package works with
 XeLaTeX and LuaLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uwa-pcf
+  (package
+    (name "texlive-uwa-pcf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uwa-pcf/" "source/latex/uwa-pcf/"
+                   "tex/latex/uwa-pcf/")
+             (base32
+              "0b41nfrrqmcq3abcwb13hb9anhb5c12c5ha60ni1yz2xqvimr1im")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uwa-pcf")
+    (synopsis
+     "@acronym{PCF, Participant Consent Form} for a human research protocol
+at the University of Western Australia")
+    (description
+     "This LaTeX class generates a @acronym{PCF, Participant Consent Form} for
+a human research protocol at the @acronym{UWA, University of Western
+Australia}.  It requires the UWA logo in PDF format, which is available in SVG
+format at
+@url{https://static-listing.weboffice.uwa.edu.au/visualid/core-rebrand/img/uwacrest/},
+and uses the Arial and UWA Slab fonts by default.  The class works with
+XeLaTeX and LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
