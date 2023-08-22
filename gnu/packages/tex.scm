@@ -30705,6 +30705,26 @@ that gets signed by the department head, your advisor, and --- for
 doctoral dissertations --- your thesis committee members.")
     (license license:lppl1.2+)))
 
+(define-public texlive-uiucthesis
+  (package
+    (name "texlive-uiucthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uiucthesis/"
+                   "source/latex/uiucthesis/"
+                   "tex/latex/uiucthesis/")
+             (base32
+              "0kzp2p03p1v7qij2kz82xis88vh1g477vs2aa0sqfa24w9y28h5i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uiucthesis")
+    (synopsis "UIUC thesis class")
+    (description
+     "The class produces a document that conforms to the format described in
+the University's Handbook for Graduate Students Preparing to Deposit.")
+    (license license:lppl)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
