@@ -17483,6 +17483,27 @@ words, both in cardinal and in ordinal form.")
 Slavik Jablan. ")
     (license license:public-domain)))
 
+(define-public texlive-jacow
+  (package
+    (name "texlive-jacow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jacow/" "tex/latex/jacow/")
+             (base32
+              "0wdmk9zl3916hgj3f16dlfvrxxlr7ffmjih2nipgfz376ryvnbgf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jacow")
+    (synopsis
+     "Class for submissions to the proceedings of conferences on JACoW.org")
+    (description
+     "The @code{jacow} class is used for submissions to the proceedings of
+conferences on @acronym{JACoW, Joint Accelerator Conferences Website}, an
+international collaboration that publishes the proceedings of accelerator
+conferences held around the world.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-jamtimes
   (package
     (name "texlive-jamtimes")
