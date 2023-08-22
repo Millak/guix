@@ -29802,6 +29802,24 @@ Tsinghua dissertations, including general undergraduate research papers,
 masters theses, doctoral dissertations, and postdoctoral reports.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tidyres
+  (package
+    (name "texlive-tidyres")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tidyres/" "tex/latex/tidyres/")
+             (base32
+              "0ls8qcj8jdv954p4mlhhdqvhp4kq016h41i6mj42fnwg598a3ms1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tidyres")
+    (synopsis "Create formal resumes easily")
+    (description
+     "This LaTeX package aims to provide users with a simple interface to
+create multi-column formal resumes.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-tinos
   (package
     (name "texlive-tinos")
