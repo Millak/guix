@@ -15534,6 +15534,31 @@ programs are provided as sources, not installed in the @file{bin}
 directories.")
     (license license:public-domain)))
 
+(define-public texlive-gzt
+  (package
+    (name "texlive-gzt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gzt/" "source/latex/gzt/"
+                   "tex/latex/gzt/")
+             (base32
+              "0gyiy9vzr760mkvaabd3aj3rgz60b9dhc7m5a2rnhzz5sz4a2yv3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gzt")
+    (synopsis "Bundle of classes for @emph{La Gazette des Mathematiciens}")
+    (description
+     "This bundle provides two classes and BibLaTeX styles for the French
+journal @emph{La Gazette des Mathematiciens}: @code{gzt} for the complete
+issues of the journal, aimed at the Gazette's team, @code{gztarticle},
+intended for authors who wish to publish an article in the Gazette.  This
+class's goals are to faithfully reproduce the layout of the Gazette, thus
+enabling the authors to be able to work their document in actual conditions,
+and provide a number of tools (commands and environments) to facilitate the
+drafting of documents, in particular those containing mathematical formulas.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hacm
   (package
     (name "texlive-hacm")
