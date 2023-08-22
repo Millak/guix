@@ -14589,6 +14589,29 @@ presentation standards required by the @emph{Cahiers du GERAD} series.")
 of the History Faculty of the University of Freiburg (Germany).")
     (license license:lppl)))
 
+(define-public texlive-gfdl
+  (package
+    (name "texlive-gfdl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gfdl/" "source/latex/gfdl/"
+                   "tex/latex/gfdl/")
+             (base32
+              "1yiyhks3097sz686sar1jnkska669hp7v2sv1fm7n0d4j00zm816")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gfdl")
+    (synopsis "Support for using GFDL in LaTeX")
+    (description
+     "The @acronym{GFDL, GNU Free Documentation License} is a popular license
+used for programming manuals, documentations and various other textual works
+too, but using this license with LaTeX is not very convenient.  This package
+aims to help users in easily using the license without violating any rules of
+the license.  With a handful of commands, users can rest assured that their
+document will be perfectly licensed under GFDL.")
+    (license (list license:gpl3+ license:fdl1.3+))))
+
 (define-public texlive-gfsartemisia
   (package
     (name "texlive-gfsartemisia")
