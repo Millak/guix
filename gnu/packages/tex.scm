@@ -49951,6 +49951,27 @@ create new @samp{List of ...}.  The ToC @code{\\parskip} may be changed.")
 
 (define-deprecated-package texlive-latex-tocloft texlive-tocloft)
 
+(define-public texlive-tocvsec2
+  (package
+    (name "texlive-tocvsec2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tocvsec2/"
+                   "source/latex/tocvsec2/"
+                   "tex/latex/tocvsec2/")
+             (base32
+              "0ybw8dra074pbl9l0ilp13naz73mgb57agy79bvmrb7v2r8a6zm7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tocvsec2")
+    (synopsis "Section numbering and table of contents control")
+    (description
+     "This package provides control over section numbering (without recourse
+to starred sectional commands) and the entries in the table of contents on
+a section by section basis.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-trimspaces
   (package
     (name "texlive-trimspaces")
