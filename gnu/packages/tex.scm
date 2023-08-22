@@ -21704,6 +21704,28 @@ a XeLaTeX style file that makes it easier to achieve the classic incunabula
 look.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-mlacls
+  (package
+    (name "texlive-mlacls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mlacls/" "source/latex/mlacls/"
+                   "tex/latex/mlacls/")
+             (base32
+              "1g6kqsrvcvf8xmygb7rh18a1amqc83fp7fghvd17klsaslal83cd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mlacls")
+    (synopsis "LaTeX class for MLA papers")
+    (description
+     "In the United States, secondary and undergraduate students are generally
+expected to adhere to the format prescribed by the @acronym{MLA, Modern
+Language Association} for typewritten essays, research papers and writings.
+This package provides a simple, straightforward LaTeX class for composing
+papers almost perfectly adherent to the MLA style guide.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mlmodern
   (package
     (name "texlive-mlmodern")
