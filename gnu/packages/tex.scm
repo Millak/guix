@@ -9224,6 +9224,27 @@ small capitals, and old-style numerals) and variant forms for particular
 languages.")
     (license (list license:silofl1.1 license:gpl2+))))
 
+(define-public texlive-classicthesis
+  (package
+    (name "texlive-classicthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/classicthesis/"
+                   "tex/latex/classicthesis/")
+             (base32
+              "0djx7vcrc1ksbgppdbwy31z5qd95flgsgqk6gpzpi3a5rc7h54nz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/classicthesis")
+    (synopsis "Classically styled thesis package")
+    (description
+     "This package provides an elegant layout designed in homage to
+Bringhurst's @emph{The Elements of Typographic Style}.  It makes use of
+a range of techniques to get the best results achievable using TeX.  Included
+in the bundle are templates to make thesis writing easier.")
+    (license license:gpl2+)))
+
 (define-public texlive-clearsans
   (package
     (name "texlive-clearsans")
