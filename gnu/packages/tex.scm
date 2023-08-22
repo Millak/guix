@@ -23198,6 +23198,27 @@ and clever references.")
 National Institutes of Health}, a US government agency.")
     (license license:lppl)))
 
+(define-public texlive-nihbiosketch
+  (package
+    (name "texlive-nihbiosketch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nihbiosketch/"
+                   "tex/latex/nihbiosketch/")
+             (base32
+              "15d22va4bxwy6h0dwahpakiqry0pq0j4mpc0rbm10lgm3z7hz25c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nihbiosketch")
+    (synopsis "Class for NIH biosketches based on the 2015 updated format")
+    (description
+     "This LaTeX document class tries to adhere to the Biographical Sketch
+formatting requirements outlined in NIH Notice NOT-OD-15-032..  This new
+format is required for applications submitted for due dates on or after May
+25, 2015.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
