@@ -7258,6 +7258,26 @@ to the formatting guidelines of Brandeis University @acronym{GSAS, Graduate
 School of Arts and Sciences}.")
     (license license:lppl1.2+)))
 
+(define-public texlive-brandeis-problemset
+  (package
+    (name "texlive-brandeis-problemset")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/brandeis-problemset/"
+                   "tex/latex/brandeis-problemset/")
+             (base32
+              "172l1jmvacjg9j5fkyrmsrhsj5pyaaq8g9pfvkahcnhk3jfc3pnp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/brandeis-problemset")
+    (synopsis "Document class for COSI Problem sets at Brandeis University")
+    (description
+     "Brandeis University's computer science courses often assign problem sets
+which require fairly rigorous formatting.  This document class, which extends
+@code{article}, provides a simple way to typeset these problem sets in LaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-breakcites
   (package
     (name "texlive-breakcites")
