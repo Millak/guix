@@ -28704,6 +28704,25 @@ The bundle comes with a set of ready-prepared puzzle files.")
 for use in the humanities).")
     (license license:lppl1.3+)))
 
+(define-public texlive-sugconf
+  (package
+    (name "texlive-sugconf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sugconf/" "tex/latex/sugconf/")
+             (base32
+              "1v9fp0dpbk4g9aab8jvwhfzh71w4276awi8lyf2pgk66d5qhfxsb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sugconf")
+    (synopsis "SAS(R) user group conference proceedings document class")
+    (description
+     "The class may be used to typeset articles to be published in the
+proceedings of SAS(R) User group conferences and workshops.  The layout
+produced by the class is based on that published by SAS Institute (2021).")
+    (license license:lppl)))
+
 (define-public texlive-superiors
   (package
     (name "texlive-superiors")
