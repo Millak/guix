@@ -16511,6 +16511,25 @@ card games.")
             "doc/lualatex/hmtrump/nkd04_playing_cards_index/LICENSE")
            license:cc-by-sa4.0))))
 
+(define-public texlive-hobete
+  (package
+    (name "texlive-hobete")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hobete/" "tex/latex/hobete/")
+             (base32
+              "1gccpxh3bfj4sbnag8rjrz8hyrx3107mwxpydl0bcdn8dxyjkfi2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hobete")
+    (synopsis "Unofficial Beamer theme for the University of Hohenheim")
+    (description
+     "The package provides a Beamer theme which features the Ci colors of the
+University of Hohenheim.  Please note that this is not an official theme, and
+that there will be no support for it from the University.")
+    (license license:lppl)))
+
 (define-public texlive-horoscop
   (package
     (name "texlive-horoscop")
