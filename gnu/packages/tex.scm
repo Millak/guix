@@ -18266,6 +18266,40 @@ The font is distributed in Metafont format, and covers the numbers and
 upper-case letters.")
     (license license:public-domain)))
 
+(define-public texlive-kluwer
+  (package
+    (name "texlive-kluwer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/kluwer/" "doc/latex/kluwer/"
+                   "source/latex/kluwer/" "tex/latex/kluwer/")
+             (base32
+              "14y95srzggd8kaiyjq0sz5amvmppl3rilhj9fr0vcjsy2g1ms52z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The "kluwer.ins" file only generates "kluwer.cls".  To that
+          ;; effect, it needs data from files located in
+          ;; "tex/latex/kluwer/".  Bring them to build directory.
+          (add-before 'build 'bring-data-files
+            (lambda _
+              (for-each (lambda (f) (install-file f "build/"))
+                        (find-files "tex/latex/kluwer/" "\\.(clo|sty)$")))))))
+    (home-page "https://ctan.org/pkg/kluwer")
+    (synopsis "@emph{Kluwer} publication support")
+    (description
+     "This package provides a class file for @emph{Kluwer} journal
+submissions, and bibliography style for named references.  It also includes
+@file{klucite.sty}, which collapses bibliographic citations, and
+@file{klups.sty}, which attempts to select Times for text and MathTime for
+math instead of Computer Modern.  This package is most likely long obsolete,
+unfortunately.")
+    (license license:knuth)))
+
 (define-public texlive-kotex-oblivoir
   (package
     (name "texlive-kotex-oblivoir")
