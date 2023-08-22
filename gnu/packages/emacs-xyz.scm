@@ -32445,6 +32445,29 @@ simple but powerful Org contents.")
 on the HTML back-end.")
       (license license:gpl3+))))
 
+(define-public emacs-ox-html-stable-ids
+  (package
+    (name "emacs-ox-html-stable-ids")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jkreeftmeijer/ox-html-stable-ids.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1slfc1hx6mgx6rb0h0hz7200dmpqr04sz8009r6cy7msp2b91hg7"))))
+    (build-system emacs-build-system)
+    (license license:gpl3)
+    (home-page "https://jeffkreeftmeijer.com/ox-html-stable-ids")
+    (synopsis "Stable IDs for ox-html.el")
+    (description
+     "Ox-html-stable-ids is an Org export extension package that generates
+ HTML with stable ID attributes instead of the random IDs Org's exporter uses
+by default.")))
+
 (define-public emacs-wc-mode
   (package
     (name "emacs-wc-mode")
