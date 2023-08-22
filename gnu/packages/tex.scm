@@ -27221,6 +27221,26 @@ a @code{sesamanuelTIKZ} style to be used for TikZ pictures in the Sesamath
 book.")
     (license license:lppl1.3+)))
 
+(define-public texlive-seu-ml-assign
+  (package
+    (name "texlive-seu-ml-assign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/seu-ml-assign/"
+                   "tex/latex/seu-ml-assign/")
+             (base32
+              "1w8dhp0kmgi9ywskq772ccj5n0kd7j55y15xwm3ss3jjdh4vzh8m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/seu-ml-assign")
+    (synopsis "Southeast University Machine Learning Assignment template")
+    (description
+     "This is a template for the Southeast University Machine Learning
+Assignment that can be easily adapted to other usages.  This template features
+a colorful theme that makes it look elegant and attractive.")
+    (license license:expat)))
+
 (define-public texlive-sfg
   (package
     (name "texlive-sfg")
