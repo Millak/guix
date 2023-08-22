@@ -19966,6 +19966,27 @@ from use of the package are in the format used in the textbook @emph{Language,
 Proof, and Logic} by Dave Barker-Plummer, Jon Barwise, and John Etchemendy.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lps
+  (package
+    (name "texlive-lps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lps/" "source/latex/lps/"
+                   "tex/latex/lps/")
+             (base32
+              "11jd8k1w2mk0xmwaxb1ps8pabxlzvs24z5hl74dwcim2xad7ahvj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lps")
+    (synopsis "Class for @emph{Logic and Philosophy of Science}")
+    (description
+     "The @emph{Logic and Philosophy of Science} journal is an online
+publication of the University of Trieste (Italy).  The class builds on the
+standard article class to offer a format that LaTeX authors may use when
+submitting to the journal.")
+    (license license:lppl)))
+
 (define-public texlive-lshort-bulgarian
   (package
     (name "texlive-lshort-bulgarian")
