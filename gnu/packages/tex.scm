@@ -14548,6 +14548,27 @@ symbols to Knuth's @code{gen} font, and so avoiding loading two fonts when you
 need only genealogical symbols.  The font is distributed as Metafont source.")
     (license license:lppl)))
 
+(define-public texlive-geradwp
+  (package
+    (name "texlive-geradwp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/geradwp/" "source/latex/geradwp/"
+                   "tex/latex/geradwp/")
+             (base32
+              "1g2kh2wdlf6y8wvs7r1zl2ws8ysrjzsk1k0032jci8ik9kx9wlg9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/geradwp")
+    (synopsis "Document class for the @emph{Cahiers du GERAD} series")
+    (description
+     "This package provides the @code{geradwp} class, a class based on
+@code{article} and compatible with LaTeX.  With this class, researchers at
+GERAD will be able to write their working paper while complying to all the
+presentation standards required by the @emph{Cahiers du GERAD} series.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-geschichtsfrkl
   (package
     (name "texlive-geschichtsfrkl")
