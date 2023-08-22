@@ -4250,16 +4250,15 @@ color-related widgets.")
   (package
     (inherit python-shiboken-2)
     (name "python-shiboken-6")
-    (version "6.3.2")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://download.qt.io/official_releases"
-                                  "/QtForPython/pyside6/PySide6-" version
-                                  "-src/pyside-setup-opensource-src-"
+              (uri (string-append "mirror://qt/QtForPython/pyside6/PySide6-"
+                                  version "-src/pyside-setup-everywhere-src-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "14k8lm0h45jy6cinfwh1r503pdsslw6sq0ay3f74hil9krc7k6fi"))))
+                "1a0v9mjlcjbffm4lf5cfg45hvqai9654p95ygj5cjhfd9z8z3nwh"))))
     (build-system cmake-build-system)
     (inputs
      (modify-inputs (package-inputs python-shiboken-2)
