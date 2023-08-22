@@ -23219,6 +23219,27 @@ format is required for applications submitted for due dates on or after May
 25, 2015.")
     (license license:lppl1.3+)))
 
+(define-public texlive-njustthesis
+  (package
+    (name "texlive-njustthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/njustthesis/"
+                   "source/latex/njustthesis/"
+                   "tex/latex/njustthesis/")
+             (base32
+              "11xbxz3vvq15v5nr32ww6llq08v7r0x52zmq13dp90nmh0xyj7y6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/njustthesis")
+    (synopsis
+     "Thesis template for the Nanjing University of Science and Technology")
+    (description
+     "This is a thesis template for the Nanjing University of Science and
+Technology.")
+    (license license:gpl3+)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
