@@ -19691,6 +19691,26 @@ version hosted by Springer (as requested by the copyright transfer agreement
 for Springer's LNCS series).")
     (license license:lppl1.3c)))
 
+(define-public texlive-lni
+  (package
+    (name "texlive-lni")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/lni/" "doc/latex/lni/"
+                   "source/latex/lni/" "tex/latex/lni/")
+             (base32
+              "0d23j9yc9q45j9l9vzpndpgsvl5d76mkhmfjjjjrqmgmqmf3fzn0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lni")
+    (synopsis "Official class for the @emph{Lecture Notes in Informatics}")
+    (description
+     "This is the official version of the class @code{lni} for submissions to
+the @emph{Lecture Notes in Informatics} published by the Gesellschaft fur
+Informatik.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lobster2
   (package
     (name "texlive-lobster2")
