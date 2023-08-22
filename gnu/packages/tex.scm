@@ -7372,6 +7372,26 @@ distributed in Adobe Type 1 format (but is available in italic shape only).
 The package includes the files needed by LaTeX in order to use that font.")
     (license license:public-domain)))
 
+(define-public texlive-buctthesis
+  (package
+    (name "texlive-buctthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/buctthesis/"
+                   "source/xelatex/buctthesis/"
+                   "tex/xelatex/buctthesis/")
+             (base32
+              "0qy9wknd91cj8b5lpdah773xqn29k5i0vfycyhax8fxzy3ss6bri")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/buctthesis")
+    (synopsis "Beijing University of Chemical Technology thesis template")
+    (description
+     "This package provides a LaTeX class and template for Beijing University
+of Chemical Technology, supporting bachelor, master, and doctor theses.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-burmese
   (package
     (name "texlive-burmese")
