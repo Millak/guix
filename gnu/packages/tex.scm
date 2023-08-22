@@ -29055,6 +29055,25 @@ in colleges and lycées (and perhaps elsewhere).  It is hoped that the package
 will facilitate the everyday use of LaTeX by mathematics teachers.")
     (license license:lppl)))
 
+(define-public texlive-technion-thesis-template
+  (package
+    (name "texlive-technion-thesis-template")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/technion-thesis-template/"
+                   "tex/xelatex/technion-thesis-template/")
+             (base32
+              "1fnz3d3knflhm9349rn9xw3k698fn6dyxxh2a7zv8rx3z3y7kzwn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/technion-thesis-template")
+    (synopsis "Template for theses on the Technion graduate school")
+    (description
+     "This is a template for writing a thesis according to the Technion
+specifications.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-tempora
   (package
     (name "texlive-tempora")
