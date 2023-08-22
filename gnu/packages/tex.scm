@@ -32161,6 +32161,29 @@ levels of degrees from bachelor to doctor, including both academic master and
 professional master.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xduts
+  (package
+    (name "texlive-xduts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xduts/" "source/xelatex/xduts/"
+                   "tex/xelatex/xduts/")
+             (base32
+              "17zd5i4vxpg2n7w9449q754i2k280jjm18pfl6d8b6r1adv5hy4c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ctex))
+    (home-page "https://ctan.org/pkg/xduts")
+    (synopsis "Xidian University TeX suite")
+    (description
+     "XDUTS is designed to help Xidian University students use LaTeX
+typesetting efficiently.  XDUTS contains a font configuration package that
+meets the school's requirements and can be applied to any document class.  In
+addition, there are thesis and thesis proposal templates for both
+undergraduate and postgraduate that meet the school's requirements.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-xecjk
   (package
     (name "texlive-xecjk")
