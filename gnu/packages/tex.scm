@@ -29231,6 +29231,23 @@ about TeX and Co.  It contains information for beginners, LaTeX packages,
 descriptions, etc.")
     (license license:fdl1.3+)))
 
+(define-public texlive-texilikechaps
+  (package
+    (name "texlive-texilikechaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/texilikechaps/")
+             (base32
+              "1z9nvv2y2nzpkpxyf18p426wcl0g6gbg7qppq70b285kdbczbijd")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texilikechaps")
+    (synopsis "Format chapters with a Texi-like format")
+    (description
+     "The package enables the user to reduce the size of the rather large
+chapter headings in standard classes into a Texi-like smaller format.")
+    (license license:lppl)))
+
 (define-public texlive-texsis
   (package
     (name "texlive-texsis")
