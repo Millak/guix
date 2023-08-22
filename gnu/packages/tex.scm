@@ -50096,6 +50096,26 @@ a document with no explicit font selection, but a series of rules of the form
 ``when entering block ..., switch font to use ...''.")
     (license license:public-domain)))
 
+(define-public texlive-undolabl
+  (package
+    (name "texlive-undolabl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/undolabl/"
+                   "source/latex/undolabl/"
+                   "tex/latex/undolabl/")
+             (base32
+              "1pa1m610j46623wm59inxmaqpjhd9cfmbwmyh02pbmpqid47p9l1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/undolabl")
+    (synopsis "Override existing labels")
+    (description
+     "The package allows the user to override existing labels (for example,
+those generated automatically).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-unicode-bidi
   (package
     (name "texlive-unicode-bidi")
