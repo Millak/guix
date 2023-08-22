@@ -3460,6 +3460,27 @@ review.  This class is derived from the standard LaTeX class @code{article}.")
 Koovit, with support for LaTeX and pdfLaTeX.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-asaetr
+  (package
+    (name "texlive-asaetr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/asaetr/" "doc/latex/asaetr/"
+                   "tex/latex/asaetr/")
+             (base32
+              "1yms34l9nx151vgjrjsa94801q0bgp2khjgk933iy1bpkmm7jf2d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asaetr")
+    (synopsis "Transactions of the ASAE")
+    (description
+     "This package provides a class and BibTeX style for submissions to the
+@emph{Transactions of the American Society of Agricultural Engineers}.  Also
+included is the Metafont source of a slanted Computer Modern Caps and Small
+Caps font.")
+    (license license:public-domain)))
+
 (define-public texlive-asapsym
   (package
     (name "texlive-asapsym")
