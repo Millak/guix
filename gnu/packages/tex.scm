@@ -1348,6 +1348,28 @@ document.")
 texts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-abntex2
+  (package
+    (name "texlive-abntex2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/abntex2/" "bibtex/bst/abntex2/"
+                   "doc/latex/abntex2/" "tex/latex/abntex2/")
+             (base32
+              "07752n6s2nl4h8j1wg7hjx2wisn505asb1r1i38z7qjbzg7lwqq5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abntex2")
+    (synopsis
+     "Typeset technical and scientific Brazilian documents based on ABNT rules")
+    (description
+     "The bundle provides support for typesetting technical and scientific
+Brazilian documents (like academic thesis, articles, reports, research project
+and others) based on the @acronym{ABNT, Associacao Brasileira de Normas
+Tecnicas} rules.  It replaces the old @code{abntex}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-aboensis
   (package
     (name "texlive-aboensis")
