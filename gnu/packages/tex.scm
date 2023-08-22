@@ -32627,6 +32627,86 @@ structural formulas in a way that reflects their structure.  The package
 provides three output modes: LaTeX, PostScript and PDF.")
     (license license:lppl1.3+)))
 
+(define-public texlive-yathesis
+  (package
+    (name "texlive-yathesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yathesis/"
+                   "source/latex/yathesis/"
+                   "tex/latex/yathesis/")
+             (base32
+              "1qp1a0y8hkv0wfkbh2rbgkm2il08a320gl0kqppam4rb8y6wn77z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:build-targets #~(list "yathesis.dtx")
+           #:tex-format "lualatex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-accsupp
+                  texlive-alphalph
+                  texlive-attachfile2
+                  texlive-babel-french
+                  texlive-biblatex
+                  texlive-booktabs
+                  texlive-caption
+                  texlive-cleveref
+                  texlive-comment
+                  texlive-csquotes
+                  texlive-datetime2
+                  texlive-denisbdoc
+                  texlive-enumitem
+                  texlive-environ
+                  texlive-fancyvrb
+                  texlive-fixfoot
+                  texlive-fontawesome
+                  texlive-fontspec
+                  texlive-footmisc
+                  texlive-glossaries
+                  texlive-glossaries-extra
+                  texlive-gofonts
+                  texlive-hologo
+                  texlive-hypdoc
+                  texlive-ifmtarg
+                  texlive-imakeidx
+                  texlive-libertine
+                  texlive-listings
+                  texlive-marginnote
+                  texlive-morewrites
+                  texlive-mparhack
+                  texlive-multirow
+                  texlive-newunicodechar
+                  texlive-path
+                  texlive-parskip
+                  texlive-pdfcol
+                  texlive-pdflscape
+                  texlive-pgf
+                  texlive-refcount
+                  texlive-siunitx
+                  texlive-tcolorbox
+                  texlive-textcase
+                  texlive-tikzfill
+                  texlive-tocbibind
+                  texlive-tocvsec2
+                  texlive-translator
+                  texlive-underscore
+                  texlive-xifthen
+                  texlive-xpatch
+                  texlive-zref))))
+    (home-page "https://ctan.org/pkg/yathesis")
+    (synopsis "LaTeX class for writing a thesis following French rules")
+    (description
+     "The purpose of @code{yathesis} is to facilitate the typesetting of
+theses prepared in France, whatever the disciplines and institutes.  It
+implements most notably recommendations from the Ministry of Higher Education
+and Research, and this transparently to the user.  It has also been designed
+to (optionally) take advantage of powerful tools available in LaTeX, including
+packages: BibLaTeX for the bibliography; @code{glossaries} for the glossary,
+list of acronyms and symbols list.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-yazd-thesis
   (package
     (name "texlive-yazd-thesis")
