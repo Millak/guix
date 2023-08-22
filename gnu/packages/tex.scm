@@ -22310,6 +22310,27 @@ example is extracting single-instrument parts from a multi-instrument score.
 source file.  This should be used before using @code{\\TransformNotes}.")
     (license license:gpl2)))
 
+(define-public texlive-musuos
+  (package
+    (name "texlive-musuos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/musuos/" "source/latex/musuos/"
+                   "tex/latex/musuos/")
+             (base32
+              "1a7cyjfgch6fvwdv2wi78sx2fdgmjbpb85gp2clhvgf15nkw0h94")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/musuos")
+    (synopsis "Typeset papers for the department of music, Osnabruck")
+    (description
+     "The package provides a LaTeX class for typesetting term papers at the
+institute of music and musicology of the University of Osnabruck, Germany,
+according to the specifications of Prof.@: Stefan Hahnheide.  A BibLaTeX style
+is provided.")
+    (license license:lppl)))
+
 (define-public texlive-msu-thesis
   (package
     (name "texlive-msu-thesis")
