@@ -29586,6 +29586,27 @@ of one's notes from one textbook to another can be achieved relatively easily
 by changing package options.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thesis-ekf
+  (package
+    (name "texlive-thesis-ekf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thesis-ekf/"
+                   "source/latex/thesis-ekf/"
+                   "tex/latex/thesis-ekf/")
+             (base32
+              "06jc8h1195h6440yc2xblv7x8cyf6yhfh99x3p6hk97hcvq0ing4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thesis-ekf")
+    (synopsis "Thesis class for Eszterhazy Karoly Catholic University")
+    (description
+     "This is a class file for theses and dissertations at the Eszterhazy
+Karoly Catholic University (Eger, Hungary).  The documentation is in
+Hungarian.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-thmbox
   (package
     (name "texlive-thmbox")
