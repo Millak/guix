@@ -17322,6 +17322,26 @@ in Archaeology")
 International Journal of Student Research in Archaeology.")
     (license license:lppl1.3+)))
 
+(define-public texlive-imac
+  (package
+    (name "texlive-imac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/imac/" "doc/latex/imac/"
+                   "tex/latex/imac/")
+             (base32
+              "06sc9irv318fc5zgngwrcdwx84pnhyhwh59jiq9sb8iayy1yxldh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/imac")
+    (synopsis "International Modal Analysis Conference format")
+    (description
+     "This package provides a set of files for producing correctly formatted
+documents for the International Modal Analysis Conference.  The bundle
+provides a LaTeX package and a BibTeX style file.")
+    (license license:gpl3+)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
