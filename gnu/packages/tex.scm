@@ -2805,6 +2805,27 @@ Apacite, which used to work with this class, has been updated for use with
 @code{apa6}.")
     (license license:lppl)))
 
+(define-public texlive-apa6e
+  (package
+    (name "texlive-apa6e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/apa6e/" "source/latex/apa6e/"
+                   "tex/latex/apa6e/")
+             (base32
+              "1dksjpdywwvyj9mfhaghsrf935p061gsnx4lf5s6pkv5nxn2pbln")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apa6e")
+    (synopsis "Format manuscripts to APA 6th edition guidelines")
+    (description
+     "This is a minimalist class file for formatting manuscripts in the style
+described in the @acronym{APA, American Psychological Association} 6th edition
+guidelines.  The @code{apa6} class provides better coverage of the
+requirements.")
+    (license license:bsd-2)))
+
 (define-public texlive-apalike-ejor
   (package
     (name "texlive-apalike-ejor")
