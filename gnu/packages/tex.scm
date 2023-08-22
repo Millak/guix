@@ -22248,6 +22248,29 @@ example is extracting single-instrument parts from a multi-instrument score.
 source file.  This should be used before using @code{\\TransformNotes}.")
     (license license:gpl2)))
 
+(define-public texlive-msu-thesis
+  (package
+    (name "texlive-msu-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/msu-thesis/"
+                   "tex/latex/msu-thesis/")
+             (base32
+              "0fsnrq8fvy8wgqfj5ccyw582142vd2haqlmgaxilvp7pybg9m100")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/msu-thesis")
+    (synopsis "Class for Michigan State University Master's and PhD theses")
+    (description
+     "This is a class file for producing dissertations and theses according to
+the Michigan State University Graduate School Guidelines for Electronic
+Submission of master's theses and dissertations.  The class should meet all
+current requirements and is updated whenever the university guidelines change.
+The class is based on the @code{memoir} document class, and inherits the
+functionality of that class.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mwcls
   (package
     (name "texlive-mwcls")
