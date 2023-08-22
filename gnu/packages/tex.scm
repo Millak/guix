@@ -16270,6 +16270,24 @@ with guillemets, and support for character protruding using the
 @code{pdfcprot} package.")
     (license license:gpl3+)))
 
+(define-public texlive-hfutexam
+  (package
+    (name "texlive-hfutexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hfutexam/" "tex/latex/hfutexam/")
+             (base32
+              "0r2048lpvj213m3a90sw93gcfdjja3w3vkrq3z171ravpl8l0bsm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hfutexam")
+    (synopsis "Exam class for Hefei University of Technology, China")
+    (description
+     "This package provides an exam class for Hefei University of
+Technology (China).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hindmadurai
   (package
     (name "texlive-hindmadurai")
