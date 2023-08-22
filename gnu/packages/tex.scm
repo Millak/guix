@@ -25203,6 +25203,27 @@ localization of real roots to arbitrary precision as well as the determination
 of all rational roots is implemented via such macros.")
     (license license:lppl1.3c)))
 
+(define-public texlive-powerdot-fuberlin
+  (package
+    (name "texlive-powerdot-fuberlin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/powerdot-fuberlin/"
+                   "tex/latex/powerdot-fuberlin/")
+             (base32
+              "0q49f7sbywfgdgn24ayg7ybfnqdnaqiwn463hiahib0vznwv1fn6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/powerdot-fuberlin")
+    (synopsis "Powerdot, using the style of FU Berlin")
+    (description
+     "The bundle provides a Powerdot-derived class and a package for use with
+Powerdot to provide the corporate design of the Free University in Berlin.
+Users may use the class itself (FUpowerdot) or use the package in the usual
+way with @code{\\style=BerlinFU} as a class option.")
+    (license license:lppl)))
+
 (define-public texlive-prftree
   (package
     (name "texlive-prftree")
