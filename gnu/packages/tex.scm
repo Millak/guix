@@ -17700,6 +17700,23 @@ should be characterised as an author-date citation style; a BibTeX style and
 a LaTeX package are provided.")
     (license license:lppl)))
 
+(define-public texlive-jnuexam
+  (package
+    (name "texlive-jnuexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jnuexam/" "tex/latex/jnuexam/")
+             (base32
+              "1l6r5cnr5wcxf6hn6ih87544845vcbcd4g3ah8wjl8vaina2j49w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jnuexam")
+    (synopsis "Exam class for Jinan University")
+    (description
+     "The package provides an exam class for Jinan University (China).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-josefin
   (package
     (name "texlive-josefin")
