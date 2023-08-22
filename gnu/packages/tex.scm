@@ -7278,6 +7278,27 @@ which require fairly rigorous formatting.  This document class, which extends
 @code{article}, provides a simple way to typeset these problem sets in LaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-brandeis-thesis
+  (package
+    (name "texlive-brandeis-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/brandeis-thesis/"
+                   "source/latex/brandeis-thesis/"
+                   "tex/latex/brandeis-thesis/")
+             (base32
+              "0gipdbnlh4jllfyhdw0i7zcypmi63p4ssv7q08gn6w2alfmffr69")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/brandeis-thesis")
+    (synopsis "Class for Brandeis University M.A. theses")
+    (description
+     "@file{brandeis-thesis.cls} provides the structures and formatting
+information for an M.A.@: thesis for the Brandeis University Graduate School
+of Arts and Sciences.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-breakcites
   (package
     (name "texlive-breakcites")
