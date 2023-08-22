@@ -14349,6 +14349,26 @@ the formatting of entries rather than their order.  The two packages can be
 used together or separately.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gammas
+  (package
+    (name "texlive-gammas")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/gammas/" "doc/latex/gammas/"
+                   "tex/latex/gammas/")
+             (base32
+              "0jj8lbwlydsih01d637zxpj97ncd44qmf7azgpzn77s8fi760p8n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gammas")
+    (synopsis "Template for the @emph{GAMM Archive for Students}")
+    (description
+     "This is the official document class for typesetting journal articles for
+@emph{GAMM Archive for Students}, the open-access online journal run by the
+@acronym{GAMM, Gesellschaft fur angewandte Mathematik und Mechanik} Juniors.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-garamond-libre
   (package
     (name "texlive-garamond-libre")
