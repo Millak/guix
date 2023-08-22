@@ -23456,6 +23456,31 @@ mathematical function values.")
 of fonts, designed by Vernon Adams.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-nwafuthesis
+  (package
+    (name "texlive-nwafuthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nwafuthesis/"
+                   "source/latex/nwafuthesis/"
+                   "tex/latex/nwafuthesis/")
+             (base32
+              "001axgdkvkcwfhzg9iw5sgahxh54sp6imi2b442li8f6n5c717lx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "xetex" #:build-targets #~(list "nwafuthesis.dtx")))
+    (native-inputs (list texlive-xetex))
+    (home-page "https://ctan.org/pkg/nwafuthesis")
+    (synopsis "Thesis template package for Northwest A&F University, China")
+    (description
+     "This template supports doctoral and master dissertations and
+undergraduate theses in Chinese.  It aims to create a simple interface,
+a normative format, as well as a hackable class for the users.  At present, it
+only supports XeTeX and LuaTeX engines.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-objectz
   (package
     (name "texlive-objectz")
