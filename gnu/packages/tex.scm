@@ -15982,6 +15982,31 @@ always italic and upright in math and text mode respectively.  Some math font
 macros are adjusted to give more consistently the naively expected results.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hep-paper
+  (package
+    (name "texlive-hep-paper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-paper/"
+                   "source/latex/hep-paper/"
+                   "tex/latex/hep-paper/")
+             (base32
+              "05dx8vsyr8ylvfqs3s9krjrqml8qivwlwhga4ghbnd3nkkqkx95a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-paper")
+    (synopsis "Publications in @emph{High Energy Physics}")
+    (description
+     "This package aims to provide a single style file containing most
+configurations and macros necessary to write appealing publications in
+@emph{High Energy Physics}.  Instead of reinventing the wheel by introducing
+newly created macros, hep-paper preferably loads third party packages as long
+as they are light-weight enough.  For usual publications it suffices to load
+the @code{hep-paper} package, without optional arguments, in addition to the
+@code{article} class.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hep-reference
   (package
     (name "texlive-hep-reference")
