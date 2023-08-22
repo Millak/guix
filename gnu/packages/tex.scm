@@ -17198,6 +17198,25 @@ and PRICE fields, extended PAGES fields, the PERIODICAL entry, and extended
 citation label suffixing.")
     (license license:knuth)))
 
+(define-public texlive-icsv
+  (package
+    (name "texlive-icsv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/icsv/" "source/latex/icsv/"
+                   "tex/latex/icsv/")
+             (base32
+              "133rbbq86qkd749bd20wdnjqddpwydm27ndh5yp2waimgij3cm8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/icsv")
+    (synopsis "Class for typesetting articles for the ICSV conference")
+    (description
+     "This is an ad-hoc class for typesetting articles for the ICSV
+conference.")
+    (license license:lppl)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
