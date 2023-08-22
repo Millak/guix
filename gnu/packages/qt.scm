@@ -4179,17 +4179,15 @@ color-related widgets.")
 (define-public python-shiboken-2
   (package
     (name "python-shiboken-2")
-    (version "5.15.8")
+    (version "5.15.10")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://download.qt.io/official_releases"
-                                  "/QtForPython/pyside2/PySide2-" version
-                                  "-src/pyside-setup-opensource-src-"
+              (uri (string-append "mirror://qt/QtForPython/pyside2/PySide2-"
+                                  version "-src/pyside-setup-opensource-src-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0pbbdypwkn3vrgy8ww207fl8pqq4jv80bck9qz5v9dfyr0166hr3"))
-              (patches (search-patches "python-shiboken-2-compat.patch"))))
+                "0fnkx8ax2lkin3bpqbz4zbdrdin2ixb4d6s3c0xghh9sc79r3xia"))))
     (build-system cmake-build-system)
     (inputs
      (list clang-toolchain
