@@ -4538,6 +4538,24 @@ class itself (FUbeamer) or use the theme in the usual way with
 @code{\\usetheme@{BerlinFU@}}.")
     (license license:lppl)))
 
+(define-public texlive-beamer-verona
+  (package
+    (name "texlive-beamer-verona")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamer-verona/"
+                   "tex/latex/beamer-verona/")
+             (base32
+              "0q79bdsc98a3y5h0yb3qwpsd0yyfyaxfjfhn4xkxf2qzyfp1mgd5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamer-verona")
+    (synopsis "Theme for the @code{beamer} class")
+    (description
+     "This package provides the Verona theme for the @code{beamer} class.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-beebe
   (package
     (name "texlive-beebe")
