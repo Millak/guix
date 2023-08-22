@@ -21114,6 +21114,30 @@ with an easy syntax.  Minus signs are printed as bar above the corresponding
 number.")
     (license license:lppl)))
 
+(define-public texlive-minimalist
+  (package
+    (name "texlive-minimalist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minimalist/"
+                   "tex/latex/minimalist/")
+             (base32
+              "01j72iqf15jx3larxkmcvsviw1z9wba9vl5g0x6d1ch3jpg32xpg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-projlib))
+    (home-page "https://ctan.org/pkg/minimalist")
+    (synopsis "Write your articles or books in a simple and clear way")
+    (description
+     "This package offers you a LaTeX style file and two classes to typeset
+articles or books in a simple and clear way.  These classes currently have
+native support for English, French, German, Italian, Portuguese (European and
+Brazilian), and Spanish typesetting.  They compile with any major TeX engine.
+You may also wish to consider the packages @code{einfart} and
+@code{simplivre}, which are enhanced versions of the classes provided here.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-mintspirit
   (package
     (name "texlive-mintspirit")
