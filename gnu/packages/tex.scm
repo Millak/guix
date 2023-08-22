@@ -3791,6 +3791,27 @@ increase character recognition, ultimately improving readability.")
            (license:fsdg-compatible
             "file://doc/Atkinson-Hyperlegible-Font-License-2020-1104.pdf")))))
 
+(define-public texlive-aucklandthesis
+  (package
+    (name "texlive-aucklandthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aucklandthesis/"
+                   "tex/latex/aucklandthesis/")
+             (base32
+              "1bdm6crn17a0rrszx28r6bn8v9w6z4rwfz2r8avd5fc3byl5dix8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aucklandthesis")
+    (synopsis "Memoir-based class for formatting University of Auckland theses")
+    (description
+     "This package provides a @code{memoir}-based class for formatting
+University of Auckland masters and doctors thesis dissertations in any
+discipline.  The title page does not handle short dissertations for
+diplomas.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-augie
   (package
     (name "texlive-augie")
