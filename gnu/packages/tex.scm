@@ -29906,6 +29906,28 @@ and margins.  It standardizes a document layout intended for formal
 documents.")
     (license license:bsd-3)))
 
+(define-public texlive-topletter
+  (package
+    (name "texlive-topletter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/topletter/"
+                   "source/latex/topletter/"
+                   "tex/latex/topletter/")
+             (base32
+              "0s9yq65wwcw6mg09lk3x756iski1k55skik3n45l9wdbdz81w1p9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/topletter")
+    (synopsis "Letter class for the @emph{Politecnico di Torino}")
+    (description
+     "This package provides a LaTeX class for typesetting letters conforming
+to the official Corporate Image guidelines for the @emph{Politecnico di
+Torino}.  The class can be used for letters written in Italian and in
+English.")
+    (license license:asl2.0)))
+
 (define-public texlive-tpslifonts
   (package
     (name "texlive-tpslifonts")
