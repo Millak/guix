@@ -21789,6 +21789,32 @@ accented letters using ordinary Computer Modern (CM) fonts.  The system is
 distributed as a TeX change file.")
     (license license:knuth)))
 
+(define-public texlive-mluexercise
+  (package
+    (name "texlive-mluexercise")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mluexercise/"
+                   "source/latex/mluexercise/"
+                   "tex/latex/mluexercise/")
+             (base32
+              "1zvnz3rm9dq8h00hlbzll5cvw4zlcy8xr8l6cfjg0winfnyznky8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:build-targets #~(list "mluexercice.dtx")))
+    (home-page "https://ctan.org/pkg/mluexercise")
+    (synopsis
+     "Exercises and homework at the Martin Luther University Halle-Wittenberg")
+    (description
+     "This package provides a template class for solving weekly exercises at
+the Institute for Computer Science of Martin Luther University
+Halle-Wittenberg.  The class can be used by all students --- especially first
+semesters --- to typeset their exercises with low effort in beautiful LaTeX.
+A bunch of handy macros are included that are used throughout many lectures
+during the bachelor's degree program.")
+    (license license:expat)))
+
 (define-public texlive-mnsymbol
   (package
     (name "texlive-mnsymbol")
