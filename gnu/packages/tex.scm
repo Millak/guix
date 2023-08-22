@@ -1785,6 +1785,26 @@ a @file{.tfm} (TeX Font Metric) file.  It normally preserves kerns and
 ligatures, but also offers additional control over them.")
     (license license:gpl2)))
 
+(define-public texlive-afparticle
+  (package
+    (name "texlive-afparticle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/afparticle/"
+                   "source/latex/afparticle/"
+                   "tex/latex/afparticle/")
+             (base32
+              "1g7dk32la2zlspdsw1pz15bf90jjycblgpg91m24bx70svdv67kv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/afparticle")
+    (synopsis "Typesetting articles for @emph{Archives of Forensic Psychology}")
+    (description
+     "This package provides a class for typesetting articles for the open
+access journal @emph{Archives of Forensic Psychology}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-aichej
   (package
     (name "texlive-aichej")
