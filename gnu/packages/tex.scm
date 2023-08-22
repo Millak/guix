@@ -15836,6 +15836,37 @@ whose authors offer no description of their behaviour.")
 in the games of Havannah and Hex.")
     (license license:lppl1.2+)))
 
+(define-public texlive-hecthese
+  (package
+    (name "texlive-hecthese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hecthese/"
+                   "source/latex/hecthese/"
+                   "tex/latex/hecthese/")
+             (base32
+              "023yqg7g612c5jdla70m0afpk0249k07sbg3xba5l77pkjw6851c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hecthese")
+    (synopsis "Class for dissertations and theses at HEC Montreal")
+    (description
+     "This package provides the @code{hecthese} class, a class based on
+@code{memoir} and compatible with LaTeX.  Using this class, postgraduate
+students at HEC Montreal will be able to write their dissertation or thesis
+while complying with all the presentation standards required by the
+University.  This class is meant to be as flexible as possible; in particular,
+there are very few hard-coded features except those that take care of the
+document's layout.
+
+Dissertations and theses at HEC Montreal can be written on a per-chapter or
+per-article basis.  Documents that are written on a per-article basis require
+a bibliography for each of the included articles and a general bibliography
+for the entire document.  The @code{hecthese} class takes care of these
+requirements.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-helmholtz-ellis-ji-notation
   (package
     (name "texlive-helmholtz-ellis-ji-notation")
