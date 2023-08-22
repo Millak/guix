@@ -15152,6 +15152,26 @@ The package also provides an interface to control various settings including
 algorithm parameters.")
     (license license:expat)))
 
+(define-public texlive-gradstudentresume
+  (package
+    (name "texlive-gradstudentresume")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gradstudentresume/"
+                   "tex/latex/gradstudentresume/")
+             (base32
+              "0jimvivx5vf1jy7yszvx2zbf13r0brqc0avz8lcx1rsqa3d7rjcn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gradstudentresume")
+    (synopsis "Generic template for graduate student resumes")
+    (description
+     "The package offers a template for graduate students writing an academic
+CV.  The goal is to create a flexible template that can be customized based on
+each specific individual's needs.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-greenpoint
   (package
     (name "texlive-greenpoint")
