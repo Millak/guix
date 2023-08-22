@@ -1286,6 +1286,27 @@ a Marathi journal, with LaTeX.")
                    (license:fsf-free "file://doc/latex/aalok/README.txt")
                    license:fdl1.3+))))
 
+(define-public texlive-aastex
+  (package
+    (name "texlive-aastex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/aastex/" "doc/latex/aastex/"
+                   "tex/latex/aastex/")
+             (base32
+              "07kbrv0vhlpdaxqkiwn2q4psldn5p2x5mmpaw70g6pgcbhk7r74h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aastex")
+    (synopsis "Macros for manuscript preparation for AAS journals")
+    (description
+     "The bundle provides a document class for preparing papers for
+@acronym{AAS, American Astronomical Society} publications.  Authors who wish
+to submit papers to AAS journals are strongly urged to use this class in
+preference to any of the alternatives available.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-abc
   (package
     (name "texlive-abc")
