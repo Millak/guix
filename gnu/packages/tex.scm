@@ -8832,6 +8832,29 @@ appearance.")
 Interfaces for Plain TeX, ConTeXt and LaTeX are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chs-physics-report
+  (package
+    (name "texlive-chs-physics-report")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chs-physics-report/"
+                   "tex/latex/chs-physics-report/")
+             (base32
+              "195f66yffi96qkrxb044mcaycyds0mp3fg3c3lhz1mpvbz0calpl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chs-physics-report")
+    (synopsis "Physics lab reports for Carmel High School")
+    (description
+     "This package may optionally be used by students at Carmel High School in
+Indiana in the United States to write physics lab reports for FW physics
+courses.  As many students are beginners at LaTeX, it also attempts to
+simplify the report-writing process by offering macros for commonly used
+notation and by automatically formatting the documents for students who will
+only use TeX for mathematics and not typesetting.")
+    (license (list license:public-domain license:cc-by-sa3.0))))
+
 (define-public texlive-chscite
   (package
     (name "texlive-chscite")
