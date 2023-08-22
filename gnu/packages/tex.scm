@@ -27322,6 +27322,26 @@ around the payoffs, (b) payoff columns of equal width, and (c) payoffs
 vertically centered within the boxes.")
     (license license:lppl)))
 
+(define-public texlive-shortmathj
+  (package
+    (name "texlive-shortmathj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shortmathj/"
+                   "tex/latex/shortmathj/")
+             (base32
+              "0rkrskx2fay7h6naa995l46xjj8v3ffdd6kx6fq6fknr091yfp7q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shortmathj")
+    (synopsis "Automatically shortify titles of mathematical journals")
+    (description
+     "This small dummy package just contains a simple list of full and short
+journal names as written in AMS standard:
+@url{https://mathscinet.ams.org/msnhtml/serials.pdf}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-showtags
   (package
     (name "texlive-showtags")
