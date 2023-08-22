@@ -12305,6 +12305,29 @@ indexing by page and by line numbers, and simple @code{tabular}- and
 @code{eledpar} package.  The package is now superseded by @code{reledmac}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-els-cas-templates
+  (package
+    (name "texlive-els-cas-templates")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/els-cas-templates/"
+                   "doc/latex/els-cas-templates/"
+                   "tex/latex/els-cas-templates/")
+             (base32
+              "1drp6gykqn4yaxjsiamsn8v5zv7nhvlqiblfhqg85fq3yl4q1sqk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/els-cas-templates")
+    (synopsis "Elsevier updated LaTeX templates")
+    (description
+     "This bundle provides two class and corresponding template files for
+typesetting journal articles supposed to go through Elsevier's updated
+workflow.  One of the sets is meant for one-column, the other for two-column
+layout.  These are now accepted for submitting articles both in Elsevier's
+electronic submission system and elsewhere.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-eltex
   (package
     (name "texlive-eltex")
