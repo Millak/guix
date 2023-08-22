@@ -22331,6 +22331,25 @@ according to the specifications of Prof.@: Stefan Hahnheide.  A BibLaTeX style
 is provided.")
     (license license:lppl)))
 
+(define-public texlive-muthesis
+  (package
+    (name "texlive-muthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/muthesis/" "tex/latex/muthesis/")
+             (base32
+              "1yydkhxpa9c5w8bpdx09w3mjggff0q2zsq8gkkbjjg29mg5x559j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/muthesis")
+    (synopsis "Classes for University of Manchester Dept.@: of Computer
+Science")
+    (description
+     "The bundle provides thesis and project report document classes from the
+University of Manchester's Department of Computer Science.")
+    (license license:lppl)))
+
 (define-public texlive-msu-thesis
   (package
     (name "texlive-msu-thesis")
