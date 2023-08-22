@@ -2742,6 +2742,24 @@ extra facilities (including Babel-like language switching, which eases porting
 of LaTeX documents to Lambda).")
     (license license:lppl)))
 
+(define-public texlive-anufinalexam
+  (package
+    (name "texlive-anufinalexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/anufinalexam/")
+             (base32
+              "1v1k74vxidgxn5zzqz6v9zga468kcf7hwdrnvw44cd318221y396")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/anufinalexam")
+    (synopsis "LaTeX document shell for ANU final exam")
+    (description
+     "This LaTeX document shell is created for the standard formatting of
+final exams in the @acronym{ANU, Australian National University}.")
+    (license license:gpl3+)))
+
 (define-public texlive-apalike-ejor
   (package
     (name "texlive-apalike-ejor")
