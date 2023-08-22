@@ -21946,6 +21946,25 @@ printing.")
                    license:silofl1.1
                    license:public-domain))))
 
+(define-public texlive-mucproc
+  (package
+    (name "texlive-mucproc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mucproc/" "source/latex/mucproc/"
+                   "tex/latex/mucproc/")
+             (base32
+              "0l6xycas6asggpd4hd1b7x5x867nsx8aw2fkdd1ib8g98i5a8vhk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mucproc")
+    (synopsis "Conference proceedings for the German MuC-conference")
+    (description
+     "The @file{mucproc.cls} is a document class to support the formatting
+guidelines for submissions to the German Mensch und Computer conference.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-multibib
   (package
     (name "texlive-multibib")
