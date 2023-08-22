@@ -28306,6 +28306,38 @@ in Adobe Type 1 format and LaTeX support.")
 numbers in the Steinmetz notation used in electrotechnics.")
     (license license:lppl)))
 
+(define-public texlive-stellenbosch
+  (package
+    (name "texlive-stellenbosch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/stellenbosch/"
+                   "doc/latex/stellenbosch/"
+                   "source/latex/stellenbosch/"
+                   "tex/latex/stellenbosch/")
+             (base32
+              "0yqlwlwlszrwg8bihkfxh77b3rkf8yx978vwb4a3xjmb5yyyx3q6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stellenbosch")
+    (synopsis "Stellenbosch thesis bundle")
+    (description
+     "The @code{usthesis} class and style files are provided to typeset
+reports, theses and dissertations that conform to the requirements of the
+Engineering Faculty of the University of Stellenbosch.  The class file
+@file{usthesis.cls} is based on the standard LaTeX @code{book} class, while
+@file{usthesis.sty} is a style file to be loaded on top of the very powerful
+@code{memoir} class.
+
+Usthesis is primarily concerned with the formatting of the front matter such
+as the title page, abstract, etc., and a decent page layout on A4 paper.  It
+also works together with the Babel package to provide language options to
+typeset documents in Afrikaans or in English.  Additional packages are
+provided for bibliographic matter, note title pages, lists of symbols, as well
+as various graphic files for logos.")
+    (license license:lppl)))
+
 (define-public texlive-step
   (package
     (name "texlive-step")
