@@ -13358,6 +13358,32 @@ family, but it might also fit other contemporary typefaces.")
 It can make it easy to write theses both in Chinese and English.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fei
+  (package
+    (name "texlive-fei")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fei/" "source/latex/fei/"
+                   "tex/latex/fei/")
+             (base32
+              "13f2sn9pazq6ak37025wr20mi11069paw8hd7qlrcy10bn7bkbl7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fei")
+    (synopsis "Class for academic works at FEI University Center, Brazil")
+    (description
+     "@code{fei} is a class created by graduate students and LaTeX enthusiasts
+that allows students from FEI University Center to create their academic
+works, be it a monograph, masters dissertation or PhD thesis, under the
+typographic rules of the institution.  The class makes it possible to create
+a full academic work, supporting functionalities such as cover, title page,
+catalog entry, dedication, summary, lists of figures, tables, algorithms,
+acronyms and symbols, multiple authors, index, references, appendices and
+attachments.  @code{fei} is loosely based in the Brazilian National Standards
+Organization (@acronym{ABNT, Associacao Brasileira de Normas Tecnicas}).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-fetamont
   (package
     (name "texlive-fetamont")
