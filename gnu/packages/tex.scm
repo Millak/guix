@@ -17237,6 +17237,26 @@ conference.")
 Computer Society Press for conference proceedings.")
     (license license:lppl)))
 
+(define-public texlive-ieeepes
+  (package
+    (name "texlive-ieeepes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/ieeepes/" "doc/latex/ieeepes/"
+                   "tex/latex/ieeepes/")
+             (base32
+              "12nvllxxswww9p9l1h3ygak3g4j8ngmypxcbbw2jwwa8kh43yiqi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ieeepes")
+    (synopsis "IEEE Power Engineering Society Transactions")
+    (description
+     "This package supports typesetting of transactions, as well as
+discussions and closures, for the IEEE Power Engineering Society Transactions
+journals.")
+    (license license:lppl)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
