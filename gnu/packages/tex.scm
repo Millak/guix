@@ -30920,6 +30920,28 @@ National Autonomous University of Mexico (UNAM) guidelines.")
 Theses.")
     (license license:gpl3)))
 
+(define-public texlive-unamthesis
+  (package
+    (name "texlive-unamthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/unamthesis/"
+                   "doc/latex/unamthesis/"
+                   "tex/latex/unamthesis/")
+             (base32
+              "1jdppibm49491ddgx6ny6hqsfs9qan948614bfcy67f5syjzx2jh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unamthesis")
+    (synopsis "Style for Universidad Nacional Autonoma de Mexico theses")
+    (description
+     "The package provides a customisable format to typeset Theses according
+to the Universidad Nacional Autonoma de Mexico guidelines.  The bundle also
+includes an appropriate bibliographic style which enables the use of
+author-year schemes using the @code{natbib} package.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-unfonts-core
   (package
     (name "texlive-unfonts-core")
