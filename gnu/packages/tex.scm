@@ -18035,6 +18035,26 @@ It (ab)uses BibTeX for citations of judgements and official documents.  For
 this purpose, a special BibTeX-style is provided.")
     (license license:gpl3+)))
 
+(define-public texlive-jwjournal
+  (package
+    (name "texlive-jwjournal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jwjournal/"
+                   "tex/latex/jwjournal/")
+             (base32
+              "098mh60qf77x12f6mnlpsl80imx97673wx3vxcndfjdmpmr5k9gk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-einfart))
+    (home-page "https://ctan.org/pkg/jwjournal")
+    (synopsis "Personal class for writing journals")
+    (description
+     "This LaTeX document class enables the user to turn simple pure text
+entries into a colorful and nicely formatted journal.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-karnaugh
   (package
     (name "texlive-karnaugh")
