@@ -20753,6 +20753,28 @@ Mathématiques Appliquées et Industrielles (SMAI).")
 mathematical textbooks for use in Italian high schools.")
     (license license:lppl1.3+)))
 
+(define-public texlive-matc3mem
+  (package
+    (name "texlive-matc3mem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/matc3mem/"
+                   "source/latex/matc3mem/"
+                   "tex/latex/matc3mem/")
+             (base32
+              "10igcyqzddl25gxasa9dxj2j49gqs9vi2g1ay0z6jyd5nfsp8ic0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/matc3mem")
+    (synopsis "Class for MatematicaC3 textbooks")
+    (description
+     "The class is a development of @code{memoir}, with
+additions (specifically, mathematical extensions) that provide support for
+writing the books for the Matematica C3 project to produce mathematical
+textbooks for use in Italian high schools.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-math-into-latex-4
   (package
     (name "texlive-math-into-latex-4")
