@@ -30450,6 +30450,24 @@ and the respective title pages are available as separate packages to work with
 any document class.")
     (license license:public-domain)))
 
+(define-public texlive-uafthesis
+  (package
+    (name "texlive-uafthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uafthesis/"
+                   "tex/latex/uafthesis/")
+             (base32
+              "0vxd9vk4dzpxcpn4l20r5hm3cz04mwqvd8kw1yg7vvjlnpshi4i6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uafthesis")
+    (synopsis "Document class for theses at University of Alaska Fairbanks")
+    (description
+     "This is document class for theses at University of Alaska Fairbanks.")
+    (license license:lppl)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
