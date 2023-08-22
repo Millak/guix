@@ -21308,6 +21308,26 @@ that represent the memory of a computer program during its execution.")
 processor).")
     (license license:bsd-3)))
 
+(define-public texlive-mentis
+  (package
+    (name "texlive-mentis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mentis/" "source/latex/mentis/"
+                   "tex/latex/mentis/")
+             (base32
+              "0js6gp93jzj6kzvwqycilp42zbwslxk6z77g2198gip2i4m1li0i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mentis")
+    (synopsis "Basis for books to be published by Mentis publishers")
+    (description
+     "This LaTeX class loads @code{scrbook} and provides changes necessary for
+publishing at Mentis publishers in Paderborn, Germany.  It is not an official
+Mentis class, but developed in close co-operation with Mentis.")
+    (license license:lppl)))
+
 (define-public texlive-merriweather
   (package
     (name "texlive-merriweather")
