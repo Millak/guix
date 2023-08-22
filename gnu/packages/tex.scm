@@ -32558,6 +32558,27 @@ and a LaTeX package for using them.")
 Original Metafont files for @code{yinit} are in the @code{yinit} package.")
     (license license:public-domain)))
 
+(define-public texlive-york-thesis
+  (package
+    (name "texlive-york-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/york-thesis/"
+                   "source/latex/york-thesis/"
+                   "tex/latex/york-thesis/")
+             (base32
+              "0wcl1zqmif2chramah8zmbgp5axbhlnjiygl7kgqnwqw5ajxkw4y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/york-thesis")
+    (synopsis "Thesis class file for York University, Toronto")
+    (description
+     "York Graduate Studies has again changed the requirements for theses and
+dissertations.  The established @code{york-thesis} class file now implements
+the changes made in Spring 2005.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-youngtab
   (package
     (name "texlive-youngtab")
