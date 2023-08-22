@@ -30426,6 +30426,30 @@ A scaled option is provided to allow arbitrary scaling.")
 included Typicons font, designed by Stephen Hutchings.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uaclasses
+  (package
+    (name "texlive-uaclasses")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uaclasses/"
+                   "source/latex/uaclasses/"
+                   "tex/latex/uaclasses/")
+             (base32
+              "0n0bz3cq9zgl5ppwq02izjgiw6gpza05ymc6x0gsc8v13wfcgvz0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uaclasses")
+    (synopsis "University of Arizona thesis and dissertation format")
+    (description
+     "This package provides a LaTeX2e document class named @code{ua-thesis}
+for typesetting theses and dissertations in the official format required by
+the University of Arizona.  Moreover, there is a fully compatible alternative
+document class @code{my-thesis} for private nice copies of the dissertation,
+and the respective title pages are available as separate packages to work with
+any document class.")
+    (license license:public-domain)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
