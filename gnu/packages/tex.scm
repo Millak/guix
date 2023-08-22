@@ -16639,6 +16639,27 @@ meaning bloke.)  With this package you can typeset 150 paragraphs of Lorum
 ipse.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hustthesis
+  (package
+    (name "texlive-hustthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/hustthesis/"
+                   "doc/latex/hustthesis/"
+                   "source/latex/hustthesis/"
+                   "tex/latex/hustthesis/")
+             (base32
+              "12sacpq43wjkr0j0ziszw37achyc7cf0z5kajqdfb5d7ksas0j2n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hustthesis")
+    (synopsis "Unofficial thesis template for Huazhong University")
+    (description
+     "The package provides an unofficial thesis template in LaTeX for Huazhong
+University of Science and Technology.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-hvarabic
   (package
     (name "texlive-hvarabic")
