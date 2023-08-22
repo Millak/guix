@@ -30641,6 +30641,29 @@ in French, the language of the typical user at the Universite de Sherbrooke.")
 Science and Technology of China.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ufrgscca
+  (package
+    (name "texlive-ufrgscca")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ufrgscca/" "tex/latex/ufrgscca/")
+             (base32
+              "0xrmgs9zjqqa09gasf2b96mjvwqshjqpyaz4icvrlr7yx9hqqs2y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ufrgscca")
+    (synopsis
+     "Bundle for undergraduate students final work or report (TCC) at
+UFRGS/EE")
+    (description
+     "This bundled is aimed at producing undergraduate students final work or
+report at UFRGS/EE (Engineering School at the Federal University of Rio Grande
+do Sul), closely following ABNT rules (Brazilian Association for Technical
+Norms).  It is composed of a main class, @code{ufrgscca}, and a set of
+auxiliary packages, some of which can be used independently.")
+    (license (list license:lppl1.3c license:gpl3+))))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
