@@ -26241,6 +26241,25 @@ provides fallbacks.  It also warns when users try to load packages which are
 known to be incompatible with @code{revtex4-1}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-revtex4
+  (package
+    (name "texlive-revtex4")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/revtex4/" "doc/latex/revtex4/"
+                   "source/latex/revtex4/" "tex/latex/revtex4/")
+             (base32
+              "0mfjp8ycsvq63vk5348r7yfcskldx6ipcwflxz7pnf60xfla5646")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/revtex4-0")
+    (synopsis "Styles for various physics journals (old version)")
+    (description
+     "This is an old version of @code{revtex}, and is kept as a courtesy to
+users having difficulty with the incompatibility of that latest version.")
+    (license license:lppl)))
+
 (define-public texlive-ribbonproofs
   (package
     (name "texlive-ribbonproofs")
