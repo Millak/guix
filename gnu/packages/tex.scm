@@ -25532,6 +25532,26 @@ specialisations of the base class for (respectively) German and European
 research proposals.")
     (license license:lppl)))
 
+(define-public texlive-prtec
+  (package
+    (name "texlive-prtec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/prtec/" "doc/latex/prtec/"
+                   "tex/latex/prtec/")
+             (base32
+              "15l75a6blk1dpcj2q841i92cdvlfjxmmaqi5lk01rac8rxa5cghx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/prtec")
+    (synopsis "Template for PRTEC conference papers")
+    (description
+     "This package provides a LaTeX class, a BibTeX style, and a LaTeX
+template to format conference papers for the @acronym{PRTEC, Pacific Rim
+Thermal Engineering Conference}.")
+    (license license:expat)))
+
 (define-public texlive-pseudo
   (package
     (name "texlive-pseudo")
