@@ -21965,6 +21965,28 @@ printing.")
 guidelines for submissions to the German Mensch und Computer conference.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mugsthesis
+  (package
+    (name "texlive-mugsthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mugsthesis/"
+                   "source/latex/mugsthesis/"
+                   "tex/latex/mugsthesis/")
+             (base32
+              "0xf3zjwx6k2dg1hrz4nw6shn6xk3lvmjprg3psfrh3z38r1sp9nh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mugsthesis")
+    (synopsis
+     "Thesis class complying with Marquette University Graduate School
+requirements")
+    (description
+     "The bundle offers a thesis class, based on @code{memoir}, that complies
+with Marquette University Graduate School requirements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-multibib
   (package
     (name "texlive-multibib")
