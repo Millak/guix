@@ -16574,6 +16574,27 @@ the graduation thesis at the University of Zagreb) and sample thesis documents
 are included.")
     (license license:lppl)))
 
+(define-public texlive-hu-berlin-bundle
+  (package
+    (name "texlive-hu-berlin-bundle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/hu-berlin-bundle/"
+                   "source/lualatex/hu-berlin-bundle/"
+                   "tex/lualatex/hu-berlin-bundle/")
+             (base32
+              "05cwh97w954gz8dr56a2n06s312gg8r0zy9zxj6hv86z019wiq85")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hu-berlin-bundle")
+    (synopsis "LaTeX classes for the Humboldt-Universitat zu Berlin")
+    (description
+     "This package provides files according to the corporate design of the
+Humboldt-Universitat zu Berlin.  This is not an official package by the
+university itself, and not officially approved by it.")
+    (license (list license:lppl1.3c license:gpl2 license:bsd-3))))
+
 (define-public texlive-huaz
   (package
     (name "texlive-huaz")
