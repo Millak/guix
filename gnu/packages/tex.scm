@@ -12151,6 +12151,26 @@ OT1 encoding.  Also offered are a couple of Metafont files described in the
 font package, but not provided there.")
     (license license:lppl)))
 
+(define-public texlive-ejpecp
+  (package
+    (name "texlive-ejpecp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ejpecp/" "source/latex/ejpecp/"
+                   "tex/latex/ejpecp/")
+             (base32
+              "083abggngg89nj4ra0a33j3s6wf0jba814lc4zp5sh64pc2x8h0j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ejpecp")
+    (synopsis "Class for EJP and ECP")
+    (description
+     "The class is designed for typesetting articles for the mathematical
+research periodicals @emph{Electronic Journal of Probability} (EJP) and
+@emph{Electronic Communications in Probability} (ECP).")
+    (license license:lppl1.2+)))
+
 (define-public texlive-ektype-tanka
   (package
     (name "texlive-ektype-tanka")
