@@ -29712,6 +29712,26 @@ to use the environment.")
 of Applied Sciences}.  These Logos are available in English and in Dutch.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thubeamer
+  (package
+    (name "texlive-thubeamer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/thubeamer/"
+                   "doc/latex/thubeamer/"
+                   "source/latex/thubeamer/"
+                   "tex/latex/thubeamer/")
+             (base32
+              "07jha3pfklqas3f2mwpxqfi6h7dm4sl9jm4kl9kg68an4drzp4zj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thubeamer")
+    (synopsis "Beamer theme for Tsinghua University")
+    (description
+     "This package provides a Beamer theme designed for Tsinghua University.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tinos
   (package
     (name "texlive-tinos")
