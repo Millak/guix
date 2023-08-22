@@ -1,17 +1,14 @@
 Submitted upstream: https://github.com/ibus/ibus-anthy/pull/35
 
 diff --git a/tests/test-build.sh b/tests/test-build.sh
-index e83b78f..a0efe32 100755
+index e83b78f..bbfa7e1 100755
 --- a/tests/test-build.sh
 +++ b/tests/test-build.sh
-@@ -63,26 +63,27 @@ parse_args()
+@@ -63,26 +63,33 @@ parse_args()
      done;
  }
  
 +maybe_install_pycotap() {
-+    # Check if pycotap is already available.
-+    python3 -m pycotap >/dev/null && return 0
-+
 +    # Red Hat specific hint.
 +    if test -f /etc/redhat-release ; then
 +        if ! rpm -q --quiet python3-pycotap; then
@@ -19,6 +16,15 @@ index e83b78f..a0efe32 100755
 +            exit -1
 +        fi
 +    fi;
++
++    # Check if pycotap is already available.
++    if ! python3 -m pycotap >/dev/null; then
++        echo "pycotap not found; installing via pip"
++        if ! pip install pycotap --user; then
++            echo "failed to install pycotap"
++            exit -1
++        fi
++    fi
 +}
 +
  init_environment()
