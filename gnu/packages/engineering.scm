@@ -3113,13 +3113,13 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
 (define-public poke
   (package
     (name "poke")
-    (version "3.2")
+    (version "3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/poke/poke-" version
                                   ".tar.gz"))
               (sha256
-               (base32 "15qd9z3wv7jrdlh6f9hwgni54ssdz8hzrn4lxiacwv1sslfmb3km"))
+               (base32 "0vlm9xcr7rrfli2x4hi2q41nh8vjd2izpz4zd0xwhqshx2flb000"))
               (modules '((guix build utils)))
               (snippet
                '(begin
