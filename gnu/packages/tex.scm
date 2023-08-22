@@ -27078,6 +27078,25 @@ paragraphs.  A reference for the quotation can optionally be added.")
 typesetting diaries, journals or devotionals.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sduthesis
+  (package
+    (name "texlive-sduthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sduthesis/"
+                   "source/latex/sduthesis/"
+                   "tex/latex/sduthesis/")
+             (base32
+              "1c9dmgjbxc0xyphi4hcb9yilmhh6hg0l2r4vkyjds3xgii7kwkn7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sduthesis")
+    (synopsis "Thesis template of Shandong University")
+    (description
+     "This package provides a thesis template of Shandong University.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-serbian-apostrophe
   (package
     (name "texlive-serbian-apostrophe")
