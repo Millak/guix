@@ -4803,6 +4803,25 @@ Type1 and in the OpenType format.  The package includes suitable font
 selection commands for use with LaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bfh-ci
+  (package
+    (name "texlive-bfh-ci")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bfh-ci/" "tex/latex/bfh-ci/")
+             (base32
+              "198r2xwki70hij36l596p9jldpzc1acna97mlszbbim2w6xj3qy8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bfh-ci")
+    (synopsis "Corporate design for Bern University of Applied Sciences")
+    (description
+     "This bundle provides possibilities to use the corporate design of Bern
+University of Applied Sciences (BFH) with LaTeX.  To this end it contains
+classes as well as some helper packages and config files.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bguq
   (package
     (name "texlive-bguq")
