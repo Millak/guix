@@ -26850,6 +26850,26 @@ Lateinische Ausgangsschrift, Schulausgangsschrift, and Vereinfachte
 Ausgangsschrift.")
     (license license:lppl)))
 
+(define-public texlive-scientific-thesis-cover
+  (package
+    (name "texlive-scientific-thesis-cover")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scientific-thesis-cover/"
+                   "source/latex/scientific-thesis-cover/"
+                   "tex/latex/scientific-thesis-cover/")
+             (base32
+              "1ny19pczzrrwb20sin1qn914hy1npwxkx573g3n5gm62kzl1vc4k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scientific-thesis-cover")
+    (synopsis "Provides cover page and affirmation at the end of a thesis")
+    (description
+     "Institutions require a cover page and an affirmation at the end of
+a thesis.  This package provides both.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-shobhika
   (package
     (name "texlive-shobhika")
