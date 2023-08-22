@@ -32397,6 +32397,56 @@ provides three output modes: LaTeX, PostScript and PDF.")
 dissertations at the Yazd University.  The class requires use of XeLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-yb-book
+  (package
+    (name "texlive-yb-book")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yb-book/" "source/latex/yb-book/"
+                   "tex/latex/yb-book/")
+             (base32
+              "1brgy4y92888z7mc6yryasbv7xhcj560zsy5wz6ahcwny8f67mgg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-anyfontsize
+           texlive-biblatex
+           texlive-bigfoot
+           texlive-changepage
+           texlive-chngcntr
+           texlive-csquotes
+           texlive-enumitem
+           texlive-fancyhdr
+           texlive-float
+           texlive-footmisc
+           texlive-geometry
+           texlive-ifmtarg
+           texlive-imakeidx
+           texlive-lastpage
+           texlive-libertine
+           texlive-mdframed
+           texlive-microtype
+           texlive-needspace
+           texlive-paralist
+           texlive-pgf
+           texlive-qrcode
+           texlive-setspace
+           texlive-soul
+           texlive-titlesec
+           texlive-ulem
+           texlive-wrapfig
+           texlive-xcolor
+           texlive-xifthen
+           texlive-xkeyval
+           texlive-zref))
+    (home-page "https://ctan.org/pkg/yb-book")
+    (synopsis "Template for YB branded books")
+    (description
+     "This template helps the author design books published on Amazon under
+the ``Y.B.'' brand.")
+    (license license:expat)))
+
 (define-public texlive-yfonts
   (package
     (name "texlive-yfonts")
