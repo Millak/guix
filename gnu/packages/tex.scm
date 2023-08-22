@@ -31361,6 +31361,29 @@ Higher Degree Research Theses} (March 2006), by the Research Student Centre,
 Research & Innovation Division, UoW.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uowthesistitlepage
+  (package
+    (name "texlive-uowthesistitlepage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uowthesistitlepage/"
+                   "tex/latex/uowthesistitlepage/")
+             (base32
+              "0mspjj6wvcb9cdbp3qp2cqd3mmmf3kyd77pmk1kji0wspg0jra6y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uowthesistitlepage")
+    (synopsis "Title page for dissertations at the University of Wollongong")
+    (description
+     "The package redefines @code{\\maketitle} to generate a title page for
+a @acronym{UoW, University of Wollongong} thesis, in accordance with the UoW
+branding guidelines.  The package should be used with the @code{book} class to
+typeset a thesis.  The package also defines a @code{\\declaration} command
+that typesets the declaration that this thesis is your own work, etc., which
+is required in the front of each PhD thesis.")
+    (license (list license:lppl1.3c license:cc-by-sa4.0))))
+
 (define-public texlive-uppunctlm
   (package
     (name "texlive-uppunctlm")
