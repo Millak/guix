@@ -4517,6 +4517,27 @@ bold.")
 It may use either TikZ or PSTricks as graphics engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-beamer-fuberlin
+  (package
+    (name "texlive-beamer-fuberlin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamer-fuberlin/"
+                   "tex/latex/beamer-fuberlin/")
+             (base32
+              "03zp6gpzilcfgrbz1lh8lpldvkf9g98f45fhsb72ikgjnka6211c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamer-fuberlin")
+    (synopsis "Beamer, using the style of FU Berlin")
+    (description
+     "The bundle provides a @code{beamer}-derived class and a theme style file
+for the corporate design of the Free University in Berlin.  Users may use the
+class itself (FUbeamer) or use the theme in the usual way with
+@code{\\usetheme@{BerlinFU@}}.")
+    (license license:lppl)))
+
 (define-public texlive-beebe
   (package
     (name "texlive-beebe")
