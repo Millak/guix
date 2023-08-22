@@ -20859,6 +20859,33 @@ addressed via macros @code{\\mathcal}, @code{\\mathbb}, @code{\\mathfrak} and
 @code{\\mathscr}).")
     (license license:lppl1.3c)))
 
+(define-public texlive-mathastext
+  (package
+    (name "texlive-mathastext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathastext/"
+                   "source/latex/mathastext/"
+                   "tex/latex/mathastext/")
+             (base32
+              "1660w9yhgw9ihhy06f9zqgw9isvprrs2x9yikhbz7szphq3cfpfv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathastext")
+    (synopsis "Use the text font in maths mode")
+    (description
+     "The package uses a text font (usually the document's text font) for the
+letters of the Latin alphabet needed when typesetting
+mathematics. (Optionally, other characters in the font may also be used).
+This facility makes possible (for a document with simple mathematics) a far
+wider choice of text font, with little worry that no specially designed
+accompanying maths fonts are available.  The package also offers a simple
+mechanism for using many different choices of (text hence, now, maths) font in
+the same document.  Of course, using one font for two purposes helps produce
+smaller PDF files.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mathcommand
   (package
     (name "texlive-mathcommand")
