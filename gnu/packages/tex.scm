@@ -18568,6 +18568,29 @@ It includes all necessary files for title pages, frontmatter, main content,
 list of references and indexes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-langsci-avm
+  (package
+    (name "texlive-langsci-avm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/langsci-avm/"
+                   "source/latex/langsci-avm/"
+                   "tex/latex/langsci-avm/")
+             (base32
+              "1n53syf2slndgjbndjhd3cl8y6bl9j3xgb86z9r1mwvdcdls5674")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/langsci-avm")
+    (synopsis "Feature structures and attribute-value matrices (AVM)")
+    (description
+     "This package provides a package for typesetting feature structures,
+also known as attribute-value matrices (AVMs), for use in linguistics.  The
+package provides a minimal and easy to read syntax.  The package serves the
+same purpose as @code{avm} package, but shares no code base with that
+package.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lato
   (package
     (name "texlive-lato")
