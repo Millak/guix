@@ -14281,6 +14281,24 @@ products and convergence with some object oriented flavor (it gives the
 possibility to override the standard behavior of norms, ...).")
     (license license:lppl)))
 
+(define-public texlive-gaceta
+  (package
+    (name "texlive-gaceta")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gaceta/" "tex/latex/gaceta/")
+             (base32
+              "17w2i3qmks9qpdwpx0hy0mjrl5xhrc8hmz9s0229xnhf6h12yb1r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gaceta")
+    (synopsis "Class to typeset @code{La Gaceta de la RSME}")
+    (description
+     "The class will typeset papers for @emph{La Gaceta de la Real Sociedad
+Matematica Espanola}.")
+    (license license:lppl)))
+
 (define-public texlive-gamebook
   (package
     (name "texlive-gamebook")
