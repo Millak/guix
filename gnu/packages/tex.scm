@@ -1805,6 +1805,25 @@ ligatures, but also offers additional control over them.")
 access journal @emph{Archives of Forensic Psychology}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-afthesis
+  (package
+    (name "texlive-afthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/afthesis/" "doc/latex/afthesis/"
+                   "tex/latex/afthesis/")
+             (base32
+              "1db9fzs4rf1d86n2gcn0zs255nlwc8i1yl5n9qzsn6xf5as7zz1i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/afthesis")
+    (synopsis "Air Force Institute of Technology thesis class")
+    (description
+     "This is a LaTeX thesis and dissertation class for US Air Force Institute
+Of Technology.")
+    (license license:public-domain)))
+
 (define-public texlive-aichej
   (package
     (name "texlive-aichej")
