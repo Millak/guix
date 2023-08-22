@@ -19669,6 +19669,28 @@ Science} and its related proceedings series CCIS, LNBIP, LNICST, and IFIP
 AICT.")
     (license license:cc-by4.0)))
 
+(define-public texlive-llncsconf
+  (package
+    (name "texlive-llncsconf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/llncsconf/"
+                   "tex/latex/llncsconf/")
+             (base32
+              "18z94lh90pzvbzfgxj27n2l12mfbcjd20vga16h8d2bln56lrfpm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/llncsconf")
+    (synopsis "LaTeX package extending Springer's @code{llncs} class")
+    (description
+     "The package extends Springer's @code{llncs} class for adding additional
+notes describing the status of the paper (submitted, accepted) as well as for
+creating author-archived versions that include the references to the official
+version hosted by Springer (as requested by the copyright transfer agreement
+for Springer's LNCS series).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lobster2
   (package
     (name "texlive-lobster2")
