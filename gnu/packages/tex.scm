@@ -23306,6 +23306,27 @@ index style file.  The style serves both for printed and for electronic
 books.")
     (license license:lppl)))
 
+(define-public texlive-nrc
+  (package
+    (name "texlive-nrc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nrc/" "source/latex/nrc/"
+                   "tex/latex/nrc/")
+             (base32
+              "10h5adzwj8558rwgwipjsbq4j5h674v8nrqfp6hvs3wbn8gdd9hj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nrc")
+    (synopsis "Class for the NRC technical journals")
+    (description
+     "This package provides macros, and some documentation, for typesetting
+papers for submission to journals published by the National Research Council
+Research Press.  At present, only @file{nrc2.cls} (for two-column layout)
+should be used.")
+    (license license:lppl)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
