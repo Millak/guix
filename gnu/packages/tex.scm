@@ -26621,6 +26621,26 @@ project according to Ryerson University's School of Graduate Studies thesis
 formatting regulations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sageep
+  (package
+    (name "texlive-sageep")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/sageep/" "doc/latex/sageep/"
+                   "source/latex/sageep/" "tex/latex/sageep/")
+             (base32
+              "1xmfqqsabc7vv3rh74qlry5jkvp0ddyi8m4yynriv5vzyqigfw5y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sageep")
+    (synopsis "Format papers for the annual meeting of EEGS")
+    (description
+     "The class provides formatting for papers for the annual meeting of the
+@acronym{EEGS, Environmental and Engineering Geophysical Society}: Application
+of Geophysics to Engineering and Environmental Problems, known as SAGEEP.")
+    (license license:lppl)))
+
 (define-public texlive-sankey
   (package
     (name "texlive-sankey")
