@@ -31338,6 +31338,29 @@ Graduate School and conform with the style requirements for dissertations and
 theses as laid out in the Fall 2010 UO graduate school student manual.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uowthesis
+  (package
+    (name "texlive-uowthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uowthesis/"
+                   "tex/latex/uowthesis/")
+             (base32
+              "196w8ics6r9n4x05ydpr0hprpmcwqwfqa92h200kxgflp595xm43")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uowthesis")
+    (synopsis
+     "Document class for dissertations at the University of Wollongong")
+    (description
+     "This package provides a document class for higher degree research theses
+in compliance with the specifications of @acronym{UoW, University of
+Wollongong} theses in the @emph{Guidelines for Preparation and Submission of
+Higher Degree Research Theses} (March 2006), by the Research Student Centre,
+Research & Innovation Division, UoW.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-uppunctlm
   (package
     (name "texlive-uppunctlm")
