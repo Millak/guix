@@ -27360,6 +27360,53 @@ journal names as written in AMS standard:
 bibliography.")
     (license license:public-domain)))
 
+(define-public texlive-shtthesis
+  (package
+    (name "texlive-shtthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shtthesis/"
+                   "tex/latex/shtthesis/")
+             (base32
+              "1l7vfqvfcgpndp5kmpdx4d9w89b83j5s2kwkr37hih9cp9l3n9vz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-alphalph
+           texlive-biber
+           texlive-biblatex
+           texlive-biblatex-gb7714-2015
+           texlive-booktabs
+           texlive-caption
+           texlive-colortbl
+           texlive-ctex
+           texlive-datetime
+           texlive-enumitem
+           texlive-fancyhdr
+           texlive-fmtcount
+           texlive-lastpage
+           texlive-latexmk
+           texlive-listings
+           texlive-lua-alt-getopt
+           texlive-lualatex-math
+           texlive-mathtools
+           texlive-ntheorem
+           texlive-tex-gyre
+           texlive-tocvsec2
+           texlive-transparent
+           texlive-undolabl
+           texlive-unicode-math
+           texlive-xits
+           texlive-xstring))
+    (home-page "https://ctan.org/pkg/shtthesis")
+    (synopsis "Unofficial LaTeX thesis template for ShanghaiTech University")
+    (description
+     "This package, forked from @code{ucasthesis}, is an unofficial LaTeX
+thesis template for ShanghaiTech University and satisfies all format
+requirements of the school.")
+    (license license:gpl3)))
+
 (define-public texlive-shuffle
   (package
     (name "texlive-shuffle")
