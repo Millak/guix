@@ -22687,6 +22687,26 @@ physics at the University of Wurzburg as a collection of macros and predefined
 environments for quickly creating nice mathematical documents.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nddiss
+  (package
+    (name "texlive-nddiss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/nddiss/" "doc/latex/nddiss/"
+                   "source/latex/nddiss/" "tex/latex/nddiss/")
+             (base32
+              "131gzskjqhh5v677rxf2pap87jvi6jdznimqmql468y3pwc2zja0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nddiss")
+    (synopsis "Notre Dame Dissertation format class")
+    (description
+     "This class file conforms to the requirements of the Graduate School of
+the University of Notre Dame; with it a user can format a thesis or
+dissertation in LaTeX.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-nevelok
   (package
     (name "texlive-nevelok")
