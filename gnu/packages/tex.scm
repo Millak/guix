@@ -2826,6 +2826,37 @@ guidelines.  The @code{apa6} class provides better coverage of the
 requirements.")
     (license license:bsd-2)))
 
+(define-public texlive-apa7
+  (package
+    (name "texlive-apa7")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/apa7/" "source/latex/apa7/"
+                   "tex/latex/apa7/")
+             (base32
+              "0kifjg61s16cn7zvmix2yqdz26spr7f9gsxkiv822qs3y337l6ry")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; ".ins" file writes files to "./config" and "./build".
+               ;; Create these directories first to prevent an error.
+               (add-before 'build 'prepare-build
+                 (lambda _
+                   (for-each mkdir-p (list "build/config" "build/samples")))))))
+    (home-page "https://ctan.org/pkg/apa7")
+    (synopsis "Format documents in APA style (7th edition)")
+    (description
+     "This class formats documents in @acronym{APA, American Psychological
+Association} style (7th Edition).  It provides a full set of facilities in
+four different output modes (journal-like appearance, double-spaced
+manuscript, double-spaced student manuscript, LaTeX-like document).  The class
+can mask author identity for copies for use in masked peer review.  It is
+a development of the @code{apa6} class.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-apalike-ejor
   (package
     (name "texlive-apalike-ejor")
