@@ -25497,6 +25497,41 @@ A cross-referencing system is provided for trees which cite line numbers in
 justifications for proof lines or branch closures.")
     (license license:lppl1.3+)))
 
+(define-public texlive-proposal
+  (package
+    (name "texlive-proposal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/proposal/base/"
+                   "doc/latex/proposal/dfg/"
+                   "doc/latex/proposal/eu/"
+                   "source/latex/proposal/base/"
+                   "source/latex/proposal/bin/"
+                   "source/latex/proposal/dfg/"
+                   "source/latex/proposal/eu/"
+                   "source/latex/proposal/lib/"
+                   "tex/latex/proposal/base/"
+                   "tex/latex/proposal/dfg/"
+                   "tex/latex/proposal/eu/")
+             (base32
+              "0km6i418hdcbl457dfwh1hl3q8qshp1gvqc1frqc84f9a6cr0kzc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/proposal")
+    (synopsis
+     "Set of LaTeX classes preparing proposals for collaborative projects")
+    (description
+     "The process of preparing a collaborative proposal, to a major funding body,
+involves integration of contributions of a many people at many sites.  It is
+therefore an ideal application for a text-based document preparation system
+such as LaTeX, in concert with a distributed version control system such as
+SVN.  The @code{proposal} class itself provides a basis for such an
+enterprise.  The @code{dfgproposal} and @code{dfgproposal} classes provide two
+specialisations of the base class for (respectively) German and European
+research proposals.")
+    (license license:lppl)))
+
 (define-public texlive-pseudo
   (package
     (name "texlive-pseudo")
