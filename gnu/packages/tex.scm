@@ -28001,6 +28001,28 @@ and subcategories.  It does not depend on BibTeX: any bibliography may be
 split and reordered.")
     (license license:lppl)))
 
+(define-public texlive-sr-vorl
+  (package
+    (name "texlive-sr-vorl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sr-vorl/" "source/latex/sr-vorl/"
+                   "tex/latex/sr-vorl/")
+             (base32
+              "1izgzwg6a9i93zfxi0qvfrdgza3q8z5b4nhlhgq072glmdqzymf0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sr-vorl")
+    (synopsis "Class for Springer books")
+    (description
+     "This package provides a LaTeX class and templates for books to be
+published at Springer Gabler Research, Springer Vieweg Research, Springer
+Spektrum Research, Springer VS Research, or Springer VS Forschung.  It may be
+used to produce monographs in different formats and several-authors-books
+fitting the conditions of the aforementioned publishers.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-srbtiks
   (package
     (name "texlive-srbtiks")
