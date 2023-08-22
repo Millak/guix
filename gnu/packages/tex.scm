@@ -26174,6 +26174,26 @@ method description path parameter request body and content type response body,
 content type and status code.")
     (license license:lppl1.3c)))
 
+(define-public texlive-resumecls
+  (package
+    (name "texlive-resumecls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/resumecls/"
+                   "source/xelatex/resumecls/"
+                   "tex/xelatex/resumecls/")
+             (base32
+              "14za3bvvksq6xjvbppfm17cj8abspj7h7l7snyd2vciy0dc305yg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/resumecls")
+    (synopsis "Typeset a resume both in English and Chinese")
+    (description
+     "This package provides a LaTeX document class to typeset a resume or CV
+both in English and Chinese with more ease and flexibility.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-reverxii
   (package
     (name "texlive-reverxii")
