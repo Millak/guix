@@ -30664,6 +30664,26 @@ Norms).  It is composed of a main class, @code{ufrgscca}, and a set of
 auxiliary packages, some of which can be used independently.")
     (license (list license:lppl1.3c license:gpl3+))))
 
+(define-public texlive-uhhassignment
+  (package
+    (name "texlive-uhhassignment")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uhhassignment/"
+                   "source/latex/uhhassignment/"
+                   "tex/latex/uhhassignment/")
+             (base32
+              "15yvq00xsikb8c78gkyyqjdgcz2yw8dnp586mjcrk1p4kvlpwyam")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uhhassignment")
+    (synopsis "Document class for typesetting homework assignments")
+    (description
+     "This document class was created for typesetting solutions to homework
+assignments at the university of Hamburg (Universitat Hamburg).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
