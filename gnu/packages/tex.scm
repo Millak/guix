@@ -31502,6 +31502,25 @@ specifies a database to use, and @code{\\usebibdata}, which typesets a single
 field from a specified entry in that database.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uspatent
+  (package
+    (name "texlive-uspatent")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uspatent/" "tex/latex/uspatent/")
+             (base32
+              "0f2w7zczl6zmxysdwyksbq3zniyw6mfr9zhdz55j5l84fgkwcd3n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uspatent")
+    (synopsis "U.S. Patent Application Tools for LaTeX and LyX")
+    (description
+     "The package provides a class and other tools for developing
+a beautifully formatted, consistent U.S. Patent Application using LaTeX and/or
+LyX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
