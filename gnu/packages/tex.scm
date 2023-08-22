@@ -30217,6 +30217,26 @@ headings in @code{twocolumn} layout.
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-tugboat
+  (package
+    (name "texlive-tugboat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/tugboat/" "doc/latex/tugboat/"
+                   "source/latex/tugboat/" "tex/latex/tugboat/")
+             (base32
+              "1yf9g7bszxdkzb4calsd03kwnjs4i0y7vh0d7z4fwiv49qrbkzks")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tugboat")
+    (synopsis "LaTeX macros for @emph{TUGboat} articles")
+    (description
+     "This package provides @file{ltugboat.cls} for both regular and
+proceedings issues of the @emph{TUGboat} journal.  It also provides a BibTeX
+style, @file{tugboat.bst}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-turabian-formatting
   (package
     (name "texlive-turabian-formatting")
