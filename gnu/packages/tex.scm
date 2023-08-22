@@ -18480,6 +18480,31 @@ KSFH (@emph{Katholische Stiftungsfachhochschule}) Munich.  BibTeX entries in
 @code{misc} formats are supported.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ksp-thesis
+  (package
+    (name "texlive-ksp-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ksp-thesis/"
+                   "tex/latex/ksp-thesis/")
+             (base32
+              "03jklx2yym78b29y3s8fh91mfsn9p4w1cl7yisj3kyyawygzs6hp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ksp-thesis")
+    (synopsis
+     "LaTeX class for theses published with KIT Scientific Publishing")
+    (description
+     "This package provides a LaTeX class intended for authors who want to
+publish their thesis or other scientific work with @acronym{KSP, KIT
+Scientific Publishing}.  The class is based on the @code{scrbook} class of the
+KOMA-script bundle in combination with the ClassicThesis and ArsClassica
+packages.  It modifies some of the layout and style definitions of these
+packages in order to provide a document layout that should be compatible with
+the requirements by KSP.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-kvmap
   (package
     (name "texlive-kvmap")
