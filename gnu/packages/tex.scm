@@ -3619,6 +3619,30 @@ part of this distribution.  The code is compatible with pdfLaTeX or LuaLaTeX.
 This LaTeX template is not a publication of ASME.")
     (license license:expat)))
 
+(define-public texlive-asmejour
+  (package
+    (name "texlive-asmejour")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/asmejour/" "doc/latex/asmejour/"
+                   "tex/latex/asmejour/")
+             (base32
+              "09zncjbvdrqkr8g131mx0m73km4d270sn9782knl5qj6gxh98940")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asmejour")
+    (synopsis "Template for ASME journal papers")
+    (description
+     "The @code{asmejour} class provides a template to format preprints
+submitted to ASME journals.  The layout and reference formats closely follow
+the style that is currently being used for published papers.  The class is
+intended to be used with the @file{asmejour.bst} BibTeX style, which is part
+of this distribution. The class is compatible with pdfLaTeX or LuaLaTeX.
+
+This package is not a publication of ASME.")
+    (license license:expat)))
+
 (define-public texlive-aspectratio
   (package
     (name "texlive-aspectratio")
