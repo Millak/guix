@@ -23180,6 +23180,24 @@ individual chapter and whole document bibliography, @code{natbib} citations,
 and clever references.")
     (license license:lppl1.3c)))
 
+(define-public texlive-nih
+  (package
+    (name "texlive-nih")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nih/" "tex/latex/nih/")
+             (base32
+              "1fa4z598i5hvlc4g9zjvqfn34pmmpab37ghi5miklvji5r2a1835")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nih")
+    (synopsis "Class for NIH grant applications")
+    (description
+     "The @code{nih} class offers support for grant applications to @acronym{NIH,
+National Institutes of Health}, a US government agency.")
+    (license license:lppl)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
