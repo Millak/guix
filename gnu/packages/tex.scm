@@ -15172,6 +15172,35 @@ CV.  The goal is to create a flexible template that can be customized based on
 each specific individual's needs.")
     (license license:lppl1.3+)))
 
+(define-public texlive-grant
+  (package
+    (name "texlive-grant")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grant/" "source/latex/grant/"
+                   "tex/latex/grant/")
+             (base32
+              "0cihhr3fqjbn2grkps5wl6aqx19s78vgklmriw2jqg27fqgv5q2p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grant")
+    (synopsis "Classes for formatting federal grant proposals")
+    (description
+     "This package provides LaTeX classes for formatting federal grant
+proposals:
+@itemize
+@item grant: base class for formatting grant proposals;
+@item grant-arl: Army Research Laboratory;
+@item grant-darpa: Defense Advanced Research Projects Agency;
+@item grant-doe: Department of Energy;
+@item grant-nih: National Institutes of Health;
+@item grant-nrl: Naval Research Laboratory;
+@item grant-nsf: National Science Foundation;
+@item grant-onr: Office of Naval Research.
+@end itemize")
+    (license license:expat)))
+
 (define-public texlive-greenpoint
   (package
     (name "texlive-greenpoint")
