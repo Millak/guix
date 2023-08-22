@@ -26600,6 +26600,27 @@ university.")
 School of Graduate Studies (SGS) theses.")
     (license license:asl2.0)))
 
+(define-public texlive-ryethesis
+  (package
+    (name "texlive-ryethesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ryethesis/"
+                   "source/latex/ryethesis/"
+                   "tex/latex/ryethesis/")
+             (base32
+              "1xjzl1ng0nbcakiasi6sfbkannfipcfv96crq6y6cb7p7l707wg7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ryethesis")
+    (synopsis "Class for Ryerson Unversity Graduate School requirements")
+    (description
+     "The class offers support for formatting a thesis, dissertation or
+project according to Ryerson University's School of Graduate Studies thesis
+formatting regulations.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sankey
   (package
     (name "texlive-sankey")
