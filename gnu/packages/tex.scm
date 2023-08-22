@@ -18139,6 +18139,27 @@ document author needs.  So it can be a useful guide for beginners as well as
 a reference manual for advanced users.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-kdgdocs
+  (package
+    (name "texlive-kdgdocs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kdgdocs/" "source/latex/kdgdocs/"
+                   "tex/latex/kdgdocs/")
+             (base32
+              "1yjd6y3h8m08zwhnd0bg3153xapxxqy2i23i30fcvv5mj5pnnql8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kdgdocs")
+    (synopsis "Document classes for Karel de Grote University College")
+    (description
+     "The bundle provides two classes for usage by @acronym{KdG, Karel de
+Grote} University College professors and master students: @code{kdgcoursetext}
+for writing course texts, and @code{kdgmasterthesis} for writing master's
+theses.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-kixfont
   (package
     (name "texlive-kixfont")
