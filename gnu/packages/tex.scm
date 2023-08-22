@@ -27824,6 +27824,25 @@ bibliography entry.  The styles are adapted from standard ones or from
 @code{natbib} ones.")
     (license license:knuth)))
 
+(define-public texlive-soton
+  (package
+    (name "texlive-soton")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/soton/" "tex/latex/soton/")
+             (base32
+              "0ib4i98x14g5bl4l5bd9ciw6aay5n6fihkyzfls52l5y9vpyglix")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/soton")
+    (synopsis "University of Southampton-compliant slides")
+    (description
+     "The bundle contains two packages: @code{soton-palette} which defines
+colour-ways, and @code{soton-beamer}, which uses the colours to produce
+compliant presentations.")
+    (license license:lppl)))
+
 (define-public texlive-soup
   (package
     (name "texlive-soup")
