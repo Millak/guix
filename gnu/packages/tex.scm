@@ -30942,6 +30942,29 @@ includes an appropriate bibliographic style which enables the use of
 author-year schemes using the @code{natbib} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-unbtex
+  (package
+    (name "texlive-unbtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unbtex/" "tex/latex/unbtex/")
+             (base32
+              "0s45np0j9xw4gfga593rpcxzagcn3yhr8m2q44jj4mf6sp9ldlbw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unbtex")
+    (synopsis "Class for theses at @acronym{UnB, University of Brasilia}")
+    (description
+     "This package provides a class based on abnTeX and compatible with
+pdfLaTex and Biber to prepare bachelor, master, and doctoral theses for the
+@acronym{UnB, University of Brasilia}, Brazil.  The class also comes with
+a template for the various types of theses for undergraduate and graduate
+programs at UnB.  The documentation for the class and the comments in the
+templates are all written in Portuguese, the language of the target
+audience.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-unfonts-core
   (package
     (name "texlive-unfonts-core")
