@@ -29692,6 +29692,26 @@ aesthetic features.  The standard macro @code{\\newtheorem} may be redefined
 to use the environment.")
     (license license:lppl)))
 
+(define-public texlive-thuaslogos
+  (package
+    (name "texlive-thuaslogos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thuaslogos/"
+                   "tex/latex/thuaslogos/")
+             (base32
+              "1ndqqc5rgxsdkanycgxi79czx6ri9fsfghh1lwyrx6ssjz2hfd7p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thuaslogos")
+    (synopsis
+     "Logos for @acronym{THUAS, The Hague University of Applied Sciences}")
+    (description
+     "This package contains some logos of @acronym{THUAS, The Hague University
+of Applied Sciences}.  These Logos are available in English and in Dutch.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tinos
   (package
     (name "texlive-tinos")
