@@ -21866,6 +21866,25 @@ as Metafont source and as Adobe Type 1 format, and a comprehensive support
 package is provided.")
     (license license:public-domain)))
 
+(define-public texlive-modeles-factures-belges-assocs
+  (package
+    (name "texlive-modeles-factures-belges-assocs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/modeles-factures-belges-assocs/"
+                   "tex/latex/modeles-factures-belges-assocs/")
+             (base32
+              "1rj4r3qa5khgc54f1gz73zywrh61rdw76hlrk9jb6b08gz56wzdz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/modeles-factures-belges-assocs")
+    (synopsis "Generate invoices for Belgian non-profit organizations")
+    (description
+     "This package provides templates and a @file{.sty} file for generating
+invoices for Belgian non-profit organizations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-montserrat
   (package
     (name "texlive-montserrat")
