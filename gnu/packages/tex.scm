@@ -12433,6 +12433,36 @@ symbols but does not provide any fonts.  The fonts themselves must be acquired
 otherwise.")
     (license license:gpl3)))
 
+(define-public texlive-emisa
+  (package
+    (name "texlive-emisa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/emisa/" "source/latex/emisa/"
+                   "tex/latex/emisa/")
+             (base32
+              "02f8blixqqbn7k3h2sn59b9d8i2lxqnh2zwdk4gv7wyjr9l0sc1x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; "emisa.ins" apparently wants to generate itself!  Fix that.
+               (add-after 'unpack 'fix-ins
+                 (lambda _
+                   (substitute* "source/latex/emisa/emisa.ins"
+                     (("\\\\file\\{\\\\jobname\\.ins\\}.*") "")))))))
+    (home-page "https://ctan.org/pkg/emisa")
+    (synopsis "LaTeX package for preparing manuscripts for the journal
+@emph{EMISA}")
+    (description
+     "The EMISA LaTeX package is provided for preparing manuscripts for
+submission to @acronym{EMISA, Enterprise Modelling and Information Systems
+Architectures}, and for preparing accepted submissions for publication as well
+as for typesetting the final document by the editorial office.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-endiagram
   (package
     (name "texlive-endiagram")
