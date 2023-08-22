@@ -32046,6 +32046,28 @@ Native American languages.")
      "This package provides LaTeX support for the @code{wnri} fonts.")
     (license license:gpl2)))
 
+(define-public texlive-wsemclassic
+  (package
+    (name "texlive-wsemclassic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wsemclassic/"
+                   "source/latex/wsemclassic/"
+                   "tex/latex/wsemclassic/")
+             (base32
+              "1kq871pbf2xq0h0njsp3j0wygz6970y5nkara5v5kpby42kx96rl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wsemclassic")
+    (synopsis "LaTeX class for Bavarian school w-seminar papers")
+    (description
+     "The class is designed either to conform with the recommendations of the
+Bavarian Kultusministerium for typesetting w-seminar papers (strict mode), or
+to use another style which should look better.  The class is based on the
+LaTeX standard @code{report} class.")
+    (license license:bsd-3)))
+
 (define-public texlive-wsuipa
   (package
     (name "texlive-wsuipa")
