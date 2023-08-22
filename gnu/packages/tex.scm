@@ -10720,6 +10720,31 @@ German speaking TeX users group.  The font includes only the five characters
 provides an interface for LuaLaTeX, XeLaTeX, and pdfLaTeX.")
     (license license:lppl)))
 
+(define-public texlive-dccpaper
+  (package
+    (name "texlive-dccpaper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dccpaper/"
+                   "source/latex/dccpaper/"
+                   "tex/latex/dccpaper/")
+             (base32
+              "1hxn5lnxbcnwhyx9n275bml2bwy3gfkkkqg0s68skcxs843p55ad")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dccpaper")
+    (synopsis
+     "Typeset papers for the @emph{International Journal of Digital Curation}")
+    (description
+     "The LaTeX class @code{ijdc-v14} produces camera-ready papers and
+articles suitable for inclusion in the @emph{International Journal of Digital
+Curation}, with applicability from volume 14 onwards; a legacy class
+@code{ijdc-v9} is provided for papers and articles written for volumes 9-13.
+The similar @code{idcc} class can be used for submissions to the International
+Digital Curation Conference, beginning with the 2015 conference.")
+    (license (list license:lppl1.3c license:cc-by4.0))))
+
 (define-public texlive-decision-table
   (package
     (name "texlive-decision-table")
