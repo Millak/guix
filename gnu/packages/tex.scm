@@ -23846,6 +23846,28 @@ LuaTeX.")
      "This package provides the documentation for Omega executables.")
     (license license:gpl3+)))
 
+(define-public texlive-onrannual
+  (package
+    (name "texlive-onrannual")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/onrannual/"
+                   "tex/latex/onrannual/")
+             (base32
+              "1m701gqf0my947jh4lsgwryn3h9m6w4b6rimm8wmzsxlvnag9ag7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/onrannual")
+    (synopsis
+     "Class for Office of Naval Research Ocean Battlespace Sensing annual
+report")
+    (description
+     "This is an unofficial document class for writing @acronym{ONR, Office of
+Naval Research} annual reports using LaTeX; as ONR has had numerous problems
+with LaTeX-generated PDF submissions in the past.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-opensans
   (package
     (name "texlive-opensans")
