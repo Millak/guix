@@ -30621,6 +30621,26 @@ which is available on the faculte's intranet.  The class file documentation is
 in French, the language of the typical user at the Universite de Sherbrooke.")
     (license license:lppl1.3c)))
 
+(define-public texlive-uestcthesis
+  (package
+    (name "texlive-uestcthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/uestcthesis/"
+                   "doc/latex/uestcthesis/"
+                   "tex/latex/uestcthesis/")
+             (base32
+              "1gqa6yyj3nq75vfjxrcn0pxc9gmgdaf7mdhp5sf3hy3br9ix8qgw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uestcthesis")
+    (synopsis "Thesis class for UESTC")
+    (description
+     "The class is for typesetting a thesis at the University of Electronic
+Science and Technology of China.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
