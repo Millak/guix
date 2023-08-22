@@ -9007,6 +9007,28 @@ job without using the indexing facilities, and needs no special
 @code{\\cite}-replacement package.")
     (license license:bsd-4)))
 
+(define-public texlive-cje
+  (package
+    (name "texlive-cje")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/cje/" "doc/latex/cje/"
+                   "tex/latex/cje/")
+             (base32
+              "0mxd9z2myzj1pixv4rqib1l6ixj0lq0vy7izgl1gx7k5bwxq945m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cje")
+    (synopsis "LaTeX document class for CJE articles")
+    (description
+     "The @code{cje} article class allows authors to format their papers to
+@emph{Canadian Journal of Economics} style with minimum effort.  The class
+includes options for two other formats: @code{review} (double spaced, for use
+at the submission stage) and @code{proof} (used by the typesetters to prepare
+the proof authors will receive for approval).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-cjhebrew
   (package
     (name "texlive-cjhebrew")
