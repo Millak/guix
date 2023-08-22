@@ -29607,6 +29607,28 @@ Karoly Catholic University (Eger, Hungary).  The documentation is in
 Hungarian.")
     (license license:lppl1.2+)))
 
+(define-public texlive-thesis-gwu
+  (package
+    (name "texlive-thesis-gwu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thesis-gwu/"
+                   "tex/latex/thesis-gwu/")
+             (base32
+              "120w3wfh5b7f6lmsf0l3wy6agxkds4rnpy5pzjnpa6rwk59plk8k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thesis-gwu")
+    (synopsis
+     "Thesis class for George Washington University School of Engineering and
+Applied Science")
+    (description
+     "This class is an attempt to create a standard format for @acronym{GWU
+SEAS, George Washington University School of Engineering and Applied Science}
+dissertations and theses.")
+    (license license:gpl3)))
+
 (define-public texlive-thmbox
   (package
     (name "texlive-thmbox")
