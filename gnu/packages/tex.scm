@@ -28638,6 +28638,72 @@ of parameters that the user sets via macros.
 The bundle comes with a set of ready-prepared puzzle files.")
     (license license:lppl)))
 
+(define-public texlive-suftesi
+  (package
+    (name "texlive-suftesi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/suftesi/" "source/latex/suftesi/"
+                   "tex/latex/suftesi/")
+             (base32
+              "1m1gsnfcnw9ylz2aik20rqs6jk0p647wlkfm813spl0hbjnpzkpc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "lualatex"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'support-greek-input
+                          (lambda _
+                            (substitute* "source/latex/suftesi/suftesi.dtx"
+                              (("\\\\usepackage\\[T1\\]\\{fontenc\\}")
+                               "\\usepackage[LGR, T1]{fontenc}")))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-babel-greek
+                  texlive-biblatex
+                  texlive-biblatex-philosophy
+                  texlive-booktabs
+                  texlive-cbfonts
+                  texlive-cbfonts-fd
+                  texlive-cochineal
+                  texlive-csquotes
+                  texlive-etoolbox
+                  texlive-fontaxes
+                  texlive-fontsize
+                  texlive-fontspec
+                  texlive-greek-fontenc
+                  texlive-guitlogo
+                  texlive-hologo
+                  texlive-hypdoc
+                  texlive-inconsolata
+                  texlive-libertine
+                  texlive-listings
+                  texlive-ltxdockit
+                  texlive-manfnt
+                  texlive-mathalpha
+                  texlive-mdframed
+                  texlive-microtype
+                  texlive-multirow
+                  texlive-needspace
+                  texlive-newtx
+                  texlive-parskip
+                  texlive-pgf
+                  texlive-sectsty
+                  texlive-siunitx
+                  texlive-txfonts
+                  texlive-upquote
+                  texlive-xcolor
+                  texlive-xkeyval
+                  texlive-xstring
+                  texlive-zref))))
+    (home-page "https://ctan.org/pkg/suftesi")
+    (synopsis "Document class for typesetting theses, books and articles")
+    (description
+     "The class can be used to typeset any kind of book (originally designed
+for use in the humanities).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-superiors
   (package
     (name "texlive-superiors")
