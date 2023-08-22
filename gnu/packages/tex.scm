@@ -26560,6 +26560,27 @@ their associated rotation sequences.
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-rutitlepage
+  (package
+    (name "texlive-rutitlepage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rutitlepage/"
+                   "source/latex/rutitlepage/"
+                   "tex/latex/rutitlepage/")
+             (base32
+              "0pcd6cqlm3r7wq9k96ignvars436hg9j5la4aaq35ldm01sqy268")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rutitlepage")
+    (synopsis "Radboud University titlepage package")
+    (description
+     "This is an unofficial LaTeX package to generate titlepages for the
+Radboud University, Nijmegen.  It uses official vector logos from the
+university.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-sankey
   (package
     (name "texlive-sankey")
