@@ -14237,6 +14237,28 @@ Its aim is to provide a French translation of terms and words used in
 algorithms to make it integrate seamlessly in a French written document.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ftc-notebook
+  (package
+    (name "texlive-ftc-notebook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ftc-notebook/"
+                   "tex/latex/ftc-notebook/")
+             (base32
+              "068fc2wisryvgr8zqmkiwnyrrh5rmmw5njl41rn70bvv9qdgh31y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ftc-notebook")
+    (synopsis "Typeset FIRST Tech Challenge (FTC) notebooks")
+    (description
+     "This LaTeX package will greatly simplify filling entries for your FIRST
+Tech Challenge (FTC) engineering or outreach notebook.  We developed this
+package to support most frequently used constructs encountered in an FTC
+notebook: meetings, tasks, decisions with pros and cons, tables, figures with
+explanations, team stories and bios, and more.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-functan
   (package
     (name "texlive-functan")
