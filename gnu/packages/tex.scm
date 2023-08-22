@@ -22426,6 +22426,35 @@ blank pages.")
 1 formats, which cover the Mxedruli and the Xucuri alphabets.")
     (license license:lppl)))
 
+(define-public texlive-mynsfc
+  (package
+    (name "texlive-mynsfc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/mynsfc/"
+                   "source/xelatex/mynsfc/"
+                   "tex/xelatex/mynsfc/")
+             (base32
+              "15vbgqmqsjqz068gn5ql5ca3wbw7gdq1vnaazpwmc71jdybxxv14")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; "mynsfc.ins" writes files to "./examples".  Create this
+               ;; directory first to prevent an error.
+               (add-before 'build 'prepare-build
+                 (lambda _ (mkdir-p "build/examples"))))))
+    (home-page "https://ctan.org/pkg/mynsfc")
+    (synopsis "XeLaTeX template for writing the main body of NSFC proposals")
+    (description
+     "The package provides a XeLaTeX template for writing the main body of
+@acronym{NSFC, National Natural Science Foundation of China} proposals, which
+are allowed to apply online.  The package defines styles of the outlines and
+uses BibLaTeX and Biber for the management of references.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-na-box
   (package
     (name "texlive-na-box")
