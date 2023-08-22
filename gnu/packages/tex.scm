@@ -12349,6 +12349,26 @@ electronic submission system and elsewhere.")
 articles both in Elsevier's electronic submission system and elsewhere.")
     (license license:lppl1.2+)))
 
+(define-public texlive-elteikthesis
+  (package
+    (name "texlive-elteikthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/elteikthesis/"
+                   "tex/latex/elteikthesis/")
+             (base32
+              "0brfkpg32vqm42cwp10vbjbk752jcfq5g65znl0z539xdynf1nnp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/elteikthesis")
+    (synopsis "Thesis template for Eotvos Lorand University (Informatics)")
+    (description
+     "This package provides a bachelor and master thesis template for the
+Eotvos Lorand University, Faculty of Informatics (Budapest, Hungary).  The
+template supports producing both Hungarian and English theses.")
+    (license license:expat)))
+
 (define-public texlive-eltex
   (package
     (name "texlive-eltex")
