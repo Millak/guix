@@ -31599,6 +31599,30 @@ for the University of Amsterdam.")
 colour palette of the University of Western Australia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uwa-letterhead
+  (package
+    (name "texlive-uwa-letterhead")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uwa-letterhead/"
+                   "source/latex/uwa-letterhead/"
+                   "tex/latex/uwa-letterhead/")
+             (base32
+              "06p4c6m8dizq4y3pd95bzf81y296r1gg134jnx5h0qzh4l5ywpyx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uwa-letterhead")
+    (synopsis "Letterhead of the University of Western Australia")
+    (description
+     "This package generates the letterhead of the @acronym{UWA, University of
+Western Australia}.  It requires the UWA logo in PDF format, which is
+available in SVG format at
+@url{https://static-listing.weboffice.uwa.edu.au/visualid/core-rebrand/img/uwacrest/},
+and uses the Arial and UWA Slab fonts by default.  The package works with
+XeLaTeX and LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
