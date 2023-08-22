@@ -21815,6 +21815,25 @@ A bunch of handy macros are included that are used throughout many lectures
 during the bachelor's degree program.")
     (license license:expat)))
 
+(define-public texlive-mnras
+  (package
+    (name "texlive-mnras")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/mnras/" "doc/latex/mnras/"
+                   "tex/latex/mnras/")
+             (base32
+              "1lw2y3vbg8ndvhy5p00blbfwp3bzw40kkrwzs289kphjq249bwnb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mnras")
+    (synopsis "Monthly Notices of the Royal Astronomical Society")
+    (description
+     "This package is used for preparing papers in the journal @emph{Monthly
+Notices of the Royal Astronomical Society}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-mnsymbol
   (package
     (name "texlive-mnsymbol")
