@@ -31541,6 +31541,25 @@ LyX.")
 University of Toronto School of Graduate Studies (SGS), as of Fall 2020.")
     (license license:lppl1.3c)))
 
+(define-public texlive-utexasthesis
+  (package
+    (name "texlive-utexasthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/utexasthesis/"
+                   "tex/latex/utexasthesis/")
+             (base32
+              "12qgidbdyjj9mdjp6lzidw0ifkdh7hskxdmpmsk5wybjicvf24w4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/utexasthesis")
+    (synopsis "University of Texas at Austin graduate thesis style")
+    (description
+     "This class file complies with the Digital Submission Requirement for
+masters and PhD thesis submissions of the University of Texas at Austin.")
+    (license license:cc0)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
