@@ -12328,6 +12328,27 @@ layout.  These are now accepted for submitting articles both in Elsevier's
 electronic submission system and elsewhere.")
     (license license:lppl1.2+)))
 
+(define-public texlive-elsarticle
+  (package
+    (name "texlive-elsarticle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/elsarticle/"
+                   "doc/latex/elsarticle/"
+                   "source/latex/elsarticle/"
+                   "tex/latex/elsarticle/")
+             (base32
+              "1616ql7yhf6fr66szgnpkxd2sz8vx22w25annf11i2zmr698k3aa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/elsarticle")
+    (synopsis "Class for articles for submission to Elsevier journals")
+    (description
+     "This class for typesetting journal articles is accepted for submitted
+articles both in Elsevier's electronic submission system and elsewhere.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-eltex
   (package
     (name "texlive-eltex")
