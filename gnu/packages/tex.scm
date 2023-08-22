@@ -29928,6 +29928,30 @@ Torino}.  The class can be used for letters written in Italian and in
 English.")
     (license license:asl2.0)))
 
+(define-public texlive-toptesi
+  (package
+    (name "texlive-toptesi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/toptesi/" "source/latex/toptesi/"
+                   "tex/latex/toptesi/")
+             (base32
+              "0mskk7swjgcy6lw1l81brcnw7n870mrz3la64ln0f3mxps98gik6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/toptesi")
+    (synopsis "Bundle for typesetting multilanguage theses")
+    (description
+     "This bundle contains everything needed for typesetting a bachelor,
+master, or PhD thesis in any language supported by LaTeX.  The infix strings
+may be selected and specified at will by means of a configuration file, so as
+to customize the layout of the front page to the requirements of a specific
+university.  Thanks to its language management, the bundle is suited for
+multi-language theses.  Toptesi is designed to save the PDF version of
+a thesis in PDF/A-1b compliant mode and with all the necessary metadata.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-tpslifonts
   (package
     (name "texlive-tpslifonts")
