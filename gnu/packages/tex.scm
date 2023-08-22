@@ -31086,6 +31086,26 @@ LaTeX (AGL, CYFI, MUFI, SIL, TITUS, UCSUR, UNZ), to enable transcription and
 display of medieval and other documents.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-unifith
+  (package
+    (name "texlive-unifith")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/unifith/" "doc/latex/unifith/"
+                   "tex/latex/unifith/")
+             (base32
+              "06y9hkxv8y9p06pcyy2nv0nqma6bnh0n9i9pwpdadks9zs9sqn8r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unifith")
+    (synopsis "Typeset theses for University of Florence (Italy)")
+    (description
+     "The package provides a class to typeset PhD, master, and bachelor theses
+that adhere to the publishing guidelines of the University of
+Florence (Italy).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-unitsdef
   (package
     (name "texlive-unitsdef")
