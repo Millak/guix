@@ -9245,6 +9245,25 @@ a range of techniques to get the best results achievable using TeX.  Included
 in the bundle are templates to make thesis writing easier.")
     (license license:gpl2+)))
 
+(define-public texlive-cleanthesis
+  (package
+    (name "texlive-cleanthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cleanthesis/"
+                   "tex/latex/cleanthesis/")
+             (base32
+              "11fv49w1nydm5fvkp1p2375ywdfd5yh8hayqfnr6wdidzdycpg85")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cleanthesis")
+    (synopsis "Clean LaTeX style for thesis documents")
+    (description
+     "The package offers a clean, simple, and elegant LaTeX style for thesis
+documents.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-clearsans
   (package
     (name "texlive-clearsans")
