@@ -30576,6 +30576,25 @@ the @acronym{ABNT, Brazilian Technical Standards Association} standards and
 the @acronym{UCS, University of Caxias do Sul} specifications.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ucthesis
+  (package
+    (name "texlive-ucthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ucthesis/" "tex/latex/ucthesis/")
+             (base32
+              "19s6s4wxq494shi2pgrdyaz9qx52zma62czd92mrkjp2diim1197")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ucthesis")
+    (synopsis "University of California thesis format")
+    (description
+     "This package provides a modified version of the standard LaTeX report
+style that is accepted for use with University of California PhD dissertations
+and masters theses.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
