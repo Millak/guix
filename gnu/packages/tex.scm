@@ -21987,6 +21987,27 @@ requirements")
 with Marquette University Graduate School requirements.")
     (license license:lppl1.3+)))
 
+(define-public texlive-muling
+  (package
+    (name "texlive-muling")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/muling/" "source/latex/muling/"
+                   "tex/latex/muling/")
+             (base32
+              "0i4yvi1b12x8k2i2hi284b4zxwpxrzkfyqvw45m5f27qsr33h61x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/muling")
+    (synopsis
+     "MA thesis class for the Department of Linguistics, University of
+Mumbai")
+    (description
+     "This is a class file for writing MA thesis as required by the
+Department of Linguistics at the University of Mumbai.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-multibib
   (package
     (name "texlive-multibib")
