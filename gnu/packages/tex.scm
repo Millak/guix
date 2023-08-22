@@ -31579,6 +31579,26 @@ masters and PhD thesis submissions of the University of Texas at Austin.")
 for the University of Amsterdam.")
     (license license:expat)))
 
+(define-public texlive-uwa-colours
+  (package
+    (name "texlive-uwa-colours")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uwa-colours/"
+                   "source/latex/uwa-colours/"
+                   "tex/latex/uwa-colours/")
+             (base32
+              "1lryscsnwayp0s74rcdlr36bi2n45fbdq9f2h3av2n1nj57259a9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uwa-colours")
+    (synopsis "Colour palette of the University of Western Australia")
+    (description
+     "This package uses the @code{xcolor} package to define macros for the
+colour palette of the University of Western Australia.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-vak
   (package
     (name "texlive-vak")
