@@ -9464,6 +9464,27 @@ Emphasis for bold-face comes from a wavy underline of each letter.  The two
 fonts are supplied as Metafont source.")
     (license license:public-domain)))
 
+(define-public texlive-cmpj
+  (package
+    (name "texlive-cmpj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/cmpj/" "doc/latex/cmpj/"
+                   "tex/latex/cmpj/")
+             (base32
+              "1drmil2vba85wa7ykrma452hwh7ggzsq33zrhch7rjnqaw7xihwv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmpj")
+    (synopsis "Style for the journal @emph{Condensed Matter Physics}")
+    (description
+     "The package contains macros and some documentation for typesetting
+papers for submission to the @emph{Condensed Matter Physics} journal published
+by the Institute for Condensed Matter Physics of the National Academy of
+Sciences of Ukraine.")
+    (license license:lppl)))
+
 (define-public texlive-cmsrb
   (package
     (name "texlive-cmsrb")
