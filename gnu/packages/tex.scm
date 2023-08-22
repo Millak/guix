@@ -30684,6 +30684,27 @@ auxiliary packages, some of which can be used independently.")
 assignments at the university of Hamburg (Universitat Hamburg).")
     (license license:lppl1.3c)))
 
+(define-public texlive-uiucredborder
+  (package
+    (name "texlive-uiucredborder")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uiucredborder/"
+                   "source/latex/uiucredborder/"
+                   "tex/latex/uiucredborder/")
+             (base32
+              "0wsf3cfmpfmsv3afm78gc91fsiba415ir4p5fa0ivfny3dh34qnq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uiucredborder")
+    (synopsis "Class for UIUC thesis red-bordered forms")
+    (description
+     "The class offers a means of filling out the ``red-bordered form''
+that gets signed by the department head, your advisor, and --- for
+doctoral dissertations --- your thesis committee members.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
