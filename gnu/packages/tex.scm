@@ -4822,6 +4822,44 @@ University of Applied Sciences (BFH) with LaTeX.  To this end it contains
 classes as well as some helper packages and config files.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bgteubner
+  (package
+    (name "texlive-bgteubner")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/bgteubner/"
+                   "doc/latex/bgteubner/"
+                   "makeindex/bgteubner/"
+                   "source/latex/bgteubner/"
+                   "tex/latex/bgteubner/")
+             (base32
+              "1plc42glcq2pxyns6lm6fygicjm8whrls1qlfw00fccsw9v1hgxv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            ;; This phase is necessary because the build phase is reluctant to
+            ;; generate "ltxdoc.cfg" since there is another one among the
+            ;; inputs already.
+            (lambda _
+              (substitute* "source/latex/bgteubner/hhsubfigure.ins"
+                (("\\\\generateFile\\{ltxdoc\\.cfg\\}\\{t\\}")
+                 "\\generateFile{ltxdoc.cfg}{f}")))))))
+    (home-page "https://ctan.org/pkg/bgteubner")
+    (synopsis "Class for producing books for the publisher Teubner Verlag")
+    (description
+     "The @code{bgteubner} document class has been programmed by order of the
+Teubner Verlag, Wiesbaden, Germany, to ensure that books of this publisher
+have a unique layout.  Unfortunately, most of the documentation is only
+available in German.  Since the document class is intended to generate
+a unique layout, many things (layout etc.) are fixed and cannot be altered by
+the user.")
+    (license license:lppl)))
+
 (define-public texlive-bguq
   (package
     (name "texlive-bguq")
