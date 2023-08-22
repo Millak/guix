@@ -24163,6 +24163,29 @@ drawings (using TikZ) for laboratory stuff.")
 for 15-18 years olds.")
     (license license:lppl1.3c)))
 
+(define-public texlive-projlib
+  (package
+    (name "texlive-projlib")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/projlib/" "source/latex/projlib/"
+                   "tex/latex/projlib/")
+             (base32
+              "1yhn0xj4xwnr7ngmv8skdj89gi8i71v710d899g9pnjgfkk7w35d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-create-theorem))
+    (home-page "https://ctan.org/pkg/projlib")
+    (synopsis "Tools to simplify your workflow")
+    (description
+     "ProjLib is a collection of tools to help you write LaTeX documents.
+With the main package ProjLib loaded, you no longer need to set up the
+@code{theorem}-like environments, nor to manually configure the appropriate
+multilingual settings.  In addition, a series of auxiliary functionalities are
+introduced.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-proof-at-the-end
   (package
     (name "texlive-proof-at-the-end")
