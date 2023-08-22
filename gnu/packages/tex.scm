@@ -25778,6 +25778,26 @@ specifying the elements of the tree; you build up your tree with those
 commands, and then issue the @code{\\tree} command to typeset the whole.")
     (license license:lppl)))
 
+(define-public texlive-qrbill
+  (package
+    (name "texlive-qrbill")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qrbill/" "scripts/qrbill/"
+                   "source/latex/qrbill/" "tex/latex/qrbill/")
+             (base32
+              "0q0m2vfpndrdvihskc50imkzx6098syq9rz8mgpnl0h1ickfmx33")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qrbill")
+    (synopsis "Create QR bills using LaTeX")
+    (description
+     "This LaTeX package provides support for creating QR-bills for the new
+Swiss payment standards.  This implementation is intended to offer an option
+to support these regulations and can be adapted for international use.")
+    (license (list license:lppl1.3c license:bsd-3))))
+
 (define-public texlive-qsharp
   (package
     (name "texlive-qsharp")
