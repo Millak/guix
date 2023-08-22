@@ -15706,6 +15706,25 @@ the towers with (up to) 15 discs.")
 through it.")
     (license license:public-domain)))
 
+(define-public texlive-har2nat
+  (package
+    (name "texlive-har2nat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/har2nat/" "tex/latex/har2nat/")
+             (base32
+              "13akhwjx48lkch46pk2syzizham3rk81ihrzbwxsvapa1fw74dzg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/har2nat")
+    (synopsis "Replace the @code{harvard} package with @code{natbib}")
+    (description
+     "This small package allows a LaTeX document containing the citation
+commands provided by the @code{harvard} package to be compiled using the
+@code{natbib} package.")
+    (license license:lppl)))
+
 (define-public texlive-harmony
   (package
     (name "texlive-harmony")
