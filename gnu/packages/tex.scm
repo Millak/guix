@@ -31250,6 +31250,29 @@ fields of study at Vienna University.  In this case, however, some settings
 may have to be adjusted.")
     (license license:lppl1.3+)))
 
+(define-public texlive-unizgklasa
+  (package
+    (name "texlive-unizgklasa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unizgklasa/"
+                   "tex/latex/unizgklasa/")
+             (base32
+              "1lrw0j34r9p2ydsajkvg2k7n8kirpi6lqj2iwhvfqh0pg230y82q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unizgklasa")
+    (synopsis
+     "LaTeX class for theses at the Faculty Of Graphic Arts in Zagreb")
+    (description
+     "This class is intended for generating graduate and final theses
+according to the instructions of the Faculty of Graphic Arts, University of
+Zagreb.  It does not necessarily correspond to the requirements of each
+component of the University, but is designed as an idea for linking and
+uniformizing the look of all graduate papers.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-uppunctlm
   (package
     (name "texlive-uppunctlm")
