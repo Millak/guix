@@ -68527,6 +68527,30 @@ uses PostScript @code{\\special} commands.  The package is now largely
 superseded by @code{pict2e}.")
     (license license:lppl)))
 
+(define-public texlive-datetime
+  (package
+    (name "texlive-datetime")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime/"
+                   "source/latex/datetime/"
+                   "tex/latex/datetime/")
+             (base32
+              "07rx0bcr8b73669xmvl1q3qy96jfqlfs2yv2khjcaf2yfid3c2vw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime")
+    (synopsis "Change format of \\today with commands for current time")
+    (description
+     "This package provides various different formats for the text created by
+the command @code{\\today}, and also provides commands for displaying the
+current time (or any given time), in 12-hour, 24-hour or text format.  It
+overrides Babel's date format, having its own library of date formats in
+different languages.  This package is now obsolete and has been replaced by
+@code{datetime2}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-datetime2
   (package
     (name "texlive-datetime2")
