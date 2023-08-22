@@ -30491,6 +30491,27 @@ your documents compliant to this version and future versions of the house
 style of the University of Antwerp.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ucalgmthesis
+  (package
+    (name "texlive-ucalgmthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ucalgmthesis/"
+                   "tex/latex/ucalgmthesis/")
+             (base32
+              "0krqj0vpl5k6v1m1v7qh14yfqf0lbriqsdz5jmwqgswljf8ld954")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ucalgmthesis")
+    (synopsis
+     "LaTeX thesis class for University of Calgary Faculty of Graduate Studies")
+    (description
+     "@file{ucalgmthesis.cls} is a LaTeX class file that produces documents
+according to the thesis guidelines of the University of Calgary Faculty of
+Graduate Studies.  It uses the @code{memoir} class.")
+    (license license:expat)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
