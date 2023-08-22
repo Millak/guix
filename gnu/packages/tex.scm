@@ -15559,6 +15559,26 @@ and provide a number of tools (commands and environments) to facilitate the
 drafting of documents, in particular those containing mathematical formulas.")
     (license license:lppl1.3c)))
 
+(define-public texlive-h2020proposal
+  (package
+    (name "texlive-h2020proposal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/h2020proposal/"
+                   "tex/latex/h2020proposal/")
+             (base32
+              "0fq43vpq3ixj6fc99fbmj129487xxzcmz22gisqmn469bam5qxj5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/h2020proposal")
+    (synopsis "LaTeX class and template for EU H2020 RIA proposal")
+    (description
+     "This package consists of a class file as well as FET and ICT proposal
+templates for writing EU H2020 RIA proposals and generating automatically the
+many cross-referenced tables that are required.")
+    (license license:gpl3)))
+
 (define-public texlive-hacm
   (package
     (name "texlive-hacm")
