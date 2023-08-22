@@ -12010,6 +12010,24 @@ The macro sets are based on (and require) the @code{harvard} package, and all
 provide variations of author-date styles of presentation.")
     (license license:lppl)))
 
+(define-public texlive-ecothesis
+  (package
+    (name "texlive-ecothesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ecothesis/")
+             (base32
+              "1avnq2y5l2bc2lkf2g16p2vh77dabv52jr6jrm4jfm1wdapc6fmq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ecothesis")
+    (synopsis "LaTeX thesis template for the Universidade Federal de Vicosa")
+    (description
+     "The package provides a LaTeX thesis template for the @acronym{UFV,
+Universidade Federal de Vicosa}, Brazil.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-eczar
   (package
     (name "texlive-eczar")
