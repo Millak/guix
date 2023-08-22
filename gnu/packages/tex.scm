@@ -18217,6 +18217,31 @@ book, the larger the spine of the book must be.  The provided class makes the
 necessary calculations on-the-fly, using the @code{qpdf} tool.")
     (license license:expat)))
 
+(define-public texlive-kfupm-math-exam
+  (package
+    (name "texlive-kfupm-math-exam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kfupm-math-exam/"
+                   "source/latex/kfupm-math-exam/"
+                   "tex/latex/kfupm-math-exam/")
+             (base32
+              "1hgyasjhqpb1b9xnffzcwhsi8rr6wx929awn0sadx6rsabiamb16")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kfupm-math-exam")
+    (synopsis
+     "LaTeX document style to produce homework, quiz and exam papers")
+    (description
+     "The package provides commands and environments that simplify and
+streamline the process of preparing homework, quiz and exam papers according
+to a preferred style.  The default style is based on the guidelines set by the
+department of mathematics at @acronym{KFUPM, King Fahd University of Petroleum
+and Minerals}.  It can be easily customized to fit any style for any
+institution.")
+    (license license:expat)))
+
 (define-public texlive-kixfont
   (package
     (name "texlive-kixfont")
