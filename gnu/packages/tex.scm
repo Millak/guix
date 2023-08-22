@@ -9972,6 +9972,28 @@ the fonts are available in the @code{ecc} bundle, and Adobe Type 1 versions of
 the @code{ecc} fonts are part of the @code{cm-super} bundle.")
     (license license:knuth)))
 
+(define-public texlive-confproc
+  (package
+    (name "texlive-confproc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/confproc/" "doc/latex/confproc/"
+                   "makeindex/confproc/"
+                   "source/latex/confproc/"
+                   "tex/latex/confproc/")
+             (base32
+              "1v3ppwxss1ans62j1pss8mcfjqmx708za7pmcm1wic7z7byc6xdb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/confproc")
+    (synopsis "Set of tools for generating conference proceedings")
+    (description
+     "The @code{confproc} collection comprises a class, a BibTeX style, and
+some scripts for generating conference proceedings.")
+    (license license:lppl)))
+
 (define-public texlive-conteq
   (package
     (name "texlive-conteq")
