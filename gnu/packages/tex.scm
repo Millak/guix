@@ -32138,6 +32138,29 @@ functionality has been taken over by @code{xr}, so this final version is just
 a stub that loads @code{xr}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xduthesis
+  (package
+    (name "texlive-xduthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xduthesis/"
+                   "source/latex/xduthesis/"
+                   "tex/latex/xduthesis/")
+             (base32
+              "1sdl1m869s4hcxdj3q2205x9xdgx0qy9ri9vjyma9rsv70sa648p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xduthesis")
+    (synopsis "XeLaTeX template for writing Xidian University thesis")
+    (description
+     "This is a XeLaTeX template for writing theses to apply academic degrees
+in Xidian University.  The template is designed according to the official
+requirements on typesetting theses.  The template currently supports all
+levels of degrees from bachelor to doctor, including both academic master and
+professional master.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-xecjk
   (package
     (name "texlive-xecjk")
