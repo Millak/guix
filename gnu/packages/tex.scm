@@ -17302,6 +17302,26 @@ submit manuscripts for the @emph{Israel Journal of Mathematics} or to put the
 preprints in arXiv with minimal changes in the LaTeX source.")
     (license license:lppl)))
 
+(define-public texlive-ijsra
+  (package
+    (name "texlive-ijsra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ijsra/" "tex/latex/ijsra/")
+             (base32
+              "0k6a92c6fhwafrw3m4fcj0dj29ip0zb28aiz861cx2mac92hyqgs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ijsra")
+    (synopsis
+     "LaTeX document class for the International Journal of Student Research
+in Archaeology")
+    (description
+     "This is a document class called ijsra which is used for the
+International Journal of Student Research in Archaeology.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
