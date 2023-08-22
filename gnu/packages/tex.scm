@@ -23240,6 +23240,28 @@ format is required for applications submitted for due dates on or after May
 Technology.")
     (license license:gpl3+)))
 
+(define-public texlive-njuthesis
+  (package
+    (name "texlive-njuthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/njuthesis/"
+                   "source/latex/njuthesis/"
+                   "tex/latex/njuthesis/")
+             (base32
+              "0vzm6iwc025vahbng9nirf1iljrdgqd2w0kz30wczaiy70p1lm5q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/njuthesis")
+    (synopsis "LaTeX thesis template for Nanjing University")
+    (description
+     "The @code{njuthesis} class is intended for typesetting Nanjing
+University dissertations with LaTeX, providing support for bachelor, master,
+and doctoral theses as well as postdoctoral reports.  Compilation of this
+class requires either XeLaTeX or LuaLaTeX.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
