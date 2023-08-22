@@ -7237,6 +7237,27 @@ the LaTeX package takes the tags and prints out corresponding Braille
 symbols.")
     (license license:lppl1.3+)))
 
+(define-public texlive-brandeis-dissertation
+  (package
+    (name "texlive-brandeis-dissertation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/brandeis-dissertation/"
+                   "source/latex/brandeis-dissertation/"
+                   "tex/latex/brandeis-dissertation/")
+             (base32
+              "12w95gcrdvxx54a2vajz71flarm82wppl1rbrxg9vxkmp1b9yham")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/brandeis-dissertation")
+    (synopsis "Class for Brandeis University dissertations")
+    (description
+     "The class will enable the user to typeset a dissertation which adheres
+to the formatting guidelines of Brandeis University @acronym{GSAS, Graduate
+School of Arts and Sciences}.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-breakcites
   (package
     (name "texlive-breakcites")
