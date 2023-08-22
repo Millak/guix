@@ -3396,6 +3396,26 @@ pdfLaTeX and the @code{cjk} package, are provided by the @code{arphic}
 package.")
     (license license:arphic-1999)))
 
+(define-public texlive-arsclassica
+  (package
+    (name "texlive-arsclassica")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arsclassica/"
+                   "tex/latex/arsclassica/")
+             (base32
+              "0cxmp68na3ww565r7ixqbhsy2mp063wwq5p6gwvq5fdrk34ci2a5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arsclassica")
+    (synopsis "Different view of the ClassicThesis package")
+    (description
+     "The package changes some typographical points of the ClassicThesis
+style.  It enables the user to reproduce the look of the guide @emph{The art
+of writing with LaTeX} (the web page is in Italian).")
+    (license license:lppl)))
+
 (define-public texlive-arvo
   (package
     (name "texlive-arvo")
