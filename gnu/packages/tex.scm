@@ -6868,6 +6868,29 @@ in Adobe type 1 format).  The package includes LaTeX macros to embed the fonts
 into the LaTeX font selection scheme.")
     (license license:lppl1.2+)))
 
+(define-public texlive-bmstu
+  (package
+    (name "texlive-bmstu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bmstu/" "tex/latex/bmstu/")
+             (base32
+              "0ipdwd78b5w4v85nqlbxf8gi42mdz19r5mdjj3agwlgb0z6icjra")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bmstu")
+    (synopsis "LaTeX class for Bauman Moscow State Technical University")
+    (description
+     "The class defines commands and environments for creating reports and
+explanatory notes in Bauman Moscow State Technical University (Russia).")
+    (license
+     (list license:lppl1.3+
+           ;; File "bmstu-logo.pdf" is a logo of Bauman Moscow ;; State
+           ;; Technical University and complies with fair use (article 1274 of
+           ;; the Russian Civil Code).
+           (license:fsdg-compatible "file://doc/latex/bmstu/README.md")))))
+
 (define-public texlive-bodeplot
   (package
     (name "texlive-bodeplot")
