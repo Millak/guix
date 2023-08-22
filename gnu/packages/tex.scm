@@ -31106,6 +31106,27 @@ that adhere to the publishing guidelines of the University of
 Florence (Italy).")
     (license license:lppl1.3c)))
 
+(define-public texlive-unigrazpub
+  (package
+    (name "texlive-unigrazpub")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unigrazpub/"
+                   "source/latex/unigrazpub/"
+                   "tex/latex/unigrazpub/")
+             (base32
+              "02xnlp7p1ap0wvkn4skskh6av4rj8fh28gqk27x97yp0c255w3qv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unigrazpub")
+    (synopsis
+     "LaTeX templates for University of Graz Library Publishing Services")
+    (description
+     "This package provides a LaTeX class matching the preparation guidelines
+of the Library Publishing Services of University of Graz.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-unitsdef
   (package
     (name "texlive-unitsdef")
