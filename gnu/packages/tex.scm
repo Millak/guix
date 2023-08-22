@@ -11154,6 +11154,26 @@ styles, that conform to the requirements of the Russian standard GOST
 R 7.0.11-2011, are provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dithesis
+  (package
+    (name "texlive-dithesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dithesis/" "tex/latex/dithesis/")
+             (base32
+              "1yz53jabca56k65pddhl68d3384k2f2jn4zrfkg2d4x8aa1dnvvx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dithesis")
+    (synopsis "Class for undergraduate theses at the University of Athens")
+    (description
+     "The class conforms to the requirements of the Department of Informatics
+and Telecommunications at the University of Athens regarding the preparation
+of undergraduate theses, as of Sep 1, 2011.  The class is designed for use
+with XeLaTeX.")
+    (license license:lppl)))
+
 (define-public texlive-dk-bib
   (package
     (name "texlive-dk-bib")
