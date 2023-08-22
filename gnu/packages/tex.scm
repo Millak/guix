@@ -30256,6 +30256,25 @@ style, @file{tugboat.bst}.")
 TeX for publication in @emph{TUGboat}.")
     (license license:knuth)))
 
+(define-public texlive-tui
+  (package
+    (name "texlive-tui")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tui/" "tex/latex/tui/")
+             (base32
+              "14wl2n8wbc2p6nmrallwsxp4s6h73h97qm1w8algyv67bfl5i0hs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tui")
+    (synopsis "Thesis style for the University of the Andes, Colombia")
+    (description
+     "The class is used for doctoral dissertations from the Faculty of
+Engineering at the Universidad de los Andes, Bogota, Colombia.  It is
+implemented as an extension of the @code{memoir} class.")
+    (license license:lppl)))
+
 (define-public texlive-turabian-formatting
   (package
     (name "texlive-turabian-formatting")
