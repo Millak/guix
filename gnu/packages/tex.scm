@@ -19646,6 +19646,29 @@ texts, particularly @code{Missal} and @code{Breviary} texts.  The package
 assumes availability of Latin typesetting packages.")
     (license license:lppl)))
 
+(define-public texlive-llncs
+  (package
+    (name "texlive-llncs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/llncs/" "doc/latex/llncs/"
+                   "tex/latex/llncs/")
+             (base32
+              "0drz45rmjprwy2019nkd6l5kjpqshfajqhg0x6jf5y9w1zbs1qv5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/llncs")
+    (synopsis
+     "Document class and bibliography style for @acronym{LNCS, Lecture Notes
+in Computer Science}")
+    (description
+     "This is Springer's official macro package for typesetting contributions
+to be published in Springer's @acronym{LNCS, Lecture Notes in Computer
+Science} and its related proceedings series CCIS, LNBIP, LNICST, and IFIP
+AICT.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-lobster2
   (package
     (name "texlive-lobster2")
