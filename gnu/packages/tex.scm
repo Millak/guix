@@ -29885,6 +29885,27 @@ metrically compatible with Times New Roman.")
 display calculators, specifically the TI-82 STATS.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tlc-article
+  (package
+    (name "texlive-tlc-article")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tlc-article/"
+                   "tex/latex/tlc-article/")
+             (base32
+              "1zxghkxg1yls97zrcfyjn8nk45mg5ygcjiprdwcs0ha1bl3pybxs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tlc-article")
+    (synopsis "LaTeX document class for formal documents")
+    (description
+     "The package provides a LaTeX document class that orchestrates a logical
+arrangement for document header, footer, author, abstract, table of contents,
+and margins.  It standardizes a document layout intended for formal
+documents.")
+    (license license:bsd-3)))
+
 (define-public texlive-tpslifonts
   (package
     (name "texlive-tpslifonts")
