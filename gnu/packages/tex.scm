@@ -23135,6 +23135,25 @@ University in order to make it easy to write experiment reports and homework
 for the bachelor's curriculum.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ndsu-thesis
+  (package
+    (name "texlive-ndsu-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ndsu-thesis/"
+                   "tex/latex/ndsu-thesis/")
+             (base32
+              "0nwn17993jqiwgjjfi2jqj6m1qq8b1cbgxvq7shqvk48a0zh6y6h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ndsu-thesis")
+    (synopsis "North Dakota State University disquisition class")
+    (description
+     "This package provides a class for generating disquisitions, intended to
+be in compliance with North Dakota State University requirements.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-nucleardata
   (package
     (name "texlive-nucleardata")
