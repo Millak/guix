@@ -30,6 +30,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages)
   #:use-module (guix build-system meson)
   #:use-module (guix git-download)
@@ -40,7 +41,7 @@
 (define-public granite
   (package
     (name "granite")
-    (version "6.2.0")
+    (version "7.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -49,16 +50,21 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ilslmg63hh2x7h5rvs3mhzw1y9ixhhkqnn1j1lzwm12v2iidkaq"))))
+                "0pyvkif2kin5dskh7adadsh4r96mvx12y7cs6gnm0ml733q548dj"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'disable-icon-cache
                     (lambda _
                       (setenv "DESTDIR" "/"))))))
-    (inputs (list glib gtk+ libgee))
-    (native-inputs (list gettext-minimal gobject-introspection pkg-config
-                         python vala))
+    (inputs (list sassc))
+    (propagated-inputs (list glib libgee gtk))      ;required in .pc file
+    (native-inputs (list gettext-minimal
+                         `(,glib "bin")
+                         gobject-introspection
+                         pkg-config
+                         python
+                         vala))
     (home-page "https://github.com/elementary/granite")
     (synopsis "Library that extends GTK with common widgets and utilities")
     (description "Granite is a companion library for GTK+ and GLib.  Among other
