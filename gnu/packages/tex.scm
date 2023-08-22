@@ -4402,6 +4402,28 @@ Basque according to the correct forms ruled by The Basque Language Academy
 issues of numbers in Basque.")
     (license license:lppl1.2+)))
 
+(define-public texlive-bath-bst
+  (package
+    (name "texlive-bath-bst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/bath-bst/"
+                   "doc/bibtex/bath-bst/"
+                   "source/bibtex/bath-bst/")
+             (base32
+              "06v5icy6537d69g5in7ps322wgnkf0imd93gnmh2y7fladsmvp06")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bath-bst")
+    (synopsis
+     "Harvard referencing style recommended by the University of Bath Library")
+    (description
+     "This package provides a BibTeX style to format reference lists in the
+Harvard style recommended by the University of Bath Library.  It should be
+used in conjunction with @code{natbib} for citations.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bbding
   (package
     (name "texlive-bbding")
