@@ -12919,6 +12919,26 @@ figures, inferior figures, a new capital Sharp @samp{S} with small caps
 version, along with macros to activate these features in LaTeX.")
     (license (list license:expat license:lppl1.3+))))
 
+(define-public texlive-etsvthor
+  (package
+    (name "texlive-etsvthor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etsvthor/" "tex/latex/etsvthor/")
+             (base32
+              "0lrvxr2lrfq1vkfkx7sjrm8fsxv8aalkpi0x0wmkdizc6n2wlhx4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/etsvthor")
+    (synopsis "Some useful abbreviations for members of e.t.s.v. Thor")
+    (description
+     "``e.t.s.v.  Thor'' stands for Elektrotechnische Studievereniging Thor,
+a study association of Electrical Engeering at the Eindhoven University of
+Technology.  This package provides abbreviations useful for creating meeting
+notes or other documents within the association.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-euclideangeometry
   (package
     (name "texlive-euclideangeometry")
