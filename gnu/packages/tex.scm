@@ -27688,6 +27688,39 @@ skull.  A package is supplied to make this character available as a symbol in
 maths mode.")
     (license license:gpl3+)))
 
+(define-public texlive-smflatex
+  (package
+    (name "texlive-smflatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/smflatex/" "doc/latex/smflatex/"
+                   "source/latex/smflatex/"
+                   "tex/latex/smflatex/")
+             (base32
+              "160bdav5rzx2hzaqxqcmlc841awr7ks1k0bmpj8kq3gzzz1pqnwj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/smflatex")
+    (synopsis "Classes for @emph{Societe mathematique de France} publications")
+    (description
+     "The @emph{Societe mathematique de France} provides a set of classes,
+packages and BibTeX styles that are used in its publications.  They are based
+on AMS classes.  Besides a quite different design, their main features are:
+
+@itemize
+
+@item new environments for typesetting some information in two languages
+@code{altabstract}, @code{alttitle}, @code{altkeywords});
+
+@item if necessary, use of Babel (option @code{frenchb});
+
+@item deactivation of some features of @code{frenchb}.
+
+@end itemize")
+    (license license:lppl1.3c)))
+
 (define-public texlive-songbook
   (package
     (name "texlive-songbook")
