@@ -26260,6 +26260,52 @@ known to be incompatible with @code{revtex4-1}.")
 users having difficulty with the incompatibility of that latest version.")
     (license license:lppl)))
 
+(define-public texlive-revtex4-1
+  (package
+    (name "texlive-revtex4-1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/revtex4-1/"
+                   "doc/latex/revtex4-1/"
+                   "source/latex/revtex4-1/"
+                   "tex/latex/revtex4-1/")
+             (base32
+              "023pzbf8hgyk6038zz9g4g95pwqrsqy1ahzy6byxh28b2p8qyk9a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:modules '((ice-9 match)
+                  (ice-9 regex)
+                  (srfi srfi-1)
+                  (guix build texlive-build-system)
+                  (guix build utils))
+      #:build-targets #~(list "revtex4-1.dtx")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; In order to build revtex4-1, we need files from revtex source.
+          ;; Add them to TEXINPUTS.
+          (add-before 'build 'extend-texinputs
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((revtex-source
+                     (any (match-lambda
+                            ((_ . dir)
+                             (and (string-match "texlive-revtex-[0-9]+-checkout"
+                                                dir)
+                                  dir)))
+                          (or native-inputs inputs))))
+                (setenv "TEXINPUTS"
+                        (string-append revtex-source
+                                       "/source/latex/revtex/:"))))))))
+    (native-inputs (list (package-source texlive-revtex)))
+    (home-page "https://ctan.org/pkg/revtex4-1")
+    (synopsis "Styles for various physics journals")
+    (description
+     "This is an old version of @code{revtex}, and is kept as a courtesy to
+users having difficulty with the incompatibility of that latest version.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-ribbonproofs
   (package
     (name "texlive-ribbonproofs")
