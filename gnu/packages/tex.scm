@@ -24746,6 +24746,26 @@ It is designed as a tool that is easy to use, with a lean syntax, native to
 LaTeX, and directly supporting PDF output format.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pittetd
+  (package
+    (name "texlive-pittetd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pittetd/" "source/latex/pittetd/"
+                   "tex/latex/pittetd/")
+             (base32
+              "1q8ikj4qqlzw3kimywdmbvkvwyvyjn8q6gr68kc0wpypqd1a91as")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pittetd")
+    (synopsis
+     "Electronic theses and dissertations at the University of Pittsburgh")
+    (description
+     "This package provides a document class for theses and dissertations at
+the University of Pittsburgh.")
+    (license license:lppl)))
+
 (define-public texlive-plainyr
   (package
     (name "texlive-plainyr")
