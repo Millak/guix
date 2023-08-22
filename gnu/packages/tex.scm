@@ -17278,6 +17278,30 @@ officially-correct output for the @acronym{IEEE, Institute of Electrical and
 Electronics Engineers} transactions, journals and conferences.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ijmart
+  (package
+    (name "texlive-ijmart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/ijmart/" "doc/latex/ijmart/"
+                   "source/latex/ijmart/" "tex/latex/ijmart/")
+             (base32
+              "18fpf0na5y1nxz0c7r43f560dp4r8yawx8vj8356vdmw6d5r15h0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ijmart")
+    (synopsis "LaTeX Class for the @emph{Israel Journal of Mathematics}")
+    (description
+     "The @emph{Israel Journal of Mathematics} is published by The Hebrew
+University Magnes Press.  This class provides LaTeX support for its authors
+and editors.  It strives to achieve the distinct look and feel of the journal,
+while having the interface similar to that of the @code{amsart} document
+class.  This will help authors already familiar with @code{amsart} to easily
+submit manuscripts for the @emph{Israel Journal of Mathematics} or to put the
+preprints in arXiv with minimal changes in the LaTeX source.")
+    (license license:lppl)))
+
 (define-public texlive-isomath
   (package
     (name "texlive-isomath")
