@@ -16288,6 +16288,29 @@ with guillemets, and support for character protruding using the
 Technology (China).")
     (license license:lppl1.3c)))
 
+(define-public texlive-hfutthesis
+  (package
+    (name "texlive-hfutthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/hfutthesis/"
+                   "tex/xelatex/hfutthesis/")
+             (base32
+              "1i7ljf5521f9dynrcnim0m4jzz2qkvpsb4pjvxbj5c7pr85gc34r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hfutthesis")
+    (synopsis "LaTeX thesis template for Hefei University of Technology")
+    (description
+     "This project is based on the HFUT_Thesis LaTeX template of Hefei
+University of Technology compiled on the basis of @code{ustctug} and
+@code{ustcthesis}, in accordance with the latest version of @emph{Hefei
+University of Technology Graduate Dissertation Writing Specifications} and
+@emph{Hefei University of Technology Undergraduate Graduation Project (Thesis)
+Work Implementation Rules}.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-hindmadurai
   (package
     (name "texlive-hindmadurai")
