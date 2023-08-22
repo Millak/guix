@@ -2760,6 +2760,25 @@ of LaTeX documents to Lambda).")
 final exams in the @acronym{ANU, Australian National University}.")
     (license license:gpl3+)))
 
+(define-public texlive-aomart
+  (package
+    (name "texlive-aomart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/aomart/" "doc/latex/aomart/"
+                   "source/latex/aomart/" "tex/latex/aomart/")
+             (base32
+              "0gdi54qi0m96pwwn59r9qjlkw0986z9ra57g1vf11h67zwmrgrv9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aomart")
+    (synopsis "Typeset articles for the @emph{Annals of Mathematics}")
+    (description
+     "The package provides a class for typesetting articles for the
+@emph{Annals of Mathematics}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-apalike-ejor
   (package
     (name "texlive-apalike-ejor")
