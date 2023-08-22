@@ -30554,6 +30554,28 @@ create a dissertation or thesis conforming to UC Davis formatting
 requirements as of April 2016.")
     (license license:lppl1.2+)))
 
+(define-public texlive-ucsmonograph
+  (package
+    (name "texlive-ucsmonograph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ucsmonograph/"
+                   "source/latex/ucsmonograph/"
+                   "tex/latex/ucsmonograph/")
+             (base32
+              "13yf91i1c4bin9vbvsjpl5s7fkina5ai5zw868wdk5fiqvmqvgx7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ucsmonograph")
+    (synopsis
+     "Typesetting academic documents from the University of Caxias do Sul")
+    (description
+     "This is a LaTeX class for typesetting academic documents according to
+the @acronym{ABNT, Brazilian Technical Standards Association} standards and
+the @acronym{UCS, University of Caxias do Sul} specifications.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-ulqda
   (package
     (name "texlive-ulqda")
