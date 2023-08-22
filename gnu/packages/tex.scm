@@ -10245,6 +10245,28 @@ bearing the ability to support bachelor, master, doctor dissertations with
 grace and speed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-crefthe
+  (package
+    (name "texlive-crefthe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crefthe/" "tex/latex/crefthe/")
+             (base32
+              "0gmyg9m4rma0qfg50d6i1lpdl4g71cx61517xl09vzy08r988i5j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crefthe")
+    (synopsis "Cross referencing with proper definite articles")
+    (description
+     "By default, when using @code{cleveref}'s @code{\\cref} to reference
+@code{theorem}-like environments, the names do not contain definite articles.
+In languages such as French, Italian, Portuguese, Spanish, etc., this results
+in incorrect grammar.  For this purpose, the current package offers
+@code{\\crefthe}, which handles the definite articles properly (especially for
+the article contractions in many European languages).")
+    (license license:lppl1.3c)))
+
 (define-public texlive-crimson
   (package
     (name "texlive-crimson")
