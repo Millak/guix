@@ -6891,6 +6891,29 @@ explanatory notes in Bauman Moscow State Technical University (Russia).")
            ;; the Russian Civil Code).
            (license:fsdg-compatible "file://doc/latex/bmstu/README.md")))))
 
+(define-public texlive-bmstu-iu8
+  (package
+    (name "texlive-bmstu-iu8")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bmstu-iu8/"
+                   "tex/latex/bmstu-iu8/")
+             (base32
+              "1nb3dfaw0m3w179z46d7fbvibkp15wf4ws3xbvws0gymwyi4nx1m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bmstu-iu8")
+    (synopsis "Class for IU8 reports")
+    (description
+     "This package consists of a class file and style files for writing
+reports at the IU8 department of IU faculty of @acronym{BMSTU, Bauman Moscow
+State Technical University}.  The class defines all headings, structure
+elements and other things in respect of Russian standard GOST 7.32-2017.  But
+there are correctives to be compatible with our local IU8 department
+requirements.")
+    (license license:expat)))
+
 (define-public texlive-bodeplot
   (package
     (name "texlive-bodeplot")
