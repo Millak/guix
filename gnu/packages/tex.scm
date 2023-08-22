@@ -30844,6 +30844,24 @@ Government Association Bills.")
 Michigan dissertation according to the Rackham dissertation handbook.")
     (license license:lppl)))
 
+(define-public texlive-umthesis
+  (package
+    (name "texlive-umthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/umthesis/" "tex/latex/umthesis/")
+             (base32
+              "1y2ba0k9d2sab9mkfhpsm92v4wx6rhapj887jbvcl7871b4idbps")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/umthesis")
+    (synopsis "Dissertations at the University of Michigan")
+    (description
+     "This is a class for dissertations at the University of Michigan. it
+loads @code{book} class, and makes minimal changes to it.")
+    (license license:lppl)))
+
 (define-public texlive-umtypewriter
   (package
     (name "texlive-umtypewriter")
