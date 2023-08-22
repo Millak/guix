@@ -7955,6 +7955,29 @@ for the deductions.")
 the Cascadia Code family of fonts with support for LaTeX and pdfLaTeX.")
     (license (list license:silofl1.1 license:lppl))))
 
+(define-public texlive-cascadilla
+  (package
+    (name "texlive-cascadilla")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/cascadilla/"
+                   "doc/latex/cascadilla/"
+                   "tex/latex/cascadilla/")
+             (base32
+              "0sl29gxjhkakaz7r48wfbvcxngnxdyixmh5awxnlsmrajxgdzh9l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cascadilla")
+    (synopsis "Conform to the stylesheet of the Cascadilla Proceedings
+Project")
+    (description
+     "The class provides an extension of the standard LaTeX @code{article}
+class that may be used to typeset papers conforming to the stylesheet of the
+Cascadilla Proceedings Project, which is used by a number of linguistics
+conference proceedings.")
+    (license license:lppl)))
+
 (define-public texlive-catcodes
   (package
     (name "texlive-catcodes")
