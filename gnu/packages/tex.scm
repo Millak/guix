@@ -30275,6 +30275,25 @@ Engineering at the Universidad de los Andes, Bogota, Colombia.  It is
 implemented as an extension of the @code{memoir} class.")
     (license license:lppl)))
 
+(define-public texlive-turabian
+  (package
+    (name "texlive-turabian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/turabian/" "tex/latex/turabian/")
+             (base32
+              "1waqdm6r4fpy602jfqjbfhm2x71llpg4wj4a9w61pkbca19xcnki")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/turabian")
+    (synopsis "Create Turabian-formatted material using LaTeX")
+    (description
+     "The bundle provides a class file and a template for creating
+Turabian-formatted projects.  The class file supports citation formatting
+conforming to the Turabian 8th Edition style guide.")
+    (license license:lppl)))
+
 (define-public texlive-turabian-formatting
   (package
     (name "texlive-turabian-formatting")
