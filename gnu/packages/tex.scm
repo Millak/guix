@@ -15603,6 +15603,30 @@ constructed language Arka.  The bundle provides nine official fonts, in Adobe
 Type 1 format.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hagenberg-thesis
+  (package
+    (name "texlive-hagenberg-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hagenberg-thesis/"
+                   "tex/latex/hagenberg-thesis/")
+             (base32
+              "0dp2mrf4smpllrgszi0cx5w42lm144qs3jvr44h6k98ibsfxdv9h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hagenberg-thesis")
+    (synopsis
+     "LaTeX classes, style files and example documents for academic
+manuscripts")
+    (description
+     "This package provides a collection of modern LaTeX classes, style files
+and example documents for authoring Bachelor, master or diploma theses and
+related academic manuscripts in English and German.  It includes comprehensive
+tutorials (in English and German) with detailed instructions and authoring
+guidelines.")
+    (license license:cc-by4.0)))
+
 (define-public texlive-hamnosys
   (package
     (name "texlive-hamnosys")
