@@ -30779,6 +30779,31 @@ providing the LaTeX user with macros which are used to markup textual
 information.")
     (license license:lppl)))
 
+(define-public texlive-ulthese
+  (package
+    (name "texlive-ulthese")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ulthese/" "source/latex/ulthese/"
+                   "tex/latex/ulthese/")
+             (base32
+              "1kcw1zsgj0dr00h555qcld9dn58i8iipnka9s10fn9q0x46sq05q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ulthese")
+    (synopsis "Thesis class and templates for Universite Laval")
+    (description
+     "The package provides a class based on @code{memoir} to prepare theses
+and memoirs compliant with the presentation rules set forth by the Faculty of
+Graduate Studies of Universite Laval, Quebec, Canada.  The class also comes
+with an extensive set of templates for the various types of theses and memoirs
+offered at Laval.
+
+Please note that the documentation for the class and the comments in the
+templates are all written in French, the language of the target audience.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-umtypewriter
   (package
     (name "texlive-umtypewriter")
