@@ -28943,6 +28943,28 @@ configuration of the language to be used in the diagrams.  The @code{tablor}
 package requires that shell escape be enabled.")
     (license license:lppl)))
 
+(define-public texlive-tabriz-thesis
+  (package
+    (name "texlive-tabriz-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabriz-thesis/"
+                   "doc/xelatex/tabriz-thesis/"
+                   "tex/latex/tabriz-thesis/"
+                   "tex/xelatex/tabriz-thesis/")
+             (base32
+              "13k6kmg1x143m1kfc3wcvyy6l60vpzz5ivmdpcqhjbdd3wz7b2ry")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabriz-thesis")
+    (synopsis "Template for the University of Tabriz")
+    (description
+     "The package offers a document class for typesetting theses and
+dissertations at the University of Tabriz.  The class requires use of
+XeLaTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-tabvar
   (package
     (name "texlive-tabvar")
