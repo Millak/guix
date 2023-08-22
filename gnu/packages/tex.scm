@@ -30825,6 +30825,25 @@ Association Bills")
 Government Association Bills.")
     (license license:gpl3)))
 
+(define-public texlive-umich-thesis
+  (package
+    (name "texlive-umich-thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/umich-thesis/"
+                   "tex/latex/umich-thesis/")
+             (base32
+              "15y25n9j2zh7hmgpq9fir6y0ydjwqhvyy6cx59jm8i0swkgw33vz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/umich-thesis")
+    (synopsis "University of Michigan thesis LaTeX class")
+    (description
+     "This package provides a LaTeX2e class to create a University of
+Michigan dissertation according to the Rackham dissertation handbook.")
+    (license license:lppl)))
+
 (define-public texlive-umtypewriter
   (package
     (name "texlive-umtypewriter")
