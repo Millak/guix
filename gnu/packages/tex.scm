@@ -27241,6 +27241,26 @@ Assignment that can be easily adapted to other usages.  This template features
 a colorful theme that makes it look elegant and attractive.")
     (license license:expat)))
 
+(define-public texlive-seuthesis
+  (package
+    (name "texlive-seuthesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/seuthesis/"
+                   "doc/latex/seuthesis/"
+                   "source/latex/seuthesis/")
+             (base32
+              "1gb1bql0llnms1c18xzp4g8j16zffinjjydiv4gsasyvxc0p8c5n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/seuthesis")
+    (synopsis "LaTeX template for theses at Southeastern University")
+    (description
+     "This template is for theses at Southeastern University, Nanjing,
+China.")
+    (license license:gpl3)))
+
 (define-public texlive-sfg
   (package
     (name "texlive-sfg")
