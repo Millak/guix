@@ -3506,6 +3506,27 @@ OpenType format, and makes extensive use of OpenType features.  Therefore, at
 this time, only XeTeX and LuaTeX are supported.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ascelike
+  (package
+    (name "texlive-ascelike")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/ascelike/" "doc/latex/ascelike/"
+                   "tex/latex/ascelike/")
+             (base32
+              "14n4z4agsnnvms51r142q0r5bv9yqp4gchrr7zvakkp2r3232dai")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ascelike")
+    (synopsis "Bibliography style for the ASCE")
+    (description
+     "This package provides a document class and bibliographic style that
+prepares documents in the style required by the @acronym{ASCE, American
+Society of Civil Engineers}.  These are unofficial files, not sanctioned by
+that organization.")
+    (license license:lppl)))
+
 (define-public texlive-ascii-chart
   (package
     (name "texlive-ascii-chart")
