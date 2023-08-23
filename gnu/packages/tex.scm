@@ -30038,6 +30038,26 @@ and margins.  It standardizes a document layout intended for formal
 documents.")
     (license license:bsd-3)))
 
+(define-public texlive-tocbibind
+  (package
+    (name "texlive-tocbibind")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tocbibind/"
+                   "source/latex/tocbibind/"
+                   "tex/latex/tocbibind/")
+             (base32
+              "086yi3d11pj5cnf0jfsmyy495y6kcind88569mig2yvq2adjmq3b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tocbibind")
+    (synopsis "Add bibliography/index/contents to table of contents")
+    (description
+     "This package automatically adds the bibliography and/or the index and/or
+the contents, etc., to the table of contents.")
+    (license license:lppl)))
+
 (define-public texlive-topletter
   (package
     (name "texlive-topletter")
