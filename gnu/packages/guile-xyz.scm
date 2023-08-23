@@ -745,6 +745,8 @@ you send to a FIFO file.")
                          texinfo
                          help2man
                          ;; needed when cross-compiling.
+                         guile-3.0
+                         guile-lib
                          guile-smc))
     (inputs (list bash-minimal guile-3.0))
     (propagated-inputs (list guile-lib guile-smc))
@@ -788,7 +790,8 @@ tables.")
     (name "guile2.2-dsv")
     (native-inputs (modify-inputs (package-native-inputs guile-dsv)
                      (replace "guile-smc" guile2.2-smc)
-                     (append guile2.2-lib)))
+                     (replace "guile" guile-2.2)
+                     (replace "guile-lib" guile2.2-lib)))
     (inputs (modify-inputs (package-inputs guile-dsv)
               (replace "guile"  guile-2.2)
               (replace "guile-lib" guile2.2-lib)))
