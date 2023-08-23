@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Joshua Grant <tadni@riseup.net>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2015, 2023 Sou Bunnbu <iyzsong@envs.net>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016 Leo Famulari <leo@famulari.name>
@@ -98,6 +98,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages xorg))
 
 (define-public font-artifika
@@ -1174,6 +1175,60 @@ It contains the following fonts and styles:
 @item UnGungseo: cursive, brush-stroke.
 @end enumerate\n")
     (license license:gpl2+)))
+
+(define-public font-unscii
+  (package
+    (name "font-unscii")
+    (version "2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://viznut.fi/unscii/unscii-"
+                    version "-src.tar.gz"))
+              (sha256
+               (base32
+                "0msvqrq7x36p76a2n5bzkadh95z954ayqa08wxd017g4jpa1a4jd"))))
+    (build-system gnu-build-system)
+    (outputs '("out" "otf" "ttf" "woff"))
+    (native-inputs (list bdftopcf fontforge perl perl-text-charwidth))
+    (inputs (list sdl sdl-image))
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ;no configure script
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((pcfdir (string-append
+                                  (assoc-ref outputs "out")
+                                  "/share/fonts/misc"))
+                         (otfdir (string-append
+                                  (assoc-ref outputs "otf")
+                                  "/share/fonts/opentype"))
+                         (ttfdir (string-append
+                                  (assoc-ref outputs "ttf")
+                                  "/share/fonts/truetype"))
+                         (woffdir (string-append
+                                   (assoc-ref outputs "woff")
+                                   "/share/fonts/webfonts"))
+                         (install-fonts
+                          (lambda (pred dir)
+                            (for-each
+                             (lambda (f) (install-file f dir))
+                             (find-files "." pred)))))
+                     (install-fonts "\\.pcf$" pcfdir)
+                     (install-fonts "\\.otf$" otfdir)
+                     (install-fonts "\\.ttf$" ttfdir)
+                     (install-fonts "\\.woff$" woffdir)))))))
+    (synopsis "Classic bitmapped Unicode fonts")
+    (description
+     "Unscii is a set of bitmapped Unicode fonts based on classic system
+fonts.  Unscii attempts to support character cell art well while also being
+suitable for terminal and programming use.  The two main variants are
+unscii-8 (8×8 pixels per glyph) and unscii-16 (8×16).")
+    (home-page "http://viznut.fi/unscii/")
+    ;; "unscii-16-full" falls under GPL, the other are in the Public Domain.
+    (license (list license:gpl2+ license:public-domain))))
 
 (define-public font-fantasque-sans
   (package
