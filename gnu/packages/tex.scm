@@ -35284,6 +35284,30 @@ advised to consider using the @code{fancyvrb} package in place of
 @code{moreverb}.")
     (license license:lppl)))
 
+(define-public texlive-morewrites
+  (package
+    (name "texlive-morewrites")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/morewrites/"
+                   "source/latex/morewrites/"
+                   "tex/latex/morewrites/")
+             (base32
+              "0vdpyzfzhb58q9fj8c4n23hb0day7gxm90ml5dsnizfn44g9nr2q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/morewrites")
+    (synopsis "Always room for a new write stream")
+    (description
+     "The package aims to solve the error @emph{No room for a new \\write},
+which occurs when the user, or when the user's packages have allocated too
+many streams using @code{\\newwrite} (TeX has a fixed maximum number ---
+16 --- of such streams built-in to its code).  The package hooks into TeX
+primitive commands associated with writing to files; it should be loaded near
+the beginning of the sequence of loading packages for a document.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-morisawa
   (package
     (name "texlive-morisawa")
