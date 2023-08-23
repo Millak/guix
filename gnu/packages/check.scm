@@ -112,7 +112,7 @@
 (define-public pict
   (package
     (name "pict")
-    (version "3.7.3")
+    (version "3.7.4")
     (source
      (origin
        (method git-fetch)
@@ -122,7 +122,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bpyl0zklw2fyxgynrc7shg0xamw8rr68zmh528niscrpavsmfpi"))))
+         "1f3xpcdwihlxd8lj5clzfiz4rybhzdib95nrsnjfl009gh6gbwh0"))))
     (build-system gnu-build-system)
     (arguments
      (list
