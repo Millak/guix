@@ -786,8 +786,15 @@ tables.")
   (package
     (inherit guile-dsv)
     (name "guile2.2-dsv")
-    (inputs (list bash-minimal guile-2.2))
-    (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
+    (native-inputs (modify-inputs (package-native-inputs guile-dsv)
+                     (replace "guile-smc" guile2.2-smc)
+                     (append guile2.2-lib)))
+    (inputs (modify-inputs (package-inputs guile-dsv)
+              (replace "guile"  guile-2.2)
+              (replace "guile-lib" guile2.2-lib)))
+    (propagated-inputs (modify-inputs (package-propagated-inputs guile-dsv)
+                         (replace "guile-lib" guile2.2-lib)
+                         (replace "guile-smc" guile2.2-smc)))))
 
 (define-public guile-fibers-1.3
   (package
