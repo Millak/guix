@@ -10810,6 +10810,30 @@ distributed as Metafont source.")
     (license
      (license:fsf-free "file://fonts/source/public/dancers/dancers.mf"))))
 
+(define-public texlive-dashrule
+  (package
+    (name "texlive-dashrule")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dashrule/"
+                   "source/latex/dashrule/"
+                   "tex/latex/dashrule/")
+             (base32
+              "0glnb77dmhl9svgxpz1s8ivsbmr0cy1a0sz68vfx1plfkxfglbyl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dashrule")
+    (synopsis "Draw dashed rules")
+    (description
+     "The @code{dashrule} package makes it easy to draw a huge variety of
+dashed rules (i.e., lines) in LaTeX.  It provides a command,
+@code{\\hdashrule}, which draws horizontally dashed rules using the same
+syntax as @code{\\rule}, but with an additional parameter that specifies the
+pattern of dash segments and the space between those segments.  Those rules
+are fully compatible with every @code{LaTeX} back-end processor.")
+    (license license:lppl)))
+
 (define-public texlive-dantelogo
   (package
     (name "texlive-dantelogo")
