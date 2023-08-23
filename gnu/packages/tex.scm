@@ -22008,6 +22008,26 @@ shapes that are much more rounded than the default version, reflecting the
 signage in the neighborhood of Montserrat.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-mparhack
+  (package
+    (name "texlive-mparhack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mparhack/"
+                   "source/latex/mparhack/"
+                   "tex/latex/mparhack/")
+             (base32
+              "1ajlpri5bi62k9wsmic3j2xjkz1wzjc3n4fr04c5d667jsibpfmg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mparhack")
+    (synopsis "Work around a LaTeX bug in marginpars")
+    (description
+     "This package works around the LaTeX bug that marginpars will sometimes
+come out at the wrong margin.")
+    (license license:gpl2+)))
+
 (define-public texlive-mpfonts
   (package
     (name "texlive-mpfonts")
