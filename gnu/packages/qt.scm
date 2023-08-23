@@ -1372,6 +1372,7 @@ with JavaScript and C++.")))
                (base32
                 "06c7xfqn2a5s2m8j1bcvx3pyjqg1rgqkjvp49737gb4z9vjiz8gk"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
+    (outputs '("out" "debug"))
     (build-system cmake-build-system)
     (arguments
      (list
