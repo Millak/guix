@@ -172,7 +172,7 @@ format."))
          ;; FIXME: This fails to start if Home is first activated from a
          ;; non-X11 session.
          (start #~(make-forkexec-constructor
-                   (list #$(file-append redshift "/bin/redshift")
+                   (list #$(file-append (home-redshift-configuration-redshift config) "/bin/redshift")
                          "-c" #$config-file)))
          (stop #~(make-kill-destructor))
          (actions (list (shepherd-configuration-action config-file))))))
