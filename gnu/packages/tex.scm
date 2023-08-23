@@ -15114,6 +15114,58 @@ package.  Its main features are:
 Polyglossia.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries
+  (package
+    (name "texlive-glossaries")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries/"
+                   "doc/man/man1/makeglossaries-lite.1"
+                   "doc/man/man1/makeglossaries-lite.man1.pdf"
+                   "doc/man/man1/makeglossaries.1"
+                   "doc/man/man1/makeglossaries.man1.pdf"
+                   "scripts/glossaries/"
+                   "source/latex/glossaries/"
+                   "tex/latex/glossaries/base/"
+                   "tex/latex/glossaries/expl/"
+                   "tex/latex/glossaries/rollback/"
+                   "tex/latex/glossaries/styles/"
+                   "tex/latex/glossaries/test-entries/")
+             (base32
+              "0k55k49sba80k51pjpb08zf9calnkchcxxsyajx8g3c33ah3j2i1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "makeglossaries" "makeglossaries-lite.lua")))
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-datatool
+           texlive-etoolbox
+           texlive-mfirstuc
+           texlive-tracklang
+           texlive-xfor
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/glossaries")
+    (synopsis "Create glossaries and lists of acronyms")
+    (description
+     "The glossaries package supports acronyms and multiple glossaries, and has
+provision for operation in several languages (using the facilities of either
+Babel or Polyglossia).  New entries are defined to have a name and description
+(and optionally an associated symbol).  Support for multiple languages is
+offered, and plural forms of terms may be specified.  An additional package,
+@code{glossaries-accsupp}, can make use of the @code{accsupp} package
+mechanisms for accessibility support for PDF files containing glossaries.  The
+user may define new glossary styles, and preambles and postambles can be
+specified.  There is provision for loading a database of terms, but only terms
+used in the text will be added to the relevant glossary.
+
+The package uses an indexing program to provide the actual glossary; either
+MakeIndex or Xindy may serve this purpose, and a Perl script is provided to
+serve as interface.  The package supersedes @code{glossary} package (which is
+now obsolete).")
+    (license license:lppl1.3+)))
+
 (define-public texlive-glossaries-extra
   (package
     (name "texlive-glossaries-extra")
