@@ -13724,6 +13724,26 @@ with pdfTeX, XeTeX and LuaTeX, and can also be used with the
 @code{unicode-math} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fixfoot
+  (package
+    (name "texlive-fixfoot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fixfoot/" "tex/latex/fixfoot/")
+             (base32
+              "1anyswchln7y7a6x72ay6hm3ck36byxk2ciia0w6y100iqcpq2sl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixfoot")
+    (synopsis "Multiple use of the same footnote text")
+    (description
+     "This package provides a @code{\\DeclareFixedFootnote} command to provide
+a single command for a frequently-used footnote.  The package ensures that
+only one instance of the footnote text appears on each page (LaTeX needs to be
+run several times to achieve this).")
+    (license license:lppl)))
+
 (define-public texlive-fixjfm
   (package
     (name "texlive-fixjfm")
