@@ -32165,6 +32165,27 @@ bundle, for which map files are available to provide a Vietnamese version.")
     (license (list license:lppl1.3+
                    (license:fsf-free "file://source/generic/vntex/LICENSE-utopia.txt")))))
 
+(define-public texlive-wallpaper
+  (package
+    (name "texlive-wallpaper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wallpaper/"
+                   "tex/latex/wallpaper/")
+             (base32
+              "07ynf0b7czqqz0ha70ccvdxmcm3s6px82s1101llwbpxhwpqis5i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wallpaper")
+    (synopsis
+     "Add wallpapers (background images) to LaTeX documents, including tiling")
+    (description
+     "This collection contains files to add wallpapers (background images) to
+LaTeX documents.  It provides simple commands to include effects such as
+tiling.")
+    (license license:lppl)))
+
 (define-public texlive-wargame
   (package
     (name "texlive-wargame")
