@@ -10922,6 +10922,25 @@ default.")
 delimiters in math mode whose size can be adjusted conveniently.")
     (license license:lppl1.3+)))
 
+(define-public texlive-denisbdoc
+  (package
+    (name "texlive-denisbdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/denisbdoc/"
+                   "source/latex/denisbdoc/"
+                   "tex/latex/denisbdoc/")
+             (base32
+              "0vfz81kqym5jj79y5f1fysyjxlhlr0zws553zx2mklixrs54bl0c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/denisbdoc")
+    (synopsis "Personal dirty package for documenting packages")
+    (description
+     "This package provides a personal dirty package for documenting packages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-derivative
   (package
     (name "texlive-derivative")
