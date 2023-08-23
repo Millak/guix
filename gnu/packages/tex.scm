@@ -1519,6 +1519,27 @@ works on TeX virtual fonts and @command{vpl2ovp} transforms a TeX font to an
 Omega one.")
     (license license:gpl3+)))
 
+(define-public texlive-accsupp
+  (package
+    (name "texlive-accsupp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/accsupp/" "source/latex/accsupp/"
+                   "tex/latex/accsupp/")
+             (base32
+              "10xdg3gk5madpb131lhc9x2sxzby4rvqycbfzb5kl2zkwr1qw5v7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/accsupp")
+    (synopsis "Better accessibility support for PDF files")
+    (description
+     "Since PDF 1.5 portions of a page can be marked for better accessibility
+support.  For example, replacement texts or expansions of abbreviations can be
+provided.  This package starts with providing a minimal low-level interface
+for programmers; its status is experimental.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-abbr
   (package
     (name "texlive-abbr")
