@@ -70,7 +70,7 @@
 ;;; Copyright © 2020 Jérémy Korwin-Zmijowski <jeremy@korwin-zmijowski.fr>
 ;;; Copyright © 2020 Alberto Eleuterio Flores Guerrero <barbanegra+guix@posteo.mx>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2022 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2020, 2022, 2023 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Ryan Desfosses <rdes@protonmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
@@ -212,6 +212,7 @@
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-viewers)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages lisp)
@@ -26781,6 +26782,39 @@ feeding them to package.el library.")
 @item Undo and browse history of undoable commands.
 @end itemize")
       (license license:gpl3+))))
+
+(define-public emacs-sxiv
+  (package
+    (name "emacs-sxiv")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://tildegit.org/contrapunctus/sxiv")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gimq172pp143jckfhhyw319n3vpjvlkadm0vhypycas9i89mcg0"))))
+    (inputs (list sxiv))
+    (propagated-inputs (list emacs-dash))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-sxiv-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (emacs-substitute-sexps "sxiv.el"
+               (":command
+                  (append"
+                `(list ,(string-append (assoc-ref inputs "sxiv")
+                                       "/bin/sxiv")))))))))
+    (build-system emacs-build-system)
+    (home-page "https://tildegit.org/contrapunctus/sxiv")
+    (synopsis "Launch sxiv from Emacs with Dired integration")
+    (description "This package integrates sxiv into Dired.  It adds a command
+to start sxiv from a Dired buffer, allowing you to mark or unmark image files
+in said buffer using sxiv.")
+    (license license:unlicense)))
 
 (define-public emacs-mu4e-conversation
   (let ((commit "98110bb9c300fc9866dee8e0023355f9f79c9b96")
