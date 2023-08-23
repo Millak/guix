@@ -9340,6 +9340,34 @@ labels and long passages in both screen and print.  The fonts are available in
 both TrueType and Type 1 formats.")
     (license (list license:asl2.0 license:lppl))))
 
+(define-public texlive-cleveref
+  (package
+    (name "texlive-cleveref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cleveref/"
+                   "source/latex/cleveref/"
+                   "tex/latex/cleveref/")
+             (base32
+              "18r8g6ipn1ly60gnp0yi0m409gm8lssbpmka5813i4l45281fk43")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cleveref")
+    (synopsis "Intelligent cross-referencing")
+    (description
+     "The package enhances LaTeX's cross-referencing features, allowing the
+format of references to be determined automatically according to the type of
+reference.  The formats used may be customised in the preamble of a document;
+Babel support is available (though the choice of languages remains limited:
+currently Danish, Dutch, English, French, German, Italian, Norwegian, Russian,
+Spanish and Ukranian).
+
+The package also offers a means of referencing a list of references, each
+formatted according to its type.  In such lists, it can collapse sequences of
+numerically-consecutive labels to a reference range.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-clrscode
   (package
     (name "texlive-clrscode")
