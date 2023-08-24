@@ -12979,6 +12979,32 @@ to identify differentially methylated regions in epigenetic epidemiology
 studies.")
     (license license:artistic2.0)))
 
+(define-public r-bumpymatrix
+  (package
+    (name "r-bumpymatrix")
+    (version "1.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BumpyMatrix" version))
+              (sha256
+               (base32
+                "021xn5d08phmwv6g8a5d4ap5kcf5syhm6vpr784l4k54lflssr5i"))))
+    (properties `((upstream-name . "BumpyMatrix")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-iranges r-matrix r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/BumpyMatrix")
+    (synopsis "Bumpy matrix of non-scalar objects")
+    (description
+     "This package provides a class and subclasses for storing non-scalar
+objects in matrix entries.  This is akin to a ragged array but the raggedness
+is in the third dimension, much like a bumpy surface--hence the name.  Of
+particular interest is the @code{BumpyDataFrameMatrix}, where each entry is a
+Bioconductor data frame.  This allows us to naturally represent multivariate
+data in a format that is compatible with two-dimensional containers like the
+@code{SummarizedExperiment} and @code{MultiAssayExperiment} objects.")
+    (license license:expat)))
+
 (define-public r-mia
   (package
     (name "r-mia")
