@@ -190,7 +190,7 @@
 ;;
 ;; CODE:
 
-(define %racket-version "8.9") ; Remember to update chez-scheme-for-racket!
+(define %racket-version "8.10") ; Remember to update chez-scheme-for-racket!
 (define %zuo-version "1.6") ; defined in racket/src/zuo/zuo.c
 (define %racket-commit
   (string-append "v" %racket-version))
@@ -201,10 +201,10 @@
           (url "https://github.com/racket/racket")
           (commit %racket-commit)))
     (sha256
-     (base32 "120djvscm2x1nv46is0kzwahd22rcc8gc0ssf12jnj7w290dpmra"))
+     (base32 "0xhra47lnz5aq2shvsil4vcravai4n86r4v1lza7r07n6s1pb9s5"))
     (file-name (git-file-name "racket" %racket-version))
     (patches (search-patches "racket-chez-scheme-bin-sh.patch"
-                             "racket-rktboot-riscv64-support.patch"
+                             "racket-backport-8.10-rktboot.patch"
                              "racket-rktio-bin-sh.patch"
                              "racket-zuo-bin-sh.patch"))
     (modules '((guix build utils)))
@@ -699,7 +699,7 @@ DrRacket IDE, are not included.")
        "contract-profile" (base32 "1xm2z8g0dpv5d9h2sg680vx1a8ix9gbsdpxxb8qv1w7akp73paj3")
        '(("contract-profile" ".")))
       (simple-racket-origin
-       "data" (base32 "08sj4m0g0cp7gwb0nq90m770f0c21b7ydif7nljc8rxmcdprfisc")
+       "data" (base32 "1pml8g3zgvnaiqb659psh99m70v96m6nh9zash2vfgir46j4rjnh")
        '("data" "data-doc" "data-enumerate-lib" "data-lib"))
       (simple-racket-origin
        "datalog" (base32 "0nf6cy4djpyhfvgpa6yn72apbz9s83gp0qg95pzjd0az4v6qwq1s")
@@ -708,7 +708,7 @@ DrRacket IDE, are not included.")
        "db" (base32 "0xx0k8yw2vb9b4vk2dwjfbpixnmriqsv7kpv3fvfxbwyg42y0db5")
        '("db" "db-doc" "db-lib"))
       (simple-racket-origin
-       "deinprogramm" (base32 "0iv14kig8w6kwxxmcfsxskk6x7a4kgzppzgyznzgy1mk6p5rxbjg")
+       "deinprogramm" (base32 "0889154ssw56aq6iqxnzgjram9x6c64sscjzrhr4077vnv4h1c93")
        '("deinprogramm" "deinprogramm-signature"))
       (simple-racket-origin
        "distributed-places" (base32 "1dajpkj9balqcpv6cdk9hwjz592h1vq8rrx5vncariiac4vbdpa0")
@@ -717,7 +717,7 @@ DrRacket IDE, are not included.")
        "draw" (base32 "0vf40hp6h14zgs0gx40jzdzxm4ai1vxwpmg65y00lwmdxc97b2ji")
        '("draw" "draw-doc" "draw-lib"))
       (simple-racket-origin
-       "drracket" (base32 "1b2fammrkb01kglf0n1rzdq2ngay4adnjh3gdmnza7mxz09y35m2")
+       "drracket" (base32 "0haban4fysr8i2w071nra9s97zkrrx5f5c874r9pr2k9bhqcp4jq")
        '("drracket"
          "drracket-plugin-lib"
          "drracket-tool"
@@ -751,13 +751,13 @@ DrRacket IDE, are not included.")
        "games" (base32 "0kpn3izlx1ccd0pj0dnvmnrhny51b85xy418a7psj70lz8j8415d")
        '(("games" ".")))
       (simple-racket-origin
-       "gui" (base32 "01ydlr10gkdm66x1gx3im5lwiap0ssiph8nmaisv0xrnrirbnp51")
+       "gui" (base32 "1s2a8qgm7dqpxyi9plshdbaxzd8klc80i8ppjpc5i5xyhcfmzyvf")
        '("gui" "gui-doc" "gui-lib" "tex-table"))
       (simple-racket-origin
        "gui-pkg-manager" (base32 "1ji9448d723nklqvycwdswj0ni28sabrncag14f9mx47did5myb5")
        '("gui-pkg-manager-lib"))
       (simple-racket-origin
-       "htdp" (base32 "1qnnnh9d9kjzlaasql7gi0h8z893bzb9kffay00mwg2j0bfzsf2s")
+       "htdp" (base32 "0kd92rg8m8my11pq1dxvv6dyban77j6kvs368xsl6fr52jd7zbkl")
        '("htdp" "htdp-doc" "htdp-lib"))
       (simple-racket-origin
        "html" (base32 "18n1jnjgzfknc8nv8dppi85nb8q08gqdwkg6hfjk08x0p00anx2x")
@@ -781,7 +781,7 @@ DrRacket IDE, are not included.")
        "make" (base32 "10852fj30bz5r46c3d99s37fkgy5yh44gb01j29sf3kxnhi0g2sa")
        '(("make" ".")))
       (simple-racket-origin
-       "math" (base32 "1qz4k6iwbrf9l7dhivrznghrpbqhxx14yczkgqpkz6yqawi642x9")
+       "math" (base32 "1l0r4xpbbjz0b2s6v3kn490zgs2q1dnj3ga95y1505jmcwgb2hl9")
        '("math" "math-doc" "math-lib"))
       (simple-racket-origin
        "mysterx" (base32 "11p9jzrafw0hizhl0cs4sxx7rv281185q8hryic2rpk0kzjdyr48")
@@ -799,7 +799,7 @@ DrRacket IDE, are not included.")
                              (url "https://github.com/RenaissanceBug/racket-cookies")
                              (commit %racket-commit)))
                        (sha256 (base32
-                                "0k0hifxhywl5c3hjcaiizc098dpyk001d981p572gly116yvjxc1"))
+                                "05lnml9nszcq72k8bi4iwdyplp2iv23ywb2gmrs2hr8837fqi65y"))
                        (file-name
                         (git-file-name "RenaissanceBug-racket-cookies" %racket-version)))
        '("net-cookies" "net-cookies-doc" "net-cookies-lib"))
@@ -825,7 +825,7 @@ DrRacket IDE, are not included.")
        "pconvert" (base32 "00czi0p399mmyrvxyrs5kniizpkqfxyz2ncxqi2jy79a7wk79pb1")
        '("pconvert-lib"))
       (simple-racket-origin
-       "pict" (base32 "0j6m95pq523pz526d7my8b3cg8a3jssag2mafxcq531prlnzq9sq")
+       "pict" (base32 "1vsn91r167wssaflzz080nsrcf0jfhl2a48zcj9hvdb77arbj8kc")
        '("pict" "pict-doc" "pict-lib"))
       (simple-racket-origin
        "pict-snip" (base32 "081nwiy4a0n4f7xws16hqbhf0j3kz5alizndi3nnyr3chm4kng6x")
@@ -840,7 +840,7 @@ DrRacket IDE, are not included.")
        "planet" (base32 "0r2yqrzrmdjjyr14k6hhlzc5kzrcx3583m1s02mhrcmpfw0s85w9")
        '("planet" "planet-doc" "planet-lib"))
       (simple-racket-origin
-       "plot" (base32 "13i6cwkscb4j6zmdc122iidmykwpxfk8xjmq09c6gv77slfynivl")
+       "plot" (base32 "1p0jxrwdwkb7z6ppp2ccpdzmizjimfpkdgilvbgv8x6mmqf0bf6q")
        '("plot" "plot-compat" "plot-doc" "plot-gui-lib" "plot-lib"))
       (simple-racket-origin
        "preprocessor" (base32 "1p5aid58ifnjy4xl0ysh85cq39k25661v975jrpk182z3k5621mg")
@@ -876,7 +876,7 @@ DrRacket IDE, are not included.")
                          (git-file-name "jeapostrophe-racket-cheat" %racket-version)))
        '(("racket-cheat" ".")))
       (simple-racket-origin
-       "racklog" (base32 "0fbq0fpfb3l6h7h772dvkmlzlk2dnq5f8296xx1qxhhwypibqzr9")
+       "racklog" (base32 "0fr8xij0sssfnmwn6dfdi4jj3l62f2yj3jrjljv13kaycrfls032")
        '(("racklog" ".")))
       (simple-racket-origin
        "rackunit" (base32 "03v1yvqgk3f65caqiwnadq00sjbg813ic949hys29f4c8mxz6gic")
@@ -895,7 +895,7 @@ DrRacket IDE, are not included.")
        "realm" (base32 "0rlvwyd6rpyl0zda4a5p8dp346fvqzc8555dgfnrhliymkxb6x4g")
        '(("realm" ".")))
       (simple-racket-origin
-       "redex" (base32 "16kyi4nxxi4a05gjarb9dayysg032vsad5mmwn1j6d6yxxhbw9jr")
+       "redex" (base32 "00pm0pj3h19a9dar4pzdn8q5l7bvl92q9gkh04k1ddlcx4af1m10")
        '("redex"
          "redex-benchmark"
          "redex-doc"
@@ -910,7 +910,7 @@ DrRacket IDE, are not included.")
        "scheme-lib" (base32 "0pcf0y8rp4qyjhaz5ww5sr5diq0wpcdfrrnask7zapyklzx1jx8x")
        '(("scheme-lib" ".")))
       (simple-racket-origin
-       "scribble" (base32 "06q5jhfblps47ly9fv5pkcz3nk8akfgad9ank32dh1svagq9plzf")
+       "scribble" (base32 "1jnbvl98yn8dhblcx411jybd879g4aj6d136xi23i4zwwrbsiy6m")
        '("scribble"
          "scribble-doc"
          "scribble-html-lib"
@@ -936,13 +936,13 @@ DrRacket IDE, are not included.")
        "slatex" (base32 "0pkm2isbbdk63slrbsxcql7rr0wdrw5kapw1xq4ps5k8dhlzv8x0")
        '(("slatex" ".")))
       (simple-racket-origin
-       "slideshow" (base32 "0phq0mvy0dh8hhbhxhmsini286dyggy6cgxq7mcwj4n2sbw38sas")
+       "slideshow" (base32 "0hmg5184cpxjb0ni6v2zkf4l29j8yyzm9pzv1gvmw2fm1rlrry4f")
        '("slideshow" "slideshow-doc" "slideshow-exe" "slideshow-lib" "slideshow-plugin"))
       (simple-racket-origin
-       "snip" (base32 "1j7sk364w2cggr4i5my1p2ibyvslrnj45xwxhihx6zypkbk59c3m")
+       "snip" (base32 "1b90ccqilnyszbphms3svm3c7dbk7870ifybjjipss5srb32mj2d")
        '("snip" "snip-lib"))
       (simple-racket-origin
-       "typed-racket" (base32 "0iz62xy2grkwyi4krz0chi3fswg74zd5s5jpdqyhxhdqq3gcscp0")
+       "typed-racket" (base32 "1721qgk1fplzwcgidg342anvykr88prvl1jag4vg8qxz8m28wi08")
        '("source-syntax"
          "typed-racket"
          "typed-racket-compatibility"
@@ -953,13 +953,13 @@ DrRacket IDE, are not included.")
        "srfi" (base32 "0rvx49ni1v8ikbx1a6qg97pprpkxmy7cgl918f52hq7jlx91b71x")
        '("srfi" "srfi-doc" "srfi-lib" "srfi-lite-lib"))
       (simple-racket-origin
-       "string-constants" (base32 "1lxab9323xmxqs4mxbgr504xgcgsf9dvx2xsb4p92fjzsif0d64y")
+       "string-constants" (base32 "1jxbh91x1r65lahjlix61rmkjikcam2k5w97xj8r7p7z05240dih")
        '("string-constants" "string-constants-doc" "string-constants-lib"))
       (simple-racket-origin
        "swindle" (base32 "1q8vdxpzczzwdw2mys2caab45yvadmqkixsr29k8pl03n8dsg8j9")
        '(("swindle" ".")))
       (simple-racket-origin
-       "syntax-color" (base32 "03fjmpww2958sryicrrcrpqwq6ibslfxd86ckl1mgafm3kr02qhp")
+       "syntax-color" (base32 "0lcv6glhsx27lkz7wwalzgfr0nb0hdqjic54z3rcfxhag4p6sg8i")
        '("syntax-color" "syntax-color-doc" "syntax-color-lib"))
       (simple-racket-origin
        "trace" (base32 "070ihla5j796hdarn5wxdwn4xj0xnkm50shgh49jy994mribvhia")
@@ -968,7 +968,7 @@ DrRacket IDE, are not included.")
        "unix-socket" (base32 "02dfwas5ynbpyz74w9kwb4wgb37y5wys7svrlmir8k0n9ph9vq0y")
        '("unix-socket" "unix-socket-doc" "unix-socket-lib"))
       (simple-racket-origin
-       "web-server" (base32 "0xfg0n0rg1g5rbqq4mm0qjgqkkrgm3ilzkffga2bjx253jrrrcai")
+       "web-server" (base32 "0sizb50rbnqmdx8igpqshj0hzsqyg30faf7wb9fs08sjs0lqkgsf")
        '("web-server" "web-server-doc" "web-server-lib"))
       (simple-racket-origin
        "wxme" (base32 "1qp5gr9gqsakiq3alw6m4yyv5vw4i3hp4y4nhq8vl2nkjmirvn0b")
