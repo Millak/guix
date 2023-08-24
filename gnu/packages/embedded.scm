@@ -1460,16 +1460,16 @@ debugging them, and more.")
 (define-public ebusd
   (package
     (name "ebusd")
-    (version "3.4")
+    (version "23.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/john30/ebusd")
-                     (commit (string-append "v" version))))
+                     (commit version)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0iva70bam7wdx60bpd3an9kxr28zxlvp3vprivgqshwwdhqa0hzp"))))
+                "1zqnxk6vgszlf410pypsjjliiy9wawy585fm7v25mka47i6iqafq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
