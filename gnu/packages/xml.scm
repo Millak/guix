@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1048,6 +1049,25 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom")
                (base32
                 "03yxj7w5a43ibbpiqsvb3lswj2b71dydsx4rs2fw0p8n0l3i3j8w"))))
     (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-xpath
+            (lambda _
+              (let ((xpath (string-append #$output "/bin/xpath"))
+                    (perl5lib
+                     (search-path-as-list
+                      '("/lib/perl5/site_perl")
+                      (list #$(this-package-input "perl-xml-parser")
+                            #$output))))
+                (wrap-program xpath
+                  `("PERL5LIB" ":" prefix ,perl5lib)))))
+          (add-after 'wrap-xpath 'check-wrap
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (unsetenv "PERL5LIB")
+                (invoke/quiet (string-append #$output "/bin/xpath"))))))))
     (native-inputs
      (list perl-path-tiny))
     (propagated-inputs
@@ -1057,7 +1077,7 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom")
     (description
      "This module aims to comply exactly to the @url{XPath specification,
 https://www.w3.org/TR/xpath} and yet allow extensions to be added in
-the form of functions.")
+the form of functions.  It also provides the command @command{xpath}.")
     (license license:perl-license)))
 
 (define-public pugixml
