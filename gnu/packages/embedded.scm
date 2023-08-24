@@ -1472,7 +1472,8 @@ debugging them, and more.")
                 "1zqnxk6vgszlf410pypsjjliiy9wawy585fm7v25mka47i6iqafq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags '("--localstatedir=/var")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-config
            (lambda* (#:key inputs outputs #:allow-other-keys)
