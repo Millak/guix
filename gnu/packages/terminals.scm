@@ -77,6 +77,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages fontutils)
@@ -1385,30 +1386,20 @@ comfortably in a pager or editor.
 (define-public eternalterminal
   (package
     (name "eternalterminal")
-    (version "6.0.13")
+    (version "6.2.4")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/MisterTea/EternalTerminal")
-               (commit (string-append "et-v" version))))
-        (file-name (git-file-name name version))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MisterTea/EternalTerminal")
+             (commit (string-append "et-v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0sb1hypg2276y8c2a5vivrkcxp70swddvhnd9h273if3kv6j879r"))))
+        (base32 "13vhr701j85ga37d53339bxgrf9fqa6z1zcp6s3ly5bb8p7lyvzm"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_TEST=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'insert-googletests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tests (assoc-ref inputs "googletest")))
-               (copy-recursively tests "external/googletest"))
-             #t)))))
-    (inputs
-     (list gflags libsodium protobuf))
-    (native-inputs
-     `(("googletest" ,(package-source googletest))))
+     '(#:configure-flags '("-DBUILD_TEST=ON" "-DDISABLE_VCPKG=1")))
+    (inputs (list libsodium protobuf openssl zlib curl))
     (home-page "https://mistertea.github.io/EternalTerminal/")
     (synopsis "Remote shell that reconnects without interrupting the session")
     (description "@dfn{Eternal Terminal} (ET) is a remote shell that
