@@ -1786,7 +1786,7 @@ MANIFEST."
        (if (string-prefix? "texlive-" name)
            (cons (gexp-input thing output)
                  (append-map entry->texlive-input deps))
-           '()))))
+           (append-map entry->texlive-input deps)))))
   (define texlive-scripts-entry?
     (match-lambda
       (($ <manifest-entry> name version output thing deps)
