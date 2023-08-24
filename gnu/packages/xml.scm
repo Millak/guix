@@ -1040,14 +1040,14 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom")
 (define-public perl-xml-xpath
   (package
     (name "perl-xml-xpath")
-    (version "1.44")
+    (version "1.48")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/M/MA/MANWAR/"
                                   "XML-XPath-" version ".tar.gz"))
               (sha256
                (base32
-                "03yxj7w5a43ibbpiqsvb3lswj2b71dydsx4rs2fw0p8n0l3i3j8w"))))
+                "1kch6w4zk7rzfimbwakz8qyhjhrvnp97158af0p5p7i3dgimpivv"))))
     (build-system perl-build-system)
     (arguments
      (list
@@ -1069,7 +1069,7 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom")
                 (unsetenv "PERL5LIB")
                 (invoke/quiet (string-append #$output "/bin/xpath"))))))))
     (native-inputs
-     (list perl-path-tiny))
+     (list perl-path-tiny perl-test-leaktrace))
     (propagated-inputs
      (list perl-xml-parser))
     (home-page "https://metacpan.org/release/XML-XPath")
