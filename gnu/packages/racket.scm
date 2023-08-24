@@ -29,6 +29,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -553,6 +554,7 @@ used to build the name of the resulting store item."
             "base" %racket-origin
             '(("base" "pkgs/base")
               ("racket-lib" "pkgs/racket-lib")))))
+    (native-search-paths (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (build-system gnu-build-system)
     (arguments
      ;; Here and for the `racket` package, we're using #:configure-flags
