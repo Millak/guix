@@ -1754,6 +1754,38 @@ LC-MSMS and MRM files from proteomics experiments; and PSI mzIdentML example
 files for various search engines.")
     (license license:gpl2+)))
 
+(define-public r-msigdb
+  (package
+    (name "r-msigdb")
+    (version "1.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "msigdb" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1kgsqg1d5r852qas09g6fs0pcmk6jgbb6g983v6iqw19qsiy6jby"))))
+    (properties `((upstream-name . "msigdb")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-annotationhub
+                             r-experimenthub
+                             r-gseabase
+                             r-org-hs-eg-db
+                             r-org-mm-eg-db))
+    (native-inputs (list r-knitr))
+    (home-page "https://doi.org/doi:10.18129/B9.bioc.msigdb")
+    (synopsis "ExperimentHub package for the molecular signatures database")
+    (description
+     "R-msigdb provides the Molecular Signatures Database in a R accessible
+objects.  Signatures are stored in @code{GeneSet} class objects form the
+GSEABase package and the entire database is stored in a
+@code{GeneSetCollection} object.  These data are then hosted on the
+@code{ExperimentHub}.  Data used in this package was obtained from the
+@code{MSigDB} of the Broad Institute.  Metadata for each gene set is stored
+along with the gene set in the @code{GeneSet} class object.")
+    (license license:cc-by4.0)))
+
 (define-public r-pasilla
   (package
     (name "r-pasilla")
