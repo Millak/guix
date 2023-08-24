@@ -750,8 +750,9 @@ ECB and OFB).")
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda _
-                      (invoke "python" "run.py" "tests"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "python" "run.py" "tests")))))))
     (home-page "https://github.com/wbond/asn1crypto")
     (synopsis "ASN.1 parser and serializer in Python")
     (description
