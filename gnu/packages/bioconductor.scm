@@ -1708,6 +1708,37 @@ gene expression indicate a role for enhancer priming in immune response\", publi
 in Nature Genetics, January 2018.")
     (license license:gpl2+)))
 
+(define-public r-mousegastrulationdata
+  (package
+    (name "r-mousegastrulationdata")
+    (version "1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "MouseGastrulationData" version
+                                     'experiment))
+              (sha256
+               (base32
+                "155kci5isq7mlbvv8mdl2jjpafm3pbv1likhls70aa746spr1h17"))))
+    (properties `((upstream-name . "MouseGastrulationData")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-bumpymatrix
+                             r-experimenthub
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-spatialexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/MarioniLab/MouseGastrulationData")
+    (synopsis
+     "Single-Cell omics data across mouse gastrulation and early organogenesis")
+    (description
+     "This package provides processed and raw count data for single-cell RNA
+sequencing.  In addition, this package offers single-cell ATAC-seq, and
+@code{seqFISH} (spatial transcriptomic) experiments performed along a
+timecourse of mouse gastrulation and early organogenesis.")
+    (license license:gpl3)))
+
 (define-public r-minfidata
   (package
     (name "r-minfidata")
