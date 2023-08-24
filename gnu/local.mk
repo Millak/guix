@@ -2018,6 +2018,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tofi-32bit-compat.patch			\
   %D%/packages/patches/tootle-glib-object-naming.patch		\
   %D%/packages/patches/tootle-reason-phrase.patch		\
+  %D%/packages/patches/tor-remove-defensive-assert.patch 	\
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/transfig-gcc10-fno-common.patch		\
   %D%/packages/patches/trytond-add-egg-modules-to-path.patch	\

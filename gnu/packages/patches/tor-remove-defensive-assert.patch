@@ -1,0 +1,28 @@
+This patch removes a call to `tor_assert_nonfatal_unreached()` in
+`relay_key_is_unavailable_()` that is only called when Tor is compiled
+without relay support.
+
+Unfortunately, the non-fatal assertion causes a BUG log
+message to appear for clients when they start up without relay support
+for each CPU worker we spawn. This makes it spotting issues during
+bootstrap harder particularly for our iOS developers.
+
+Since the call sites to `get_master_identity_key()` handles `NULL`
+values already, we do not think this will be an issue later on.
+
+Reported by Benjamin Erhart (@tla) from Guardian Project.
+
+Fixes tpo/core/tor#40848.
+
+diff --git a/src/feature/relay/routerkeys.h b/src/feature/relay/routerkeys.h
+index 7b6d80773c..b97615a9c9 100644
+--- a/src/feature/relay/routerkeys.h
++++ b/src/feature/relay/routerkeys.h
+@@ -53,7 +53,6 @@ void routerkeys_free_all(void);
+ static inline void *
+ relay_key_is_unavailable_(void)
+ {
+-  tor_assert_nonfatal_unreached();
+   return NULL;
+ }
+ #define relay_key_is_unavailable(type) \
