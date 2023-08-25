@@ -8165,6 +8165,51 @@ functions for:
 @end itemize")
     (license license:gpl3)))
 
+(define-public r-statsexpressions
+  (package
+    (name "r-statsexpressions")
+    (version "1.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "statsExpressions" version))
+              (sha256
+               (base32
+                "1lq4h3a8yr7wnmjkg2rgr8524vdpfacr73pv4wxj44dbg9yh8l3x"))))
+    (properties `((upstream-name . "statsExpressions")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-afex
+                             r-bayesfactor
+                             r-correlation
+                             r-datawizard
+                             r-dplyr
+                             r-effectsize
+                             r-glue
+                             r-insight
+                             r-magrittr
+                             r-parameters
+                             r-performance
+                             r-pmcmrplus
+                             r-purrr
+                             r-rlang
+                             r-tibble
+                             r-tidyr
+                             r-withr
+                             r-wrs2
+                             r-zeallot))
+    (native-inputs (list r-knitr))
+    (home-page "https://indrajeetpatil.github.io/statsExpressions/")
+    (synopsis "Dataframes and expressions with statistical details")
+    (description
+     "This package provides tools for creating detailed dataframes for common
+statistical approaches and tests.  These include parametric, nonparametric,
+robust, and Bayesian t-test, one-way ANOVA, correlation analyses, contingency
+table analyses, and meta-analyses.  The functions are pipe-friendly and
+provide a consistent syntax to work with tidy data.  These dataframes
+additionally contain expressions with statistical details, and can be used in
+graphing packages.  This package also forms the statistical processing backend
+for ggstatsplot.")
+    (license license:gpl3)))
+
 (define-public r-stringdist
   (package
     (name "r-stringdist")
