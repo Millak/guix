@@ -712,8 +712,8 @@ freedesktop.org project.")
                (list check)
                '())))
     (propagated-inputs
-     `(;; libinput.h requires <libudev.h>, so propagate it.
-       ("udev" ,eudev)))
+     ;; libinput.h requires <libudev.h>, so propagate it.
+     (list eudev))
     (home-page "https://www.freedesktop.org/wiki/Software/libinput/")
     (synopsis "Input devices handling library")
     (description
