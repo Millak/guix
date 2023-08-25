@@ -813,7 +813,7 @@ names for 256 color terminal setups.")
 (define-public python-colorful
   (package
     (name "python-colorful")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -822,7 +822,7 @@ names for 256 color terminal setups.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fcz5v8b318a3dsdha4c874jsf3wmcw3f25bv2csixclyzacli98"))))
+        (base32 "0kyy9qhvrb5m9h8xmri7c88i0k1g5qc7017anw39gx44an7mn33y"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-coverage python-flake8 python-pytest))
