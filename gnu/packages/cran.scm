@@ -2337,6 +2337,27 @@ offer an alternative to parts of BioConductor, but can also be used to enhance
 existing BioConductor packages.")
     (license license:asl2.0)))
 
+(define-public r-oompabase
+  (package
+    (name "r-oompabase")
+    (version "3.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "oompaBase" version))
+              (sha256
+               (base32
+                "1cmw2s5dznmv675484jgvkzgvi6vhg0zbxsq6zhpqsisf672pjhl"))))
+    (properties `((upstream-name . "oompaBase")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cluster))
+    (home-page "https://oompa.r-forge.r-project.org/")
+    (synopsis "Class unions, matrix operations, and color schemes for OOMPA")
+    (description
+     "This package preloads class unions for defining/loading core OOMPA tools.
+It also includes vectorized operations for row-by-row means, variances, and
+t-tests.  Finally, it provides new colorschemes.")
+    (license license:asl2.0)))
+
 (define-public r-orgmassspecr
   (package
     (name "r-orgmassspecr")
