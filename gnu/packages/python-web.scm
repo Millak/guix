@@ -5008,7 +5008,7 @@ for URL parsing and changing.")
 (define-public python-canvasapi
   (package
     (name "python-canvasapi")
-    (version "2.2.0")
+    (version "3.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5017,10 +5017,10 @@ for URL parsing and changing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i13wrq2czcaz3h98pvnsl237104v611y9636jf32b1nn76sbp0p"))))
-    (build-system python-build-system)
+                "1vbd3ndhmxi8scxgxs6sc7r0rdaliqd80384n06nyb3haqz25inm"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-pytz python-requests))
-    (native-inputs (list python-requests-mock))
+    (native-inputs (list python-arrow python-requests-mock))
     (home-page "https://github.com/ucfopen/canvasapi")
     (synopsis "API wrapper for the Canvas LMS")
     (description
