@@ -1797,7 +1797,7 @@ compositor libraries.")))
                      (((string-append
                         "QVERIFY\\(!cursorSurface\\(\\)->"
                         "m_waitingFrameCallbacks\\.empty\\(\\)\\);")) "")
-                     (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);") ""))))
+                     (("QTRY_COMPARE\\(bufferSpy\\.size\\(\\), 1\\);") ""))))
                (add-before 'check 'set-test-environment
                  (lambda _
                    ;; Do not fail just because /etc/machine-id is missing.
