@@ -2314,6 +2314,29 @@ higher.")
 @url{https://www.oenb.at/en/Statistics/User-Defined-Tables/webservice.html}.")
     (license license:gpl2+)))
 
+(define-public r-oompadata
+  (package
+    (name "r-oompadata")
+    (version "3.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "oompaData" version))
+              (sha256
+               (base32
+                "0gdp7bghgpz3q0h06w8r926x7wkpcvkpyf0v5qfi1qixbpvk5fdf"))))
+    (properties `((upstream-name . "oompaData")))
+    (build-system r-build-system)
+    (home-page "http://oompa.r-forge.r-project.org/")
+    (synopsis "Data to illustrate OOMPA algorithms")
+    (description
+     "OOMPA offers R packages for gene expression and proteomics analysis.
+OOMPA uses S4 classes to construct object-oriented tools with a consistent
+user interface.  All higher level analysis tools in OOMPA are compatible with
+the eSet classes defined in BioConductor.  The lower level processing tools
+offer an alternative to parts of BioConductor, but can also be used to enhance
+existing BioConductor packages.")
+    (license license:asl2.0)))
+
 (define-public r-orgmassspecr
   (package
     (name "r-orgmassspecr")
