@@ -678,7 +678,7 @@ freedesktop.org project.")
   ;; Updating this will rebuild over 700 packages through libinput-minimal.
   (package
     (name "libinput")
-    (version "1.23.0")
+    (version "1.24.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -687,7 +687,7 @@ freedesktop.org project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wnqfnxxvf9jclh64hrb0scn3s1dmwdkmqf7hp0cfmjz5n5nnv7d"))))
+                "0xk0dljykjfmkks7kjxvbia6g3wadmy7lihfygm8icywkq8j0dw1"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Ddocumentation=false")
