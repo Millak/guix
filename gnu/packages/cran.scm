@@ -362,6 +362,29 @@ Shiny applications.")
 queues, stacks, deques, dicts and ordered dicts.")
     (license license:expat)))
 
+(define-public r-correlation
+  (package
+    (name "r-correlation")
+    (version "0.8.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "correlation" version))
+              (sha256
+               (base32
+                "07fz7wmvrcd6b023jhj3bsrvg4w6i7f1v99jslm0gj84vzmnqzbs"))))
+    (properties `((upstream-name . "correlation")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bayestestr r-datawizard r-insight r-parameters))
+    (native-inputs (list r-knitr))
+    (home-page "https://easystats.github.io/correlation/")
+    (synopsis "Methods for correlation analysis")
+    (description
+     "This is a lightweight package for computing different kinds of
+correlations.  These correlations include partial correlations, Bayesian
+correlations, multilevel correlations, polychoric correlations, biweight
+correlations, distance correlations and more.")
+    (license license:gpl3)))
+
 (define-public r-cplm
   (package
     (name "r-cplm")
