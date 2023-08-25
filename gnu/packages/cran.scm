@@ -799,6 +799,49 @@ text annotations.")
      "Ggfittext is a ggplot2 extension for fitting text into boxes.")
     (license license:gpl2)))
 
+(define-public r-ggstatsplot
+  (package
+    (name "r-ggstatsplot")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggstatsplot" version))
+              (sha256
+               (base32
+                "17jxvzr4dlvsakrsvblxngg60jxh0c1a0i8phqqg63nbf79ng2lk"))))
+    (properties `((upstream-name . "ggstatsplot")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-correlation
+                             r-datawizard
+                             r-dplyr
+                             r-ggcorrplot
+                             r-ggplot2
+                             r-ggrepel
+                             r-ggside
+                             r-ggsignif
+                             r-glue
+                             r-insight
+                             r-paletteer
+                             r-parameters
+                             r-patchwork
+                             r-performance
+                             r-purrr
+                             r-rlang
+                             r-statsexpressions
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://indrajeetpatil.github.io/ggstatsplot/")
+    (synopsis "Based plots with statistical details")
+    (description
+     "This package generates graphics with embedded details from statistical tests.
+Statistical tests included in the plots themselves.  It provides an easier
+syntax to generate information-rich plots for statistical analysis of
+continuous or categorical data.  Currently, it supports the most common
+types of statistical approaches and tests: parametric, nonparametric,
+robust, and Bayesian versions of t-test/ANOVA, correlation analyses,
+contingency table analysis, meta-analysis, and regression analyses.")
+    (license license:gpl3)))
+
 (define-public r-glmpca
   (package
     (name "r-glmpca")
