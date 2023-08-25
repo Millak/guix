@@ -13344,6 +13344,30 @@ spreadsheet.  The worksheet name will be the name of the data frame it
 contains or can be specified by the user.")
     (license license:gpl2+)))
 
+(define-public r-wrs2
+  (package
+    (name "r-wrs2")
+    (version "1.1-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "WRS2" version))
+              (sha256
+               (base32
+                "1838wy59cqd65s0bw6c24xcvx7zflypqcbgs35l9s2fj87vw2hdc"))))
+    (properties `((upstream-name . "WRS2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass r-mc2d r-plyr r-reshape))
+    (native-inputs (list r-knitr))
+    (home-page "https://r-forge.r-project.org/projects/psychor/")
+    (synopsis "Collection of robust statistical methods")
+    (description
+     "R-wrs2 offers a range of strong stats methods from Wilcox WRS functions.
+It implements robust t-tests, both independent and dependent, robust ANOVA,
+including designs with between-within subjects, quantile ANOVA, robust
+correlation, robust mediation, and nonparametric ANCOVA models using robust
+location measures.")
+    (license license:gpl3)))
+
 (define-public r-biasedurn
   (package
     (name "r-biasedurn")
