@@ -737,6 +737,13 @@ stored and user can review his performance in any time.")
                            version "-source.tgz"))
        (sha256
         (base32 "1gfr51rnllkyzli73p4r51h5ypzfa3m7lic3m3rzpywmqwrxs07k"))
+       (modules '((guix build utils)))
+       ;; Fix preferences error: <https://issues.guix.gnu.org/65506>.
+       (snippet '(substitute* "aqt/preferences.py"
+                   (("qc\\['collapseTime']/60\\.0" x)
+                    (format #f "int(~a)" x))
+                   (("qc\\['timeLim']/60\\.0" x)
+                    (format #f "int(~a)" x))))
        (patches (search-patches "anki-mpv-args.patch"))))
     (build-system gnu-build-system)
     (arguments
