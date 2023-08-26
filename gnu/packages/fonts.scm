@@ -2059,20 +2059,41 @@ emphasis while still being readable.")
     (license license:silofl1.1)))
 
 (define-public font-openmoji
-  (package
+  (let ((commit "93f059dfb68401d49beaef7a3e09b80072b51a1f")
+        (revision "1"))
+   (package
     (name "font-openmoji")
-    (version "13.1.0")
+    (version (git-version "14.0.0" revision commit))
     (source
      (origin
-       (method url-fetch/zipbomb)
-       (uri
-        (string-append "https://github.com/hfg-gmuend/openmoji/"
-                       "releases/download/" version
-                       "/openmoji-font.zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hfg-gmuend/openmoji/")
+             (commit commit)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xmy3hr38v03f1riwxmxdibb7iwj0qz288inqaha3pwq7pj7ln45"))))
+         "16w4lg2y6qzb45j08l7cdwprjhprsm11jsm6nxzxwy2wzykd7gxk"))))
     (build-system font-build-system)
+    (arguments (list #:modules `((ice-9 ftw)
+                                 (guix build font-build-system)
+                                 (guix build utils))
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'unpack 'chdir
+                           (lambda _ (chdir "font")))
+                         (add-after 'chdir 'strip-alternative-variants
+                           (lambda _
+                             (let ((keep '("OpenMoji-black-glyf"
+                                           "OpenMoji-color-glyf_colr_0"
+                                           "."
+                                           "..")))
+                               (for-each (lambda (f)
+                                           (unless (member f keep)
+                                             (delete-file-recursively f)))
+                                         (scandir ".")))))
+                         (add-before 'install-license-files 'chdir-back
+                           (lambda _ (chdir ".."))))))
     (native-inputs
      (list unzip))
     (home-page "https://openmoji.org")
@@ -2080,7 +2101,7 @@ emphasis while still being readable.")
     (description
      "This package provides the OpenMoji font in both color and black
 variants.")
-    (license license:cc-by-sa4.0)))
+    (license license:cc-by-sa4.0))))
 
 (define-public font-dosis
   (package
