@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <cstdint>
 
 #include "types.hh"
 
