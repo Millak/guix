@@ -470,20 +470,18 @@ sets, both THUMB and ARM mode.")
 (define-public intel-xed
   (package
     (name "intel-xed")
-    (version "12.0.1")
+    (version "2023.08.21")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/intelxed/xed")
-             (commit version)))
-       (sha256 (base32 "07zfff8zf29c2n0wal87hiqfq3cwcjn80zz78mz0nyjfj09nd39f"))
-       (file-name (git-file-name name version))
-       (patches (search-patches "intel-xed-fix-nondeterminism.patch"))))
+             (commit (string-append "v" version))))
+       (sha256 (base32 "1zv99m5h3n3w6jcpplznq030s5mlwg5llz3vgfwpfl5l8laz1032"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
      `(("python" ,python-wrapper)
-       ("tcsh" ,tcsh)
        ;; As of the time of writing this comment, mbuild does not exist in the
        ;; Python Package Index and seems to only be used by intel-xed, so we
        ;; opt to include it here instead of packaging separately.  Note also
@@ -491,15 +489,15 @@ sets, both THUMB and ARM mode.")
        ;; reference the "version" variable from setup.py instead.
        ("mbuild"
         ,(let ((name "mbuild")
-               (version "0.2496"))
+               (version "2022.07.28"))
            (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/intelxed/mbuild")
-                   (commit "3de3f0d753c11dbe634bec611d4cc13f74768e4f")))
+                   (commit (string-append "v" version))))
              (sha256
               (base32
-               "0z8hdhpmk8y5c9429p2yns9daswnffbprni9czkq3vij8f58lkg4"))
+               "0rc9xp202yqw42bwgylwxvfvjr1crdl50qvv8vzfczyvlf4wflcx"))
              (file-name (git-file-name name version)))))))
     (outputs '("out" "lib"))
     (arguments
@@ -585,5 +583,3 @@ intrinsics as defined in the @file{arm_neon.h} header and x86 SSE (up to
 SSE4.2) intrinsic functions as defined in corresponding x86 compilers headers
 files.")
       (license license:bsd-2))))
-
-
