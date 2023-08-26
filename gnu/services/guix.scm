@@ -975,6 +975,7 @@ ca-certificates.crt file in the system profile."
                              '()))
                 #:user #$user
                 #:group #$group
+                #:directory "/var/lib/nar-herder"
                 #:pid-file "/var/run/nar-herder/pid"
                 #:environment-variables
                 `(,(string-append
