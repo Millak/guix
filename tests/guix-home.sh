@@ -224,5 +224,5 @@ EOF
     #
 
     guix home search mcron | grep "^name: home-mcron"
-    guix home search job manager | grep "^name: home-mcron"
+    guix home search scheduling daemon | grep "^name: home-mcron"
 )

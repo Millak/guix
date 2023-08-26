@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2022, 2023 Artyom Bologov <mail@aartaka.me>
 ;;; Copyright © 2023 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2023 ykonai <mail@ykonai.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5486,25 +5487,25 @@ client and server.")
   (sbcl-package->cl-source-package sbcl-trivial-arguments))
 
 (define-public sbcl-trivial-clipboard
-  (let ((commit "13b53720306c0e6a13eccf4674d28ee5361127ae"))
+  (let ((commit "6ddf8d5dff8f5c2102af7cd1a1751cbe6408377b")
+        (revision "6"))
     (package
       (name "sbcl-trivial-clipboard")
-      (version (git-version "0.0.0.0" "5" commit))
+      (version (git-version "0.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/snmsts/trivial-clipboard")
                (commit commit)))
-         (file-name (git-file-name "trivial-clipboard" version))
+         (file-name (git-file-name "cl-trivial-clipboard" version))
          (sha256
-          (base32
-           "0l198m1gg2ixc43lqjq1ffd80s1sjxhqf1w83qqa1cn51rra2jp8"))))
+          (base32 "04qmm69zyx8rs23pfhgzgxn0j108byv3b7skfdv0h01a76wlhplz"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        ;; Pick xsel instead of xclip because its closure size is slightly
        ;; smaller.
-       (list xsel))
+       (list wl-clipboard xsel))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
@@ -5514,7 +5515,15 @@ client and server.")
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "src/text.lisp"
                  (("\"xsel\"")
-                  (string-append "\"" (assoc-ref inputs "xsel") "/bin/xsel\""))))))))
+                  (string-append "\"" (assoc-ref inputs "xsel") "/bin/xsel\""))
+                 (("\"wl-copy\"")
+                  (string-append "\""
+                                 (assoc-ref inputs "wl-clipboard")
+                                 "/bin/wl-copy\""))
+                 (("\"wl-paste\"")
+                  (string-append "\""
+                                 (assoc-ref inputs "wl-clipboard")
+                                 "/bin/wl-paste\""))))))))
       (home-page "https://github.com/snmsts/trivial-clipboard")
       (synopsis "Access system clipboard in Common Lisp")
       (description
@@ -9556,8 +9565,8 @@ function.")
   (sbcl-package->cl-source-package sbcl-specialization-store))
 
 (define-public sbcl-cl-gobject-introspection
-  (let ((commit "d0136c8d9ade2560123af1fc55bbf70d2e3db539")
-        (revision "1"))
+  (let ((commit "c4fef07d01cec7c830ce84ef150ed8e4da5959c4")
+        (revision "2"))
     (package
       (name "sbcl-cl-gobject-introspection")
       (version (git-version "0.3" revision commit))
@@ -9568,18 +9577,17 @@ function.")
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-gobject-introspection" version))
          (sha256
-          (base32
-           "0dz0r73pq7yhz2iq2jnkq977awx2zws2qfxdcy33329sys1ii32p"))))
+          (base32 "18n4wg93sf6cjmpcpr47bg2rd8mbm9ml9lykmjsxgvsf3nwr5vnw"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("iterate" ,sbcl-iterate)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("glib" ,glib)
-         ("gobject-introspection" ,gobject-introspection)))
+       (list glib
+             gobject-introspection
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-iterate
+             sbcl-trivial-garbage))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
@@ -9607,6 +9615,113 @@ of C+GObject libraries without the need of writing dedicated bindings.")
 
 (define-public ecl-cl-gobject-introspection
   (sbcl-package->ecl-package sbcl-cl-gobject-introspection))
+
+(define-public sbcl-cl-gobject-introspection-wrapper
+  (let ((commit "2d197cba7e7d734ac8a2e181e5e709e5b218bada")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-gobject-introspection-wrapper")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bohonghuang/cl-gobject-introspection-wrapper")
+               (commit commit)))
+         (file-name (git-file-name "cl-gobject-introspection-wrapper" version))
+         (sha256
+          (base32 "05np2zs5806ib6qfz7d6knyaz6llxgwvjqavl1fsz5hcga40296s"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-gobject-introspection
+             sbcl-cl-ppcre))
+      (home-page
+       "https://github.com/bohonghuang/cl-gobject-introspection-wrapper")
+      (synopsis
+       "Wrap and call GObject Introspection FFI function in Common Lisp")
+      (description
+       "This library converts the elements from GObject Introspection into
+Common Lisp-style definitions, based on cl-gobject-introspection.")
+      (license license:lgpl3+))))
+
+(define-public cl-gobject-introspection-wrapper
+  (sbcl-package->cl-source-package sbcl-cl-gobject-introspection-wrapper))
+
+(define-public ecl-cl-gobject-introspection-wrapper
+  (sbcl-package->ecl-package sbcl-cl-gobject-introspection-wrapper))
+
+(define-public sbcl-cl-glib
+  (let ((commit "9e52827cce1cbb3962536b6a5e628febab593f57")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-glib")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bohonghuang/cl-glib")
+               (commit commit)))
+         (file-name (git-file-name "cl-glib" version))
+         (sha256
+          (base32 "0dxa493zdp1p93cahhpp3yaggn3j3kkn90mdw99g4ld7scmiglp4" ))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("cl-gio" "cl-glib" "cl-gobject")))
+      (inputs
+       (list glib
+             gobject-introspection
+             sbcl-bordeaux-threads
+             sbcl-cl-gobject-introspection-wrapper))
+      (home-page "https://github.com/bohonghuang/cl-glib")
+      (synopsis "Glib, GIO and Gobject bindings for Common Lisp")
+      (description "This library provides Glib, GIO and Gobject bindings for
+Common Lisp via Gobject Introspection.")
+      (license license:lgpl3+))))
+
+(define-public cl-glib
+  (sbcl-package->cl-source-package sbcl-cl-glib))
+
+(define-public ecl-cl-glib
+  (sbcl-package->ecl-package sbcl-cl-glib))
+
+(define-public sbcl-cl-gtk4
+  (let ((commit "d116905e7b68508d03681a50b3b24d63e7b111e4")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-gtk4")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bohonghuang/cl-gtk4")
+               (commit commit)))
+         (file-name (git-file-name "cl-gtk4" version))
+         (sha256
+          (base32 "0mprmmvbagnflvhynn51l42nbwr08rld99ls0c48m5lpjn0ja4zc"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("cl-gtk4" "cl-gdk4")))
+      ;; propagate because it at least requires the typelib files at runtime
+      (propagated-inputs (list gtk))
+      (inputs
+       (list gobject-introspection
+             sbcl-cl-glib
+             sbcl-cl-gobject-introspection-wrapper))
+      (home-page "https://github.com/bohonghuang/cl-gtk4")
+      (synopsis "GTK4 bindings for Common Lisp")
+      (description
+       "This library provides GTK4 bindings for Common Lisp via Gobject
+Introspection, in the cl-gtk4 ASDF system.")
+      (license license:lgpl3))))
+
+(define-public cl-gtk4
+  (sbcl-package->cl-source-package sbcl-cl-gtk4))
+
+(define-public ecl-cl-gtk4
+  (sbcl-package->ecl-package sbcl-cl-gtk4))
 
 (define-public sbcl-cl-slug
   (let ((commit "ffb229d10f0d3f7f54e706791725225e200bf749")
@@ -25708,10 +25823,10 @@ change since last write.
            (package-inputs sbcl-nfiles)))))
 
 (define-public sbcl-nasdf
-  (let ((commit "73c89680ace25929c2a1ccc0809db99e9edffa07"))
+  (let ((commit "dd9fb2df7174464b54561b2a2f3c3e00fdd5d4f7"))
     (package
       (name "sbcl-nasdf")
-      (version "0.1.6")
+      (version "0.1.7")
       (source
        (origin
          (method git-fetch)
@@ -25720,20 +25835,19 @@ change since last write.
                (commit commit)))
          (file-name (git-file-name "cl-ntemplate" version))
          (sha256
-          (base32
-           "193wwcp84pyyv33pkkm41s7ca2limpcqqi41hxd1pm5il5r9q9h7"))))
+          (base32 "1q8ky8hz8xrr37h7yyc6ysvrcwlsp1i6r2x44c060drspgjbqj70"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'cd-sdl
              (lambda _
-               (chdir "nasdf")
-               #t)))))
+               (chdir "nasdf"))))))
       (home-page "https://github.com/atlas-engineer/ntemplate")
       (synopsis "ASDF helpers for system setup, testing and installation")
       (description
-       "NASDF is an ASDF extension providing utilities to ease system setup, testing and installation.
+       "NASDF is an ASDF extension providing utilities to ease system setup,
+testing and installation.
 
 @itemize
 @item Simple way to fetch Git submodules and “do the right thing” for

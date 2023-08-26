@@ -5,6 +5,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -390,6 +391,13 @@ will be used in description and synopsis."
    "054fmpf47cwh59gbg00sc0nl237ba4rnxi73miz39yqzcs87055r"
    "0.19.1"))
 
+(define-public tree-sitter-dockerfile
+  (tree-sitter-grammar
+   "dockerfile" "Dockerfile"
+   "0kf4c4xs5naj8lpcmr3pbdvwj526wl9p6zphxxpimbll7qv6qfnd"
+   "0.1.2"
+   #:repository-url "https://github.com/camdencheek/tree-sitter-dockerfile"))
+
 (define-public tree-sitter-elm
   (tree-sitter-grammar
    "elm" "Elm"
@@ -527,6 +535,18 @@ will be used in description and synopsis."
    "1a2899x7i6dgbsrf13qzmh133hgfrlvmjsr3bbpffi1ixw1h7azk"
    "0.7.1"
    #:repository-url "https://github.com/ikatyang/tree-sitter-markdown"))
+
+(define-public tree-sitter-meson
+  ;; tag 1.2 is Aug 24,2022  this commit is Feb 28,2023
+  (let ((commit "3d6dfbdb2432603bc84ca7dc009bb39ed9a8a7b1")
+        (revision "0"))
+    (tree-sitter-grammar
+     "meson" "Meson"
+     "1rn7r76h65d41354czyccm59d1j9nzybcrjvjh934lpr59qrw61m"
+     (git-version "1.2" revision commit)
+     #:repository-url "https://github.com/Decodetalkers/tree-sitter-meson"
+     #:commit commit
+     #:license license:expat)))
 
 (define-public tree-sitter-org
   ;; There are a lot of additions, the last tag was placed a while ago

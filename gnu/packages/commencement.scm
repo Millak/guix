@@ -3459,31 +3459,32 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
     ;; still use 'package-with-bootstrap-guile' so that the bootstrap tools are
     ;; used for origins that have patches, thereby avoiding circular
     ;; dependencies.
-    (let ((finalize (compose with-boot6
-                             package-with-bootstrap-guile)))
-      `(,@(map (match-lambda
-                 ((name package)
-                  (list name (finalize package))))
-               `(("tar" ,tar)
-                 ("gzip" ,gzip)
-                 ("bzip2" ,bzip2)
-                 ("file" ,file)
-                 ("diffutils" ,diffutils)
-                 ("patch" ,patch)
-                 ("findutils" ,findutils)
-                 ("gawk" ,gawk)))
-        ("sed" ,sed-final)
-        ("grep" ,grep-final)
-        ("xz" ,xz-final)
-        ("coreutils" ,coreutils-final)
-        ("make" ,gnu-make-final)
-        ("bash" ,bash-final)
-        ("ld-wrapper" ,ld-wrapper)
-        ("binutils" ,binutils-final)
-        ("gcc" ,gcc-final)
-        ("libc" ,glibc-final)
-        ("libc:static" ,glibc-final "static")
-        ("locales" ,glibc-utf8-locales-final)))))
+    (parameterize ((%current-system system))
+      (let ((finalize (compose with-boot6
+                               package-with-bootstrap-guile)))
+        `(,@(map (match-lambda
+                   ((name package)
+                    (list name (finalize package))))
+                 `(("tar" ,tar)
+                   ("gzip" ,gzip)
+                   ("bzip2" ,bzip2)
+                   ("file" ,file)
+                   ("diffutils" ,diffutils)
+                   ("patch" ,patch)
+                   ("findutils" ,findutils)
+                   ("gawk" ,gawk)))
+          ("sed" ,sed-final)
+          ("grep" ,grep-final)
+          ("xz" ,xz-final)
+          ("coreutils" ,coreutils-final)
+          ("make" ,gnu-make-final)
+          ("bash" ,bash-final)
+          ("ld-wrapper" ,ld-wrapper)
+          ("binutils" ,binutils-final)
+          ("gcc" ,gcc-final)
+          ("libc" ,glibc-final)
+          ("libc:static" ,glibc-final "static")
+          ("locales" ,glibc-utf8-locales-final))))))
 
 (define-public canonical-package
   (let ((name->package (mlambda (system)
@@ -3560,6 +3561,13 @@ COREUTILS-FINAL vs. COREUTILS, etc."
                        (union-build (assoc-ref %outputs "static")
                                     (list (assoc-ref %build-inputs
                                                      "libc-static")))
+                       ;; XXX Remove once an empty librt.a is added to
+                       ;; libc:out.
+                       (copy-file
+                        (string-append (assoc-ref %outputs "out")
+                                       "/lib/libpthread.a")
+                        (string-append (assoc-ref %outputs "out")
+                                       "/lib/librt.a"))
                        #t))))
 
       (native-search-paths

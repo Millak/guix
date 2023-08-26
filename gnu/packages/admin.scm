@@ -55,11 +55,12 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022, 2023 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,7 +98,9 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages attr)
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -174,6 +177,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -5914,3 +5918,39 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
            ;; Note: applies to src/md5.{c,h}
            ;; This file is likely to be gone in the next release.
            license:zlib))))
+
+(define-public bfs
+  (package
+    (name "bfs")
+    (version "3.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tavianator/bfs")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ffma9p82bl0ai4h439cnhvcyyy8x593m27xlf16gsg6knpldm58"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "PREFIX="
+                                               #$output) "bfs")
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-before 'check 'disable-exec-no-path-test
+                          (lambda _
+                            ;; This test unsets PATH. It then probably cannot find
+                            ;; echo since it's not inside _PATH_STDPATH (?). We
+                            ;; delete the test to disable it.
+                            (delete-file "tests/posix/exec_nopath.sh"))))))
+    (inputs (list acl attr libcap oniguruma))
+    (synopsis "Breadth-first search for your files")
+    (description
+     "Bfs is a variant of the UNIX @command{find} command that operates
+breadth-first rather than depth-first.  It is otherwise compatible with many
+versions of command{find}, including POSIX, GNU, and *BSD find.")
+    (home-page "https://tavianator.com/projects/bfs.html")
+    (license license:bsd-0)))

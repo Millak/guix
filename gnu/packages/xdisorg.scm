@@ -60,6 +60,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -103,6 +104,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -273,7 +275,7 @@ program.")
 (define-public autorandr
   (package
     (name "autorandr")
-    (version "1.10.1")
+    (version "1.14")
     (home-page "https://github.com/phillipberndt/autorandr")
     (source
      (origin
@@ -283,7 +285,7 @@ program.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0msw9b1hdy3gbq9w5d04mfizhyirz1c648x84mlcbzl8salm7vpg"))))
+        (base32 "0yb0rnv37xymjhg54mk7zw3h9501f45ykc1754mxy1q3bm0fgva6"))))
     (build-system python-build-system)
     (native-inputs
      (list pkg-config))
@@ -1115,7 +1117,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.68")
+    (version "5.72")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "http://sillycycle.com/xlock/"
@@ -1126,7 +1128,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                                         "xlockmore-" version ".tar.xz")))
               (sha256
                (base32
-                "0vndfwccnvkaaraprjam8pmx0aj55va0ag64q6snxw83nbf1ywrh"))))
+                "0wn77ri29rhk1w3wik2hpqb8lks1pyqzdk6d583mawxfcxcrf4fm"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1144,6 +1146,57 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 X Window System.")
     (license (license:non-copyleft #f "See xlock.c.")
              ))) ; + GPLv2 in modes/glx/biof.c.
+
+(define-public xtrlock
+  (package
+    (name "xtrlock")
+    (version "2.15")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://debian/pool/main/x/xtrlock/xtrlock_" version
+                    ".tar.xz"))
+              (sha256
+               (base32
+                "0mgpysbvipd5h6x6zz4hng6b13gp3qjnpgny3azyj8k8dv85bppw"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; LDLIBS are required for the package to build.
+     ;; CFLAGS are required for it to use the shadow file, and to
+     ;; be compatible with multi-touch devices.
+     (list #:make-flags
+           #~'("CFLAGS=-O2 -g -Wall -DSHADOW_PWD -DMULTITOUCH"
+               "LDLIBS=-lX11 -lcrypt -lXi")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (delete 'check)
+               (add-after 'unpack 'rename-makefile
+                 (lambda _
+                   (rename-file "Makefile.noimake" "Makefile")
+                   (rename-file "xtrlock.man" "xtrlock.1")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out")))
+                     (install-file "xtrlock"
+                                   (string-append out "/bin/"))
+                     (install-file "xtrlock.1"
+                                   (string-append out
+                                                  "/share/man/man1/"))))))))
+    (inputs (list libx11 libxi libxfixes))
+    (home-page "https://packages.debian.org/sid/xtrlock")
+    (synopsis "Minimal X display lock program")
+    (description
+     "xtrlock locks the X server till the user enters their password at the
+keyboard.  While xtrlock is running, the mouse and keyboard are grabbed and
+the mouse cursor becomes a padlock.  Output displayed by X programs, and
+windows put up by new X clients, continue to be visible, and any new output is
+displayed normally.  The mouse and keyboard are returned when the user types
+their password, followed by Enter or Newline.  If an incorrect password is
+entered the bell is sounded.  Pressing Backspace or Delete erases one
+character of a password partially typed; pressing Escape or Clear clears
+anything that has been entered.")
+    (license license:gpl2+)))
 
 (define-public xosd
   (package
@@ -1892,7 +1945,16 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "138c4bl60p7namsb2pk8q5cdlxbdkli7zny192vk5jv5s5kczzya"))))
+                "138c4bl60p7namsb2pk8q5cdlxbdkli7zny192vk5jv5s5kczzya"))
+              (snippet
+               #~(begin
+                   ;; Delete pre-generated files.
+                   (for-each delete-file
+                             (list "lexer/theme-lexer.c"
+                                   "lexer/theme-parser.c"
+                                   "lexer/theme-parser.h"
+                                   "resources/resources.c"
+                                   "resources/resources.h"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -1904,7 +1966,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
      (list cairo
            glib
            libjpeg-turbo
-           librsvg
+           (librsvg-for-system)
            libxcb
            libxkbcommon
            pango
@@ -2023,7 +2085,7 @@ natural language input and provide results.")
     (inputs
      (list gtk+
            imlib2
-           librsvg
+           (librsvg-for-system)
            libxcomposite
            libxdamage
            libxft
@@ -2043,6 +2105,46 @@ The taskbar includes transparency and color settings for the font, icons,
 border, and background.  It also supports multihead setups, customized mouse
 actions, a built-in clock, a battery monitor and a system tray.")
     (license license:gpl2)))
+
+(define-public stalonetray
+  (package
+    (name "stalonetray")
+    (version "0.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/kolbusa/stalonetray")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "074wy1xppfycillbxq6fwrq87ik9glc95083df5vgm20mhzni7pz"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-docbook-root
+            (lambda _
+              (substitute* "configure.ac"
+                (("AC_SUBST\\(DOCBOOK_ROOT\\)" all)
+                 (string-append "DOCBOOK_ROOT="
+                                #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/docbook-xsl-"
+                                #$(package-version (this-package-native-input "docbook-xsl"))
+                                "; " all))))))))
+    (inputs (list libx11 libxpm))
+    (native-inputs (list autoconf automake docbook-xsl libxslt))
+    (build-system gnu-build-system)
+    (home-page "https://kolbusa.github.io/stalonetray")
+    (synopsis "Standalone freedesktop.org and KDE systray implementation")
+    (description
+     "Stalonetray is a stand-alone freedesktop.org and KDE system
+tray (notification area) for X Window System/X11 (e.g. X.Org or XFree86).  It
+has full XEMBED support and minimal dependencies: an X11 lib only.  Stalonetray
+works with virtually any EWMH-compliant window manager.")
+    (license license:gpl2+)))
 
 (define-public tofi
   (package
@@ -2559,14 +2661,14 @@ temperature of the screen.")
 (define-public xsecurelock
   (package
     (name "xsecurelock")
-    (version "1.7.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/google/xsecurelock/releases"
                     "/download/v" version "/xsecurelock-" version ".tar.gz"))
               (sha256
-               (base32 "0s2q69g1xhvs18q2jhcval5vpa9j0kkrdv02r176vvxvdms7hhc7"))))
+               (base32 "1i7vhzysirr5kra15vd501b79k0jgs11lkb9ck3hx6vicxm204d3"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -3162,7 +3264,7 @@ using @command{dmenu}.")
                   fontconfig
                   libpng
                   libxkbcommon
-                  librsvg ;if librsvg is not used, bundled nanosvg is used
+                  (librsvg-for-system) ;if librsvg is not used, bundled nanosvg is used
                   pixman
                   wayland
                   wayland-protocols))
@@ -3216,7 +3318,7 @@ such as sway, similar to @command{rofi}.")
                 "0hq2qiqxvrw3g515ywcb676ljc8mdw3pyslgxr3vahizfljah1pv"))))
     (build-system meson-build-system)
     (native-inputs (list nlohmann-json pkg-config))
-    (inputs (list gtk-layer-shell gtkmm-3 librsvg))
+    (inputs (list gtk-layer-shell gtkmm-3 (librsvg-for-system)))
     (home-page "https://github.com/nwg-piotr/nwg-launchers")
     (synopsis "Application launchers for wlroots")
     (description
@@ -3450,7 +3552,7 @@ light filter or night light.")
 (define-public ydotool
   (package
     (name "ydotool")
-    (version "1.0.1")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -3459,7 +3561,7 @@ light filter or night light.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h19dh7kai0iikssr7sq0wfkh0sb18dylyfg7c3dkwc158cdg9cr"))))
+        (base32 "0y2n1r6hx0ar1yn636a7j4ywm17qqji84ryhdina3kriwx3sgmij"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))          ; no tests
     (native-inputs (list scdoc))

@@ -349,7 +349,7 @@ Chinese pinyin input methods.")
 (define-public ibus-anthy
   (package
     (name "ibus-anthy")
-    (version "1.5.14")
+    (version "1.5.15")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -357,13 +357,13 @@ Chinese pinyin input methods.")
                     version "/ibus-anthy-" version ".tar.gz"))
               (sha256
                (base32
-                "16vd0k8wm13s38869jqs3dnwmjvywgn0snnpyi41m28binhlssf8"))
+                "12yrgqiq6mqc8jr49dgkk3d7mdnyqic4xs597biwjjkahgaydi2q"))
               (patches (search-patches "ibus-anthy-fix-tests.patch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
       ;; The test suite hangs (see:
-      ;; https://github.com/ibus/ibus-anthy/issues/28).
+      ;; https://github.com/ibus/ibus-anthy/pull/35).
       #:tests? #f
       #:configure-flags
       ;; Use absolute exec path in the anthy.xml.

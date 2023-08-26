@@ -614,11 +614,15 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "maxim.cournoyer@gmail.com")
   gnome qt telephony)
 
+(define-member (person "Katherine Cox-Buday"
+                       "cox.katherine.e+guix@gmail.com")
+  emacs go lisp)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
       (error (format #false
-                           "no such team: ~a~%" name))))
+                     "no such team: ~a~%" name))))
 
 (define (find-team-by-scope files)
   "Return the team(s) which scope matches at least one of the FILES, as list

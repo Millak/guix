@@ -542,12 +542,12 @@ completely compatible with Plain TeX.")
                ('arguments
                 ('list '#:builder ('gexp ('mkdir ('ungexp 'output)))))
                ('propagated-inputs
-                ('list 'texlive-collection-basic 'texlive-texworks))
+                ('list 'texlive-collection-basic))
                ('home-page "https://www.tug.org/texlive/")
                ('synopsis (? string?))
                ('description (? string?))
                ('license
-                ('license:fsf-free "https://www.tug.org/texlive/copying.html")))
+                ('fsf-free "https://www.tug.org/texlive/copying.html")))
              #true)
             (_
              (begin

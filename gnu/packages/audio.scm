@@ -37,7 +37,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
-;;; Copyright © 2022, 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
@@ -45,6 +45,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -116,7 +117,9 @@
   #:use-module (gnu packages pulseaudio)  ;libsndfile, libsamplerate
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
@@ -4691,6 +4694,45 @@ flavors EBU R128, ATSC A/85, and ReplayGain 2.0.  It helps normalizing the
 loudness of audio and video files to the same level.")
     (license license:gpl2+)))
 
+(define-public r128gain
+  (package
+    (name "r128gain")
+    (version "1.0.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/desbma/r128gain.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zqclskkjb9hfdw9gq6iq4bs9dl1wj9nr8v1jz6s885379q9l8i7"))))
+    (build-system python-build-system)
+    (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'hardcode-ffmpeg
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "r128gain/__init__.py"
+                  (("ffmpeg_path or \"ffmpeg\"")
+                   (string-append "ffmpeg_path or \""
+                                  (search-input-file inputs "bin/ffmpeg")
+                                  "\""))))))))
+    (inputs (list python-crcmod python-ffmpeg-python python-mutagen
+                  python-tqdm ffmpeg))
+    (native-inputs (list python-future python-requests))
+    (home-page "https://github.com/desbma/r128gain")
+    (synopsis "Fast audio loudness scanner & tagger")
+    (description
+     "r128gain is a multi platform command line tool to scan your audio
+files and tag them with loudness metadata (ReplayGain v2 or Opus R128 gain
+format), to allow playback of several tracks or albums at a similar
+loudness level. r128gain can also be used as a Python module from other
+Python projects to scan and/or tag audio files.")
+    ;; 'setup.py' claims LGPL2+, 'LICENSE' is LGPLv2.1.
+    (license license:lgpl2.1+)))
+
 (define-public filteraudio
   (let ((revision "1")
         (commit "2fc669581e2a0ff87fba8de85861b49133306094"))
@@ -5936,14 +5978,14 @@ while still staying in time.")
 (define-public butt
   (package
     (name "butt")
-    (version "0.1.34")
+    (version "0.1.38")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/butt/butt/butt-"
                                   version "/butt-" version ".tar.gz"))
               (sha256
                (base32
-                "0zd1g1673pv8z437y34fllxska8dzpd7mygpham35pzwpdyc5c1p"))
+                "10i3xpxzccdl4pidiyymw9cfavhy50yhn7xi5bd77y91f2903kp9"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "src/butt.cpp"
@@ -5966,9 +6008,10 @@ while still staying in time.")
            (uri (string-append "https://danielnoethen.de/butt/butt-"
                                version "_manual.pdf"))
            (sha256
-            (base32 "0kadqzzbk25n0aqxgbqhg4mq4hsbjq44phzcx5qj1b8847yzz8si"))))))
+            (base32 "04aixxqshfj11ja3ifh0zvywl2mqzmymppcd0xj8sv0j7whjibaq"))))))
     (inputs
-     (list dbus
+     (list curl
+           dbus
            flac
            fltk
            lame
@@ -6253,7 +6296,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.4.5")
+    (version "0.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6262,7 +6305,7 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06pgkma0i9dbir74cfhgnnkqjcq8z496by4lk1whqcj7j9ldbi2l"))))
+                "186c3s56py8xjasbp4380m9sqdba9mf7mppqz8hkli1nhbspbix9"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib

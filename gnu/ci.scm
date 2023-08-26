@@ -24,6 +24,7 @@
   #:use-module (guix build-system channel)
   #:use-module (guix config)
   #:autoload   (guix describe) (package-channels)
+  #:use-module (guix memoization)
   #:use-module (guix store)
   #:use-module (guix profiles)
   #:use-module (guix packages)
@@ -342,29 +343,32 @@ otherwise use the IMAGE name."
   ;; Return the name of a package's job.
   package-name)
 
+(define base-packages
+  (mlambda (system)
+    "Return the set of packages considered to be part of the base for SYSTEM."
+    (delete-duplicates
+     (append-map (match-lambda
+                   ((_ package _ ...)
+                    (match (package-transitive-inputs package)
+                      (((_ inputs _ ...) ...)
+                       inputs))))
+                 (%final-inputs system)))))
+
 (define package->job
-  (let ((base-packages
-         (delete-duplicates
-          (append-map (match-lambda
-                        ((_ package _ ...)
-                         (match (package-transitive-inputs package)
-                           (((_ inputs _ ...) ...)
-                            inputs))))
-                      (%final-inputs)))))
-    (lambda* (store package system #:key (suffix ""))
-      "Return a job for PACKAGE on SYSTEM, or #f if this combination is not
+  (lambda* (store package system #:key (suffix ""))
+    "Return a job for PACKAGE on SYSTEM, or #f if this combination is not
 valid.  Append SUFFIX to the job name."
-      (cond ((member package base-packages)
-             (package-job store (string-append "base." (job-name package))
-                          package system #:suffix suffix))
-            ((supported-package? package system)
-             (let ((drv (package-derivation store package system
-                                            #:graft? #f)))
-               (and (substitutable-derivation? drv)
-                    (package-job store (job-name package)
-                                 package system #:suffix suffix))))
-            (else
-             #f)))))
+    (cond ((member package (base-packages system))
+           (package-job store (string-append "base." (job-name package))
+                        package system #:suffix suffix))
+          ((supported-package? package system)
+           (let ((drv (package-derivation store package system
+                                          #:graft? #f)))
+             (and (substitutable-derivation? drv)
+                  (package-job store (job-name package)
+                               package system #:suffix suffix))))
+          (else
+           #f))))
 
 (define %x86-64-micro-architectures
   ;; Micro-architectures for which we build tuned variants.
@@ -417,9 +421,9 @@ valid.  Append SUFFIX to the job name."
               (map channel-url channels)))
        arguments))
 
-(define (manifests->jobs store manifests)
+(define (manifests->jobs store manifests systems)
   "Return the list of jobs for the entries in MANIFESTS, a list of file
-names."
+names, for each one of SYSTEMS."
   (define (load-manifest manifest)
     (save-module-excursion
      (lambda ()
@@ -430,11 +434,12 @@ names."
     (string-append (manifest-entry-name entry) "-"
                    (manifest-entry-version entry)))
 
-  (define (manifest-entry->job entry)
+  (define (manifest-entry->job entry system)
     (let* ((obj (manifest-entry-item entry))
            (drv (parameterize ((%graft? #f))
                   (run-with-store store
-                    (lower-object obj))))
+                    (lower-object obj system)
+                    #:system system)))
            (max-silent-time (or (and (package? obj)
                                      (assoc-ref (package-properties obj)
                                                 'max-silent-time))
@@ -446,11 +451,13 @@ names."
                        #:max-silent-time max-silent-time
                        #:timeout timeout)))
 
-  (map manifest-entry->job
-       (delete-duplicates
-        (append-map (compose manifest-entries load-manifest)
-                    manifests)
-        manifest-entry=?)))
+  (let ((entries (delete-duplicates
+                  (append-map (compose manifest-entries load-manifest)
+                              manifests)
+                  manifest-entry=?)))
+    (append-map (lambda (system)
+                  (map (cut manifest-entry->job <> system) entries))
+                systems)))
 
 (define (arguments->systems arguments)
   "Return the systems list from ARGUMENTS."
@@ -572,7 +579,7 @@ names."
          (('manifests . rest)
           ;; Build packages in the list of manifests.
           (let ((manifests (arguments->manifests rest channels)))
-            (manifests->jobs store manifests)))
+            (manifests->jobs store manifests systems)))
          (else
           (error "unknown subset" subset))))
      systems)))

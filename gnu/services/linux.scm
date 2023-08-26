@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,6 +67,28 @@
             fstrim-service-type
 
             kernel-module-loader-service-type
+
+            cachefilesd-configuration
+            cachefilesd-configuration?
+            cachefilesd-configuration-cachefilesd
+            cachefilesd-configuration-debug-output?
+            cachefilesd-configuration-use-syslog?
+            cachefilesd-configuration-scan?
+            cachefilesd-configuration-cache-directory
+            cachefilesd-configuration-cache-name
+            cachefilesd-configuration-security-context
+            cachefilesd-configuration-pause-culling-for-block-percentage
+            cachefilesd-configuration-pause-culling-for-file-percentage
+            cachefilesd-configuration-resume-culling-for-block-percentage
+            cachefilesd-configuration-resume-culling-for-file-percentage
+            cachefilesd-configuration-pause-caching-for-block-percentage
+            cachefilesd-configuration-pause-caching-for-file-percentage
+            cachefilesd-configuration-log2-table-size
+            cachefilesd-configuration-cull?
+            cachefilesd-configuration-trace-function-entry-in-kernel-module
+            cachefilesd-configuration-trace-function-exit-in-kernel-module
+            cachefilesd-configuration-trace-internal-checkpoints-in-kernel-module
+            cachefilesd-service-type
 
             rasdaemon-configuration
             rasdaemon-configuration?
@@ -151,6 +174,7 @@ representation."
   (shepherd-service
    (documentation "Run the Early OOM daemon.")
    (provision '(earlyoom))
+   (requirement '(user-processes))
    (start #~(make-forkexec-constructor
              '#$(earlyoom-configuration->command-line-args config)
              #:log-file "/var/log/earlyoom.log"))
@@ -169,7 +193,8 @@ representation."
                              (compose list earlyoom-shepherd-service))
           (service-extension rottlog-service-type
                              (const %earlyoom-log-rotation))))
-   (description "Run @command{earlyoom}, the Early OOM daemon.")))
+   (description "Run @command{earlyoom}, a daemon that quickly responds to
+@acronym{OOM, out-of-memory} conditions by terminating relevant processes.")))
 
 
 ;;;
@@ -308,6 +333,180 @@ more information)."
 
 
 ;;;
+;;; Cachefilesd, an FS-Cache daemon
+;;;
+
+(define (serialize-string variable-symbol value)
+  #~(format #f "~a ~a~%" #$(symbol->string variable-symbol) #$value))
+
+(define-maybe string)
+
+(define (non-negative-integer? val)
+  (and (exact-integer? val) (not (negative? val))))
+
+(define (serialize-non-negative-integer variable-symbol value)
+  #~(format #f "~a ~d~%" #$(symbol->string variable-symbol) #$value))
+
+(define-maybe non-negative-integer)
+
+(define (make-option-serializer option-symbol)
+  (lambda (variable-symbol text)
+    (if (maybe-value-set? text)
+        #~(format #f "~a ~a~%" #$(symbol->string option-symbol) #$text)
+        "")))
+
+(define (make-percentage-threshold-serializer threshold-symbol)
+  (lambda (variable-symbol percentage)
+    (if (maybe-value-set? percentage)
+        #~(format #f "~a ~a%~%" #$(symbol->string threshold-symbol) #$percentage)
+        "")))
+
+(define-configuration cachefilesd-configuration
+  (cachefilesd
+   (file-like cachefilesd)
+   "The cachefilesd package to use."
+   (serializer empty-serializer))
+
+  ;; command-line options
+  (debug-output?
+   (boolean #f)
+   "Print debugging output to stderr."
+   (serializer empty-serializer))
+
+  (use-syslog?
+   (boolean #t)
+   "Log to syslog facility instead of stdout."
+   (serializer empty-serializer))
+
+  ;; culling is part of the configuration file
+  ;; despite the name of the command-line option
+  (scan?
+   (boolean #t)
+   "Scan for cachable objects."
+   (serializer empty-serializer))
+
+  ;; sole required field in the configuration file
+  (cache-directory
+   maybe-string
+   "Location of the cache directory."
+   (serializer (make-option-serializer 'dir)))
+
+  (cache-name
+   (maybe-string "CacheFiles")
+   "Name of cache (keep unique)."
+   (serializer (make-option-serializer 'tag)))
+
+  (security-context
+   maybe-string
+   "SELinux security context."
+   (serializer (make-option-serializer 'secctx)))
+
+  ;; percentage thresholds in the configuration file
+  (pause-culling-for-block-percentage
+   (maybe-non-negative-integer 7)
+   "Pause culling when available blocks exceed this percentage."
+   (serializer (make-percentage-threshold-serializer 'brun)))
+
+  (pause-culling-for-file-percentage
+   (maybe-non-negative-integer 7)
+   "Pause culling when available files exceed this percentage."
+   (serializer (make-percentage-threshold-serializer 'frun)))
+
+  (resume-culling-for-block-percentage
+   (maybe-non-negative-integer 5)
+   "Start culling when available blocks drop below this percentage."
+   (serializer (make-percentage-threshold-serializer 'bcull)))
+
+  (resume-culling-for-file-percentage
+   (maybe-non-negative-integer 5)
+   "Start culling when available files drop below this percentage."
+   (serializer (make-percentage-threshold-serializer 'fcull)))
+
+  (pause-caching-for-block-percentage
+   (maybe-non-negative-integer 1)
+   "Pause further allocations when available blocks drop below this percentage."
+   (serializer (make-percentage-threshold-serializer 'bstop)))
+
+  (pause-caching-for-file-percentage
+   (maybe-non-negative-integer 1)
+   "Pause further allocations when available files drop below this percentage."
+   (serializer (make-percentage-threshold-serializer 'fstop)))
+
+  ;; run time optimizations in the configuration file
+  (log2-table-size
+   (maybe-non-negative-integer 12)
+   "Size of tables holding cullable objects in logarithm of base 2."
+   (serializer (make-option-serializer 'culltable)))
+
+  (cull?
+   (boolean #t)
+   "Create free space by culling (consumes system load)."
+   (serializer
+    (lambda (variable-symbol value)
+      (if value "" "nocull\n"))))
+
+  ;; kernel module debugging in the configuration file
+  (trace-function-entry-in-kernel-module?
+   (boolean #f)
+   "Trace function entry in the kernel module (for debugging)."
+   (serializer empty-serializer))
+
+  (trace-function-exit-in-kernel-module?
+   (boolean #f)
+   "Trace function exit in the kernel module (for debugging)."
+   (serializer empty-serializer))
+
+  (trace-internal-checkpoints-in-kernel-module?
+   (boolean #f)
+   "Trace internal checkpoints in the kernel module (for debugging)."
+   (serializer empty-serializer)))
+
+(define (serialize-cachefilesd-configuration configuration)
+  (mixed-text-file
+   "cachefilesd.conf"
+   (serialize-configuration configuration cachefilesd-configuration-fields)))
+
+(define (cachefilesd-shepherd-service config)
+  "Return a list of <shepherd-service> for cachefilesd for CONFIG."
+  (match-record
+      config <cachefilesd-configuration> (cachefilesd
+                                          debug-output?
+                                          use-syslog?
+                                          scan?
+                                          cache-directory)
+      (let ((configuration-file (serialize-cachefilesd-configuration config)))
+        (shepherd-service
+         (documentation "Run the cachefilesd daemon for FS-Cache.")
+         (provision '(cachefilesd))
+         (requirement (append '(file-systems)
+                              (if use-syslog? '(syslogd) '())))
+         (start #~(begin
+                    (and=> #$(maybe-value cache-directory) mkdir-p)
+                    (make-forkexec-constructor
+                     `(#$(file-append cachefilesd "/sbin/cachefilesd")
+                       ;; do not detach
+                       "-n"
+                       #$@(if debug-output? '("-d") '())
+                       #$@(if use-syslog? '() '("-s"))
+                       #$@(if scan? '() '("-N"))
+                       "-f" #$configuration-file))))
+         (stop #~(make-kill-destructor))))))
+
+(define cachefilesd-service-type
+  (service-type
+   (name 'cachefilesd)
+   (description
+    "Run the file system cache daemon @command{cachefilesd}, which relies on
+the Linux @code{cachefiles} module.")
+   (extensions
+    (list (service-extension kernel-module-loader-service-type
+                             (const '("cachefiles")))
+          (service-extension shepherd-root-service-type
+                             (compose list cachefilesd-shepherd-service))))
+   (default-value (cachefilesd-configuration))))
+
+
+;;;
 ;;; Reliability, Availability, and Serviceability (RAS) daemon
 ;;;
 
@@ -351,7 +550,7 @@ more information)."
 
 
 ;;;
-;;; Kernel module loader.
+;;; Zram device
 ;;;
 
 (define-record-type* <zram-device-configuration>

@@ -22,10 +22,10 @@ index 4e8cc81..63161b7 100644
  )
 
  install(FILES
-diff --git a/KF5AkonadiConfig.cmake.in b/KF5AkonadiConfig.cmake.in
+diff --git a/KPimAkonadiConfig.cmake.in b/KPimAkonadiConfig.cmake.in
 index bcf7320..1574319 100644
---- a/KF5AkonadiConfig.cmake.in
-+++ b/KF5AkonadiConfig.cmake.in
+--- a/KPimAkonadiConfig.cmake.in
++++ b/KPimAkonadiConfig.cmake.in
 @@ -1,10 +1,10 @@
  @PACKAGE_INIT@
 

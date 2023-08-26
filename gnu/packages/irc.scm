@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -49,6 +51,7 @@
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -66,6 +69,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-xyz)
@@ -260,14 +264,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.0.2")
+    (version "4.0.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0g026j47140h8kqyh3l0367fq9194wdx8q7f4na0kj14s3h8wr0f"))))
+                "1xmnks152ixn0ycs0h6dzvir3vl1wkvxahg7hjdk785dnmwljpxf"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -480,14 +484,14 @@ highlighted.
 (define-public sic
   (package
     (name "sic")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dl.suckless.org/tools/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "11aiavxp44yayibc58bvimi8mrxvbw1plbci8cnbl4syk42zj1xc"))))
+                "1lk57mrrqgky37bjsnp72s8libywzsrbbjq8bpmz4xdw7smqyirh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -830,3 +834,80 @@ but can also be used independently as a logging bot.")
 server written in C++ for Unix-like operating systems.")
     (home-page "https://www.inspircd.org/")
     (license license:gpl2)))
+
+(define-public snuik
+  (package
+    (name "snuik")
+    (version "0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dezyne.org/download/snuik/"
+                           name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lm6mbgfjzjk3pvzp1y9wkdz9dr2qyl1c6ib1hqxrnvkmlciy5p5"))))
+    (native-inputs (list guile-3.0))
+    (inputs (list bash-minimal guile-3.0 guile-8sync))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:not-compiled-file-regexp "(guix|guix/.*)[.]scm$"
+      #:modules '((srfi srfi-1)
+                  (ice-9 popen)
+                  (guix build guile-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 #~()
+                 #~((add-after 'build 'check
+                      (lambda _
+                        (let* ((tests (find-files "test" "[.]scm$"))
+                               (guile #$(this-package-input "guile"))
+                               (guile (string-append guile "/bin/guile")))
+                          (fold (lambda (test result)
+                                  (and
+                                   result
+                                   (invoke guile "--no-auto-compile" test)))
+                                #t
+                                tests))))))
+          (add-after 'install 'install-script
+            (lambda _
+              (let* ((bash #$(this-package-input "bash-minimal"))
+                     (bash (string-append bash "/bin/bash"))
+                     (guile #$(this-package-input "guile"))
+                     (guile (string-append guile "/bin/guile"))
+                     (build-guile #$(this-package-native-input "guile"))
+                     (build-guile (string-append build-guile "/bin/guile"))
+                     (guile-8sync #$(this-package-input "guile-8sync"))
+                     (out #$output)
+                     (bin (string-append out "/bin"))
+                     (effective (read
+                                 (open-pipe* OPEN_READ
+                                             build-guile "-c"
+                                             "(write (effective-version))")))
+                     (path (list (string-append guile "/bin")))
+                     (scm-dir (string-append "/share/guile/site/" effective))
+                     (scm-path (list (string-append out scm-dir)
+                                     (string-append guile-8sync scm-dir)))
+                     (go-dir (string-append "/lib/guile/" effective
+                                            "/site-ccache/"))
+                     (go-path (list (string-append out go-dir)
+                                    (string-append guile-8sync go-dir))))
+                (mkdir-p "bin")
+                (copy-file "snuik.sh" "bin/snuik")
+                (substitute* "bin/snuik"
+                  (("@SHELL@") bash))
+                (chmod "snuik" #o755)
+                (install-file "bin/snuik" bin)
+                (wrap-script (string-append out "/bin/snuik")
+                  `("PATH" ":" prefix ,path)
+                  `("GUILE_AUTO_COMPILE" ":" = ("0"))
+                  `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
+                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))))))))
+    (home-page "https://gitlab.com/janneke/snuik")
+    (synopsis "IRC bot using Guile-8sync")
+    (description "@code{Snuik} is an IRC bot using the GNU 8sync (for
+now).  It has some basic functionality only, such as seen, tell, and
+what.")
+    (license license:gpl3+)))

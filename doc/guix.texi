@@ -96,7 +96,7 @@ Copyright @copyright{} 2021 Domagoj Stolfa@*
 Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
-Copyright @copyright{} 2021, 2022 Josselin Poiret@*
+Copyright @copyright{} 2021-2023 Josselin Poiret@*
 Copyright @copyright{} 2021, 2023 muradm@*
 Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
@@ -116,7 +116,9 @@ Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
 Copyright @copyright{} 2023 Tanguy Le Carrour@*
+Copyright @copyright{} 2023 Zheng Junjie@*
 Copyright @copyright{} 2023 Brian Cully@*
+Copyright @copyright{} 2023 Felix Lechner@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -448,6 +450,8 @@ Home Services
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Networking: Networking Home Services.  Networking services.
+* Miscellaneous: Miscellaneous Home Services.  More services.
 
 Platforms
 
@@ -1403,7 +1407,7 @@ The system types the remote machine supports---e.g., @code{(list
 "x86_64-linux" "i686-linux")}.
 
 @item user
-The user account to use when connecting to the remote machine over SSH.
+The user account on the remote machine to use when connecting over SSH.
 Note that the SSH key pair must @emph{not} be passphrase-protected, to
 allow non-interactive logins.
 
@@ -1496,6 +1500,11 @@ archives of files from the store (@pxref{Invoking guix archive}):
 @example
 # guix archive --generate-key
 @end example
+
+@quotation Note
+This key pair is not related to the SSH key pair that was previously
+mentioned in the description of the @code{build-machine} data type.
+@end quotation
 
 @noindent
 Each build machine must authorize the key of the master machine so that
@@ -4801,9 +4810,11 @@ Specifically, @command{guix pull} downloads code from the @dfn{channels}
 @item
 the @option{--channels} option;
 @item
-the user's @file{~/.config/guix/channels.scm} file;
+the user's @file{~/.config/guix/channels.scm} file, unless @option{-q}
+is passed;
 @item
-the system-wide @file{/etc/guix/channels.scm} file;
+the system-wide @file{/etc/guix/channels.scm} file, unless @option{-q}
+is passed;
 @item
 the built-in default channels specified in the @code{%default-channels}
 variable.
@@ -4904,6 +4915,11 @@ Read the list of channels from @var{file} instead of
 @var{file} must contain Scheme code that
 evaluates to a list of channel objects.  @xref{Channels}, for more
 information.
+
+@item --no-channel-files
+@itemx -q
+Inhibit loading of the user and system channel files,
+@file{~/.config/guix/channels.scm} and @file{/etc/guix/channels.scm}.
 
 @cindex channel news
 @item --news
@@ -5050,7 +5066,9 @@ guix time-machine --commit=v1.2.0 -- \
   environment -C --ad-hoc guile -- guile
 @end example
 
-The command above fetches Guix@tie{}1.2.0 and runs its @command{guix
+The command above fetches Guix@tie{}1.2.0 (and possibly other channels
+specified by your @file{channels.scm} configuration files---see
+below) and runs its @command{guix
 environment} command to spawn an environment in a container running
 @command{guile} (@command{guix environment} has since been subsumed by
 @command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
@@ -5060,6 +5078,21 @@ invocation can be expensive: it may have to download or even build a
 large number of packages; the result is cached though and subsequent
 commands targeting the same commit are almost instantaneous.
 
+As for @command{guix pull}, in the absence of any options,
+@command{time-machine} fetches the latest commits of the channels
+specified in @file{~/.config/guix/channels.scm},
+@file{/etc/guix/channels.scm}, or the default channels; the @option{-q}
+option lets you ignore these configuration files.  The command:
+
+@example
+guix time-machine -q -- build hello
+@end example
+
+will thus build the package @code{hello} as defined in the main branch
+of Guix, without any additional channel, which is in general a newer
+revision of Guix than you have installed.  Time travel works in both
+directions!
+
 @quotation Note
 The history of Guix is immutable and @command{guix time-machine}
 provides the exact same software as they are in a specific Guix
@@ -5067,6 +5100,23 @@ revision.  Naturally, no security fixes are provided for old versions
 of Guix or its channels.  A careless use of @command{guix time-machine}
 opens the door to security vulnerabilities.  @xref{Invoking guix pull,
 @option{--allow-downgrades}}.
+@end quotation
+
+Due to @command{guix time-machine} relying on the ``inferiors''
+mechanism (@pxref{Inferiors}), the oldest commit it can travel to is
+commit @samp{6298c3ff} (``v1.0.0''), dated May 1@sup{st}, 2019, which is
+the first release that included the inferiors mechanism.  An error is
+returned when attempting to navigate to older commits.
+
+@quotation Note
+Although it should technically be possible to travel to such an old
+commit, the ease to do so will largely depend on the availability of
+binary substitutes.  When traveling to a distant past, some packages may
+not easily build from source anymore.  One such example are old versions
+of Python 2 which had time bombs in its test suite, in the form of
+expiring SSL certificates.  This particular problem can be worked around
+by setting the hardware clock to a value in the past before attempting
+the build.
 @end quotation
 
 The general syntax is:
@@ -5092,18 +5142,21 @@ string or the name of a tag), or @var{branch}.
 Read the list of channels from @var{file}.  @var{file} must contain
 Scheme code that evaluates to a list of channel objects.
 @xref{Channels} for more information.
-@end table
 
-As for @command{guix pull}, the absence of any options means that the
-latest commit on the master branch will be used.  The command
+@item --no-channel-files
+@itemx -q
+Inhibit loading of the user and system channel files,
+@file{~/.config/guix/channels.scm} and @file{/etc/guix/channels.scm}.
+
+Thus, @command{guix time-machine -q} is equivalent to the following Bash
+command, using the ``process substitution'' syntax (@pxref{Process
+Substitution,,, bash, The GNU Bash Reference Manual}):
 
 @example
-guix time-machine -- build hello
+guix time-machine -C <(echo %default-channels) @dots{}
 @end example
 
-will thus build the package @code{hello} as defined in the master branch,
-which is in general a newer revision of Guix than you have installed.
-Time travel works in both directions!
+@end table
 
 Note that @command{guix time-machine} can trigger builds of channels and
 their dependencies, and these are controlled by the standard build
@@ -6217,6 +6270,14 @@ building or downloading any missing package, and runs the
 @example
 guix shell python python-numpy -- python3
 @end example
+
+Note that it is necessary to include the main @code{python} package in
+this command even if it is already installed into your environment.
+This is so that the shell environment knows to set @env{PYTHONPATH} and
+other related variables.  The shell environment cannot check the
+previously installed environment, because then it would be
+non-deterministic.  This is true for most libraries: their corresponding
+language package should be included in the shell invocation.
 
 @quotation Note
 @cindex shebang, for @command{guix shell}
@@ -14529,6 +14590,26 @@ gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0
 @dots{}
 @end example
 
+In some specific cases, you may have many packages specified via a
+manifest or a module selection which should all be updated together; for
+these cases, the @option{--target-version} option can be provided to have
+them all refreshed to the same version, as shown in the examples below:
+
+@example
+$ guix refresh qtbase qtdeclarative --target-version=6.5.2
+gnu/packages/qt.scm:1248:13: qtdeclarative would be upgraded from 6.3.2 to 6.5.2
+gnu/packages/qt.scm:584:2: qtbase would be upgraded from 6.3.2 to 6.5.2
+@end example
+
+@example
+$ guix refresh --manifest=qt5-manifest.scm --target-version=5.15.10
+gnu/packages/qt.scm:1173:13: qtxmlpatterns would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1202:13: qtdeclarative would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1762:13: qtserialbus would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:2070:13: qtquickcontrols2 would be upgraded from 5.15.8 to 5.15.10
+@dots{}
+@end example
+
 Sometimes the upstream name differs from the package name used in Guix,
 and @command{guix refresh} needs a little help.  Most updaters honor the
 @code{upstream-name} property in package definitions, which can be used
@@ -16924,6 +17005,13 @@ Alternatively, the @code{modify-services} macro can be used:
   (delete avahi-service-type))
 @end lisp
 
+@quotation Do not panic
+@cindex Scheme programming language, getting started
+Intimidated by the Scheme language or curious about it?  The Cookbook
+has a short section to get started that explains the fundamentals, which
+you will find helpful when hacking your configuration.  @xref{A Scheme
+Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
+@end quotation
 
 @unnumberedsubsec Instantiating the System
 
@@ -17968,6 +18056,10 @@ administrator's choice; reconfiguring does @emph{not} change their name.
 
 @item @code{home-directory}
 This is the name of the home directory for the account.
+
+@item @code{home-directory-permissions} (default: @code{#o700})
+The permission bits for the home directory.  By default, full access is
+granted to the user account and all other access is denied.
 
 @item @code{create-home-directory?} (default: @code{#t})
 Indicates whether the home directory of this account should be created
@@ -21230,6 +21322,8 @@ client.
 @end table
 @end deftp
 
+@cindex Syncthing, file synchronization service
+@cindex backup service, Syncthing
 The @code{(gnu services syncthing)} module provides the following services:
 @cindex syncthing
 
@@ -21247,7 +21341,14 @@ syncthing} daemon, The value for this service type is a
          (syncthing-configuration (user "alice")))
 @end lisp
 
+@quotation Note
+This service is also available for Guix Home, where it runs directly
+with your user privileges (@pxref{Networking Home Services,
+@code{home-syncthing-service-type}}).
+@end quotation
+
 See below for details about @code{syncthing-configuration}.
+@end defvar
 
 @deftp {Data Type} syncthing-configuration
 Data type representing the configuration for @code{syncthing-service-type}.
@@ -21277,7 +21378,6 @@ directory is @file{$HOME} of the specified Syncthing @code{user}.
 
 @end table
 @end deftp
-@end defvar
 
 Furthermore, @code{(gnu services ssh)} provides the following services.
 @cindex SSH
@@ -23726,6 +23826,23 @@ The GNOME package to use.
 @end table
 @end deftp
 
+@defvar plasma-desktop-service-type
+This is the type of the service that adds the @uref{https://kde.org/plasma-desktop/,
+Plasma} desktop environment.  Its value is a @code{plasma-desktop-configuration}
+object (see below).
+
+This service adds the @code{plasma} package to the system profile.
+@end defvar
+
+@deftp {Data Type} plasma-desktop-configuration
+Configuration record for the Plasma desktop environment.
+
+@table @asis
+@item @code{plasma} (default: @code{plasma})
+The Plasma package to use.
+@end table
+@end deftp
+
 @defvar xfce-desktop-service-type
 This is the type of a service to run the @uref{Xfce, https://xfce.org/}
 desktop environment.  Its value is an @code{xfce-desktop-configuration} object
@@ -24994,12 +25111,11 @@ String or G-exp denoting an mcron schedule for the periodic
 @command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).
 
 @item @code{excluded-directories} (default @code{%default-file-database-excluded-directories})
-List of directories to ignore when building the file database.  By
-default, this includes @file{/tmp} and @file{/gnu/store}, which should
-instead be indexed by @command{guix locate} (@pxref{Invoking guix
-locate}).  This list is passed to the @option{--prunepaths} option of
-@command{updatedb} (@pxref{Invoking updatedb,,, find,
-GNU@tie{}Findutils}).
+List of regular expressions of directories to ignore when building the
+file database.  By default, this includes @file{/tmp} and @file{/gnu/store};
+the latter should instead be indexed by @command{guix locate} (@pxref{Invoking
+guix locate}).  This list is passed to the @option{--prunepaths} option of
+@command{updatedb} (@pxref{Invoking updatedb,,, find, GNU@tie{}Findutils}).
 @end table
 @end deftp
 
@@ -25150,6 +25266,20 @@ psql -U postgres
 There is no need to add this field for contrib extensions such as hstore or
 dblink as they are already loadable by postgresql.  This field is only
 required to add extensions provided by other packages.
+
+@item @code{create-account?} (default: @code{#t})
+Whether or not the @code{postgres} user and group should be created.
+
+@item @code{uid} (default: @code{#f})
+Explicitly specify the UID of the @code{postgres} daemon account.
+You normally do not need to specify this, in which case a free UID will
+be automatically assigned.
+
+One situation where this option might be useful is if the @var{data-directory}
+is located on a mounted network share.
+
+@item @code{gid} (default: @code{#f})
+Explicitly specify the GID of the @code{postgres} group.
 
 @end table
 @end deftp
@@ -32521,113 +32651,6 @@ network or obtained a DHCP lease from dnsmasq.
 @end table
 @end deftp
 
-@subsubheading ddclient Service
-
-@cindex ddclient
-The ddclient service described below runs the ddclient daemon, which takes
-care of automatically updating DNS entries for service providers such as
-@uref{https://dyn.com/dns/, Dyn}.
-
-The following example show instantiates the service with its default
-configuration:
-
-@lisp
-(service ddclient-service-type)
-@end lisp
-
-Note that ddclient needs to access credentials that are stored in a
-@dfn{secret file}, by default @file{/etc/ddclient/secrets} (see
-@code{secret-file} below).  You are expected to create this file manually, in
-an ``out-of-band'' fashion (you @emph{could} make this file part of the
-service configuration, for instance by using @code{plain-file}, but it will be
-world-readable @i{via} @file{/gnu/store}).  See the examples in the
-@file{share/ddclient} directory of the @code{ddclient} package.
-
-@c %start of fragment
-
-Available @code{ddclient-configuration} fields are:
-
-@deftypevr {@code{ddclient-configuration} parameter} package ddclient
-The ddclient package.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} integer daemon
-The period after which ddclient will retry to check IP and domain name.
-
-Defaults to @samp{300}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} boolean syslog
-Use syslog for the output.
-
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string mail
-Mail to user.
-
-Defaults to @samp{"root"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string mail-failure
-Mail failed update to user.
-
-Defaults to @samp{"root"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string pid
-The ddclient PID file.
-
-Defaults to @samp{"/var/run/ddclient/ddclient.pid"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} boolean ssl
-Enable SSL support.
-
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string user
-Specifies the user name or ID that is used when running ddclient
-program.
-
-Defaults to @samp{"ddclient"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string group
-Group of the user who will run the ddclient program.
-
-Defaults to @samp{"ddclient"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} string secret-file
-Secret file which will be appended to @file{ddclient.conf} file.  This
-file contains credentials for use by ddclient.  You are expected to
-create it manually.
-
-Defaults to @samp{"/etc/ddclient/secrets.conf"}.
-
-@end deftypevr
-
-@deftypevr {@code{ddclient-configuration} parameter} list extra-options
-Extra options will be appended to @file{ddclient.conf} file.
-
-Defaults to @samp{'()}.
-
-@end deftypevr
-
-
-@c %end of fragment
-
 @node VNC Services
 @subsection VNC Services
 @cindex VNC (virtual network computing)
@@ -33088,7 +33111,7 @@ IP address that no longer correspond to their freshly resolved host
 name.  Set this to @code{#t} if one or more endpoints use host names
 provided by a dynamic DNS service to keep the sessions alive.
 
-@item @code{monitor-ips-internal} (default: @code{'(next-minute (range 0 60 5))})
+@item @code{monitor-ips-interval} (default: @code{'(next-minute (range 0 60 5))})
 The time interval at which the IP monitoring job should run, provided as
 an mcron time specification (@pxref{Guile Syntax,,,mcron}).
 
@@ -38632,6 +38655,94 @@ parameters, can be done as follow:
 @end lisp
 @end defvar
 
+@subsubheading Cachefilesd Service
+
+@cindex cachefilesd
+@cindex fscache, file system caching (Linux)
+The Cachefilesd service starts a daemon that caches network file system
+data locally.  It is especially useful for NFS and AFS shares, where it
+reduces latencies for repeated access when reading files.
+
+The daemon can be configured as follows:
+
+@lisp
+(service cachefilesd-service-type
+         (cachefilesd-configuration
+           (cache-directory "/var/cache/fscache")))
+@end lisp
+
+@defvar cachefilesd-service-type
+The service type for starting @command{cachefilesd}.  The value for this
+service type is a @code{cachefilesd-configuration}, whose only required
+field is @var{cache-directory}.
+
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} cachefilesd-configuration
+Available @code{cachefilesd-configuration} fields are:
+
+@table @asis
+@item @code{cachefilesd} (default: @code{cachefilesd}) (type: file-like)
+The cachefilesd package to use.
+
+@item @code{debug-output?} (default: @code{#f}) (type: boolean)
+Print debugging output to stderr.
+
+@item @code{use-syslog?} (default: @code{#t}) (type: boolean)
+Log to syslog facility instead of stdout.
+
+@item @code{scan?} (default: @code{#t}) (type: boolean)
+Scan for cachable objects.
+
+@item @code{cache-directory} (type: maybe-string)
+Location of the cache directory.
+
+@item @code{cache-name} (default: @code{"CacheFiles"}) (type: maybe-string)
+Name of cache (keep unique).
+
+@item @code{security-context} (type: maybe-string)
+SELinux security context.
+
+@item @code{pause-culling-for-block-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available blocks exceed this percentage.
+
+@item @code{pause-culling-for-file-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available files exceed this percentage.
+
+@item @code{resume-culling-for-block-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available blocks drop below this percentage.
+
+@item @code{resume-culling-for-file-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available files drop below this percentage.
+
+@item @code{pause-caching-for-block-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available blocks drop below this
+percentage.
+
+@item @code{pause-caching-for-file-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available files drop below this
+percentage.
+
+@item @code{log2-table-size} (default: @code{12}) (type: maybe-non-negative-integer)
+Size of tables holding cullable objects in logarithm of base 2.
+
+@item @code{cull?} (default: @code{#t}) (type: boolean)
+Create free space by culling (consumes system load).
+
+@item @code{trace-function-entry-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function entry in the kernel module (for debugging).
+
+@item @code{trace-function-exit-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function exit in the kernel module (for debugging).
+
+@item @code{trace-internal-checkpoints-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace internal checkpoints in the kernel module (for debugging).
+
+@end table
+@end deftp
+@c %end of fragment
+
 @cindex rasdaemon
 @cindex Platform Reliability, Availability and Serviceability daemon
 @subsubheading Rasdaemon Service
@@ -38997,6 +39108,12 @@ implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
 You can add @command{open localhost} to your @file{~/.dico} file to make
 @code{localhost} the default server for @command{dico} client
 (@pxref{Initialization File,,, dico, GNU Dico Manual}).
+
+@quotation Note
+This service is also available for Guix Home, where it runs directly
+with your user privileges (@pxref{Miscellaneous Home Services,
+@code{home-dicod-service-type}}).
+@end quotation
 @end defvar
 
 @deftp {Data Type} dicod-configuration
@@ -40779,7 +40896,7 @@ QEMU monitor and the VM.
 @cindex image, creating disk images
 The @code{image} command can produce various image types.  The image
 type can be selected using the @option{--image-type} option.  It
-defaults to @code{efi-raw}.  When its value is @code{iso9660}, the
+defaults to @code{mbr-raw}.  When its value is @code{iso9660}, the
 @option{--label} option can be used to specify a volume ID with
 @code{image}.  By default, the root file system of a disk image is
 mounted non-volatile; the @option{--volatile} option can be provided to
@@ -40798,7 +40915,7 @@ qemu-system-x86_64 -enable-kvm -hda /tmp/my-image.qcow2 -m 1000 \
                    -bios $(guix build ovmf)/share/firmware/ovmf_x64.bin
 @end example
 
-When using the @code{efi-raw} image type, a raw disk image is produced;
+When using the @code{mbr-raw} image type, a raw disk image is produced;
 it can be copied as is to a USB stick, for instance.  Assuming
 @code{/dev/sdc} is the device corresponding to a USB stick, one can copy
 the image to it using the following command:
@@ -40936,7 +41053,7 @@ of the image.
 For the @code{image} action, create an image with given @var{type}.
 
 When this option is omitted, @command{guix system} uses the
-@code{efi-raw} image type.
+@code{mbr-raw} image type.
 
 @cindex ISO-9660 format
 @cindex CD image format
@@ -42887,15 +43004,17 @@ services)}.
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Networking: Networking Home Services.  Networking services.
+* Miscellaneous: Miscellaneous Home Services.  More services.
 @end menu
 @c In addition to that Home Services can provide
 
 @node Essential Home Services
 @subsection Essential Home Services
 There are a few essential home services defined in
-@code{(gnu services)}, they are mostly for internal use and are required
-to build a home environment, but some of them will be useful for the end
-user.
+@code{(gnu home services)}, they are mostly for internal use and are
+required to build a home environment, but some of them will be useful
+for the end user.
 
 @cindex environment variables
 
@@ -44160,8 +44279,8 @@ font installation path (@file{~/.guix-home/profile/share/fonts}).  If
 you configure this service directly, be sure to include the above
 directory.
 
-A typical extension for adding an additional font directory and setting
-a font as the default monospace font might look like this:
+Here's how you'd extend it to include fonts installed with the Nix
+package manager, and to prefer your favourite monospace font:
 
 @lisp
 (simple-service 'additional-fonts-service
@@ -44475,6 +44594,82 @@ kodi} for more information.
 
 @end table
 @end deftp
+
+@node Networking Home Services
+@subsection Networking Home Services
+
+This section lists services somewhat networking-related that you may use
+with Guix Home.
+
+@cindex Syncthing, file synchronization service
+@cindex backup service, Syncthing
+The @code{(gnu home services syncthing)} module provides a service to
+set up the @uref{Syncthing, https://syncthing.net} continuous file
+backup service.
+
+@defvar home-syncthing-service-type
+This is the service type for the @command{syncthing} daemon; it is the
+Home counterpart of the @code{syncthing-service-type} system service
+(@pxref{Networking Services, @code{syncthing-service-type}}).  The value
+for this service type is a @command{syncthing-configuration}.
+
+Here is how you would set it up with the default configuration:
+
+@lisp
+(service home-syncthing-service-type)
+@end lisp
+
+For a custom configuration, wrap you @code{syncthing-configuration} in
+@code{for-home}, as in this example:
+
+@lisp
+(service home-syncthing-service-type
+         (for-home
+          (syncthing-configuration (logflags 5))))
+@end lisp
+
+For details about @code{syncthing-configuration}, check out the
+documentation of the system service (@pxref{Networking Services,
+@code{syncthing-service-type}}).
+@end defvar
+
+
+@node Miscellaneous Home Services
+@subsection Miscellaneous Home Services
+
+This section lists Home services that lack a better place.
+
+@subsubheading Dictionary Service
+
+@cindex dictionary service, for Home
+The @code{(gnu home services dict)} module provides the following service:
+
+@defvar home-dicod-service-type
+This is the type of the service that runs the @command{dicod} daemon, an
+implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
+
+You can add @command{open localhost} to your @file{~/.dico} file to make
+@code{localhost} the default server for @command{dico} client
+(@pxref{Initialization File,,, dico, GNU Dico Manual}).
+@end defvar
+
+This service is a direct mapping of the @code{dicod-service-type} system
+service (@pxref{Miscellaneous Services, Dictionary Service}).  You can
+use it like this:
+
+@lisp
+(service home-dicod-service-type)
+@end lisp
+
+You may specify a custom configuration by providing a
+@code{dicod-configuration} record, exactly like for
+@code{dicod-service-type}, but wrapping it in @code{for-home}:
+
+@lisp
+(service home-dicod-service-type
+         (for-home
+          (dicod-configuration @dots{})))
+@end lisp
 
 @node Invoking guix home
 @section Invoking @command{guix home}
@@ -45010,7 +45205,7 @@ then directly boot from it, without any kind of installation procedure.
 
 The @command{guix system image} command is able to turn an operating
 system definition into a bootable image.  This command supports
-different image types, such as @code{efi-raw}, @code{iso9660} and
+different image types, such as @code{mbr-raw}, @code{iso9660} and
 @code{docker}.  Any modern @code{x86_64} machine will probably be able
 to boot from an @code{iso9660} image.  However, there are a few machines
 out there that require specific image types.  Those machines, in general
@@ -45362,6 +45557,10 @@ record.
 There are several @code{image-type} records provided by the @code{(gnu
 system image)} and the @code{(gnu system images @dots{})} modules.
 
+@defvar mbr-raw-image-type
+Build an image based on the @code{mbr-disk-image} image.
+@end defvar
+
 @defvar efi-raw-image-type
 Build an image based on the @code{efi-disk-image} image.
 @end defvar
@@ -45371,7 +45570,7 @@ Build an image based on the @code{efi32-disk-image} image.
 @end defvar
 
 @defvar qcow2-image-type
-Build an image based on the @code{efi-disk-image} image but with the
+Build an image based on the @code{mbr-disk-image} image but with the
 @code{compressed-qcow2} image format.
 @end defvar
 
@@ -45442,7 +45641,7 @@ wsl -d Guix
 
 So, if we get back to the @code{guix system image} command taking an
 @code{operating-system} declaration as argument.  By default, the
-@code{efi-raw-image-type} is used to turn the provided
+@code{mbr-raw-image-type} is used to turn the provided
 @code{operating-system} into an actual bootable image.
 
 To use a different @code{image-type}, the @code{--image-type} option can

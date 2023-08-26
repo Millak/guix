@@ -3,6 +3,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -171,14 +172,14 @@ exec ~a \"$@\""
 (define-public pkgconf
   (package
     (name "pkgconf")
-    (version "1.9.3")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append  "https://distfiles.dereferenced.org/"
                                    name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17b9cl2s99pzgblaj0yg49k3m0by5x78vwg4879vckymhys5bcsz"))))
+                "00a4cv1f8cxsb4jhpgxxrwrl92b1zdsirqn0gqvva7i5izpjanpa"))))
     (build-system gnu-build-system)
     (arguments (list #:tests? #f))      ;TODO: package kyua
     (home-page "http://pkgconf.org/")

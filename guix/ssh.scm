@@ -175,8 +175,9 @@ to SSH server at '~a'")
              (disconnect! session)
              (raise (condition
                      (&message
-                      (message (format #f (G_ "SSH authentication failed for '~a': ~a~%")
-                                       host (get-error session)))))))))))
+                      (message (format #f (G_ "SSH authentication failed for '~a@~a': ~a~%")
+                                       (session-get session 'user) host
+                                       (get-error session)))))))))))
       (x
        ;; Connection failed or timeout expired.
        (raise (formatted-message (G_ "SSH connection to '~a' failed: ~a~%")

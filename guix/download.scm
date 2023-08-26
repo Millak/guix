@@ -358,7 +358,15 @@
        "https://mirror.esc7.net/pub/OpenBSD/")
       (mate
        "https://pub.mate-desktop.org/releases/"
-       "http://pub.mate-desktop.org/releases/"))))
+       "http://pub.mate-desktop.org/releases/")
+      (qt
+       "https://mirrors.ocf.berkeley.edu/qt/official_releases/"
+       "https://ftp.jaist.ac.jp/pub/qtproject/official_releases/"
+       "https://ftp.nluug.nl/languages/qt/official_releases/"
+       "https://mirrors.cloud.tencent.com/qt/official_releases/"
+       "https://mirrors.sjtug.sjtu.edu.cn/qt/official_releases/"
+       "https://qtproject.mirror.liquidtelecom.com/official_releases/"
+       "https://download.qt.io/official_releases/")))) ;slow
 
 (define %mirror-file
   ;; Copy of the list of mirrors to a file.  This allows us to keep a single

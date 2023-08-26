@@ -1850,8 +1850,8 @@ which uses SQL to describe changes.")
 
 (define-public sqlcrush
   ;; Unfortunately, there is no proper upstream release and may never be.
-  (let ((commit "b5f6868f189566a26eecc78d0f0659813c1aa98a")
-        (revision "1"))
+  (let ((commit "502a583e97a84efdeb48e59f1bfe403daa9681ee")
+        (revision "2"))
     (package
       (name "sqlcrush")
       (version (git-version "0.1.5" revision commit))
@@ -1863,7 +1863,7 @@ which uses SQL to describe changes.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0x3wy40r93p0jv3nbwj9a77wa4ff697d13r0wffmm7q9h3mzsww8"))))
+                  "0x2q4m9ryw68kifalnm3x4bv9v2xrc2ffsiap8m9wnw6lf1h05la"))))
       (build-system python-build-system)
       (inputs
        (list python-cryptography python-psycopg2 python-pymysql

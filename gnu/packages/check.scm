@@ -978,7 +978,7 @@ generation.")
 (define-public googlebenchmark
   (package
     (name "googlebenchmark")
-    (version "1.5.3")
+    (version "1.8.2")
     (home-page "https://github.com/google/benchmark")
     (source (origin
               (method git-fetch)
@@ -987,7 +987,7 @@ generation.")
               (file-name (git-file-name "google-benchmark" version))
               (sha256
                (base32
-                "1hls0aqqj5cfldn9jfpvzjhpxkhrydrz9crp477rwllwjsybdxw7"))))
+                "1p72bw7xcd88d8268fmmzji59408f552fbiv37jmsixml5dmq9wv"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"

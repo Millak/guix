@@ -101,6 +101,7 @@
     ("cc-by-sa-3" 'cc-by-sa3.0)
     ("cc-by-sa-4" 'cc-by-sa4.0)
     ("mit" 'expat)
+    ("x11" 'x11)
     ("fdl" 'fdl1.3+)
     ;; The GUST Font Nosource License, which is legally equivalent to
     ;; lppl1.3c+, is no longer in use (per
@@ -298,7 +299,7 @@ When TEXLIVE-ONLY is true, only TeX Live packages are returned."
 (define (linked-scripts name package-database)
   "Return a list of script names to symlink from \"bin/\" directory for
 package NAME according to PACKAGE-DATABASE.  Consider as scripts files with
-\".lua\", \".pl\", \".py\", \".sh\", \".tcl\", \".texlua\", \".tlu\"
+\".lua\", \".pl\", \".py\", \".rb\", \".sh\", \".tcl\", \".texlua\", \".tlu\"
 extensions, and files without extension."
   (and-let* ((data (assoc-ref package-database name))
              ;; Check if binaries are associated to the package.
@@ -317,7 +318,8 @@ extensions, and files without extension."
     (filter-map (lambda (script)
                   (and (any (lambda (ext)
                               (member (basename script ext) binaries))
-                            '(".lua" ".pl" ".py" ".sh" ".tcl" ".texlua" ".tlu"))
+                            '(".lua" ".pl" ".py" ".rb" ".sh" ".tcl" ".texlua"
+                              ".tlu"))
                        (basename script)))
                 ;; Get the right (alphabetic) order.
                 (reverse scripts))))
@@ -476,6 +478,7 @@ of those files are returned that are unexpectedly installed."
           ,@(match (append-map (lambda (s)
                                  (cond ((string-suffix? ".pl" s) '(perl))
                                        ((string-suffix? ".py" s) '(python))
+                                       ((string-suffix? ".rb" s) '(ruby))
                                        ((string-suffix? ".tcl" s) '(tcl tk))
                                        (else '())))
                                (or scripts '()))
@@ -499,7 +502,7 @@ of those files are returned that are unexpectedly installed."
           (license
            ,(cond
              (meta-package?
-              '(license:fsf-free "https://www.tug.org/texlive/copying.html"))
+              '(fsf-free "https://www.tug.org/texlive/copying.html"))
              ((assoc-ref data 'catalogue-license) => string->license)
              (else #f))))
        (translate-depends depends #t)))))

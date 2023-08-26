@@ -1401,14 +1401,14 @@ archives.")
 (define-public grsync
   (package
     (name "grsync")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.opbyte.it/release/"
                                   "grsync-" version ".tar.gz"))
               (sha256
                (base32
-                "1z1m782b50x348kgynzf753apy8yszkl31y32y1jsc055skcdixp"))))
+                "1ly6ng211wj9sc0la73jsz2lviwd7b4a7bhw16kmnbm6v8jhxk1k"))))
     (build-system gnu-build-system)
     (native-inputs (list intltool pkg-config))
     (inputs (list gtk+))

@@ -90,7 +90,7 @@
     '("XDG_CONFIG_DIRS" suffix directory "/etc/xdg")
     `("QT_PLUGIN_PATH" prefix directory
       ,(format #f "/lib/qt~a/plugins" qt-major-version))
-    `("QML2_IMPORT_PATH" = directory
+    `("QML2_IMPORT_PATH" prefix directory
       ,(format #f "/lib/qt~a/qml" qt-major-version))
     ;; QTWEBENGINEPROCESS_PATH accepts a single value, which makes 'exact the
     ;; most suitable environment variable type for it.

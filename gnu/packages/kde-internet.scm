@@ -52,7 +52,8 @@
   #:use-module (gnu packages vnc)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xiph)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public choqok
   (package
@@ -114,17 +115,59 @@ Other notable features include:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public falkon
+  (package
+    (name "falkon")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/falkon-" version ".tar.xz"))
+       (sha256
+        (base32
+         "11r1iwimdzabfah68gsvw6xi67cj539anqa6s1rg33agsi5y56d3"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E"
+                             "(locationbartest|qmltabsapitest)")))))))
+    (native-inputs
+     (list extra-cmake-modules pkg-config qttools-5))
+    (inputs
+     (list karchive
+           ki18n
+           kio
+           kwallet
+           openssl
+           purpose
+           qtquickcontrols-5
+           qtsvg-5
+           qtwebengine-5
+           qtx11extras
+           qtwayland-5
+           xcb-util))
+    (home-page "https://www.falkon.org/")
+    (synopsis "Qt-based web browser for KDE")
+    (description
+     "Falkon is is a Qt-based web browser for  KDE.")
+    (license license:gpl3+)))
+
 (define-public kget
   (package
     (name "kget")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kget-" version ".tar.xz"))
        (sha256
-        (base32 "0rqznsyphnq0zi65wvrl9mwqm9268wgihkr104i87pp5kfiah5yp"))))
+        (base32 "1n9wnm1si4g4rv8zaqpr8m3c2aav0mj8i7z96m78dk1apippx77r"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
@@ -183,14 +226,14 @@ This package is part of the KDE networking module.")
 (define-public konversation
   (package
     (name "konversation")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konversation-" version ".tar.xz"))
        (sha256
-        (base32 "08b4vnm66hbbnvkkh1p0a82pd2aj4zy5a8indfv3fzczsfpx6gp0"))))
+        (base32 "1ip0jlz71fad5l0ppbc6w914hqk7h626s12ssbb9p1c2yvlr1j1v"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -255,14 +298,14 @@ Features are:
 (define-public kopete
   (package
     (name "kopete")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kopete-" version ".tar.xz"))
        (sha256
-        (base32 "0fc9m2xgsjmsypqllqb3cp1y2m28dqh48r1qg2xgkfyqa70dnvp9"))))
+        (base32 "1ps6g440p1dy2zwbj23f0mzw1d78r02aj88fy3i5sws9p9ra92gi"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
@@ -332,14 +375,14 @@ This package is part of the KDE networking module.")
 (define-public krdc
   (package
     (name "krdc")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "0bs8q3na924lnmra5608jwnn0dqczvh0f72nn43673ib3m1mddlr"))))
+        (base32 "0jva74n11fpm4ix4sbi0y1xnbly97lnap7dfj0bliw5s2d0sdjr0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -377,14 +420,14 @@ This package is part of the KDE networking module.")
 (define-public ktorrent
   (package
     (name "ktorrent")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktorrent-" version ".tar.xz"))
        (sha256
-        (base32 "1h95hf4ki2xi2c9bzdg18p6d1757gzqknf6gn1ls6lwqy6p0pr4h"))))
+        (base32 "17q6ivnbh4zxqnbm1bdzz3hri1434sq2rs9y57lvn4bb2xdwn1z5"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -432,14 +475,14 @@ a full-featured client for BitTorrent.")
 (define-public libktorrent
   (package
     (name "libktorrent")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "098ac7b5wa7v6svqv4rx1w44j18pr22qgr236fj94r2kpl2nq79q"))))
+        (base32 "1m6gyk1bids7qr9wfh6gcfq73ac9j5b2bljvfvfsw9f1ky1cmwab"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))

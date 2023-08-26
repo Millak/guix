@@ -454,7 +454,8 @@ designed to be used in a generic text renderer.")
               (sha256
                (base32
                 "0c0s4silpax74kwfz3dfmzn4lkv6jsyb800vfak166vii0hvbv3d"))
-              (patches (search-patches "fbreader-curl-7.62.patch"))))
+              (patches (search-patches "fbreader-curl-7.62.patch"
+                                       "fbreader-fix-icon.patch"))))
     (build-system gnu-build-system)
     (inputs
      `(("curl" ,curl)

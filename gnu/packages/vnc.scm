@@ -130,7 +130,7 @@
            ffmpeg
            freerdp                      ; for rdp plugin
            libgcrypt
-           librsvg
+           (librsvg-for-system)
            glib
            gnome-keyring
            gsettings-desktop-schemas

@@ -783,7 +783,7 @@ lock-free fixed size queue written in C++11.")
 (define-public gperftools
   (package
     (name "gperftools")
-    (version "2.10")
+    (version "2.11")
     (source
      (origin
        (method git-fetch)
@@ -791,7 +791,7 @@ lock-free fixed size queue written in C++11.")
              (url "https://github.com/gperftools/gperftools")
              (commit (string-append "gperftools-" version))))
        (sha256
-        (base32 "0s9qhx940s8q6glc8sw74k5gs8hdhjfigq20zci92qawgm7zsicm"))
+        (base32 "1mwsa4y696m8zjya0k7xzr9vsgb24dq4aq13m21hb5ygy7nh47id"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1976,11 +1976,11 @@ validation.")
     (license license:asl2.0)))
 
 (define-public bloomberg-bde-tools
-  (let ((commit "094885bd177e0159232d4e6a060a04edb1edd786"))
+  (let ((commit "f63dfe9114cd7df29623bd01f644b9f654253972"))
     (package
       (name "bloomberg-bde-tools")
       ;; Recent releases are not tagged so commit must be used for checkout.
-      (version "3.97.0.0")
+      (version "3.118.0.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1989,7 +1989,7 @@ validation.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0mbbai73z8amh23ah3wy35kmy612380yr5wg89mic60qwqmpqb02"))
+                  "1a5sw4xjwd222na3zkflm2gkmzhnfq17i8qapyaxszpiayf3hw6v"))
                 (patches
                  (search-patches
                   "bloomberg-bde-tools-fix-install-path.patch"))))
@@ -2003,11 +2003,11 @@ validation.")
       (license license:asl2.0))))
 
 (define-public bloomberg-bde
-  (let ((commit "b6bcc0e24a5862bf77aea7edd831dedf50e21d64"))
+  (let ((commit "77a0f39d538c20ae28bece9a81cac99a9e1df95d"))
     (package
       (name "bloomberg-bde")
       ;; Recent releases are not tagged so commit must be used for checkout.
-      (version "3.98.0.0")
+      (version "3.118.0.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -2016,7 +2016,7 @@ validation.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0y3lipi1lj9qazgc935851r2qsx5aq3vvc4y52jq57riyz8wg3ma"))
+                  "0nw5clkc9yipd03kijh4c8lxi9zkxfxcjhszl1xzwvgz8xmpampf"))
                 (patches
                  (search-patches
                   "bloomberg-bde-cmake-module-path.patch"))
@@ -2033,26 +2033,28 @@ validation.")
                      (list "groups/bal/ball/ball_asyncfileobserver.t.cpp"
                            "groups/bal/ball/ball_fileobserver2.t.cpp"
                            "groups/bal/ball/ball_recordstringformatter.t.cpp"
+                           "groups/bal/balst/balst_stacktraceresolver_filehelper.t.cpp"
                            "groups/bal/balst/balst_stacktraceutil.t.cpp"
                            "groups/bdl/bdlmt/bdlmt_eventscheduler.t.cpp"
                            "groups/bdl/bdlmt/bdlmt_timereventscheduler.t.cpp"
                            "groups/bdl/bdls/bdls_filesystemutil.t.cpp"
+                           "groups/bsl/bslh/bslh_hash.t.cpp"
                            "groups/bsl/bslh/bslh_hashpair.t.cpp"
                            "groups/bsl/bsls/bsls_platform.t.cpp"
                            "groups/bsl/bsls/bsls_stackaddressutil.t.cpp"
                            "groups/bsl/bsls/bsls_stopwatch.t.cpp"
+                           "groups/bsl/bsls/bsls_timeutil.t.cpp"
+                           "groups/bsl/bslstl/bslstl_deque.1.t.cpp"
+                           "groups/bsl/bslstl/bslstl_deque.2.t.cpp"
+                           "groups/bsl/bslstl/bslstl_deque.3.t.cpp"
                            "groups/bsl/bslstl/bslstl_function_invokerutil.t.cpp"))
                     #t))))
       (build-system cmake-build-system)
       (arguments
        `(#:parallel-tests? #f           ; Test parallelism may fail inconsistently.
          ;; Set UFID to build shared libraries. Flag descriptions can be found at
-         ;; https://bloomberg.github.io/bde-tools/reference/bde_repo.html#ufid
-         #:configure-flags ,(match %current-system
-            ((or "i686-linux" "armhf-linux")
-             ''("-DUFID=opt_dbg_exc_mt_32_shr_cpp17"))
-            (_
-             ''("-DUFID=opt_dbg_exc_mt_64_shr_cpp17")))
+         ;; https://bloomberg.github.io/bde-tools/bbs/reference/bbs_build_configuration.html#ufid
+         #:configure-flags '("-DUFID=opt_dbg_exc_mt_64_shr_cpp20")
          #:phases
          (modify-phases %standard-phases
            ;; Explicitly build tests separate from the main build.
@@ -2072,6 +2074,8 @@ implementation of STL containers, vocabulary types for representing common
 concepts (like dates and times), and building blocks for developing
 multi-threaded applications and network applications.")
       (home-page "https://github.com/bloomberg/bde")
+      ;; Out-of-memory on i686-linux, compile errors with non-x86.
+      (supported-systems '("x86_64-linux"))
       (license license:asl2.0))))
 
 (define-public gulrak-filesystem

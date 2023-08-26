@@ -5,6 +5,7 @@
 ;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,14 +58,14 @@
 (define-public audiocd-kio
   (package
     (name "audiocd-kio")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/audiocd-kio-" version ".tar.xz"))
        (sha256
-        (base32 "0d6pbsh1fbhwwr2c4kf9b17dhzzx2jsmgamawcp4kn7pw9i7i8ql"))))
+        (base32 "0kl0j5qy54q88cbclwqj0rn8hj3gzjhzk7bimjgw5w0xy3cw6kql"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -96,14 +97,14 @@ This package is part of the KDE multimedia module.")
 (define-public dragon
   (package
     (name "dragon")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dragon-" version ".tar.xz"))
        (sha256
-        (base32 "0284shnqwbh1953ym197qaqgjwrnva77zi55lvvykg5cq42x512s"))))
+        (base32 "0mliddp0nyxz91wzy8md0p0i45mlhffip4zqjl4db55x4p6wh4y8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -154,14 +155,14 @@ This package is part of the KDE multimedia module.")
 (define-public elisa
   (package
     (name "elisa")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/elisa-" version ".tar.xz"))
        (sha256
-        (base32 "1v2h7ayyrv6f6hdkl78x1nrv5x0l6n8dh0xrfm5fnii4f694iik8"))))
+        (base32 "1ry4mhj7wc31xq9fip3amv8fj631m213zz0qg44h68q77sik4422"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config dbus kdoctools
@@ -227,14 +228,14 @@ its own database.  You can build and play your own playlist.")
 (define-public ffmpegthumbs
   (package
     (name "ffmpegthumbs")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ffmpegthumbs-" version ".tar.xz"))
        (sha256
-        (base32 "1jl7l3n2lfg71kbzwjn5nrm3qlgilhnvs67iil162mnv52gf3c0v"))))
+        (base32 "02wvhjqqird55xcs4kkj0s7nam4vqh3khjz5f1mjqfnk62sj1plx"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -253,14 +254,14 @@ This package is part of the KDE multimedia module.")
 (define-public juk
   (package
     (name "juk")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/juk-" version ".tar.xz"))
        (sha256
-        (base32 "12pnbx17r1103w39gglybdzs8kcpwghy5lc4q9fqk89s1r7l3c7h"))))
+        (base32 "1q0r0iv4nn6jd0g8db54r7xdw7kdw1ja0z1ggxl1sy0k60m9c4q3"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -307,7 +308,7 @@ This package is part of the KDE multimedia module.")
 (define-public kid3
   (package
     (name "kid3")
-    (version "3.9.1")
+    (version "3.9.4")
     (source
      (origin
        (method git-fetch)
@@ -316,7 +317,7 @@ This package is part of the KDE multimedia module.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rq0742rm3y5ps7878qd7xhhiizy6d6ls6hdjqa6z5sq077s5lz9"))))
+        (base32 "0j454nzwx0v7iwcixyjcx71shzh3ag4ydggs8d68alrfj9f4ajap"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -365,14 +366,14 @@ variety of formats.")
 (define-public k3b
   (package
     (name "k3b")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/k3b-" version ".tar.xz"))
        (sha256
-        (base32 "1bizk66ad2yq8xszjqvv2ghk069d0l6iczn5rlna1p3zigr43ysl"))))
+        (base32 "1kr1hw4pws87zzwyrwrg2ysdn11qf0qhwi1vc9b0k8jkjmmdplmb"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -519,14 +520,14 @@ autoloading of subtitle files for use while playing video.")
 (define-public kamoso
   (package
     (name "kamoso")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kamoso-" version ".tar.xz"))
        (sha256
-        (base32 "0br7dbnm2ypdl55pscp8wr0vwrgprycrxxj206b5r1l9ysx9aqip"))))
+        (base32 "1f06331qigf5wi6lgir5ij8h1fsdn54v32fyw2mgf0hg05xndrcl"))))
     (build-system qt-build-system)
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
@@ -562,14 +563,14 @@ camera.  Use it to take pictures and make videos to share.")
 (define-public kmix
   (package
     (name "kmix")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kmix-" version ".tar.xz"))
       (sha256
-       (base32 "0zc96l9mnn763pw54ki715sw3wm4z6rjdz2zzsjc6l5iwcqzwqq8"))))
+       (base32 "09pfsa6y1phm6z24da60s47gc18w4cvv7r8sxh5qfww7b0dnhixj"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
@@ -677,14 +678,14 @@ Some features:
 (define-public kwave
   (package
     (name "kwave")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kwave-" version ".tar.xz"))
        (sha256
-        (base32 "0j6ck44lkfcnaa0rymv2aqvdcy0zbybbklm1s6mvbgdpfsh0rhkm"))))
+        (base32 "0s9w8jgwblljwfji2a19bqs3nx6sr2qzz35kwbi0ahwncy69k4jx"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools))
@@ -751,14 +752,14 @@ Its features include:
 (define-public libkcddb
   (package
     (name "libkcddb")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcddb-" version ".tar.xz"))
        (sha256
-        (base32 "1js5r8hxqabnygmavfjvjbfy5c7978bmwm2rqlgsfyn17fkmf2y8"))))
+        (base32 "1s10g6m6c3h14gzxvp2s0v51jxzsrh23xfn7gl51a0r50srbbz52"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -767,6 +768,7 @@ Its features include:
            kconfig
            ki18n
            kio
+           kcmutils
            kwidgetsaddons
            libmusicbrainz
            qtbase-5))
@@ -781,14 +783,14 @@ Its features include:
 (define-public libkcompactdisc
   (package
     (name "libkcompactdisc")
-    (version "22.04.3")
+    (version "23.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcompactdisc-" version ".tar.xz"))
        (sha256
-        (base32 "0fv9dbx74xs42iiw67bvjpxga0d126q2nfs8n4hiv3z2xda9n4ic"))))
+        (base32 "0gl21mhfz3vj89x0r8y79yiijcag1xfdnyfrjqzkx9i8yd2k45b1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))

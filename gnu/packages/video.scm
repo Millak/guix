@@ -1701,6 +1701,11 @@ operate properly.")
       ;;   --enable-libzvbi         enable teletext support via libzvbi [no]
       ;;   --enable-opencl          enable OpenCL code
       #~(list
+         #$@(if (target-powerpc?)
+                ;; These tests fail on powerpc64-le (see:
+                ;; https://trac.ffmpeg.org/ticket/9604).
+                '("--ignore-tests=checkasm-sw_scale,filter-scale2ref_keep_aspect")
+                '())
          "--enable-gpl"                 ;enable optional gpl licensed parts
          "--enable-shared"
          "--enable-frei0r"
@@ -2158,7 +2163,7 @@ streaming protocols.")
     (inputs
      (list alsa-lib
            cdparanoia
-           ffmpeg-4
+           ffmpeg-5
            fontconfig
            freetype
            giflib
@@ -4583,7 +4588,7 @@ tools for styling them, including a built-in real-time video preview.")
            python-pygobject))
     ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
     ;; otherwise pitivi fails to launch.
-    (propagated-inputs (list librsvg))
+    (propagated-inputs (list (librsvg-for-system)))
     (arguments
      `(#:glib-or-gtk? #t
        #:phases

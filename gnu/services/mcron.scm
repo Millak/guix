@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
@@ -20,10 +20,8 @@
 
 (define-module (gnu services mcron)
   #:use-module (gnu services)
-  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages guile-xyz)
-  #:use-module (guix deprecation)
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
@@ -37,6 +35,7 @@
             mcron-configuration-log-file
             mcron-configuration-log-format
             mcron-configuration-date-format
+            mcron-configuration-home-service?
 
             mcron-service-type))
 
@@ -55,40 +54,34 @@
 ;;;
 ;;; Code:
 
-(define list-of-gexps?
-  (list-of gexp?))
+;; Configuration of mcron.
+;; XXX: 'define-configuration' cannot be used here due to the need for
+;; 'thunked' and 'innate' fields as well as 'this-mcron-configuration'.
+(define-record-type* <mcron-configuration> mcron-configuration
+  make-mcron-configuration
+  mcron-configuration?
+  this-mcron-configuration
 
-(define-maybe/no-serialization string)
+  (mcron       mcron-configuration-mcron          ;file-like
+               (default mcron))
+  (jobs        mcron-configuration-jobs           ;list of gexps
+               (default '()))
+  (log?        mcron-configuration-log?           ;Boolean
+               (default #t))
+  (log-file    mcron-configuration-log-file       ;string | gexp
+               (thunked)
+               (default
+                 (if (mcron-configuration-home-service?
+                      this-mcron-configuration)
+                     #~(string-append %user-log-dir "/mcron.log")
+                     "/var/log/mcron.log")))
+  (log-format  mcron-configuration-log-format     ;string
+               (default "~1@*~a ~a: ~a~%"))
+  (date-format mcron-configuration-date-format    ;string | #f
+               (default #f))
 
-(define-configuration/no-serialization mcron-configuration
-  (mcron
-   (file-like mcron)
-   "The mcron package to use.")
-
-  (jobs
-   (list-of-gexps '())
-   "This is a list of gexps (@pxref{G-Expressions}), where each gexp
-corresponds to an mcron job specification (@pxref{Syntax, mcron job
-specifications,, mcron, GNU@tie{}mcron}).")
-
-  (log?
-   (boolean #t)
-   "Log messages to standard output.")
-
-  (log-file
-   (string "/var/log/mcron.log")
-   "Log file location.")
-
-  (log-format
-   (string "~1@*~a ~a: ~a~%")
-   "@code{(ice-9 format)} format string for log messages.  The default value
-produces messages like @samp{@var{pid} @var{name}: @var{message}}
-(@pxref{Invoking mcron, Invoking,, mcron, GNU@tie{}mcron}).
-Each message is also prefixed by a timestamp by GNU Shepherd.")
-
-  (date-format
-   maybe-string
-   "@code{(srfi srfi-19)} format string for date."))
+  (home-service? mcron-configuration-home-service?
+                 (default for-home?) (innate)))
 
 (define (job-files mcron jobs)
   "Return a list of file-like object for JOBS, a list of gexps."
@@ -158,24 +151,27 @@ files."
 
 (define (mcron-shepherd-services config)
   (match-record config <mcron-configuration>
-    (mcron jobs log? log-file log-format date-format)
+    (mcron jobs log? log-file log-format date-format home-service?)
     (if (eq? jobs '())
         '()                             ;nothing to do
         (let ((files (job-files mcron jobs)))
           (list (shepherd-service
                  (provision '(mcron))
-                 (requirement '(user-processes))
+                 (requirement (if home-service?
+                                  '()
+                                  '(user-processes)))
                  (modules `((srfi srfi-1)
                             (srfi srfi-26)
                             (ice-9 popen) ;for the 'schedule' action
                             (ice-9 rdelim)
                             (ice-9 match)
+                            ((shepherd support) #:select (%user-log-dir))
                             ,@%default-modules))
                  (start #~(make-forkexec-constructor
                            (list #$(file-append mcron "/bin/mcron")
                                  #$@(if log?
                                         `("--log" "--log-format" ,log-format
-                                          ,@(if (maybe-value-set? date-format)
+                                          ,@(if date-format
                                                 (list "--date-format"
                                                       date-format)
                                                 '()))
@@ -209,15 +205,10 @@ files."
                 (extend (lambda (config jobs)
                           (mcron-configuration
                            (inherit config)
+                           (home-service?
+                            (mcron-configuration-home-service? config))
                            (jobs (append (mcron-configuration-jobs config)
                                          jobs)))))
                 (default-value (mcron-configuration)))) ;empty job list
-
-
-;;;
-;;; Generate documentation.
-;;;
-(define (generate-doc)
-  (configuration->documentation 'mcron-configuration))
 
 ;;; mcron.scm ends here

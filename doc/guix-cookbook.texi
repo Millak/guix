@@ -21,7 +21,7 @@ Copyright @copyright{} 2020 Brice Waegeneire@*
 Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
-Copyright @copyright{} 2022 Maxim Cournoyer@*
+Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
 Copyright @copyright{} 2023 Ludovic Courtès
 
 Permission is granted to copy, distribute and/or modify this document
@@ -78,7 +78,7 @@ manual}).
 * Containers::                  Isolated environments and nested systems
 * Advanced package management::  Power to the users!
 * Environment management::      Control environment
-* Installing Guix on a Cluster:: High-performance computing.
+* Installing Guix on a Cluster::  High-performance computing.
 
 * Acknowledgments::             Thanks!
 * GNU Free Documentation License::  The license of this document.
@@ -87,36 +87,86 @@ manual}).
 @detailmenu
  --- The Detailed Node Listing ---
 
+Scheme tutorials
+
+* A Scheme Crash Course::
+
 Packaging
 
-* Packaging Tutorial::         A tutorial on how to add packages to Guix.
+* Packaging Tutorial::          A tutorial on how to add packages to Guix.
+
+Packaging Tutorial
+
+* A ``Hello World'' package::
+* Setup::
+* Extended example::
+* Other build systems::
+* Programmable and automated package definition::
+* Getting help::
+* Conclusion::
+* References::
+
+Setup
+
+* Local file::
+* Channels::
+* Direct checkout hacking::
+
+Programmable and automated package definition
+
+* Recursive importers::
+* Automatic update::
+* Inheritance::
 
 System Configuration
 
-* Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
-* Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
-* Guix System Image API::        Customizing images to target specific platforms.
-* Using security keys::          How to use security keys with Guix System.
+* Auto-Login to a Specific TTY::  Automatically Login a User to a Specific TTY
+* Customizing the Kernel::      Creating and using a custom Linux kernel on Guix System.
+* Guix System Image API::       Customizing images to target specific platforms.
+* Using security keys::         How to use security keys with Guix System.
+* Dynamic DNS mcron job::       Job to update the IP address behind a DuckDNS host name.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
-* Customizing a Window Manager:: Handle customization of a Window manager on Guix System.
-* Running Guix on a Linode Server:: Running Guix on a Linode Server
-* Setting up a bind mount:: Setting up a bind mount in the file-systems definition.
-* Getting substitutes from Tor:: Configuring Guix daemon to get substitutes through Tor.
-* Setting up NGINX with Lua:: Configuring NGINX web-server to load Lua modules.
-* Music Server with Bluetooth Audio:: Headless music player with Bluetooth output.
+* Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
+* Running Guix on a Linode Server::  Running Guix on a Linode Server.
+* Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
+* Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
+* Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
+* Music Server with Bluetooth Audio::  Headless music player with Bluetooth output.
+
+Customizing a Window Manager
+
+* StumpWM::
+* Session lock::
+
+Session lock
+
+* Xorg::
 
 Containers
 
-* Guix Containers::            Perfectly isolated environments
-* Guix System Containers::     A system inside your system
+* Guix Containers::             Perfectly isolated environments
+* Guix System Containers::      A system inside your system
+
+Guix System Containers
+
+* A Database Container::
+* Container Networking::
 
 Advanced package management
 
-* Guix Profiles in Practice::     Strategies for multiple profiles and manifests.
+* Guix Profiles in Practice::   Strategies for multiple profiles and manifests.
+
+Guix Profiles in Practice
+
+* Basic setup with manifests::
+* Required packages::
+* Default profile::
+* The benefits of manifests::
+* Reproducible profiles::
 
 Environment management
 
-* Guix environment via direnv:: Setup Guix environment with direnv
+* Guix environment via direnv::  Setup Guix environment with direnv
 
 Installing Guix on a Cluster
 
@@ -143,6 +193,10 @@ advanced features Guix provides --- and you don't even need to be an
 experienced programmer to use them!
 
 Let's get started!
+
+@menu
+* A Scheme Crash Course::
+@end menu
 
 @node A Scheme Crash Course
 @section A Scheme Crash Course
@@ -192,7 +246,8 @@ rest are the arguments passed to the function.  Every function returns the
 last evaluated expression as its return value.
 
 @item
-Anonymous functions are declared with the @code{lambda} term:
+Anonymous functions---@dfn{procedures} in Scheme parlance---are declared
+with the @code{lambda} term:
 
 @lisp
 (lambda (x) (* x x))
@@ -207,6 +262,9 @@ which can in turn be applied to an argument:
 ((lambda (x) (* x x)) 3)
 @result{} 9
 @end lisp
+
+Procedures are regular values just like numbers, strings, Booleans, and
+so on.
 
 @item
 Anything can be assigned a global name with @code{define}:
@@ -232,6 +290,30 @@ A list structure can be created with the @code{list} procedure:
 (list 2 a 5 7)
 @result{} (2 3 5 7)
 @end lisp
+
+@item
+Standard procedures are provided by the @code{(srfi srfi-1)} module to
+create and process lists (@pxref{SRFI-1, list processing,, guile, GNU
+Guile Reference Manual}).  Here are some of the most useful ones in
+action:
+
+@lisp
+(use-modules (srfi srfi-1))  ;import list processing procedures
+
+(append (list 1 2) (list 3 4))
+@result{} (1 2 3 4)
+
+(map (lambda (x) (* x x)) (list 1 2 3 4))
+@result{} (1 4 9 16)
+
+(delete 3 (list 1 2 3 4))        @result{} (1 2 4)
+(filter odd? (list 1 2 3 4))     @result{} (1 3)
+(remove even? (list 1 2 3 4))    @result{} (1 3)
+(find number? (list "a" 42 "b")) @result{} 42
+@end lisp
+
+Notice how the first argument to @code{map}, @code{filter},
+@code{remove}, and @code{find} is a procedure!
 
 @item
 @cindex S-expression
@@ -280,6 +362,9 @@ they provide code to be executed during the package build process.  They
 look like this:
 
 @lisp
+(use-modules (guix gexp)           ;so we can write gexps
+             (gnu packages base))  ;for 'coreutils'
+
 ;; Below is a G-expression representing staged code.
 #~(begin
     ;; Invoke 'ls' from the package defined by the 'coreutils'
@@ -347,6 +432,9 @@ defines the module @code{guix build-system ruby} which must be located in
 @file{guix/build-system/ruby.scm} somewhere in the Guile load path.  It
 depends on the @code{(guix store)} module and it exports two variables,
 @code{ruby-build} and @code{ruby-build-system}.
+
+@xref{Package Modules,,, guix, GNU Guix Reference Manual}, for info on
+modules that define packages.
 @end itemize
 
 @quotation Going further
@@ -396,7 +484,7 @@ definitions in Guile Scheme, organizing them in package modules, and building
 them.
 
 @menu
-* Packaging Tutorial::         A tutorial on how to add packages to Guix.
+* Packaging Tutorial::          A tutorial on how to add packages to Guix.
 @end menu
 
 @node Packaging Tutorial
@@ -437,6 +525,17 @@ The following tutorial covers all the basics around package creation with Guix.
 It does not assume much knowledge of the Guix system nor of the Lisp language.
 The reader is only expected to be familiar with the command line and to have some
 basic programming knowledge.
+
+@menu
+* A ``Hello World'' package::
+* Setup::
+* Extended example::
+* Other build systems::
+* Programmable and automated package definition::
+* Getting help::
+* Conclusion::
+* References::
+@end menu
 
 @node A ``Hello World'' package
 @subsection A ``Hello World'' package
@@ -642,6 +741,12 @@ We recommend you work directly on the Guix source checkout since it makes it
 easier for everyone to contribute to the project.
 
 But first, let's look at other possibilities.
+
+@menu
+* Local file::
+* Channels::
+* Direct checkout hacking::
+@end menu
 
 @node Local file
 @subsubsection Local file
@@ -1293,6 +1398,12 @@ empowers us in ways that reach far beyond traditional package management.
 
 Let's illustrate this with some awesome features of Guix!
 
+@menu
+* Recursive importers::
+* Automatic update::
+* Inheritance::
+@end menu
+
 @node Recursive importers
 @subsubsection Recursive importers
 
@@ -1456,17 +1567,18 @@ chapter is to demonstrate some advanced configuration concepts.
 reference.
 
 @menu
-* Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
-* Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
-* Guix System Image API::        Customizing images to target specific platforms.
-* Using security keys::          How to use security keys with Guix System.
+* Auto-Login to a Specific TTY::  Automatically Login a User to a Specific TTY
+* Customizing the Kernel::      Creating and using a custom Linux kernel on Guix System.
+* Guix System Image API::       Customizing images to target specific platforms.
+* Using security keys::         How to use security keys with Guix System.
+* Dynamic DNS mcron job::       Job to update the IP address behind a DuckDNS host name.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
-* Customizing a Window Manager:: Handle customization of a Window manager on Guix System.
-* Running Guix on a Linode Server:: Running Guix on a Linode Server
-* Setting up a bind mount:: Setting up a bind mount in the file-systems definition.
-* Getting substitutes from Tor:: Configuring Guix daemon to get substitutes through Tor.
-* Setting up NGINX with Lua:: Configuring NGINX web-server to load Lua modules.
-* Music Server with Bluetooth Audio:: Headless music player with Bluetooth output.
+* Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
+* Running Guix on a Linode Server::  Running Guix on a Linode Server.
+* Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
+* Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
+* Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
+* Music Server with Bluetooth Audio::  Headless music player with Bluetooth output.
 @end menu
 
 @node Auto-Login to a Specific TTY
@@ -1907,17 +2019,23 @@ One can run:
 mathieu@@cervin:~$ guix system --list-image-types
 The available image types are:
 
+   - unmatched-raw
+   - rock64-raw
    - pinebook-pro-raw
    - pine64-raw
    - novena-raw
    - hurd-raw
    - hurd-qcow2
    - qcow2
-   - uncompressed-iso9660
-   - efi-raw
-   - arm64-raw
-   - arm32-raw
    - iso9660
+   - uncompressed-iso9660
+   - tarball
+   - efi-raw
+   - mbr-raw
+   - docker
+   - wsl2
+   - raw-with-offset
+   - efi32-raw
 @end example
 
 and by writing an @code{operating-system} file based on
@@ -2022,6 +2140,77 @@ security key'' menu.  If it works, congratulations, your security key is
 ready to be used with applications supporting two-factor authentication
 (2FA).
 
+@subsection Disabling OTP code generation for a Yubikey
+@cindex disabling yubikey OTP
+If you use a Yubikey security key and are irritated by the spurious OTP
+codes it generates when inadvertently touching the key (e.g. causing you
+to become a spammer in the @samp{#guix} channel when discussing from
+your favorite IRC client!), you can disable it via the following
+@command{ykman} command:
+
+@example
+guix shell python-yubikey-manager -- ykman config usb --force --disable OTP
+@end example
+
+Alternatively, you could use the @command{ykman-gui} command provided by
+the @code{yubikey-manager-qt} package and either wholly disable the
+@samp{OTP} application for the USB interface or, from the
+@samp{Applications -> OTP} view, delete the slot 1 configuration, which
+comes pre-configured with the Yubico OTP application.
+
+@node Dynamic DNS mcron job
+@section Dynamic DNS mcron job
+
+@cindex dynamic DNS, DDNS
+If your @acronym{ISP, Internet Service Provider} only provides dynamic
+IP addresses, it can be useful to setup a dynamic @acronym{DNS, Domain
+Name System} (also known as @acronym{DDNS, Dynamic DNS}) service to
+associate a static host name to a public but dynamic (often changing) IP
+address.  There are multiple existing services that can be used for
+this; in the following mcron job, @url{https://duckdns.org, DuckDNS} is
+used.  It should also work with other dynamic DNS services that offer a
+similar interface to update the IP address, such as
+@url{https://freedns.afraid.org/}, with minor adjustments.
+
+The mcron job is provided below, where @var{DOMAIN} should be
+substituted for your own domain prefix, and the DuckDNS provided token
+associated to @var{DOMAIN} added to the
+@file{/etc/duckdns/@var{DOMAIN}.token} file.
+
+@lisp
+(define duckdns-job
+  ;; Update personal domain IP every 5 minutes.
+  #~(job '(next-minute (range 0 60 5))
+	 #$(program-file
+            "duckdns-update"
+            (with-extensions (list guile-gnutls) ;required by (web client)
+              #~(begin
+                  (use-modules (ice-9 textual-ports)
+                               (web client))
+                  (let ((token (string-trim-both
+                                (call-with-input-file "/etc/duckdns/@var{DOMAIN}.token"
+                                  get-string-all)))
+                        (query-template (string-append "https://www.duckdns.org/"
+                                                       "update?domains=@var{DOMAIN}"
+                                                       "&token=~a&ip=")))
+                    (http-get (format #f query-template token))))))
+         "duckdns-update"
+         #:user "nobody"))
+@end lisp
+
+The job then needs to be added to the list of mcron jobs for your
+system, using something like:
+
+@lisp
+(operating-system
+ (services
+  (cons* (service mcron-service-type
+           (mcron-configuration
+             (jobs (list duckdns-job ...))))
+         ...
+         %base-services)))
+@end lisp
+
 @node Connecting to Wireguard VPN
 @section Connecting to Wireguard VPN
 
@@ -2103,6 +2292,11 @@ this post by thaller}.
 @section Customizing a Window Manager
 @cindex wm
 
+@menu
+* StumpWM::
+* Session lock::
+@end menu
+
 @node StumpWM
 @subsection StumpWM
 @cindex stumpwm
@@ -2157,6 +2351,10 @@ Depending on your environment, locking the screen of your session might come bui
 or it might be something you have to set up yourself. If you use a desktop environment
 like GNOME or KDE, it's usually built in. If you use a plain window manager like
 StumpWM or EXWM, you might have to set it up yourself.
+
+@menu
+* Xorg::
+@end menu
 
 @node Xorg
 @subsubsection Xorg
@@ -2821,8 +3019,8 @@ from foreign libraries or configuration files that are available
 system-wide.
 
 @menu
-* Guix Containers::            Perfectly isolated environments
-* Guix System Containers::     A system inside your system
+* Guix Containers::             Perfectly isolated environments
+* Guix System Containers::      A system inside your system
 @end menu
 
 @node Guix Containers
@@ -3005,6 +3203,11 @@ contexts---configuration files, dedicated user accounts, directories for
 caches or log files, etc.  In Guix System the demands of this kind of
 software are satisfied through the deployment of system services.
 
+
+@menu
+* A Database Container::
+* Container Networking::
+@end menu
 
 @node A Database Container
 @subsection A Database Container
@@ -3208,7 +3411,7 @@ concepts.
 reference.
 
 @menu
-* Guix Profiles in Practice::     Strategies for multiple profiles and manifests.
+* Guix Profiles in Practice::   Strategies for multiple profiles and manifests.
 @end menu
 
 @node Guix Profiles in Practice
@@ -3286,6 +3489,14 @@ Games.
 @end itemize
 
 Let's dive in the set up!
+
+@menu
+* Basic setup with manifests::
+* Required packages::
+* Default profile::
+* The benefits of manifests::
+* Reproducible profiles::
+@end menu
 
 @node Basic setup with manifests
 @subsection Basic setup with manifests
@@ -3601,7 +3812,7 @@ Guix provides multiple tools to manage environment.  This chapter
 demonstrate such utilities.
 
 @menu
-* Guix environment via direnv:: Setup Guix environment with direnv
+* Guix environment via direnv::  Setup Guix environment with direnv
 @end menu
 
 @node Guix environment via direnv

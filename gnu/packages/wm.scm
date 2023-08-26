@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2016, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2016 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
@@ -1073,7 +1073,8 @@ drags, snap-to-border support, and virtual desktops.")
                (base32
                 "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))
               (patches
-               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"))))
+               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"
+                               "fluxbox-1.3.7-gcc.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("CPPFLAGS=-U__TIME__") ;ugly, but for reproducibility
@@ -3045,7 +3046,7 @@ capabilities.  It is heavily inspired by the Calm Window manager(cwm).")
      (list cairo
            libjpeg-turbo
            libpng
-           librsvg
+           (librsvg-for-system)
            libxext
            libxinerama
            libxmu

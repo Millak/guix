@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -85,6 +85,10 @@
             service-back-edges
             instantiate-missing-services
             fold-services
+
+            remove-service-extensions
+            for-home
+            for-home?
 
             service-error?
             missing-value-service-error?
@@ -1224,5 +1228,24 @@ TARGET-TYPE; return the root service adjusted accordingly."
                    (format #f
                            (G_ "more than one target service of type '~a'")
                            (service-type-name target-type)))))))))
+
+(define (remove-service-extensions type lst)
+  "Return TYPE, a service type, without any of the service extensions
+targeting one of the types in LST."
+  (service-type
+   (inherit type)
+   (extensions (remove (lambda (extension)
+                         (memq (service-extension-target extension) lst))
+                       (service-type-extensions type)))))
+
+(define-syntax-parameter for-home?
+  ;; Whether the configuration being defined is for a Home service.
+  (identifier-syntax #f))
+
+(define-syntax-rule (for-home exp ...)
+  "Mark EXP, which typically defines a service configuration, as targeting a
+Home service rather than a System service."
+  (syntax-parameterize ((for-home? (identifier-syntax #t)))
+    exp ...))
 
 ;;; services.scm ends here.

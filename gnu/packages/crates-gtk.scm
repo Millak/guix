@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -902,24 +902,25 @@
         ("rust-serial-test" ,rust-serial-test-0.1)
         ("rust-serial-test-derive" ,rust-serial-test-derive-0.1))))))
 
-(define-public rust-gio-sys-0.15
+(define-public rust-gio-sys-0.17
   (package
     (name "rust-gio-sys")
-    (version "0.15.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gio-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "13fgmc2xdzg9qk9l3nlp1bilwn6466mrqbiq4fhc9qkia93pl59j"))))
+    (version "0.17.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "gio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1hr84vgpz1hbs9q7wgvpnwhbxwh9kim0z5aqv6v6ki0j1b1qgkqc"))))
     (build-system cargo-build-system)
     (arguments
-     `(;; FIXME: some GLib macros are not found
+     `(;; XXX: Tests are sensitive to the version of glib, even though
+       ;; the library supports a wide range.  Skip for now.
        #:tests? #f
        #:cargo-inputs
-       (("rust-glib-sys" ,rust-glib-sys-0.15)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+       (("rust-glib-sys" ,rust-glib-sys-0.17)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.17)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-system-deps" ,rust-system-deps-6)
         ("rust-winapi" ,rust-winapi-0.3))
@@ -943,6 +944,40 @@
     (synopsis "FFI bindings to libgio-2.0")
     (description "This package provides FFI bindings to libgio-2.0.")
     (license license:expat)))
+
+(define-public rust-gio-sys-0.15
+  (package
+    (inherit rust-gio-sys-0.17)
+    (name "rust-gio-sys")
+    (version "0.15.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gio-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13fgmc2xdzg9qk9l3nlp1bilwn6466mrqbiq4fhc9qkia93pl59j"))))
+    (arguments
+     `(;; FIXME: some GLib macros are not found
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'extend-include-path
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let ((gio-headers (search-input-directory
+                                          inputs "include/gio-unix-2.0")))
+                        ;; Tests rely on these headers.
+                        (setenv "C_INCLUDE_PATH"
+                                (string-append gio-headers ":"
+                                               (getenv "C_INCLUDE_PATH")))))))))))
 
 (define-public rust-gio-sys-0.14
   (package
@@ -1030,8 +1065,56 @@
     (description "File format checker in Rust.")
     (license license:expat)))
 
+(define-public rust-glib-0.17
+  (package
+    (name "rust-glib")
+    (version "0.17.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "glib" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jqlipn9zixj8fpqlg45v0f06j2ghdz72cml2akcxlnlm1dx9ynk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; XXX: Tests are sensitive to the version of glib, even though
+       ;; the library supports a wide range.  Skip for now.
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-task" ,rust-futures-task-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gio-sys" ,rust-gio-sys-0.17)
+        ("rust-glib-macros" ,rust-glib-macros-0.17)
+        ("rust-glib-sys" ,rust-glib-sys-0.17)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-trybuild2" ,rust-trybuild2-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GLib library")
+    (description "Rust bindings for the GLib library")
+    (license license:expat)))
+
 (define-public rust-glib-0.15
   (package
+    (inherit rust-glib-0.17)
     (name "rust-glib")
     (version "0.15.12")
     (source
@@ -1041,7 +1124,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0pahikbwxr3vafdrr5l2hnlhkf9xi4illryan0l59ayhp9pk1c7d"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -1062,15 +1144,7 @@
        #:cargo-development-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GLib library")
-    (description "Rust bindings for the GLib library")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-glib-0.14
   (package
@@ -1160,8 +1234,43 @@
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-glib-macros-0.17
+  (package
+    (name "rust-glib-macros")
+    (version "0.17.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "glib-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09nyh22nryip4i22mdrixzl4q0r5h5lxcn40mgqr30rk6y9wg9gc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-heck" ,rust-heck-0.4)
+        ("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-glib" ,rust-glib-0.17)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-trybuild2" ,rust-trybuild2-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GLib library, proc macros crate")
+    (description "Rust bindings for the GLib library, proc macros crate.")
+    (license license:expat)))
+
 (define-public rust-glib-macros-0.15
   (package
+    (inherit rust-glib-macros-0.17)
     (name "rust-glib-macros")
     (version "0.15.11")
     (source
@@ -1171,7 +1280,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0r3cr0c79rs91z0sps089nsf8ppnm8agp48qwwqlkc32lqqq39i5"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; XXX: Circular dependency on rust-glib??
        #:tests? #f
@@ -1182,11 +1290,7 @@
         ("rust-proc-macro-error" ,rust-proc-macro-error-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GLib library, proc macros crate")
-    (description "Rust bindings for the GLib library, proc macros crate.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-glib-macros-0.14
   (package
@@ -1237,17 +1341,17 @@
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
-(define-public rust-glib-sys-0.15
+(define-public rust-glib-sys-0.17
   (package
     (name "rust-glib-sys")
-    (version "0.15.10")
+    (version "0.17.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "glib-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1m5sqm69fdk8vaw6hggyizhs1r1vivx73splrdvczsb5iqpijjzg"))))
+                "1w64ppa12s9ky6gfdaqhq9w30ad6hskll812jb3sl2xsggmac2nq"))))
     (build-system cargo-build-system)
     (arguments
      `(;; XXX: Tests are sensitive to the version of glib, even though
@@ -1267,6 +1371,29 @@
     (synopsis "FFI bindings to libglib-2.0")
     (description "This package provides FFI bindings to libglib-2.0.")
     (license license:expat)))
+
+(define-public rust-glib-sys-0.15
+  (package
+    (inherit rust-glib-sys-0.17)
+    (name "rust-glib-sys")
+    (version "0.15.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "glib-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m5sqm69fdk8vaw6hggyizhs1r1vivx73splrdvczsb5iqpijjzg"))))
+    (arguments
+     `(;; XXX: Tests are sensitive to the version of glib, even though
+       ;; the library supports a wide range.  Skip for now.
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-glib-sys-0.14
   (package
@@ -1335,25 +1462,24 @@
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-gobject-sys-0.15
+(define-public rust-gobject-sys-0.17
   (package
     (name "rust-gobject-sys")
-    (version "0.15.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gobject-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "02hyilvpi4hw4gr03z2plsbf1zicsfs5l0xxadqx3v3b4i2cwmqd"))))
+    (version "0.17.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "gobject-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ql0pcab6dxjapiglxcjaavbbh1sznyc2wj5q273b9j0fwqw6d6d"))))
     (build-system cargo-build-system)
     (arguments
-     `(;; FIXME: Constant value mismatch for G_TYPE_FUNDAMENTAL_MAX
-       ;; Rust: "255"
-       ;; C:    "1020"
+     `(;; XXX: Tests are sensitive to the version of glib, even though
+       ;; the library supports a wide range.  Skip for now.
        #:tests? #f
        #:cargo-inputs
-       (("rust-glib-sys" ,rust-glib-sys-0.15)
+       (("rust-glib-sys" ,rust-glib-sys-0.17)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs
@@ -1367,6 +1493,31 @@
     (synopsis "FFI bindings to libgobject-2.0")
     (description "This package provides FFI bindings to libgobject-2.0.")
     (license license:expat)))
+
+(define-public rust-gobject-sys-0.15
+  (package
+    (inherit rust-gobject-sys-0.17)
+    (name "rust-gobject-sys")
+    (version "0.15.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gobject-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02hyilvpi4hw4gr03z2plsbf1zicsfs5l0xxadqx3v3b4i2cwmqd"))))
+    (arguments
+     `(;; FIXME: Constant value mismatch for G_TYPE_FUNDAMENTAL_MAX
+       ;; Rust: "255"
+       ;; C:    "1020"
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gobject-sys-0.14
   (package

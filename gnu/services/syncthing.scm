@@ -49,35 +49,41 @@
   (group     syncthing-configuration-group     ;string
              (default "users"))
   (home      syncthing-configuration-home      ;string
-             (default #f)))
+             (default #f))
+  (home-service? syncthing-configuration-home-service?
+                 (default for-home?) (innate)))
 
 (define syncthing-shepherd-service
-  (match-lambda
-    (($ <syncthing-configuration> syncthing arguments logflags user group home)
-     (list
-      (shepherd-service
-       (provision (list (string->symbol (string-append "syncthing-" user))))
-       (documentation "Run syncthing.")
-       (requirement '(loopback))
-       (start #~(make-forkexec-constructor
-                 (append (list (string-append #$syncthing "/bin/syncthing")
-                               "--no-browser"
-                               "--no-restart"
-                               (string-append "--logflags=" (number->string #$logflags)))
-                         '#$arguments)
-                 #:user #$user
-                 #:group #$group
-                 #:environment-variables
-                 (append (list (string-append "HOME=" (or #$home (passwd:dir (getpw #$user))))
-                               "SSL_CERT_DIR=/etc/ssl/certs"
-                               "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt")
-                         (remove (lambda (str)
+  (match-record-lambda <syncthing-configuration>
+      (syncthing arguments logflags user group home home-service?)
+    (list
+     (shepherd-service
+      (provision (if home-service?
+                     '(syncthing)
+                     (list (string->symbol
+                            (string-append "syncthing-" user)))))
+      (documentation "Run syncthing.")
+      (requirement (if home-service? '() '(loopback)))
+      (start #~(make-forkexec-constructor
+                (append (list (string-append #$syncthing "/bin/syncthing")
+                              "--no-browser"
+                              "--no-restart"
+                              (string-append "--logflags=" (number->string #$logflags)))
+                        '#$arguments)
+                #:user #$(and (not home-service?) user)
+                #:group #$(and (not home-service?) group)
+                #:environment-variables
+                (append (list (string-append "HOME=" (or #$home (passwd:dir (getpw #$user))))
+                              "SSL_CERT_DIR=/etc/ssl/certs"
+                              "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt")
+                        (filter (negate       ;XXX: 'remove' is not in (guile)
+                                 (lambda (str)
                                    (or (string-prefix? "HOME=" str)
                                        (string-prefix? "SSL_CERT_DIR=" str)
-                                       (string-prefix? "SSL_CERT_FILE=" str)))
-                                 (environ)))))
-       (respawn? #f)
-       (stop #~(make-kill-destructor)))))))
+                                       (string-prefix? "SSL_CERT_FILE=" str))))
+                                (environ)))))
+      (respawn? #f)
+      (stop #~(make-kill-destructor))))))
 
 (define syncthing-service-type
   (service-type (name 'syncthing)

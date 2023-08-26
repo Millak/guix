@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2017, 2018 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -69,7 +69,7 @@
            which))
     (inputs
      (list dbus
-           librsvg ; for svg support
+           (librsvg-for-system) ; for svg support
            glib
            cairo
            pango

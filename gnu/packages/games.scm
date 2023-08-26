@@ -430,7 +430,7 @@ mouse and joystick control, and original music.")
      `(#:tests? #f                      ; no check target
        #:make-flags
        (list "CC=gcc"
-             "CFLAGS=-D_FILE_OFFSET_BITS=64"
+             "CFLAGS=-D_FILE_OFFSET_BITS=64 -fcommon"
              (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
@@ -713,7 +713,8 @@ canyons and wait for the long I-shaped block to clear four rows at a time.")
      (list ncurses))
     (arguments
      `(#:tests? #f                      ;no tests
-       #:make-flags '("CC=gcc")
+       #:make-flags '("CC=gcc"
+                      "CFLAGS=-O2 -DHAVE_IPV6 -g -Wall -fcommon")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ;no configure script
@@ -1160,7 +1161,7 @@ allows users to brew while offline.")
 (define-public corsix-th
   (package
     (name "corsix-th")
-    (version "0.66")
+    (version "0.67")
     (source
      (origin
        (method git-fetch)
@@ -1169,29 +1170,28 @@ allows users to brew while offline.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sgsvhqgiq6v1v5am7ghja8blhlrj0y1arvq6xq1j5fwa7c59ihs"))))
+        (base32 "14996kbrwdrd0gpz19il2i4p650qdhjw8v8ka3aigk6pl4kda3sq"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-binary
-           (lambda _
-             ;; Set Lua module paths and default MIDI soundfont on startup.
-             (let* ((out (assoc-ref %outputs "out"))
-                    (fluid (assoc-ref %build-inputs "fluid-3"))
-                    (lua-version ,(version-major+minor (package-version lua)))
-                    (lua-cpath
-                     (map (lambda (lib)
-                            (string-append
-                             (assoc-ref %build-inputs (string-append "lua-" lib))
-                             "/lib/lua/" lua-version "/?.so"))
-                          '("filesystem" "lpeg"))))
-               (wrap-program (string-append out "/bin/corsix-th")
-                 `("LUA_CPATH" ";" = ,lua-cpath)
-                 `("SDL_SOUNDFONTS" ":" suffix
-                   (,(string-append fluid "/share/soundfonts/FluidR3Mono_GM.sf3")))))
-             #t)))
-       #:tests? #f)) ; TODO need busted package to run tests
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-binary
+            (lambda _
+              ;; Set Lua module paths and default MIDI soundfont on startup.
+              (let* ((fluid #$(this-package-input "fluid-3"))
+                     (lua-version #$(version-major+minor (package-version lua)))
+                     (lua-cpath
+                      (map (lambda (lib)
+                             (string-append
+                              (assoc-ref %build-inputs (string-append "lua-" lib))
+                              "/lib/lua/" lua-version "/?.so"))
+                           '("filesystem" "lpeg"))))
+                (wrap-program (string-append #$output "/bin/corsix-th")
+                  `("LUA_CPATH" ";" = ,lua-cpath)
+                  `("SDL_SOUNDFONTS" ":" suffix
+                    (,(string-append fluid "/share/soundfonts/FluidR3Mono_GM.sf3"))))))))
+      #:tests? #f)) ; TODO need busted package to run tests
     ;; Omit Lua-Socket dependency to disable automatic updates.
     (inputs
      (list ffmpeg
@@ -1542,7 +1542,7 @@ effects and music to make a completely free game.")
 (define-public freedroidrpg
   (package
     (name "freedroidrpg")
-    (version "1.0rc2")
+    (version "1.0")
     (source
      (origin
        (method url-fetch)
@@ -1553,7 +1553,7 @@ effects and music to make a completely free game.")
                              "freedroidRPG-" major+minor "/"
                              "freedroidRPG-" version ".tar.gz")))
        (sha256
-        (base32 "10jknaad2ph9j5bs4jxvpnl8rq5yjlq0nasv98f4mki2hh8yiczy"))))
+        (base32 "1kxvyg70r9x8q40kn5lr3h1q60d6jx9mkvxls4aflj22b45vg5br"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1891,7 +1891,13 @@ built-in level editor.")
                                   version "_src.tar.gz"))
               (sha256
                (base32
-                "18vp2ygvn0s0jz8rm585jqf6hjqkam1ximq81k0r9hpmfj7wb88f"))))
+                "18vp2ygvn0s0jz8rm585jqf6hjqkam1ximq81k0r9hpmfj7wb88f"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix a missing include for std::map.
+               #~(substitute* "src/shared/impl/lua_func_wrapper.cpp"
+                   (("#include \"misc[.]hpp\"" x)
+                    (string-append "#include <map>\n" x))))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
@@ -2012,7 +2018,7 @@ such as chess or stockfish.")
 (define-public gnubg
   (package
     (name "gnubg")
-    (version "1.06.002")
+    (version "1.07.001")
     (source
      (origin
        (method url-fetch)
@@ -2020,10 +2026,10 @@ such as chess or stockfish.")
                            version "-sources.tar.gz"))
        (sha256
         (base32
-         "11xwhcli1h12k6rnhhyq4jphzrhfik7i8ah3k32pqw803460n6yf"))))
+         "07l2srlm05c99l4pppba8l54bnh000ns2rih5h8rzbcw84lrffbj"))))
     (build-system gnu-build-system)
     (inputs (list ;; XXX: Build with an older Pango for 'pango_font_get_hb_font' and
-                  ;; 'pango_coverage_get_type'.  Try removing this for versions > 1.06.002.
+                  ;; 'pango_coverage_get_type'.  Try removing this for versions > 1.07.001.
                   pango-1.42
                   glib
                   readline
@@ -2377,7 +2383,7 @@ Every puzzle has a complete solution, although there may be more than one.")
                 #t))))
    (build-system gnu-build-system)
    (arguments
-    '(#:configure-flags '("--disable-cpu-opt")
+    '(#:configure-flags '("--disable-cpu-opt" "CFLAGS=-fcommon")
       #:make-flags `(,(string-append "gamesdir="
                                      (assoc-ref %outputs "out") "/bin"))
       #:phases
@@ -3740,7 +3746,7 @@ object-oriented programming.")
                                (assoc-ref inputs "chess")
                                "/bin/gnuchessx"))))))))
     (inputs
-     (list alsa-utils chess gtk+-2 librsvg))
+     (list alsa-utils chess gtk+-2 (librsvg-for-system)))
     (native-inputs
      (list texinfo pkg-config))
     (home-page "https://www.gnu.org/software/xboard/")
@@ -5166,7 +5172,7 @@ are only two levels to play with, but they are very addictive.")
                (("\"beep\"")
                 (string-append "\"" (assoc-ref inputs "beep") "/bin/beep\"")))
              #t)))))
-    (inputs (list avahi beep gtk+ librsvg))
+    (inputs (list avahi beep gtk+ (librsvg-for-system)))
     (native-inputs (list intltool itstool libxml2 pkg-config))
     (synopsis "Board game inspired by The Settlers of Catan")
     (description "Pioneers is an emulation of the board game The Settlers of
@@ -5815,7 +5821,7 @@ safety of the Chromium vessel.")
        ("fribidi" ,fribidi)
        ("gettext" ,gettext-minimal)
        ("libpng" ,libpng)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libpaper" ,libpaper)
        ("netpbm" ,netpbm)
        ("sdl" ,(sdl-union (list sdl sdl-mixer sdl-ttf sdl-image)))))
@@ -6509,7 +6515,7 @@ emerges from a sewer hole and pulls her below ground.")
 (define-public cdogs-sdl
   (package
     (name "cdogs-sdl")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -6518,13 +6524,21 @@ emerges from a sewer hole and pulls her below ground.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1505z8rli59i1ych4rzwbf4dvhv72icdj22n1xarb8xfyz0wyp3b"))))
+        (base32 "1i1akay3ad2bkiqa7vfkh3qyhiqax8ikp1v6lfjysvxg65wkqdvc"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DCDOGS_DATA_DIR="
-                            (assoc-ref %outputs "out")
-                            "/share/cdogs-sdl/"))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCDOGS_DATA_DIR=" #$output
+                             "/share/cdogs-sdl/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-install-directory
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set\\(DATA_INSTALL_DIR \".\"\\)")
+                 (string-append "set(DATA_INSTALL_DIR \""
+                                #$output "/share/cdogs-sdl\")"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -7755,7 +7769,7 @@ Github or Gitlab.")
             (base32
              "1s86cd36rwkff329mb1ay1wi5qqyi35564ppgr3f4qqz9wj9vs2m"))))
        ("gettext" ,gettext-minimal)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("po4a" ,po4a)
        ("python" ,python-wrapper)))
     (inputs
@@ -8243,7 +8257,8 @@ ncurses for text display.")
            physfs
            python
            python-pyyaml
-           (sdl-union (list sdl2 sdl2-image sdl2-mixer))
+           sdl2
+           sdl2-image
            suitesparse))
     (home-page "https://naev.org/")
     (synopsis "Game about space exploration, trade and combat")

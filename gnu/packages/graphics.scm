@@ -1397,7 +1397,7 @@ visual effects work for film.")
      `(("giflib" ,giflib)
        ("libjpeg" ,libjpeg-turbo)       ; required for the JPEG texture plugin.
        ("jasper" ,jasper)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxrandr" ,libxrandr)
        ("ffmpeg" ,ffmpeg-4)
        ("mesa" ,mesa)))

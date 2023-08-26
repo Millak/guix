@@ -384,7 +384,6 @@ services.")
 (define-public libcloudproviders
   (package/inherit libcloudproviders-minimal
     (name "libcloudproviders")
-    (version "0.3.1")
     (outputs (cons "doc" (package-outputs libcloudproviders-minimal)))
     (arguments
      (substitute-keyword-arguments (package-arguments libcloudproviders-minimal)
@@ -567,7 +566,7 @@ in JavaScript.")
            vala))
     (inputs
      (list avahi
-           librsvg
+           (librsvg-for-system)
            libgee
            gst-plugins-base
            gtk+))
@@ -871,7 +870,7 @@ tomorrow, the rest of the week and for special occasions.")
            libjpeg-turbo
            libportal
            libpng
-           librsvg
+           (librsvg-for-system)
            python-pygobject
            rest
            tracker
@@ -2802,11 +2801,12 @@ and how they are displayed (View).")
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
+           itstool
            pkg-config
            python))
     (inputs
      (list bash-minimal
-           librsvg
+           (librsvg-for-system)
            gsettings-desktop-schemas
            gtk+
            pango
@@ -4381,7 +4381,7 @@ engineering.")
            python))
     (inputs
      (list bash-minimal
-           librsvg
+           (librsvg-for-system)
            gsettings-desktop-schemas
            gtk+
            pango
@@ -5387,7 +5387,7 @@ once.")
      (list gtk+
            json-glib
            libgee
-           librsvg
+           (librsvg-for-system)
            qqwing))
     (home-page "https://wiki.gnome.org/Apps/Sudoku")
     (synopsis "Japanese logic game")
@@ -6085,7 +6085,7 @@ playlists in a variety of formats.")
        ("pkg-config" ,pkg-config)
        ("xmllint" ,libxml2)))
     (inputs
-     (list gtk+ guile-2.2 libcanberra librsvg))
+     (list gtk+ guile-2.2 libcanberra (librsvg-for-system)))
     (home-page "https://wiki.gnome.org/Apps/Aisleriot")
     (synopsis "Solitaire card games")
     (description
@@ -6672,7 +6672,7 @@ discovery protocols.")
            libxml2
            libsoup
            libpeas
-           librsvg
+           (librsvg-for-system)
            libhandy
            gnome-desktop
            gstreamer
@@ -9109,7 +9109,7 @@ devices using the GNOME desktop.")
            libgtop
            libnma
            libpwquality
-           librsvg                      ;for loading SVG files
+           (librsvg-for-system)             ;for loading SVG files
            libsecret
            libxml2
            libwacom
@@ -10987,7 +10987,7 @@ Bluefish supports many programming and markup languages.")
            gtk+
            gtkmm-3
            libhandy
-           librsvg
+           (librsvg-for-system)
            libxml2
            libwnck))
     (home-page "https://wiki.gnome.org/Apps/SystemMonitor")
@@ -11772,7 +11772,7 @@ functionality.")
        ("libheif" ,libheif)
        ("libjpeg" ,libjpeg-turbo)
        ("libraw" ,libraw)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libtiff" ,libtiff)
        ("libwebp" ,libwebp)))
     (home-page "https://wiki.gnome.org/Apps/Gthumb")
@@ -12157,7 +12157,7 @@ and a high score table.")
      `(("glib" ,glib)
        ("gtk+" ,gtk+)
        ("gtk+-2" ,gtk+-2)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libxml2" ,libxml2)))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-themes-extra")
     (synopsis "GNOME Extra Themes")
@@ -12468,7 +12468,7 @@ to.")
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)))
     (inputs
-     (list gtk+ librsvg libxml2))
+     (list gtk+ (librsvg-for-system) libxml2))
     (arguments
      `(#:configure-flags '("CFLAGS=-fcommon")))
     (home-page "https://glabels.org/")

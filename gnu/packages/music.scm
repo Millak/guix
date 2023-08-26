@@ -3,7 +3,7 @@
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
-;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -752,7 +752,7 @@ many input formats and provides a customisable Vi-style user interface.")
            gtk+
            gtksourceview-3
            guile-2.0
-           librsvg
+           (librsvg-for-system)
            libsndfile
            libxml2
            lilypond
@@ -7223,7 +7223,7 @@ streaming audio server.")
            gtksourceview-4 ; undo, redo, multiline text fields
            hicolor-icon-theme
            keybinder-3.0 ; keybindings outside of GNOME
-           librsvg
+           (librsvg-for-system)
            libsoup-minimal-2
            python
            python-cheetah

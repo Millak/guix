@@ -78,7 +78,8 @@
   #:export (glibc
             libc-for-target
             make-ld-wrapper
-            libiconv-if-needed))
+            libiconv-if-needed
+            %final-inputs))
 
 ;;; Commentary:
 ;;;
@@ -966,6 +967,10 @@ the store.")
                      ;; library is empty by some criterion (such as their file
                      ;; size equaling eight bytes) rather than hardcoding them
                      ;; by name.
+
+                     ;; XXX: We forgot librt.a for the current version!  In
+                     ;; the meantime, gcc-toolchain provides it, but remove
+                     ;; that fix once librt.a is added here.
                      (define empty-static-libraries
                        '("libpthread.a" "libdl.a" "libutil.a" "libanl.a"))
                      (define (empty-static-library? file)
@@ -1648,10 +1653,10 @@ package needs iconv ,@(libiconv-if-needed) should be added."
          (proc  (module-ref iface 'canonical-package)))
     (proc package)))
 
-(define-public (%final-inputs)
+(define* (%final-inputs #:optional (system (%current-system)))
   "Return the list of \"final inputs\"."
   ;; Avoid circular dependency by lazily resolving 'commencement'.
   (let ((iface (resolve-interface '(gnu packages commencement))))
-    ((module-ref iface '%final-inputs) (%current-system))))
+    ((module-ref iface '%final-inputs) system)))
 
 ;;; base.scm ends here

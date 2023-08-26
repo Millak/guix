@@ -5,6 +5,7 @@
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2017, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
+;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019 Christopher Baines <mail@cbaines.net>
@@ -15,6 +16,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021, 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +57,9 @@
   #:use-module (gnu packages cups)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages xdisorg)
@@ -149,6 +154,10 @@
             sugar-desktop-configuration
             sugar-desktop-configuration?
             sugar-desktop-service-type
+
+            plasma-desktop-configuration
+            plasma-desktop-configuration?
+            plasma-desktop-service-type
 
             xfce-desktop-configuration
             xfce-desktop-configuration?
@@ -1165,6 +1174,10 @@ started~%")
                             (string-append #$output service-directory))
           (symlink (string-append #$elogind "/etc") ;for etc/dbus-1
                    (string-append #$output "/etc"))
+          ;; Also expose the D-Bus policy configurations (.conf) files, now
+          ;; installed under '/share' instead of the legacy '/etc' prefix.
+          (symlink (string-append #$elogind "/share/dbus-1/system.d")
+                   (string-append #$output "/share/dbus-1/system.d"))
 
           ;; Replace the "Exec=" line of the 'org.freedesktop.login1.service'
           ;; file with one that refers to WRAPPER instead of elogind.
@@ -1624,6 +1637,50 @@ need to create it beforehand."))))
 profile, and extends dbus with the ability for @code{efl} to generate
 thumbnails and makes setuid the programs which enlightenment needs to function
 as expected.")))
+
+;;;
+;;; KDE Plasma desktop service.
+;;;
+
+(define-record-type* <plasma-desktop-configuration> plasma-desktop-configuration
+  make-plasma-desktop-configuration
+  plasma-desktop-configuration?
+  (plasma-package plasma-package (default plasma)))
+
+(define (plasma-polkit-settings config)
+  "Return the list of KDE Plasma dependencies that provide polkit actions and
+rules."
+  (let ((plasma-plasma (plasma-package config)))
+    (map (lambda (name)
+           ((package-direct-input-selector name) plasma-plasma))
+         '("plasma-desktop"
+           "plasma-workspace"
+           "plasma-disks"
+           "kinfocenter"
+           "libksysguard"
+           "ktexteditor"
+           "powerdevil"
+           "plasma-firewall"))))
+
+;; see https://bugs.kde.org/show_bug.cgi?id=456210
+;; if `kde' no exits, fallback to `other', and then unlock lockscreen not work,
+;; so add it.
+(define (plasma-pam-services config)
+  (list (unix-pam-service "kde")))
+
+(define plasma-desktop-service-type
+  (service-type
+   (name 'plasma-desktop)
+   (description "Run the KDE Plasma desktop environment.")
+   (default-value (plasma-desktop-configuration))
+   (extensions
+    (list (service-extension polkit-service-type
+                             plasma-polkit-settings)
+          (service-extension pam-root-service-type
+                             plasma-pam-services)
+          (service-extension profile-service-type
+                             (compose list
+                                      plasma-package))))))
 
 
 ;;;
