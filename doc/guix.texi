@@ -38088,6 +38088,65 @@ File name of the file system key for the target volume.
 @node Guix Services
 @subsection Guix Services
 
+@subsubheading Build Farm Front-End (BFFE)
+The @uref{https://git.cbaines.net/guix/bffe/,Build Farm Front-End}
+assists with building Guix packages in bulk.  It's responsible for
+submitting builds and displaying the status of the build farm.
+
+@defvar bffe-service-type
+Service type for the Build Farm Front-End.  Its value must be a
+@code{bffe-configuration} object.
+@end defvar
+
+@deftp {Data Type} bffe-configuration
+Data type representing the configuration of the Build Farm Front-End.
+
+@table @asis
+@item @code{package} (default: @code{bffe})
+The Build Farm Front-End package to use.
+
+@item @code{user} (default: @code{"bffe"})
+The system user to run the service as.
+
+@item @code{group} (default: @code{"bffe"})
+The system group to run the service as.
+
+@item @code{arguments}
+A list of arguments to the Build Farm Front-End.  These are passed to
+the @code{run-bffe-service} procedure when starting the service.
+
+For example, the following value directs the Build Farm Front-End to
+submit builds for derivations available from @code{data.guix.gnu.org} to
+the Build Coordinator instance assumed to be running on the same
+machine.
+
+@example
+(list
+ #:build
+ (list
+  (build-from-guix-data-service
+   (data-service-url "https://data.guix.gnu.org")
+   (build-coordinator-url "http://127.0.0.1:8746")
+   (branches '("master"))
+   (systems '("x86_64-linux" "i686-linux"))
+   (systems-and-targets
+    (map (lambda (target)
+           (cons "x86_64-linux" target))
+         '("aarch64-linux-gnu"
+           "i586-pc-gnu")))
+   (build-priority (const 0))))
+ #:web-server-args
+ '(#:event-source "https://example.com"
+   #:controller-args
+   (#:title "example.com build farm")))
+@end example
+
+@item @code{extra-environment-variables} (default: @var{'()})
+Extra environment variables to set via the shepherd service.
+
+@end table
+@end deftp
+
 @subsubheading Guix Build Coordinator
 The @uref{https://git.cbaines.net/guix/build-coordinator/,Guix Build
 Coordinator} aids in distributing derivation builds among machines
