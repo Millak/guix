@@ -24630,6 +24630,41 @@ interface (@command{oj-api} command) which talks JSON compatible with
 jmerle/competitive-companion.")
     (license license:expat)))
 
+(define-public online-judge-tools
+  (package
+    (name "online-judge-tools")
+    (version "11.5.1")
+    ;; Source distributions are not uploaded to PyPI.
+    ;; https://pypi.org/project/online-judge-tools/11.5.1/#files
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/online-judge-tools/oj")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zkzmmjgjb6lyrzq1ip54cpnp7al9a7mcyjyi5vx58bvnx3q0c6m"))
+              (patches (search-patches "online-judge-tools.patch"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        ;; These tests require network connections
+                        (add-after 'unpack 'remove-failing-test
+                          (lambda _
+                            (delete-file "tests/command_version.py") #t)))))
+    (inputs (list time))
+    (propagated-inputs (list python-online-judge-api-client python-colorama
+                             python-requests))
+    (home-page "https://github.com/online-judge-tools/oj")
+    (synopsis "Command to help solving problems on various online judges")
+    (description
+     "@command{oj} is a command line tool to help solving problems on
+various online judges.  This command automates downloading sample
+cases, generating additional test cases, testing for your code, and
+submitting it.")
+    (license license:expat)))
+
 (define-public python-parso
   (package
     (name "python-parso")
