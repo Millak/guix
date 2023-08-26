@@ -698,6 +698,7 @@ ca-certificates.crt file in the system profile."
 
                 #:user #$user
                 #:group #$group
+                #:directory "/var/lib/guix-data-service"
                 #:pid-file "/var/run/guix-data-service/pid"
                 #:environment-variables
                 `(,(string-append
@@ -717,6 +718,7 @@ ca-certificates.crt file in the system profile."
                  #$@extra-process-jobs-options)
                 #:user #$user
                 #:group #$group
+                #:directory "/var/lib/guix-data-service"
                 #:environment-variables
                 `("HOME=/var/lib/guix-data-service"
                   "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
