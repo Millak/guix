@@ -2377,6 +2377,15 @@ reviewing large, complex patch files.")
                (substitute* "tests/prt/all-512.sh"
                  (("/bin/sh") (which "sh")))
 
+               (for-each
+                (lambda (file)
+                  (substitute* file (("egrep") "grep -E")))
+                '("tests/common/test-common"
+                  "tests/admin/comment.sh"
+                  "tests/cdc/2comment.sh"
+                  "tests/cdc/4order.sh"
+                  "tests/get/subst.sh"))
+
                ;; XXX: This test has no hope of passing until there is a "nogroup"
                ;; entry (or at least some group to which the guix builder does
                ;; not belong) in the /etc/group file of the build environment.
