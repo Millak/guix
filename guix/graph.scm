@@ -29,6 +29,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 string-fun)
   #:use-module (ice-9 vlist)
   #:export (node-type
             node-type?
@@ -49,6 +50,7 @@
             %graph-backends
             %d3js-backend
             %graphviz-backend
+            %graphml-backend
             lookup-backend
 
             graph-backend?
@@ -328,6 +330,37 @@ nodeArray.push(nodes[\"~a\"]);~%"
                  emit-cypher-prologue emit-cypher-epilogue
                  emit-cypher-node emit-cypher-edge))
 
+
+;;;
+;;; GraphML export.
+;;;
+
+(define (emit-graphml-prologue name port)
+  (format port "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\"
+    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+    xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns
+     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">
+  <graph id=\"G\" edgedefault=\"directed\">~%"))
+
+(define (emit-graphml-epilogue port)
+  (format port "  </graph>
+</graphml>"))
+
+(define (emit-graphml-node id label port)
+  (format port "    <node id=\"~a\"/>~%"
+          (string-replace-substring (object->string id) "\"" "\\\"")))
+
+(define (emit-graphml-edge id1 id2 port)
+  (format port "    <edge source=\"~a\" target=\"~a\"/>~%"
+          (string-replace-substring (object->string id1) "\"" "\\\"")
+          (string-replace-substring (object->string id2) "\"" "\\\"")))
+
+(define %graphml-backend
+  (graph-backend "graphml"
+                 "Generate GraphML."
+                 emit-graphml-prologue emit-graphml-epilogue
+                 emit-graphml-node emit-graphml-edge))
 
 
 ;;;
@@ -337,7 +370,8 @@ nodeArray.push(nodes[\"~a\"]);~%"
 (define %graph-backends
   (list %graphviz-backend
         %d3js-backend
-        %cypher-backend))
+        %cypher-backend
+        %graphml-backend))
 
 (define (lookup-backend name)
   "Return the graph backend called NAME.  Raise an error if it is not found."

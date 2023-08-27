@@ -92,6 +92,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home.scm					\
   %D%/home/services.scm			\
   %D%/home/services/desktop.scm			\
+  %D%/home/services/dict.scm			\
   %D%/home/services/symlink-manager.scm		\
   %D%/home/services/fontutils.scm		\
   %D%/home/services/gnupg.scm			\
@@ -104,6 +105,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/shepherd.scm		\
   %D%/home/services/sound.scm			\
   %D%/home/services/ssh.scm			\
+  %D%/home/services/syncthing.scm		\
   %D%/home/services/mcron.scm			\
   %D%/home/services/utils.scm			\
   %D%/home/services/xdg.scm			\
@@ -1598,7 +1600,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/mcrypt-CVE-2012-4527.patch			\
   %D%/packages/patches/libmemcached-build-with-gcc7.patch	\
   %D%/packages/patches/libmhash-hmac-fix-uaf.patch		\
-  %D%/packages/patches/libsigrokdecode-python3.9-fix.patch	\
   %D%/packages/patches/maturin-no-cross-compile.patch		\
   %D%/packages/patches/mecab-variable-param.patch		\
   %D%/packages/patches/memtest86+-build-reproducibly.patch	\
@@ -1728,11 +1729,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
   %D%/packages/patches/python-sip-include-dirs.patch	\
   %D%/packages/patches/python-sgmllib3k-assertions.patch	\
-  %D%/packages/patches/python-shiboken-2-compat.patch		\
   %D%/packages/patches/python-telingo-fix-comparison.patch	\
   %D%/packages/patches/python-typeguard-python3.10.patch	\
   %D%/packages/patches/python-w3lib-fix-test-failure.patch	\
   %D%/packages/patches/python-wxwidgets-type-errors.patch	\
+  %D%/packages/patches/qtdeclarative-5-disable-qmlcache.patch	\
+  %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\
   %D%/packages/patches/quodlibet-fix-invalid-glob.patch	\
   %D%/packages/patches/quodlibet-fix-mtime-tests.patch		\
   %D%/packages/patches/qxlsx-fix-include-directory.patch	\
@@ -1878,7 +1880,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/quagga-reproducible-build.patch          \
   %D%/packages/patches/quickswitch-fix-dmenu-check.patch	\
   %D%/packages/patches/quilt-grep-compat.patch 			\
-  %D%/packages/patches/qtwayland-gcc-11.patch			\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
   %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
   %D%/packages/patches/ragel-char-signedness.patch		\

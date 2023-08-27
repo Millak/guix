@@ -45,6 +45,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -116,7 +117,9 @@
   #:use-module (gnu packages pulseaudio)  ;libsndfile, libsamplerate
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
@@ -4690,6 +4693,45 @@ simplified, although really accurate, measuring tools.")
 flavors EBU R128, ATSC A/85, and ReplayGain 2.0.  It helps normalizing the
 loudness of audio and video files to the same level.")
     (license license:gpl2+)))
+
+(define-public r128gain
+  (package
+    (name "r128gain")
+    (version "1.0.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/desbma/r128gain.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zqclskkjb9hfdw9gq6iq4bs9dl1wj9nr8v1jz6s885379q9l8i7"))))
+    (build-system python-build-system)
+    (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'hardcode-ffmpeg
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "r128gain/__init__.py"
+                  (("ffmpeg_path or \"ffmpeg\"")
+                   (string-append "ffmpeg_path or \""
+                                  (search-input-file inputs "bin/ffmpeg")
+                                  "\""))))))))
+    (inputs (list python-crcmod python-ffmpeg-python python-mutagen
+                  python-tqdm ffmpeg))
+    (native-inputs (list python-future python-requests))
+    (home-page "https://github.com/desbma/r128gain")
+    (synopsis "Fast audio loudness scanner & tagger")
+    (description
+     "r128gain is a multi platform command line tool to scan your audio
+files and tag them with loudness metadata (ReplayGain v2 or Opus R128 gain
+format), to allow playback of several tracks or albums at a similar
+loudness level. r128gain can also be used as a Python module from other
+Python projects to scan and/or tag audio files.")
+    ;; 'setup.py' claims LGPL2+, 'LICENSE' is LGPLv2.1.
+    (license license:lgpl2.1+)))
 
 (define-public filteraudio
   (let ((revision "1")

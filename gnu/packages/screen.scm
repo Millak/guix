@@ -43,14 +43,14 @@
 (define-public screen
   (package
     (name "screen")
-    (version "4.9.0")
+    (version "4.9.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/screen/screen-"
                                  version ".tar.gz"))
              (patches (search-patches "screen-hurd-path-max.patch"))
              (sha256
-              (base32 "1x1hqy4h47i7hk85f779lkwkm7gkq8h8mxwd0znkh5adpf0m4czr"))))
+              (base32 "0sdc0ms6qxm4gbx0caw7pwghj5aw1h8syvxdhkac0w95qkiz7ki6"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake texinfo))

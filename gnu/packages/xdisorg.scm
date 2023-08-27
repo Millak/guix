@@ -275,7 +275,7 @@ program.")
 (define-public autorandr
   (package
     (name "autorandr")
-    (version "1.10.1")
+    (version "1.14")
     (home-page "https://github.com/phillipberndt/autorandr")
     (source
      (origin
@@ -285,7 +285,7 @@ program.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0msw9b1hdy3gbq9w5d04mfizhyirz1c648x84mlcbzl8salm7vpg"))))
+        (base32 "0yb0rnv37xymjhg54mk7zw3h9501f45ykc1754mxy1q3bm0fgva6"))))
     (build-system python-build-system)
     (native-inputs
      (list pkg-config))
@@ -1117,7 +1117,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.68")
+    (version "5.72")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "http://sillycycle.com/xlock/"
@@ -1128,7 +1128,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                                         "xlockmore-" version ".tar.xz")))
               (sha256
                (base32
-                "0vndfwccnvkaaraprjam8pmx0aj55va0ag64q6snxw83nbf1ywrh"))))
+                "0wn77ri29rhk1w3wik2hpqb8lks1pyqzdk6d583mawxfcxcrf4fm"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2661,14 +2661,14 @@ temperature of the screen.")
 (define-public xsecurelock
   (package
     (name "xsecurelock")
-    (version "1.7.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/google/xsecurelock/releases"
                     "/download/v" version "/xsecurelock-" version ".tar.gz"))
               (sha256
-               (base32 "0s2q69g1xhvs18q2jhcval5vpa9j0kkrdv02r176vvxvdms7hhc7"))))
+               (base32 "1i7vhzysirr5kra15vd501b79k0jgs11lkb9ck3hx6vicxm204d3"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -3552,7 +3552,7 @@ light filter or night light.")
 (define-public ydotool
   (package
     (name "ydotool")
-    (version "1.0.1")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -3561,7 +3561,7 @@ light filter or night light.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h19dh7kai0iikssr7sq0wfkh0sb18dylyfg7c3dkwc158cdg9cr"))))
+        (base32 "0y2n1r6hx0ar1yn636a7j4ywm17qqji84ryhdina3kriwx3sgmij"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))          ; no tests
     (native-inputs (list scdoc))

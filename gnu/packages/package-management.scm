@@ -174,8 +174,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "44bbfc24e4bcc48d0e3343cd3d83452721af8c36")
-        (revision 7))
+        (commit "4dfdd822102690b5687acf28365ab707b68d9476")
+        (revision 10))
     (package
       (name "guix")
 
@@ -191,7 +191,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "08gq04pphapr3i0gzdilp8l87rpxlh2p768qrn1fw92fmw727xf7"))
+                  "1p21gz2lr7iqvma1m83k2r04w201rzvk31d5kfn2qkr9l0gds4cx"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -262,6 +262,46 @@ $(prefix)/etc/openrc\n")))
                             (lambda _
                               (substitute* "tests/gexp.scm"
                                 (("2\\.0") "3.0")))))
+                        '())
+                    ,@(if (system-hurd?)
+                          `((add-after 'unpack 'disable-tests/hurd
+                              (lambda _
+                                (substitute* "Makefile.am"
+                                  (("tests/derivations.scm") "")
+                                  (("tests/grafts.scm") "")
+                                  (("tests/graph.scm") "")
+                                  (("tests/lint.scm") "")
+                                  (("tests/nar.scm") "")
+                                  (("tests/offload.scm") "")
+                                  (("tests/pack.scm") "")
+                                  (("tests/packages.scm") "")
+                                  (("tests/processes.scm") "")
+                                  (("tests/publish.scm") "")
+                                  (("tests/pypi.scm") "")
+                                  (("tests/size.scm") "")
+                                  (("tests/store.scm") "")
+                                  (("tests/substitute.scm") "")
+                                  (("tests/syscalls.scm") "")
+                                  (("tests/union.scm") "")
+                                  (("tests/guix-build.sh") "")
+                                  (("tests/guix-build-branch.sh") "")
+                                  (("tests/guix-hash.sh") "")
+                                  (("tests/guix-locate.sh") "")
+                                  (("tests/guix-pack.sh") "")
+                                  (("tests/guix-pack-relocatable.sh") "")
+                                  (("tests/guix-package-aliases.sh") "")
+                                  (("tests/guix-package-net.sh") "")
+                                  (("tests/guix-home.sh") "")
+                                  (("tests/guix-archive.sh") "")
+                                  (("tests/guix-environment.sh") "")
+                                  (("tests/guix-package.sh") "")
+                                  (("tests/guix-refresh.sh") "")
+                                  (("tests/guix-shell.sh") "")
+                                  (("tests/guix-shell-export-manifest.sh") "")
+                                  (("tests/guix-system.sh") "")
+                                  (("tests/guix-graph.sh") "")
+                                  (("tests/guix-gc.sh") "")
+                                  (("tests/guix-daemon.sh") "")))))
                         '())
                     (add-before 'build 'use-host-compressors
                       (lambda* (#:key inputs target #:allow-other-keys)
@@ -1410,8 +1450,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "f39f16000469429745bd8aff3cd4d59b7c489fa1")
-        (revision "86"))
+  (let ((commit "06a44693c4f25109f945e5aa6c7c4670df72b690")
+        (revision "87"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1422,7 +1462,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1lmbwbza87xzbvmzw44sgpscmqjfl5kpgfl79n7hzwa1icqqb7mg"))
+                  "1g9dq7nzndrws82dajxapajhd2c7zmk7kmi7fbga9qd414pwfv92"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

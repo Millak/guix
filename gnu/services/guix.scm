@@ -365,6 +365,7 @@
                               #:guile guile))
                      #:user #$user
                      #:group #$group
+                     #:directory "/var/lib/guix-build-coordinator"
                      #:pid-file "/var/run/guix-build-coordinator/pid"
                      ;; Allow time for migrations to run
                      #:pid-file-timeout 60
@@ -440,7 +441,7 @@
      (shepherd-service
       (documentation "Guix Build Coordinator Agent")
       (provision '(guix-build-coordinator-agent))
-      (requirement '(networking))
+      (requirement '(networking user-processes))
       (start
        #~(lambda _
            (parameterize ((%current-logfile-date-format ""))
@@ -697,6 +698,7 @@ ca-certificates.crt file in the system profile."
 
                 #:user #$user
                 #:group #$group
+                #:directory "/var/lib/guix-data-service"
                 #:pid-file "/var/run/guix-data-service/pid"
                 #:environment-variables
                 `(,(string-append
@@ -716,6 +718,7 @@ ca-certificates.crt file in the system profile."
                  #$@extra-process-jobs-options)
                 #:user #$user
                 #:group #$group
+                #:directory "/var/lib/guix-data-service"
                 #:environment-variables
                 `("HOME=/var/lib/guix-data-service"
                   "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
@@ -972,6 +975,7 @@ ca-certificates.crt file in the system profile."
                              '()))
                 #:user #$user
                 #:group #$group
+                #:directory "/var/lib/nar-herder"
                 #:pid-file "/var/run/nar-herder/pid"
                 #:environment-variables
                 `(,(string-append

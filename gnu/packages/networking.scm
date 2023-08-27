@@ -4502,7 +4502,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public phantomsocks
   (package
     (name "phantomsocks")
-    (version "0.0.0-20230405135900-a54ae9f3611e")
+    (version "0.0.0-20230811053544-53b995bdab83")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4511,7 +4511,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qgv8dcrsyzjzppvdk0n5kkyaypcjm1hcn9lb29ahvbhm70cpm6a"))))
+                "1jc9qldi4f9s6n4ggaphyilxjymrz95hwd060jhj260x2hkdywl9"))))
     (build-system go-build-system)
     (arguments
      (list #:install-source? #f
@@ -4519,13 +4519,12 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
            #:build-flags #~'("-tags" #$(if (target-linux?)
                                            "rawsocket"
                                            "pcap"))))
-    (propagated-inputs
-     (list go-github-com-google-gopacket
-           go-github-com-macronut-go-tproxy))
     (inputs
-     (if (target-linux?)
-         '()
-         (list libpcap)))
+     (append (if (target-linux?)
+                 '()
+                 (list libpcap))
+             (list go-github-com-google-gopacket
+                   go-github-com-macronut-go-tproxy)))
     (home-page "https://github.com/macronut/phantomsocks")
     (synopsis "Internet censorship circumvention tool")
     (description

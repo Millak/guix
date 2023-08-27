@@ -1730,7 +1730,7 @@ Dropbox API v2.")
          #~(begin (use-modules (guix build utils))
                   ;; Don't check for package updates.
                   (substitute* "dbxfs/main.py"
-                    (("if version") "if false"))))))
+                    (("if version") "if False"))))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; tests requires safefs

@@ -87,7 +87,7 @@ client.")
 (define-public fcitx5
   (package
     (name "fcitx5")
-    (version "5.0.23")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
@@ -95,13 +95,10 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5/fcitx5-"
              version "_dict.tar.xz"))
        (sha256
-        (base32 "1w26v0a8qizv8flpkmg04b42kwym6ca1a1chng7j2j1xizjhiw0p"))))
-    (build-system cmake-build-system)
+        (base32 "1a1d3bcxddv3hsmffgf608arhamia17bq82q932sy5zl9j8s423y"))))
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DCLDR_DIR="
-                            (assoc-ref %build-inputs "unicode-cldr-common")
-                            "/share/unicode/cldr"))))
+     (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF")))
+    (build-system cmake-build-system)
     (inputs
      `(("cairo" ,cairo)
        ("cairo-xcb" ,cairo-xcb)
@@ -115,16 +112,11 @@ client.")
        ("iso-codes" ,iso-codes)
        ("json-c" ,json-c)
        ("libevent" ,libevent)
-       ("libpthread-stubs" ,libpthread-stubs)
        ("libuuid" ,util-linux "lib")
-       ("libx11" ,libx11)
        ("libxcb" ,libxcb)
-       ("libxfixes" ,libxfixes)
-       ("libxinerama" ,libxinerama)
        ("libxkbcommon" ,libxkbcommon)
        ("libxkbfile" ,libxkbfile)
        ("pango" ,pango)
-       ("unicode-cldr-common" ,unicode-cldr-common)
        ("wayland" ,wayland)
        ("wayland-protocols" ,wayland-protocols)
        ("xcb-imdkit" ,xcb-imdkit)
@@ -172,14 +164,14 @@ client.")
 (define-public libime
   (package
     (name "libime")
-    (version "1.0.17")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.fcitx-im.org/fcitx5/libime/libime-"
                            version "_dict.tar.xz"))
        (sha256
-        (base32 "00d191nghqkcxky5i2j5v8105ckhfh0bdjbkk8swyndjp35bn54f"))))
+        (base32 "0jqr9riwygr3c9qzs8hx46smhgys68bf6m70fmam819903a9gpf0"))))
     (build-system cmake-build-system)
     (inputs
      (list fcitx5 boost))
@@ -194,7 +186,7 @@ editors.")
 (define-public fcitx5-gtk
   (package
     (name "fcitx5-gtk")
-    (version "5.0.23")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
@@ -202,7 +194,7 @@ editors.")
                            "/fcitx5-gtk/fcitx5-gtk-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0s08j8y7bxn9hjz9xkza2fal24r9az2p7js7v86nbjmvy7klq4md"))))
+        (base32 "0rc4iwqb7ydysm95qpncfd8kvyzk36cfxwg1h0cjn98v3fxjf8kw"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -312,7 +304,7 @@ IM module for GTK+3 applications.
 (define-public fcitx5-qt
   (package
     (name "fcitx5-qt")
-    (version "5.0.17")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
@@ -320,7 +312,7 @@ IM module for GTK+3 applications.
                            "/fcitx5-qt/fcitx5-qt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1x4iks052jn6dcwd1lv1i9cpwh3l3qnnd3phryfsg4kn4yhyfs22"))))
+        (base32 "02gnzwf0mlshmh1hw8c1866643qmdqazwjz339jq0c3ll61f8m7h"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -347,7 +339,7 @@ for Qt based application.")
 (define-public fcitx5-anthy
   (package
     (name "fcitx5-anthy")
-    (version "5.0.14")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
@@ -355,7 +347,7 @@ for Qt based application.")
                            "/fcitx5-anthy/fcitx5-anthy-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1dx7ajygdy244lwyv3fv14b4wdg3csppxhk8p0g2zwjfvxq4v1qa"))))
+        (base32 "0hzk3v36ph6f2nnlqqyw08w3qakbcb71y572ff09cy5b20vb29dp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ;; no tests
@@ -371,7 +363,7 @@ the Anthy input method.")
 (define-public fcitx5-chinese-addons
   (package
     (name "fcitx5-chinese-addons")
-    (version "5.0.17")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
@@ -379,7 +371,7 @@ the Anthy input method.")
                            "/fcitx5-chinese-addons/fcitx5-chinese-addons-"
                            version "_dict.tar.xz"))
        (sha256
-        (base32 "0vilq49q02hrim0dg4z3rm6p3ma8v4smh0r5q5rrj6bkyf1apivx"))))
+        (base32 "1akf4qqvck7m93i0183ffb7jfsz0rq4f3bkf89vfxlqp4i7lfw5l"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -435,7 +427,7 @@ including input methods previous bundled inside Fcitx 4:
 (define-public fcitx5-configtool
   (package
     (name "fcitx5-configtool")
-    (version "5.0.17")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
@@ -443,7 +435,7 @@ including input methods previous bundled inside Fcitx 4:
              "https://download.fcitx-im.org/fcitx5"
              "/fcitx5-configtool/fcitx5-configtool-" version ".tar.xz"))
        (sha256
-        (base32 "1mc6axvkv2i396v7hyqllpiv5rdnf8vvqg9bkb66ljni4dnikdpq"))))
+        (base32 "0xv5kckm6bsbavw0s2iqg128fv7j8sh49lpwc0acqrdmwj49x1pz"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -545,7 +537,7 @@ for Fcitx 5 with following color variants:
 (define-public fcitx5-rime
   (package
     (name "fcitx5-rime")
-    (version "5.0.16")
+    (version "5.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.fcitx-im.org/fcitx5"
@@ -553,7 +545,7 @@ for Fcitx 5 with following color variants:
                                   ".tar.xz"))
               (sha256
                (base32
-                "0d3qikdcm55p7qjfgiidx1a0zij3sv4s6j7vxxmxwyynjl5xjxjh"))))
+                "1h6vh5pkak8l528l2d2nw5gy6zqa2sy3ris3xzkakb8kmgyjd3da"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ;no tests

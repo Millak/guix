@@ -891,6 +891,34 @@ GIT integration to Thunar, it adds Subversion and GIT actions to the context
 menu.")
     (license gpl2+)))
 
+(define-public thunarx-python
+  (package
+    (name "thunarx-python")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.xfce.org/src/bindings/"
+                           name "/" (version-major+minor version)
+                           "/" name "-" version ".tar.bz2"))
+       (sha256
+        (base32 "08lz9pvx006a2fypg2q38p61jbhy0yswz8cizlxpiwfcqsvhpnln"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config which))
+    (inputs
+     (list exo
+           thunar
+           python
+           python-pygobject
+           libxfce4ui
+           gtk+))
+    (home-page "https://gitlab.xfce.org/bindings/thunarx-python")
+    (synopsis "Python Bindings for Thunar")
+    (description
+     "These bindings allow one to create python plugins for Thunar.")
+    (license gpl2+)))
+
 (define-public xfwm4
   (package
     (name "xfwm4")

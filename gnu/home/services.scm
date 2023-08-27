@@ -33,6 +33,7 @@
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (guix modules)
+  #:use-module (guix memoization)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (ice-9 match)
@@ -63,11 +64,16 @@
             lookup-home-service-types
             home-provenance
 
+            define-service-type-mapping
+            system->home-service-type
+
             %initialize-gettext)
 
   #:re-export (service
                service-type
-               service-extension))
+               service-extension
+               for-home
+               for-home?))
 
 ;;; Comment:
 ;;;
@@ -512,6 +518,67 @@ generation of home environment and update the state of the home
 directory.  @command{activate} script automatically called during
 reconfiguration or generation switching.  This service can be extended
 with one gexp, but many times, and all gexps must be idempotent.")))
+
+
+;;;
+;;; Service type graph rewriting.
+;;;
+
+(define (service-type-mapping proc)
+  "Return a procedure that applies PROC to map a service type graph to another
+one."
+  (define (rewrite extension)
+    (match (proc (service-extension-target extension))
+      (#f #f)
+      (target
+       (service-extension target
+                          (service-extension-compute extension)))))
+
+  (define replace
+    (mlambdaq (type)
+      (service-type
+       (inherit type)
+       (name (symbol-append 'home- (service-type-name type)))
+       (location (service-type-location type))
+       (extensions (filter-map rewrite (service-type-extensions type))))))
+
+  replace)
+
+(define %system/home-service-type-mapping
+  ;; Mapping of System to Home services.
+  (make-hash-table))
+
+(define system->home-service-type
+  ;; Map the given System service type to the corresponding Home service type.
+  (let ()
+    (define (replace type)
+      (define replacement
+        (hashq-ref %system/home-service-type-mapping type
+                   *unspecified*))
+
+      (if (eq? replacement *unspecified*)
+          type
+          replacement))
+
+    (service-type-mapping replace)))
+
+(define-syntax define-service-type-mapping
+  (syntax-rules (=>)
+    ((_ system-type => home-type)
+     (hashq-set! %system/home-service-type-mapping
+                 system-type home-type))))
+
+(define-syntax define-service-type-mappings
+  (syntax-rules (=>)
+    ((_ (system-type => home-type) ...)
+     (begin
+       (define-service-type-mapping system-type => home-type)
+       ...))))
+
+(define-service-type-mappings
+  (system-service-type => home-service-type)
+  (activation-service-type => home-activation-service-type)
+  (profile-service-type => home-profile-service-type))
 
 
 ;;;

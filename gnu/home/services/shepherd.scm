@@ -141,7 +141,7 @@ as shepherd package."
 (define (shepherd-xdg-configuration-files config)
   `(("shepherd/init.scm" ,(home-shepherd-configuration-file config))))
 
-(define-public home-shepherd-service-type
+(define home-shepherd-service-type
   (service-type (name 'home-shepherd)
                 (extensions
                  (list (service-extension
@@ -168,4 +168,6 @@ as shepherd package."
                 (default-value (home-shepherd-configuration))
                 (description "Configure and install userland Shepherd.")))
 
+(define-service-type-mapping
+  shepherd-root-service-type => home-shepherd-service-type)
 

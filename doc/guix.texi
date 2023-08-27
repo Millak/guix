@@ -96,7 +96,7 @@ Copyright @copyright{} 2021 Domagoj Stolfa@*
 Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
-Copyright @copyright{} 2021, 2022 Josselin Poiret@*
+Copyright @copyright{} 2021-2023 Josselin Poiret@*
 Copyright @copyright{} 2021, 2023 muradm@*
 Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
@@ -450,6 +450,8 @@ Home Services
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Networking: Networking Home Services.  Networking services.
+* Miscellaneous: Miscellaneous Home Services.  More services.
 
 Platforms
 
@@ -1405,7 +1407,7 @@ The system types the remote machine supports---e.g., @code{(list
 "x86_64-linux" "i686-linux")}.
 
 @item user
-The user account to use when connecting to the remote machine over SSH.
+The user account on the remote machine to use when connecting over SSH.
 Note that the SSH key pair must @emph{not} be passphrase-protected, to
 allow non-interactive logins.
 
@@ -1498,6 +1500,11 @@ archives of files from the store (@pxref{Invoking guix archive}):
 @example
 # guix archive --generate-key
 @end example
+
+@quotation Note
+This key pair is not related to the SSH key pair that was previously
+mentioned in the description of the @code{build-machine} data type.
+@end quotation
 
 @noindent
 Each build machine must authorize the key of the master machine so that
@@ -6263,6 +6270,14 @@ building or downloading any missing package, and runs the
 @example
 guix shell python python-numpy -- python3
 @end example
+
+Note that it is necessary to include the main @code{python} package in
+this command even if it is already installed into your environment.
+This is so that the shell environment knows to set @env{PYTHONPATH} and
+other related variables.  The shell environment cannot check the
+previously installed environment, because then it would be
+non-deterministic.  This is true for most libraries: their corresponding
+language package should be included in the shell invocation.
 
 @quotation Note
 @cindex shebang, for @command{guix shell}
@@ -18042,6 +18057,10 @@ administrator's choice; reconfiguring does @emph{not} change their name.
 @item @code{home-directory}
 This is the name of the home directory for the account.
 
+@item @code{home-directory-permissions} (default: @code{#o700})
+The permission bits for the home directory.  By default, full access is
+granted to the user account and all other access is denied.
+
 @item @code{create-home-directory?} (default: @code{#t})
 Indicates whether the home directory of this account should be created
 if it does not exist yet.
@@ -21303,6 +21322,8 @@ client.
 @end table
 @end deftp
 
+@cindex Syncthing, file synchronization service
+@cindex backup service, Syncthing
 The @code{(gnu services syncthing)} module provides the following services:
 @cindex syncthing
 
@@ -21320,7 +21341,14 @@ syncthing} daemon, The value for this service type is a
          (syncthing-configuration (user "alice")))
 @end lisp
 
+@quotation Note
+This service is also available for Guix Home, where it runs directly
+with your user privileges (@pxref{Networking Home Services,
+@code{home-syncthing-service-type}}).
+@end quotation
+
 See below for details about @code{syncthing-configuration}.
+@end defvar
 
 @deftp {Data Type} syncthing-configuration
 Data type representing the configuration for @code{syncthing-service-type}.
@@ -21350,7 +21378,6 @@ directory is @file{$HOME} of the specified Syncthing @code{user}.
 
 @end table
 @end deftp
-@end defvar
 
 Furthermore, @code{(gnu services ssh)} provides the following services.
 @cindex SSH
@@ -25084,12 +25111,11 @@ String or G-exp denoting an mcron schedule for the periodic
 @command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).
 
 @item @code{excluded-directories} (default @code{%default-file-database-excluded-directories})
-List of directories to ignore when building the file database.  By
-default, this includes @file{/tmp} and @file{/gnu/store}, which should
-instead be indexed by @command{guix locate} (@pxref{Invoking guix
-locate}).  This list is passed to the @option{--prunepaths} option of
-@command{updatedb} (@pxref{Invoking updatedb,,, find,
-GNU@tie{}Findutils}).
+List of regular expressions of directories to ignore when building the
+file database.  By default, this includes @file{/tmp} and @file{/gnu/store};
+the latter should instead be indexed by @command{guix locate} (@pxref{Invoking
+guix locate}).  This list is passed to the @option{--prunepaths} option of
+@command{updatedb} (@pxref{Invoking updatedb,,, find, GNU@tie{}Findutils}).
 @end table
 @end deftp
 
@@ -39082,6 +39108,12 @@ implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
 You can add @command{open localhost} to your @file{~/.dico} file to make
 @code{localhost} the default server for @command{dico} client
 (@pxref{Initialization File,,, dico, GNU Dico Manual}).
+
+@quotation Note
+This service is also available for Guix Home, where it runs directly
+with your user privileges (@pxref{Miscellaneous Home Services,
+@code{home-dicod-service-type}}).
+@end quotation
 @end defvar
 
 @deftp {Data Type} dicod-configuration
@@ -40864,7 +40896,7 @@ QEMU monitor and the VM.
 @cindex image, creating disk images
 The @code{image} command can produce various image types.  The image
 type can be selected using the @option{--image-type} option.  It
-defaults to @code{efi-raw}.  When its value is @code{iso9660}, the
+defaults to @code{mbr-raw}.  When its value is @code{iso9660}, the
 @option{--label} option can be used to specify a volume ID with
 @code{image}.  By default, the root file system of a disk image is
 mounted non-volatile; the @option{--volatile} option can be provided to
@@ -40883,7 +40915,7 @@ qemu-system-x86_64 -enable-kvm -hda /tmp/my-image.qcow2 -m 1000 \
                    -bios $(guix build ovmf)/share/firmware/ovmf_x64.bin
 @end example
 
-When using the @code{efi-raw} image type, a raw disk image is produced;
+When using the @code{mbr-raw} image type, a raw disk image is produced;
 it can be copied as is to a USB stick, for instance.  Assuming
 @code{/dev/sdc} is the device corresponding to a USB stick, one can copy
 the image to it using the following command:
@@ -41021,7 +41053,7 @@ of the image.
 For the @code{image} action, create an image with given @var{type}.
 
 When this option is omitted, @command{guix system} uses the
-@code{efi-raw} image type.
+@code{mbr-raw} image type.
 
 @cindex ISO-9660 format
 @cindex CD image format
@@ -42972,15 +43004,17 @@ services)}.
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Networking: Networking Home Services.  Networking services.
+* Miscellaneous: Miscellaneous Home Services.  More services.
 @end menu
 @c In addition to that Home Services can provide
 
 @node Essential Home Services
 @subsection Essential Home Services
 There are a few essential home services defined in
-@code{(gnu services)}, they are mostly for internal use and are required
-to build a home environment, but some of them will be useful for the end
-user.
+@code{(gnu home services)}, they are mostly for internal use and are
+required to build a home environment, but some of them will be useful
+for the end user.
 
 @cindex environment variables
 
@@ -44561,6 +44595,82 @@ kodi} for more information.
 @end table
 @end deftp
 
+@node Networking Home Services
+@subsection Networking Home Services
+
+This section lists services somewhat networking-related that you may use
+with Guix Home.
+
+@cindex Syncthing, file synchronization service
+@cindex backup service, Syncthing
+The @code{(gnu home services syncthing)} module provides a service to
+set up the @uref{Syncthing, https://syncthing.net} continuous file
+backup service.
+
+@defvar home-syncthing-service-type
+This is the service type for the @command{syncthing} daemon; it is the
+Home counterpart of the @code{syncthing-service-type} system service
+(@pxref{Networking Services, @code{syncthing-service-type}}).  The value
+for this service type is a @command{syncthing-configuration}.
+
+Here is how you would set it up with the default configuration:
+
+@lisp
+(service home-syncthing-service-type)
+@end lisp
+
+For a custom configuration, wrap you @code{syncthing-configuration} in
+@code{for-home}, as in this example:
+
+@lisp
+(service home-syncthing-service-type
+         (for-home
+          (syncthing-configuration (logflags 5))))
+@end lisp
+
+For details about @code{syncthing-configuration}, check out the
+documentation of the system service (@pxref{Networking Services,
+@code{syncthing-service-type}}).
+@end defvar
+
+
+@node Miscellaneous Home Services
+@subsection Miscellaneous Home Services
+
+This section lists Home services that lack a better place.
+
+@subsubheading Dictionary Service
+
+@cindex dictionary service, for Home
+The @code{(gnu home services dict)} module provides the following service:
+
+@defvar home-dicod-service-type
+This is the type of the service that runs the @command{dicod} daemon, an
+implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
+
+You can add @command{open localhost} to your @file{~/.dico} file to make
+@code{localhost} the default server for @command{dico} client
+(@pxref{Initialization File,,, dico, GNU Dico Manual}).
+@end defvar
+
+This service is a direct mapping of the @code{dicod-service-type} system
+service (@pxref{Miscellaneous Services, Dictionary Service}).  You can
+use it like this:
+
+@lisp
+(service home-dicod-service-type)
+@end lisp
+
+You may specify a custom configuration by providing a
+@code{dicod-configuration} record, exactly like for
+@code{dicod-service-type}, but wrapping it in @code{for-home}:
+
+@lisp
+(service home-dicod-service-type
+         (for-home
+          (dicod-configuration @dots{})))
+@end lisp
+
 @node Invoking guix home
 @section Invoking @command{guix home}
 
@@ -45095,7 +45205,7 @@ then directly boot from it, without any kind of installation procedure.
 
 The @command{guix system image} command is able to turn an operating
 system definition into a bootable image.  This command supports
-different image types, such as @code{efi-raw}, @code{iso9660} and
+different image types, such as @code{mbr-raw}, @code{iso9660} and
 @code{docker}.  Any modern @code{x86_64} machine will probably be able
 to boot from an @code{iso9660} image.  However, there are a few machines
 out there that require specific image types.  Those machines, in general
@@ -45447,6 +45557,10 @@ record.
 There are several @code{image-type} records provided by the @code{(gnu
 system image)} and the @code{(gnu system images @dots{})} modules.
 
+@defvar mbr-raw-image-type
+Build an image based on the @code{mbr-disk-image} image.
+@end defvar
+
 @defvar efi-raw-image-type
 Build an image based on the @code{efi-disk-image} image.
 @end defvar
@@ -45456,7 +45570,7 @@ Build an image based on the @code{efi32-disk-image} image.
 @end defvar
 
 @defvar qcow2-image-type
-Build an image based on the @code{efi-disk-image} image but with the
+Build an image based on the @code{mbr-disk-image} image but with the
 @code{compressed-qcow2} image format.
 @end defvar
 
@@ -45527,7 +45641,7 @@ wsl -d Guix
 
 So, if we get back to the @code{guix system image} command taking an
 @code{operating-system} declaration as argument.  By default, the
-@code{efi-raw-image-type} is used to turn the provided
+@code{mbr-raw-image-type} is used to turn the provided
 @code{operating-system} into an actual bootable image.
 
 To use a different @code{image-type}, the @code{--image-type} option can

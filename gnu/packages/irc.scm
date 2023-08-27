@@ -264,14 +264,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.0.2")
+    (version "4.0.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0g026j47140h8kqyh3l0367fq9194wdx8q7f4na0kj14s3h8wr0f"))))
+                "1xmnks152ixn0ycs0h6dzvir3vl1wkvxahg7hjdk785dnmwljpxf"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -484,14 +484,14 @@ highlighted.
 (define-public sic
   (package
     (name "sic")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dl.suckless.org/tools/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "11aiavxp44yayibc58bvimi8mrxvbw1plbci8cnbl4syk42zj1xc"))))
+                "1lk57mrrqgky37bjsnp72s8libywzsrbbjq8bpmz4xdw7smqyirh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests

@@ -1701,6 +1701,11 @@ operate properly.")
       ;;   --enable-libzvbi         enable teletext support via libzvbi [no]
       ;;   --enable-opencl          enable OpenCL code
       #~(list
+         #$@(if (target-powerpc?)
+                ;; These tests fail on powerpc64-le (see:
+                ;; https://trac.ffmpeg.org/ticket/9604).
+                '("--ignore-tests=checkasm-sw_scale,filter-scale2ref_keep_aspect")
+                '())
          "--enable-gpl"                 ;enable optional gpl licensed parts
          "--enable-shared"
          "--enable-frei0r"

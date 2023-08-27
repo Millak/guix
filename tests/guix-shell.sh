@@ -48,7 +48,7 @@ guix shell -s armhf-linux intelmetool -n && false
 # opens a couple of extra FDs.
 initial_fd_list="$(echo /proc/$$/fd/*)"
 fd_list="$(guix shell --bootstrap guile-bootstrap -- \
-		 "$SHELL" -c 'echo /proc/$$/fd/*')"
+		 bash -c 'echo /proc/$$/fd/*')"
 test "$(echo $fd_list | wc -w)" -le "$(echo $initial_fd_list | wc -w)"
 
 # Ignoring unauthorized files.

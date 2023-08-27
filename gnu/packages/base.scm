@@ -967,6 +967,10 @@ the store.")
                      ;; library is empty by some criterion (such as their file
                      ;; size equaling eight bytes) rather than hardcoding them
                      ;; by name.
+
+                     ;; XXX: We forgot librt.a for the current version!  In
+                     ;; the meantime, gcc-toolchain provides it, but remove
+                     ;; that fix once librt.a is added here.
                      (define empty-static-libraries
                        '("libpthread.a" "libdl.a" "libutil.a" "libanl.a"))
                      (define (empty-static-library? file)

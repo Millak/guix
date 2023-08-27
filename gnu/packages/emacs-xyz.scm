@@ -11290,39 +11290,38 @@ interface.")
     (license license:expat)))
 
 (define-public emacs-orderless
-  (let ((commit "004cee6b8e01f8eb0cb1c683d0a637b14890600f"))
-    (package
-      (name "emacs-orderless")
-      (version "1.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/oantolin/orderless")
-               (commit commit)))
-         (sha256
-          (base32 "115bwqi2yc44bgvcl7lha8p2s6jgh5hksn4wa9s0kpfxhi14jwmy"))
-         (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'makeinfo
-              (lambda _
-                (invoke "makeinfo" "orderless.texi")
-                (install-file "orderless.info"
-                              (string-append #$output "/share/info")))))))
-      (native-inputs
-       (list texinfo))
-      (home-page "https://github.com/oantolin/orderless")
-      (synopsis "Emacs completion style that matches multiple regexps in any order")
-      (description "This package provides an orderless completion style that
+  (package
+    (name "emacs-orderless")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oantolin/orderless")
+             (commit version)))
+       (sha256
+        (base32 "1jmwyici90v82gqjq44n0scrwhmg05pi9yplkn4bpss80c83dxp4"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "makeinfo" "orderless.texi")
+              (install-file "orderless.info"
+                            (string-append #$output "/share/info")))))))
+    (native-inputs
+     (list texinfo))
+    (home-page "https://github.com/oantolin/orderless")
+    (synopsis "Emacs completion style that matches multiple regexps in any order")
+    (description "This package provides an orderless completion style that
 divides the pattern into space-separated components, and matches candidates
 that match all of the components in any order.  Each component can match in
 any one of several ways: literally, as a regexp, as an initialism, in the flex
 style, or as multiple word prefixes.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-consult
   (package
@@ -24410,31 +24409,29 @@ downloading manager for Emacs.")
       (license license:gpl3+))))
 
 (define-public emacs-helpful
-  (let ((commit "1c98f6f06a85def5d34c735f8cd407f20cebddf9")
-        (revision "1"))
-    (package
-      (name "emacs-helpful")
-      (version (git-version "0.19" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Wilfred/helpful")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "18b5hjfji51zxjrxhkklxx3j9svk295awmxv8n95mp8ilas2kd3l"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash emacs-elisp-refs emacs-f emacs-s))
-      (native-inputs
-       (list emacs-ert-runner emacs-undercover))
-      (arguments
-       `(#:tests? #t
-         #:test-command '("ert-runner")))
-      (home-page "https://github.com/Wilfred/helpful")
-      (synopsis "More contextual information in Emacs help")
-      (description "@code{helpful} is an alternative to the built-in Emacs help
+  (package
+    (name "emacs-helpful")
+    (version "0.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Wilfred/helpful")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03afgdbs5nmhw833svrqky7fmfs1zlvqzcj7j5g29sakivs60xqc"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dash emacs-elisp-refs emacs-f emacs-s))
+    (native-inputs
+     (list emacs-ert-runner emacs-undercover))
+    (arguments
+     `(#:tests? #t
+       #:test-command '("ert-runner")))
+    (home-page "https://github.com/Wilfred/helpful")
+    (synopsis "More contextual information in Emacs help")
+    (description "@code{helpful} is an alternative to the built-in Emacs help
 that provides much more contextual information.
 
 @itemize
@@ -24453,7 +24450,7 @@ functions.
 @item Trace, disassemble functions from inside Helpful.  This is discoverable
 and doesn't require memorisation of commands.
 @end itemize\n")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-logview
   (package
@@ -32445,6 +32442,29 @@ simple but powerful Org contents.")
 on the HTML back-end.")
       (license license:gpl3+))))
 
+(define-public emacs-ox-html-stable-ids
+  (package
+    (name "emacs-ox-html-stable-ids")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jkreeftmeijer/ox-html-stable-ids.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1slfc1hx6mgx6rb0h0hz7200dmpqr04sz8009r6cy7msp2b91hg7"))))
+    (build-system emacs-build-system)
+    (license license:gpl3)
+    (home-page "https://jeffkreeftmeijer.com/ox-html-stable-ids")
+    (synopsis "Stable IDs for ox-html.el")
+    (description
+     "Ox-html-stable-ids is an Org export extension package that generates
+ HTML with stable ID attributes instead of the random IDs Org's exporter uses
+by default.")))
+
 (define-public emacs-wc-mode
   (package
     (name "emacs-wc-mode")
@@ -34171,25 +34191,28 @@ shift-reduce parser function.")
     (license license:gpl3+)))
 
 (define-public emacs-hide-mode-line
-  (package
-    (name "emacs-hide-mode-line")
-    (version "1.0.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/hlissner/emacs-hide-mode-line")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0dfzjgxfkcw4wisbyldsm1km18pfp9j8xgadn6qnsz11l55bpgyp"))))
-    (build-system emacs-build-system)
-    (synopsis "Emacs plugin that hides the mode-line")
-    (description "A minor mode that hides the mode-line in your current
-buffer.  It can be used to toggle an alternative mode-line, toggle its visibility,
-or simply disable the mode-line in buffers where it is not very useful.")
-    (home-page "https://github.com/hlissner/emacs-hide-mode-line")
-    (license license:expat)))
+  ;; XXX: Commit below refers to the un-tagged latest release.
+  (let ((commit "bc5d293576c5e08c29e694078b96a5ed85631942"))
+    (package
+      (name "emacs-hide-mode-line")
+      (version "1.0.3")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hlissner/emacs-hide-mode-line")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12mfhg0r3gvy59ijy44vsircn251nmisp04k9vvgd2yhykpsr1j6"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/hlissner/emacs-hide-mode-line")
+      (synopsis "Emacs plugin that hides the mode-line")
+      (description
+       "A minor mode that hides the mode-line in your current buffer.  It can be
+used to toggle an alternative mode-line, toggle its visibility, or simply
+disable the mode-line in buffers where it is not very useful.")
+      (license license:expat))))
 
 (define-public emacs-helm-cider
   (package

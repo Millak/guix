@@ -19,8 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages scsi)
-  #:use-module ((guix licenses)
-                #:select (gpl2+ bsd-2 bsd-3 lgpl2.1+))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -70,7 +69,7 @@ used in C and C++ programs to interact with SCSI devices.")
     ;;   "3 clause" to the newer "2 clause" version on 20180119. To save space
     ;;   various source code files refer to a file called "BSD_LICENSE" [...]."
     ;; Some files (like sg_compare_and_write.c) retain their 3-clause headers!
-    (license (list gpl2+ bsd-2 bsd-3))))
+    (license (list license:gpl2+ license:bsd-2 license:bsd-3))))
 
 (define-public libiscsi
   (package
@@ -97,6 +96,27 @@ synchronous layer is also provided for ease of use for simpler applications.")
     (license (list
               ;; For the src, examples and test-tool directories, except
               ;; src/ld_iscsi.c.
-              gpl2+
+              license:gpl2+
               ;; For the lib and include directories.
-              lgpl2.1+))))
+              license:lgpl2.1+))))
+
+(define-public lsscsi
+  (package
+    (name "lsscsi")
+    (version "0.32")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "http://sg.danny.cz/scsi/lsscsi-" version ".tar.xz"))
+             (sha256
+              (base32
+               "0jp458m2b3wckr18qkln69i01152qlwz33zm49103lq8fgx0n6d4"))))
+    (build-system gnu-build-system)
+    (synopsis "Lists information about SCSI or NVMe devices in Linux")
+    (home-page "https://sg.danny.cz/scsi/lsscsi.html")
+    (description
+     "@command{lsscsi} lists SCSI logical units or SCSI targets.  It can
+also list NVMe namespaces or controllers and show the relationship between a
+device's primary node name, its SCSI generic (sg) node name and its kernel
+name.")
+    (license license:gpl2)))

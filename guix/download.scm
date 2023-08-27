@@ -51,7 +51,10 @@
 ;;; Code:
 
 (define %mirrors
-  ;; Mirror lists used when `mirror://' URLs are passed.
+  ;; Mirror lists used when `mirror://' URLs are passed.  The first mirror
+  ;; entry of each set should ideally be the most authoritative one, as that's
+  ;; what the generic HTML updater will pick to look for updates, with
+  ;; possible exceptions when the authoritative mirror is too slow.
   (let* ((gnu-mirrors
           '(;; This one redirects to a (supposedly) nearby and (supposedly)
             ;; up-to-date mirror.
@@ -358,7 +361,15 @@
        "https://mirror.esc7.net/pub/OpenBSD/")
       (mate
        "https://pub.mate-desktop.org/releases/"
-       "http://pub.mate-desktop.org/releases/"))))
+       "http://pub.mate-desktop.org/releases/")
+      (qt
+       "https://mirrors.ocf.berkeley.edu/qt/official_releases/"
+       "https://ftp.jaist.ac.jp/pub/qtproject/official_releases/"
+       "https://ftp.nluug.nl/languages/qt/official_releases/"
+       "https://mirrors.cloud.tencent.com/qt/official_releases/"
+       "https://mirrors.sjtug.sjtu.edu.cn/qt/official_releases/"
+       "https://qtproject.mirror.liquidtelecom.com/official_releases/"
+       "https://download.qt.io/official_releases/")))) ;slow
 
 (define %mirror-file
   ;; Copy of the list of mirrors to a file.  This allows us to keep a single

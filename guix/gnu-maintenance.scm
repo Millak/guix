@@ -3,6 +3,7 @@
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (ice-9 regex)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (rnrs io ports)
@@ -61,6 +63,7 @@
             gnu-package?
 
             uri-mirror-rewrite
+            rewrite-url
 
             release-file?
             releases
@@ -255,8 +258,7 @@ network to check in GNU's database."
   (make-regexp "^.*-.*[0-9](-|~|\\.)?(alpha|beta|rc|RC|cvs|svn|git)-?[0-9\\.]*\\.tar\\."))
 
 (define (release-file? project file)
-  "Return #f if FILE is not a release tarball of PROJECT, otherwise return
-true."
+  "Return true if FILE is a release tarball of PROJECT."
   (and (not (member (file-extension file)
                     '("sig" "sign" "asc"
                       "md5sum" "sha1sum" "sha256sum")))
@@ -265,12 +267,21 @@ true."
                 ;; Filter out unrelated files, like `guile-www-1.1.1'.
                 ;; Case-insensitive for things like "TeXmacs" vs. "texmacs".
                 ;; The "-src" suffix is for "freefont-src-20120503.tar.gz".
+                ;; The '-everywhere-src' suffix is for Qt modular components.
                 (and=> (match:substring match 1)
                        (lambda (name)
                          (or (string-ci=? name project)
-                             (string-ci=? name
-                                          (string-append project
-                                                         "-src")))))))
+                             (string-ci=? name (string-append project "-src"))
+                             (string-ci=?
+                              name (string-append project "-everywhere-src"))
+                             ;; For older Qt releases such as version 5.
+                             (string-ci=?
+                              name (string-append
+                                    project "-everywhere-opensource-src"))
+                             ;; For Qt Creator.
+                             (string-ci=?
+                              name (string-append
+                                    project "-opensource-src")))))))
        (not (regexp-exec %alpha-tarball-rx file))
        (let ((s (tarball-sans-extension file)))
          (regexp-exec %package-name-rx s))))
@@ -483,14 +494,133 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
       (_
        links))))
 
-(define* (import-html-release package
+(define (url->links url)
+  "Return the unique links on the HTML page accessible at URL."
+  (let* ((uri   (string->uri url))
+         (port  (http-fetch/cached uri #:ttl 3600))
+         (sxml  (html->sxml port)))
+    (close-port port)
+    (delete-duplicates (html-links sxml))))
+
+(define (canonicalize-url url base-url)
+  "Make relative URL absolute, by appending URL to BASE-URL as required.  If
+URL is a directory instead of a file, it should be suffixed with a slash (/)."
+  (cond ((and=> (string->uri url) uri-scheme)
+         ;; Fully specified URL.
+         url)
+        ((string-prefix? "//" url)
+         ;; Full URL lacking a URI scheme.  Reuse the URI scheme of the
+         ;; document that contains the URL.
+         (string-append (symbol->string (uri-scheme (string->uri base-url)))
+                        ":" url))
+        ((string-prefix? "/" url)
+         ;; Absolute URL.
+         (let ((uri (string->uri base-url)))
+           (uri->string
+            (build-uri (uri-scheme uri)
+                       #:host (uri-host uri)
+                       #:port (uri-port uri)
+                       #:path url))))
+        ;; URL is relative to BASE-URL, which is assumed to be a directory.
+        ((string-suffix? "/" base-url)
+         (string-append base-url url))
+        (else
+         ;; URL is relative to BASE-URL, which is assumed to denote a file
+         ;; within a directory.
+         (string-append (dirname base-url) "/" url))))
+
+(define (strip-trailing-slash s)
+  "Strip any trailing slash from S, a string."
+  (if (string-suffix? "/" s)
+      (string-drop-right s 1)
+      s))
+
+;;; TODO: Extend to support the RPM and GNOME version schemes?
+(define %version-rx "[0-9.]+")
+
+(define* (rewrite-url url version #:key to-version)
+  "Rewrite URL so that the URL path components matching the current VERSION or
+VERSION-MAJOR.VERSION-MINOR are updated with that of the latest version found
+by crawling the corresponding URL directories.  Alternatively, when TO-VERSION
+is specified, rewrite version matches directly to it without crawling URL.
+
+For example, the URL
+\"https://dist.libuv.org/dist/v1.45.0/libuv-v1.45.0.tar.gz\" could be
+rewritten to something like
+\"https://dist.libuv.org/dist/v1.46.0/libuv-v1.46.0.tar.gz\"."
+  ;; XXX: major-minor may be #f if version is not a triplet but a single
+  ;; number such as "2".
+  (let* ((major-minor (false-if-exception (version-major+minor version)))
+         (to-major-minor (false-if-exception
+                          (and=> to-version version-major+minor)))
+         (uri (string->uri url))
+         (url-prefix (string-drop-right url (string-length (uri-path uri))))
+         (url-prefix-components (string-split url-prefix #\/))
+         (path (uri-path uri))
+         ;; Strip a forward slash on the path to avoid a double slash when
+         ;; string-joining later.
+         (path (if (string-prefix? "/" path)
+                   (string-drop path 1)
+                   path))
+         (path-components (string-split path #\/)))
+    (string-join
+     (reverse
+      (fold
+       (lambda (s parents)
+         (if to-version
+             ;; Direct rewrite case; the archive is assumed to exist.
+             (let ((u (string-replace-substring s version to-version)))
+               (cons (if (and major-minor to-major-minor)
+                         (string-replace-substring u major-minor to-major-minor)
+                         u)
+                     parents))
+             ;; More involved HTML crawl case.
+             (let* ((pattern (if major-minor
+                                 (format #f "(~a|~a)" version major-minor)
+                                 (format #f "(~a)" version)))
+                    (m (string-match pattern s)))
+               (if m
+                   ;; Crawl parent and rewrite current component.
+                   (let* ((parent-url (string-join (reverse parents) "/"))
+                          (links (url->links parent-url))
+                          ;; The pattern matching the version.
+                          (pattern (string-append "^" (match:prefix m)
+                                                  "(" %version-rx ")"
+                                                  (match:suffix m) "$"))
+                          (candidates (filter-map
+                                       (lambda (l)
+                                         ;; Links may be followed by a
+                                         ;; trailing '/' in the case of
+                                         ;; directories.
+                                         (and-let*
+                                             ((l (strip-trailing-slash l))
+                                              (m (string-match pattern l))
+                                              (v (match:substring m 1)))
+                                           (cons v l)))
+                                       links)))
+                     ;; Retrieve the item having the largest version.
+                     (if (null? candidates)
+                         (error "no candidates found in rewrite-url")
+                         (cons (cdr (first (sort candidates
+                                                 (lambda (x y)
+                                                   (version>? (car x)
+                                                              (car y))))))
+                               parents)))
+                   ;; No version found in path component; continue.
+                   (cons s parents)))))
+       (reverse url-prefix-components)
+       path-components))
+     "/")))
+
+(define* (import-html-release base-url package
                               #:key
-                              (version #f)
-                              (base-url "https://kernel.org/pub")
-                              (directory (string-append "/" package))
+                              rewrite-url?
+                              version
+                              (directory (string-append
+                                          "/" (package-upstream-name package)))
                               file->signature)
-  "Return an <upstream-source> for the latest release of PACKAGE (a string) on
-SERVER under DIRECTORY, or #f. Optionally include a VERSION string to fetch a
+  "Return an <upstream-source> for the latest release of PACKAGE under
+DIRECTORY at BASE-URL, or #f.  Optionally include a VERSION string to fetch a
 specific version.
 
 BASE-URL should be the URL of an HTML page, typically a directory listing as
@@ -499,14 +629,23 @@ found on 'https://kernel.org/pub'.
 When FILE->SIGNATURE is omitted or #f, guess the detached signature file name,
 if any.  Otherwise, FILE->SIGNATURE must be a procedure; it is passed a source
 file URL and must return the corresponding signature URL, or #f it signatures
-are unavailable."
-  (let* ((uri   (string->uri (if (string-null? directory)
-                                 base-url
-                                 (string-append base-url directory "/"))))
-         (port  (http-fetch/cached uri #:ttl 3600))
-         (sxml  (html->sxml port))
-         (links (delete-duplicates (html-links sxml))))
+are unavailable.
+
+When REWRITE-URL? is #t, versioned components in BASE-URL and/or DIRECTORY are
+also updated to the latest version, as explained in the doc of the
+\"rewrite-url\" procedure used."
+  (let* ((current-version (package-version package))
+         (name (package-upstream-name package))
+         (url (if (string-null? directory)
+                  base-url
+                  (string-append base-url directory "/")))
+         (url (if rewrite-url?
+                  (rewrite-url url current-version #:to-version version)
+                  url))
+         (links (map (cut canonicalize-url <> url) (url->links url))))
+
     (define (file->signature/guess url)
+      "Return the first link that matches a signature extension, else #f."
       (let ((base (basename url)))
         (any (lambda (link)
                (any (lambda (extension)
@@ -517,41 +656,13 @@ are unavailable."
              links)))
 
     (define (url->release url)
-      (let* ((base (basename url))
-             (base-url (string-append base-url directory))
-             (url  (cond ((and=> (string->uri url) uri-scheme) ;full URL?
-                          url)
-                         ;; full URL, except for URI scheme.  Reuse the URI
-                         ;; scheme of the document that contains the link.
-                         ((string-prefix? "//" url)
-                          (string-append
-                           (symbol->string (uri-scheme (string->uri base-url)))
-                           ":" url))
-                         ((string-prefix? "/" url) ;absolute path?
-                          (let ((uri (string->uri base-url)))
-                            (uri->string
-                             (build-uri (uri-scheme uri)
-                                        #:host (uri-host uri)
-                                        #:port (uri-port uri)
-                                        #:path url))))
-
-                         ;; URL is a relative path and BASE-URL may or may not
-                         ;; end in slash.
-                         ((string-suffix? "/" base-url)
-                          (string-append base-url url))
-                         (else
-                          ;; If DIRECTORY is non-empty, assume BASE-URL
-                          ;; denotes a directory; otherwise, assume BASE-URL
-                          ;; denotes a file within a directory, and that URL
-                          ;; is relative to that directory.
-                          (string-append (if (string-null? directory)
-                                             (dirname base-url)
-                                             base-url)
-                                         "/" url)))))
-        (and (release-file? package base)
+      "Return an <upstream-source> object if a release file was found at URL,
+else #f.  URL is assumed to fully specified."
+      (let ((base (basename url)))
+        (and (release-file? name base)
              (let ((version (tarball->version base)))
                (upstream-source
-                (package package)
+                (package name)
                 (version version)
                 ;; uri-mirror-rewrite: Don't turn nice mirror:// URIs into ftp://
                 ;; URLs during "guix refresh -u".
@@ -563,22 +674,21 @@ are unavailable."
     (define candidates
       (filter-map url->release links))
 
-    (close-port port)
     (match candidates
       (() #f)
       ((first . _)
        (if version
-           ;; find matching release version and return it
+           ;; Find matching release version and return it.
            (find (lambda (upstream)
                    (string=? (upstream-source-version upstream) version))
                  (coalesce-sources candidates))
            ;; Select the most recent release and return it.
            (reduce (lambda (r1 r2)
-                         (if (version>? (upstream-source-version r1)
-                                        (upstream-source-version r2))
-                             r1 r2))
-                       first
-                       (coalesce-sources candidates)))))))
+                     (if (version>? (upstream-source-version r1)
+                                    (upstream-source-version r2))
+                         r1 r2))
+                   first
+                   (coalesce-sources candidates)))))))
 
 
 ;;;
@@ -652,20 +762,20 @@ list available from %GNU-FILE-LIST-URI over HTTP(S)."
            (tarballs (filter (lambda (file)
                                (string=? version (tarball->version file)))
                              relevant)))
-    (match tarballs
-           (() #f)
-           (_
-            (upstream-source
-             (package name)
-             (version version)
-             (urls (map (lambda (file)
-                          (string-append "mirror://gnu/"
-                                         (string-drop file
-                                                      (string-length "/gnu/"))))
-                       ;; Sort so that the tarball with the same compression
-                       ;; format as currently used in PACKAGE comes first.
-                       (sort tarballs better-tarball?)))
-             (signature-urls (map (cut string-append <> ".sig") urls))))))))
+      (match tarballs
+        (() #f)
+        (_
+         (upstream-source
+          (package name)
+          (version version)
+          (urls (map (lambda (file)
+                       (string-append "mirror://gnu/"
+                                      (string-drop file
+                                                   (string-length "/gnu/"))))
+                     ;; Sort so that the tarball with the same compression
+                     ;; format as currently used in PACKAGE comes first.
+                     (sort tarballs better-tarball?)))
+          (signature-urls (map (cut string-append <> ".sig") urls))))))))
 
 (define %package-name-rx
   ;; Regexp for a package name, e.g., "foo-X.Y".  Since TeXmacs uses
@@ -726,13 +836,11 @@ to fetch a specific version."
                      (match (origin-uri (package-source package))
                        ((? string? uri) uri)
                        ((uri mirrors ...) uri))))
-         (package   (package-upstream-name package))
          (directory (dirname (uri-path uri))))
     ;; Note: We use the default 'file->signature', which adds ".sig", ".asc",
     ;; or whichever detached signature naming scheme PACKAGE uses.
-    (import-html-release package
+    (import-html-release %savannah-base package
                          #:version version
-                         #:base-url %savannah-base
                          #:directory directory)))
 
 (define* (latest-sourceforge-release package #:key (version #f))
@@ -808,7 +916,7 @@ to fetch a specific version."
       (string-append "/pub/xorg/" (dirname (uri-path uri)))))))
 
 (define* (import-kernel.org-release package #:key (version #f))
-  "Return the latest release of PACKAGE, the name of a kernel.org package.
+  "Return the latest release of PACKAGE, a Linux kernel package.
 Optionally include a VERSION string to fetch a specific version."
   (define %kernel.org-base
     ;; This URL and sub-directories thereof are nginx-generated directory
@@ -822,35 +930,49 @@ Optionally include a VERSION string to fetch a specific version."
                      (match (origin-uri (package-source package))
                        ((? string? uri) uri)
                        ((uri mirrors ...) uri))))
-         (package   (package-upstream-name package))
          (directory (dirname (uri-path uri))))
-    (import-html-release package
+    (import-html-release %kernel.org-base package
                          #:version version
-                         #:base-url %kernel.org-base
                          #:directory directory
                          #:file->signature file->signature)))
 
-(define html-updatable-package?
-  ;; Return true if the given package may be handled by the generic HTML
-  ;; updater.
-  (let ((hosting-sites '("github.com" "github.io" "gitlab.com"
-                         "notabug.org" "sr.ht" "gitlab.inria.fr"
-                         "ftp.gnu.org" "download.savannah.gnu.org"
-                         "pypi.org" "crates.io" "rubygems.org"
-                         "bioconductor.org")))
-    (define http-url?
-      (url-predicate (lambda (url)
-                       (match (string->uri url)
-                         (#f #f)
-                         (uri
-                          (let ((scheme (uri-scheme uri))
-                                (host   (uri-host uri)))
-                            (and (memq scheme '(http https))
-                                 (not (member host hosting-sites)))))))))
+;;; These sites are disallowed for the generic HTML updater as there are
+;;; better means to query them.
+(define %disallowed-hosting-sites
+  '("github.com" "github.io" "gitlab.com"
+    "notabug.org" "sr.ht" "gitlab.inria.fr"
+    "ftp.gnu.org" "download.savannah.gnu.org"
+    "pypi.org" "crates.io" "rubygems.org"
+    "bioconductor.org"))
 
-    (lambda (package)
-      (or (assoc-ref (package-properties package) 'release-monitoring-url)
-          (http-url? package)))))
+(define (http-url? url)
+  "Return URL if URL has HTTP or HTTPS as its protocol.  If URL uses the
+special mirror:// protocol, substitute it with the first HTTP or HTTPS URL
+prefix from its set."
+  (match (string->uri url)
+    (#f #f)
+    (uri
+     (let ((scheme (uri-scheme uri))
+           (host   (uri-host uri)))
+       (or (and (memq scheme '(http https))
+                ;; HOST may contain prefixes, e.g. "profanity-im.github.io",
+                ;; hence the suffix-based test below.
+                (not (any (cut string-suffix? <> host)
+                          %disallowed-hosting-sites))
+                url)
+           (and (eq? scheme 'mirror)
+                (and=> (find http-url?
+                             (assoc-ref %mirrors
+                                        (string->symbol host)))
+                       (lambda (url)
+                         (string-append (strip-trailing-slash url)
+                                        (uri-path uri))))))))))
+
+(define (html-updatable-package? package)
+  "Return true if the given package may be handled by the generic HTML
+updater."
+  (or (assoc-ref (package-properties package) 'release-monitoring-url)
+      ((url-predicate http-url?) package)))
 
 (define* (import-html-updatable-release package #:key (version #f))
   "Return the latest release of PACKAGE.  Do that by crawling the HTML page of
@@ -858,6 +980,9 @@ the directory containing its source tarball.  Optionally include a VERSION
 string to fetch a specific version."
   (let* ((uri       (string->uri
                      (match (origin-uri (package-source package))
+                       ((? (cut string-prefix? "mirror://" <>) url)
+                        ;; Retrieve the authoritative HTTP URL from a mirror.
+                        (http-url? url))
                        ((? string? url) url)
                        ((url _ ...) url))))
          (custom    (assoc-ref (package-properties package)
@@ -867,12 +992,11 @@ string to fetch a specific version."
                                        "://" (uri-host uri))))
          (directory (if custom
                         ""
-                        (dirname (uri-path uri))))
-         (package   (package-upstream-name package)))
+                        (dirname (uri-path uri)))))
     (false-if-networking-error
-     (import-html-release package
+     (import-html-release base package
+                          #:rewrite-url? #t
                           #:version version
-                          #:base-url base
                           #:directory directory))))
 
 (define %gnu-updater

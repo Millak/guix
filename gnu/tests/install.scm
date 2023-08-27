@@ -229,7 +229,7 @@ reboot\n")
                                                 (gnu installer tests)
                                                 (guix combinators))))
                       (uefi-support? #f)
-                      (installation-image-type 'efi-raw)
+                      (installation-image-type 'mbr-raw)
                       (install-size 'guess)
                       (target-size (* 2200 MiB))
                       (number-of-disks 1))
@@ -291,7 +291,7 @@ such as for RAID systems."
                        '("-bios" #$uefi-firmware)
                        '())
                  #$@(cond
-                     ((eq? 'efi-raw installation-image-type)
+                     ((eq? 'mbr-raw installation-image-type)
                       #~("-drive"
                          ,(string-append "file=" #$image
                                          ",if=virtio,readonly")))

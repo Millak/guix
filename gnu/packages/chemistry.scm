@@ -87,7 +87,6 @@
     (native-inputs
      (list eigen
            mmtf-cpp
-           msgpack
            googletest
            pkg-config
            pybind11))
@@ -248,7 +247,7 @@ molecules.")
 (define-public mmtf-cpp
   (package
     (name "mmtf-cpp")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -258,11 +257,13 @@ molecules.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17ylramda69plf5w0v5hxbl4ggkdi5s15z55cv0pljl12yvyva8l"))))
+         "0rs2f1ppgqz663c3m22p8wsq6z839bj59zy29chci46ypfhwv6ph"))))
     (build-system cmake-build-system)
     ;; Tests require the soon-to-be-deprecated version 1 of the catch-framework.
-    (arguments
-     '(#:tests? #f))
+    (arguments '(#:tests? #f))
+    ;; There is no support for modern msgpack versions yet (see:
+    ;; https://github.com/rcsb/mmtf-cpp/issues/44).
+    (propagated-inputs (list msgpack))  ;included by mmtf/structure_data.hpp
     (home-page "https://mmtf.rcsb.org/")
     (synopsis "C++ API for the Macromolecular Transmission Format")
     (description "This package is a library for the
@@ -574,7 +575,6 @@ symmetries written in C.  Spglib can be used to:
            glew
            libxml2
            mmtf-cpp
-           msgpack
            python-pyqt
            glm
            netcdf))

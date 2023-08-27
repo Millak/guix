@@ -174,6 +174,7 @@ representation."
   (shepherd-service
    (documentation "Run the Early OOM daemon.")
    (provision '(earlyoom))
+   (requirement '(user-processes))
    (start #~(make-forkexec-constructor
              '#$(earlyoom-configuration->command-line-args config)
              #:log-file "/var/log/earlyoom.log"))
@@ -192,7 +193,8 @@ representation."
                              (compose list earlyoom-shepherd-service))
           (service-extension rottlog-service-type
                              (const %earlyoom-log-rotation))))
-   (description "Run @command{earlyoom}, the Early OOM daemon.")))
+   (description "Run @command{earlyoom}, a daemon that quickly responds to
+@acronym{OOM, out-of-memory} conditions by terminating relevant processes.")))
 
 
 ;;;

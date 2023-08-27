@@ -29,6 +29,7 @@
             user-account-supplementary-groups
             user-account-comment
             user-account-home-directory
+            user-account-home-directory-permissions
             user-account-create-home-directory?
             user-account-shell
             user-account-system?
@@ -70,6 +71,8 @@
   (comment        user-account-comment (default ""))
   (home-directory user-account-home-directory (thunked)
                   (default (default-home-directory this-record)))
+  (home-directory-permissions user-account-home-directory-permissions
+                              (default #o700))
   (create-home-directory? user-account-create-home-directory? ;Boolean
                           (default #t))
   (shell          user-account-shell              ; gexp
