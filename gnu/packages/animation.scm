@@ -442,19 +442,24 @@ waveform until they line up with the proper sounds.")
     (inputs
      (list qtbase-5 qtxmlpatterns qtmultimedia-5 qtsvg-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "qmake" (string-append "PREFIX=" out)))))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (plugin-path (getenv "QT_PLUGIN_PATH")))
-               (wrap-program (string-append out "/bin/pencil2d")
-                 `("QT_PLUGIN_PATH" ":" prefix (,plugin-path)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; Its bundled catch2-2.5.0 fails to build with glibc-2.35.
+              (copy-file #$(file-append catch2 "/include/catch2/catch.hpp")
+                         "tests/src/catch.hpp")))
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (invoke "qmake" (string-append "PREFIX=" out)))))
+          (add-after 'install 'wrap-executable
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (plugin-path (getenv "QT_PLUGIN_PATH")))
+                (wrap-program (string-append out "/bin/pencil2d")
+                  `("QT_PLUGIN_PATH" ":" prefix (,plugin-path)))))))))
     (home-page "https://www.pencil2d.org")
     (synopsis "Make 2D hand-drawn animations")
     (description
