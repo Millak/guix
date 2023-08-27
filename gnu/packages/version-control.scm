@@ -2881,14 +2881,14 @@ specific files and directories.")
 (define-public src
   (package
     (name "src")
-    (version "1.31")
+    (version "1.32")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://www.catb.org/~esr/src/src-" version ".tar.gz"))
               (sha256
                (base32
-                "1p8f5xc6k4jrli3iimi64ng11c246qqwsw9bqrrqkrmhvqdh4kcv"))))
+                "0r9i399kkagpwj08nwf1f7c6lr50xjzzgmzwyjjy6ppgcc53a809"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
