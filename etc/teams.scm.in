@@ -174,6 +174,7 @@ and the r-build-system."
         "TeX, LaTeX, XeLaTeX, LuaTeX, TeXLive, the texlive-build-system, and
 the \"texlive\" importer."
         #:scope (list "gnu/packages/tex.scm"
+                      "gnu/packages/texlive.scm"
                       "guix/build/texlive-build-system.scm"
                       "guix/build-system/texlive.scm"
                       "guix/import/texlive.scm"
@@ -516,7 +517,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")
-  lxqt science)
+  lxqt science tex)
 
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr")
