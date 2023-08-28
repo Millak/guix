@@ -16131,19 +16131,18 @@ results using @code{ggplot2}.")
 (define-public r-effectsize
   (package
     (name "r-effectsize")
-    (version "0.8.3")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "effectsize" version))
        (sha256
         (base32
-         "1db197w72zi2ln0xfivg1i35rqr9xfsn7py854fv12dipg3l1cfw"))))
+         "01iv9rc1ssa69ziy4z7kldwab5754vamgymf2zannss9g65dl7ri"))))
     (properties `((upstream-name . "effectsize")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bayestestr r-datawizard r-insight r-parameters
-           r-performance))
+     (list r-bayestestr r-datawizard r-insight r-parameters r-performance))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/easystats/effectsize")
