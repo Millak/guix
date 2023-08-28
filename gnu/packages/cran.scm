@@ -22584,14 +22584,14 @@ inbred lines, F2 intercrosses, and association mapping populations.")
 (define-public r-hwde
   (package
     (name "r-hwde")
-    (version "0.67")
+    (version "0.67-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hwde" version))
        (sha256
         (base32
-         "0wb2f9i5qi7w77ygh8bvydfpr7j5x8dyvnnhdkajaz0wdcpkyaqy"))))
+         "0kj3vf4pmcvxy95hx1d0q6c626y8d0ljj3r76y5hd90a6v75b5xa"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/hwde/")
     (synopsis "Models and tests for departure from Hardy-Weinberg equilibrium")
