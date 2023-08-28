@@ -24551,24 +24551,22 @@ provides tools to compute this metric.")
 (define-public r-lintr
   (package
     (name "r-lintr")
-    (version "3.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lintr" version))
        (sha256
         (base32
-         "1j9l5lsa88hl5b3lw1789868pm0m2sbahyqayj9213d7zspp0slz"))))
+         "1kb3jrzh1vn1fpj6phm2ni542yjgbbjmzgkn8w7khmh1sd9mj7pp"))))
     (properties `((upstream-name . "lintr")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
            r-codetools
-           r-crayon
            r-cyclocomp
            r-digest
            r-glue
-           r-jsonlite
            r-knitr
            r-rex
            r-xml2
