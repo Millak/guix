@@ -23231,14 +23231,14 @@ package.")
 (define-public r-ggplotify
   (package
     (name "r-ggplotify")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplotify" version))
        (sha256
         (base32
-         "1x4fnsh66rxdd2k7w1mhs6if8i4qjjkfj5x1hf4zjpqqm8f5sf1k"))))
+         "11qfk4pj0bb013m9964q2fsrj4x39c4kwh84vfyi3qhlkrsybfh1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gridgraphics r-yulab-utils))
