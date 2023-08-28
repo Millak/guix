@@ -9594,14 +9594,14 @@ their own grammars and easily expose them in R packages.")
 (define-public r-tinytex
   (package
     (name "r-tinytex")
-    (version "0.45")
+    (version "0.46")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tinytex" version))
        (sha256
         (base32
-         "0b79fvrjifkajspkjga1hmxsj3877xjz0nv8dg581bw0kv8bnbqc"))))
+         "00q21bx3vgsxqdfk372cxdcvfmbza2yplzfhr1hd5mad4f4qx30b"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-xfun))
