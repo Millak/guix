@@ -18462,13 +18462,13 @@ Touzet and Varre (2007).")
 (define-public r-rnaturalearth
   (package
     (name "r-rnaturalearth")
-    (version "0.3.3")
+    (version "0.3.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rnaturalearth" version))
               (sha256
                (base32
-                "0cji6hpcpkrsx615627z9dgk0zf78l2nnj3x5kkkpj9lvsm5gj6m"))))
+                "1lqgv2v72jgp3xrxdwh0x644jwd2ixqjqja32r3sj9dfwnpx6b65"))))
     (properties `((upstream-name . "rnaturalearth")))
     (build-system r-build-system)
     (propagated-inputs (list r-httr r-jsonlite r-sf r-sp r-terra))
