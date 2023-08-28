@@ -32287,17 +32287,17 @@ estimation.")
 (define-public r-optimx
   (package
     (name "r-optimx")
-    (version "2022-4.30")
+    (version "2023-8.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "optimx" version))
        (sha256
         (base32
-         "045ls1vl1392ihwln6mngz0zg2w93ym1m607vfrg8v1949x8isgb"))))
+         "00w8h450gs8vf0raghjg2818xzj4gz5jr3hwk9m9zc5k3rwmcf8n"))))
     (properties `((upstream-name . "optimx")))
     (build-system r-build-system)
-    (propagated-inputs (list r-numderiv))
+    (propagated-inputs (list r-nloptr r-numderiv r-pracma))
     (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/optimx/")
     (synopsis "Expanded replacement and extension of the optim function")
