@@ -12973,14 +12973,14 @@ implemented in bibutils.")
 (define-public r-rdpack
   (package
     (name "r-rdpack")
-    (version "2.4")
+    (version "2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rdpack" version))
        (sha256
         (base32
-         "109mylzmlncq5a09ayy4g2g0frj1k843lj8j78gvmz1h5g8sslkn"))))
+         "0xy8w3law1dn53f1gv4jd637pwssr928pvgchpbrpsqz8ghv4kad"))))
     (properties `((upstream-name . "Rdpack")))
     (build-system r-build-system)
     (propagated-inputs
