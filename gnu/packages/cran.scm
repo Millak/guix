@@ -11753,17 +11753,22 @@ time after the current time, after the R execution stack has emptied.")
 (define-public r-promises
   (package
     (name "r-promises")
-    (version "1.2.0.1")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "promises" version))
        (sha256
         (base32
-         "1dy4cbqw17awh4q8m7cy3anaj0n9iynabfzflb1g94cyj0bq4fld"))))
+         "1gp55inqbbj0ifm4n0j5h8854a9v109xpikyhwv7b8lyydns5q1w"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-later r-magrittr r-r6 r-rcpp r-rlang))
+     (list r-fastmap
+           r-later
+           r-magrittr
+           r-r6
+           r-rcpp
+           r-rlang))
     (native-inputs
      (list r-knitr))
     (home-page "https://rstudio.github.io/promises")
