@@ -16754,14 +16754,14 @@ model with Box-Cox transformation.")
 (define-public r-rprotobuflib
   (package
     (name "r-rprotobuflib")
-    (version "2.12.0")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RProtoBufLib" version))
        (sha256
         (base32
-         "0qlb3fp4lj3wys2hgrdrccfdf0lf85qnk0g117n959mg3y0dqikq"))))
+         "097nxjijblqyz6nbpal7292qfijmk7x8dbx7plryr132xbaw5hdm"))))
     (properties `((upstream-name . "RProtoBufLib")))
     (build-system r-build-system)
     (arguments
