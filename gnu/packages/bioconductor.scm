@@ -4001,13 +4001,13 @@ Various visual and textual types of output are available.")
 (define-public r-bambu
   (package
     (name "r-bambu")
-    (version "3.2.5")
+    (version "3.2.6")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bambu" version))
               (sha256
                (base32
-                "1vqxmz2lknnx1g61y7skvznsnxv3clajngz9mnggg1z3p5mr6cnh"))))
+                "0h7ps32vbcn4hjpfb343nn8b50zq9my0k61847fi69vc4siwcx5k"))))
     (properties `((upstream-name . "bambu")))
     (build-system r-build-system)
     (propagated-inputs
