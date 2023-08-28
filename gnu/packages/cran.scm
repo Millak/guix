@@ -15027,13 +15027,13 @@ and the non-wearing time, selecting valid days and subjects, and creating plots.
 (define-public r-mhsmm
   (package
     (name "r-mhsmm")
-    (version "0.4.16")
+    (version "0.4.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mhsmm" version))
        (sha256
-        (base32 "009dj0zkj1zry7jr9hf4cknb686z50a2l967if64xm0dvjmp7dgs"))))
+        (base32 "1fibgpl65bl3rwlf9dhlams3gxbjqgwcd26gb0flp4wln6pl8d99"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mvtnorm))
     (home-page "https://github.com/jaredo/mhsmm/")
