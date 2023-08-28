@@ -9345,24 +9345,26 @@ Markdown documents.")
 (define-public r-seriation
   (package
     (name "r-seriation")
-    (version "1.4.2")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "seriation" version))
        (sha256
         (base32
-         "142hzxra9ji4473hbf6sg4ksp9dkwz8bpik0i8di5a2s6yyfq6dd"))))
+         "0q52lvcxgiqs1x0vyjrahkj8mdxc9s3514064fsqgwns4s03j1aa"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ca
            r-cluster
            r-colorspace
+           r-foreach
            r-gclus
            r-mass
            r-qap
            r-registry
-           r-tsp))
+           r-tsp
+           r-vegan))
     (native-inputs (list gfortran))
     (home-page "https://s2.smu.edu/IDA/seriation/")
     (synopsis "Infrastructure for ordering objects using seriation")
