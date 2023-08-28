@@ -35302,14 +35302,14 @@ including:
 (define-public r-perm
   (package
     (name "r-perm")
-    (version "1.0-0.2")
+    (version "1.0-0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "perm" version))
        (sha256
         (base32
-         "182ac1y91yzb34zwdcmx5fdfr5z0cha0gx2bgk36gwxhgfc994kj"))))
+         "1sbvc9pd8j4wigblncd5jsgfnphp4kz1jy3acyivcclh79wh27jn"))))
     (properties `((upstream-name . "perm")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/perm/")
