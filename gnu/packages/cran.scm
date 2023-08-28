@@ -15235,17 +15235,19 @@ samples is large and the number of mixture components is not too large.")
 (define-public r-magick
   (package
     (name "r-magick")
-    (version "2.7.4")
+    (version "2.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "magick" version))
        (sha256
         (base32
-         "0bzhx0hyhh2zbc8fsqz3xkwla3lxwms9q2ph9jgc3y4hfmrng3g2"))))
+         "18lxzszpd4x2l150wm762xh24zblrin3w734dkhis7mp74niddk9"))))
+    (properties
+     '((updater-extra-inputs . ("imagemagick"))))
     (build-system r-build-system)
     (inputs
-     (list imagemagick zlib))
+     (list imagemagick pcre2 zlib))
     (propagated-inputs
      (list r-curl r-magrittr r-rcpp))
     (native-inputs
