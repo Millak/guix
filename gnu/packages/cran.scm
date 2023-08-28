@@ -2520,13 +2520,13 @@ functions which can speed up workflow.")
 (define-public r-pagoda2
   (package
     (name "r-pagoda2")
-    (version "1.0.10")
+    (version "1.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pagoda2" version))
        (sha256
-        (base32 "18ip8j5l5c3hqw1xsf5wnyas55i2mhk09phy68kjkjdgcymmpg7c"))))
+        (base32 "13x2l7hcvd6975921c5hba8hm2qijkslviszfizah8wxynhbayy1"))))
     (properties `((upstream-name . "pagoda2")))
     (build-system r-build-system)
     (propagated-inputs
