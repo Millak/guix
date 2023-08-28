@@ -37012,14 +37012,14 @@ text but not always easily handled by analysis algorithms.  The
 (define-public r-striprtf
   (package
     (name "r-striprtf")
-    (version "0.5.3")
+    (version "0.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "striprtf" version))
         (sha256
           (base32
-            "0dqcsh3fb8j0mmmxvxjl77rryhmrjm7a3scqvk2xkgxk4xq6q316"))))
+            "1c8z2qf1kp43ir4dmyxq6hc46dclq8vx3ggkj02p8j1icjswm9bh"))))
     (properties `((upstream-name . "striprtf")))
     (build-system r-build-system)
     (propagated-inputs
