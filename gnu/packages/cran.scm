@@ -2326,7 +2326,7 @@ higher.")
                 "0gdp7bghgpz3q0h06w8r926x7wkpcvkpyf0v5qfi1qixbpvk5fdf"))))
     (properties `((upstream-name . "oompaData")))
     (build-system r-build-system)
-    (home-page "http://oompa.r-forge.r-project.org/")
+    (home-page "https://oompa.r-forge.r-project.org/")
     (synopsis "Data to illustrate OOMPA algorithms")
     (description
      "OOMPA offers R packages for gene expression and proteomics analysis.
