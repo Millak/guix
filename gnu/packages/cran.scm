@@ -1477,13 +1477,13 @@ specifications, such as RAM, CPU type, and R version.")
 (define-public r-bestnormalize
   (package
     (name "r-bestnormalize")
-    (version "1.9.0")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bestNormalize" version))
               (sha256
                (base32
-                "0kz03bawq45ff3vibhnfq1fq2xs7snx9qw2jaw7a7ma57svbr3gd"))))
+                "1lryl23jvf51n7ka58ncwhjglk0zzm18wik962h403j4mph1jjly"))))
     (properties `((upstream-name . "bestNormalize")))
     (build-system r-build-system)
     (propagated-inputs (list r-butcher
