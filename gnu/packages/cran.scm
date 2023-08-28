@@ -24157,14 +24157,14 @@ methods, as described by Deng C, et al. (2018).")
 (define-public r-mapplots
   (package
     (name "r-mapplots")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mapplots" version))
        (sha256
         (base32
-         "18s2y66f8vi8g2r8a25zbgp2xm079r8v8qxv0w71h8krycs6vs9p"))))
+         "064a3jc7p4wh5x8rxmjap6kqkg19zfkq8ac820d9sm35d0fia3pd"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/mapplots/")
     (synopsis "Data visualization on maps")
