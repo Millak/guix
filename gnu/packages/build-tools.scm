@@ -118,7 +118,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
 (define-public bear
   (package
     (name "bear")
-    (version "3.1.2")
+    (version "3.1.3")
     (source
      (origin
        (method git-fetch)
@@ -127,7 +127,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iq0ciw3x2awpli4k9mhx80c442xbs70y4g6qpwrirbjw15q33n7"))))
+        (base32 "0z8jzvxmzna7320w3hvmzb1qsv91g9npc5z5j28ncwnn0b74yxnn"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
