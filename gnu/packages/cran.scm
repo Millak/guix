@@ -34478,13 +34478,13 @@ observations.")
 (define-public r-scico
   (package
     (name "r-scico")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scico" version))
        (sha256
-        (base32 "1zcsqmsr9vjs4krz8vmq4z59wh6x25g9ca6yxb0wlq58nmws77k6"))))
+        (base32 "1c6905y62s03kiah8ykhkag275pn06ihk5szldib2621ysrj2wb4"))))
     (properties `((upstream-name . "scico")))
     (build-system r-build-system)
     (propagated-inputs (list r-scales))
