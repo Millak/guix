@@ -7633,13 +7633,13 @@ the Human Protein Atlas project.")
 (define-public r-raggedexperiment
   (package
     (name "r-raggedexperiment")
-    (version "1.24.0")
+    (version "1.24.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RaggedExperiment" version))
               (sha256
                (base32
-                "1xs7dz5mkh9zs078g2a0izij8vxrwhzh7gyjglp057gicsca0hal"))))
+                "0aa886mmk1c5h1i3xnk4niq4ylrawpsn2f62hwmfj5dsyl8a36ka"))))
     (properties `((upstream-name . "RaggedExperiment")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
