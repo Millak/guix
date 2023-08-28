@@ -83,8 +83,8 @@
 (define %telegram-version "4.8.1")
 
 (define libyuv-for-telegram-desktop
-  (let ((commit "00950840d1c9bcbb3eb6ebc5aac5793e71166c8b")
-        (revision "2212"))
+  (let ((commit "77c2121f7e6b8e694d6e908bbbe9be24214097da")
+        (revision "2439"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -95,7 +95,7 @@
                   (git-version "0" revision commit)))
       (sha256
        (base32
-        "0mm56p8iapfild2xdw4w8zi35c3xm06fgagiali644gnxdmnym6c")))))
+        "1b4k8yskr9ffl5k8s9i0af1gn1pavsfixla26vh8bij69rdr7f9c")))))
 
 (define cmake-helpers-for-telegram-desktop
   (origin
