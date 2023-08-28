@@ -13646,14 +13646,14 @@ and automatically generate usage notices.")
 (define-public r-hash
   (package
     (name "r-hash")
-    (version "2.2.6.2")
+    (version "2.2.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hash" version))
        (sha256
         (base32
-         "17scs675a86c34hjbxmwi8kny4yyv97x3515s449zafj2i0ad8vm"))))
+         "044ifii4gpinzi9vbv5aw0da956ccslxg34xmx24njf6x5dhn0wa"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/hash/")
     (synopsis "Implementation of hash/associated arrays/dictionaries")
