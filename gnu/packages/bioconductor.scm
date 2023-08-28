@@ -14057,6 +14057,38 @@ implemented for discovering disease associations of high-throughput biological
 data.")
     (license license:artistic2.0)))
 
+(define-public r-enrichedheatmap
+  (package
+    (name "r-enrichedheatmap")
+    (version "1.30.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "EnrichedHeatmap" version))
+              (sha256
+               (base32
+                "18p2vjcg76rrjzjl03zgm4yxrgllbd42hg8rvsdbfb0s7brzr7ya"))))
+    (properties `((upstream-name . "EnrichedHeatmap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-circlize
+                             r-complexheatmap
+                             r-genomicranges
+                             r-getoptlong
+                             r-iranges
+                             r-locfit
+                             r-matrixstats
+                             r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/jokergoo/EnrichedHeatmap")
+    (synopsis "Enriched heatmaps")
+    (description
+     "Enriched heatmap is a special type of heatmap which visualizes the
+enrichment of genomic signals on specific target regions.  This type of
+heatmap is just a normal heatmap but with some special settings, with the
+functionality of @code{ComplexHeatmap}, it would be much easier to customize
+the heatmap as well as concatenating to a list of heatmaps to show
+correspondance between different data sources.")
+    (license license:expat)))
+
 (define-public r-enrichplot
   (package
     (name "r-enrichplot")
