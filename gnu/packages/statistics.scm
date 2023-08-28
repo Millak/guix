@@ -2718,16 +2718,16 @@ integers.")
 (define-public r-httr
   (package
     (name "r-httr")
-    (version "1.4.6")
+    (version "1.4.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr" version))
               (sha256
                (base32
-                "1cipxhsss77n2psik755y1s7dkyqhrs0yjch8cmqswr3xz5qcvcd"))))
+                "0fisvq3zydmqagn7lj6x98zxkcl7l95gfydl27zkigb7zg1fcm8m"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-curl r-jsonlite r-openssl r-mime r-r6))
+     (list r-curl r-jsonlite r-mime r-openssl r-r6))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/hadley/httr")
