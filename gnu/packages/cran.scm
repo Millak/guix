@@ -13497,14 +13497,14 @@ location measures.")
 (define-public r-biasedurn
   (package
     (name "r-biasedurn")
-    (version "2.0.10")
+    (version "2.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BiasedUrn" version))
        (sha256
         (base32
-         "0jv0zvz1zs34h12zdgn3lqmn7hfkk2z6fkwbd9mlyddf34rkvfqv"))))
+         "0dvmkrdmhfh4swilyxf10y856kx0zf9sj1gc0g62bm6r5jhz35b2"))))
     (properties `((upstream-name . "BiasedUrn")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/BiasedUrn/")
