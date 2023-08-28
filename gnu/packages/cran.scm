@@ -4605,32 +4605,29 @@ separately.")
 (define-public r-shinytree
   (package
     (name "r-shinytree")
-    (version "0.2.7")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinyTree" version))
        (sha256
         (base32
-         "0jfx2capckv7hf2yx3fn8i4rcmhi222ah91jnmhg497x8wgz31s3"))
-       (modules '((guix build utils)))
+         "0krffsgdv99cvyzdspb9l7cdnq1vibsbmpd4w48r5pi4v8jbvfj6"))
        (snippet
-        '(begin
-           ;; Delete minified JavaScript
-           (for-each delete-file
-                     '("inst/www/jsTree-3.3.7/libs/require.js"
-                       "inst/www/jsTree-3.3.7/libs/jquery.js"
-                       "inst/www/jsTree-3.3.7/jstree.min.js"))
-           #t))))
+        ;; Delete minified JavaScript
+        '(for-each delete-file
+                   '("inst/www/jsTree-3.3.7/libs/require.js"
+                     "inst/www/jsTree-3.3.7/libs/jquery.js"
+                     "inst/www/jsTree-3.3.7/jstree.min.js")))))
     (properties `((upstream-name . "shinyTree")))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build utils)
+     (list
+      #:modules '((guix build utils)
                   (guix build r-build-system)
-                  (srfi srfi-1)
-                  (ice-9 popen))
-       #:phases
-       (modify-phases %standard-phases
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'replace-minified-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/www/jsTree-3.3.7/"
@@ -4648,18 +4645,15 @@ separately.")
                    (for-each (lambda (source target)
                                (format #t "Processing ~a --> ~a~%"
                                        source target)
-                               (let ((minified (open-pipe* OPEN_READ "uglifyjs" source)))
-                                 (call-with-output-file target
-                                   (lambda (port)
-                                     (dump-port minified port)))))
-                             sources targets))))
-             #t)))))
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target)))
+                             sources targets)))))))))
     (propagated-inputs
      (list r-htmlwidgets r-jsonlite r-promises r-shiny r-stringr))
     (inputs
      (list js-requirejs))
     (native-inputs
-     `(("uglifyjs" ,node-uglify-js)
+     `(("esbuild" ,esbuild)
        ("js-jquery"
         ,(origin
            (method url-fetch)
