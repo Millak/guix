@@ -691,14 +691,14 @@ work with FlowSOM and flow-cytometry use-cases.")
 (define-public r-emdist
   (package
     (name "r-emdist")
-    (version "0.3-2")
+    (version "0.3-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emdist" version))
        (sha256
         (base32
-         "05mv6xhm15b0mq9kzyiblkb14bdqmjrwl64ghdk66il0w8i7p6nh"))))
+         "0jmnz612pjad3p1zk0qiljcbf0zbxfi4zcw2jqwg8ncjsifhr3mp"))))
     (properties `((upstream-name . "emdist")))
     (build-system r-build-system)
     (home-page "https://www.rforge.net/emd")
