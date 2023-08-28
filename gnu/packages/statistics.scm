@@ -6284,7 +6284,7 @@ genome-wide association studies can be analyzed efficiently.")
     (properties `((upstream-name . "Cairo")))
     (build-system r-build-system)
     (inputs
-     (list cairo libxt zlib))
+     (list cairo harfbuzz icu4c libjpeg-turbo libtiff zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.rforge.net/Cairo/")
