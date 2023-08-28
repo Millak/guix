@@ -31122,24 +31122,30 @@ and reproducible way.")
 (define-public r-rsconnect
   (package
     (name "r-rsconnect")
-    (version "0.8.29")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsconnect" version))
        (sha256
         (base32
-         "0hqww1nn7ap6jzy6jl936d1fxs3hqw09w6hr9pgww2zrmb99ja45"))))
+         "1cni5sc4qgvd3vvn2jy0saxsxz144yl2jahhbf0bhix35blgzlp1"))))
     (properties `((upstream-name . "rsconnect")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-curl
+     (list r-cli
+           r-curl
            r-digest
            r-jsonlite
+           r-lifecycle
            r-openssl
            r-packrat
+           r-renv
+           r-rlang
            r-rstudioapi
            r-yaml))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://github.com/rstudio/rsconnect")
     (synopsis "Deployment interface for R Markdown documents and Shiny applications")
     (description
