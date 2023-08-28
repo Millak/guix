@@ -2573,20 +2573,17 @@ method for preprocessing data for conos.")
 (define-public r-pals
   (package
     (name "r-pals")
-    (version "1.7")
+    (version "1.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "pals" version))
               (sha256
                (base32
-                "18pbivmqs9yqsb6p8anv42alny0njaq3dajibhzysax0b7rsk2js"))))
+                "0z6lkvkq7b3wsxvizljf08sjqrdcj33p5kdx6074pc5jv36dylhb"))))
     (properties `((upstream-name . "pals")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-colorspace
-           r-dichromat
-           r-mapproj
-           r-maps))
+     (list r-colorspace r-dichromat r-mapproj r-maps))
     (native-inputs (list r-knitr))
     (home-page "https://kwstat.github.io/pals/")
     (synopsis "Color palettes, color maps, and tools to evaluate them")
