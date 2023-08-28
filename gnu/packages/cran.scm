@@ -16753,13 +16753,13 @@ algorithms, clusterings, and individual clusters.")
 (define-public r-clustergeneration
   (package
     (name "r-clustergeneration")
-    (version "1.3.7")
+    (version "1.3.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "clusterGeneration" version))
               (sha256
                (base32
-                "0p1dwl08bf20h7pnspnsycrp3v48nm2miwcnlklyc4gdyzc2jksk"))))
+                "0w1sywv9cgl78wrsamh1zrig67r3grnyl27f036ipd1ab1b2510g"))))
     (properties `((upstream-name . "clusterGeneration")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
