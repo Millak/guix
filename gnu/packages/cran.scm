@@ -37380,14 +37380,14 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
 (define-public r-stars
   (package
     (name "r-stars")
-    (version "0.6-2")
+    (version "0.6-3")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "stars" version))
         (sha256
           (base32
-            "0prip06c28d72wa7h8h8p2y7rw7jnh2h2yhnygbaipc8cbzlvi7x"))))
+            "08i5m46plkwkxwgzpy6srvn69jchp364vj3sg1isp2lj9pxhzfwc"))))
     (properties `((upstream-name . "stars")))
     (build-system r-build-system)
     (propagated-inputs
