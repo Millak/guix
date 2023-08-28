@@ -18886,13 +18886,13 @@ linear order on both variables.")
 (define-public r-chemometrics
   (package
     (name "r-chemometrics")
-    (version "1.4.2")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "chemometrics" version))
        (sha256
-        (base32 "0shqns0n964pfwnd0q5sadglrlpgs4g5fbv45fsj9p37l4pq61dp"))))
+        (base32 "10d8g8sgck6v2cgkv988yiawv9vrziyqsrhagmkzf7rjpqgdn3px"))))
     (properties `((upstream-name . "chemometrics")))
     (build-system r-build-system)
     (propagated-inputs
