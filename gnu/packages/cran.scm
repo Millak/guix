@@ -24223,22 +24223,18 @@ external dependencies.  This package has is implemented purely in R.")
 (define-public r-aplot
   (package
     (name "r-aplot")
-    (version "0.1.10")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aplot" version))
        (sha256
         (base32
-         "1lb739r3d60a73km8w5f76p7v6xydkfljfxvi25n51zq8617cdyr"))))
+         "1431c6hx812bz013zqbgj5zg4ilpakfpi691wlcwybri75sxxdv0"))))
     (properties `((upstream-name . "aplot")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggfun
-           r-ggplot2
-           r-ggplotify
-           r-magrittr
-           r-patchwork))
+     (list r-ggfun r-ggplot2 r-ggplotify r-magrittr r-patchwork))
     (home-page "https://github.com/YuLab-SMU/aplot")
     (synopsis "Decorate a ggplot with associated information")
     (description
