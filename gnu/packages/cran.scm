@@ -30482,13 +30482,13 @@ actuarial models such as pension mathematics.")
 (define-public r-matrixextra
   (package
     (name "r-matrixextra")
-    (version "0.1.13")
+    (version "0.1.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MatrixExtra" version))
        (sha256
-        (base32 "1s8y8zp9k7rsnyi1d8ghi4brjbbdwxijc9chhla24qm3fi6np33a"))))
+        (base32 "09c6f467sbqa65ny9si9acwkwy4kfvhy532vikr4cd16r89xxr01"))))
     (properties `((upstream-name . "MatrixExtra")))
     (build-system r-build-system)
     (propagated-inputs
