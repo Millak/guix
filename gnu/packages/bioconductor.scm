@@ -7627,6 +7627,28 @@ from a @code{GRangesList} representation and provides a semblance of a
 rectangular dataset.")
     (license license:artistic2.0)))
 
+(define-public r-rdisop
+  (package
+    (name "r-rdisop")
+    (version "1.60.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Rdisop" version))
+              (sha256
+               (base32
+                "02mj02sa9qxc6678irx7g3yzab4sa5sf4jkdjzsi9i6519xd7sa4"))))
+    (properties `((upstream-name . "Rdisop")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/sneumann/Rdisop")
+    (synopsis "Decomposition of isotopic patterns")
+    (description
+     "This is a package for identification of metabolites using high precision
+mass spectrometry.  MS peaks are used to derive a ranked list of sum formulae,
+alternatively for a given sum formula the theoretical isotope distribution can
+be calculated to search in MS peak lists.")
+    (license license:gpl2)))
+
 (define-public r-rhtslib
   (package
     (name "r-rhtslib")
