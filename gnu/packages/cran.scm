@@ -2219,13 +2219,13 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
 (define-public r-ggpmisc
   (package
     (name "r-ggpmisc")
-    (version "0.5.3")
+    (version "0.5.4-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpmisc" version))
               (sha256
                (base32
-                "1j504pvhxvl9cfagsjcsw7rbc94q5ysh1f8qhb7hzpx04fpnm65a"))))
+                "0f6n48vnqnqqd7xhb4mdcwy4h9wz0icnynjigcbzagrrxmi2r64x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-confintr
@@ -2236,6 +2236,8 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
            r-lmodel2
            r-lubridate
            r-mass
+           r-multcomp
+           r-multcompview
            r-plyr
            r-polynom
            r-quantreg
