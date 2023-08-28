@@ -16542,22 +16542,20 @@ of the analyses while minimizing technical noise.")
 (define-public r-cytolib
   (package
     (name "r-cytolib")
-    (version "2.12.0")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "0r58960jhq44qs6p0l0kd4iazflxdar7sc7m2xa7dwwl9zh5zm42"))))
+         "0mfv259k92vz0g7zv8zir2av2nlmx6na1f6q9zyj24s18m7mrkqz"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
     (propagated-inputs
-     (list r-bh
-           r-rhdf5lib
-           r-rprotobuflib))
+     (list r-bh r-rhdf5lib r-rprotobuflib))
     (home-page "https://bioconductor.org/packages/cytolib/")
     (synopsis "C++ infrastructure for working with gated cytometry")
     (description
