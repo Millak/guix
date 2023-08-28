@@ -14356,20 +14356,20 @@ Models\" (Hastie and Tibshirani, 1990).")
 (define-public r-superlearner
   (package
     (name "r-superlearner")
-    (version "2.0-28")
+    (version "2.0-28.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SuperLearner" version))
        (sha256
         (base32
-         "00any24msgflyagy87nznpfjz5g9v15frqda6c679wa8plx26hjz"))))
+         "19kb4shfhj5aigjm1ljmlvr0jmgcbd6yl4gl3wfddy0nk2wi2bvm"))))
     (properties `((upstream-name . "SuperLearner")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cvauc r-gam r-nnls))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-rmarkdown))
     (home-page "https://github.com/ecpolley/SuperLearner")
     (synopsis "Super learner prediction")
     (description
