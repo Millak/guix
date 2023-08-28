@@ -11024,13 +11024,13 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "1.7.1")
+    (version "1.7.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "0a4ykfybwx1qhgn7ic29dzigiazj248iihdr1597jxj505q21gay"))))
+                "0yk62cc0vmv6dyfiwvvbgpsqlvp1cw61db60153xvzmcdvd077cl"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
     (propagated-inputs (list r-aldex2
