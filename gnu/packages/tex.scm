@@ -42838,7 +42838,31 @@ document's directory tree).")
               "19mvh7pm2332f6c8nzgcbscm9vcz0apwfgm0m55ycibssc2fb3ww")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:link-scripts #~(list "texdoc.tlu")))
+    (arguments
+     (list
+      #:link-scripts #~(list "texdoc.tlu")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The following phase prevents the following warning: "Info:
+          ;; Running Texdoc not installed in the current TEXMFMAIN".
+          (add-after 'unpack 'eschew-warning
+            (lambda _
+              (substitute* "scripts/texdoc/texdoc.tlu"
+                (("if texmf ~= nil") "if false"))))
+          ;; `kpse.find_file' is not able to locate "texlive.tlpdb", resulting
+          ;; in the following error: "texdoc error: No texlive.tlpdb nor
+          ;; shipped tlpdb data found".  This phase explicitly points `texdoc'
+          ;; into the right direction.
+          (add-after 'unpack 'set-tlpdb-location
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let ((tlpdb (search-input-file (or native-inputs inputs)
+                                              "/share/tlpkg/texlive.tlpdb")))
+                (substitute* "scripts/texdoc/texdoclib-const.tlu"
+                  (("(local tlpdb=\").*" _ prefix)
+                   (string-append prefix tlpdb "\"\n")))
+                (substitute* "scripts/texdoc/texdoclib-search.tlu"
+                  (("(local texlive_tlpdb = ).*" _ prefix)
+                   (string-append prefix "'" tlpdb "'\n")))))))))
     (propagated-inputs (list texlive-kpathsea))
     (home-page "https://ctan.org/pkg/texdoc")
     (synopsis "Documentation access for TeX Live")
