@@ -29501,14 +29501,14 @@ significance of sample deviation from a reference distribution.")
 (define-public r-qqman
   (package
     (name "r-qqman")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qqman" version))
        (sha256
         (base32
-         "1a6qp5wv9bvwjchfw8x4jh48hkynlnfr21a8vqgnswldvwbq7njq"))))
+         "04xwqp4bnblrn0qijqv9bjdyy7b0vlflf87jg15ifxfkf4br6siz"))))
     (properties `((upstream-name . "qqman")))
     (build-system r-build-system)
     (propagated-inputs
