@@ -39850,13 +39850,13 @@ jitterplot, or half violinplot and half dotplot.")
 (define-public r-zoeppritz
   (package
     (name "r-zoeppritz")
-    (version "1.0-8")
+    (version "1.0-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "zoeppritz" version))
               (sha256
                (base32
-                "1711szx9zz17q6pfinyzlyrw7m9772c8ywlixqar2l165bkjalgm"))))
+                "0bl1hrghyv5vjs02r2f5k9p7l4ialwdpl7si14lz8lbb0r1a6fwq"))))
     (properties `((upstream-name . "zoeppritz")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=zoeppritz")
