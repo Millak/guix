@@ -1863,19 +1863,17 @@ known as Dynamic Linear Models.")
 (define-public r-zcompositions
   (package
     (name "r-zcompositions")
-    (version "1.4.0-1")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "zCompositions" version))
               (sha256
                (base32
-                "1rrhja9iaq123r2gqw1bzrn1ri0s3z4wzq8p0sfcr1yb6pv13vik"))))
+                "1l9hj37x54b4vzbcg2051nfli5rh65llm27hygc2vx7yyi6q75ma"))))
     (properties `((upstream-name . "zCompositions")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass
-           r-nada
-           r-truncnorm))
+     (list r-mass r-nada r-truncnorm))
     (home-page "https://github.com/Japal/zCompositions")
     (synopsis
      "Treatment of zeros, left-censored and missing values in compositional data")
