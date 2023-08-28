@@ -9864,13 +9864,13 @@ rules with R.")
 (define-public r-leaflet-providers
   (package
     (name "r-leaflet-providers")
-    (version "1.9.0")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaflet.providers" version))
        (sha256
-        (base32 "0yynrwv4xd5cdh49cwvfxm4ranarah9iiry2cd3b4fiihdfcg3wy"))))
+        (base32 "1jrfhqmr735maa0mr3ia7441vzd3q95msgicclzdpglmk4aqhhhh"))))
     (properties `((upstream-name . "leaflet.providers")))
     (build-system r-build-system)
     (home-page "https://github.com/rstudio/leaflet.providers")
