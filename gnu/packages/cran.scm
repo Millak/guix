@@ -28264,14 +28264,14 @@ R\" (ISBN 978-1-119-15272-9.)")
 (define-public r-alabama
   (package
     (name "r-alabama")
-    (version "2022.4-1")
+    (version "2023.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "alabama" version))
        (sha256
         (base32
-         "0v6kl6ndm8wvp9xzya3x4gj5kh03qgx13x5vyzn410wsndcjiim8"))))
+         "075zqyarb970d4zpxsivaxhnmdg916ypfxrp0mqngnww5p3nfpwj"))))
     (properties `((upstream-name . "alabama")))
     (build-system r-build-system)
     (propagated-inputs (list r-numderiv))
