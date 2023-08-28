@@ -36894,14 +36894,14 @@ in same length matches).")
 (define-public r-syuzhet
   (package
     (name "r-syuzhet")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "syuzhet" version))
         (sha256
           (base32
-            "16iccqdbw02iw82nah6kwz3gwfghi864j2y698n4b9dyc386ijzv"))))
+            "0cpjg16hwn6843jdxp4h94qjw1wwwblvjzg30w54rac08m62nkxg"))))
     (properties `((upstream-name . "syuzhet")))
     (build-system r-build-system)
     (propagated-inputs
