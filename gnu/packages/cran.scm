@@ -6389,14 +6389,14 @@ use in R.  It also provides a simple way for variable interpolation in R.")
 (define-public r-fastmatch
   (package
     (name "r-fastmatch")
-    (version "1.1-3")
+    (version "1.1-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastmatch" version))
        (sha256
         (base32
-         "0qcq1gwl9pijgp34giyq5y9rk0ly3d7xza2b7r68xx63ifqa1vqx"))))
+         "0symkcmyrqvz6hkawr40ga808rb3w4hy9ssfsi5ri8hykjn4r4cs"))))
     (build-system r-build-system)
     (home-page "https://www.rforge.net/fastmatch")
     (synopsis "Fast match function")
