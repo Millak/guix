@@ -12777,6 +12777,28 @@ required source code files from the official Leidenalg distribution and
 several functions from the R igraph package.")
       (license license:gpl3+))))
 
+(define-public r-sangerseqr
+  (package
+    (name "r-sangerseqr")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "sangerseqR" version))
+              (sha256
+               (base32
+                "0hhq5zsx4srd9ndr370m44f80qdlrqafjv1838wf65gzijffhfqb"))))
+    (properties `((upstream-name . "sangerseqR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings r-shiny r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/sangerseqR")
+    (synopsis "Tools for Sanger Sequencing data in R")
+    (description
+     "This package contains several tools for analyzing Sanger Sequencing data
+files in R, including reading @file{.scf} and @file{.ab1} files, making
+basecalls and plotting chromatograms.")
+    (license license:gpl2)))
+
 (define-public r-sanssouci
   ;; sansscouci doesn't have a (versioned) release yet.
   ;; This is the latest commit as of packaging for Guix.
