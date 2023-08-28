@@ -22652,13 +22652,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.34")
+    (version "0.35")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "049jq2csazk5wkn6ck0izvy49g4i612d9n5w3d89mqmmx9nax7ml"))
+                "1fzzppwp2ri4jhl1j2122rhiniay34cccvxr559bypv5b38yjywd"))
               ;; TODO: there is one more file to replace:
               ;; inst/resources/gitbook/js/app.min.js
               (snippet
@@ -22666,6 +22666,11 @@ SELECT or UPDATE queries to an end-point.")
                           '("inst/resources/gitbook/js/clipboard.min.js"
                             "inst/resources/gitbook/js/lunr.js"
                             "inst/resources/mathquill/mathquill.min.js")))))
+    (properties
+     `((upstream-name . "bookdown")
+       ;; We cannot add knitr because this package depends on xfun, which is
+       ;; an input to knitr.
+       (updater-ignored-native-inputs . ("r-knitr"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -22705,10 +22710,7 @@ SELECT or UPDATE queries to an end-point.")
            r-yaml
            pandoc))
     (native-inputs
-     ;; We cannot add knitr because this package depends on xfun, which is an
-     ;; input to knitr.
-     `(;;("r-knitr" ,r-knitr)
-       ("esbuild" ,esbuild)
+     `(("esbuild" ,esbuild)
        ("js-clipboard"
         ,(let ((version "2.0.4"))
            (origin
