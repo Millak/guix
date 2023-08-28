@@ -3091,20 +3091,17 @@ variety of formats.")
 (define-public r-gtable
   (package
     (name "r-gtable")
-    (version "0.3.3")
+    (version "0.3.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gtable" version))
               (sha256
                (base32
-                "0fkv19h64cyxsadplvyzbpjliy9wlfg56hc8znvqg972g3cmi6ig"))))
+                "0xvrkhcv1896mf3n43mva2mrmk0d8np7sjrykpg1pv54f69h6ckh"))))
     (properties `((upstream-name . "gtable")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli
-           r-glue
-           r-lifecycle
-           r-rlang))
+     (list r-cli r-glue r-lifecycle r-rlang))
     (native-inputs
      (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/gtable")
