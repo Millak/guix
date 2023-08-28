@@ -24009,15 +24009,14 @@ interface for editing @code{ggplot2} theme elements.")
 (define-public r-flexdashboard
   (package
     (name "r-flexdashboard")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexdashboard" version))
        (sha256
         (base32
-         "1lxlai4s3qdg2w36xx61idn67zidz9n5mmbz72i0zvcpxr25v5xl"))
-       (modules '((guix build utils)))
+         "0zxyrfp1inv19palaba81pxlq0nz655hcliynvh995a58cvg6c5n"))
        ;; Delete bundled minified JavaScript files
        (snippet
         '(for-each delete-file
@@ -24081,7 +24080,7 @@ interface for editing @code{ggplot2} theme elements.")
            r-scales
            r-shiny))
     (native-inputs
-     `(("uglifyjs" ,esbuild)
+     `(("esbuild" ,esbuild)
        ("js-raphael"
         ,(origin
            (method url-fetch)
@@ -24089,6 +24088,7 @@ interface for editing @code{ggplot2} theme elements.")
            (sha256
             (base32
              "1h4c4akrgcj7wra9j1z1rv2406j0yf68y9c0wg8v7w9ibw2iwf1x"))))
+       ;; It actually wants version 1.4.1 according to R/dependencies.R.
        ("js-prism"
         ,(origin
            (method url-fetch)
@@ -24110,13 +24110,14 @@ interface for editing @code{ggplot2} theme elements.")
            (sha256
             (base32
              "1543wgf3iynrilyb27jq8px3h5gvfz5xmdib5ik2ki400c1sl991"))))
+       ;; See R/dependencies.R
        ("js-featherlight"
         ,(origin
            (method url-fetch)
-           (uri "https://raw.githubusercontent.com/noelboss/featherlight/1.3.4/src/featherlight.js")
+           (uri "https://raw.githubusercontent.com/noelboss/featherlight/1.3.5/src/featherlight.js")
            (sha256
             (base32
-             "14kkhwzvp8rxq2mrck5i0xcm8v5rqwqhwnmncbng8h4qq42zx3sb"))))))
+             "0pbxgcipzbyivzlf3hal0lpajjj33p86fggm704c1b5bcq7ljl80"))))))
     (home-page "https://rmarkdown.rstudio.com/flexdashboard")
     (synopsis "R Markdown format for flexible dashboards")
     (description
