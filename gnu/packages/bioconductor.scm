@@ -5069,17 +5069,18 @@ calculation in parallel.")
 (define-public r-dmrcate
   (package
     (name "r-dmrcate")
-    (version "2.14.0")
+    (version "2.14.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DMRcate" version))
               (sha256
                (base32
-                "1kcp0hgxnrcslphdqb25jsicif52r1sk8c7sn73jkdxy4n64idbm"))))
+                "1va60r297cl6xw5mc4nf9igfizqqzz7i5436x26iw4q35jcwlfjl"))))
     (properties `((upstream-name . "DMRcate")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bsseq
+     (list r-biomart
+           r-bsseq
            r-dss
            r-edger
            r-experimenthub
