@@ -13170,17 +13170,18 @@ intervals.")
 (define-public r-snakecase
   (package
     (name "r-snakecase")
-    (version "0.11.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "snakecase" version))
        (sha256
         (base32
-         "1ky1x2cp5rd0ffd9m1fji9sq4z4jsrpxzg30brw8bb4ihfjj114r"))))
+         "0888fng8zwm2zmi7rap9hc2q2x2gnhz8gyr35wwjx93w6f8rfpra"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-stringi r-stringr))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/Tazinho/snakecase")
     (synopsis "Convert strings into any case")
     (description
