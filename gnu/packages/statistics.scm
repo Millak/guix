@@ -1904,14 +1904,17 @@ features require SQL translation to be provided by the package author.")
 (define-public r-acepack
   (package
     (name "r-acepack")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "acepack" version))
        (sha256
         (base32
-         "1f98rpfjmhd92rdc3j004plyfpjailz6j0ycysbac0kgj83haxc2"))))
+         "14dccqpww3bv59236r0vr6bibhsafhbm7qshdjxp5ww3nw9cvzsv"))))
+    (properties
+     `((upstream-name . "acepack")
+       (updater-extra-inputs . ("gfortran"))))
     (build-system r-build-system)
     (inputs
      (list gfortran))
