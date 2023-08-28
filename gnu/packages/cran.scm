@@ -27808,14 +27808,14 @@ provided as well.")
 (define-public r-tuner
   (package
     (name "r-tuner")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tuneR" version))
        (sha256
         (base32
-         "1fzkji3yq4f7y2y0h3k47kcv3pj3lfy524lvra18f5y27pwvjkif"))))
+         "1ysjn8mclrjp4qr4m45qanm20gpdbikmgzfrcn2a0phfz8nhvlpm"))))
     (properties `((upstream-name . "tuneR")))
     (build-system r-build-system)
     (propagated-inputs (list r-signal))
