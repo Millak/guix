@@ -16405,18 +16405,18 @@ user credentials.")
 (define-public r-gert
   (package
     (name "r-gert")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gert" version))
        (sha256
         (base32
-         "0pk6mf300kh6wwzvaqymwzlikkbf8zj0xpslgyydn7zvr95ipjj2"))))
+         "09v8dv1yazgc7g1yi3h5x5hrljix9kaiadbhsd1cvannp5pj7332"))))
     (properties `((upstream-name . "gert")))
     (build-system r-build-system)
     (inputs
-     (list libgit2 zlib))
+     (list libgit2 openssh openssl zlib))
     (propagated-inputs
      (list r-askpass
            r-credentials
