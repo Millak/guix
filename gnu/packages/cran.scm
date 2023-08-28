@@ -30637,14 +30637,14 @@ and analyze Stan models.")
 (define-public r-rpf
   (package
     (name "r-rpf")
-    (version "1.0.11")
+    (version "1.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rpf" version))
        (sha256
         (base32
-         "1yr1i7kswq57mcxv05lh7bvbicz1djqxcl6f13dlgsf3ww56gzg1"))))
+         "15pp6fdqxngsmcibxfzv72g25q3ww3hrazsl4c5fgi0fh450kfz4"))))
     (properties `((upstream-name . "rpf")))
     (build-system r-build-system)
     (propagated-inputs
