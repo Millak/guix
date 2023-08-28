@@ -13924,6 +13924,33 @@ interpreting functional enrichment results obtained from ORA or GSEA analyses.
 All the visualization methods are developed based on ggplot2 graphics.")
     (license license:artistic2.0)))
 
+;; This is a CRAN package, but it depends on Bioconductor packages, so we
+;; added it here.
+(define-public r-classdiscovery
+  (package
+    (name "r-classdiscovery")
+    (version "3.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ClassDiscovery" version))
+              (sha256
+               (base32
+                "06l7jvpcdynij05hb0ka33zpg7xdyqyzfzx24s0bnlspp83yc62s"))))
+    (properties `((upstream-name . "ClassDiscovery")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase r-cluster r-mclust r-oompabase r-oompadata))
+    (native-inputs
+     (list r-xtable)) ;for vignettes
+    (home-page "https://oompa.r-forge.r-project.org/")
+    (synopsis
+     "Classes and methods for \"Class Discovery\" with Microarrays or Proteomics")
+    (description
+     "This package defines classes for \"class discovery\" in the OOMPA project.
+Class discovery primarily consists of unsupervised clustering methods with
+attempts to assess their statistical significance.")
+    (license license:asl2.0)))
+
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
