@@ -20987,18 +20987,24 @@ to easily call your own custom JavaScript functions from R.")
 (define-public r-colourpicker
   (package
     (name "r-colourpicker")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "colourpicker" version))
        (sha256
         (base32
-         "12k3m2s49pc1p2hzd4zqqzzdf94q7hhqz7zgp8w908a6w3p80b5w"))))
+         "0415238r7a8xrp3kvq8lczzxz534irj2q1zfbb0pl7xfs6663wn7"))
+       (snippet
+        '(for-each delete-file
+                   (list "inst/examples/colourInput/www/salvattore.min.js"
+                         "inst/htmlwidgets/lib/jquery/jquery.min.js"
+                         "inst/www/shared/colourpicker/js/colourpicker.min.js")))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst"
@@ -21012,7 +21018,6 @@ to easily call your own custom JavaScript functions from R.")
                  (for-each (lambda (source target)
                              (format #true "Processing ~a --> ~a~%"
                                      source target)
-                             (delete-file target)
                              (invoke "esbuild" source "--minify"
                                      (string-append "--outfile=" target)))
                            (map car mapping)
