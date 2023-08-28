@@ -1246,13 +1246,13 @@ highlight styles are supported.")
 (define-public r-proj4
   (package
     (name "r-proj4")
-    (version "1.0-12")
+    (version "1.0-13")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "proj4" version))
               (sha256
                (base32
-                "1y3n6zjc4s78pagq5f2x9sdfjg5x5nwnhq67jd06fndlsma8mssa"))))
+                "1wvp17x58i614mnrjp0idzfi7s3g7pz41x8cxv05ryi9iz5l0m5c"))))
     (properties `((upstream-name . "proj4")))
     (build-system r-build-system)
     (inputs (list proj-7 zlib))
