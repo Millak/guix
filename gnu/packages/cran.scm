@@ -34291,14 +34291,14 @@ model.")
 (define-public r-igraph
   (package
     (name "r-igraph")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "igraph" version))
        (sha256
         (base32
-         "01kkzl0akq5ygz2mvn29myhnfx4b74xkpmn592ih1vnh1zzph1yq"))))
+         "0jmii8kzs7hpf3xmlbfb8d21q79z7ramc18zcjamsjmdfwg0mndd"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
@@ -34307,6 +34307,7 @@ model.")
     (propagated-inputs
      (list r-cli
            r-cpp11
+           r-lifecycle
            r-magrittr
            r-matrix
            r-pkgconfig
