@@ -24964,17 +24964,23 @@ classification and regression models.")
 (define-public r-dae
   (package
     (name "r-dae")
-    (version "3.2.15")
+    (version "3.2.19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dae" version))
        (sha256
         (base32
-         "1qi90gr87imhc01iadghjkifni6j5pbcsi2z55hylqfbpwffcmnl"))))
+         "18cvxj2qjfqdp7gxpl93185f9c7q0fcxnc63h9car1y9dgwqsild"))))
     (build-system r-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           ;; Needed for vignette builder
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list r-ggplot2 r-plyr))
+     (list r-ggplot2 r-ggpubr r-plyr))
     (native-inputs
      (list r-r-rsp)) ; vignette builder
     (home-page "http://chris.brien.name")
