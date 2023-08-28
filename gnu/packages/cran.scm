@@ -4328,19 +4328,21 @@ expression estimates for all genes.")
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "05fi1cbb33hvrxx3vibbai7bzlx60jxd3iaqpc86x0224b3gpim2"))
+         "03phbr6zax3898yvdfqmrs0sjiik4pfn34ksysf95fp348in2xdi"))
        (snippet
         '(for-each delete-file
-                   '("inst/components/accordion.min.js"
-                     "inst/components/card.min.js"
-                     "inst/components/sidebar.min.js"
+                   '("inst/components/dist/accordion/accordion.min.js"
+                     "inst/components/dist/bslibShiny/bslibShiny.min.js"
+                     "inst/components/dist/card/card.min.js"
+                     "inst/components/dist/sidebar/sidebar.min.js"
+                     "inst/components/dist/webComponents/webComponents.min.js"
                      "inst/lib/bs-a11y-p/plugins/js/bootstrap-accessibility.min.js"
                      "inst/lib/bs3/assets/javascripts/bootstrap.min.js"
                      "inst/lib/bs4/dist/js/bootstrap.bundle.min.js"
@@ -4360,13 +4362,28 @@ expression estimates for all genes.")
               (for-each (lambda (component)
                           (invoke "esbuild"
                                   "--bundle" "--minify" "--sourcemap"
-                                   "--target=es6" ;"--external=:bootstrap"
+                                  "--target=es6" ;"--external=:bootstrap"
                                   (string-append
                                    #$(this-package-native-input "typescript-components")
                                    "/srcts/src/components/" component ".ts")
-                                  (string-append "--outfile=inst/components/"
-                                                 component ".min.js")))
-                        '("accordion" "sidebar" "card"))
+                                  (string-append "--outfile=inst/components/dist/"
+                                                 component "/" component ".min.js")))
+                        '("accordion" "bslibShiny" "card" "sidebar"))
+              ;; XXX: webComponents requires "lit" for type annotations, which
+              ;; we cannot easily build.
+              (with-directory-excursion "inst/"
+                (call-with-values
+                    (lambda ()
+                      (unzip2
+                       `(("components/dist/webComponents/webComponents.js"
+                          "components/dist/webComponents/webComponents.min.js"))))
+                  (lambda (sources targets)
+                    (for-each (lambda (source target)
+                                (format #t "Processing ~a --> ~a~%"
+                                        source target)
+                                (invoke "esbuild" source "--minify"
+                                        (string-append "--outfile=" target)))
+                              sources targets))))
               (with-directory-excursion "inst/lib/"
                 (call-with-values
                     (lambda ()
@@ -4423,7 +4440,7 @@ expression estimates for all genes.")
            (file-name (git-file-name name version))
            (sha256
             (base32
-             "1krmavvbnpikiyxgv36vf70p8qzy1rymh1l41pjc7z74hk526p7c"))))))
+             "0rvwdn1xg7vwphq0bpa7s81f2d2xyhmy5kb516b0lxvc7qfdypa4"))))))
     (home-page "https://rstudio.github.io/bslib/")
     (synopsis "Custom Bootstrap Sass themes for shiny and rmarkdown")
     (description
