@@ -7781,6 +7781,37 @@ Shiny-based display methods for Bioconductor objects.")
 @dfn{Kyoto Encyclopedia of Genes and Genomes} (KEGG) REST server.")
     (license license:artistic2.0)))
 
+(define-public r-lea
+  (package
+    (name "r-lea")
+    (version "3.12.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "LEA" version))
+              (sha256
+               (base32
+                "1kxrrl8pxhaipmzsw8gs4gs8g8xbp8169z9f7bcpgrfapnawafm9"))))
+    (properties `((upstream-name . "LEA")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "http://membres-timc.imag.fr/Olivier.Francois/LEA/index.htm")
+    (synopsis
+     "R package for landscape and ecological association studies")
+    (description
+     "LEA is an R package dedicated to population genomics, landscape genomics
+and genotype-environment association tests.  LEA can run analyses of
+population structure and genome-wide tests for local adaptation, and also
+performs imputation of missing genotypes.  The package includes statistical
+methods for estimating ancestry coefficients from large genotypic matrices and
+for evaluating the number of ancestral populations (snmf).  It performs
+statistical tests using latent factor mixed models for identifying genetic
+polymorphisms that exhibit association with environmental gradients or
+phenotypic traits (lfmm2).  In addition, LEA computes values of genetic offset
+statistics based on new or predicted environments (@code{genetic.gap},
+@code{genetic.offset}).  LEA is mainly based on optimized programs that can
+scale with the dimensions of large data sets.")
+    (license license:gpl3)))
+
 (define-public r-lfa
   (package
     (name "r-lfa")
