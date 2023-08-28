@@ -20217,14 +20217,14 @@ cell types to infer the cell of origin of each single cell independently.")
 (define-public r-scuttle
   (package
     (name "r-scuttle")
-    (version "1.10.1")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scuttle" version))
        (sha256
         (base32
-         "13207k7b9qrpcngk4vd3jhc3zz815anwci1dqgadjyn4c8ragmnj"))))
+         "0225fk3ca540b9z3dd5q2zngxsa524nq7zrv1z5qnmr2knc0yxfb"))))
     (properties `((upstream-name . "scuttle")))
     (build-system r-build-system)
     (propagated-inputs
