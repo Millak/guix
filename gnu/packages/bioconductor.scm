@@ -16783,14 +16783,14 @@ for other R packages to compile and link against.")
 (define-public r-flowworkspace
   (package
     (name "r-flowworkspace")
-    (version "4.12.0")
+    (version "4.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowWorkspace" version))
        (sha256
         (base32
-         "1ln98xnnqlz3hqdyhypzarw7jcghd5gjaw8h42yw41w0plhh4wyr"))))
+         "1g1hym2anysgy7v46fnnxyzac3wzi1713vlih2gqzi23k8r2xx26"))))
     (properties `((upstream-name . "flowWorkspace")))
     (build-system r-build-system)
     (propagated-inputs
