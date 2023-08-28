@@ -7291,13 +7291,13 @@ statistics/methods are implemented.")
 (define-public r-envstats
   (package
     (name "r-envstats")
-    (version "2.8.0")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "EnvStats" version))
               (sha256
                (base32
-                "17fgwa5rdjpsxk95p1j48bkpbmm01vy25vzbgggj31a1k2i4i85p"))))
+                "19nnab201yalxbgpvpp5lkgqs0m17b5plsswmaxbvdv4mag2p58j"))))
     (properties `((upstream-name . "EnvStats")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-mass r-nortest))
