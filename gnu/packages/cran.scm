@@ -23534,14 +23534,14 @@ layer by layer.")
 (define-public r-gkmsvm
   (package
     (name "r-gkmsvm")
-    (version "0.82.0")
+    (version "0.83.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gkmSVM" version))
        (sha256
         (base32
-         "1m2cq4b0srghaj04p5ffbc21zv1rg7avi8pn765bybjhvrn567bm"))))
+         "1bg9jw4ra76j132lkr0p5m2xlr952fdij1hn6f1v7g687l55m0k5"))))
     (properties `((upstream-name . "gkmSVM")))
     (build-system r-build-system)
     (propagated-inputs
