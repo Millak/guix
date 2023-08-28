@@ -3420,6 +3420,44 @@ at @dfn{EBI} (European Bioinformatics Institute) and build Bioconductor data
 structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
     (license license:artistic2.0)))
 
+(define-public r-arrayqualitymetrics
+  (package
+    (name "r-arrayqualitymetrics")
+    (version "3.56.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "arrayQualityMetrics" version))
+              (sha256
+               (base32
+                "06plgmgla7hvryqfcid4y35s24r50s39d9f8sjchwbxqciwy72wj"))))
+    (properties `((upstream-name . "arrayQualityMetrics")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-affy
+                             r-affyplm
+                             r-beadarray
+                             r-biobase
+                             r-genefilter
+                             r-gridsvg
+                             r-hmisc
+                             r-hwriter
+                             r-lattice
+                             r-latticeextra
+                             r-limma
+                             r-rcolorbrewer
+                             r-setrng
+                             r-svglite
+                             r-vsn
+                             r-xml))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/arrayQualityMetrics")
+    (synopsis "Quality metrics report for microarray data sets")
+    (description
+     "This package generates microarray quality metrics reports for data in
+Bioconductor microarray data containers @code{(ExpressionSet},
+@code{NChannelSet}, @code{AffyBatch}).  One and two color array platforms are
+supported.")
+    (license license:lgpl2.0+)))
+
 (define-public r-asafe
   (package
     (name "r-asafe")
