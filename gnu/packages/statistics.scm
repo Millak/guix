@@ -5919,22 +5919,23 @@ using modular prediction and response module classes.")
 (define-public r-quantreg
   (package
     (name "r-quantreg")
-    (version "5.95")
+    (version "5.97")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantreg" version))
        (sha256
-        (base32 "1k4n5armw4lfyy4q8llnrpgvcw7s5n8w9zfff9rr5ggbrqgah1ab"))))
+        (base32 "18bdcxm2f8gc2bxdxrk80dcafl8d5snckp0913pkdsfyfrbxxrw7"))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This is needed for building vignettes
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list gfortran
-           r-r-rsp)) ;for vignettes
+     (list gfortran r-r-rsp)) ;for vignettes
     (propagated-inputs
      (list r-mass r-matrix r-matrixmodels r-sparsem r-survival))
     (home-page "https://www.r-project.org")
