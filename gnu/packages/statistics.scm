@@ -3055,13 +3055,13 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.23")
+    (version "2.24")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "09f8gfa4cfjwqb44xdr832blbgknn4ciyisvcrpyz5x51iphi3b6"))))
+          (base32 "11ixspf7w5zsr02c5545w0ra7l9c8kb4bls97dhx5cgldnjfywrq"))))
     (properties
      `((upstream-name . "rmarkdown")
        (updater-extra-propagated-inputs . ("pandoc"))))
@@ -3080,7 +3080,7 @@ certain criterion, e.g., it contains a certain regular file.")
            r-yaml
            pandoc))
     (native-inputs
-     (list r-knitr))
+     (list esbuild r-knitr))
     (home-page "https://rmarkdown.rstudio.com")
     (synopsis "Convert R Markdown documents into a variety of formats")
     (description
