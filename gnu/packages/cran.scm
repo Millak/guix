@@ -38045,13 +38045,13 @@ reading and writing arbitrary protocol-buffer data in R.")
 (define-public r-opencpu
   (package
     (name "r-opencpu")
-    (version "2.2.10")
+    (version "2.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "opencpu" version))
        (sha256
-        (base32 "0wpr3cgkznrm2ivapi1vdlcm2729v1jkyah5q82nfmnzisdlrc4a"))
+        (base32 "1hdvfbzc8xmv8hrmchad590f91s4vq1nq83wi2ffh4n7q6ixr03s"))
        (snippet
         '(for-each delete-file
                    '("inst/test/jquery-1.10.2.min.js"
@@ -38099,7 +38099,9 @@ reading and writing arbitrary protocol-buffer data in R.")
            r-protolite
            r-rappdirs
            r-remotes
+           r-rlang
            r-sys
+           r-vctrs
            r-webutils
            r-zip))
     (native-inputs
