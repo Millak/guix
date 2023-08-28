@@ -1996,6 +1996,40 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
     ;; The author(s) mentions only LGPL without any specific version.
     (license license:lgpl2.1+)))
 
+(define-public r-sesamedata
+  (package
+    (name "r-sesamedata")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "sesameData" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1fvxs5n6bj2j0k3vgnaiksshkaxw7fmx6k22rjd3fsqg3cz60fm6"))))
+    (properties `((upstream-name . "sesameData")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationhub
+                             r-experimenthub
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-iranges
+                             r-readr
+                             r-s4vectors
+                             r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/sesameData")
+    (synopsis "Supporting Data for SeSAMe Package")
+    (description
+     "This package provides supporting annotation and test data for
+@code{SeSAMe} package.  This includes chip tango addresses, mapping
+information, performance annotation, and trained predictor for Infinium array
+data.  This package provides user access to essential annotation data for
+working with many generations of the Infinium DNA methylation array.  It
+currently supports human array (HM27, HM450, EPIC), mouse array (MM285) and
+the @code{HorvathMethylChip40} (Mammal40) array.")
+    (license license:artistic2.0)))
+
 (define-public r-tcgabiolinksgui-data
   (package
     (name "r-tcgabiolinksgui-data")
