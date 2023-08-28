@@ -342,7 +342,14 @@ LENGTH characters."
                      (let ((pattern (make-regexp "([A-Z][a-z]+[A-Z]|[a-z]+[A-Z])")))
                        (match (list-matches pattern word)
                          (() word)
-                         (_ (string-append "@code{" word "}")))))))))
+                         ((m . rest)
+                          ;; Do not include leading or trailing punctuation.
+                          (let* ((last-text (or (and=> (string-skip-right word char-set:punctuation) 1+)
+                                                (string-length word)))
+                                 (inner (substring word (match:start m) last-text))
+                                 (pre (string-take word (match:start m)))
+                                 (post (substring word last-text (string-length word))))
+                            (string-append pre "@code{" inner "}" post))))))))))
          (words
           (string-tokenize (string-trim-both description)
                            (char-set-complement
