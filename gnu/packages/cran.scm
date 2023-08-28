@@ -11806,13 +11806,13 @@ using the @code{snow} package.")
 (define-public r-fsa
   (package
     (name "r-fsa")
-    (version "0.9.4")
+    (version "0.9.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "FSA" version))
               (sha256
                (base32
-                "0m63pik6bcqsbzizq8zjzilr2pxjl8b64ivdqzdnz09gmck73r5h"))))
+                "0b9gf1sh7igd6i14cgl6j8ns2zqvpph3830n7b4q9vw4dfcb53g0"))))
     (properties `((upstream-name . "FSA")))
     (build-system r-build-system)
     (propagated-inputs (list r-car r-dunn-test r-lmtest r-plotrix r-withr))
