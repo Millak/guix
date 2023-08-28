@@ -57,6 +57,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module ((srfi srfi-1) #:hide (zip)))
@@ -9302,13 +9303,13 @@ pre-processed data.")
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
-    (version "1.60.0")
+    (version "1.60.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rtracklayer" version))
               (sha256
                (base32
-                "0gy8df0ndq6nyly4b5h3kby8k77rc4j9n7zhnliryvirpr6alm9m"))))
+                "06z02sz8zjg2lxp2q4qwhvh6dsi6srirdmhcdvmi3as50nnjmzd8"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -9322,7 +9323,7 @@ pre-processed data.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list zlib))
+     (list openssl zlib))
     (propagated-inputs
      (list r-biocgenerics
            r-biocio
