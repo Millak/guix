@@ -7982,51 +7982,54 @@ formats.")
   (sbcl-package->ecl-package sbcl-swap-bytes))
 
 (define-public sbcl-iolib
-  (package
-    (name "sbcl-iolib")
-    (version "0.8.4")
-    (home-page "https://github.com/sionescu/iolib")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1f43jqqqwp9n7xksqxw91myapsdbc2dxck6nd6flakbnp9haylyq"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("cffi" ,sbcl-cffi)
-       ("idna" ,sbcl-idna)
-       ("libfixposix" ,libfixposix)
-       ("split-sequence" ,sbcl-split-sequence)
-       ("swap-bytes" ,sbcl-swap-bytes)))
-    (arguments
-     '(#:asd-systems '("iolib"
-                       "iolib/os")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/syscalls/ffi-functions-unix.lisp"
-               (("\\(:default \"libfixposix\"\\)")
-                (string-append
-                 "(:default \""
-                 (assoc-ref inputs "libfixposix") "/lib/libfixposix\")")))
-             ;; Socket tests need Internet access, disable them.
-             (substitute* "iolib.asd"
-               (("\\(:file \"sockets\" :depends-on \\(\"pkgdcl\" \"defsuites\"\\)\\)")
-                "")))))))
-    (synopsis "Common Lisp I/O library")
-    (description "IOlib is to be a better and more modern I/O library than
+  (let ((commit "010b7a6bdd2e918ebf2ec85edd3853179f01cb30")
+        (revision "0"))
+    (package
+      (name "sbcl-iolib")
+      (version (git-version "0.8.4" revision commit))
+      (home-page "https://github.com/sionescu/iolib")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name "cl-iolib" version))
+         (sha256
+          (base32 "1qqy2yhprkmdn2vmi69akf818q3n99gv8cacv6456af0wjm5p1ga"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list pkg-config sbcl-fiveam))
+      (inputs
+       (list libfixposix
+             sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-idna
+             sbcl-split-sequence
+             sbcl-swap-bytes))
+      (arguments
+       '(#:asd-systems '("iolib"
+                         "iolib/os")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/syscalls/ffi-functions-unix.lisp"
+                 (("\\(:default \"libfixposix\"\\)")
+                  (string-append
+                   "(:default \""
+                   (assoc-ref inputs "libfixposix") "/lib/libfixposix\")")))
+               ;; Socket tests need Internet access, disable them.
+               (substitute* "iolib.asd"
+                 (("\\(:file \"sockets\" :depends-on \\(\"pkgdcl\" \"defsuites\"\\)\\)")
+                  "")))))))
+      (synopsis "Common Lisp I/O library")
+      (description "IOlib is to be a better and more modern I/O library than
 the standard Common Lisp library.  It contains a socket library, a DNS
 resolver, an I/O multiplexer(which supports @code{select(2)}, @code{epoll(4)}
 and @code{kqueue(2)}), a pathname library and file-system utilities.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public cl-iolib
   (let ((parent (sbcl-package->cl-source-package sbcl-iolib)))
