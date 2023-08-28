@@ -21811,14 +21811,14 @@ standard regular expressions.")
 (define-public r-untb
   (package
     (name "r-untb")
-    (version "1.7-4")
+    (version "1.7-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "untb" version))
        (sha256
         (base32
-         "1i7m4vfslsix98dwx4jlrsldm7fhhfp25gr7aapcxqxms7ryaby6"))))
+         "0sd9vapgzy3ifpyl08hm5l7d5g1yvyccqf3n9dyc9x5gmqkvhri1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brobdingnag r-partitions r-polynom))
