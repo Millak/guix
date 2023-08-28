@@ -4960,6 +4960,52 @@ space.  This can help to create visualisations that are more representative of
 heterogeneity in the original high-dimensional space.")
     (license license:expat)))
 
+(define-public r-derfinder
+  (package
+    (name "r-derfinder")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "derfinder" version))
+              (sha256
+               (base32
+                "1gb65hk26ffn0njsgwgk43z9i9bcvx89pz5m9x951c2a07c1xrcw"))))
+    (properties `((upstream-name . "derfinder")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-biocgenerics
+                             r-biocparallel
+                             r-bumphunter
+                             r-derfinderhelper
+                             r-genomeinfodb
+                             r-genomicalignments
+                             r-genomicfeatures
+                             r-genomicfiles
+                             r-genomicranges
+                             r-hmisc
+                             r-iranges
+                             r-qvalue
+                             r-rsamtools
+                             r-rtracklayer
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/lcolladotor/derfinder")
+    (synopsis
+     "Annotation-agnostic differential expression analysis of RNA-seq data")
+    (description
+     "This package provides functions for annotation-agnostic differential
+expression analysis of RNA-seq data.  Two implementations of the DER Finder
+approach are included in this package:
+
+@enumerate
+@item single base-level F-statistics and
+@item DER identification at the expressed regions-level.
+@end enumerate
+
+The DER Finder approach can also be used to identify differentially bounded
+@code{ChIP-seq} peaks.")
+    (license license:artistic2.0)))
+
 (define-public r-derfinderhelper
   (package
     (name "r-derfinderhelper")
