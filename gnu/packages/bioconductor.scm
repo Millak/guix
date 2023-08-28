@@ -9649,6 +9649,48 @@ sequence motif occurrences across a large set of sequences centred at a common
 reference point and sorted by a user defined feature.")
     (license license:gpl3+)))
 
+(define-public r-sesame
+  (package
+    (name "r-sesame")
+    (version "1.18.4")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "sesame" version))
+              (sha256
+               (base32
+                "1il33ygys6y72l8p3fhx301q16w9kylfy6w92b64n8gqkn6dmsmn"))))
+    (properties `((upstream-name . "sesame")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocfilecache
+                             r-biocparallel
+                             r-dplyr
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-ggplot2
+                             r-illuminaio
+                             r-iranges
+                             r-mass
+                             r-preprocesscore
+                             r-readr
+                             r-reshape2
+                             r-s4vectors
+                             r-sesamedata
+                             r-stringr
+                             r-summarizedexperiment
+                             r-tibble
+                             r-wheatmap))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zwdzwd/sesame")
+    (synopsis "Step-wise analysis of DNA Methylation BeadChips")
+    (description
+     "This package provides tools For analyzing Illumina Infinium DNA
+methylation arrays.  @code{SeSAMe} provides utilities to support analyses of
+multiple generations of Infinium DNA methylation @code{BeadChips}, including
+preprocessing, quality control, visualization and inference.  @code{SeSAMe}
+features accurate detection calling, intelligent inference of ethnicity, sex
+and advanced quality control routines.")
+    (license license:expat)))
+
 (define-public r-shinymethyl
   (package
     (name "r-shinymethyl")
