@@ -242,7 +242,8 @@ packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
         #:name "Emacs team"
         #:description "The extensible, customizable text editor and its
 ecosystem."
-        #:scope (list (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
+        #:scope (list "gnu/packages/aux-files/emacs/guix-emacs.el"
+                      (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
                       "guix/build/emacs-build-system.scm"
                       "guix/build/emacs-utils.scm"
                       "guix/build-system/emacs.scm"
