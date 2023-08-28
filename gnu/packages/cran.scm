@@ -20421,14 +20421,16 @@ machine or distributed on a compute cluster.")
 (define-public r-future-callr
   (package
     (name "r-future-callr")
-    (version "0.8.1")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "future.callr" version))
               (sha256
                (base32
-                "1w7wq2nrvj65a25nsb5h99258p9565qwnlvcc07nyc21gm5zrg9k"))))
-    (properties `((upstream-name . "future.callr")))
+                "14hq53cam65ff25l6y17zv37448ls90sa0w51f13199m1kffaaqb"))))
+    (properties
+     '((upstream-name . "future.callr")
+       (updater-extra-native-inputs . ("r-markdown"))))
     (build-system r-build-system)
     ;; This is needed for the vignette builder R.rsp.
     (arguments
