@@ -3995,13 +3995,16 @@ LaTeX.")
 (define-public r-curl
   (package
     (name "r-curl")
-    (version "5.0.1")
+    (version "5.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "curl" version))
               (sha256
                (base32
-                "19lkvy5hngdsh59slvvlrzf0iz432fv88daq0nan93zsqyf8y1dp"))))
+                "0wkwdlnc9v10hip0a1zka9gik9nb67yanbqvsy0cidrfk4x3fsqn"))))
+    (properties
+     `((upstream-name . "curl")
+       (updater-extra-inputs . ("curl"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
