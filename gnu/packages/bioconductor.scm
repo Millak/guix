@@ -16652,14 +16652,14 @@ manipulation of flow cytometry data.")
 (define-public r-ggcyto
   (package
     (name "r-ggcyto")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggcyto" version))
        (sha256
         (base32
-         "1b2xsn0avm6r4zylygdhab3zz3v8qvwbm1xr58894dwgysdk8zc5"))))
+         "1hgw8g0b62k2lyswp3m81qczzwsyid7zdrnyjvl9388k29w2105s"))))
     (properties `((upstream-name . "ggcyto")))
     (build-system r-build-system)
     (propagated-inputs
