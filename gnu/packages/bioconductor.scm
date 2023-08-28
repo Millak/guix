@@ -19510,17 +19510,22 @@ routines.")
 (define-public r-s4arrays
   (package
     (name "r-s4arrays")
-    (version "1.0.4")
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Arrays" version))
               (sha256
                (base32
-                "1pwkbp94r8vv43vgxcgqzbs1njhqlahfgsbf8rhr0ndy1bjyly2g"))))
+                "01xlccybhdgas9pnx88ll9q56qb2xd687xvfrc7bd5r9sf72b81c"))))
     (properties `((upstream-name . "S4Arrays")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics r-crayon r-iranges r-matrix r-s4vectors))
+     (list r-abind
+           r-biocgenerics
+           r-crayon
+           r-iranges
+           r-matrix
+           r-s4vectors))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/S4Arrays")
     (synopsis "Foundation of array-like containers in Bioconductor")
