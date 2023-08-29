@@ -85944,6 +85944,34 @@ normal class.")
 and atomic number indications of isotopes.")
     (license license:lppl)))
 
+(define-public texlive-issuulinks
+  (package
+    (name "texlive-issuulinks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/issuulinks/"
+                   "source/latex/issuulinks/"
+                   "tex/latex/issuulinks/")
+             (base32
+              "1lawg1l5q0c6vblwmj9nyszqk9q3ivmk05bpczwycc28xsmr6rd6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/issuulinks")
+    (synopsis "Produce external links instead of internal ones")
+    (description
+     "The PDF visualizer @url{http://issuu.com/ISSUU} is a popular service which
+shows PDF documents ``a page a time''.  Due to the way it is implemented,
+internal links in these documents are not allowed.  Instead, they must be
+converted to external ones in the form
+@url{http://issuu.com/action/page?page=PAGENUMBER}. The package patches
+@code{hyperref} to produce external links in the required form instead of
+internal links created by @code{\\ref}, @code{\\cite} and other commands.
+
+Since the package redefines the internals of @code{hyperref}, it must be
+loaded after @code{hyperref}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
