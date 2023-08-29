@@ -100486,6 +100486,25 @@ after the standard LaTeX commands @code{\\savebox}, @code{\\sbox},
 @code{\\usebox} and the @code{lrbox} environment.")
     (license license:lppl)))
 
+(define-public texlive-xsim
+  (package
+    (name "texlive-xsim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xsim/" "tex/latex/xsim/")
+             (base32
+              "0dalnjkisyk4ixxqpim5hvjzi9sn71gjiygj08ix0ifpbix9hqn2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xsim")
+    (synopsis "eXercise Sheets IMproved")
+    (description
+     "This package helps in creating exercises and the corresponding solutions.  It
+is the official successor of the @code{exsheets} package and fixes/improves
+various long-standing issues.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
