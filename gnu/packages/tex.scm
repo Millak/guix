@@ -85201,6 +85201,24 @@ not need the additional action by the user to run the external program
 pygmentize to create the code snippets.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hvqrurl
+  (package
+    (name "texlive-hvqrurl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hvqrurl/" "tex/latex/hvqrurl/")
+             (base32
+              "0inikkv2ndq6jc4b96fxy0gzd53mfprcbc5nnak7s8x8a4wzij4n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hvqrurl")
+    (synopsis "Insert a QR code in the margin")
+    (description
+     "This package allows to draw an URL as a QR code into the margin of a one- or
+two-sided document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
