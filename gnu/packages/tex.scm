@@ -73101,6 +73101,29 @@ the @code{arrayjob} package.")
 the arrays should have been created using the @code{arrayjobx} package.")
     (license license:lppl1.2+)))
 
+(define-public texlive-arydshln
+  (package
+    (name "texlive-arydshln")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arydshln/"
+                   "source/latex/arydshln/"
+                   "tex/latex/arydshln/")
+             (base32
+              "0zhn8fq92ghkci457qmls90yd2q55zfgqd6rxyhzl5nsfhamcrvh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arydshln")
+    (synopsis "Draw dash-lines in array/tabular")
+    (description
+     "The package is to draw dash-lines in @code{array} and @code{tabular}
+environments.  Horizontal lines are drawn by @code{\\hdashline} and
+@code{\\cdashline} while vertical ones can be specified as a part of the
+preamble using @samp{:}.  The shape of dash-lines may be controlled through
+style parameters or optional arguments.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
