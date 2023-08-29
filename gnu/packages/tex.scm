@@ -85657,6 +85657,27 @@ Portable Document Format (PDF) tutorials meant to be used by internet students
 and that, in particular, freely use mathematical notation.")
     (license license:lppl)))
 
+(define-public texlive-interfaces
+  (package
+    (name "texlive-interfaces")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/interfaces/"
+                   "source/latex/interfaces/"
+                   "tex/latex/interfaces/")
+             (base32
+              "1fq0fld4j0z3pi9sczv8iisigbvv64j3bnfg478dx2sqnn6maybp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/interfaces")
+    (synopsis "Set parameters for other packages, conveniently")
+    (description
+     "The package provides a small number of convenient macros that access features
+in other frequently-used packages, or provide interfaces to other useful
+facilities such as the pdfTeX @code{\\pdfelapsedtime} primitive.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
