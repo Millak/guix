@@ -95571,6 +95571,27 @@ it's easy to do it for others, such as the @code{\\ref} or @code{\\begin}
 commands.")
     (license license:lppl1.3c)))
 
+(define-public texlive-sidenotes
+  (package
+    (name "texlive-sidenotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sidenotes/"
+                   "source/latex/sidenotes/"
+                   "tex/latex/sidenotes/")
+             (base32
+              "0amrcapvyz9fbh7mqck7pg85nmkr6wgqmyvjj3syjnkshlcpvrr8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sidenotes")
+    (synopsis "Typeset notes containing rich content, in the margin")
+    (description
+     "The package allows typesetting of texts with notes, figures, citations,
+captions and tables in the margin.  This is common (for example) in science
+text books.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
