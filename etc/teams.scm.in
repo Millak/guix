@@ -666,13 +666,11 @@ TEAMS when a patch is received by Debbugs."
                                 name)))
     (format #false "~a <~a>" quoted-name/maybe (person-email member))))
 
-(define* (list-members team #:optional port (prefix ""))
+(define* (list-members team #:key (prefix ""))
   "Print the members of the given TEAM."
-  (define port* (or port (current-output-port)))
-  (for-each
-   (lambda (member)
-     (format port* "~a~a~%" prefix (member->string member)))
-   (sort-members (team-members team))))
+  (for-each (lambda (member)
+              (format #t "~a~a~%" prefix (member->string member)))
+            (sort-members (team-members team))))
 
 (define (list-teams)
   "Print all teams, their scope and their members."
@@ -698,7 +696,7 @@ description: ~a
              (match (team-scope team)
                (() "")
                (scope (format #f "scope: ~{~s ~}~%" scope))))
-     (list-members team port* "+ ")
+     (list-members team #:prefix "+ ")
      (newline))
    (sort
     (hash-map->list (lambda (key value) value) %teams)
