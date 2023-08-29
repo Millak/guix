@@ -77891,6 +77891,26 @@ numerical results; such results may vary as the project proceeds (and hence
 the project report develops).")
     (license license:lppl1.3+)))
 
+(define-public texlive-datax
+  (package
+    (name "texlive-datax")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datax/" "source/latex/datax/"
+                   "tex/latex/datax/")
+             (base32
+              "09zhrgxwh9s0ah65lw557d0b6hqahhsba850fxcchmww4dqfan9d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datax")
+    (synopsis "Import individual data from script files")
+    (description
+     "This LaTeX package uses pgfkeys to retrieve individual data points generated
+in some script.  Analogous to how one might generate graphics in a script and
+import those graphics into a LaTeX document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
