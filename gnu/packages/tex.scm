@@ -100106,6 +100106,30 @@ colors of Ethan Schoonover's popular color palette, Solarized, for use in
 documents typeset with LaTeX and friends.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xcookybooky
+  (package
+    (name "texlive-xcookybooky")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xcookybooky/"
+                   "source/latex/xcookybooky/"
+                   "tex/latex/xcookybooky/")
+             (base32
+              "0h0a4y1aax9zkm3mnxjhi8q9s3ql8jg50s88npazac5c2b2f8qxv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcookybooky")
+    (synopsis "Typeset (potentially long) recipes")
+    (description
+     "The package enables the user to typeset recipes, which could be greater than
+one page.  Above the recipe text two (optional) pictures can be displayed.
+Other features are recipe name, energy content, portions, preparation and
+baking time, baking temperatures, recipe source and of course preparation
+steps and required ingredients.  At the bottom you may insert an optional
+hint.  The package depends on the Emerald fonts.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
