@@ -98261,6 +98261,25 @@ footnotes to the title or first page of a document.  It works with any class
 for which the @code{\\thanks} macro works (e.g., @code{article}).")
     (license license:lppl)))
 
+(define-public texlive-titlepic
+  (package
+    (name "texlive-titlepic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/titlepic/" "tex/latex/titlepic/")
+             (base32
+              "1mqmcqyh7c109m158n38mv0jhxlppdb92ki2g38g9y9gaq6jbr49")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/titlepic")
+    (synopsis "Add picture to title page of a document")
+    (description
+     "The package allows you to place a picture on the title page (cover page) of
+a LaTeX document.  The package currently only works with the document classes
+@code{article}, @code{report} and @code{book}.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
