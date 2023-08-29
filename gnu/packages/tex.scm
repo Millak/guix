@@ -99451,6 +99451,24 @@ but corrects, improves, and extends it in both implementation and function.")
 single-sided document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-vertbars
+  (package
+    (name "texlive-vertbars")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vertbars/" "tex/latex/vertbars/")
+             (base32
+              "1kqj1f1x9apssr678y0d85x5wlc338i3dmdn3ln3mb5bgm6hbwj5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vertbars")
+    (synopsis "Mark vertical rules in margin of text")
+    (description
+     "This package is an extension to @code{lineno}, replacing that package's line
+numbers with bars to the left or right of the text.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
