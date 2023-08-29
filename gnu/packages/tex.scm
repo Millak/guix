@@ -90058,6 +90058,46 @@ place the object for the letterhead (picture, information, etc.) in a box and
 all sizing is set automatically.")
     (license license:gpl3+)))
 
+(define-public texlive-newspaper
+  (package
+    (name "texlive-newspaper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newspaper/"
+                   "source/latex/newspaper/"
+                   "tex/latex/newspaper/")
+             (base32
+              "1naa0w3bvnj709msfq9kk6yb7b5qf1sahisjr7z8bfs1q17ml8xc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "pdflatex"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Build process requires images from "doc/"; we need to
+          ;; point to them.
+          (add-before 'build 'fix-build
+            (lambda _
+              (substitute* "source/latex/newspaper/newspaper.dtx"
+                (("\\{Figure(1|2)\\}" _ n)
+                 (string-append "{"
+                                (getcwd) "/doc/latex/newspaper/Figure" n ".pdf"
+                                "}"))))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-hypdoc texlive-pdflscape))))
+    (home-page "https://ctan.org/pkg/newspaper")
+    (synopsis "Typeset newsletters to resemble newspapers")
+    (description
+     "The @code{newspaper} package redefines the page style and
+@code{\\maketitle} command to produce a typeset page similar to that
+of a newspaper.  It also provides several commands that (when used
+with other packages) simplify the writing of articles in
+a newspaper-style column format.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
