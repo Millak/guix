@@ -82519,6 +82519,29 @@ to the floats created by packages @code{rotating}, @code{wrapfig},
 @code{subfig} (in the case of rows of subfloats), and @code{longtable}.")
     (license license:lppl)))
 
+(define-public texlive-flowfram
+  (package
+    (name "texlive-flowfram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flowfram/" "scripts/flowfram/"
+                   "source/latex/flowfram/"
+                   "tex/latex/flowfram/")
+             (base32
+              "1y3r1g9ycxq7r839ca7xzjpk628jvnc1fc0qgp6f6wb99ps79pzc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flowfram")
+    (synopsis "Create text frames for posters, brochures or magazines")
+    (description
+     "The @code{flowfram} package enables you to create frames in a document such
+that the contents of the document environment flow from one frame to the next
+in the order in which they were defined.  This is useful for creating posters
+or magazines, indeed any form of document that does not conform to the
+standard one or two column layout.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
