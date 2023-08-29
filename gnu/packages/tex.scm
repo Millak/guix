@@ -91069,6 +91069,29 @@ not presuppose any specific document class.  Rather, it is a lightweight
 alternative to full-fledged presentation classes like @code{beamer}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-padcount
+  (package
+    (name "texlive-padcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/padcount/"
+                   "source/latex/padcount/"
+                   "tex/latex/padcount/")
+             (base32
+              "13dk66ax3wr7vx0nkr36dnw411qc5q3d7wdm40kgm8r6a9xg0f7w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/padcount")
+    (synopsis "Pad numbers with arbitrary characters")
+    (description
+     "This package provides some simple macros which will pad numbers (or, indeed,
+any expanded token) with your choice of character (defaulting to @samp{0}) to
+your choice of number of places (defaults to @samp{2}).  This works not only
+on Arabic numerals, but on any expanded list of tokens passed to it.  This
+makes it suitable for, among other things, counters of all kinds.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
