@@ -91816,6 +91816,23 @@ to use any standard method to position text at arbitrary places on a given
 page.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pdfpagediff
+  (package
+    (name "texlive-pdfpagediff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfpagediff/"
+                   "tex/latex/pdfpagediff/")
+             (base32
+              "02mz7qc68772ixdmnrdi7a9mrfimzfaxxjc31c01jrrx7ph4g33y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfpagediff")
+    (synopsis "Find difference between two PDF")
+    (description "This package finds the differences between two PDF files.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
