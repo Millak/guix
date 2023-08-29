@@ -76334,6 +76334,28 @@ least it provides a number of programming tools.")
 patterns.  These patterns do not affect normal LaTeX treatment of counters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cntperchap
+  (package
+    (name "texlive-cntperchap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cntperchap/"
+                   "tex/latex/cntperchap/")
+             (base32
+              "06af0861m7fsvznpjc5kylbz0dvv9kwcmwk09iv4yy7lrp43a5b7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cntperchap")
+    (synopsis "Store counter values per chapter")
+    (description
+     "This package stores values of counters (which have been registered
+beforehand) on a per chapter base and provides the values on demand in the
+second LaTeX compilation run.  In this way it is possible to know how many
+sections etc., there are lying ahead and to react to these counter values, if
+needed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
