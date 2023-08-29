@@ -87879,6 +87879,26 @@ programming languages, the lists in this package are 1-indexed, meaning the
 first element is numbered 1, the second element numbered 2, and so on.")
     (license license:lppl1.3+)))
 
+(define-public texlive-macroswap
+  (package
+    (name "texlive-macroswap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/macroswap/"
+                   "source/latex/macroswap/"
+                   "tex/latex/macroswap/")
+             (base32
+              "06qj68pi24rblmx16wm76p5cy791p9whmglwi384k3vikb91qjrl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/macroswap")
+    (synopsis "Swap the definitions of two LaTeX macros")
+    (description
+     "The package provides simple utility methods to swap the meaning (token
+expansion) of two macros by name.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
