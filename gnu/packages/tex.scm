@@ -98103,6 +98103,24 @@ but logically related regions of text into a form that the user can scroll
 through as if its contents were contiguous.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thumb
+  (package
+    (name "texlive-thumb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thumb/" "source/latex/thumb/"
+                   "tex/latex/thumb/")
+             (base32
+              "02va4kzc032vqlr8hv893s5280bzqmziqirg2y94rb1sjhkl98zg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thumb")
+    (synopsis "Thumb marks in documents")
+    (description
+     "This package places thumb marks in books, manuals and reference maunals.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
