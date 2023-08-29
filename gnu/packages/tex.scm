@@ -84489,6 +84489,30 @@ times.")
 of the @code{rule-D} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xcomment
+  (package
+    (name "texlive-xcomment")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/xcomment/"
+                   "tex/generic/xcomment/")
+             (base32
+              "1fkk619drqvadm7ixdbn2hrfnjddqylwpnqv383g0b4jjnl5x7p4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcomment")
+    (synopsis "Allows selected environments to be included/excluded")
+    (description
+     "The package defines an environment that only typesets specified environments
+within its scope.  So, for example, if you want nothing but the @code{figure}
+and @code{table} environments in your document, you can enclose the whole
+document with an @code{xcomment} environment that excludes everything but
+those.  This is a lot easier than excluding the chunks of text between the
+environments you want, or creating an entire document containing only those
+environments.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
