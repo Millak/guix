@@ -84965,6 +84965,26 @@ configuration designed for undergraduates on the three campuses of Harbin
 Institute of Technology.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hletter
+  (package
+    (name "texlive-hletter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hletter/" "tex/latex/hletter/")
+             (base32
+              "1dlin6p96w01bwc8jdbajjj1rhrsq27fnjmap1ry4sa7y62gaqxm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hletter")
+    (synopsis "Flexible letter typesetting with flexible page headings")
+    (description
+     "The package permits the user to specify easily, with the aid of self defined
+key-words, letters (with a logo and private) and headings.  The heading may
+include a footer and the letter provides commands to include a scanned
+signature and two signees.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
