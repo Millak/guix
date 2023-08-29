@@ -903,6 +903,59 @@ mathematical or other technical packages.")
     (description "This is the TeX Live scheme for installing ConTeXt.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public texlive-scheme-full
+  (package
+    (name "texlive-scheme-full")
+    (version (number->string %texlive-revision))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments (list #:builder #~(mkdir #$output)))
+    (propagated-inputs
+     (list texlive-collection-basic
+           texlive-collection-bibtexextra
+           texlive-collection-binextra
+           texlive-collection-context
+           texlive-collection-fontsextra
+           texlive-collection-fontsrecommended
+           texlive-collection-fontutils
+           texlive-collection-formatsextra
+           texlive-collection-games
+           texlive-collection-humanities
+           texlive-collection-langarabic
+           texlive-collection-langchinese
+           texlive-collection-langcjk
+           texlive-collection-langcyrillic
+           texlive-collection-langczechslovak
+           texlive-collection-langenglish
+           texlive-collection-langeuropean
+           texlive-collection-langfrench
+           texlive-collection-langgerman
+           texlive-collection-langgreek
+           texlive-collection-langitalian
+           texlive-collection-langjapanese
+           texlive-collection-langkorean
+           texlive-collection-langother
+           texlive-collection-langpolish
+           texlive-collection-langportuguese
+           texlive-collection-langspanish
+           texlive-collection-latex
+           texlive-collection-latexextra
+           texlive-collection-latexrecommended
+           texlive-collection-luatex
+           texlive-collection-mathscience
+           texlive-collection-metapost
+           texlive-collection-music
+           texlive-collection-pictures
+           texlive-collection-plaingeneric
+           texlive-collection-pstricks
+           texlive-collection-publishers
+           texlive-collection-xetex))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "TeX Live full scheme (everything)")
+    (description
+     "This is the full TeX Live scheme: it installs everything available.")
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
+
 (define-public texlive-scheme-gust
   (package
     (name "texlive-scheme-gust")
