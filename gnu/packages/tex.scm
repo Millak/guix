@@ -99640,6 +99640,26 @@ commands for @code{tabular} and similar environment.")
 multicolumn paragraph text of various column widths on a single page.")
     (license license:lppl1.3+)))
 
+(define-public texlive-wallcalendar
+  (package
+    (name "texlive-wallcalendar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/wallcalendar/"
+                   "tex/lualatex/wallcalendar/")
+             (base32
+              "18f6jxwn1lzg98bw8y3yaxfm7wv8s4spp6nkhrqsssc0n7x2x8ig")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wallcalendar")
+    (synopsis "Wall calendar class with custom layouts")
+    (description
+     "This package provides a wall calendar class with custom layouts and support
+for internationalization.  There is also support for loading event marks from
+a CSV file.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
