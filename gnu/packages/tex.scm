@@ -76581,6 +76581,24 @@ designed for printing (which numbers delimiters and underlines new commands).")
 environments of the @code{framed} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-colorinfo
+  (package
+    (name "texlive-colorinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colorinfo/"
+                   "tex/latex/colorinfo/")
+             (base32
+              "1v283sq2xkxix614f2sgblgz4m1xzvv8lcng2ykasvcasq62zcyc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colorinfo")
+    (synopsis "Retrieve colour model and values for defined colours")
+    (description
+     "This package retrieves colour model and values for defined colours.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
