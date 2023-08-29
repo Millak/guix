@@ -90392,6 +90392,27 @@ here (@code{\\linebreak} is disabled, for example) but spaces hidden in macros
 or @samp{@{} and @samp{@}} can still create break-points.")
     (license license:public-domain)))
 
+(define-public texlive-nomentbl
+  (package
+    (name "texlive-nomentbl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nomentbl/" "makeindex/nomentbl/"
+                   "source/latex/nomentbl/"
+                   "tex/latex/nomentbl/")
+             (base32
+              "1q44gay0a701sn99ripip2h4p4g95p10958vkxxc3cs5hhlqv9s5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nomentbl")
+    (synopsis "Nomenclature typeset in a longtable")
+    (description
+     "@code{nomentbl} typeset nomenclatures in a longtable instead of the
+@code{makeindex} style of @code{nomencl}.  A nomenclature entry may have three
+arguments: the symbol, description and physical unit.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
