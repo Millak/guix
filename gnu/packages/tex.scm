@@ -72886,6 +72886,28 @@ page or as footnotes on the first page.  The email addresses are always listed
 as a footnote on the front page.")
     (license license:lppl)))
 
+(define-public texlive-animate
+  (package
+    (name "texlive-animate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/animate/" "source/latex/animate/"
+                   "tex/latex/animate/")
+             (base32
+              "1s25smsfjvgv5cwhkawd0mk36zkcnbdgvnhc523zkx96q56cac0n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/animate")
+    (synopsis
+     "Create PDF and SVG animations from graphics files and inline graphics")
+    (description
+     "The package provides an interface to create portable, JavaScript driven PDF
+and SVG animations from sets of graphics files or from inline graphics, such
+as LaTeX picture environment, PSTricks or PGF/TikZ generated pictures, or just
+from typeset text.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
