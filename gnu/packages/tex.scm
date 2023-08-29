@@ -94751,6 +94751,28 @@ that prints out all of the hints.  This generalizes beyond hints; one can create
 scrambled solutions as well, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scrlayer-fancyhdr
+  (package
+    (name "texlive-scrlayer-fancyhdr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scrlayer-fancyhdr/"
+                   "source/latex/scrlayer-fancyhdr/"
+                   "tex/latex/scrlayer-fancyhdr/")
+             (base32
+              "1ikr1l1pa33l6v2d3ad4gz2qp3ggldk1f31j49cgfazs6qwnzy0a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scrlayer-fancyhdr")
+    (synopsis
+     "Combining package @code{fancyhdr} with KOMA-Script's @code{scrlayer}")
+    (description
+     "This LaTeX package uses KOMA-Script's @code{scrlayer} to redefine the page
+styles of package @code{fancyhdr}.  This allows the combination of features of
+@code{fancyhdr} with features of @code{scrlayer}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
