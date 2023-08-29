@@ -81410,6 +81410,29 @@ This is also supported by this package by providing a macro to retrieve the
 points of each exercise.")
     (license license:lppl1.3+)))
 
+(define-public texlive-exercises
+  (package
+    (name "texlive-exercises")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exercises/"
+                   "source/latex/exercises/"
+                   "tex/latex/exercises/")
+             (base32
+              "0rvlink5l3nqz9x5vvjxh9xgijxba3c1sdzynx86bhxynb0ffnx1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exercises")
+    (synopsis
+     "Typeset exercises and solutions with automatic addition of points")
+    (description
+     "This package defines the environments exercise and solution.
+The layout of these environments can be customized.  The -- optional -- points
+in the exercises can be added automatically.  The package also permits to hide
+the solutions.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
