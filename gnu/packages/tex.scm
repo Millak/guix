@@ -88505,6 +88505,30 @@ citations together as is often done in physics journals.  An extensive set of
 features provide for other applications such as reference sublisting.")
     (license license:lppl)))
 
+(define-public texlive-media4svg
+  (package
+    (name "texlive-media4svg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/media4svg/"
+                   "tex/latex/media4svg/")
+             (base32
+              "01a9p1c4mqvs07qn5gign7d389q856mkh9rszw26d5czxc2rb6kh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/media4svg")
+    (synopsis "Multimedia inclusion for the @code{dvisvgm} backend")
+    (description
+     "This package implements an interface for embedding video and audio files in
+@acronym{SVG, Scalable Vector Graphics} output.  SVG with embedded media is
+very portable, as it is supported by all modern Web browsers across a variety
+of operating systems and platforms, including portable devices.  All DVI
+producing TeX engines can be used.  The @command{dvisvgm} utility converts the
+intermediate DVI to SVG.  By default, media files are embedded into the SVG
+output to make self-sufficient SVG files.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
