@@ -79809,6 +79809,25 @@ supported to produce dynamic number list files.")
 blocks inside a presentation.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ean13isbn
+  (package
+    (name "texlive-ean13isbn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ean13isbn/"
+                   "tex/latex/ean13isbn/")
+             (base32
+              "1ls2i412f2kmipm9ibir8mazy3jhg1plcbzwf780r3hsc8i68fib")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ean13isbn")
+    (synopsis "Print EAN13 for ISBN")
+    (description
+     "The package provides the means to typeset ISBN codes with EAN-13; it uses the
+(generic) package @file{ean13.tex} to typeset the actual barcode.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
