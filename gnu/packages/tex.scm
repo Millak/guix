@@ -90748,6 +90748,26 @@ show) or disable (to hide) OCGs.")
 documents.")
     (license license:gpl3+)))
 
+(define-public texlive-oldstyle
+  (package
+    (name "texlive-oldstyle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/oldstyle/"
+                   "source/latex/oldstyle/"
+                   "tex/latex/oldstyle/")
+             (base32
+              "0lrjr8w54m2ab9a8l1vigjdlsbg21lh0nl9kyyhpn6xgpi16ph1p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/oldstyle")
+    (synopsis "Old style numbers in OT1 encoding")
+    (description
+     "This package provides font information needed to load the @code{cmmi} and
+@code{cmmib} fonts for use to produce old-style numbers.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
