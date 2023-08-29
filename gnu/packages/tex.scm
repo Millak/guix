@@ -79828,6 +79828,39 @@ blocks inside a presentation.")
 (generic) package @file{ean13.tex} to typeset the actual barcode.")
     (license license:lppl1.3+)))
 
+(define-public texlive-easy
+  (package
+    (name "texlive-easy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easy/" "tex/latex/easy/")
+             (base32
+              "0dig68199whwprq1g4fdn504vlzyrcmdjdy6y1fvpsz9qfhvkgq7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/easy")
+    (synopsis "Collection of easy-to-use macros")
+    (description
+     "This package provides a collection of macros:
+
+@itemize
+
+@item @code{easybib}, support for customising bibliographies;
+
+@item @code{easybmat}, support for composing block matrices;
+
+@item @code{easyeqn}, support for various aspects of equations;
+
+@item @code{easymat}, support for composing matrices;
+
+@item @code{easytable}, support for writing tables;
+
+@item @code{easyvector}, a C-like syntax for writing vectors.
+
+@end itemize")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
