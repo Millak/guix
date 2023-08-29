@@ -90098,6 +90098,27 @@ with other packages) simplify the writing of articles in
 a newspaper-style column format.")
     (license license:lppl)))
 
+(define-public texlive-newvbtm
+  (package
+    (name "texlive-newvbtm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newvbtm/" "source/latex/newvbtm/"
+                   "tex/latex/newvbtm/")
+             (base32
+              "0cvm24v80f40yi2mx6w33kaznlng3gj8b385f5imzd8qrgwkf3f2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newvbtm")
+    (synopsis "Define your own verbatim-like environment")
+    (description
+     "Defines general purpose macro named @code{\\newverbatim} to define your own
+verbatim-like environment.  It also has a supplementary style file
+@file{varvbtm.sty} to provide set of macros for variants of verbatim, such as
+@samp{Tab} emulation.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
