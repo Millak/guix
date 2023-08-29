@@ -86678,6 +86678,27 @@ text and math fonts (Computer Modern or Times), and paper sizes correctly with
 both pdfLaTeX and LuaLaTeX.")
     (license license:lppl)))
 
+(define-public texlive-latexcolors
+  (package
+    (name "texlive-latexcolors")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexcolors/"
+                   "source/latex/latexcolors/"
+                   "tex/latex/latexcolors/")
+             (base32
+              "1y3wvf8jvcb9i1dvkgnm2gd8pvxg538mxpchhw930gaf4rwi5xyp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexcolors")
+    (synopsis "Use color definitions from @url{latexcolor.com}")
+    (description
+     "Built on top of the @code{xcolor} package, the @code{latexcolors} package
+defines the set of colors shown on @url{latexcolor.com} for use in documents
+typeset with LaTeX and friends.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
