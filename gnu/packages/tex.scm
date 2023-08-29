@@ -84826,6 +84826,27 @@ package and provides some text macros.")
 macros for a preprint, affiliation, editors, and endorsers.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hereapplies
+  (package
+    (name "texlive-hereapplies")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hereapplies/"
+                   "tex/latex/hereapplies/")
+             (base32
+              "16v1bchcs4d27whh3n8sv32gqw0fwpp43pwcj6k186rs1c0gm91a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hereapplies")
+    (synopsis "Reference groups of pages that share something in common")
+    (description
+     "Here Applies is a LaTeX package that allows to collect groups of labels and
+reference them altogether.  It can be used for creating informal glossaries
+that cross-link concepts to their applications, or simply mentioning multiple
+pages that share something in common.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
