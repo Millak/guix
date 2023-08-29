@@ -97641,6 +97641,30 @@ macros @code{\\termfile} and @code{\\termfile*} to simulate Win10, Ubuntu and
 Mac terminals.")
     (license license:lppl1.3c)))
 
+(define-public texlive-testhyphens
+  (package
+    (name "texlive-testhyphens")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/testhyphens/"
+                   "source/latex/testhyphens/"
+                   "tex/latex/testhyphens/")
+             (base32
+              "1sw0anyv3la86hamkrnxjxach2j6hqr2lxakihz7ma3d2l545xwh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/testhyphens")
+    (synopsis "Testing hyphenation patterns")
+    (description
+     "The package may be used for testing hyphenation patterns or for controlling
+that specific words are hyphenated as expected.  This package implements some
+old TUGboat code to adapt it to LaTeX with some enhancements.  It differs form
+@code{\\showhyphens}, because it typesets its output on the document's output
+file.  It also works with XeLaTeX, where @code{\\showhyphens} requires
+a workaround.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
