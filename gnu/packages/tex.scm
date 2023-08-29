@@ -88191,6 +88191,31 @@ Currently there are (almost) no configuration features for
 loading @file{makelabels.lco} to get various configuration features.")
     (license license:lppl1.3c)))
 
+(define-public texlive-makerobust
+  (package
+    (name "texlive-makerobust")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makerobust/"
+                   "tex/latex/makerobust/")
+             (base32
+              "1a5360vda131jh1qvwarbqc9riwksxjrzamqkcf3a2zg1ps13w59")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makerobust")
+    (synopsis "Making a macro robust (legacy package)")
+    (description
+     "Heiko Oberdiek's @code{makerobust} package defined a command with name
+@code{\\MakeRobustCommand} that could be used to make fragile commands robust.
+The LaTeX format has, since 2015, included a command @code{\\MakeRobust} with
+the same syntax and behaviour.  Also by 2019, almost all commands in LaTeX
+that may be used in a moving argument are already robust.  This package is now
+just a simple one-liner defining the name @code{\\MakeRobustCommand} as an
+alias for @code{\\MakeRobust}.  This package should not be used in any new
+documents.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
