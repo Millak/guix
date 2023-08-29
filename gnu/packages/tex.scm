@@ -83266,6 +83266,38 @@ have been extracted.")
     ;; modified provided that this notice is left intact."
     (license (license:fsf-free "file://doc/latex/fwlw/README"))))
 
+(define-public texlive-gatherenum
+  (package
+    (name "texlive-gatherenum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gatherenum/"
+                   "source/latex/gatherenum/"
+                   "tex/latex/gatherenum/")
+             (base32
+              "1y379ikgz3phvz88h50w1l6ab4sgx3hcs0wz9q6f9g6zv5hbh7fn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gatherenum")
+    (synopsis "Crossover of @code{align*} and @code{enumerate}")
+    (description
+     "This package (ab)uses the inline enumeration capabilities of @code{enumitem}
+to add a displayed enumeration mode, triggered by adding @code{gathered} to
+the key-value option list of the @code{enumerate} environment.  The end result
+is similar to a regular @code{enumerate} environment wrapped in
+a @code{multicols} environment, with the following advantages:
+
+@itemize
+
+@item it can pack items depending on their actual width rather than a fixed,
+constant number per line;
+
+@item it fills items in a line-major order (instead of column-major order).
+
+@end itemize")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
