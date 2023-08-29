@@ -87401,6 +87401,28 @@ that are used in constructing LK proof diagrams.")
 structures, such as making a series of similar commands from a list of names.")
     (license license:lppl1.2+)))
 
+(define-public texlive-locality
+  (package
+    (name "texlive-locality")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/locality/"
+                   "source/latex/locality/"
+                   "tex/latex/locality/")
+             (base32
+              "0q26jb8x9ik3wfv224yxdfj651pxq49qvbz45f0x0iw6vxqllx1n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/locality")
+    (synopsis "Various macros for keeping things local")
+    (description
+     "This package provides a toolbox of macros designed to allow the LaTeX
+programmer to work around some of the restrictions of the TeX grouping
+mechanisms.  The present release offers a preliminary view of the package; not
+all of its facilities are working optimally")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
