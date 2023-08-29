@@ -84629,6 +84629,24 @@ supports preparation of such handouts when writing the talk.")
 scaled slides.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hang
+  (package
+    (name "texlive-hang")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hang/" "tex/latex/hang/")
+             (base32
+              "19b7sff10b1w2acnrp3kgg6wpspw29qqphrdxj805s88wmf3vv57")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hang")
+    (synopsis "Environments for hanging paragraphs and list items")
+    (description
+     "This package provides environments for hanging paragraphs and list items.  In
+addition, it defines environments for labeled paragraphs and list items.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
