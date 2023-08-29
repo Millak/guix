@@ -73406,6 +73406,27 @@ programs, and therefore requires that the LaTeX run starts with @samp{write18}
 enabled.")
     (license license:lppl1.2+)))
 
+(define-public texlive-autopuncitems
+  (package
+    (name "texlive-autopuncitems")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/autopuncitems/"
+                   "tex/lualatex/autopuncitems/")
+             (base32
+              "1i7i2yjlh85gmqna19r7j6wz35yrkkmmc2kzv4r2mhhbag25j8iy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/autopuncitems")
+    (synopsis "Automatically punctuate lists")
+    (description
+     "This package provides the @code{autopunc} option in the @code{enumitem}
+environments @code{itemize}, @code{enumerate}, and @code{description} to
+automatically punctuate the items.  It uses Lua pattern matching to modify the
+environment's contents.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
