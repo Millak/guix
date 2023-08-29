@@ -79577,6 +79577,25 @@ be used with pdfLaTeX.  For that usage, consider the @code{wallpaper} or
 @code{draftwatermark} packages.")
     (license license:lppl)))
 
+(define-public texlive-draftfigure
+  (package
+    (name "texlive-draftfigure")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/draftfigure/"
+                   "tex/latex/draftfigure/")
+             (base32
+              "08akqd8hw2f5rybl1yj7gb8jv0z3ipwvr1gc6bz5rk1676vyfwdz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/draftfigure")
+    (synopsis "Replace figures with a white box and additional features")
+    (description
+     "With this package you can control the outcome of a figure which is set to
+draft and modify the display with various options.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
