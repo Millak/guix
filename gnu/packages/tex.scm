@@ -89485,6 +89485,26 @@ should be very useful for end-users who could obtain messages in their own
 preferred language.")
     (license license:lppl)))
 
+(define-public texlive-mslapa
+  (package
+    (name "texlive-mslapa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/mslapa/" "doc/latex/mslapa/"
+                   "tex/latex/mslapa/")
+             (base32
+              "0c3bw05gaqdwzvs40z1481gn6dr4rf71h520pplrcp1mgbxabzhv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mslapa")
+    (synopsis "Michael Landy's APA citation style")
+    (description
+     "This package provides LaTeX and BibTeX style files for a respectably close
+approximation to @acronym{APA, American Psychological Association} citation
+and reference style.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
