@@ -81015,6 +81015,33 @@ increasing.  The package is noticeably more efficient than the @code{revnum}
 package, which uses painfully many counters.")
     (license license:lppl)))
 
+(define-public texlive-etl
+  (package
+    (name "texlive-etl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etl/" "source/latex/etl/"
+                   "tex/latex/etl/")
+             (base32
+              "1aln59faads7yh432q62kd44idlhc0wfwrxk5y8sbdhql5s6hk7l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/etl")
+    (synopsis "Expandable token list operations")
+    (description
+     "This package provides expandable token list operations for which @code{l3tl}
+only has unexpandable variants.  These expandable versions are typically
+slower than the unexpandable code.  Unlike the @code{l3tl} versions, the
+functions in this module may contain braces and macro parameter tokens in
+their arguments, but as a drawback they cannot distinguish some tokens and do
+not consider the character code of group-begin and group-end tokens.
+Additionally a general map to token lists is provided, modelled after the
+@code{expl3} internal @code{__tl_act:NNNn} but with additional features.  The
+package has no immediate use for document authors; it only contains
+@code{expl3} functions intended for programmers.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
