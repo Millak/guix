@@ -75490,6 +75490,26 @@ in LaTeX. It defines some commands useful to quickly write these logos,
 related to CC licences versions 1.0 and 2.0.")
     (license license:lppl)))
 
+(define-public texlive-cd
+  (package
+    (name "texlive-cd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cd/" "source/latex/cd/"
+                   "tex/latex/cd/")
+             (base32
+              "19r5xhrdjsvxhci440apwb85srbw0lrs43hgfipjjzvx8i92n2ab")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cd")
+    (synopsis "Typeset CD covers")
+    (description
+     "This package helps typesetting CD covers.  Normal usage will ordinarily
+require no more than a simple data file per cover; the package will make
+a full insert for a CD case (it copes with both normal and slim cases).")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
