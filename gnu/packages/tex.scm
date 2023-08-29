@@ -86890,6 +86890,27 @@ replaces the rather more difficult LaTeX command @code{\\linespread}, where
 the leading is specified by reference to the font size.")
     (license license:lppl)))
 
+(define-public texlive-leaflet
+  (package
+    (name "texlive-leaflet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/leaflet/" "source/latex/leaflet/"
+                   "tex/latex/leaflet/")
+             (base32
+              "0vgcywhq8llskfsxxhld9jgzdjlmz0gijs9xcv3sqcz6cw6sis68")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/leaflet")
+    (synopsis "Create small handouts (flyers)")
+    (description
+     "This package provides a document class to create small hand-outs (flyers)
+that fit on a single sheet of paper which is then folded twice.  Pages are
+rearranged by LaTeX so that they print correctly on a single sheet --- no
+external script is necessary.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
