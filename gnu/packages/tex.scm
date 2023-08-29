@@ -86365,6 +86365,24 @@ one to typeset tables that have a previously defined column layout and whose
 rows can be produced in a key-value fashion.")
     (license license:lppl1.2+)))
 
+(define-public texlive-kix
+  (package
+    (name "texlive-kix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kix/" "tex/latex/kix/")
+             (base32
+              "1sbvvjmrz61il4xy6vv7n0zsbv42s5g65grn4bn14sc60sfa968h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kix")
+    (synopsis "Typeset KIX codes")
+    (description
+     "This package implements KIX codes as used by the Dutch PTT for bulk mail
+addressing. (Royal Mail 4 State Code.)")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
