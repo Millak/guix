@@ -75874,6 +75874,28 @@ just use the package.")
 look and feel of @code{harvmac} for readers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chextras
+  (package
+    (name "texlive-chextras")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chextras/"
+                   "source/latex/chextras/"
+                   "tex/latex/chextras/")
+             (base32
+              "1nz3fwn7r8bp4i8yd1brmcsffnfljfmlsgyn7gq7vynaf53d28d3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chextras")
+    (synopsis "Companion package for the Swiss typesetter")
+    (description
+     "The package simplifies the preparation of Swiss documents and letters by
+setting up linguistic and common packages.  While it is a useful addition to
+the @code{chletter} document class, it is not tied to it and may be used as
+a general purpose package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
