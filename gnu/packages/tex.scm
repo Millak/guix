@@ -87155,6 +87155,34 @@ enumerate and itemize which allow the horizontal and vertical spacing to be
 changed.")
     (license license:gpl3+)))
 
+(define-public texlive-libgreek
+  (package
+    (name "texlive-libgreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/libgreek/"
+                   "source/latex/libgreek/"
+                   "tex/latex/libgreek/")
+             (base32
+              "1ma56mn0b2wh0kja3p275w94vhss3anv7djnil2gx3k7878kjpgy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/libgreek")
+    (synopsis
+     "Greek letters in math mode from Libertinus or Linux Libertine/Biolinum")
+    (description
+     "This package allows LaTeX users (especially if using traditional
+@code{LaTeX/pdfLaTeX)} to set the Greek letters in math mode using the glyphs
+from the Libertinus Serif or Sans font via the font support files provided by
+Bob Tennent's libertinus-type1 package.  All Greek letters are defined both in
+\\...up and \\...it variants.  The style (ISO, TeX, or French i.e., upright)
+can be modified midway in the document.  A legacy mode uses font support from
+the (obsolete) @code{libertine-legacy} package which maps to the Linux
+Libertine or Biolinum fonts.  This package is for users who only want to
+customize Greek letters in math mode.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
