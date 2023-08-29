@@ -99997,6 +99997,32 @@ LaTeX commands, which allow easy and robust definition of macros with many
 optional arguments, using a clear and simple @code{xkeyval}-style syntax.")
     (license license:lppl)))
 
+(define-public texlive-xassoccnt
+  (package
+    (name "texlive-xassoccnt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xassoccnt/"
+                   "tex/latex/xassoccnt/")
+             (base32
+              "0b38fjfi9ydm0snkdwmgzm2qrmh32dzl3k8ypj06fwaan7n3341n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xassoccnt")
+    (synopsis "Associated counters stepping simultaneously")
+    (description
+     "This package provides a way of associating counters to an existing driver
+counter so that incrementing the driver counter will increase its associated
+counters as well.  This package can be regarded as a supplement to the
+@code{totcount} package, but it can be used without it, too.
+
+@code{xassoccnt} is a successor and a complete rewrite of the @code{assoccnt}
+package.  However, some features of @code{assoccnt} are not (yet) contained in
+@code{xassoccnt} so that the older package cannot yet be regarded as
+obsolete.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
