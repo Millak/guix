@@ -82994,6 +82994,25 @@ macro; @code{removefr}, for removing reset relations between counters; and
     ;; It contains a collection of packages, with different licenses.
     (license (list license:public-domain license:lppl))))
 
+(define-public texlive-frame
+  (package
+    (name "texlive-frame")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/frame/" "tex/generic/frame/")
+             (base32
+              "02n15mi5amvrm6pnr3hkrw6rww2an437b6nff8j4gh6x7vhapygn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frame")
+    (synopsis "Framed boxes for Plain TeX")
+    (description
+     "This package provides a jiffy file (taken from @code{fancybox}) for placing
+a frame around a box of text.  The macros also provide for typesetting an
+empty box of given dimensions.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
