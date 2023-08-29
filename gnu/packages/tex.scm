@@ -100315,6 +100315,27 @@ same name to the same color.  This package makes the collected color names
 usable with LaTeX.")
     (license (list license:lppl1.3c license:cc0))))
 
+(define-public texlive-xltabular
+  (package
+    (name "texlive-xltabular")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xltabular/"
+                   "tex/latex/xltabular/")
+             (base32
+              "08wpgf2w0pcl2nqm2mgplxvy9q0zbszd5lm4rqzkz3vyi6zlravm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xltabular")
+    (synopsis "@code{longtable} support with possible X-column specifier")
+    (description
+     "This package loads package @code{ltablex}, but keeps the current
+@code{tabularx} environment as is.  The new environment @code{xltabular} is
+a combination of @code{longtable} and @code{tabularx}: Header/footer
+definitions, X-column specifier, and with possible pagebreaks.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
