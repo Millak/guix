@@ -88976,6 +88976,29 @@ be used like minipage) --- and the internal commands may be used by other
 packages to define similar environments or commands.")
     (license license:lppl)))
 
+(define-public texlive-minorrevision
+  (package
+    (name "texlive-minorrevision")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minorrevision/"
+                   "tex/latex/minorrevision/")
+             (base32
+              "1ijamqhl709877z3rcfbvcsgjsw611ag7swx1brk2rgzz4llyjqj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minorrevision")
+    (synopsis "Quote and refer to a manuscript for minor revisions")
+    (description
+     "The package supports those who publish articles in peer-reviewed journals.
+In the final stages of the review process, the authors typically have to
+provide an additional document (such as a letter to the editors), in which
+they provide a list of modifications that they made to the manuscript.  The
+package automatically provides line numbers and quotations from the
+manuscript, for this letter.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
