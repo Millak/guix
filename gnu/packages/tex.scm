@@ -98741,6 +98741,33 @@ yield a clearer result and, in the long run, help with training to distinguish
 entries of different types.")
     (license license:lppl1.2+)))
 
+(define-public texlive-typeface
+  (package
+    (name "texlive-typeface")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/typeface/"
+                   "source/latex/typeface/"
+                   "tex/latex/typeface/")
+             (base32
+              "0xyqvqvk06ca4rcgw917abprz5qi8kqsrm5z89ws1n72vyzfjhgm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/typeface")
+    (synopsis "Select a balanced set of fonts")
+    (description
+     "The package provides the means of establishing a consistent set of fonts for
+use in a LaTeX document.  It allows mixing and matching the Type 1 font sets
+available on the archive.  Font-set definition takes the form of a set of
+options that are read when the package is loaded: for each typographic
+category (main body font, sans-serif font, monospace font, mathematics fonts,
+text figures, and so on), a font or a transformation is given in those
+options.  The approach enables the user to remember their own
+configurations (as a single command) and to borrow configurations that other
+users have developed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
