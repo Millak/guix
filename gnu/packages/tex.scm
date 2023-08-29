@@ -80709,6 +80709,32 @@ sophisticated @code{epigraph} package.")
 in a script used in Southern Middle America until about 500 AD.")
     (license license:lppl)))
 
+(define-public texlive-eq-pin2corr
+  (package
+    (name "texlive-eq-pin2corr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eq-pin2corr/"
+                   "source/latex/eq-pin2corr/"
+                   "tex/latex/eq-pin2corr/")
+             (base32
+              "0gh9r6f9l3dxd5fldglnnrx3c0x4s2s4r10igg8crqd4zzas5kp1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eq-pin2corr")
+    (synopsis
+     "Add PIN security to the ``Correct'' button of a quiz created by
+@code{exerquiz}")
+    (description
+     "This package is an add-on to the @code{quiz} environment of the
+@code{exerquiz} package.  It adds PIN security to a quiz created by the
+@code{quiz} environment.  To correct a quiz, the document consumer must press
+the ``Correct'' button of the quiz and successfully enter the correct PIN
+number.  The PIN security is designed for the instructor to mark and record
+the student's effort on that quiz.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
