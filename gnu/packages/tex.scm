@@ -92177,6 +92177,27 @@ constraints.  The style builds upon the powerful RevTeX class, so you can use
 all of RevTeX's features such as author affiliations, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-phffullpagefigure
+  (package
+    (name "texlive-phffullpagefigure")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phffullpagefigure/"
+                   "source/latex/phffullpagefigure/"
+                   "tex/latex/phffullpagefigure/")
+             (base32
+              "15s58c6b0yp948dwyw68cr6r1cj9wlwh334b49a6yi1fnfgrr71l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phffullpagefigure")
+    (synopsis "Figures which fill up a whole page")
+    (description
+     "This package defines a @code{figure} environment which provides the figure
+content on its own page, with the corresponding caption reading for example
+@samp{Figure 3 (on next page): <caption>}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
