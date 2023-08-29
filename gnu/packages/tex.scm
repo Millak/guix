@@ -83579,6 +83579,30 @@ LaTeX documents; the log data is obtained from the Git distributed version
 control system.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gitstatus
+  (package
+    (name "texlive-gitstatus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gitstatus/"
+                   "source/latex/gitstatus/"
+                   "tex/latex/gitstatus/")
+             (base32
+              "01lcqm7r0a95bpfdvdv25dqxj9j0cnj1vihq54a9iqwd8hq196hb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gitstatus")
+    (synopsis
+     "Include Git information in the document as watermark or via variables")
+    (description
+     "If your LaTeX document is version-controlled with Git, you might encounter
+situations, where you want to include some information of your Git repository
+into your LaTeX document, e.g., to keep track on who gave you feedback on
+which version of your document.  This Git information can be included on every
+page by a watermark or (for custom needs) via provided variables.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
