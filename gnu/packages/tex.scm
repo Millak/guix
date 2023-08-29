@@ -88886,6 +88886,28 @@ and can be well distinguished from the main text, for writing your ideas or
 annotations.")
     (license license:lppl1.3c)))
 
+(define-public texlive-minibox
+  (package
+    (name "texlive-minibox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minibox/" "source/latex/minibox/"
+                   "tex/latex/minibox/")
+             (base32
+              "0z53r59771rdkbqxyjxn37r2ra67kw0ir0fnggmza90h3vidq5yg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list texlive-filecontents))
+    (home-page "https://ctan.org/pkg/minibox")
+    (synopsis "Simple type of box for LaTeX")
+    (description
+     "This small package provides a convenient input syntax for boxes that don't
+break their text over lines automatically, but do allow manual line breaks.
+The boxes shrink to the natural width of the longest line they contain.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
