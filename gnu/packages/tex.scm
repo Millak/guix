@@ -97962,6 +97962,30 @@ part.  Such an operation is commonly used as ``mail merge'' to produce mail
 shots.")
     (license license:public-domain)))
 
+(define-public texlive-textualicomma
+  (package
+    (name "texlive-textualicomma")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textualicomma/"
+                   "source/latex/textualicomma/"
+                   "tex/latex/textualicomma/")
+             (base32
+              "15d2jkfmmy1n0ni7516dik071v8jr3m0wyphv2ixr63cplbmr3sk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/textualicomma")
+    (synopsis
+     "Use the textual comma character as decimal separator in math mode")
+    (description
+     "The package is based on the @code{icomma} package, and intended as a solution
+for situations where the text comma character discerns from the math comma
+character, e.g., when fonts whithout math support are involved.  Escaping to
+text mode every time a comma is used in math mode may slow down the
+compilation process.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
