@@ -99431,6 +99431,26 @@ selecting environments to be included/excluded.  This package does the same,
 but corrects, improves, and extends it in both implementation and function.")
     (license license:lppl1.3+)))
 
+(define-public texlive-versonotes
+  (package
+    (name "texlive-versonotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/versonotes/"
+                   "source/latex/versonotes/"
+                   "tex/latex/versonotes/")
+             (base32
+              "1l45jgz7sginjrzg2q4xm7lbzgqk024p5mqlwym924rs6hpi8j71")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/versonotes")
+    (synopsis "Display brief notes on verso pages")
+    (description
+     "This package allows you to place notes on the verso pages of an otherwise
+single-sided document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
