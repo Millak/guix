@@ -81818,6 +81818,26 @@ types of slides, simplified commands (e.g. for starting and ending slide).
 The class is built upon LaTeX Beamer, so all Beamer commands should work.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fancytabs
+  (package
+    (name "texlive-fancytabs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancytabs/"
+                   "source/latex/fancytabs/"
+                   "tex/latex/fancytabs/")
+             (base32
+              "09d293nl925sp1nfgnbpqb0xps6d0wa3q566p458qxyzadvfadvk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancytabs")
+    (synopsis "Fancy page border tabs")
+    (description
+     "The package can typeset tabs on the side of a page.  It requires TikZ from
+the PGF bundle.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
