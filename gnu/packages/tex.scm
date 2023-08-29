@@ -77480,6 +77480,25 @@ the behavior of fragile environments.  Moving arguments, and corresponding
 ``tables of ...'' work happily.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cprotectinside
+  (package
+    (name "texlive-cprotectinside")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cprotectinside/"
+                   "tex/latex/cprotectinside/")
+             (base32
+              "1pa9j8v61xvrcmqgarzlwpg55l5qr3qi6nw2v3rdvvfg65ri6vf5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cprotectinside")
+    (synopsis "Use @code{cprotect} arbitrarily nested")
+    (description
+     "This package extends the @code{cprotect} package to allow users to use
+verbatim-like commands inside arbitrary parameters.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
