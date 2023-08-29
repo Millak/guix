@@ -98669,6 +98669,28 @@ Page numbers appear on the included pages, and not on the landscape container
 page.")
     (license license:public-domain)))
 
+(define-public texlive-twoup
+  (package
+    (name "texlive-twoup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/twoup/" "source/latex/twoup/"
+                   "tex/latex/twoup/")
+             (base32
+              "0s33w3mvpkw2jy2vxfbbagasxc37vi09dlkn9kbi0917mz8k5i70")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/twoupltx")
+    (synopsis "Print two virtual pages on each physical page")
+    (description
+     "Some tools massage PostScript into booklet and two-up printing --- that is,
+printing two logical pages side by side on one side of one sheet of paper.
+However, some LaTeX preliminaries are necessary to use those tools.  The
+@code{twoup} package provides such preliminaries and gives advice on how to
+use the PostScript tools.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
