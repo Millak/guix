@@ -92544,6 +92544,26 @@ the central idea was to develop a method to have one common source which can
 be interpreted by a Prolog system as well as by LaTeX.")
     (license (license:fsf-free "file://doc/latex/plweb/README"))))
 
+(define-public texlive-pmboxdraw
+  (package
+    (name "texlive-pmboxdraw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pmboxdraw/"
+                   "source/latex/pmboxdraw/"
+                   "tex/latex/pmboxdraw/")
+             (base32
+              "19zgl38h0cxm7w7md3zjji3j2in9ibalhc4ljazdla50rgmcr81p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pmboxdraw")
+    (synopsis "Poor man's box drawing characters")
+    (description
+     "This package declares box drawing characters of old code pages,
+e.g. @samp{cp437}.  It uses rules instead of using a font.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
