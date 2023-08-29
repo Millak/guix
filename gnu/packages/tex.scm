@@ -100622,6 +100622,31 @@ that usually provides it; this has the advantage of avoiding the name clashes
 that so commonly trouble those who load symbol-packages.")
     (license license:lppl)))
 
+(define-public texlive-yaletter
+  (package
+    (name "texlive-yaletter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yaletter/"
+                   "source/latex/yaletter/"
+                   "tex/latex/yaletter/")
+             (base32
+              "1ak35xs7b7v5314nic8mb158828rnq1bv53v412ad2zmsha7wrg9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yaletter")
+    (synopsis
+     "Extremely flexible macros for letters, envelopes, and label sheets")
+    (description
+     "The @code{yaletter} class provides extremely configurable macros for
+typesetting letters in any conceivable style.  It provides facilities for
+maintaining easily-accessible databases of letterheads and addresses for
+repeat use.  It further provides easy macros for envelopes and for label
+sheets.  Finally, it provides some nice defaults for a few of the more common
+styles and sizes.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
