@@ -89232,6 +89232,33 @@ cross-references) and for particular types of references (identified by
 a prefix in the reference label), in a very generic manner.")
     (license license:lppl)))
 
+(define-public texlive-modroman
+  (package
+    (name "texlive-modroman")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/modroman/"
+                   "source/latex/modroman/"
+                   "tex/latex/modroman/")
+             (base32
+              "0sjj98a2qwwknlznrvjzpblp3kxs5l3kzw2rg09l73xn2kj91jwh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/modroman")
+    (synopsis "Write numbers in lower case roman numerals")
+    (description
+     "This package provides only two macros: @code{\\modromannumeral} which writes
+the number given as argument in lower case roman numeral with a @samp{j}
+instead of a @samp{i} as the final letter of numbers greater than 1, and
+@code{\\modroman}, which writes the value of a counter in the same way.
+
+You use the first in the same way as the TeX primitive @code{\\romannumeral}
+and the second as LaTeX command @code{\\roman}.  The default option is
+@code{vpourv} with which @samp{5} is translated as @samp{v} and option
+@samp{upourv} with which the same @samp{5} is given as @samp{u}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
