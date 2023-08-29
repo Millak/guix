@@ -81318,6 +81318,28 @@ file format only acts as an interface between the spreadsheet application and
 applications are able to read and write Excel files.")
     (license license:gpl3+)))
 
+(define-public texlive-excludeonly
+  (package
+    (name "texlive-excludeonly")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/excludeonly/"
+                   "tex/latex/excludeonly/")
+             (base32
+              "0ya7f51h9m207nqiacb1a2kvrlrla8q0gyrv9dzm9k0k01458iyz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/excludeonly")
+    (synopsis "Prevent files being @code{\\include}-ed")
+    (description
+     "The package defines an @code{\\excludeonly} command, which is the opposite of
+@code{\\includeonly}.  If both @code{\\includeonly} and @code{\\excludeonly}
+exist in a document, only files allowed by both will be included.  The package
+redefines the internal @code{\\@@include} command, so it conflicts with
+packages that do the same.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
