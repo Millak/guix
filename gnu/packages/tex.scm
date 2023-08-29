@@ -95455,6 +95455,28 @@ tables.
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-shorttoc
+  (package
+    (name "texlive-shorttoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shorttoc/"
+                   "source/latex/shorttoc/"
+                   "tex/latex/shorttoc/")
+             (base32
+              "0ajzxmpj3d4lnzh3l86k4bii1jjs2483x7lmzgc2rqkp80zaayh0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shorttoc")
+    (synopsis "Table of contents with different depths")
+    (description
+     "This package creates another table of contents with a different depth, useful
+in large documents where a detailed table of contents should be accompanied by
+a shorter one, giving only a general overview of the main topics in the
+document.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
