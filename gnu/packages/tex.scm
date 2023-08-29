@@ -76747,6 +76747,28 @@ a letter, as required (for example) in Romanian typesetting.  The command is
 robust, but interferes with hyphenation.")
     (license license:lppl1.3+)))
 
+(define-public texlive-combine
+  (package
+    (name "texlive-combine")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/combine/" "source/latex/combine/"
+                   "tex/latex/combine/")
+             (base32
+              "1v0qs274sqdx63md9xmpibnry0pj44r3rylfyrxaxr8q69i983vc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/combine")
+    (synopsis "Bundle individual documents into a single document")
+    (description
+     "The @code{combine} class lets you bundle individual documents into a single
+document, such as when preparing a conference proceedings.  The auxiliary
+@code{combinet} package puts the titles and authors from @code{\\maketitle}
+commands into the main document's table of contents.  The package cooperates
+with the @code{abstract} and @code{titling} packages.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
