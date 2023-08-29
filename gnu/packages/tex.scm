@@ -86181,6 +86181,29 @@ generated automatically.  The @file{.mtx} file may then be loaded by
 later use in LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-keycommand
+  (package
+    (name "texlive-keycommand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keycommand/"
+                   "source/latex/keycommand/"
+                   "tex/latex/keycommand/")
+             (base32
+              "0if07qinrxr798xin04rhf6g6chq0lj1p684zi40rrlkwgrc5br5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keycommand")
+    (synopsis "Simple creation of commands with key-value arguments")
+    (description
+     "The package (which requires e-TeX) provides a natural way to define commands
+with optional keys.  The package provides @code{\\newkeycommand},
+@code{\\renewkeycommand}, @code{\\providekeycommand},
+@code{\\newkeyenvironment} and @code{\\renewkeyenvironment}, together with
+@code{\\keycmd} for a more advanced interface.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
