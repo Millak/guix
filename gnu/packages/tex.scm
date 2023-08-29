@@ -89526,6 +89526,24 @@ letters hardwired to be upright and only upright; this package provides
 a switch to choose between the two kinds of Greek uppercase letters.")
     (license license:lppl)))
 
+(define-public texlive-multenum
+  (package
+    (name "texlive-multenum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multenum/" "tex/latex/multenum/")
+             (base32
+              "18nvnxs5gpaxz82kbfxc7yj8vc7vh0ki1yc0y91xchfnc88hcdhs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multenum")
+    (synopsis "Multi-column enumerated lists")
+    (description
+     "This package defines an environment @code{multienumerate}, that produces an
+enumerated array in which columns are vertically aligned on the counter.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
