@@ -73013,6 +73013,27 @@ work, @code{\\pagenumbering} has to be inside these macros --- most of classes
 do that, but there are exceptions like @code{memoir}.")
     (license license:expat)))
 
+(define-public texlive-arcs
+  (package
+    (name "texlive-arcs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arcs/" "source/latex/arcs/"
+                   "tex/latex/arcs/")
+             (base32
+              "08a20d8qgpvisfini220g3hw1hivrbp13ngsfd47dpdqwn12n98s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arcs")
+    (synopsis "Draw arcs over and under text")
+    (description
+     "The package provides two commands for placing an arc over (@code{\\overarc})
+or under (@code{\\underarc}) a piece of text. (The text may be up to three
+letters long.)  The commands generate an @code{\\hbox}, and may be used both
+in text and in maths formulae.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
