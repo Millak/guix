@@ -88719,6 +88719,26 @@ appearance of the logos TeX, LaTeX, LaTeX2e, XeLaTeX, and LuaLaTeX, depending
 on the font detected or the option given to @code{metalogox}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-metanorma
+  (package
+    (name "texlive-metanorma")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/metanorma/"
+                   "tex/latex/metanorma/")
+             (base32
+              "1b0f2sz7229q3nkv8ch1b72ima32jjh3ji5i4j3fwrsa0ck8gjw6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metanorma")
+    (synopsis "Write Metanorma standardization documents using LaTeX")
+    (description
+     "This work includes a LaTeX document class, a LaTeXML script and
+a @code{latexmlpost} stylesheet which allow you to write a LaTeX document and
+transcode it into Metanorma's ADOC format.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
