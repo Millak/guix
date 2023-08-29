@@ -94541,6 +94541,33 @@ to give the glyph a unique name.  To do that, we define
 @code{\\XXX}.")
     (license license:lppl)))
 
+(define-public texlive-savetrees
+  (package
+    (name "texlive-savetrees")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/savetrees/"
+                   "doc/latex/savetrees/"
+                   "source/latex/savetrees/"
+                   "tex/latex/savetrees/")
+             (base32
+              "06vhi0yzdrry5l8xg1j3hm0c22af4hasdaivgrbgqbjxldll2dxa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/savetrees")
+    (synopsis "Optimise the use of each page of a LaTeX document")
+    (description
+     "The goal of the @code{savetrees} package is to pack as much text as possible
+onto each page of a LaTeX document.  Admittedly, this makes the document far
+less attractive.  Nevertheless, @code{savetrees} is a simple way to save paper
+when printing draft copies of a document.  It can also be useful when trying
+to meet a tight page-length requirement for a conference or journal
+submission.  Most of the package options cover specific modifications to
+typesetting rules, but there are also options subtle, moderate and extreme
+options for the broad brush approach.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
