@@ -84568,6 +84568,26 @@ functionality of Prosper even further.")
 Configuration is provided via using key-value syntax.")
     (license license:lppl1.3c)))
 
+(define-public texlive-handin
+  (package
+    (name "texlive-handin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/handin/" "tex/latex/handin/")
+             (base32
+              "0xxh7419yv2rfzpl9z28dxpb1jvfxdyap1zc3i32y1fl1c7n2naq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/handin")
+    (synopsis
+     "Light weight template for creating school submissions using LaTeX")
+    (description
+     "This package is for students creating school submissions using LaTeX.  It is
+especially suitable for math, physics, statistics and the like.  It can easily
+be used for creating exercises, too.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
