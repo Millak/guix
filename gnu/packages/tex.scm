@@ -79861,6 +79861,25 @@ blocks inside a presentation.")
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-easy-todo
+  (package
+    (name "texlive-easy-todo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easy-todo/"
+                   "tex/latex/easy-todo/")
+             (base32
+              "0wzpqd8pq5cpxdaqfwz5knpvrjjhwpvl6yq25h86zk3jxmyag88r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/easy-todo")
+    (synopsis "To-do notes in a document")
+    (description
+     "The package provides to-do notes throughout a document, and will provide an
+index of things to do.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
