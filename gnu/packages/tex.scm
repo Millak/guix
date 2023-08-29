@@ -96220,6 +96220,37 @@ sparklines package uses PGF.")
 mode.")
     (license license:knuth)))
 
+(define-public texlive-splitindex
+  (package
+    (name "texlive-splitindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/splitindex/"
+                   "doc/man/man1/splitindex.1"
+                   "doc/man/man1/splitindex.man1.pdf"
+                   "scripts/splitindex/"
+                   "source/latex/splitindex/"
+                   "tex/generic/splitindex/"
+                   "tex/latex/splitindex/")
+             (base32
+              "14c7x81zqvwwdd54jvjkyr34inhfppidcask6wx9w23xsy8mr8y8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "splitindex.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/splitindex")
+    (synopsis "Unlimited number of indexes")
+    (description
+     "SplitIndex consists of a LaTeX package, @code{splitidx}, and a small program,
+@code{splitindex}.  The package may be used to produce one index or several
+indexes.  Without @command{splitindex}, the number of indexes is limited by
+the number of TeX's output streams.  But using the program you may use even
+more than 16 indexes: @command{splitidx} outputs only a single file and the
+program splits that file into several raw index files and calls your favorite
+index processor for each of the files.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
