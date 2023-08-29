@@ -75956,6 +75956,27 @@ is based on the standard LaTeX classes and is compatible with the LaTeX
 a generic document class; it is used with the @code{chextras} package.")
     (license license:lppl)))
 
+(define-public texlive-chronology
+  (package
+    (name "texlive-chronology")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chronology/"
+                   "tex/latex/chronology/")
+             (base32
+              "0xs7nnmx4ybh613wvlgxnk9705ld2103zvj8kz1na94y82sb6hjk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chronology")
+    (synopsis "Provides a horizontal timeline")
+    (description
+     "This package provides a timeline package that allows labelling of events with
+per-day granularity.  Other features include relative positioning with unit
+specification, adjustable tick mark step size, and scaling to specified
+width.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
