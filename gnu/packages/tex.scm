@@ -91872,6 +91872,30 @@ embedding (hyperlinking) movies in a way compatible with the PDF Presenter
 Console (@command{pdfpc}).")
     (license license:lppl1.3c)))
 
+(define-public texlive-pdfprivacy
+  (package
+    (name "texlive-pdfprivacy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfprivacy/"
+                   "source/latex/pdfprivacy/"
+                   "tex/latex/pdfprivacy/")
+             (base32
+              "1xs4gsgbdp5q8p32d9idq10bscnxn8whbdha1n3l6ki1dmn89g0g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfprivacy")
+    (synopsis "LaTeX package to remove or suppress pdf meta-data")
+    (description
+     "Creating PDFs with pdfLaTeX populates several PDF meta-data fields such as
+date/time of creation/modification, information about the LaTeX
+installation (e.g., pdfTeX version), and the relative paths of included PDFs.
+The @code{pdfprivacy} package provides support for emptying several of these
+PDF meta-data fields as well as suppressing some pdfTeX meta-data entries in
+the resulting PDF.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
