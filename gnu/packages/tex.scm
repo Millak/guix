@@ -92403,6 +92403,27 @@ have to be placed as floats, they can also be placed as boxes, with captions
 and photographer line still being available.")
     (license license:lppl)))
 
+(define-public texlive-photobook
+  (package
+    (name "texlive-photobook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/photobook/"
+                   "tex/latex/photobook/")
+             (base32
+              "0blwjpmjgxdnhsbfans3lb3q6p1y3s4gc7jz30c9mccakk4ib0xx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/photobook")
+    (synopsis "Document class for typesetting photo books")
+    (description
+     "The @code{photobook} LaTeX document class extends the book class defining
+a set of parameters, meta-macros, macros and environments with reasonable
+defaults to help typeset, build and print books mainly based on visual/image
+content.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
