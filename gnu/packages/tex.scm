@@ -98863,6 +98863,26 @@ at one point only.
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-umoline
+  (package
+    (name "texlive-umoline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/umoline/" "source/latex/umoline/"
+                   "tex/latex/umoline/")
+             (base32
+              "1z1yaqvaxx9a0s6dzjx7g88f97zjq262c6f1jqkdvckmjy3zqd9w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/umoline")
+    (synopsis "Underline text allowing line breaking")
+    (description
+     "This package provides commands @code{\\Underline}, @code{\\Midline} and
+@code{\\Overline} for underlining, striking out, and overlining their text
+arguments.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
