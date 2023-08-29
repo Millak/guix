@@ -82474,6 +82474,27 @@ as a set of numbered files (e.g., @file{im1.pdf}, @file{im2.pdf}, ...).  The
 package relies on @code{fancyhdr} to control the corners.")
     (license license:lppl)))
 
+(define-public texlive-flippdf
+  (package
+    (name "texlive-flippdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flippdf/" "source/latex/flippdf/"
+                   "tex/latex/flippdf/")
+             (base32
+              "0bjac3nddii4g9q8b02z43slab1wnl707jqpyy8f8zmns4l04ws5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flippdf")
+    (synopsis "Horizontal flipping of pages with pdfLaTeX")
+    (description
+     "The package allows the production of a document with pages mirrored.  This is
+sometimes required by publishers who want camera-ready documents to be printed
+on transparent film (to be viewed from the ``wrong'' side).  The package only
+works with pdfLaTeX or LuaLaTeX in PDF output mode.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
