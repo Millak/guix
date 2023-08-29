@@ -90729,6 +90729,25 @@ package does not use Javascript embedded in the PDF document to enable (to
 show) or disable (to hide) OCGs.")
     (license (list license:lppl license:lppl))))
 
+(define-public texlive-ocr-latex
+  (package
+    (name "texlive-ocr-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ocr-latex/"
+                   "tex/latex/ocr-latex/")
+             (base32
+              "0sykr0xvy0fk75prq7614k302vzdpfx8qz0yvj2yx7kzk2pr5h6k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ocr-latex")
+    (synopsis "LaTeX support for @code{ocr} fonts")
+    (description
+     "The package supports use of both @code{ocr-a} and @code{ocr-b} fonts in LaTeX
+documents.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
