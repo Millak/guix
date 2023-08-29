@@ -79190,6 +79190,27 @@ the macro used in the bibliography that can wrap a URL up into a BibTeX entry.
 @end itemize")
     (license license:lppl)))
 
+(define-public texlive-dnaseq
+  (package
+    (name "texlive-dnaseq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dnaseq/" "source/latex/dnaseq/"
+                   "tex/latex/dnaseq/")
+             (base32
+              "07g0197v6kyvzmxa3xl96adjki19whmmsj4pjqprpbaqm6nlhn19")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dnaseq")
+    (synopsis "Format DNA base sequences")
+    (description
+     "This package defines a means of specifying sequences of bases.  The bases may
+be numbered (per line) and you may specify that subsequences be coloured.  For
+a more vanilla-flavoured way of typesetting base sequences, the user might
+consider the @code{seqsplit} package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
