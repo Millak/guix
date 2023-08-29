@@ -91833,6 +91833,24 @@ page.")
     (description "This package finds the differences between two PDF files.")
     (license license:lppl1.0+)))
 
+(define-public texlive-pdfpc
+  (package
+    (name "texlive-pdfpc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfpc/" "tex/latex/pdfpc/")
+             (base32
+              "0r0393h6yxyrv45p5wywqx2r88ppxf1xg7gikhhnx5hvc0rxn8ws")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfpc")
+    (synopsis "Define data for the @command{pdfpc} presentation viewer")
+    (description
+     "This packages allows to define additional meta data within the PDF file which
+can be interpreted by the PDF presenter console (@command{pdfpc}) program.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
