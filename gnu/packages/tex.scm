@@ -100130,6 +100130,26 @@ steps and required ingredients.  At the bottom you may insert an optional
 hint.  The package depends on the Emerald fonts.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xcpdftips
+  (package
+    (name "texlive-xcpdftips")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xcpdftips/"
+                   "source/latex/xcpdftips/"
+                   "tex/latex/xcpdftips/")
+             (base32
+              "16in0hkr8ij36xxclq6z0rxmkldn0pba49sj3vnfamrgq80r70xg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcpdftips")
+    (synopsis "@code{natbib} citations with PDF tooltips")
+    (description
+     "This LaTeX package uses @code{pdfcomment} and @code{bibentry} to surround
+@code{natbib} citations with PDF tooltips.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
