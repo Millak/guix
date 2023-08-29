@@ -76225,6 +76225,25 @@ facilities for this.")
 places its contents into a full page width colour strip.")
     (license license:lppl1.3c)))
 
+(define-public texlive-cmdstring
+  (package
+    (name "texlive-cmdstring")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cmdstring/"
+                   "tex/latex/cmdstring/")
+             (base32
+              "102xjy2bx76f4h7vv9az62bm5qbf6qpv3simykwpdd4ivaxfzy8l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmdstring")
+    (synopsis "Get command name reliably")
+    (description
+     "This package extracts the letters of a command's name (e.g., @samp{foo} for
+command @samp{\\foo}), in a reliable way.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
