@@ -88483,6 +88483,28 @@ is customary in physics journals.  The package requires a customised BibTeX
 style for its work; the documentation explains how to do that customisation.")
     (license license:gpl3+)))
 
+(define-public texlive-mciteplus
+  (package
+    (name "texlive-mciteplus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/mciteplus/"
+                   "doc/latex/mciteplus/"
+                   "tex/latex/mciteplus/")
+             (base32
+              "1j6dhj5rcxlx7824060yq5fixhbccz6qjns52d8v2vrs11rgw2q5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mciteplus")
+    (synopsis "Enhanced multiple citations")
+    (description
+     "The @code{mciteplus} LaTeX package is an enhanced reimplementation of
+@code{mcite} package which provides support for the grouping of multiple
+citations together as is often done in physics journals.  An extensive set of
+features provide for other applications such as reference sublisting.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
