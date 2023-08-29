@@ -79073,6 +79073,25 @@ that examines the installation is available.")
 to write macros to carry on a dialogue with the user.")
     (license license:lppl)))
 
+(define-public texlive-dichokey
+  (package
+    (name "texlive-dichokey")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dichokey/" "tex/latex/dichokey/")
+             (base32
+              "0ncfxvkky0p0ff5bl378464zxvjdq3wg2acy0dmgvxh3zyc8925k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dichokey")
+    (synopsis "Construct dichotomous identification keys")
+    (description
+     "The package can be used to construct dichotomous identification keys (used
+especially in biology for species identification), taking care of numbering
+and indentation of successive key steps automatically.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
