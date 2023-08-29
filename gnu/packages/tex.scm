@@ -74402,6 +74402,25 @@ references.")
 An example would be when the integrand is a matrix.")
     (license license:lppl)))
 
+(define-public texlive-bilingualpages
+  (package
+    (name "texlive-bilingualpages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bilingualpages/"
+                   "tex/latex/bilingualpages/")
+             (base32
+              "0byjjkbswy7m80qdw2q3k9nqkgkyw4ary40ccgrq7m1dnirrnb48")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bilingualpages")
+    (synopsis "Typeset two columns in parallel")
+    (description
+     "This is a simple wrapper for the @code{paracol} package for setting
+two-column parallel text.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
