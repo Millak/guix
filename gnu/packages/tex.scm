@@ -89976,6 +89976,25 @@ nesting left and right quotes that properly change between double and single
 quotes according to their nesting level.")
     (license license:bsd-3)))
 
+(define-public texlive-newcommand
+  (package
+    (name "texlive-newcommand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newcommand/")
+             (base32
+              "1vlxm26393psl4kjfh533q03sb4klnfq84nld9ggs8l5x08dks58")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newcommand")
+    (synopsis "Generate new LaTeX command definitions")
+    (description
+     "Generating any other than the simple @code{\\newcommand}-style commands, in
+LaTeX, is tedious.  This script allows the specification of commands in
+a natural style; the script then generates macros to define the command.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
