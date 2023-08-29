@@ -77537,6 +77537,25 @@ crossing lines at the corners.")
 which may be listed in a table of cross-references.")
     (license license:lppl)))
 
+(define-public texlive-crossreftools
+  (package
+    (name "texlive-crossreftools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crossreftools/"
+                   "tex/latex/crossreftools/")
+             (base32
+              "0rqv8km9l5yxl60vs9cyx41yfpw56djxynlm0p2ykxpncppipxrs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crossreftools")
+    (synopsis "Expandable extraction of @code{cleveref} data")
+    (description
+     "This package extracts information from cross-referencing labels, especially
+those from @code{cleveref}, in an expandable manner.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
