@@ -82385,6 +82385,28 @@ opening and closing multiple flagpoles, different comment styles, customizable
 symbols and label namespaces.")
     (license license:gpl3+)))
 
+(define-public texlive-flashcards
+  (package
+    (name "texlive-flashcards")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flashcards/"
+                   "source/latex/flashcards/"
+                   "tex/latex/flashcards/")
+             (base32
+              "0l70bz1dng1drilp6mk9998n38zbd5d9jlxnw0g5gp1p0hrlmzmb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flashcards")
+    (synopsis "Class for typesetting flashcards")
+    (description
+     "The FlashCards class provides for the typesetting of flash cards.  By flash
+card, we mean a two sided card which has a prompt or a question on one side
+and the response or the answer on the flip (back) side.  Flash cards come in
+many sizes depending on the nature of the information they contain.")
+    (license license:gpl2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
