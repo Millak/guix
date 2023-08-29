@@ -95955,6 +95955,26 @@ e.g., slanted or bold slanted for all fonts that provide appropriate font
 shapes.")
     (license license:lppl)))
 
+(define-public texlive-smalltableof
+  (package
+    (name "texlive-smalltableof")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/smalltableof/"
+                   "tex/latex/smalltableof/")
+             (base32
+              "022m2n0524mcgzjq4ba1sm76alwy78h4w83kvc68h3yzfb6i7mm6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/smalltableof")
+    (synopsis "Create @code{listoffigures}, etc., in a single chapter")
+    (description
+     "The package allows you to create a list of figures and list of tables in
+a chapter named List that contains separate sections for each list of figures,
+tables, etc.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
