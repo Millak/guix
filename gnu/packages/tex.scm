@@ -85279,6 +85279,26 @@ embedded documents and different types of GoTo-links.  The cooperation of
 enhanced back-referencing system.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hyper
+  (package
+    (name "texlive-hyper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hyper/" "source/latex/hyper/"
+                   "tex/latex/hyper/")
+             (base32
+              "1z01dlbsjdppvfjgggnla1l7v9a0l3zy2j8fa56g757jcidi1s1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hyper")
+    (synopsis "Hypertext cross referencing")
+    (description
+     "This package redefines LaTeX cross-referencing commands to insert
+@code{\\special} commands for HyperTeX DVI viewers, such as recent versions of
+@command{xdvi}.  The package is now largely superseded by @code{hyperref}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
