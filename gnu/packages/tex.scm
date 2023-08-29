@@ -78315,6 +78315,26 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-german
+  (package
+    (name "texlive-datetime2-german")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-german/"
+                   "source/latex/datetime2-german/"
+                   "tex/latex/datetime2-german/")
+             (base32
+              "14vr043hh0ay5qy1gz3g9dhv397nkvjhzavslyb7kw85cpz5c2i5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-german")
+    (synopsis "German language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{german} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
