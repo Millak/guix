@@ -89300,6 +89300,26 @@ This package provides the missing piece.")
 @code{\\listfiles}.  Uses may include in-text tables, or even code listings.")
     (license license:lppl1.3+)))
 
+(define-public texlive-moodle
+  (package
+    (name "texlive-moodle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/moodle/" "source/latex/moodle/"
+                   "tex/latex/moodle/")
+             (base32
+              "0zi30nl5zqhz3291i2fvkra2bx5ysi9lsmkybcl9kzw63nzrnvwf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/moodle")
+    (synopsis "Generating Moodle quizzes via LaTeX")
+    (description
+     "This package provides a package for writing Moodle quizzes in LaTeX.  In
+addition to typesetting the quizzes for proofreading, the package compiles an
+XML file to be uploaded to a Moodle server.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
