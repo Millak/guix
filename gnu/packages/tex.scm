@@ -96593,6 +96593,25 @@ anywhere, simulating the effect of ``midfloats'', a package to manipulate
 numerical lists and arrays.")
     (license license:lppl1.3+)))
 
+(define-public texlive-stubs
+  (package
+    (name "texlive-stubs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stubs/" "tex/latex/stubs/")
+             (base32
+              "0bd4ccv4lgrh0z471aqh63pdydg93ba8wkqr2a9q513y8l93i00f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stubs")
+    (synopsis "Create tear-off stubs at the bottom of a page")
+    (description
+     "The @code{\\stubs} command creates as many repetitions as possible of its
+argument, at the bottom of the page; these stubs may be used (for example) for
+contact information.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
