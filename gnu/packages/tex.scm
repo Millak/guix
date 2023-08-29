@@ -85258,6 +85258,27 @@ unnecessary destinations and shortens the destination names or uses numbered
 destinations to get smaller PDF files.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hypdvips
+  (package
+    (name "texlive-hypdvips")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hypdvips/" "tex/latex/hypdvips/")
+             (base32
+              "03zpciwfzcp7mrr7mq60i0fwx10spgvyc5hjz490k0p2ha95l8i6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hypdvips")
+    (synopsis "@code{hyperref} extensions for use with Dvips")
+    (description
+     "The @code{hypdvips} package fixes some problems when using @code{hyperref}
+with Dvips.  It also adds support for breaking links, file attachments,
+embedded documents and different types of GoTo-links.  The cooperation of
+@code{hyperref} with @code{cleveref} is improved, which in addition allows an
+enhanced back-referencing system.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
