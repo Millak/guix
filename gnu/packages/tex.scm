@@ -82921,6 +82921,33 @@ in documents.")
 source; the package offers parametrisation of the letters actually sent.")
     (license license:gpl3+)))
 
+(define-public texlive-forms16be
+  (package
+    (name "texlive-forms16be")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/forms16be/"
+                   "source/latex/forms16be/"
+                   "tex/latex/forms16be/")
+             (base32
+              "07lj38mwkj1g0gba8sk435474g417lp815byci691xskr84fy33x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/forms16be")
+    (synopsis "Initialize form properties using big-endian encoding")
+    (description
+     "This package provides support for UTF-16BE Unicode character encoding (called
+a big-endian character string) for the text string type (PDF Reference,
+version 1.7, beginning on page 158).  Text strings are used in ``text
+annotations, bookmark names, article threads, document information, and so
+forth'' (to partially quote page 158).  The particular application is to set
+property values of form fields, at least those properties that take the text
+strings as its value.  The package contains support for Basic Latin plus the
+ability to enter any Unicode character using the notation
+@code{\\u@var{XXXX}}, where @var{XXXX} are four hex digits.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
