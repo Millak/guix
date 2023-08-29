@@ -99216,6 +99216,26 @@ For example, with it you can generate multiple index entries in almost any
 form by a single command.")
     (license license:lppl)))
 
+(define-public texlive-varsfromjobname
+  (package
+    (name "texlive-varsfromjobname")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/varsfromjobname/"
+                   "tex/latex/varsfromjobname/")
+             (base32
+              "1b6k85hxz2frz33cqdbkhqa204s43r6sd44i2qjihicgwlnv2q60")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/varsfromjobname")
+    (synopsis "Extract variables from the name of the LaTeX file")
+    (description
+     "The package allows the user to extract information from the job name,
+provided that the name has been structured appropriately: the package expects
+the file name to consist of a set of words separated by hyphens.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
