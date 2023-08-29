@@ -87423,6 +87423,27 @@ mechanisms.  The present release offers a preliminary view of the package; not
 all of its facilities are working optimally")
     (license license:lppl1.3+)))
 
+(define-public texlive-logbox
+  (package
+    (name "texlive-logbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/logbox/" "source/latex/logbox/"
+                   "tex/latex/logbox/")
+             (base32
+              "1qpywgp8nl2s43cmq8xxdm8jlcbglmvif0fp28zi4psapdr0kybi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/logbox")
+    (synopsis "e-TeX @code{showbox} facilities for exploration purposes")
+    (description
+     "The command @code{\\logbox} does @code{\\showbox} without stopping the
+compilation.  The package's main command is @code{\\viewbox*}: the box is
+typeset (copied) with its dimensions, and its contents are logged in the
+@file{.log} file.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
