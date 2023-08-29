@@ -83540,6 +83540,26 @@ continuity for existing users.  All new repositories should use
 @code{gitinfo2}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gitinfo2
+  (package
+    (name "texlive-gitinfo2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gitinfo2/" "tex/latex/gitinfo2/")
+             (base32
+              "0bbzxb4p4nh7hyrh1888srbh3w9ncyj09jsq0q5yfscn6gbx8gx3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gitinfo2")
+    (synopsis
+     "Access metadata from the Git distributed version control system")
+    (description
+     "The package makes it possible to incorporate git version control metadata
+into documents.  For @code{memoir} users, the package provides the means to
+tailor page headers and footers to use the metadata.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
