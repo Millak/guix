@@ -75717,6 +75717,26 @@ a large paragraph of text at the end of chapters, prologues, etc.")
 user to change the layout of individual pages and their texts.")
     (license license:lppl)))
 
+(define-public texlive-changelog
+  (package
+    (name "texlive-changelog")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/changelog/"
+                   "tex/latex/changelog/")
+             (base32
+              "0fbjsdkg7ngk9syb3jbjzln2gkwi1fx39zfa0i5ngxjy2ch9q8n8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/changelog")
+    (synopsis "Typesetting @url{keepachangelog.com} style change logs")
+    (description
+     "This package provides a @code{changelog} environment (which itself provides
+a @code{version} environment) to represent a change log.  The package supports
+multiple authors, unreleased changes, and yanked (revoked) releases.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
