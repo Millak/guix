@@ -85506,6 +85506,25 @@ the package's @code{\\ifthenelse} command.  The package is complementary to
 loaded in the same document, as long as @code{xifthen} is loaded first.")
     (license license:lppl)))
 
+(define-public texlive-iitem
+  (package
+    (name "texlive-iitem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iitem/" "source/latex/iitem/"
+                   "tex/latex/iitem/")
+             (base32
+              "1wizydpgy1xghwy18l0ywwi5r3mkiw8m37dafa8pg1k5rvffz4zq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iitem")
+    (synopsis "Multiple level of lists in one list-like environment")
+    (description
+     "The package defines multiple level lists within one list-like environment,
+with the help of the @code{\\iitem}, @code{\\iiitem}, ... macros.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
