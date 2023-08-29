@@ -79252,6 +79252,26 @@ handle all kinds of licenses.")
 non-LaTeX code, such as Metafont or MetaPost, or other programming languages.")
     (license license:lppl)))
 
+(define-public texlive-docmute
+  (package
+    (name "texlive-docmute")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/docmute/" "source/latex/docmute/"
+                   "tex/latex/docmute/")
+             (base32
+              "1r1anq3hcddsnzj2vxa8kiax7vazl4zd4ny1a03jzmaljlildrjq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/docmute")
+    (synopsis "Input files ignoring LaTeX preamble, etc")
+    (description
+     "This package inputs or includes stand-alone LaTeX documents, ignoring
+everything but the material between @code{\\begin@{document@}} and
+@code{\\end@{document@}}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
