@@ -88051,6 +88051,26 @@ storage media.")
 (default 16).  It does not change font or typeface.")
     (license license:lppl1.3+)))
 
+(define-public texlive-makebox
+  (package
+    (name "texlive-makebox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makebox/" "source/latex/makebox/"
+                   "tex/latex/makebox/")
+             (base32
+              "0n7gxbqlx88bigcrw2z8jqwaakhisdzxx2lzn0ddjnpvslhm4hl9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makebox")
+    (synopsis "Defines a @code{\\makebox*} command")
+    (description
+     "This package defines a @code{\\makebox*} command that does the same as
+a @code{\\makebox} command, except that the width is given by a sample text
+instead of an explicit length measure.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
