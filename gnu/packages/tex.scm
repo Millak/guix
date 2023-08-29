@@ -91948,6 +91948,31 @@ can be used with various options to produce regular print versions of the same
 document without any extra effort.")
     (license license:lppl)))
 
+(define-public texlive-pdfslide
+  (package
+    (name "texlive-pdfslide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfslide/" "tex/latex/pdfslide/")
+             (base32
+              "00h5f6acmxq4mwr91k1zcmvjv1n7rv8kk9lqy11pngqp76gf5w5n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfslide")
+    (synopsis "Presentation slides using pdfTeX")
+    (description
+     "This is a package for use with pdfTeX, to make nice presentation slides.
+Its aims are: to devise a method for easier technical presentation; to help
+the mix of mathematical formulae with text and graphics which other present
+day document processing tools fail to accomplish; to exploit the platform
+independence of TeX so that presentation documents become portable; and to
+offer the freedom and possibilities of using various backgrounds and other
+embellishments that a user can imagine to have in as presentation.
+
+The package can make use of the facilities of the PPower4 post-processor.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
