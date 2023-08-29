@@ -80853,6 +80853,28 @@ document highlighting the difference to the published version.")
 @code{\\erw_merge_sort}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-esami
+  (package
+    (name "texlive-esami")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/esami/" "tex/latex/esami/")
+             (base32
+              "1vrn6wpjfssgq41nhws8rjfj9k7hki7bai1xwb7mxkwzh5aa247f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/esami")
+    (synopsis "Typeset exams with scrambled questions and answers")
+    (description
+     "The package enables the user to typeset exams with multiple choice, open
+questions and many other types of exercise.  Both questions and answers may be
+randomly distributed within the exam, and the solutions are typeset
+automatically.  Exercises may contain a wide number of random parameters and
+it is possible to do arithmetical operations on them.  The package is
+localised in Italian, English, French, German, Greek, Serbian, and Spanish.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
