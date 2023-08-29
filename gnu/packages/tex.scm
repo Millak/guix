@@ -72763,6 +72763,26 @@ class called @code{myletter}.")
 accessible in Unicode.")
     (license (list license:gpl3+ license:lppl))))
 
+(define-public texlive-alertmessage
+  (package
+    (name "texlive-alertmessage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/alertmessage/"
+                   "source/latex/alertmessage/"
+                   "tex/latex/alertmessage/")
+             (base32
+              "03pbkpbkgxx4c91b43bbykh931ncvm92mzjms9cpb5msf6yjk2wq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alertmessage")
+    (synopsis "Alert messages for LaTeX")
+    (description
+     "This package provides some macros to display alert messages (informations,
+errors, warnings and success messages).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
