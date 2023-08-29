@@ -96159,6 +96159,26 @@ typesetting a compact list, placing two boxes side by side with vertical
 adjustment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-spark-otf
+  (package
+    (name "texlive-spark-otf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/spark-otf/"
+                   "fonts/opentype/public/spark-otf/"
+                   "tex/latex/spark-otf/")
+             (base32
+              "1kydm3ixnnnv2r40aayr6hg7ky9lh4y1xyar26ip45d8a45plll2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spark-otf")
+    (synopsis "Support OpenType Spark fonts")
+    (description
+     "The package supports the fonts from @emph{After the Flood} which are
+available from AtF Spark.")
+    (license (list license:silofl1.1 license:lppl1.3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
