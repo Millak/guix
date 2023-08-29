@@ -88420,6 +88420,26 @@ standard classes and with the KOMA-Script document classes @code{scrartcl},
 @code{scrreprt} and @code{scrbook}.")
     (license license:lppl)))
 
+(define-public texlive-mceinleger
+  (package
+    (name "texlive-mceinleger")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mceinleger/"
+                   "tex/latex/mceinleger/")
+             (base32
+              "0fkg8hz11nl7xfg1d4w4yxc2wf2ffry0jcv48phcxsjm50hw7wv2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mceinleger")
+    (synopsis "Creating covers for music cassettes")
+    (description
+     "This package provides a package for creating MC-covers on your own.  It
+allows the creation of simple covers as well as covers with an additional page
+for more information about the cassette (e.g., table of contents).")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
