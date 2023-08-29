@@ -84399,6 +84399,30 @@ from CSS grid systems.  The facility is useful for creating box layouts as
 used in brochures.")
     (license license:asl2.0)))
 
+(define-public texlive-gridpapers
+  (package
+    (name "texlive-gridpapers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gridpapers/"
+                   "source/latex/gridpapers/"
+                   "tex/latex/gridpapers/")
+             (base32
+              "0csc8dzgvc36p1c5gcfg0k6s5812vq4vpzjm3ybaph9y8cy0vd64")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gridpapers")
+    (synopsis "Graph paper backgrounds and color schemes")
+    (description
+     "This package provides many preset yet customizable graph paper backgrounds.
+Some of the preset patterns include standard quadrille or graph pattern, dot
+grid, hexagons, isometric or triangular grid, squares with 45deg ``light
+cone'' lines, ruled, and more.  Pattern sizes can be controlled via package
+options.  There are several preset color palletes, and colors can be
+overridden.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
