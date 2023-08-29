@@ -76244,6 +76244,30 @@ places its contents into a full page width colour strip.")
 command @samp{\\foo}), in a reliable way.")
     (license license:lppl)))
 
+(define-public texlive-cmdtrack
+  (package
+    (name "texlive-cmdtrack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cmdtrack/"
+                   "source/latex/cmdtrack/"
+                   "tex/latex/cmdtrack/")
+             (base32
+              "1dmmz5pmp5ql9wq9vlh888hn2q6djjpia3h8c2580yxs5pwk1hrq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmdtrack")
+    (synopsis "Check used commands")
+    (description
+     "The package keeps track of whether a command defined in a document preamble
+is actually used somewhere in the document.  After the package is loaded in
+the preamble of a document, all @code{\\newcommand} (and similar command
+definitions) between that point and the beginning of the document will be
+marked for logging.  At the end of the document a report of command usage will
+be printed in the TeX log.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
