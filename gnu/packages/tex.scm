@@ -72303,6 +72303,27 @@ size and layout, and produces a standard DVI file without involving
 additional DVI or PostScript filters.")
     (license license:lppl)))
 
+(define-public texlive-a0poster
+  (package
+    (name "texlive-a0poster")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/a0poster/" "tex/latex/a0poster/")
+             (base32
+              "11b6hcspl01w2w1dy4491nl7xyjxfydkzrbl55bis5j1a64pbixn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/a0poster")
+    (synopsis "Support for designing posters on large paper")
+    (description
+     "This package provides fonts in sizes of 12pt up to 107pt and also
+makes sure that in math formulas the symbols appear in the right size.
+It can also create a PostScript header file for Dvips which ensures
+that the poster will be printed in the right size.  The supported
+sizes are DIN A0, DIN A1, DIN A2 and DIN A3.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
