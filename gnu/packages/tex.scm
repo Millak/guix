@@ -92445,6 +92445,26 @@ syntax of these arguments, so that dimensions with calculation support may be
 used for these arguments.")
     (license license:lppl1.3+)))
 
+(define-public texlive-piff
+  (package
+    (name "texlive-piff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/piff/" "tex/latex/piff/")
+             (base32
+              "1y61wv1msddh4d1cybdq4dxcaibbc2rx9yhv1c0kjavzyvdmjyxx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/piff")
+    (synopsis "Macro tools by Mike Piff")
+    (description
+     "This collection of tools consists of: a small package for dealing with
+duplicate-numbered output pages; @code{newproof}, for defining mathematical
+proof structures; @code{onepagem} for omitting the page number in one-page
+documents and @code{time}, which prints a 12-hour format time.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
