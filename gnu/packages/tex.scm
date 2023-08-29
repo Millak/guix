@@ -89211,6 +89211,27 @@ such diagrams are designed to fit into Curriculum Vitae documents written
 using the @code{moderncv} class.")
     (license license:lppl1.3+)))
 
+(define-public texlive-modref
+  (package
+    (name "texlive-modref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/modref/" "source/latex/modref/"
+                   "tex/latex/modref/")
+             (base32
+              "1az7lkvazjn5yqkmxi6h60yk18nm16arl5glv0bcslwhagn63lfk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/modref")
+    (synopsis "Customisation of cross-references in LaTeX")
+    (description
+     "The package contains macros which allow authors to easily customise how
+cross-references appear in their document, both in general (across all
+cross-references) and for particular types of references (identified by
+a prefix in the reference label), in a very generic manner.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
