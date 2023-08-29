@@ -90886,6 +90886,29 @@ Finally, it also allows a definition of any optimization problem without
 a limitless number of constraints.")
     (license license:lppl1.3+)))
 
+(define-public texlive-optional
+  (package
+    (name "texlive-optional")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/optional/" "tex/latex/optional/")
+             (base32
+              "06dxidxin8jaygr1glzwlhcpxcq71kcd0g86k0r61sgiwscnr8bg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/optional")
+    (synopsis "Facilitate optional printing of parts of a document")
+    (description
+     "@code{optional} provides simple, flexible, optional compilation of LaTeX
+documents.  Option switches may be given via package options, by the
+@code{\\UseOption} command, or interactively via the @code{\\AskOption}
+command (help text may be provided, by defining the @code{\\ExplainOptions}
+command).  The package is not robust, in the way that comment package is,
+against ill-behaved text.  In particular, verbatim text may not be directly
+included in optional sections (whether they're included or not).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
