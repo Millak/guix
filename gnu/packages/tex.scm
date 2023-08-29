@@ -87315,6 +87315,28 @@ labels by typesetting a complete list of labels wherever the author requests it.
 references right.)")
     (license license:lppl1.3+)))
 
+(define-public texlive-listliketab
+  (package
+    (name "texlive-listliketab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/listliketab/"
+                   "source/latex/listliketab/"
+                   "tex/latex/listliketab/")
+             (base32
+              "0gmd78nnjgq8ka4x9a7zmbq9f9345lcpms9pk9dhiz9a5kwpi7ii")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/listliketab")
+    (synopsis "Typeset lists as tables")
+    (description
+     "The @code{listliketab} package helps the user make list-like tabulars, i.e.,
+a tabular that is indistinguishable from an @code{itemize} or @code{enumerate}
+environment.  The advantage of using a tabular is that the user can add
+additional columns to each entry in the list.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
