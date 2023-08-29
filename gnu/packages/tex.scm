@@ -72908,6 +72908,26 @@ as LaTeX picture environment, PSTricks or PGF/TikZ generated pictures, or just
 from typeset text.")
     (license license:lppl)))
 
+(define-public texlive-anonchap
+  (package
+    (name "texlive-anonchap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/anonchap/" "tex/latex/anonchap/")
+             (base32
+              "0c606nyp8ybik8vjk821hrvfp8ci5f4dwnllqb932xgnqgibr5rf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/anonchap")
+    (synopsis "Make chapters be typeset like sections")
+    (description
+     "The command @code{\\simplechapter} sets up the @code{\\chapter} command not to number chapters,
+though they may possibly have a prefix, and a suffix (the
+@code{\\simplechapterdelim} command, which the user may alter).  The
+@code{\\restorechapter} command restores the status quo ante.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
