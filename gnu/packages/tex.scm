@@ -73362,6 +73362,26 @@ package relies on BibTeX being used to handle citations.")
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-autonum
+  (package
+    (name "texlive-autonum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/autonum/" "source/latex/autonum/"
+                   "tex/latex/autonum/")
+             (base32
+              "0xlxkmnar4ylprf4zcz59ia9xb9nb2r14hbg7ar4in5rsxsiih4j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/autonum")
+    (synopsis "Automatic equation references")
+    (description
+     "The package arranges that equation numbers are applied only to those
+equations that are referenced.  This operation is similar to the
+@samp{showonlyrefs} option of the package @code{mathtools}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
