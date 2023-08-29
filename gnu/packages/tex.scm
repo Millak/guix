@@ -90247,6 +90247,27 @@ direct from package files.
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-nidanfloat
+  (package
+    (name "texlive-nidanfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nidanfloat/"
+                   "source/latex/nidanfloat/"
+                   "tex/latex/nidanfloat/")
+             (base32
+              "18c58k4f2vq6ys7dq8b4xcl0yxvwn4maazb51fyf4mnl8cd2sl6f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nidanfloat")
+    (synopsis
+     "Bottom placement option for double float in two column mode (nidan-kumi)")
+    (description
+     "This package enables a bottom placement option for double floats in two
+column mode (@emph{nidan-kumi}).")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
