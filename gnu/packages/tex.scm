@@ -97620,6 +97620,27 @@ kind of terms with a continuous number.  Candidate terms may appear inside an
 @code{equation} or @code{eqnarray} environment.")
     (license license:lppl)))
 
+(define-public texlive-termsim
+  (package
+    (name "texlive-termsim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/termsim/" "source/latex/termsim/"
+                   "tex/latex/termsim/")
+             (base32
+              "1yz4kjvc4ip58vnwcvyiyg65sr9szy6z772cammdakx2ga344v78")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ctex))
+    (home-page "https://ctan.org/pkg/termsim")
+    (synopsis "Simulate Win10, Ubuntu, and Mac terminals")
+    (description
+     "This package provides environments @code{terminal} and @code{terminal*}, and
+macros @code{\\termfile} and @code{\\termfile*} to simulate Win10, Ubuntu and
+Mac terminals.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
