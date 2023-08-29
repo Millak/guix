@@ -94460,6 +94460,24 @@ written as @samp{\"U} into the raw index file for correct processing with
 MakeIndex and pdfLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-precattl
+  (package
+    (name "texlive-precattl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/precattl/" "tex/latex/precattl/")
+             (base32
+              "0b003sdv58chmckyqcrij6k2b76639j7r5hiidnwcwf1lk56wfk4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/precattl")
+    (synopsis "Prepare special catcodes from token list")
+    (description
+     "This package allows users to write code that contains tokens with unusual
+catcodes.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
