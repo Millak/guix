@@ -87073,6 +87073,23 @@ easy indexing and glossary printing.")
 selection of units.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lettre
+  (package
+    (name "texlive-lettre")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lettre/" "tex/latex/lettre/")
+             (base32
+              "1ahcsx9ds5vw3cf9jxs277jcckhbslpcs9ahhj40ycygfrlkw4p8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lettre")
+    (synopsis "Letters and faxes in French")
+    (description
+     "This class is for writing letters and faxes in French.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
