@@ -87032,6 +87032,27 @@ similar packages, @code{leftindex} also indents the left superscript,
 providing much better spacing in general.")
     (license license:lppl1.3c)))
 
+(define-public texlive-leipzig
+  (package
+    (name "texlive-leipzig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/leipzig/" "makeindex/leipzig/"
+                   "source/latex/leipzig/" "tex/latex/leipzig/")
+             (base32
+              "1iwra0yvalprgxqk4vdbh4wr17pla94x5lnjnwg3jh8nlb1887a6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/leipzig")
+    (synopsis "Typeset and index linguistic gloss abbreviations")
+    (description
+     "The @code{leipzig} package provides a set of macros for standard glossing
+abbreviations, with options to create new ones.  They are mnemonic.  These
+abbreviations can be used alone or on top of the @code{glossaries} package for
+easy indexing and glossary printing.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
