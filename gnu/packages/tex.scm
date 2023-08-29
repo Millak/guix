@@ -98280,6 +98280,27 @@ a LaTeX document.  The package currently only works with the document classes
 @code{article}, @code{report} and @code{book}.")
     (license license:public-domain)))
 
+(define-public texlive-titleref
+  (package
+    (name "texlive-titleref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/titleref/" "tex/latex/titleref/")
+             (base32
+              "16s0kqln0mzs9mqnsw8rv5rpqizpd3r3lgmw3wl1yrrbq11n9grh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/titleref")
+    (synopsis "@code{\\titleref} command to cross-reference section titles")
+    (description
+     "This package defines a command @code{\\titleref} that allows you to
+cross-reference section (and chapter, etc) titles and captions just like
+@code{\\ref} and @code{\\pageref}.  The package does not interwork with
+@code{hyperref}; if you need @code{hypertext} capabilities, use @code{nameref}
+instead.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
