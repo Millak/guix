@@ -82883,6 +82883,25 @@ package include data management, construction of lists and tables, and
 calculations based on the contents of lists and arrays.")
     (license license:lppl)))
 
+(define-public texlive-foreign
+  (package
+    (name "texlive-foreign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/foreign/" "source/latex/foreign/"
+                   "tex/latex/foreign/")
+             (base32
+              "06mbm7j754w44acpvx2miaa3py5gvmjxjq9wh9nq3xv8b7v7a7n3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/foreign")
+    (synopsis "Systematic treatment of foreign words in documents")
+    (description
+     "The package supports authors use of consistent typesetting of foreign words
+in documents.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
