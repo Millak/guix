@@ -76902,6 +76902,24 @@ a concept (typically, near its first use), and will ensure consistent use
 throughout the document.")
     (license license:lppl)))
 
+(define-public texlive-concprog
+  (package
+    (name "texlive-concprog")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/concprog/" "tex/latex/concprog/")
+             (base32
+              "1i47w63gqiczygvmwq7pdym7l2hi2fw4maan3c0psfqm6wh0mz0w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/concprog")
+    (synopsis "Concert programmes")
+    (description
+     "This package provides a class which provides the necessary macros to prepare a
+(classical) concert programme; a sample is provided.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
