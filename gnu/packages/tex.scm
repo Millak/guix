@@ -87856,6 +87856,29 @@ on the package @code{todonotes}, and depends heavily on Lua, so it can only be
 used with LuaLaTeX.")
     (license license:lppl1.2+)))
 
+(define-public texlive-macrolist
+  (package
+    (name "texlive-macrolist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/macrolist/"
+                   "source/latex/macrolist/"
+                   "tex/latex/macrolist/")
+             (base32
+              "1lirq03dnz9pf454njqc9fmq9ra0pkkyx28lx3qjz1wph9g7cayv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/macrolist")
+    (synopsis "List operations for LaTeX2e")
+    (description
+     "This package provides a list data structure and common list functions such as
+@code{\\macrolistadd}, @code{\\macrolistremove}, @code{\\macrolistforeach}, as
+well as @code{\\macrolistremovelast} and @code{\\macrolistjoin}.  Unlike most
+programming languages, the lists in this package are 1-indexed, meaning the
+first element is numbered 1, the second element numbered 2, and so on.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
