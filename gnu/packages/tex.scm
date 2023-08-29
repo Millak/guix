@@ -83804,6 +83804,26 @@ package.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-german
+  (package
+    (name "texlive-glossaries-german")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-german/"
+                   "source/latex/glossaries-german/"
+                   "tex/latex/glossaries-german/")
+             (base32
+              "0yg9i4fdmxm67nrs5mpijx1vhvfiqzblhca94qylr5ylp8dwxhfc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-german")
+    (synopsis "German language module for @code{glossaries} package")
+    (description
+     "This package provides a German language module for the @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
