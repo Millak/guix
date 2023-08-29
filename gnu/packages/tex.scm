@@ -73190,6 +73190,24 @@ files''.")
 assignments.")
     (license license:lppl)))
 
+(define-public texlive-assoccnt
+  (package
+    (name "texlive-assoccnt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/assoccnt/" "tex/latex/assoccnt/")
+             (base32
+              "0a7mwmsqj3vyvgcwxyyhawiylj9qkyggmgzar0517b2wrmqy7iyk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/assoccnt")
+    (synopsis "Associate counters, making them step when a master steps")
+    (description
+     "The package provides the means of declaring a set of counters to be stepped,
+each time some master counter is stepped.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
