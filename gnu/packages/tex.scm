@@ -81084,6 +81084,28 @@ It includes the major style updates that came out in 2013, featuring a neater,
 more compact and somewhat fancier layout.")
     (license license:lppl1.3+)))
 
+(define-public texlive-europecv
+  (package
+    (name "texlive-europecv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/europecv/" "tex/latex/europecv/")
+             (base32
+              "05m1xah8alvql7iiwg1br97gwncx3i1d3151dw4nccxrxyw7wnw5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/europecv")
+    (synopsis "Unofficial class for European curricula vitae")
+    (description
+     "The europecv class is an unofficial LaTeX implementation of the standard
+model for curricula vitae (the ``Europass CV'') as recommended by the European
+Commission.  Although primarily intended for users in the European Union, the
+class is flexible enough to be used for any kind of curriculum vitae.  The
+class has localisations for all the official languages of the EU (plus
+Catalan), as well as options permitting input in UTF-8 and koi8-r.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
