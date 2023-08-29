@@ -76377,6 +76377,30 @@ Starred versions of these environments and macros are provided to add
 a comment at the bottom of the fancy box.")
     (license license:lppl1.3c)))
 
+(define-public texlive-codedoc
+  (package
+    (name "texlive-codedoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/codedoc/" "tex/latex/codedoc/")
+             (base32
+              "052l9xznmm01y946wlxyrq9srqys343yrq39kwsd2xxvzi3zm159")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/codedoc")
+    (synopsis "LaTeX code and documentation in LaTeX-format file")
+    (description
+     "The CodeDoc class is an alternative to DocStrip (and others) to produce LaTeX
+code along with its documentation without departing from LaTeX's ordinary
+syntax.  The documentation is prepared like any other LaTeX document and the
+code to be commented verbatim is simply delimited by an environment.  When an
+option is turned on in the class options, this code is written to the desired
+file(s).  The class also includes fully customizable verbatim environments
+which provide the author with separate commands to typeset the material and/or
+to execute it.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
