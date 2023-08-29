@@ -89444,6 +89444,27 @@ and compiles it to @file{.mps} files.  It also allows for various
 configuration options to manage the generation of files and compilation.")
     (license license:lppl1.3+)))
 
+(define-public texlive-msc
+  (package
+    (name "texlive-msc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/msc/" "tex/latex/msc/")
+             (base32
+              "0hsxvqk0nhx8zwmlzws8xl47syg993k044sbj0w22kvk3kqf0cqc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/msc")
+    (synopsis "Draw MSC diagrams")
+    (description
+     "The package should be useful to all people that prepare their texts with
+LaTeX and want to draw @acronym{MSC, Message Sequence Charts} in their texts.
+The package is not an MSC editor; it simply takes a textual description of an
+MSC and draws the corresponding MSC. The current version of the MSC macro
+package supports the full MSC2000 language.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
