@@ -76423,6 +76423,26 @@ way to highlight code: using LPeg (Parsing Expression Grammars for Lua).  LPeg
 is much more powerful and faster than @code{l3regex}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-codepage
+  (package
+    (name "texlive-codepage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/codepage/"
+                   "source/latex/codepage/"
+                   "tex/latex/codepage/")
+             (base32
+              "1y223jd20issbl4p4rf14130iix75r29kszknglkshdhb3lqzg4c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/codepage")
+    (synopsis "Support for variant code pages")
+    (description
+     "The package provides a mechanism for inputting non-ASCII text.  Nowadays, the
+job is mostly done by the @code{inputenc} package in the LaTeX distribution.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
