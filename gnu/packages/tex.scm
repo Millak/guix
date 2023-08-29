@@ -73294,6 +73294,29 @@ user (as @code{\\MyAuthor}, etc) after the @code{\\maketitle} command has been
 executed.")
     (license license:cc0)))
 
+(define-public texlive-authorarchive
+  (package
+    (name "texlive-authorarchive")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/authorarchive/"
+                   "tex/latex/authorarchive/")
+             (base32
+              "0lqz5bb7hz42ja7kmbkgq0l25ram9axj1kgvv6cyhzxdf0b0hxwn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/authorarchive")
+    (synopsis "Adds self-archiving information to scientific papers")
+    (description
+     "This is a LaTeX style for producing author self-archiving copies of
+(academic) papers.  The following layout-styles are pre-defined: ACMfor the
+two-column layout used by many ACM conferences, IEEE for the two-column layout
+used by many IEEE conferences, LNCS for the LNCS layout (as used by Springer),
+and LNI for the Lecture Notes in Informatics, published by the GI ENTCS for
+the Elsevier ENTCS layout")
+    (license (list license:lppl1.3c license:bsd-2))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
