@@ -93073,6 +93073,30 @@ of customizations are possible, allowing you to create an unique progress bar
 on your own.  The package uses TikZ to produce its graphics.")
     (license license:lppl)))
 
+(define-public texlive-proofread
+  (package
+    (name "texlive-proofread")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/proofread/"
+                   "source/latex/proofread/"
+                   "tex/latex/proofread/")
+             (base32
+              "13sp7xd1a5k25l5wvjzk51p01zk6wcnj5fjd7fpca4indqz3x2kx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/proofread")
+    (synopsis "Commands for inserting annotations")
+    (description
+     "This package defines a few LaTeX commands that may be useful when you
+proofread a LaTeX document.  They allow you to easily highlight text and add
+comments in the margin.  Vim escape sequences are provided for inserting or
+removing these LaTeX commands in the source.  Options are provided for
+displaying the document with extra line spacing, and for displaying it in
+either corrected or uncorrected state, both without margin notes.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
