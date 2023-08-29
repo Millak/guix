@@ -92854,6 +92854,25 @@ and @code{\\restoregeometry} of the @code{geometry} package @code{\\newpagecolor
 with PowerPoint, but more precise, uniform, and visually strict.")
     (license license:expat)))
 
+(define-public texlive-practicalreports
+  (package
+    (name "texlive-practicalreports")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/practicalreports/"
+                   "tex/latex/practicalreports/")
+             (base32
+              "0zm7rx8d5vgg2b2dlra44qk77kgivb4pq7glkaligcd1fw8sdzyp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/practicalreports")
+    (synopsis "Some macros for writing practical reports")
+    (description
+     "This package provides a handful of macros for writing up science practical
+reports.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
