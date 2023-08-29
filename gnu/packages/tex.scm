@@ -99929,6 +99929,25 @@ package.  It is backwards compatible with the original environments.")
      "This package provides another implementation of text wrapping.")
     (license license:lppl1.3c)))
 
+(define-public texlive-writeongrid
+  (package
+    (name "texlive-writeongrid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/writeongrid/"
+                   "tex/latex/writeongrid/")
+             (base32
+              "0vrwgc0ldcy1b948dk1ry4j5ass4f92zmf5wiq517zza7fz45rql")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/writeongrid")
+    (synopsis "Write on grid lines")
+    (description
+     "This package provides an environment to create grids (type 5x5 or Seyes or
+Ruled) and commands to write texts right on the lines.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
