@@ -84847,6 +84847,26 @@ that cross-link concepts to their applications, or simply mentioning multiple
 pages that share something in common.")
     (license license:gpl3+)))
 
+(define-public texlive-hhtensor
+  (package
+    (name "texlive-hhtensor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hhtensor/"
+                   "source/latex/hhtensor/"
+                   "tex/latex/hhtensor/")
+             (base32
+              "0ghqfyhq5467jc506j0wa0nlxxrlm28mx1wp963rgqkynzlflv4j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hhtensor")
+    (synopsis "Print vectors, matrices, and tensors")
+    (description
+     "This package provides commands for vectors, matrices, and tensors with
+different styles --- arrows (as the LaTeX default), underlined, and bold.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
