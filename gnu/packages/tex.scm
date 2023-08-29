@@ -89421,6 +89421,29 @@ loaded.  This is useful for side by side movie clips to be played back
 synchronously.  The package is now superseded by @code{media9}.")
     (license license:lppl)))
 
+(define-public texlive-mpostinl
+  (package
+    (name "texlive-mpostinl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mpostinl/"
+                   "source/latex/mpostinl/"
+                   "tex/latex/mpostinl/")
+             (base32
+              "02micxsgrhry1ii5ih070rd014c3vxvz8mrzzd5qh2pf32zzfwa4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mpostinl")
+    (synopsis "Embed MetaPost figures within LaTeX documents")
+    (description
+     "This LaTeX2e package enables the embedding of MetaPost figures within LaTeX
+documents.  The package automatically collects the embedded definitions and
+figures in a @file{.mp} file, adds an appropriate LaTeX document structure,
+and compiles it to @file{.mps} files.  It also allows for various
+configuration options to manage the generation of files and compilation.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
