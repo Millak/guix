@@ -74577,6 +74577,26 @@ user-friendly.")
 integers, powers, factorials, truncated division and its associated modulo.")
     (license license:lppl1.3c)))
 
+(define-public texlive-boites
+  (package
+    (name "texlive-boites")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/boites/" "source/latex/boites/"
+                   "tex/latex/boites/")
+             (base32
+              "1dinh5p4vvm7g9hdki329ik8v6d3ci5v20hpiv2960cq0l99bf08")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/boites")
+    (synopsis "Boxes that may break across pages")
+    (description
+     "This package defines environments that allow page breaks inside framed boxes
+whose edges may be variously fancy.  The bundle includes a few
+examples (shaded box, box with a wavy line on its side, etc).")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
