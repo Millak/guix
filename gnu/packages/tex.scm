@@ -90208,6 +90208,45 @@ Some (Metafont) font sources are included; the fonts are available separately
 in Type 1 format.")
     (license license:lppl)))
 
+(define-public texlive-nicetext
+  (package
+    (name "texlive-nicetext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nicetext/"
+                   "source/latex/nicetext/"
+                   "tex/latex/nicetext/")
+             (base32
+              "1si1slffnw957h6bmyvgnhivbcdz32wcj7s1r5myq7rjhq1dg9ar")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nicetext")
+    (synopsis
+     "Minimal markup for simple text (Wikipedia style) and documentation")
+    (description
+     "The bundle offers minimal markup syntax for various simple kinds of text.
+The user will typically involve little more than is printed, and will still
+get LaTeX quality.The bundle provides four packages:
+
+@itemize
+
+@item @code{wiki} addresses general texts, marked up in the simple style used
+on Wikipedia;
+
+@item @code{niceverb} is yet another means of documenting LaTeX packages: it
+offers syntax-aware typesetting of meta-variables (macro arguments) and for
+referring to commands (and their syntax) in footnotes, section titles etc.;
+
+@item @code{fifinddo} aims to parse plain text or (La)TeX files using TeX, and
+to write the results to an external file;
+
+@item @code{makedoc} provides the means to produce typeset documentation
+direct from package files.
+
+@end itemize")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
