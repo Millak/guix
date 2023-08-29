@@ -93116,6 +93116,28 @@ either corrected or uncorrected state, both without margin notes.")
 @code{\\jobname.properties}.")
     (license license:lppl)))
 
+(define-public texlive-prosper
+  (package
+    (name "texlive-prosper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prosper/" "tex/latex/prosper/")
+             (base32
+              "1wbfgvh0lgfz7l9ihd6p25w88zpbgn2v1pjfsr19xyrf5h1dkg0s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/prosper")
+    (synopsis "LaTeX class for high quality slides")
+    (description
+     "Prosper is a LaTeX class for writing transparencies.  It is written as an
+extension of the @code{seminar} class.  Prosper offers a friendly environment
+for creating slides for both presentations with an overhead projector and
+a video projector.  Slides prepared for a presentation with a computer and
+a video projector may integrate animation effects, incremental display, and so
+on.  Various visual styles are supported and others are being contributed.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
