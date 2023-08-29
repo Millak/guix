@@ -78079,6 +78079,26 @@ currently unmaintained.")
 unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-croatian
+  (package
+    (name "texlive-datetime2-croatian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-croatian/"
+                   "source/latex/datetime2-croatian/"
+                   "tex/latex/datetime2-croatian/")
+             (base32
+              "0kmhwg1kcq5n8sq8a8h0q0izblm94b7wjdymsvdnaxj9z9xniwih")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-croatian")
+    (synopsis "Croatian language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{croatian} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
