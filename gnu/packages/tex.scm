@@ -77406,6 +77406,28 @@ needs to be repeated often.")
      (license:non-copyleft
       "file://tex/latex/courseoutline/courseoutline.cls"))))
 
+(define-public texlive-coursepaper
+  (package
+    (name "texlive-coursepaper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coursepaper/"
+                   "tex/latex/coursepaper/")
+             (base32
+              "0h625m8blq1a3ga9m2c0bkv5n1wfwgy9kbgs89jh7yqy262z2cs3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coursepaper")
+    (synopsis "Prepare university course papers")
+    (description
+     "Coursepaper is a class with which students can provide simple course papers,
+in a uniform design to ease the task of marking.")
+    ;; "Feel free to copy, modify, and distribute."
+    (license
+     (license:non-copyleft
+      "file://tex/latex/coursepaper/coursepaper.cls"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
