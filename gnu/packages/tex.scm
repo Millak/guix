@@ -100842,6 +100842,30 @@ due.  The reference format is highly and easily customizable, both globally
 and locally.")
     (license license:lppl1.3c)))
 
+(define-public texlive-zref-vario
+  (package
+    (name "texlive-zref-vario")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zref-vario/"
+                   "source/latex/zref-vario/"
+                   "tex/latex/zref-vario/")
+             (base32
+              "0m2q6agq66yc5prag12b1rk6fn4bqcapqqiq5p1nn89n53x1nxyp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-tools texlive-zref-clever))
+    (home-page "https://ctan.org/pkg/zref-vario")
+    (synopsis
+     "Extended cross-references with @code{varioref} and @code{zref-clever}")
+    (description
+     "This package offers a compatibility layer for @code{varioref} to be used
+alongside @code{zref-clever}.  It provides @samp{\\z...}  counterparts to
+@code{varioref}'s main reference commands, each of which essentially does
+some (scoped) setup for @code{varioref}, then calls the original one.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
