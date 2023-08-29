@@ -93792,6 +93792,26 @@ created\")}.  The text in the references is derived from the definition and
 also rendered as hyperlink to the definition.")
     (license license:lppl1.3+)))
 
+(define-public texlive-reflectgraphics
+  (package
+    (name "texlive-reflectgraphics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/reflectgraphics/"
+                   "source/latex/reflectgraphics/"
+                   "tex/latex/reflectgraphics/")
+             (base32
+              "0hwri11ywffm1a4rwgbb11yhhsa5p5ccz7x8rpclpr86rqg54mv1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/reflectgraphics")
+    (synopsis "Techniques for reflecting graphics")
+    (description
+     "The package provides a macro for reflecting images, in a number of different
+ways, in pursuit of more striking graphics in a document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
