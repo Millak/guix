@@ -88145,6 +88145,25 @@ code and documentation in separate files, and then combine them into a single
 table, and also writes the associated installation (@file{.ins}) script.")
     (license license:lppl)))
 
+(define-public texlive-makeglos
+  (package
+    (name "texlive-makeglos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makeglos/" "tex/latex/makeglos/")
+             (base32
+              "10d74vw46y5ckkr2s5rpkv6cf4z1cxp8idqx4gjm6zxfr3arp2ss")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makeglos")
+    (synopsis "Include a glossary into a document")
+    (description
+     "The package provides the means to include a glossary into a document.  The
+glossary is prepared by an external program, such as @command{xindy} or
+@command{makeindex}, in the same way that an index is made.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
