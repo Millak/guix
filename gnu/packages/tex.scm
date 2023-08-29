@@ -85048,6 +85048,34 @@ requirements were to use A5 paper and 10pt type.")
      "This LaTeX package makes hyperlinks underscored, just like on the web.")
     (license license:expat)))
 
+(define-public texlive-hrefhide
+  (package
+    (name "texlive-hrefhide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hrefhide/"
+                   "source/latex/hrefhide/"
+                   "tex/latex/hrefhide/")
+             (base32
+              "1smbklq7cyjzvd2kryv97kwvyh2alpd6gn2j6pbj6v9bcsyc3lmx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hrefhide")
+    (synopsis "Suppress hyper links when printing")
+    (description
+     "This package provides the command @code{\\hrefdisplayonly} (additionally to
+@code{\\href} provided by the @code{hyperref} package).  While
+the (hyperlinked) text appears like an ordinary @code{\\href} in the compiled
+PDF file, the same text will be hidden when printing the text.  Hiding is
+actually achieved by making the text the same colour as the background, thus
+preserving the layout of the rest of the text.
+
+Further, the commands @code{\\hycon} and @code{\\hycoff} can be used to
+simulate switching option @code{ocgcolorlinks} of the @code{hyperref} package
+on and off.  This package is possibly obsolete.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
