@@ -91851,6 +91851,27 @@ page.")
 can be interpreted by the PDF presenter console (@command{pdfpc}) program.")
     (license license:gpl3+)))
 
+(define-public texlive-pdfpc-movie
+  (package
+    (name "texlive-pdfpc-movie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfpc-movie/"
+                   "source/latex/pdfpc-movie/"
+                   "tex/latex/pdfpc-movie/")
+             (base32
+              "0bcr2vn4mljh4y5z75ar8lxfk4m1g5gc168dd12v55jasbghx1sm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfpc-movie")
+    (synopsis "Pdfpc viewer-compatible hyperlinks to movies")
+    (description
+     "This LaTeX2e package provides a command @code{\\pdfpcmovie} for
+embedding (hyperlinking) movies in a way compatible with the PDF Presenter
+Console (@command{pdfpc}).")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
