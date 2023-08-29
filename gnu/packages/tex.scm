@@ -77127,6 +77127,24 @@ code) is greatly simplified.")
     ;; "This package is released under the GNU LGPL."  Assume latest.
     (license license:lgpl3+)))
 
+(define-public texlive-coolfn
+  (package
+    (name "texlive-coolfn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coolfn/" "tex/latex/coolfn/")
+             (base32
+              "0945abjfiyq6rfhjck840c8s72kg2v1hx4ism3iccszfakckqxsb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coolfn")
+    (synopsis "Typeset long legal footnotes")
+    (description
+     "This package provides formatting for footnotes in long legal documents, using
+hanging indents to make them look nicer.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
