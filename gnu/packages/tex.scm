@@ -81620,6 +81620,31 @@ be useful for extracting specific slides from a presentation and use them in
 a new file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-facsimile
+  (package
+    (name "texlive-facsimile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/facsimile/"
+                   "source/latex/facsimile/"
+                   "tex/latex/facsimile/")
+             (base32
+              "1sr4avyrkqwq6gh7f5alclnj0z2n8p2q7263jdqb8jlvq80b9pdd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/facsimile")
+    (synopsis "Document class for preparing faxes")
+    (description
+     "The @code{facsimile} class provides a simple interface for creating
+a document for sending as a fax, with LaTeX.  The class covers two areas.
+First, a title page is created with a detailed fax header; second, every page
+gets headers and footers so that the recipient can be sure that every page has
+been received and all pages are complete, and in the correct order.  The class
+evolved from the @code{fax} package, and provides much better language
+support.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
