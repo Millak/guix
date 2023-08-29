@@ -87209,6 +87209,27 @@ Information Mapping method.  The class provides all definitions to typeset
 a whole document.")
     (license license:lppl1.3c)))
 
+(define-public texlive-linegoal
+  (package
+    (name "texlive-linegoal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/linegoal/"
+                   "source/latex/linegoal/"
+                   "tex/latex/linegoal/")
+             (base32
+              "1aipk7y42gkibpaqicbw8myfyj94qs736m2sk3l390xidz81fmw8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/linegoal")
+    (synopsis "@emph{dimen} that returns the space left on the line")
+    (description
+     "The @code{linegoal} package provides a macro @code{\\linegoal} to be used
+with @code{\\setlength}: @samp{\\setlength<some dimen>\\linegoal} will set
+@samp{<some dimen>} to the horizontal length of the remainder of the line.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
