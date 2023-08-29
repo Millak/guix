@@ -92424,6 +92424,27 @@ defaults to help typeset, build and print books mainly based on visual/image
 content.")
     (license license:bsd-3)))
 
+(define-public texlive-picture
+  (package
+    (name "texlive-picture")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/picture/" "source/latex/picture/"
+                   "tex/latex/picture/")
+             (base32
+              "157icaf3sx263y7vf25klcxs1ycnv5rxcag0wc8q19hbxj2qxg6v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/picture")
+    (synopsis "Dimensions for picture macros")
+    (description
+     "There are macro and environment arguments that expect numbers that will
+internally be multiplied by @code{\\unitlength}.  This package extends the
+syntax of these arguments, so that dimensions with calculation support may be
+used for these arguments.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
