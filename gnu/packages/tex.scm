@@ -94887,6 +94887,25 @@ a trailing dot.  It includes a command whereby the same can be made to happen
 with other sectioning commands.")
     (license license:lppl)))
 
+(define-public texlive-secnum
+  (package
+    (name "texlive-secnum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/secnum/" "source/latex/secnum/"
+                   "tex/latex/secnum/")
+             (base32
+              "0nsvq3w3925r45qg6na5i79wg84sy6p4a2gi6nrgkilb1mdvxxqx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/secnum")
+    (synopsis "Macro to format section numbering intuitively")
+    (description
+     "This package provides a macro @code{\\setsecnum} to format section numbering
+intuitively.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
