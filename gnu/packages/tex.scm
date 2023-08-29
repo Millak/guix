@@ -84926,6 +84926,24 @@ For this purpose it builds on the generic @code{listings} package.")
 @code{picture} environment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hitec
+  (package
+    (name "texlive-hitec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hitec/" "tex/latex/hitec/")
+             (base32
+              "16c5jk7950nl1b6qa67as8iscm9nk8nlcq6v4c7ib8zm9qf68z29")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hitec")
+    (synopsis "Class for documentation")
+    (description
+     "This package provides an article-based class designed for use for
+documentation in high-technology companies.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
