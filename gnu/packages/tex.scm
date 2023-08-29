@@ -83684,6 +83684,25 @@ replaced by @code{\\gloss}.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-dutch
+  (package
+    (name "texlive-glossaries-dutch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-dutch/"
+                   "source/latex/glossaries-dutch/"
+                   "tex/latex/glossaries-dutch/")
+             (base32
+              "0q6szswbbz2lkiknmvv53mxwvl0nrxrmbz5pw8ppgf2d13xs6c9f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-dutch")
+    (synopsis "Dutch language module for @code{glossaries} package")
+    (description
+     "This package provides a Dutch language module for @code{glossaries} package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
