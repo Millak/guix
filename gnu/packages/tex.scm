@@ -79975,6 +79975,26 @@ respectively, end, italic, bold or small-caps formatting.  The meaning of
 underscore and circumflex in math mode remain the same.")
     (license license:gpl3+)))
 
+(define-public texlive-easylist
+  (package
+    (name "texlive-easylist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easylist/" "tex/latex/easylist/")
+             (base32
+              "1sj2sn0hwk16819qqyy2bfxslpqxhd4i7zbng2abqbmw1vdvqb2p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/easylist")
+    (synopsis "Lists using a single active character")
+    (description
+     "This package allows you to create lists of numbered items with a single
+active character as the only command.  A variety of parameters are available
+to configure the appearance of the list; lists may be nested (effectively to
+unlimited depth).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
