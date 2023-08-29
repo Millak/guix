@@ -78992,6 +78992,24 @@ user-defined tokens (e.g., @samp{Tab}).  It can be used for serial letters and
 the like, making it easier to export the data file from MS-Excel/MS-Word")
     (license license:lppl)))
 
+(define-public texlive-democodetools
+  (package
+    (name "texlive-democodetools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/democodetools/"
+                   "tex/latex/democodetools/")
+             (base32
+              "0fr37dqqvccr8vfkkqmgds7da0cwhlwlrgh4vzx49kq9l66m78n3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/democodetools")
+    (synopsis "Package for LaTeX code documentation")
+    (description
+     "This is yet another doc/docx/doc3 package for LaTeX code documentation.")
+    (license (list license:lppl1.3c license:gpl3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
