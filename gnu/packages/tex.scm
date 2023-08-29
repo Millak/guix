@@ -97087,6 +97087,28 @@ boxes may be absolute, or as a percentage of the width; various other controls
 are available.")
     (license license:lppl)))
 
+(define-public texlive-tablefootnote
+  (package
+    (name "texlive-tablefootnote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tablefootnote/"
+                   "source/latex/tablefootnote/"
+                   "tex/latex/tablefootnote/")
+             (base32
+              "1179jcgjnsh6plk4kfcyyczjx0xcn2cjdc413kfz4pxmx7592jdn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tablefootnote")
+    (synopsis "Permit footnotes in tables")
+    (description
+     "The package provides the command @code{\\tablefootnote} to be used in
+a @code{table} or @code{sidewaystable} environment, where @code{\\footnote}
+will not work (and when using @code{\\footnotemark} and @code{\\footnotetext},
+and adjusting the counter as necessary, is too much work).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
