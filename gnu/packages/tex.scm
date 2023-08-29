@@ -88164,6 +88164,33 @@ glossary is prepared by an external program, such as @command{xindy} or
 @command{makeindex}, in the same way that an index is made.")
     (license license:gpl3+)))
 
+(define-public texlive-makelabels
+  (package
+    (name "texlive-makelabels")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makelabels/"
+                   "source/latex/makelabels/"
+                   "tex/latex/makelabels/")
+             (base32
+              "0aplzmyvdkyqkzwhyjcjp11dnmf2v1xm4b4qbyrvmhjbldrmzsps")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makelabels")
+    (synopsis
+     "Add a @code{\\makelabels} feature to KOMA-Script letter classes and package")
+    (description
+     "The standard letter class @code{letter} has a label feature.  You can
+activate it using @code{\\makelabels}.  While in Germany window envelopes are
+common, printing labels is not common, and @code{scrlttr2} has never supported
+label printing.  Using @file{makelabels.lco} does implement
+a @code{\\makelabels} feature similar to the standard letter classes.
+Currently there are (almost) no configuration features for
+@file{makelabels.lco}.  But you may use the @code{envlab} package after
+loading @file{makelabels.lco} to get various configuration features.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
