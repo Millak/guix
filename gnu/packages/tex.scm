@@ -72495,6 +72495,45 @@ acronyms and technical terms in the text, giving an index each of
 terms and acronyms with their expanded form.")
     (license license:lppl1.3+)))
 
+(define-public texlive-actuarialangle
+  (package
+    (name "texlive-actuarialangle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/actuarialangle/"
+                   "source/latex/actuarialangle/"
+                   "tex/latex/actuarialangle/")
+             (base32
+              "0j8z47n0aawhvz2s4i0pwfp7yq1vqsxbd2sjx7f955n6k2f54hhw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-enumitem
+                  texlive-etoolbox
+                  texlive-framed
+                  texlive-hypdoc
+                  texlive-helvetic
+                  texlive-inconsolata
+                  texlive-mathpazo
+                  texlive-microtype
+                  texlive-natbib
+                  texlive-pict2e
+                  texlive-upquote
+                  texlive-xcolor
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/actuarialangle")
+    (synopsis
+     "Angle symbol denoting a duration in actuarial and financial notation")
+    (description
+     "This package provides commands to typeset the angle symbol denoting
+a duration in actuarial notation, such as in symbols for the present value of
+certain or life annuities, and an over angle square bracket used to emphasize
+joint status in symbols of life contingencies.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
