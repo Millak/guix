@@ -87645,6 +87645,24 @@ the @code{listings} package.  This style contains almost all ligatures in Fira
 Code family of fonts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lt3graph
+  (package
+    (name "texlive-lt3graph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lt3graph/" "tex/latex/lt3graph/")
+             (base32
+              "0n68mxgidr5kb5qz8mgdc3i6qk6bmirbvs6wij6b04a3b9d0fkh0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lt3graph")
+    (synopsis "Provide a graph datastructure for experimental LaTeX3")
+    (description
+     "The package defines a graph data structure, for use in documents that are
+using the experimental LaTeX 3 syntax.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
