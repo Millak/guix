@@ -81480,6 +81480,29 @@ interface for configuring and customising the formatting, layout, and
 representation of the exercise content.")
     (license license:lppl1.3+)))
 
+(define-public texlive-exp-testopt
+  (package
+    (name "texlive-exp-testopt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exp-testopt/"
+                   "source/latex/exp-testopt/"
+                   "tex/latex/exp-testopt/")
+             (base32
+              "0b28paxhpnl7s2yi6dlf81z2hpyg7hjd8ixs04wygk6q5ll4bcds")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exp-testopt")
+    (synopsis "Expandable @code{\\@@testopt} (and related) macros")
+    (description
+     "The package provides an expandable variant of the LaTeX kernel command
+@code{\\@@testopt}, named @code{\\@@expandable@@testopt}, and a more general
+@code{\\@@expandable@@ifopt}, both intended for package writers.  Also we have
+a variant of @code{\\newcommand} which uses these macros to check for optional
+arguments.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
