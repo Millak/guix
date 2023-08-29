@@ -72618,6 +72618,28 @@ selection.  Using this package still requires some knowledge on how to use
 fonts with LaTeX.")
     (license license:gpl3+)))
 
+(define-public texlive-addlines
+  (package
+    (name "texlive-addlines")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/addlines/"
+                   "source/latex/addlines/"
+                   "tex/latex/addlines/")
+             (base32
+              "1hn7xhzr6qxfv5rp7hlb3ln3zfm52g5hb006f4gdwc17c0j25h48")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/addlines")
+    (synopsis "Wrapper around @code{\\enlargethispage}")
+    (description
+     "This small package provides the command @code{\\addlines} for adding or
+removing space in the textblock of the page it's used on.  E.g., adding an
+extra line of text to the page so that a section fits better on the next page.
+It will also add space to the facing page in a two-sided document.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
