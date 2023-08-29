@@ -91137,6 +91137,39 @@ for measuring, the package might be unnecessary.  Otherwise it saves the
 developer from printing the page and measuring by hand.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pagelayout
+  (package
+    (name "texlive-pagelayout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pagelayout/"
+                   "doc/man/man1/pagelayoutapi.1"
+                   "doc/man/man1/pagelayoutapi.man1.pdf"
+                   "doc/man/man1/textestvis.1"
+                   "doc/man/man1/textestvis.man1.pdf"
+                   "scripts/pagelayout/"
+                   "tex/latex/pagelayout/")
+             (base32
+              "1zaif2bfv1p97w1yj40rkgyspf0np45phz85ag0v0ikdvshqhs0v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "pagelayoutapi" "textestvis")))
+    (home-page "https://ctan.org/pkg/pagelayout")
+    (synopsis "Layout graphic rich documents")
+    (description
+     "The @code{pagelayout} class enables you to layout pages declaratively
+using simple macros for pages, covers, grids, templates, text, and graphics to
+create graphic rich, perfectly typeset, and print ready PDFs.  The integration
+of Inkscape allows your to create box shadows.  The integration of ImageMagick
+allows you to configure compression and sharpening for bitmap graphics to
+export web, print or preview versions of your document.  Parallelized image
+optimization, caching, and a draft mode enable fast PDF creation and
+a responsive workflow, even for large documents with lots of photos and
+graphics.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
