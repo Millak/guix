@@ -75060,6 +75060,32 @@ compress streams; whether or not to use object streams.  This package supports
 all major PDF-output engines and @command{dvipdfmx}.")
     (license license:expat)))
 
+(define-public texlive-bxtexlogo
+  (package
+    (name "texlive-bxtexlogo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxtexlogo/"
+                   "tex/latex/bxtexlogo/")
+             (base32
+              "0kd2gyz8a5pkqh8am7ydcndykcrmjlcg0bwsabz61aklyrvaxsdv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxtexlogo")
+    (synopsis "Additional TeX-family logos")
+    (description
+     "The @code{hologo} package provides many useful logos of popular (and not so
+popular) TeX-family software.  However, its interface is a bit cumbersome
+because you must type @code{\\hologo{BibTeX}} instead of @code{\\BibTeX}.
+This package makes it possible to import some of the logos provided by
+@code{hologo} as single commands, such as @code{\\BibTeX}.
+
+Additionally, the package provides logos of some TeX-family software that is
+popular mainly in Japan.  These logos can be imported in the same way as those
+provided by the @code{\\hologo} command.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
