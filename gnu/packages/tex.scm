@@ -93812,6 +93812,26 @@ also rendered as hyperlink to the definition.")
 ways, in pursuit of more striking graphics in a document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-refman
+  (package
+    (name "texlive-refman")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/refman/" "source/latex/refman/"
+                   "tex/latex/refman/")
+             (base32
+              "11yrv849xq2qa6x1zihm1mk19gs7zfa7blw0psbcv945vxpz6vm8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/refman")
+    (synopsis "Format technical reference manuals")
+    (description
+     "This package provides document classes (@code{report} and @code{article}
+style) for writing technical reference manuals.  It offers a wide left margin
+for notes to the reader, like some of the manuals distributed by Adobe.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
