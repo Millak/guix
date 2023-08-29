@@ -84232,6 +84232,41 @@ with Ghostscript before inclusion, with the following consequences:
 supported.")
     (license license:bsd-3)))
 
+(define-public texlive-graphicx-psmin
+  (package
+    (name "texlive-graphicx-psmin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphicx-psmin/"
+                   "source/latex/graphicx-psmin/"
+                   "tex/latex/graphicx-psmin/")
+             (base32
+              "1vppjv24cwnizg96pyhj68g2wx8dd4193c6bm2k4visqwpnwh95p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-footmisc
+                  texlive-fourier
+                  texlive-hypdoc
+                  texlive-listings
+                  texlive-pgf
+                  texlive-pst-text
+                  texlive-pstricks
+                  texlive-xcolor
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/graphicx-psmin")
+    (synopsis "Reduce size of PostScript files by not repeating images")
+    (description
+     "The package is an extension of the standard @code{graphics} bundle and
+provides a way to include repeated PostScript graphics (PS, EPS) only once in
+a PostScript document.  This leads to smaller PostScript documents when
+having, for instance, a logo on every page.  The package only works when
+post-processed with Dvips.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
