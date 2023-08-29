@@ -77169,6 +77169,29 @@ within the list (the index of the item).")
     ;; "This package is released under the GNU LGPL."  Assume latest.
     (license license:lgpl3+)))
 
+(define-public texlive-coolstr
+  (package
+    (name "texlive-coolstr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coolstr/" "source/latex/coolstr/"
+                   "tex/latex/coolstr/")
+             (base32
+              "0df218brjmhb2zd3wa1hi3wcnilbv7xhz4bg0kvs612mjjxkjcsi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coolstr")
+    (synopsis "String manipulation in LaTeX")
+    (description
+     "Coolstr is a subpackage of the @code{cool} bundle that deals with the
+manipulation of strings.  A string is defined as a sequence of characters (not
+tokens).  The package provides the ability to access a specific character of
+a string, as well as determine if the string contains numeric or integer
+data.")
+    ;; "This package is released under the GNU LGPL."  Assume latest.
+    (license license:lgpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
