@@ -97855,6 +97855,31 @@ for preparing slides (such as @code{foiltex} or @code{seminar}) or another
 package such as @code{pdfslide}.")
     (license license:gpl3+)))
 
+(define-public texlive-texshade
+  (package
+    (name "texlive-texshade")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texshade/"
+                   "source/latex/texshade/"
+                   "tex/latex/texshade/")
+             (base32
+              "00vja01rqbvl205lw2wgf256hdr641mq2s7rh180rhjybqlj7m0h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texshade")
+    (synopsis "Package for setting nucleotide and peptide alignments")
+    (description
+     "TeXshade is alignment shading software completely written in TeX/LaTeX; it
+can process multiple sequence alignments in the @file{.msf} and the
+@file{.aln} file formats.  In addition to common shading algorithms, it
+provides special shading modes showing functional aspects, e.g., charge or
+hydropathy, and a wide range of commands for handling shading colours, text
+styles, labels, legends; it even allows the user to define completely new
+shading modes.")
+    (license license:gpl2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
