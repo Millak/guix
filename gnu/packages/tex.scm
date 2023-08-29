@@ -89995,6 +89995,24 @@ LaTeX, is tedious.  This script allows the specification of commands in
 a natural style; the script then generates macros to define the command.")
     (license license:lppl)))
 
+(define-public texlive-newenviron
+  (package
+    (name "texlive-newenviron")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newenviron/"
+                   "tex/latex/newenviron/")
+             (base32
+              "193qxw4mck3sngjf1p63c65sbysji15j3hbvq0mbmg6xrjw2im7j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newenviron")
+    (synopsis "Processing an environment's body")
+    (description
+     "The package offers tools for collecting and executing an environment's body.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
