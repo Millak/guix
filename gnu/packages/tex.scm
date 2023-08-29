@@ -93708,6 +93708,29 @@ normal letterpaper easily.  The size was chosen to work in half-page 3-ring
 binder cover sheets.")
     (license license:lppl1.3+)))
 
+(define-public texlive-recipecard
+  (package
+    (name "texlive-recipecard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/recipecard/"
+                   "source/latex/recipecard/"
+                   "tex/latex/recipecard/")
+             (base32
+              "0794jd9d28rjvwk6bx93al2dcavjrb341yjmivhmq74d504wahpf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs (list (texlive-updmap.cfg (list texlive-hypdoc))))
+    (home-page "https://ctan.org/pkg/recipecard")
+    (synopsis "Typeset recipes in note-card-sized boxes")
+    (description
+     "The @code{recipecard} class typesets recipes into note card sized boxes that
+can then be cut out and pasted on to note cards.  The recipe then looks
+elegant and fits in the box of recipes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
