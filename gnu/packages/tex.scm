@@ -81456,6 +81456,30 @@ enumeration lists, environments for questions and answers, with conditional
 display, macros for marking schemes with detailed comments.")
     (license license:lppl1.3+)))
 
+(define-public texlive-exframe
+  (package
+    (name "texlive-exframe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exframe/" "source/latex/exframe/"
+                   "tex/latex/exframe/")
+             (base32
+              "0rbmhnn5ndy5dsjlfc2v7l88ryxi854z6ifd8m7w99x1akrif379")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exframe")
+    (synopsis "Framework for exercise problems")
+    (description
+     "This LaTeX2e package provides a general purpose framework to describe and
+typeset exercises and exam questions along with their solutions.  The package
+features mechanisms to hide or postpone solutions, to assign and handle
+points, to collect problems on exercise sheets, to store and use metadata, and
+to implement a consistent numbering.  It also provides a very flexible
+interface for configuring and customising the formatting, layout, and
+representation of the exercise content.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
