@@ -87788,6 +87788,28 @@ all kind of control sequences.")
 his macro files.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lua-check-hyphen
+  (package
+    (name "texlive-lua-check-hyphen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lua-check-hyphen/doc/"
+                   "tex/lualatex/lua-check-hyphen/")
+             (base32
+              "1pxqz93izg5xpzp4p923mi97jr7y2ng9mxa8fqyxdbzvl92q48ni")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-check-hyphen")
+    (synopsis "Mark hyphenations in a document, for checking")
+    (description
+     "The package looks at all hyphenation breaks in the document, comparing them
+against a white-list prepared by the author.  If a hyphenation break is found,
+for which there is no entry in the white-list, the package flags the line
+where the break starts.  The author may then either add the hyphenation to the
+white-list, or adjust the document to avoid the break.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
