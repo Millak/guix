@@ -99746,6 +99746,30 @@ of specified width by working on the inter-column glue; the tabular cells will
 all be stretched (or shrunk) according to need.")
     (license license:lppl1.3+)))
 
+(define-public texlive-widows-and-orphans
+  (package
+    (name "texlive-widows-and-orphans")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/widows-and-orphans/"
+                   "source/latex/widows-and-orphans/"
+                   "tex/latex/widows-and-orphans/")
+             (base32
+              "1jwfwkl9f9xjdk03vxziiwxz6wb9150ig6zdkpvj5d1ivwkg87v2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/widows-and-orphans")
+    (synopsis "Identify (typographic) widows and orphans")
+    (description
+     "This package identifies all widows and orphans in a document to help a user
+to get rid of them.  The act of resolving still needs to be done manually: by
+rewriting text, running some paragraph long or short or or explicitly breaking
+in some strategic place.  It will also identify and warn about words broken
+across columns or pages and display formulas separated from their introductory
+paragraph.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
