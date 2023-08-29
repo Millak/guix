@@ -84806,6 +84806,26 @@ and defines convenience wrappers for floats.")
 package and provides some text macros.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hep-title
+  (package
+    (name "texlive-hep-title")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-title/"
+                   "source/latex/hep-title/"
+                   "tex/latex/hep-title/")
+             (base32
+              "15ln8m1hw8qlhwv08il7g52rj2sjlydl5c42963p0b5rj8hl41si")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-title")
+    (synopsis "Extensions for the title page")
+    (description
+     "The hep-title package extends the title macros of the standard classes with
+macros for a preprint, affiliation, editors, and endorsers.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
