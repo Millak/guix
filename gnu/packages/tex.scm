@@ -81645,6 +81645,28 @@ evolved from the @code{fax} package, and provides much better language
 support.")
     (license license:lppl)))
 
+(define-public texlive-factura
+  (package
+    (name "texlive-factura")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/factura/" "source/latex/factura/"
+                   "tex/latex/factura/")
+             (base32
+              "1kv6lqfd75lsbj413wxjx7zvxhs0s466263g1p4wik1ry3h0bj71")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/factura")
+    (synopsis "Typeset and calculate invoices according to Venezuelan law")
+    (description
+     "@code{factura} is a LaTeX class for typesetting and calculating invoices,
+taking into account requirements of SENIAT legislation (tax collector entity
+on the Bolivarian Republic of Venezuela).  However, its use is not restricted
+to Venezuela because all variables and the displayed text can be redefined by
+invoking commands or editing.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
