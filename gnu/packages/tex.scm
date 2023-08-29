@@ -100063,6 +100063,27 @@ tree.")
 tracklevels than just only one.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xcolor-material
+  (package
+    (name "texlive-xcolor-material")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xcolor-material/"
+                   "source/latex/xcolor-material/"
+                   "tex/latex/xcolor-material/")
+             (base32
+              "1ks2mp2r9dgpp1397ci5qza93cwwc3b02rax1rqs1vpd4bxrklnp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcolor-material")
+    (synopsis "Defines the 256 colors from Google Material Color Palette")
+    (description
+     "The package is built on top of the great @code{xcolor} package.  It provides
+a definition of the Google Material Color Palette for its use in document
+writing with LaTeX and friends.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
