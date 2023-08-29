@@ -89320,6 +89320,29 @@ addition to typesetting the quizzes for proofreading, the package compiles an
 XML file to be uploaded to a Moodle server.")
     (license license:lppl1.3+)))
 
+(define-public texlive-moreenum
+  (package
+    (name "texlive-moreenum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/moreenum/" "tex/latex/moreenum/")
+             (base32
+              "0v0wvnshsva5z2ll9y204rxfqp334v1dxwz015y5v4kzf0wgi826")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/moreenum")
+    (synopsis "More enumeration options")
+    (description
+     "The package provides the following new @code{enumerate} styles: @code{\\greek},
+@code{\\Greek}, @code{\\enumHex}, @code{\\enumhex}, @code{\\enumbinary},
+@code{\\enumoctal},, @code{\\levelnth}, @code{\\raisenth}, @code{\\Nthwords},
+@code{\\NTHWORDS}, @code{\\nwords}, @code{\\Nwords}, and @code{\\NWORDS}.
+Each of these works with @code{enumitem}'s starred variant feature.  So
+@samp{\\begin@{enumerate@}[label=\\enumhex*]} will output a hex enumerated
+list.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
