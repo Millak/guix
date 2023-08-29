@@ -87230,6 +87230,26 @@ with @code{\\setlength}: @samp{\\setlength<some dimen>\\linegoal} will set
 @samp{<some dimen>} to the horizontal length of the remainder of the line.")
     (license license:lppl1.3+)))
 
+(define-public texlive-linop
+  (package
+    (name "texlive-linop")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/linop/" "tex/latex/linop/")
+             (base32
+              "0w8g6xfmk2y04xzn6la96ykvv2y0lz9lib6gcnz7p8cbh24fjxa5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/linop")
+    (synopsis
+     "Typeset linear operators as they appear in quantum theory or linear algebra")
+    (description
+     "This small package aims to provide two simple commands and many options to
+easily write linear operators as they appear in many-body physics, quantum
+theory, and linear algebra, in any of the ways commonly in use.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
