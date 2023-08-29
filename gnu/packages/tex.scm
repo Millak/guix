@@ -81904,6 +81904,32 @@ the sum line (preceded by a rule of the correct width) using the specifier
 @samp{f}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fetchcls
+  (package
+    (name "texlive-fetchcls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fetchcls/"
+                   "source/latex/fetchcls/"
+                   "tex/latex/fetchcls/")
+             (base32
+              "03wiyp91x2y93l50rbla4b6qpc3h5zjz36j392r1slxlhplm6m7p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/fetchcls")
+    (synopsis "Fetch the current class name")
+    (description
+     "With standard LaTeX you are able to check for the class in use invoking the
+kernel command @code{\\@@ifclassloaded}.  However, doing so you cannot get the
+explicit class name, unless you want to loop over every possible class name
+until @code{\\@@ifclassloaded} returns true --- don't do that!  With the help
+of the present package you can obtain the name of the current class with
+significantly less effort.  Just load the package as usual, then, the control
+sequence @code{\\classname} will hold the name you were looking for.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
