@@ -93770,6 +93770,28 @@ bibliography references.  It can also display label names in text near
 corresponding numbers of equations and/or bibliography references.")
     (license license:gpl3+)))
 
+(define-public texlive-refenums
+  (package
+    (name "texlive-refenums")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/refenums/" "tex/latex/refenums/")
+             (base32
+              "08k7n3vwb12hyjdyj2509gll724v08r6cx1196piqcclbxb6vrll")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/refenums")
+    (synopsis "Define named items and provide back-references with that name")
+    (description
+     "The package provides commands to define enumerable items with a number and
+a long name, which can be referenced later with the name or just the short
+form.  For instance, @samp{Milestone M1: Specification created} can be defined
+and later on be referenced with @samp{M1} or @samp{M1 (\"Specification
+created\")}.  The text in the references is derived from the definition and
+also rendered as hyperlink to the definition.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
