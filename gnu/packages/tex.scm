@@ -76857,6 +76857,29 @@ in the development of templates which are intended to work with modern TeX
 engines (LuaTeX, XeTeX) as well as traditional ones (TeX, pdfTeX).")
     (license license:expat)))
 
+(define-public texlive-competences
+  (package
+    (name "texlive-competences")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/competences/"
+                   "source/latex/competences/"
+                   "tex/latex/competences/")
+             (base32
+              "1f4nkhi152410v0zl8priw71s135i2rm9f54dcwqcrkm0d1ijca2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/competences")
+    (synopsis "Track skills of classroom checks")
+    (description
+     "This package is an attempt to track skills assessed during a classroom check.
+Each question can be associated with one or more skills and be assigned
+a number of points to be earned.  At the end of the text, a table set
+summarizes the skills assessed, and in what proportions.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
