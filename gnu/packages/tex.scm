@@ -77829,6 +77829,26 @@ to dark mode when a document has a dark background with a light font and to
 light mode if it has a dark font with a light background.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dashbox
+  (package
+    (name "texlive-dashbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dashbox/" "source/latex/dashbox/"
+                   "tex/latex/dashbox/")
+             (base32
+              "0w2vdyxikizfp3qcnjsl5nxyb2igq79d9f88sip0hllyzl6fy5k2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dashbox")
+    (synopsis "Draw dashed boxes")
+    (description
+     "The package can draw boxes that perform like @code{\\framebox} or
+@code{\\fbox}, but use dashed lines.  The package can also draw (an illusion
+of) vertical stacks of boxes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
