@@ -83205,6 +83205,24 @@ this way, it is rather easy to debug code too.")
 documents.  The package is part of the @code{fundus} bundle.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-fundus-cyr
+  (package
+    (name "texlive-fundus-cyr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/fundus-cyr/")
+             (base32
+              "02zz37h71nqq0f4sf00fiw80pq1q3yadnhqm2j3niz13gms9ydl2")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fundus-cyr")
+    (synopsis "Support for Washington University Cyrillic fonts")
+    (description
+     "The package supports the use of the Washington Cyrillic fonts with LaTeX
+(Note that standard LaTeX has support, too, as encoding OT2).  The package is
+distributed as part of the @code{fundus} bundle.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
