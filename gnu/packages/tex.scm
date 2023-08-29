@@ -99119,6 +99119,27 @@ for creating underlines of various sizes and types.")
      "This LaTeX package gives meaning to various Unicode space characters.")
     (license license:expat)))
 
+(define-public texlive-utf8add
+  (package
+    (name "texlive-utf8add")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/utf8add/" "tex/latex/utf8add/")
+             (base32
+              "0chqx3l9c4khw20gdj3pr25hky3xgmwi39y2jy6im6y1nyhwxm4s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/utf8add")
+    (synopsis "Additional support for UTF-8 encoded LaTeX input")
+    (description
+     "This bundle contains the LaTeX packages @file{utf8add.sty} and
+@file{utf8hax.sty}.  The @code{utf8add} package provides additional support
+for the use of UTF-8 encoded input.  This is intended for making LaTeX input
+more readable.  The @code{utf8hax} package is using UTF-8 characters for
+easier access to math in LaTeX, however making the LaTeX input less readable.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
