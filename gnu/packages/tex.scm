@@ -79693,6 +79693,47 @@ following macros are available: @code{\\ducksay}, @code{\\duckthink},
 Multi-line messages are fully supported.")
     (license license:lppl1.3c)))
 
+(define-public texlive-duckuments
+  (package
+    (name "texlive-duckuments")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/duckuments/"
+                   "source/latex/duckuments/"
+                   "tex/latex/duckuments/")
+             (base32
+              "03yp3icmzg9plvr3pdjv7qkad528mv0lw95b90a9rq16smkhqnw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/duckuments")
+    (synopsis "Create duckified dummy content")
+    (description
+     "The package provides facilities to create duckified dummy contents.  The
+following macros are available:
+
+@itemize
+
+@item @code{\\duckument} prints a short duckument;
+
+@item @code{\\blindduck} prints a paragraph;
+
+@item @code{\\ducklist} creates a list of a given type;
+
+@item @code{\\ducklistlist} creates nested lists;
+
+@item @code{\\duckitemize}, @code{\\duckenumerate} and
+@code{\\duckdescription} are shortcuts for, respectively,
+@code{\\ducklist@{itemize@}}, @code{\\ducklist@{enumerate@}} and
+@code{\\ducklist@{description@}};
+
+@item @code{\\duckumentsCreateExampleFile};
+
+@item  @code{\\duckumentsDrawRandomDucks}.
+
+@end itemize")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
