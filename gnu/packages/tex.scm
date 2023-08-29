@@ -97187,6 +97187,31 @@ slows down compilation of tables, since each entry is boxed twice.")
     ;; provided that this notice is left intact.
     (license (license:fsf-free "file://tex/latex/tabls/tabls.sty"))))
 
+(define-public texlive-tablvar
+  (package
+    (name "texlive-tablvar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tablvar/" "source/latex/tablvar/"
+                   "tex/latex/tablvar/")
+             (base32
+              "09avmk6czz2p36mmsyd83i8riblj92vbdb344mp2rh8rjv3myzj8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tablvar")
+    (synopsis
+     "Typesetting pretty tables of signs and variations according to French usage")
+    (description
+     "This is a complete and easy-to-use package for typesetting pretty tables of
+signs and variations according to French usage.  The syntax is similar to that
+of the @code{array} environment and uses intuitive position commands.  Arrows
+are drawn automatically (using PSTricks by default or TikZ as an option).
+Macros are provided for drawing twin bars, single bars crossing the zeros,
+areas where the function is not defined, or placing special values.  Several
+features of the variation tables can be customized.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
