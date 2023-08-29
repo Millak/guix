@@ -74999,6 +74999,27 @@ various mechanisms provided by LaTeX kernel or packages that attach hooks at
 the beginning and end of documents.")
     (license license:expat)))
 
+(define-public texlive-bxnewfont
+  (package
+    (name "texlive-bxnewfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxnewfont/"
+                   "tex/latex/bxnewfont/")
+             (base32
+              "1b37y0bpsxwiygd5ffm1r5h8rakdrmz5xxkd0lgrjf3v73hsbvzv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxnewfont")
+    (synopsis "Enhanced @code{\\newfont} command")
+    (description
+     "This package provides a new command @code{\\newfontx}.  It is similar to the
+old (and deprecated) command @code{\\newfont} in function, but is more
+compatible with NFSS.  In particular, one can safely change font size after
+invoking a font command defined by @code{\\newfontx}.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
