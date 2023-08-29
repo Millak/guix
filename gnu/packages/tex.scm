@@ -93514,6 +93514,30 @@ The author now considers the package obsolete, and recommends use of
 @code{csquotes} in its place.")
     (license license:lppl)))
 
+(define-public texlive-ran-toks
+  (package
+    (name "texlive-ran-toks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ran_toks/"
+                   "source/latex/ran_toks/"
+                   "tex/latex/ran_toks/")
+             (base32
+              "18js88apqcvsr4z4fwjf6219d28fxnhcv3srhhksbi5h4ky8y88m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ran_toks")
+    (synopsis "Randomise token strings")
+    (description
+     "The package provides means of randomising lists of tokens, or lists of chunks
+of tokens.  Two mechanisms for defining chunks are provided: the
+@code{\\ranToks} command accepts an argument containing tokens to be
+randomised; and the @code{\\bRTVToks/\\eRTVToks} commands delimit a collection
+of tokens for randomising; each group inside a @code{rtVw} constitutes one of
+these (typically larger) token sets.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
