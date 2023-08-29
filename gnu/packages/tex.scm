@@ -92895,6 +92895,25 @@ the document as draft and puts a timestamp on it).  It Can be used together
 with e.g., the @code{vrsion}, @code{rcs} and @code{rcsinfo} packages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pressrelease
+  (package
+    (name "texlive-pressrelease")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pressrelease/"
+                   "source/latex/pressrelease/"
+                   "tex/latex/pressrelease/")
+             (base32
+              "1gp9m7smh21r3shvlqivnh560sgpfvibh47qlz39pwn6285nix51")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pressrelease")
+    (synopsis "Class for typesetting press releases")
+    (description
+     "This package provides a configurable class for writing press releases.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
