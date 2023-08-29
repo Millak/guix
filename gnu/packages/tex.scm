@@ -95278,6 +95278,24 @@ However, this package is considered as obsolete by its author.  Users are
 generally recommended, therefore, to use @code{mdframed} instead.")
     (license license:lppl)))
 
+(define-public texlive-shadow
+  (package
+    (name "texlive-shadow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shadow/" "tex/latex/shadow/")
+             (base32
+              "0rqwga17jy4d8zyv2v3sf0vww8cf54jg4qqd0blxq748fk2b4509")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shadow")
+    (synopsis "Shadow boxes")
+    (description
+     "This package defines a command @code{\\shabox} (analgous to @code{\\fbox}),
+and supporting mechanisms.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
