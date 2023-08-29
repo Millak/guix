@@ -93750,6 +93750,26 @@ elegant and fits in the box of recipes.")
 a document.")
     (license license:lppl)))
 
+(define-public texlive-refcheck
+  (package
+    (name "texlive-refcheck")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/refcheck/" "tex/latex/refcheck/")
+             (base32
+              "1zrwz6450p8gapw2sm7716k0h2si0l3c419xph0i0j9mj381kr8y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/refcheck")
+    (synopsis "Check references (in figures, table, equations, etc)")
+    (description
+     "The package checks references in a document, looking for numbered but
+unlabelled equations, for labels which are not used in the text, for unused
+bibliography references.  It can also display label names in text near
+corresponding numbers of equations and/or bibliography references.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
