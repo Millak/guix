@@ -94391,6 +94391,30 @@ designating the relative scale in printed materials.")
 and compass diagrams with TikZ.")
     (license license:lppl1.3+)))
 
+(define-public texlive-runcode
+  (package
+    (name "texlive-runcode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/runcode/" "tex/latex/runcode/")
+             (base32
+              "0hl179kc1snbld8ggp2jsx7rb5kyi9xjw2xbvzlf0bjxib8c2id7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/runcode")
+    (synopsis
+     "Execute foreign source code and embed the result in the PDF file")
+    (description
+     "This LaTeX package executes programming source codes (including all command
+line tools) from within LaTeX and embeds the output in the resulting
+@file{.pdf} file.  Many programming languages can be easily used and any
+command-line executable can be invoked when preparing the @file{.pdf} file
+from a @file{.tex} file.  It is however recommended to use this package in
+server-mode together with the Python @command{talk2stat} package.  Currently,
+this server-mode supports Julia, MatLab, Python, and R.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
