@@ -90930,6 +90930,26 @@ with more built-in data types and more convenient support for families and
 searching.")
     (license license:lppl1.3+)))
 
+(define-public texlive-orcidlink
+  (package
+    (name "texlive-orcidlink")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/orcidlink/"
+                   "source/latex/orcidlink/"
+                   "tex/latex/orcidlink/")
+             (base32
+              "19vzfpr3hqlqshf55gqrh1z5mgfa2z6apavmkbjwhd0ds783k1p3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/orcidlink")
+    (synopsis "Insert hyperlinked ORCiD logo")
+    (description
+     "This package provides a command to insert the ORCiD logo, which is
+hyperlinked to the URL of the researcher whose iD was specified.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
