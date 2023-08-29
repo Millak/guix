@@ -96397,6 +96397,24 @@ graphics model, and control structures such as loops and conditionals are
 available.")
     (license license:lppl)))
 
+(define-public texlive-sslides
+  (package
+    (name "texlive-sslides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sslides/" "tex/latex/sslides/")
+             (base32
+              "0rplfdzzp15h3xsszzr7hcbb40kqd6bbqv8850ip8df4yd19mb8r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sslides")
+    (synopsis "Slides with headers and footers")
+    (description
+     "The class provides a variant of the LaTeX standard slides class, in which the
+user may add headers and footers to the slide.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
