@@ -75020,6 +75020,26 @@ compatible with NFSS.  In particular, one can safely change font size after
 invoking a font command defined by @code{\\newfontx}.")
     (license license:expat)))
 
+(define-public texlive-bxpapersize
+  (package
+    (name "texlive-bxpapersize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxpapersize/"
+                   "tex/latex/bxpapersize/")
+             (base32
+              "1133p7xl0dqakqsh3cvhd7yx0j8zcqmwhf82fmphsclvbgwycyhs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxpapersize")
+    (synopsis "Synchronize output paper size with layout paper size")
+    (description
+     "As is well known, in LaTeX processing layout paper size specified by document
+class options is not automatically applied to output paper size.  This package
+enables LaTeX authors to synchronize both kinds of paper sizes.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
