@@ -35496,6 +35496,7 @@ of TeX and one of Metafont are needed.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:link-scripts #~(list "mkgrkindex")))
+    (inputs (list perl))
     (home-page "https://ctan.org/pkg/greek-makeindex")
     (synopsis "MakeIndex working with Greek")
     (description
