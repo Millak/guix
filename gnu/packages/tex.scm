@@ -95256,6 +95256,28 @@ including the package, all maths of the current document is displayed with
 sans serif fonts.")
     (license license:lppl)))
 
+(define-public texlive-shadethm
+  (package
+    (name "texlive-shadethm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shadethm/" "tex/latex/shadethm/")
+             (base32
+              "0mzvfvz5f07mva4hjaba9jrhj9jalv7hqck93236qqbxkp1lxpr9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shadethm")
+    (synopsis "Theorem environments that are shaded")
+    (description
+     "This package extends the @code{\\newtheorem} command with a new command,
+@code{\\newshadetheorem}, which can produce theorem statement in a shaded box.
+It supports all the options of @code{\\newtheorem}.
+
+However, this package is considered as obsolete by its author.  Users are
+generally recommended, therefore, to use @code{mdframed} instead.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
