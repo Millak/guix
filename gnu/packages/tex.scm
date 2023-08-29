@@ -85697,6 +85697,26 @@ facilities such as the pdfTeX @code{\\pdfelapsedtime} primitive.")
 hyperlink.")
     (license license:lppl1.3c)))
 
+(define-public texlive-inversepath
+  (package
+    (name "texlive-inversepath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inversepath/"
+                   "source/latex/inversepath/"
+                   "tex/latex/inversepath/")
+             (base32
+              "1mbvx1lj1h0p2li4qjc5s238iiwnp9cg0vsdlxxwdlng8ahc62p0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inversepath")
+    (synopsis "Calculate inverse file paths")
+    (description
+     "The package calculates inverse relative paths.  Such things may be useful,
+for example, when writing an auxiliary file to a different directory.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
