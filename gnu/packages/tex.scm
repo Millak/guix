@@ -91763,6 +91763,30 @@ for different fonts and choosing the right adjustment automatically depending
 on the font.  The package is largely superseded by @code{microtype}.")
     (license license:lppl)))
 
+(define-public texlive-pdfmarginpar
+  (package
+    (name "texlive-pdfmarginpar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfmarginpar/"
+                   "tex/latex/pdfmarginpar/")
+             (base32
+              "0l294kgyvjmrvnvfp3hdjb7nfcl6d02n5nmjlnzrghcj2692hy8v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfmarginpar")
+    (synopsis "Generate marginpar-equivalent PDF annotations")
+    (description
+     "The package provides the @code{\\pdfmarginpar} command which is similar in
+spirit to @code{\\marginpar}.  However, it creates PDF annotations which may
+be viewed with Adobe Reader in place of marginal texts.  Small icons indicate
+the in-text position where the message originates, popups provide the messages
+themselves.  Thus bugfixes and other such communications are clearly visible
+together when viewing the document, while the document itself is not
+obscured.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
