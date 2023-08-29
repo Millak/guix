@@ -80124,6 +80124,27 @@ source.  In draft mode, the annotations are shown for communication, and in
 publication mode these are suppressed.")
     (license license:lppl1.0+)))
 
+(define-public texlive-edichokey
+  (package
+    (name "texlive-edichokey")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/edichokey/"
+                   "tex/latex/edichokey/")
+             (base32
+              "0hc04ckwiw2kwy2r7cs517wlig594fczlmags1yd8hw3wlxcz17n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/edichokey")
+    (synopsis "Typeset dichotomous identification keys")
+    (description
+     "This is a LaTeX package for typesetting dichotomous identification key in
+indented style.  It can be considered as an extended version of package
+@code{dichokey}, as @code{edichokey} is more capable of dealing with complex
+keys.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
