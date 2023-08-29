@@ -80794,6 +80794,25 @@ list in which the indentation corresponds to the longest item of the list.")
 is required, but these cases should be seldom.")
     (license license:lppl1.3+)))
 
+(define-public texlive-eqname
+  (package
+    (name "texlive-eqname")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/eqname/")
+             (base32
+              "1qryjgmn2cw2indmmybgzrcrakqi6a3crvdcyvj769mciz8lsdwy")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eqname")
+    (synopsis "Name tags for equations")
+    (description
+     "The @code{\\eqname} command provides a name tag for the current equation, in
+place of an equation number.  The name tag will be picked up by a subsequent
+@code{\\label} command.")
+    ;; "You may freely use, modify and/or distribute this file."
+    (license (license:non-copyleft "file://tex/latex/eqname/eqname.sty"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
