@@ -77270,6 +77270,29 @@ publish documents states minimally invasive, to avoid any clash with
 publishers styles.")
     (license license:expat)))
 
+(define-public texlive-coordsys
+  (package
+    (name "texlive-coordsys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coordsys/"
+                   "source/latex/coordsys/"
+                   "tex/latex/coordsys/")
+             (base32
+              "0c2p4358g9ggpx92bs7r95mlm8r4a1n6bnsdilhzrm1lnb1gb6ls")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coordsys")
+    (synopsis "Draw cartesian coordinate systems")
+    (description
+     "The package provides commands for typesetting number lines (coordinate axes),
+coordinate systems and grids in the @code{picture} environment.  The package
+may be integrated with other drawing mechanisms: the documentation shows
+examples of drawing graphs (coordinate tables created by Maple), using the
+@code{eepic} package's drawing capabilities.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
