@@ -92101,6 +92101,30 @@ a noticeboard, with tear-off strips at the bottom where you can place contact
 details.")
     (license license:lppl)))
 
+(define-public texlive-pgfmath-xfp
+  (package
+    (name "texlive-pgfmath-xfp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pgfmath-xfp/"
+                   "source/latex/pgfmath-xfp/"
+                   "tex/latex/pgfmath-xfp/")
+             (base32
+              "1ss8wfqj5bmngzpcp0nfw6zm331bnjqa9x0ddfl1hf6i6j6c27b2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pgfmath-xfp")
+    (synopsis "Define pgfmath functions using @code{xfp}")
+    (description
+     "This package allows to define @code{pgfmath} functions that use the
+@code{xfp} FPU for their calculations.  The input arguments are parsed with
+@code{pgfmath}, and the results are forwarded to the FPU for the function
+evaluation.  The result of that calculation is then parsed by @code{pgfmath}
+again.  This way the functions should be usable in every @code{pgfmath}
+context, though there is some overhead to this approach.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
