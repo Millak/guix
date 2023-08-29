@@ -90687,6 +90687,25 @@ Supported languages are English, French, German, Hungarian, Italian, and
 Latin.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ocg-p
+  (package
+    (name "texlive-ocg-p")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ocg-p/" "tex/latex/ocg-p/")
+             (base32
+              "1fm3a0ipzqmk2wjc866b42imfkqc5a3zrfr6cs030m0j0g9dccjy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ocg-p")
+    (synopsis "PDF OCG support in LaTeX")
+    (description
+     "The package provides OCG (Optional Content Groups) support within a PDF
+document, replacing the @code{file.sty} distributed with Asymptote.  Nested
+OCGs are supported.  The package may be used with pdfLaTeX and XeLaTeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
