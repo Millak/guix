@@ -84766,6 +84766,26 @@ versions that reflect the current gender choice.")
 and defines convenience wrappers for floats.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hep-math
+  (package
+    (name "texlive-hep-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-math/"
+                   "source/latex/hep-math/"
+                   "tex/latex/hep-math/")
+             (base32
+              "1vw1vgsmi3sja32db18f481p5jd7s1nkxx47ipp0kk7aj3zzpl8y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-math")
+    (synopsis "Extended math macros")
+    (description
+     "The @code{hep-math} package provides some additional features beyond the
+@code{mathtools} and @code{amsmath} packages.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
