@@ -72324,6 +72324,26 @@ that the poster will be printed in the right size.  The supported
 sizes are DIN A0, DIN A1, DIN A2 and DIN A3.")
     (license license:lppl)))
 
+(define-public texlive-a4wide
+  (package
+    (name "texlive-a4wide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/a4wide/" "tex/latex/a4wide/")
+             (base32
+              "1i0rwkfzvyd0d8809djli85df1085b9vi97n2c9ipc8kjls1vygi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/a4wide")
+    (synopsis "Wide A4 layout")
+    (description
+     "This package increases the width of the typeset area of an A4 page.
+This sort of operation is capable of producing typographically poor
+results; the operation itself is better provided by the
+@code{geometry} package.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
