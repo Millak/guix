@@ -98996,6 +98996,27 @@ package is compiled with Lua/XeLaTeX and a good Unicode font which has the
 small caps characters, e.g., Charis SIL.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-unitconv
+  (package
+    (name "texlive-unitconv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/unitconv/"
+                   "tex/lualatex/unitconv/")
+             (base32
+              "0z10w79cddldw1rm9xzsr610ydn9hczx7dfda9n8g6wlpwhal0ps")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unitconv")
+    (synopsis "Convert a length into one with another unit")
+    (description
+     "This package defines two macros to convert a value with unit into one with
+another unit.  Supported are all TeX related units, and also @samp{km} and
+@samp{m}.  The output can be in scientific notation for large values.  The
+package only works with LuaLaTeX.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
