@@ -99039,6 +99039,28 @@ some simple typesetting commands.  To use this package, one should normally
 run TeX in a terminal.")
     (license license:lppl1.3c)))
 
+(define-public texlive-upmethodology
+  (package
+    (name "texlive-upmethodology")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/upmethodology/"
+                   "doc/latex/upmethodology/"
+                   "tex/latex/upmethodology/")
+             (base32
+              "1118xx6bjxj6lzqqf124r1ir0x627z0gyimdvnnscyag5n5jyqfd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/upmethodology")
+    (synopsis "Writing specifications such as for UP-based methodologies")
+    (description
+     "The bundle allows the user to create Unified Process methodology (UP or RUP)
+based documents.  The style provides document versioning, document history,
+document authors, document validators, specification description, task
+management, and several helping macros.")
+    (license license:lgpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
