@@ -89610,6 +89610,29 @@ environment.  The package also provides a convenient way to customise your
 captions, whether they be in @code{multicols} or not.")
     (license license:lppl)))
 
+(define-public texlive-multicolrule
+  (package
+    (name "texlive-multicolrule")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multicolrule/"
+                   "source/latex/multicolrule/"
+                   "tex/latex/multicolrule/")
+             (base32
+              "0l58120c9pfizsqxjhwn7jsd9mhp7b5hmwjliyjw91xb0z1agz9x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multicolrule")
+    (synopsis "Decorative rules between columns")
+    (description
+     "This package lets you customize the appearance of the vertical rule that
+appears between columns of multicolumn text.  It is primarily intended to work
+with the @code{multicol} package, hence its name, but also supports the
+@code{twocolumn} option and @code{\\twocolumn} macro provided by the standard
+classes (and related classes such as the KOMA-Script equivalents).")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
