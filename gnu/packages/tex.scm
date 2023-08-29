@@ -78931,6 +78931,25 @@ for more interesting tasks depending on the individual.")
 within the text.")
     (license license:expat)))
 
+(define-public texlive-decimal
+  (package
+    (name "texlive-decimal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/decimal/" "source/latex/decimal/"
+                   "tex/latex/decimal/")
+             (base32
+              "16ixjiddz4qvwv0rir7l8amz4bc9ldacm2y4cssmb4053kvc9pxw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/decimal")
+    (synopsis "LaTeX package for the English raised decimal point")
+    (description
+     "This LaTeX package should be used by people who need the traditional English
+raised decimal point, instead of the American-style period.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
