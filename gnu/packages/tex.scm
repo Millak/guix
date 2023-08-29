@@ -84944,6 +84944,27 @@ For this purpose it builds on the generic @code{listings} package.")
 documentation in high-technology companies.")
     (license license:lppl)))
 
+(define-public texlive-hitreport
+  (package
+    (name "texlive-hitreport")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hitreport/"
+                   "source/latex/hitreport/"
+                   "tex/latex/hitreport/")
+             (base32
+              "0sn4xa1y4i71qxw42w6q2l9z3039k2n57b05sfawmy656yjcvqpz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hitreport")
+    (synopsis "Harbin Institute of Technology Report LaTeX template")
+    (description
+     "This package provides an assignment and experiment report template free of
+configuration designed for undergraduates on the three campuses of Harbin
+Institute of Technology.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
