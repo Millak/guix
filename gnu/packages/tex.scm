@@ -100524,6 +100524,26 @@ various long-standing issues.")
 @code{xtabular} environment provides tables that break across pages.")
     (license license:lppl)))
 
+(define-public texlive-xurl
+  (package
+    (name "texlive-xurl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xurl/" "tex/latex/xurl/")
+             (base32
+              "0g03b27vg4qmprjy7jlpvpvq0223xsjfd6ynhsfwglqva3yq70ri")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xurl")
+    (synopsis "Allow URL breaks at any alphanumerical character")
+    (description
+     "This package loads @code{url} by default and defines possible URL breaks for
+all alphanumerical characters, as well as @samp{=}, @samp{/}, @samp{.},
+@samp{:}, @samp{*}, @samp{-}, @samp{~}, and @samp{\"}.  All arguments which
+are valid for @code{url} can be used and will be passed on to this package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
