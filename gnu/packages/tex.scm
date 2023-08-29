@@ -99195,6 +99195,27 @@ style file.  This mechanism is useful in mixed text compositions, for example
 Japanese-Latin.")
     (license license:gfl1.0)))
 
+(define-public texlive-varindex
+  (package
+    (name "texlive-varindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/varindex/"
+                   "source/latex/varindex/"
+                   "tex/latex/varindex/")
+             (base32
+              "079blfmdil8dhw8qxbwp6n2kgxqc92yn8fjlk8zahkkvims89xaj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/varindex")
+    (synopsis "Luxury frontend to the @code{\\index} command")
+    (description
+     "This package provides a convenient front-end for the @code{\\index} command.
+For example, with it you can generate multiple index entries in almost any
+form by a single command.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
