@@ -100336,6 +100336,27 @@ a combination of @code{longtable} and @code{tabularx}: Header/footer
 definitions, X-column specifier, and with possible pagebreaks.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xnewcommand
+  (package
+   (name "texlive-xnewcommand")
+   (version (number->string %texlive-revision))
+   (source (texlive-origin
+            name version
+            (list "doc/latex/xnewcommand/"
+                  "tex/latex/xnewcommand/")
+            (base32
+             "0nicb4v9mxkavsgns37ap9bhi5wc1aqlk82dcsvpysxps1rmmyk4")))
+   (outputs '("out" "doc"))
+   (build-system texlive-build-system)
+   (home-page "https://ctan.org/pkg/xnewcommand")
+   (synopsis
+    "Define @code{\\global} and @code{\\protected} commands with @code{\\newcommand}")
+   (description
+    "The package provides the means of defining @code{\\global} and (e-TeX)
+@code{\\protected} commands, within the framework of LaTeX's standard
+@code{\\newcommand}.")
+   (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
