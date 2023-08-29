@@ -89057,6 +89057,28 @@ humanities should be able to typeset their materials, properly, with minimal
 effort on their part.")
     (license license:lppl)))
 
+(define-public texlive-mleftright
+  (package
+    (name "texlive-mleftright")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mleftright/"
+                   "source/latex/mleftright/"
+                   "tex/generic/mleftright/")
+             (base32
+              "17rx9kndll8iwbkh07swjv5dn78wm74hd2qiga3gc7xbq9zmiczs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mleftright")
+    (synopsis "Variants of delimiters that act as maths open/close")
+    (description
+     "The package defines variants @code{\\mleft} and @code{\\mright} of
+@code{\\left} and @code{\\right}, that make the delimiters act as
+@code{\\mathopen} and @code{\\mathclose}.  These commands address spacing
+difficulties in sub-formulas.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
