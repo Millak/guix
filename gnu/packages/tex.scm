@@ -91367,6 +91367,26 @@ you produce multi-column (e.g., bilingual) document switching and sychronizing
 each corresponding part in parallel.")
     (license license:lppl)))
 
+(define-public texlive-parades
+  (package
+    (name "texlive-parades")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/parades/" "tex/latex/parades/")
+             (base32
+              "1s7vdypyrkvg4c17qgwy8x9d6jkjkr29cjgzg9lx2iq1zaw178zb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/parades")
+    (synopsis "Tabulators and space between paragraphs in galley approach")
+    (description
+     "The LaTeX package @code{paravesp} controls the spaces above and below
+paragraphs.  The Python script @file{parades.py} generates paragraph styles
+with support of space above, space below and tabulators.  The system imposes
+the galley approach on the document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
