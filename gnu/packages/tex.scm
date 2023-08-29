@@ -74231,6 +74231,26 @@ nothing more than style file needed for preparing presentations.")
      "This package provides a simple Beamer theme using the Nord color theme.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bearwear
+  (package
+    (name "texlive-bearwear")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bearwear/"
+                   "source/latex/bearwear/"
+                   "tex/latex/bearwear/")
+             (base32
+              "1brqpn1j62nxg2gj904sm00m7rmkm9q54vdnn1sn4fw4w0y9hg10")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bearwear")
+    (synopsis "Shirts to dress TikZbears")
+    (description
+     "The package offers tools to create shirts for TikZbears from the TikZlings
+package.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
