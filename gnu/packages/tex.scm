@@ -81503,6 +81503,27 @@ a variant of @code{\\newcommand} which uses these macros to check for optional
 arguments.")
     (license license:lppl)))
 
+(define-public texlive-export
+  (package
+    (name "texlive-export")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/export/" "source/latex/export/"
+                   "tex/latex/export/")
+             (base32
+              "0axk0z4pdypwg0bdxyyrk0wvwby9xzq7im0a0r62lriimy53cfdw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/export")
+    (synopsis "Import and export values of LaTeX registers")
+    (description
+     "The package allows the user to export/import the values of LaTeX
+registers (counters, rigid and rubber lengths only).  It is not for
+faint-hearted users.  The package may be used, for example, to communicate
+between documents for the purposes of Dvipaste.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
