@@ -95891,6 +95891,29 @@ callbacks and values on the fly, and other features of @code{pgfkeys} are
 introduced in a new context.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skills
+  (package
+    (name "texlive-skills")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skills/" "tex/latex/skills/")
+             (base32
+              "0hvh16a6iziand9wlq48lnaw3ha1lj5g396mpfv1m8ci3r9hydm6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skills")
+    (synopsis "Create proficiency tests")
+    (description
+     "This package attempts to make it easy for even a LaTeX novice to prepare
+proficiency tests, especially in combination with the @code{exam} document
+class.  Thus, almost all command names are very similar.  After defining
+skills in the preamble or in an external file, they are declared using labels,
+and can optionally be set as global skills.  A skills table is generated to
+summarize the evaluated competencies and to allow for writing down the
+resulting proficiency level.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
