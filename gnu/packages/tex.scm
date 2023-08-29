@@ -89137,6 +89137,36 @@ including the ability to re-encode Knuth's basic mathematics fonts.")
 collaboratively-written documents.")
     (license license:lppl1.3+)))
 
+(define-public texlive-moderncv
+  (package
+    (name "texlive-moderncv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/moderncv/" "tex/latex/moderncv/")
+             (base32
+              "0g4syan63zycw07ixy7qk1qmwb8gfwb3mpj7lg65514k80jh8nbi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-fancyhdr
+           texlive-graphics
+           texlive-hyperref
+           texlive-iftex
+           texlive-l3packages
+           texlive-microtype
+           texlive-tools
+           texlive-url
+           texlive-xcolor))
+    (home-page "https://ctan.org/pkg/moderncv")
+    (synopsis "Modern curriculum vitae class")
+    (description
+     "The class provides facilities for typesetting modern curriculums vitae, both
+in a classic and in a casual style.  It is fairly customizable, allowing you
+to define your own style by changing the colours, the fonts, etc.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
