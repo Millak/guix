@@ -76061,6 +76061,27 @@ accordance with traditional pagination systems.  It may be used in conjunction
 with other citation packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-classpack
+  (package
+    (name "texlive-classpack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/classpack/"
+                   "source/support/classpack/"
+                   "tex/latex/classpack/")
+             (base32
+              "134bv6g8yynzw76i496wvb58bng2vrz0b9krqgwpjfj2hqlfhwbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/classpack")
+    (synopsis "XML mastering for LaTeX classes and packages")
+    (description
+     "The package provides an experiment in using XML (specifically DocBook 5) to
+mark up and maintain LaTeX classes and packages.  XSLT 2 styleheets generate
+the @file{.dtx} and @file{.ins} distribution files expected by end users.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
