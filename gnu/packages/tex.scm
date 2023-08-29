@@ -74004,6 +74004,27 @@ be attractive.")
 @end itemize")
     (license license:gpl3+)))
 
+(define-public texlive-beamertheme-saintpetersburg
+  (package
+    (name "texlive-beamertheme-saintpetersburg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-saintpetersburg/"
+                   "source/latex/beamertheme-saintpetersburg/"
+                   "tex/latex/beamertheme-saintpetersburg/")
+             (base32
+              "1wnhl4l07x88bw1xps6xygmr704513k2b8jq7g9magq3hjv0bkp0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-saintpetersburg")
+    (synopsis
+     "Beamer theme with colours and fonts of Saint Petersburg State University")
+    (description
+     "This minimalistic beamer Theme incorporates Saint Petersburg State University
+colours and fonts.  It is suitable for both presentations and posters.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
