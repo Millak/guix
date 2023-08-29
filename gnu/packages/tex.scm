@@ -99700,6 +99700,31 @@ relative to each other, while centred beneath the column label.  In addition,
 macros are provided to enable variations on this column type to be defined.")
     (license license:lppl)))
 
+(define-public texlive-webquiz
+  (package
+    (name "texlive-webquiz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/webquiz/"
+                   "doc/man/man1/webquiz.1"
+                   "doc/man/man1/webquiz.man1.pdf"
+                   "scripts/webquiz/" "tex/latex/webquiz/")
+             (base32
+              "1z2qwm3jaj2wh8f6vx7mih21y32d0604jirdgd3bywq7yv57y125")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "webquiz.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/webquiz")
+    (synopsis "Write interactive web based quizzes")
+    (description
+     "WebQuiz makes it possible to use LaTeX to write interactive web based
+quizzes.  The quizzes are first written in LaTeX and then converted into HTML
+files using @command{webquiz}, which is written in Python.  The conversion
+from LaTeX to HTML is done behind the scenes using TeX4ht.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
