@@ -78190,6 +78190,28 @@ bookmarks or in the argument of certain commands, such as
 @code{\\MakeUppercase}, while these styles are in use.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-english
+  (package
+    (name "texlive-datetime2-english")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-english/"
+                   "source/latex/datetime2-english/"
+                   "tex/latex/datetime2-english/")
+             (base32
+              "1fdr2i49ximm0hy0gcbi2c00brxrr5mlrw4y1zvc6phjfis1ld8b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-english")
+    (synopsis "English language module for the @code{datetime2} package")
+    (description
+     "This module provides the following styles that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  The region not only
+determines the date/time format but also the time zone abbreviations if the
+zone mapping setting is on.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
