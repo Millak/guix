@@ -80578,6 +80578,36 @@ convert number arguments to lower case or upper case Greek letters.  Options
 are provided to work with the @code{upgreek} and @code{fourier} packages.")
     (license license:lppl)))
 
+(define-public texlive-enumitem-zref
+  (package
+    (name "texlive-enumitem-zref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/enumitem-zref/"
+                   "source/latex/enumitem-zref/"
+                   "tex/latex/enumitem-zref/")
+             (base32
+              "05chqdbbis649b1dgclz0hylgp8nbhapc6p16aqb91bpbcms7a6b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/enumitem-zref")
+    (synopsis "Extended references to items for @code{enumitem} package")
+    (description
+     "The package is a companion for the @code{enumitem} package; it makes it
+possible to reference any item in lists formatted by @code{enumitem} lists,
+viz., @code{enumerated}, @code{itemize} and @code{description} lists, and any
+list defined (or customised) with @code{\\newlist} or @code{\\setlist}.
+References may be typeset differently with options/properties and even
+arbitrary text.  With @code{hyperref}, anchors are added for each item to
+enable hyperlinks within the document or even to external documents.  Three
+schemes are provided to make reference names (including the standard
+@code{\\label} command).
+
+The package is currently broken, cf.@:
+@url{https://tex.stackexchange.com/q/664886/1090}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
