@@ -73542,6 +73542,27 @@ you want to make sure the programs listed in the document are executed
 directly from the input.  The package may use other shells than Bash.")
     (license license:lppl1.3+)))
 
+(define-public texlive-basicarith
+  (package
+    (name "texlive-basicarith")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/basicarith/"
+                   "source/latex/basicarith/"
+                   "tex/latex/basicarith/")
+             (base32
+              "01hlnzwmw3013fi0flm3r3basybz2pbrcxr1pmc042w9nmd53q4b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/basicarith")
+    (synopsis "Macros for typesetting basic arithmetic")
+    (description
+     "The package provides macros for typesetting basic arithmetic, in the style
+typically found in textbooks.  It focuses on the American style of performing
+these algorithms.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
