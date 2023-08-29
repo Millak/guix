@@ -98807,6 +98807,25 @@ may help in making typesetting decisions.")
 page into columns, and may be used for fixing measurements of layout.")
     (license license:lppl)))
 
+(define-public texlive-uassign
+  (package
+    (name "texlive-uassign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uassign/" "tex/latex/uassign/")
+             (base32
+              "0qfj5z9ljd5x169jcr8dv09ajib9cc1m2hwq0ymz95qc17s7rk5l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uassign")
+    (synopsis
+     "Environments and options for typesetting university assignments")
+    (description
+     "The purpose of this package is to provide simple question and solution style
+environments for typesetting university assignments.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
