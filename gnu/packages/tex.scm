@@ -98353,6 +98353,25 @@ with the TOC/LOF formatting of the default LaTeX classes, @code{memoir},
 and @code{tocstyle}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-todo
+  (package
+    (name "texlive-todo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/todo/" "source/latex/todo/"
+                   "tex/latex/todo/")
+             (base32
+              "0fdj17gg0c77qa7lq9xhh9dc85navhzdgfm2lfis480n4yw7wbfq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/todo")
+    (synopsis "Make a to-do list for a document")
+    (description
+     "The package allows you to insert ``to do'' marks in your document, to make
+lists of such items, and to cross-reference to them.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
