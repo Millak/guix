@@ -88325,6 +88325,28 @@ addition, the package will automatically create page headers and footers, and
 will let you include instructions and space for students to put their name.")
     (license license:lppl)))
 
+(define-public texlive-mathfam256
+  (package
+    (name "texlive-mathfam256")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathfam256/"
+                   "tex/latex/mathfam256/")
+             (base32
+              "170hjgam55xgfrmznqmqycr5iwk76s1gknfdjjg8jxqd0z8z55i9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathfam256")
+    (synopsis "Extend math family up to 256 for pLaTeX/upLaTeX/Lamed")
+    (description
+     "This package increases the upper limit of math symbols up to 256, using
+@code{\\omath}...  primitives.  These primitives were originally introduced in
+Omega and are currently available in the following formats: pLaTeX (runs on
+e-pTeX), upLaTeX (runs on e-upTeX), and Lamed (runs on Aleph, successor of
+Omega).")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
