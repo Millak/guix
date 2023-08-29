@@ -90571,6 +90571,28 @@ notetaking easier for students and offer easy support for marginnotes along
 with a reliable and legible formatting structure.")
     (license license:lppl1.3+)))
 
+(define-public texlive-notoccite
+  (package
+    (name "texlive-notoccite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/notoccite/"
+                   "tex/latex/notoccite/")
+             (base32
+              "1l5gj5f495vmxiixnfjmkfp2wlq0gg39y6lhd3f68lf3wq3nqd99")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/notoccite")
+    (synopsis "Prevent trouble from citations in table of contents, etc")
+    (description
+     "If you have @code{\\cite} commands in @code{\\section}-like commands, or in
+@code{\\caption}, the citation will also appear in the table of contents, or
+list of whatever.  If you are also using an @code{unsrt}-like bibliography
+style, these citations will come at the very start of the bibliography, which
+is confusing.  This package suppresses the effect.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
