@@ -79132,6 +79132,27 @@ mode.")
 maintenance and exploitation of an address book-like database.")
     (license license:lppl)))
 
+(define-public texlive-dirtytalk
+  (package
+    (name "texlive-dirtytalk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dirtytalk/"
+                   "source/latex/dirtytalk/"
+                   "tex/latex/dirtytalk/")
+             (base32
+              "1rm3y5bwxg7s8db10pzkskgcp54qlkz93g6kif732n9j5c17d9ca")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dirtytalk")
+    (synopsis "Typeset quotations easier")
+    (description
+     "The package provides a macro to typeset quotations, using the command
+@code{\\say}.  The quotation mark glyphs are inserted by the macro; nested
+quotations are detected.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
