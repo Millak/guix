@@ -20,6 +20,8 @@
   #:use-module (gnu services)
   #:use-module (gnu home services)
   #:use-module (gnu services syncthing)
+  ;; For the 'home-shepherd-service-type' mapping.
+  #:use-module (gnu home services shepherd)
   #:export (home-syncthing-service-type)
   #:re-export (syncthing-configuration
                syncthing-configuration?))
