@@ -72702,6 +72702,28 @@ current date (as specified in @code{\\today}), to save, set and restore the
 current date and to print it.  The package has only been tested with Czech
 dates.")
     (license license:lppl1.3+)))
+(define-public texlive-akktex
+  (package
+    (name "texlive-akktex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/akktex/" "tex/latex/akktex/")
+             (base32
+              "1inwr5s2n9a8a0j8v7ngzcxg9dmg24vlyjcchjgd5x808ril98wx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/akktex")
+    (synopsis "Collection of packages and classes")
+    (description
+     "The bundle provides new document classes for technical documents,
+thesis works, manuscripts and lecture notes; many mathematical packages
+providing a large number of macros for mathematical texts; layout providing
+a non-empty parskip with extended length corrections and new section
+definition commands; easy label creation for counters; and German language
+tools and predefined abbreviations.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
