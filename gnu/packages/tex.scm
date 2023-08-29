@@ -86105,6 +86105,32 @@ optional hyperlinking and a list of articles.  It requires LuaLaTeX for colour
 support in split boxes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-jvlisting
+  (package
+    (name "texlive-jvlisting")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jvlisting/"
+                   "source/latex/jvlisting/"
+                   "tex/latex/jvlisting/")
+             (base32
+              "0isbn35x3228bhkp77q3agy380w7akryam3p5i3rvi7bmk1s5958")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jvlisting")
+    (synopsis "Replacement for LaTeX's @code{verbatim} package")
+    (description
+     "This package provides a LaTeX environment @code{listing}, an alternative to
+the built-in @code{verbatim} environment.  The @code{listing} environment is
+tailored for including listings of computer program source code into
+documents.  The main advantages over the original @code{verbatim} environment
+are: environments automatically fixes leading whitespace so that the
+environment and program listing can be indented with the rest of the document
+source, and; @code{listing} environments may easily be customised and
+extended.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
