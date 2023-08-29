@@ -83407,6 +83407,26 @@ Note that the package has been designed to work in conjunction with
 @file{units.sty}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-getfiledate
+  (package
+    (name "texlive-getfiledate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/getfiledate/"
+                   "tex/latex/getfiledate/")
+             (base32
+              "0m1fz3g2xxwballmka3qvc58wkgzbn9srvn3w4ij79pnffk89l6r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/getfiledate")
+    (synopsis "Find the date of last modification of a file")
+    (description
+     "The package fetches from the system the date of last modification or opening
+of an existing file, using the function @code{\\pdffilemoddate}; the user may
+specify how the date is to be presented.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
