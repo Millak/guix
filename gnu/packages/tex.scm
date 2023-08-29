@@ -78504,6 +78504,27 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-magyar
+  (package
+    (name "texlive-datetime2-magyar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-magyar/"
+                   "source/latex/datetime2-magyar/"
+                   "tex/latex/datetime2-magyar/")
+             (base32
+              "1vy50gl9r2ga0a1m1z9b0hcc35iq5xgr2sl0ifyd48s8zadxrxz4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-magyar")
+    (synopsis "Magyar language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{magyar} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
