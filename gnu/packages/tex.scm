@@ -87465,6 +87465,36 @@ a language name as an option; accepted language options are @code{american},
 @code{british}, @code{german} and @code{polish}.")
     (license license:gpl3)))
 
+(define-public texlive-logpap
+  (package
+    (name "texlive-logpap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/logpap/" "source/latex/logpap/"
+                   "tex/latex/logpap/")
+             (base32
+              "0jg7jp40h80bmdjwhm9pz2ipz3r4r5rz1ksnac5ssybxp6psnhkq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Do not stop build to ask about building part of the
+          ;; documentation.
+          (add-after 'unpack 'non-interactive-build
+            (lambda _
+              (substitute* "source/latex/logpap/logpap.ins"
+                (("\\\\generateexampletrue") "\\generateexamplefalse")))))))
+    (home-page "https://ctan.org/pkg/logpap")
+    (synopsis "Generate logarithmic graph paper with LaTeX")
+    (description
+     "The logpap package provides four macros for drawing logarithmic-logarithmic,
+logarithmic-linear, linear-logarithmic and (because it was easy to implement)
+linear-linear graph paper with LaTeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
