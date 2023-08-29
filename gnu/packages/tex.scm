@@ -75151,6 +75151,26 @@ package @code{xpicture}, but the numeric abilities of @code{calculator} and
 @code{calculus} may be useful in other contexts.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cals
+  (package
+    (name "texlive-cals")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cals/" "source/latex/cals/"
+                   "tex/latex/cals/")
+             (base32
+              "0zjh44f5sknz0lj0zn9mslyj7aw5wnjwnlb6427r4lqf2ph31jlq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cals")
+    (synopsis "Multipage tables with wide range of features")
+    (description
+     "The package is a set of macros to typeset multipage tables with repeatable
+headers and footers, with cells spanned over rows and columns.  Decorations are
+supported: padding, background color, width of separation rules.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
