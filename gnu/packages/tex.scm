@@ -95828,6 +95828,28 @@ packages.  It has the ability to generate both documentation and code in
 a single run of a single file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skeldoc
+  (package
+    (name "texlive-skeldoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skeldoc/" "tex/latex/skeldoc/")
+             (base32
+              "10172ig4pivy3hl8y6cb3jxzxdb1lylwbjc75a17ygk2x1lm4xds")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skeldoc")
+    (synopsis "Placeholders for unfinished documents")
+    (description
+     "This package lets you produce placeholder elements for documents under
+development, similar to the skeleton screens used while loading contents in
+many applications and websites.  It also has a mechanism for attaching
+explanatory endnotes to these placeholders, or to anything else in your
+document.  The same note mechanism can also be used with ordinary content,
+e.g., as a to-do mechanism.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
