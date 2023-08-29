@@ -74319,6 +74319,28 @@ applications that can be shown to the German authorities.  The data for these
 applications can be maintained in a simple CSV file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bez123
+  (package
+    (name "texlive-bez123")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bez123/" "source/latex/bez123/"
+                   "tex/latex/bez123/")
+             (base32
+              "140caf7ng0ivhiqk0njwpqbivwmv54il7nh5ks2rji765zvsg2h5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bez123")
+    (synopsis "Support for Bezier curves")
+    (description
+     "This package provides additional facilities in a @code{picture} environment
+for drawing linear, cubic, and rational quadratic Bezier curves (standard
+LaTeX only offers non-rational quadratic splines).  It also ships with the
+LaTeX package @code{multiply} that provides a command for multiplication of
+a length without numerical overflow.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
