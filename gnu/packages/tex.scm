@@ -84867,6 +84867,27 @@ pages that share something in common.")
 different styles --- arrows (as the LaTeX default), underlined, and bold.")
     (license license:lppl)))
 
+(define-public texlive-hideanswer
+  (package
+    (name "texlive-hideanswer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hideanswer/"
+                   "tex/latex/hideanswer/")
+             (base32
+              "1difjhxs4nssis3gjgq809h26zppk0cda40mnm8ry9fc0ij362if")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hideanswer")
+    (synopsis
+     "Generate documents with and without answers by toggling a switch")
+    (description
+     "This package can generate documents with and without answers from a single
+file by toggling a switch.  However, it can only be used to create documents
+to be printed on paper.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
