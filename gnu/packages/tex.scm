@@ -81862,6 +81862,26 @@ the files in Adobe Reader.  The links and JavaScripts are inserted using
 @code{eforms} package from the AcroTeX bundle.")
     (license license:lppl1.2+)))
 
+(define-public texlive-fbox
+  (package
+    (name "texlive-fbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fbox/" "tex/latex/fbox/")
+             (base32
+              "089wdbww6a4y4bqw35h11rxmqjmz0c3df1yf8668h8vrv086c8dn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fbox")
+    (synopsis "Extended @code{\\fbox} macro from standard LaTeX")
+    (description
+     "This package redefines @code{\\fbox} to allow an optional argument for
+different frames.  It can be any combination of l)eft, r)ight, t)op, and
+b)ottom, for example: @samp{\\fbox[lt]@{foo@}}.  Using uppercase letters or
+a combination of lowercase and uppercase is also possible.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
