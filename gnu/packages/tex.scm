@@ -100505,6 +100505,25 @@ is the official successor of the @code{exsheets} package and fixes/improves
 various long-standing issues.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xtab
+  (package
+    (name "texlive-xtab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xtab/" "source/latex/xtab/"
+                   "tex/latex/xtab/")
+             (base32
+              "0d9rc8dwirxlzvyfrwf884achshimcrz99c2d57gad2097c6qkd6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xtab")
+    (synopsis "Break tables across pages")
+    (description
+     "Xtab is an extended and somewhat improved version of @code{supertabular}; its
+@code{xtabular} environment provides tables that break across pages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
