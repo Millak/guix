@@ -78971,6 +78971,27 @@ a font installed with all distributions of TeX, so it works independently,
 without the need to install any additional software or fonts.")
     (license license:lppl1.3+)))
 
+(define-public texlive-delimtxt
+  (package
+    (name "texlive-delimtxt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/delimtxt/"
+                   "source/latex/delimtxt/"
+                   "tex/latex/delimtxt/")
+             (base32
+              "0zj7r4igpw5qw40klx17k4w7fmp1w4j0v3gk6h14qw58y9d0wffw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/delimtxt")
+    (synopsis "Read and parse text tables")
+    (description
+     "This experimental package can read and parse text tables delimited by
+user-defined tokens (e.g., @samp{Tab}).  It can be used for serial letters and
+the like, making it easier to export the data file from MS-Excel/MS-Word")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
