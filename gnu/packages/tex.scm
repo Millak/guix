@@ -96679,6 +96679,27 @@ The default behaviour is to place subscripts slightly lower when there is
 a superscript as well, but this can look odd in some situations.")
     (license license:lppl)))
 
+(define-public texlive-subdocs
+  (package
+    (name "texlive-subdocs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subdocs/" "tex/latex/subdocs/")
+             (base32
+              "1j30b926n15i3dbdw4xgd241a9g7q084lbalaq7sf4pkjqjj9zh8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subdocs")
+    (synopsis "Multifile documents")
+    (description
+     "This is an experimental package aiming to provide a different approach for
+multidocument works (mainly, books with a document per chapter).  Unlike the
+@code{\\include} mechanism, every subdocument is a complete normal LaTeX
+document and may be typeset separately.  What the package does is sharing the
+@file{.aux} files.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
