@@ -94927,6 +94927,27 @@ It was designed with the @code{sciposter} class in mind, and certainly works
 with that class and with derived classes.")
     (license license:lppl)))
 
+(define-public texlive-sectionbreak
+  (package
+    (name "texlive-sectionbreak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sectionbreak/"
+                   "tex/latex/sectionbreak/")
+             (base32
+              "0b58qzhxbsmg3yfkmgq8xis3l9yb3jzi85znzczd75yvbcs5b0f3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sectionbreak")
+    (synopsis "LaTeX support for section breaks")
+    (description
+     "This package provides LaTeX support for section breaks, used mainly in
+fiction books to signal changes in a story, like changes in time, location,
+etc.  It supports the asterism symbol, text content, or custom macros as the
+section break mark symbol.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
