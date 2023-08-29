@@ -87364,6 +87364,24 @@ The concept of creating the list of symbols, though, is different from the way
 @file{nomencl.sty} does it.")
     (license license:lppl)))
 
+(define-public texlive-lkproof
+  (package
+    (name "texlive-lkproof")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lkproof/" "tex/latex/lkproof/")
+             (base32
+              "0hlf5wgvkbi12p52dy1jh7fq9d6sw8vma1hcv9s6b9fzk03h21v4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lkproof")
+    (synopsis "LK Proof figure macros")
+    (description
+     "The package defines a pair of commands @code{\\infer} and @code{\\deduce},
+that are used in constructing LK proof diagrams.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
