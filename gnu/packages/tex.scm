@@ -80359,6 +80359,34 @@ your card, the printable area of your printer, and the design of the card.
 Everything else is taken care of by @code{elzcards}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-emarks
+  (package
+    (name "texlive-emarks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/emarks/" "source/latex/emarks/"
+                   "tex/latex/emarks/")
+             (base32
+              "0snd4wc0fl64b9k4mzdjklcw6z549rx3l7jw34fa2ibmf5zcmr2p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/emarks")
+    (synopsis "Named mark registers with e-TeX")
+    (description
+     "E-TeX provides 32 768 mark registers; using this facility is far more
+comfortable than LaTeX tricks with @code{\\markright}, @code{\\markboth},
+@code{\\leftmark} and @code{\\rightmark}.  The package provides two commands
+for marking: @code{\\marksthe} and @code{\\marksthecs}, which have starred
+forms which disable expansion; new mark registers are allocated as needed.
+Syntax is closely modelled on the @code{\\marks} primitive.  Four commands are
+provided for retrieving the marks registers content: @code{\\thefirstmarks},
+@code{\\thebotmarks}, @code{\\thetopmarks} and @code{\\getthemarks}; and the
+command @code{\\ifmarksequal} is available for comparing the content of marks
+registers.  The package requires an e-TeX enabled engine, and the @code{etex}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
