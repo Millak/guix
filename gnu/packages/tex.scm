@@ -72991,6 +72991,28 @@ conditional @code{\\ifappendix} and a LaTeX-style conditional
 been called.")
     (license license:lppl1.3+)))
 
+(define-public texlive-arabicfront
+  (package
+    (name "texlive-arabicfront")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arabicfront/"
+                   "tex/latex/arabicfront/")
+             (base32
+              "1cmsv10yn7351nkxs0mjl7xj3xlshg5hj6pyykb9i8yqm8h4jwcn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arabicfront")
+    (synopsis "Frontmatter with Arabic page numbers")
+    (description
+     "This package modifies the definitions of @code{\\frontmatter} and
+@code{\\mainmatter} so that page numbering starts in Arabic style from the
+front matter while preserving the rest of the original definitions.  For it to
+work, @code{\\pagenumbering} has to be inside these macros --- most of classes
+do that, but there are exceptions like @code{memoir}.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
