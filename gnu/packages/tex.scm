@@ -74858,6 +74858,29 @@ vertical bar specifier in between two bracketed parts.  Each macro comes in
 a fixed-size version and an expanding version.")
     (license license:public-domain)))
 
+(define-public texlive-bubblesort
+  (package
+    (name "texlive-bubblesort")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bubblesort/"
+                   "source/latex/bubblesort/"
+                   "tex/latex/bubblesort/")
+             (base32
+              "1gmrw2m0gr082xj5qmjr6bc0gk7wqqzs38mrf3nmymbd7nv21crd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bubblesort")
+    (synopsis "Bubble sorts a list")
+    (description
+     "This package sorts a list of TeX items in increasing order where increasing
+is determined by a comparator macro.  By default it sorts real numbers with
+the usual meaning of increasing but some other examples are discussed in the
+documentation.  A second macro is included which sorts one list and applies
+the same permutation to a second list.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
