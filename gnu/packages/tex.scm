@@ -83427,6 +83427,28 @@ of an existing file, using the function @code{\\pdffilemoddate}; the user may
 specify how the date is to be presented.")
     (license license:lppl)))
 
+(define-public texlive-getitems
+  (package
+    (name "texlive-getitems")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/getitems/"
+                   "source/latex/getitems/"
+                   "tex/latex/getitems/")
+             (base32
+              "0zwdb7hqfr0jzd2shz80wby2x8yqn74yw6im5qiiwgmmzrnvp48m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/getitems")
+    (synopsis "Gathering items from a list-like environment")
+    (description
+     "This package provides a @code{\\gatheritems} command to parse a list of data
+separated by @code{\\item} tokens.  This makes it easier to define custom
+environments which structure their data in the same way that @code{itemize} or
+@code{enumerate} do.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
