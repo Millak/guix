@@ -92960,6 +92960,29 @@ Open the file in any browser to view the result.  It can be used to replace
 @code{\\tl_analysis_show:n}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-printlen
+  (package
+    (name "texlive-printlen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/printlen/" "tex/latex/printlen/")
+             (base32
+              "0pha10m0zgsp4zs100kjlf1zgdj2dsb1i1a6ng3wamhbq8l0508l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/printlen")
+    (synopsis "Print lengths using specified units")
+    (description
+     "@code{\\printlength@{length@}} prints the value of a LaTeX length in the
+units specified by @code{\\uselengthunit@{unit@}}, where @samp{unit} may be
+any TeX length unit: @samp{pt}, @samp{pc}, @samp{in}, @samp{mm}, @samp{cm},
+@samp{bp}, @samp{dd} or @samp{cc}).  When the unit is @samp{pt}, the printed
+length value will include any stretch or shrink; otherwise these are not
+printed.  The unit argument may also be @samp{PT}, in which case length values
+will be printed in point units but without any stretch or shrink values.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
