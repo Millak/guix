@@ -89259,6 +89259,27 @@ and the second as LaTeX command @code{\\roman}.  The default option is
 @samp{upourv} with which the same @samp{5} is given as @samp{u}.")
     (license license:lppl)))
 
+(define-public texlive-modular
+  (package
+    (name "texlive-modular")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/modular/" "tex/latex/modular/")
+             (base32
+              "050z4181br4npg413xbb7wngssyj5mvfc3nc7wwagijd0c6n7l1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/modular")
+    (synopsis "Relative section headings for modular documents")
+    (description
+     "LaTeX sections have absolute depth, e.g., @code{\\section},
+@code{\\subsection}, etc.  When composing modular documents, we want relative
+depths.  The @code{coseoul} package provides relative headings, but does not
+get things right when composing a document modularly from multiple parts.
+This package provides the missing piece.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
