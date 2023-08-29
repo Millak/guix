@@ -79010,6 +79010,30 @@ the like, making it easier to export the data file from MS-Excel/MS-Word")
      "This is yet another doc/docx/doc3 package for LaTeX code documentation.")
     (license (list license:lppl1.3c license:gpl3+))))
 
+(define-public texlive-diabetes-logbook
+  (package
+    (name "texlive-diabetes-logbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/diabetes-logbook/"
+                   "tex/latex/diabetes-logbook/")
+             (base32
+              "1kadfz9vq0awzdzp829rri1kw77awi9x96vfqn3nxjwwkdba7nd5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/diabetes-logbook")
+    (synopsis "Logbook for people with type one diabetes")
+    (description
+     "Initally a logbook for me, a person with type one diabetes mellitus, this
+evolved over time into a TeX project, making it prettier and easier to use.
+I've made it simple to use, while not forgoing the document's beauty or the
+speed of input.  The logbook, with slight commenting out and editing, could be
+used as a journal by anybody, although the template and graphing functionality
+are set up for people using insulin injections and blood glucose teststrips,
+as well as counting/estimating carbs, protein, and fat.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
