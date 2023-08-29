@@ -79111,6 +79111,27 @@ and indentation of successive key steps automatically.")
 mode.")
     (license license:lppl1.3+)))
 
+(define-public texlive-directory
+  (package
+    (name "texlive-directory")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/directory/"
+                   "bibtex/bst/directory/"
+                   "doc/latex/directory/"
+                   "tex/latex/directory/")
+             (base32
+              "03h3vskri5hcvna92spvagig4na8pmr52jmdclis58d903pmm6wp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/directory")
+    (synopsis "Address book using BibTeX")
+    (description
+     "This package for LaTeX and BibTeX facilitates the construction,
+maintenance and exploitation of an address book-like database.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
