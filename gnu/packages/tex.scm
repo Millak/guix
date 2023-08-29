@@ -95715,6 +95715,27 @@ things may be placed.")
 (renamed to avoid the existing @code{cv} package).")
     (license license:lppl)))
 
+(define-public texlive-simpleinvoice
+  (package
+    (name "texlive-simpleinvoice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simpleinvoice/"
+                   "tex/latex/simpleinvoice/")
+             (base32
+              "02rni033d2ighbc3s165blqpsxzxqz4sfvlnc7h4820l5583nvfr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simpleinvoice")
+    (synopsis "Easy typesetting of invoices")
+    (description
+     "This package lets you easily typeset professional-looking invoices.  The user
+specifies the content of the invoice by different @code{\\setPROPERTY}
+commands, and an invoice is generated automatically with the
+@code{\\makeinvoice} command.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
