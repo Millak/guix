@@ -84666,6 +84666,26 @@ addition, it defines environments for labeled paragraphs and list items.")
 adding an experience timeline'.")
     (license license:public-domain)))
 
+(define-public texlive-harpoon
+  (package
+    (name "texlive-harpoon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/harpoon/" "tex/latex/harpoon/")
+             (base32
+              "163457fhnpc11r2r3lvf4zfcqdvjrahwgjfxl3xa7zhhdx9ai4v7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/harpoon")
+    (synopsis "Extra harpoons, using the @code{graphics} package")
+    (description
+     "This package provides over- and under-harpoon symbol commands; the harpoons
+may point in either direction, with the hook pointing up or down.  The covered
+object is provided as an argument to the commands, so that they have the look
+of accent commands.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
