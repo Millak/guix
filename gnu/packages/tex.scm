@@ -78735,6 +78735,27 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-spanish
+  (package
+    (name "texlive-datetime2-spanish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-spanish/"
+                   "source/latex/datetime2-spanish/"
+                   "tex/latex/datetime2-spanish/")
+             (base32
+              "14wh1hwnyr9pwc90hm0w17br9m3xbwb27h307m2r552hj0g0da51")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-spanish")
+    (synopsis "Spanish language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{spanish} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
