@@ -83244,6 +83244,28 @@ Sueterlin handwriting fonts.  The package is distributed as part of the
 @code{fundus} bundle..")
     (license license:lppl1.3+)))
 
+(define-public texlive-fwlw
+  (package
+    (name "texlive-fwlw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fwlw/" "tex/latex/fwlw/")
+             (base32
+              "10phasf69lcd9rs6yn997ng1z1g460wzgi3rda45rdjvc0mw336v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fwlw")
+    (synopsis "Get first and last words of a page")
+    (description
+     "The package extracts the first and last words of a page, together with the
+first word of the next page, just before the page is formed into the object to
+print.  The package defines a couple of page styles that use the words that
+have been extracted.")
+    ;; "This software package may be freely used, transmitted, reproduced, or
+    ;; modified provided that this notice is left intact."
+    (license (license:fsf-free "file://doc/latex/fwlw/README"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
