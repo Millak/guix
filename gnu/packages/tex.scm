@@ -88031,6 +88031,26 @@ printing ITF bar codes as well as bar codes for identification labels for HP
 storage media.")
     (license license:lppl)))
 
+(define-public texlive-makebase
+  (package
+    (name "texlive-makebase")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makebase/"
+                   "source/latex/makebase/"
+                   "tex/latex/makebase/")
+             (base32
+              "1rqgfxfardp4z000zxfmnh231vi4wffyzsd3wfvyz9j7jd543pip")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makebase")
+    (synopsis "Typeset counters in a different base")
+    (description
+     "This package typesets a LaTeX counter such as page in an arbitrary base
+(default 16).  It does not change font or typeface.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
