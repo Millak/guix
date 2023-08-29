@@ -73427,6 +73427,26 @@ automatically punctuate the items.  It uses Lua pattern matching to modify the
 environment's contents.")
     (license license:expat)))
 
+(define-public texlive-avremu
+  (package
+    (name "texlive-avremu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/avremu/" "source/latex/avremu/"
+                   "tex/latex/avremu/")
+             (base32
+              "1fmbmkqy4icbpprgwl9rbb5k44pcymjlqgggcxw9s58slfynsh20")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/avremu")
+    (synopsis "8-Bit micro-controller simulator written in LaTeX")
+    (description
+     "This package provides a fully working package to simulate a microprocessor in
+pure LaTeX.  The simulator is able to calculate complex pictures, like
+Mandelbrot sets.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
