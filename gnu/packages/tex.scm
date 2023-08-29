@@ -86818,6 +86818,36 @@ slightly increase their spacing;
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-lcd
+  (package
+    (name "texlive-lcd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lcd/" "source/latex/lcd/"
+                   "tex/latex/lcd/")
+             (base32
+              "1iglq9rcdx2m9b7k2k2m10mc1k0xylxyqk4gwz3q1avp9vxdqpd8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Do not stop build to ask about building part of the
+          ;; documentation.
+          (add-after 'unpack 'non-interactive-build
+            (lambda _
+              (substitute* "source/latex/lcd/lcd.ins"
+                (("\\\\generateexampletrue") "\\generateexamplefalse")))))))
+    (home-page "https://ctan.org/pkg/lcd")
+    (synopsis "Alphanumerical LCD-style displays")
+    (description
+     "This is a LaTeX package that will display text as on an
+(early) LCD display (the output is very visibly pixellated).  It assumes 8-bit
+input in its internal verbatim-style environment.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
