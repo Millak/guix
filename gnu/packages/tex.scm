@@ -81290,6 +81290,34 @@ an example environment, which typesets its contents on the left of the page,
 and prints it verbatim on the right.")
     (license license:gpl3+)))
 
+(define-public texlive-exceltex
+  (package
+    (name "texlive-exceltex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exceltex/" "scripts/exceltex/"
+                   "tex/latex/exceltex/")
+             (base32
+              "1i5l1a7ay63b0lqzqsc10ywlqqi1byng7zr4fn7g28v99831wmp4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "exceltex")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/exceltex")
+    (synopsis "Get data from Excel files into LaTeX")
+    (description
+     "@code{exceltex} is a LaTeX package combined with a helper program
+written in Perl.  It provides an easy to use yet powerful and flexible way to
+get data from spreadsheets into LaTeX. In contrast to other solutions,
+@code{exceltex} does not seek to make the creation of tables in LaTeX easier,
+but to get data from spreadsheets into LaTeX as easily as possible.  The Excel
+file format only acts as an interface between the spreadsheet application and
+@code{exceltex} beacause it is easily accessible (via the
+@code{Spreadsheet::ParseExcel} Perl module) and because most spreadsheet
+applications are able to read and write Excel files.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
