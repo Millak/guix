@@ -73473,6 +73473,28 @@ automatically generates hidden comments in the PDF document (by means of the
 formula.")
     (license license:lppl1.3+)))
 
+(define-public texlive-background
+  (package
+    (name "texlive-background")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/background/"
+                   "source/latex/background/"
+                   "tex/latex/background/")
+             (base32
+              "0hbz78mvpjd9ac86lxcnbbqlnsgp3p21iv3cl4jwriqp930ipwcg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/background")
+    (synopsis "Placement of background material on pages of a document")
+    (description
+     "The package offers the placement of background material on the pages of
+a document.  The user can control many aspects (contents, position, color,
+opacity) of the background material that will be displayed; all placement and
+attribute settings are controlled by setting key values.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
