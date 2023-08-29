@@ -92484,6 +92484,25 @@ documents and @code{time}, which prints a 12-hour format time.")
 manages the options and loading order of other packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-plantslabels
+  (package
+    (name "texlive-plantslabels")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/plantslabels/"
+                   "tex/latex/plantslabels/")
+             (base32
+              "1isrp48vzawl7fw1w2166nlhz78h7vjcjnsri389i5kv54k2pihz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plantslabels")
+    (synopsis "Write labels for plants")
+    (description
+     "The package defines a command @code{\\plant}, which has three mandatory and
+seven optional argument.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
