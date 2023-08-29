@@ -99323,6 +99323,28 @@ used, but does no checking and may therefore overwrite an important file if
 used injudiciously.")
     (license license:lppl)))
 
+(define-public texlive-verbdef
+  (package
+    (name "texlive-verbdef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verbdef/" "tex/latex/verbdef/")
+             (base32
+              "1l6sm2mk7c197qicxlagl1hrfcaqswpq7b5a22i7m7gq1wpa8yvg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/verbdef")
+    (synopsis "Define commands which expand to verbatim text")
+    (description
+     "The package defines a single command @code{\\verbdef} (which has a starred
+form, like @code{\\verb}).  @code{\\verbdef} will define a robust command
+whose body expands to verbatim text.  By using commands defined by
+@code{\\verbdef}, one can put verbatim text into the arguments of commands;
+since the defined command is robust, it doesn't matter if the argument is
+moving.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
