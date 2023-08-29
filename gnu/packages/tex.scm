@@ -76268,6 +76268,30 @@ marked for logging.  At the end of the document a report of command usage will
 be printed in the TeX log.")
     (license license:lppl1.0+)))
 
+(define-public texlive-cmsd
+  (package
+    (name "texlive-cmsd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cmsd/" "tex/latex/cmsd/")
+             (base32
+              "0cqfwknx1y0l0ws888m45m8adxqxbvgnzmyjl69y5pjkdxah1yxi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmsd")
+    (synopsis "Interfaces to the CM Sans Serif Bold fonts")
+    (description
+     "Thr purpose of the package is to provide an alternative interface to the CM
+Sans Serif boldface fonts.  The EC (T1, Cork) encoded versions of the CM Sans
+Serif boldface extended fonts differ considerably from the traditionally (OT1)
+encoded ones: at large sizes, above 10pt, they have thinner strokes and are
+much wider.  At 25pt they are hardly to be recognized as being boldface'.
+This package attempts to make these T1 fonts look like the traditional ones
+did.  You do not need any new fonts; the package just changes the way LaTeX
+makes use of the current ones.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
