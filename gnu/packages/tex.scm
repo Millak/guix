@@ -99679,6 +99679,27 @@ printed out at the very end of the logfile.  This is useful for warnings such
 as ``Rerun for this or that reason'' or ``This is a draft''.")
     (license license:lppl)))
 
+(define-public texlive-warpcol
+  (package
+    (name "texlive-warpcol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/warpcol/" "source/latex/warpcol/"
+                   "tex/latex/warpcol/")
+             (base32
+              "0f03v03vsfavkx3wchh2nli10hihapjlgw822rgxi8z6bm5jphss")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/warpcol")
+    (synopsis "Relative alignment of rows in numeric columns in tabulars")
+    (description
+     "This package defines a tabular column type for formatting numerical columns
+in LaTeX.  The column type enables numerical items to be right justified
+relative to each other, while centred beneath the column label.  In addition,
+macros are provided to enable variations on this column type to be defined.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
