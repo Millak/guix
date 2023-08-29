@@ -78693,6 +78693,27 @@ Cyrillic and Latin, Ekavian and Ijekavian variants of Serbian date formats,
 regionalized and non-regionalized.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-slovak
+  (package
+    (name "texlive-datetime2-slovak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-slovak/"
+                   "source/latex/datetime2-slovak/"
+                   "tex/latex/datetime2-slovak/")
+             (base32
+              "0whrbsybflccvrnljh5vj73m4lk44njm15sjhj6arq30qal9fqly")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-slovak")
+    (synopsis "Slovak language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{slovak} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
