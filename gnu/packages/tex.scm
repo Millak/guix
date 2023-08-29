@@ -91719,6 +91719,29 @@ It has therefore become empty stub that does nothing at all, just in case
 there are still documents that reference it.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pdfcomment
+  (package
+    (name "texlive-pdfcomment")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfcomment/"
+                   "tex/latex/pdfcomment/")
+             (base32
+              "0vv2lgnfnxyx7slbyg0xa4rh4j7192s4gis30zsz7rnydzq016fi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfcomment")
+    (synopsis "User-friendly interface to PDF annotations")
+    (description
+     "For a long time pdfLaTeX has offered the command @code{\\pdfannot} for
+inserting arbitrary PDF annotations.  The package offers a convenient and
+user-friendly means of using @code{\\pdfannot} to provide comments in PDF
+files.  It also supports LaTeX, Dvips, @command{ps2pdf}, LaTeX,
+@command{dvipdfmx}, XeLaTeX and LuaLaTeX.  Unfortunately, support of PDF
+annotations by PDF viewers may vary.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
