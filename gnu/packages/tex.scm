@@ -96792,6 +96792,27 @@ which generates sub-figures within one normal figure, and manages their
 placement; @code{subfloat} only affects captions and numbering.")
     (license license:lppl)))
 
+(define-public texlive-substitutefont
+  (package
+    (name "texlive-substitutefont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/substitutefont/"
+                   "tex/latex/substitutefont/")
+             (base32
+              "12h6012ckkacv2hjcs0cv3ylzzxfp54ps0ca2fp6m20achbv93lc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/substitutefont")
+    (synopsis "Easy font substitution")
+    (description
+     "Many fonts are extensions of a basic font family with new glyphs or shapes.
+Such fonts may be given a new name due to licence reasons or to the creator's
+preference.  The package facilitates the task of setting up a font family as
+substitute for another one, using its @code{\\substitutefont} command.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
