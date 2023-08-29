@@ -76836,6 +76836,27 @@ edition is a teacher's book based on a student's textbook.  Each page of
 a teacher's book is a page from the textbook and comments for the teacher.")
     (license license:lppl1.3+)))
 
+(define-public texlive-commonunicode
+  (package
+    (name "texlive-commonunicode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/commonunicode/"
+                   "tex/latex/commonunicode/")
+             (base32
+              "1s0kni4gc8jr102ikk96igxiriikccm21zml08kwiv17vy4n50mb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/commonunicode")
+    (synopsis "Convert common Unicode symbols to LaTeX code")
+    (description
+     "The aim of this LaTeX package is to provide a complete as possible list of
+common Unicode symbols with their translations to LaTeX code.  This is useful
+in the development of templates which are intended to work with modern TeX
+engines (LuaTeX, XeTeX) as well as traditional ones (TeX, pdfTeX).")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
