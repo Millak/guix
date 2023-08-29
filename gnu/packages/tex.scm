@@ -99017,6 +99017,28 @@ another unit.  Supported are all TeX related units, and also @samp{km} and
 package only works with LuaLaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-unravel
+  (package
+    (name "texlive-unravel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unravel/" "source/latex/unravel/"
+                   "tex/latex/unravel/")
+             (base32
+              "0d80axwfyc73q92vcazmkvlk69g1fqx986gcncpqpc11a81y10qa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unravel")
+    (synopsis "Watching TeX digest tokens")
+    (description
+     "The aim of this LaTeX package is to help debug complicated macros.  This is
+done by letting the user step through the execution of some TeX code, going
+through the details of nested expansions, performing assignments, as well as
+some simple typesetting commands.  To use this package, one should normally
+run TeX in a terminal.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
