@@ -98301,6 +98301,29 @@ cross-reference section (and chapter, etc) titles and captions just like
 instead.")
     (license license:public-domain)))
 
+(define-public texlive-to-be-determined
+  (package
+    (name "texlive-to-be-determined")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/to-be-determined/"
+                   "source/latex/to-be-determined/"
+                   "tex/latex/to-be-determined/")
+             (base32
+              "0jvyvcrnz8vv17rjd3mxb25d2ljrlkmmcl8qk3bnr19gpb4a1vcb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-soul texlive-xcolor))
+    (home-page "https://ctan.org/pkg/to-be-determined")
+    (synopsis "Highlight text passages that need further work")
+    (description
+     "This package provides a single command @code{\\tbd} which highlights the
+pieces of text that need to be rewritten later.  You can hide them all with
+a single package option hide, or just make them disappear entirely with the
+option off.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
