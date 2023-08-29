@@ -84786,6 +84786,26 @@ and defines convenience wrappers for floats.")
 @code{mathtools} and @code{amsmath} packages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hep-text
+  (package
+    (name "texlive-hep-text")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-text/"
+                   "source/latex/hep-text/"
+                   "tex/latex/hep-text/")
+             (base32
+              "099isjwa4xhjzlmcflldswhg1l2x46y9012v3bx96mw0wjkcyw4l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-text")
+    (synopsis "List and text extensions")
+    (description
+     "The @code{hep-text} package extends LaTeX lists using the @code{enumitem}
+package and provides some text macros.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
