@@ -99725,6 +99725,27 @@ files using @command{webquiz}, which is written in Python.  The conversion
 from LaTeX to HTML is done behind the scenes using TeX4ht.")
     (license license:gpl3+)))
 
+(define-public texlive-widetable
+  (package
+    (name "texlive-widetable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/widetable/"
+                   "source/latex/widetable/"
+                   "tex/latex/widetable/")
+             (base32
+              "1fb1545agxpkd4xjh6hs70flqpwna13rh5kzc202w64jxsfgwwzs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/widetable")
+    (synopsis "Environment for typesetting tables of specified width")
+    (description
+     "The package defines a new environment that, unlike tabularX, typesets a table
+of specified width by working on the inter-column glue; the tabular cells will
+all be stretched (or shrunk) according to need.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
