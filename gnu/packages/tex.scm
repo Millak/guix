@@ -81219,6 +81219,31 @@ running marks, ``Question n continued'' catchwords, and so on;
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-exam-randomizechoices
+  (package
+    (name "texlive-exam-randomizechoices")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exam-randomizechoices/"
+                   "tex/latex/exam-randomizechoices/")
+             (base32
+              "0zaiaxvz91qsjxfiyzfn9i6nrmf95qwdl28s81az20kyn45k18x4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exam-randomizechoices")
+    (synopsis
+     "Randomize multiple choices questions using the @code{exam} class")
+    (description
+     "This package is an extension to the @code{exam} document class.
+It provides the user with four new multiple choice typesetting environments
+which place their content in a random order.  It can (only) be used in
+combination with the @code{exam} class.  The questions themselves cannot be
+randomized with this package.  Furthermore, the package provides a simple
+answer key table typesetter and has a command for writing the answer keys to
+an external file.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
