@@ -77641,6 +77641,26 @@ data sorting or data base storage.")
 step (somewhat similarly to the layout used in cooking).")
     (license license:lppl)))
 
+(define-public texlive-currency
+  (package
+    (name "texlive-currency")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/currency/"
+                   "source/latex/currency/"
+                   "tex/latex/currency/")
+             (base32
+              "1xzpgqifdk77ch39gcpfdzrm9vdyxkh3mz7nfh1j1pk2jw5vg3k7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/currency")
+    (synopsis "Format currencies in a consistent way")
+    (description
+     "The package facilitates the formatting of currencies (amounts and units) with
+various formatting capabilities.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
