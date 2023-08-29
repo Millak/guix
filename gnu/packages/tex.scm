@@ -78442,6 +78442,26 @@ styles: @code{itfulltext} and @code{it-fulltext-twenty-four}.  The first style
 uses a format ``am pm'', the second a format ``24 hours''.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-italian
+  (package
+    (name "texlive-datetime2-italian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-italian/"
+                   "source/latex/datetime2-italian/"
+                   "tex/latex/datetime2-italian/")
+             (base32
+              "00bdgp7z7dgqzb6d693bs80x3qldbw7pnfcclkyyifgb8i1zg1ll")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-italian")
+    (synopsis "Italian language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{italian} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
