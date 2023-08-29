@@ -94049,6 +94049,28 @@ purpose of combining the preferences used in the author's own package
 documentations.")
     (license license:lppl1.2+)))
 
+(define-public texlive-rjlparshap
+  (package
+    (name "texlive-rjlparshap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rjlparshap/"
+                   "source/latex/rjlparshap/"
+                   "tex/latex/rjlparshap/")
+             (base32
+              "1csigz0i8a1zlrzlv0wl5dc5rqbpjkfhadaib5y92qb54n4aqi36")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rjlparshap")
+    (synopsis "Support for use of @code{\\parshape} in LaTeX")
+    (description
+     "The package provides macros and environments that relieve the programmer of
+some of the difficulties of using @code{\\parshape} in LaTeX macros.  It does
+not actually calculate shapes in the way that the @code{shapepar} package
+does.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
