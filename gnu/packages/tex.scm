@@ -79315,6 +79315,26 @@ documentation or in @file{.tex} files.")
 LaTeX document, or within a @file{.dtx} file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-documentation
+  (package
+    (name "texlive-documentation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/documentation/"
+                   "source/latex/documentation/"
+                   "tex/latex/documentation/")
+             (base32
+              "05f93m7sjjml6cdzw7j02vjxr9ij0079iql6vn5d3xwfx51l9pzl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/documentation")
+    (synopsis "Documentation support for C, Java and assembler code")
+    (description
+     "The package provides a simple means of typesetting computer programs such
+that the result is acceptable for inclusion in reports, etc.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
