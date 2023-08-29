@@ -91506,6 +91506,26 @@ with the package.  Conversion for use with other languages (than French)
 should be possible.")
     (license license:lppl)))
 
+(define-public texlive-pas-tableur
+  (package
+    (name "texlive-pas-tableur")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pas-tableur/"
+                   "tex/latex/pas-tableur/")
+             (base32
+              "0gy20s7prkj7da56y9hrxi7knbww02i7pf4lr4fc9f2q5zlakq1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pas-tableur")
+    (synopsis "Create a spreadsheet layout")
+    (description
+     "The package provides commands for creating a grid of rectangles, and commands
+for populating locations in the grid. PGF/TikZ is used for placement and
+population of the cells.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
