@@ -97753,6 +97753,32 @@ Also defined are the C++ logo, with the @samp{+} signs properly positioned,
 and the logo of the Vienna University Business Administration Center (BWZ).")
     (license license:lppl)))
 
+(define-public texlive-texmate
+  (package
+    (name "texlive-texmate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texmate/" "source/latex/texmate/"
+                   "tex/latex/texmate/")
+             (base32
+              "1c584zbmz0k1kwd41cgz11zjzw29b0128j1xqz5a8wbsw894csq4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texmate")
+    (synopsis "Comprehensive chess annotation in LaTeX")
+    (description
+     "TeXmate formats chess games from very simple ASCII input.  The clean
+@samp{1.@: e4 e5; 2.@: Nf3 Nc6; 3.@: Bb5 a6} will produce the same results as
+the sloppier @samp{1 e4 e5; Nf3 Nc6 3..@: Bb5 a6}.  The resulting format is
+fully customizable.  There are 4 levels of commentary: 1 is the main game, 2-3
+are commentaries.  Each has its fonts, punctuation marks, etc., and these are
+also customizable.  The package includes a tool for the creation of diagrams.
+The package works in conjunction with @code{skak} to produce diagrams of the
+current position automatically.  For chess fonts, the package uses the
+@code{chessfss} system.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
