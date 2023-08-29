@@ -80915,6 +80915,26 @@ alternatives may be selected by package options")
 will expect.")
     (license license:lppl)))
 
+(define-public texlive-esindex
+  (package
+    (name "texlive-esindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/esindex/" "tex/latex/esindex/")
+             (base32
+              "12jirxg7nijnagn8gszi0bj3sdiyvb9sb2sdpjpj1yk2ngfb41m1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/esindex")
+    (synopsis "Typset index entries in Spanish documents")
+    (description
+     "This package helps you to create indexes in Spanish.  With @code{esindex} you
+can write, say, @code{\\esindex@{canon@}} and the entry will be correctly
+alphabetized in the index.  This release of @code{esindex} works with accented
+characters in any encoding, and without Babel.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
