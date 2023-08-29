@@ -74788,6 +74788,37 @@ does not.  Instead, it subtracts the frame's dimensions from the specified
 dimensions of the @code{minipage} before typesetting the @code{minipage}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-boxhandler
+  (package
+    (name "texlive-boxhandler")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/boxhandler/"
+                   "source/latex/boxhandler/"
+                   "tex/latex/boxhandler/")
+             (base32
+              "19vyasxd17akk5dvrw37pn3s8gjkpgr8qwsqqbxij5hf5qix6qqf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/boxhandler")
+    (synopsis "Flexible captioning and deferred box/list printing")
+    (description
+     "The package allows the user to optimise presentation of LaTeX tables and
+figures.  Boxhandler will lay out table and figure captions with a variety of
+stylistic apperances, and will also allow figures and tables to be wrapped in
+a manner consistent with many business and government documents.  For
+a document that might appear in different venues with different formatting,
+boxhandler permits the creation of a LaTeX source document that can, with
+a single-line change in the source code, produce an output that has very
+different layout from the baseline configuration, not only in terms of caption
+style, but more importantly in terms of the locations where figures, tables
+and lists appear (or not) in the document.  Deferral routines also allow one
+to keep all figure and table data in a separate source file, while nonetheless
+producing a document with figures and tables appearing in the desired
+location.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
