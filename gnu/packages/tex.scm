@@ -100175,6 +100175,31 @@ templates, and program components for other languages (functions, classes,
 procedures, etc.).")
     (license license:lppl)))
 
+(define-public texlive-xellipsis
+  (package
+    (name "texlive-xellipsis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xellipsis/"
+                   "source/latex/xellipsis/"
+                   "tex/latex/xellipsis/")
+             (base32
+              "1p1xzaprrglliid7zsl4s22zzqd7wrryhn69mdpac267jh8cpxds")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xellipsis")
+    (synopsis
+     "Extremely configurable ellipses with formats for various style manuals")
+    (description
+     "The @code{xellipsis} package provides a system for configuring (almomst)
+every possible aspect of ellipses, including preceding and proceeding
+characters; the character itself; distances before and after each of these;
+and number of characters.  It comes with both a compatibility option for
+standard LaTeX @code{\\ldots} as well as preset package options for the
+@emph{Chicago Manual of Style} (Turabian); the Bluebook; and MLA guidelines.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
