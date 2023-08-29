@@ -83863,6 +83863,26 @@ package.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-magyar
+  (package
+    (name "texlive-glossaries-magyar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-magyar/"
+                   "source/latex/glossaries-magyar/"
+                   "tex/latex/glossaries-magyar/")
+             (base32
+              "0lha8h8bl2wqw22jy7nznzh908pg4vwk3s4lsd7cnbpiv46c2g1i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-magyar")
+    (synopsis "Magyar language module for @code{glossaries} package")
+    (description
+     "This package provides a Magyar language module for @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
