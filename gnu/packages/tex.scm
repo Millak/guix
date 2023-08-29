@@ -86932,6 +86932,28 @@ support for English, French, German, Italian, Portuguese (European and
 Brazilian), and Spanish typesetting.  They compile with any major TeX engine.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lebhart
+  (package
+    (name "texlive-lebhart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lebhart/" "tex/latex/lebhart/")
+             (base32
+              "1f253s1vcnmx79la1zdrk8wqr7rbghpby8n0hzlpihwr7qhwg6jh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-colorist))
+    (home-page "https://ctan.org/pkg/lebhart")
+    (synopsis "Write your articles in a colorful way")
+    (description
+     "This package provides a LaTeX class for typesetting articles with a colorful
+design.  Currently, it has native support for Chinese (simplified and
+traditional), English, French, German, Italian, Japanese, Portuguese (European
+and Brazilian), Russian and Spanish typesetting.  It compiles with either
+XeLaTeX or LuaLaTeX.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
