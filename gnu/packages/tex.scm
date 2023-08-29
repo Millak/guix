@@ -73618,6 +73618,28 @@ presentation from right to left.  It requires Babel with the LuaTeX engine.")
      "The package specifies a Beamer theme for presenting a thesis.")
     (license license:lppl)))
 
+(define-public texlive-beamerappendixnote
+  (package
+    (name "texlive-beamerappendixnote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerappendixnote/"
+                   "source/latex/beamerappendixnote/"
+                   "tex/latex/beamerappendixnote/")
+             (base32
+              "1cn3hygzahvprhhl9vn95iqkaywp19q61caa6rvyq2krq5m7r5wy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerappendixnote")
+    (synopsis "Create notes on appendix frames in beamer")
+    (description
+     "This package introduces the @code{\\appxnote} command, which puts the note's
+content on a separate Beamer frame shown by the command
+@code{\\printappxnotes}.  It also creates interactive buttons to move back and
+forth between the two frames.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
