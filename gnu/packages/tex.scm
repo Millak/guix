@@ -91008,6 +91008,28 @@ easily be changed.  There is a mechanism for shifting all levels.  This makes
 it easy to bundle existing articles into a compilation.")
     (license license:gpl3+)))
 
+(define-public texlive-outlines
+  (package
+    (name "texlive-outlines")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/outlines/" "tex/latex/outlines/")
+             (base32
+              "0jdsjyxsx9shl6vlm05a3lnq55a6lnfm6w4kh6ykzmn6jms9kkjd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/outlines")
+    (synopsis "Produce outline lists")
+    (description
+     "This package defines an @code{outline} environment, which allows
+outline-style indented lists with freely mixed levels up to four levels deep.
+It replaces the nested @code{begin}/@code{end} pairs by different item tags
+@samp{\\1} to @samp{\\4} for each nesting level.  This is very convenient in
+cases where nested lists are used a lot, such as for to-do lists or
+presentation slides.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
