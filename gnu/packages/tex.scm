@@ -81152,6 +81152,41 @@ Note that the bundle @code{exams} also provides a file @file{exam.cls}; the
 two bundles therefore clash, and should not be installed on the same system.")
     (license license:lppl1.3+)))
 
+(define-public texlive-exam-lite
+  (package
+    (name "texlive-exam-lite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exam-lite/"
+                   "tex/latex/exam-lite/")
+             (base32
+              "0nbwlpj68cc6vqg9bmlwwc1vax6fi3rl885a0dvbqmlznrga5ach")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exam-lite")
+    (synopsis "Quicker preparation of exams in LaTeX")
+    (description
+     "This template is devoted to the quicker preparation of exams in LaTeX.
+Its main features are:
+
+@itemize
+
+@item minimalistic design;
+
+@item include the custom logo of the affiliation;
+
+@item predefined commands for a subject, study year, study program, exam type,
+place of exam, date;
+
+@item many macros contained in this package speed up the process of preparing
+the necessary ingredients for the exam;
+
+@item automatic calculation of total points.
+
+@end itemize")
+    (license license:cc-by-sa4.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
