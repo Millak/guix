@@ -91408,6 +91408,25 @@ care only of letters which have a macro name like @code{\\alpha} or
 @code{\\Omega}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-parnotes
+  (package
+    (name "texlive-parnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/parnotes/" "tex/latex/parnotes/")
+             (base32
+              "129wgpd2bwff2g8w6ihjpz2l6n4hyl6bs12g502xd1y89a7g1f0x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/parnotes")
+    (synopsis "Notes after every paragraph (or elsewhere)")
+    (description
+     "The package provides the @code{\\parnote} command.  The notes are set as
+running paragraphs; placement is at the end of each paragraph, or manually,
+using the @code{\\parnotes} command.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
