@@ -79395,6 +79395,44 @@ which give access to dotless @samp{i} and @samp{j} in math mode.  They are
 intended for symbols in non English languages.")
     (license license:expat)))
 
+(define-public texlive-dotseqn
+  (package
+    (name "texlive-dotseqn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dotseqn/" "source/latex/dotseqn/"
+                   "tex/latex/dotseqn/")
+             (base32
+              "0ggi0zsnd1prfnvwx41hb37rvmwyq95p4a5qyjq1pms2haniija4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      ;; "dotseqn.ins" is a partial file, so use ".dtx" instead.
+      #:build-targets #~(list "dotseqn.dtx")
+      #:tex-format "latex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'non-interactive-build
+            (lambda _
+              (substitute* "source/latex/dotseqn/dotseqn.dtx"
+                (("(\\\\type(in|out)|\\\\edef\\\\answer).*") "")
+                (("\\\\ifodd\\\\answer\n")
+                 "\\ifodd89\n") ;create "dotseqn.sty"
+                (("\\\\ifodd\\\\answer \\\\else \\\\OnlyDescription \\\\fi")
+                 "\\OnlyDescription"))))))) ;no documentation.
+    (native-inputs (list (texlive-updmap.cfg (list texlive-hypdoc))))
+    (home-page "https://ctan.org/pkg/dotseqn")
+    (synopsis "Flush left equations with dotted leaders to the numbers")
+    (description
+     "The package provides a different format for typesetting equations,
+one reportedly used in old style Britsh books: equations aligned on the left,
+with dots on the right leading to the equation number.  In default of an
+equation number, the package operates much like the @code{fleqn} class
+option (no leaders).")
+    (license license:knuth)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
