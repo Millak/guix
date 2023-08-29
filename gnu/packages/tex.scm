@@ -85843,6 +85843,29 @@ supports German (old and new rules), Austrian, US English, British English,
 French, Danish, Swedish, and Norwegian.")
     (license license:lppl)))
 
+(define-public texlive-isodoc
+  (package
+    (name "texlive-isodoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/isodoc/" "source/latex/isodoc/"
+                   "tex/latex/isodoc/")
+             (base32
+              "04p3rjxd636k270cy4mqzfmmhp54s69rdr2rjynvvf84p3l2573q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "luatex"))
+    (home-page "https://ctan.org/pkg/isodoc")
+    (synopsis "Latex class for typesetting letters and invoices")
+    (description
+     "The @code{isodoc} class can be used for the preparation of letters and
+invoices.  Documents are set up with options, thus making the class easily
+adaptable to user's wishes and extensible for other document types.  The class
+is based on the NTG @code{brief} class, which implements the NEN1026
+standard.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
