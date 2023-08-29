@@ -94518,6 +94518,29 @@ With this package the mark of a footnote can be saved into a name, and re-used
 subsequently without creating another footnote at the bottom.")
     (license license:gpl3+)))
 
+(define-public texlive-savesym
+  (package
+    (name "texlive-savesym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/savesym/")
+             (base32
+              "18z0xwarbkb6cm7n29wasa04d92g2pirlzsr0icnzfip2f4j7524")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/savesym")
+    (synopsis "Redefine symbols where names conflict")
+    (description
+     "There are a number of symbols (e.g., @code{\\Square}) that are defined by
+several packages.  In order to typeset all the variants in a document, we have
+to give the glyph a unique name.  To do that, we define
+@code{\\savesymbol@{XXX@}}, which renames a symbol from @code{\\XXX} to
+@code{\\origXXX}, and @code{\\restoresymbols@{yyy@}@{XXX@}}, which renames
+@code{\\origXXX} back to @code{\\XXX} and defines a new command,
+@code{\\yyyXXX}, which corresponds to the most recently loaded version of
+@code{\\XXX}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
