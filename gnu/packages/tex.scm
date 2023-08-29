@@ -96179,6 +96179,28 @@ adjustment.")
 available from AtF Spark.")
     (license (list license:silofl1.1 license:lppl1.3+))))
 
+(define-public texlive-sparklines
+  (package
+    (name "texlive-sparklines")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sparklines/"
+                   "tex/latex/sparklines/")
+             (base32
+              "0p40s93s51bf67gf8mq5v888mm9nhabwd4gr8lyhaf5hhl2g8909")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sparklines")
+    (synopsis "Drawing sparklines: intense, simple, wordlike graphics")
+    (description
+     "Sparklines are intense, simple, wordlike graphics.  A sparkline can be added
+using the @code{sparkline} environment.  Also, you can add sparkling
+rectangles for the median and special sparkling dots in red or blue.  The
+package requires pdfLaTeX; sparklines cannot appear in a DVI file.  The
+sparklines package uses PGF.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
