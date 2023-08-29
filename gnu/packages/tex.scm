@@ -99832,6 +99832,31 @@ An accompanying shell script @file{wordcount.sh} contains more information in
 its comments.")
     (license license:lppl)))
 
+(define-public texlive-wordlike
+  (package
+    (name "texlive-wordlike")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wordlike/"
+                   "source/latex/wordlike/"
+                   "tex/latex/wordlike/")
+             (base32
+              "04m9syfp78grgxfa0d3vq990381sdrayg1id34gp13c8cl6kxdv8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wordlike")
+    (synopsis "Simulating word processor layout")
+    (description
+     "The package simulates typical word processor layout: narrow page margins,
+Times, Helvetica and Courier fonts, @code{\\LARGE} or @code{\\Large} headings,
+and @code{\\sloppy} typesetting.
+
+The package aims at making life easier for users who are discontent with
+LaTeX's standard layout settings because they need a layout that resembles the
+usual ``wordlike'' output.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
