@@ -74471,6 +74471,25 @@ Institute of Technology dissertations, including general undergraduate theses
 and master theses.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bizcard
+  (package
+    (name "texlive-bizcard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bizcard/" "source/latex/bizcard/"
+                   "tex/latex/bizcard/")
+             (base32
+              "1b5rnh1jm125yak8nd36nf0zk456pxmakr77z7fbq2h9a6q8fbzb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bizcard")
+    (synopsis "Typeset business cards")
+    (description
+     "This package helps typesetting business cards.  It produces cards at the
+normal US card size, 76.2mm x 50.8mm.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
