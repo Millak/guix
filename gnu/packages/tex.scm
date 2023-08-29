@@ -85486,6 +85486,26 @@ be printed.  The package offers commands and options for modifying this
 behaviour, maybe limited to certain parts of the document source.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ifthenx
+  (package
+    (name "texlive-ifthenx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ifthenx/" "tex/latex/ifthenx/")
+             (base32
+              "10ii2p56c088m786grsidq2l9cvk52jp10nmah3xamlix7nx10lm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ifthenx")
+    (synopsis "Extra tests for \\ifthenelse")
+    (description
+     "The package extends the @code{ifthen} package, providing extra predicates for
+the package's @code{\\ifthenelse} command.  The package is complementary to
+@code{xifthen}, in that they provide different facilities; the two may be
+loaded in the same document, as long as @code{xifthen} is loaded first.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
