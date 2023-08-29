@@ -80608,6 +80608,23 @@ The package is currently broken, cf.@:
 @url{https://tex.stackexchange.com/q/664886/1090}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-envbig
+  (package
+    (name "texlive-envbig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/envbig/" "tex/latex/envbig/")
+             (base32
+              "0s09py3cdrhpx4p23zax9lc45bjgv08wkvpp9kw6k7j9wpqgdskf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/envbig")
+    (synopsis "Printing addresses on envelopes")
+    (description
+     "This simple package prints both from and to addresses.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
