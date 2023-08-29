@@ -75329,6 +75329,27 @@ equation number plus a letter.")
     ;; provided that this notice is left intact.
     (license (license:fsf-free "file://doc/latex/cases/README"))))
 
+(define-public texlive-casyl
+  (package
+    (name "texlive-casyl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/casyl/"
+                   "fonts/source/public/casyl/"
+                   "fonts/tfm/public/casyl/" "tex/latex/casyl/")
+             (base32
+              "1dxl04m0inilv4jhq4w6haw0g7hd3svyhy3g9x946xydf7zrfjg6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/casyl")
+    (synopsis "Typeset Cree/Inuktitut in Canadian Aboriginal syllabics")
+    (description
+     "The bundle constitutes a font (as Metafont source) and LaTeX macros for its
+use within a document.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
