@@ -85525,6 +85525,27 @@ loaded in the same document, as long as @code{xifthen} is loaded first.")
 with the help of the @code{\\iitem}, @code{\\iiitem}, ... macros.")
     (license license:lppl)))
 
+(define-public texlive-image-gallery
+  (package
+    (name "texlive-image-gallery")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/image-gallery/"
+                   "tex/latex/image-gallery/")
+             (base32
+              "19n9ll9gbqv56f14vd9sqn85wl726z8rhs7ba2631qlpskj9qb1v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/image-gallery")
+    (synopsis
+     "Create an overview of pictures from a digital camera or other sources")
+    (description
+     "The class may be used to create an overview of pictures from a digital camera
+or from other sources.  It is possible to adjust the size of the pictures and
+all the margins.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
