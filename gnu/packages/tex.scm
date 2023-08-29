@@ -99412,6 +99412,25 @@ where significant chunks of text may be excluded.")
     ;; provided that the copyright notice and this permission is retained.
     (license (license:fsf-free "file://tex/latex/version/version.sty"))))
 
+(define-public texlive-versions
+  (package
+    (name "texlive-versions")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/versions/" "tex/latex/versions/")
+             (base32
+              "1zq8vp85hsy8c6yjhpjslr8063q95w5rnyv23kkks44bkcgrac8l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/versions")
+    (synopsis "Optionally omit pieces of text")
+    (description
+     "Stephan Bellantoni's @code{version} has provided preamble commands for
+selecting environments to be included/excluded.  This package does the same,
+but corrects, improves, and extends it in both implementation and function.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
