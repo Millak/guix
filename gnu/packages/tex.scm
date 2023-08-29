@@ -76538,6 +76538,30 @@ multiple authors.  Two package options allow the quick suppression of all
 colorful edits and comments, and showing text whose deletion was proposed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-colordoc
+  (package
+    (name "texlive-colordoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colordoc/"
+                   "source/latex/colordoc/"
+                   "tex/latex/colordoc/")
+             (base32
+              "1qyqhryazrwja3hxs6wjrlg6q0jv6qpbwy4mqi6sxdrvxq2flw97")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colordoc")
+    (synopsis "Coloured syntax highlights in documentation")
+    (description
+     "The package is used in documentation files; with it the code listings will
+highlight (for example) pairs of curly braces with matching colors.  Other
+delimiters like @samp{\\if ... \\fi}, are highlighted, as are the names of new
+commands.  All this makes code a little more readable, and helps during
+process of writing.  Three options are provided, including a non-color option
+designed for printing (which numbers delimiters and underlines new commands).")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
