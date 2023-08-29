@@ -96026,6 +96026,25 @@ Many commands are provided to serve as a macro programming environment for
 using the extended labels.")
     (license license:lppl)))
 
+(define-public texlive-smartunits
+  (package
+    (name "texlive-smartunits")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/smartunits/"
+                   "tex/latex/smartunits/")
+             (base32
+              "002962fis50p644izb5rj0yx8b54h7jj98ksxrfn5043hxq80za8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/smartunits")
+    (synopsis "Converting between common metric and Imperial units")
+    (description
+     "This LaTeX package implements a @code{\\SmartUnit} macro for converting
+between (some) metric and Imperial units.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
