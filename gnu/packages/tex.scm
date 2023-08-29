@@ -90178,6 +90178,36 @@ date, version and caption.  Alignment is not disturbed by short file name
 extensions, such as @file{.fd}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-niceframe
+  (package
+    (name "texlive-niceframe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/niceframe/"
+                   "fonts/source/public/niceframe/"
+                   "fonts/tfm/public/niceframe/"
+                   "source/latex/niceframe/"
+                   "tex/latex/niceframe/")
+             (base32
+              "0an86fr2crlxxz84d325jhpccal0ilbkhscqzl6dhk91cysdzrij")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           ;; FIXME: This phase fails with "! Strange path
+           ;; (turning number is zero)" error.
+           #~(modify-phases %standard-phases
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/niceframe")
+    (synopsis "Support for fancy frames")
+    (description
+     "The package defines means of drawing frames around boxes, using dingbat fonts.
+Some (Metafont) font sources are included; the fonts are available separately
+in Type 1 format.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
