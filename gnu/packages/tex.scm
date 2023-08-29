@@ -74045,6 +74045,25 @@ structure, with page numbers in footer, no side bar, and simple colors, using
 only several foreground and background colors.")
     (license license:public-domain)))
 
+(define-public texlive-beamertheme-simpleplus
+  (package
+    (name "texlive-beamertheme-simpleplus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-simpleplus/"
+                   "tex/latex/beamertheme-simpleplus/")
+             (base32
+              "0l92d8siv19kdwvaq8mv2jdw3y7vsficmgk1y46q64dakxfwsr9a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-simpleplus")
+    (synopsis "Simple and clean theme for LaTeX beamer")
+    (description
+     "This package provides a simple and clean theme for LaTeX Beamer.  It can be
+used for academic and scientific presentations.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
