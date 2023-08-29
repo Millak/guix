@@ -93538,6 +93538,28 @@ of tokens for randomising; each group inside a @code{rtVw} constitutes one of
 these (typically larger) token sets.")
     (license license:lppl1.0+)))
 
+(define-public texlive-randtext
+  (package
+    (name "texlive-randtext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/randtext/" "tex/latex/randtext/")
+             (base32
+              "19zammzlnd4c0sa34pcm4gn5ascxsxcd9k2lrzpxdzck6cydycg8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/randtext")
+    (synopsis "Randomise the order of characters in strings")
+    (description
+     "The package provides a single macro @code{\\randomize@{@var{TEXT}@}} that
+typesets the characters of @var{TEXT} in random order, such that the resulting
+output appears correct, but most automated attempts to read the file will
+misunderstand it.  This function allows one to include an email address in
+a TeX document and publish it online without fear of email address harvesters
+or spammers easily picking up the address.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
