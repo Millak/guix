@@ -96658,6 +96658,27 @@ command, in order to choose the best option for every document.  This includes
 expandable and protected commands.")
     (license license:gpl3+)))
 
+(define-public texlive-subdepth
+  (package
+    (name "texlive-subdepth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subdepth/"
+                   "source/latex/subdepth/"
+                   "tex/latex/subdepth/")
+             (base32
+              "1h79qghibgnfz2savf158c6qkliizif95azma905rpwhz06zw1f9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subdepth")
+    (synopsis "Unify maths subscript height")
+    (description
+     "This package is based on code to equalise the height of subscripts in maths.
+The default behaviour is to place subscripts slightly lower when there is
+a superscript as well, but this can look odd in some situations.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
