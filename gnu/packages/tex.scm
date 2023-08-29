@@ -74838,6 +74838,26 @@ location.")
 lists of species.")
     (license license:lppl1.3+)))
 
+(define-public texlive-braket
+  (package
+    (name "texlive-braket")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/braket/" "tex/latex/braket/")
+             (base32
+              "092wk3zc6zajgi6l9h9zna3ksk6k6y4gi8slnfk6vldndcg5sbqn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/braket")
+    (synopsis "Dirac bra-ket and set notations")
+    (description
+     "This package provides macros to typeset bra-ket notation, as well as set
+specifiers, with a single (@samp{|}) or a double (@samp{||} or @samp{\\|})
+vertical bar specifier in between two bracketed parts.  Each macro comes in
+a fixed-size version and an expanding version.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
