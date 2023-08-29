@@ -83161,6 +83161,30 @@ if you are using the two-side mode, you can set the inner and outer margins to
 avoid the effects of the different margins.")
     (license license:lppl)))
 
+(define-public texlive-functional
+  (package
+    (name "texlive-functional")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/functional/"
+                   "tex/latex/functional/")
+             (base32
+              "1xfr911nhj0qfcqibhfch24yzcaj2dlk0ffi20zf5z9nvcyays5v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/functional")
+    (synopsis "Intuitive functional programming interface for LaTeX2")
+    (description
+     "This package provides an intuitive functional programming interface for
+LaTeX2, which is an alternative choice to @code{expl3} or LuaTeX, if you want
+to do programming in LaTeX.  Although there are functions in LaTeX3
+programming layer (@code{expl3}), the evaluation of them is from outside to
+inside.  With this package, the evaluation of functions is from inside to
+outside, which is the same as other programming languages such as Lua.  In
+this way, it is rather easy to debug code too.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
