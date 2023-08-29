@@ -82841,6 +82841,48 @@ then the references are hyperlinked.  (References to footnotes in
 rather than being numbered sequentially through the document.")
     (license license:gpl3+)))
 
+(define-public texlive-forarray
+  (package
+    (name "texlive-forarray")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/forarray/"
+                   "source/latex/forarray/"
+                   "tex/latex/forarray/")
+             (base32
+              "1xbl5lzyd264avy3dkqz7yq8imk6pziaalhi7smh9d4jra6412a3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: I couldn't find how to build this package without error.
+          (delete 'build))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-breakurl
+                  texlive-caption
+                  texlive-examplep
+                  texlive-hypdoc
+                  texlive-ragged2e
+                  texlive-subfig
+                  texlive-varwidth
+                  texlive-vntex
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/forarray")
+    (synopsis "Using array structures in LaTeX")
+    (description
+     "The package provides functionality for processing lists and array structures
+in LaTeX.  Arrays can contain characters as well as TeX and LaTeX commands,
+nesting of arrays is possible, and arrays are processed within the same brace
+level as their surrounding environment.  Array levels can be delimited by
+characters or control sequences defined by the user.  Practical uses of this
+package include data management, construction of lists and tables, and
+calculations based on the contents of lists and arrays.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
