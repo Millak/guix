@@ -96978,6 +96978,28 @@ by applying transformations to the given font's glyph for a tilde.")
 to represent the diagram structure.")
     (license license:gpl3+)))
 
+(define-public texlive-syntrace
+  (package
+    (name "texlive-syntrace")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/syntrace/"
+                   "source/latex/syntrace/"
+                   "tex/latex/syntrace/")
+             (base32
+              "1qdl3vriidpdl3cpa05r2h2dv3i8bmqf5l47313mghyz1pilkrga")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/syntrace")
+    (synopsis "Labels for tracing in a syntax tree")
+    (description
+     "This package adds support for traces in trees created using either the
+@code{synttree} or the @code{qtree} package.  The package provides two
+commands @code{(\\traceLabel} and @code{\\traceReference)} to set and use
+a trace.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
