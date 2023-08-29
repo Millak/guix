@@ -76815,6 +76815,27 @@ are provided through two comma-separated lists.
 These loop'-like commands are (themselves) entirely expandable.")
     (license license:lppl1.3+)))
 
+(define-public texlive-commedit
+  (package
+    (name "texlive-commedit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/commedit/"
+                   "source/latex/commedit/"
+                   "tex/latex/commedit/")
+             (base32
+              "0h8jqizvnl9hxpxmk5g60fy24b5n5n9jjjrmm9zi5azkscjqjfdg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/commedit")
+    (synopsis "Commented editions with LaTeX")
+    (description
+     "The package is intended for commented editions.  An example of commented
+edition is a teacher's book based on a student's textbook.  Each page of
+a teacher's book is a page from the textbook and comments for the teacher.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
