@@ -92503,6 +92503,27 @@ manages the options and loading order of other packages.")
 seven optional argument.")
     (license license:lppl)))
 
+(define-public texlive-plates
+  (package
+    (name "texlive-plates")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/plates/" "tex/latex/plates/")
+             (base32
+              "08dpfyy22d1fh7jxyhlhv98bb5lmd6jkfbix5fqjdbrxyhz8snsk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/plates")
+    (synopsis "Arrange for plates sections of documents")
+    (description
+     "The @code{plates} package provides a simple facility for inserting colour
+figures in a document when they should be gathered and printed together as in
+a book's section of colour plates.  The package provides a @code{plate}
+environment that takes the place of the @code{figure} environment for such
+colour images.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
