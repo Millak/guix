@@ -93422,6 +93422,27 @@ using shortcuts to existing commands and specific commands for quick
 formatting and creation of tables and title pages with a graphic image.")
     (license license:lppl1.3+)))
 
+(define-public texlive-quiz2socrative
+  (package
+    (name "texlive-quiz2socrative")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quiz2socrative/"
+                   "tex/latex/quiz2socrative/")
+             (base32
+              "02w9hqb2ri1xp3b5mi2sd41q2grq4vw4cvi7zmff02rrwaxd16wa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quiz2socrative")
+    (synopsis "Prepare questions for socrative quizzes")
+    (description
+     "This is a LaTeX package for preparing multiple choice, true/false,
+and short answer questions.  Its main purpose is to offer a tool to
+easily insert rather complicated mathematical material in
+@url{https://socrative.com, socrative quizzes}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
