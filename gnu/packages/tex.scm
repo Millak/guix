@@ -78880,6 +78880,31 @@ the right order and allowed float positions are now @samp{[tbp]}.  The package
 actually merges facilities from @code{fixltx2e} and @code{stfloats}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dbshow
+  (package
+    (name "texlive-dbshow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dbshow/" "source/latex/dbshow/"
+                   "tex/latex/dbshow/")
+             (base32
+              "1av2zsk0c2wlzcrrr6pv9j5fhw9g77r2gj6ia4hyn0v6q5lfxx2g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dbshow")
+    (synopsis
+     "Store and display data with custom filters, orders, and styles")
+    (description
+     "The package provides four core functions: data storage and display, data
+filtering, data sorting and data display.  All data is saved once and then you
+can display these data with custom filters, orders and styles.  The package
+can be used, for example, to record and display something you'd like to
+review, maybe the question you always answered incorrectly or some forgettable
+knowledge.  But obviously, the package is much more powerful and extensible
+for more interesting tasks depending on the individual.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
