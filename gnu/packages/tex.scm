@@ -94306,6 +94306,24 @@ normally and the solutions rotated.")
 for producing boxes, framed with rounded corners.")
     (license license:lppl1.3+)))
 
+(define-public texlive-rterface
+  (package
+    (name "texlive-rterface")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rterface/" "tex/latex/rterface/")
+             (base32
+              "1k9xfi2sxl9p7h3vm5b4dzp15w2vdr80p2bf8pvlry2wn8lb9vws")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rterface")
+    (synopsis "Access to R analysis from within a document")
+    (description
+     "The package mediates interaction between LaTeX and R; it allows LaTeX to set
+R's parameters, and provides code to read R output.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
