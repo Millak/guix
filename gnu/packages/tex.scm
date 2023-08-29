@@ -80409,6 +80409,29 @@ used in creating your project.  In particular, it can embed images, external
 TeX files, and external codes.")
     (license license:lppl1.2+)))
 
+(define-public texlive-embedfile
+  (package
+    (name "texlive-embedfile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/embedfile/"
+                   "source/latex/embedfile/"
+                   "tex/generic/embedfile/"
+                   "tex/latex/embedfile/")
+             (base32
+              "0khpr65fap1rr7rgyv9wbfjpiij2wpazf9xarkzn62wp25yzplag")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/embedfile")
+    (synopsis "Embed files into PDF")
+    (description
+     "This package embeds files in a PDF document, using the PDF format's embedding
+operation (note the contrast with the attach operation used by the
+@code{attachfile} and @code{attachfile2} packages).  Currently only pdfTeX, in
+PDF mode, is supported.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
