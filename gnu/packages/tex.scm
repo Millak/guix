@@ -74064,6 +74064,29 @@ only several foreground and background colors.")
 used for academic and scientific presentations.")
     (license license:public-domain)))
 
+(define-public texlive-beamertheme-tcolorbox
+  (package
+    (name "texlive-beamertheme-tcolorbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-tcolorbox/"
+                   "tex/latex/beamertheme-tcolorbox/")
+             (base32
+              "1a195a2qmsg6132qlr2pydpcfpxrwf5m1v440d756vp7bn12n08k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-tcolorbox")
+    (synopsis
+     "Beamer inner theme which reproduces standard Beamer blocks using
+@code{tcolorboxes}")
+    (description
+     "This package provides an inner theme for Beamer which reproduces standard
+Beamer blocks using @code{tcolorboxes}.  The look and feel (rounded/sharp
+corners, shadows and colours) will automatically adapt to which other themes
+are loaded.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
