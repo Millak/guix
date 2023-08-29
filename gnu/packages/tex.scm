@@ -80735,6 +80735,24 @@ number.  The PIN security is designed for the instructor to mark and record
 the student's effort on that quiz.")
     (license license:lppl1.2+)))
 
+(define-public texlive-eqell
+  (package
+    (name "texlive-eqell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eqell/" "tex/latex/eqell/")
+             (base32
+              "1x50b4yfph5707d9xw94fyjrhnih3rp31g4ay4mp7p7m6dgq2q32")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eqell")
+    (synopsis "Sympathetically spaced ellipsis after punctuation")
+    (description
+     "The package provides commands that give a well-spaced ellipsis after
+@samp{!}, @samp{?}, @samp{!?} or @samp{?!}.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
