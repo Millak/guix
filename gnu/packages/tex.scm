@@ -91190,6 +91190,29 @@ numbers, expanding them (e.g., adding first or last page numbers) and
 standardising them.")
     (license license:lppl)))
 
+(define-public texlive-pageslts
+  (package
+    (name "texlive-pageslts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pageslts/"
+                   "source/latex/pageslts/"
+                   "tex/latex/pageslts/")
+             (base32
+              "0cxkmdiipcclyvrg54rv0lzqr3bllflr6f4pvaar0avw8grgrljc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pageslts")
+    (synopsis "Variants of last page labels")
+    (description
+     "The package was designed as an extension of the @code{lastpage} package.
+When more than one page numbering scheme is in operation (as in a @code{book}
+class document with frontmatter), the labels above do not give the total
+number of pages, so the package also provides labels @code{pagesLTS.<numbering
+scheme>}, where the numbering scheme is @code{arabic}, @code{roman}, etc.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
