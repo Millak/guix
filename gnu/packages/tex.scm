@@ -91605,6 +91605,33 @@ those that were defined with @code{\\DeclareRobustCommand}.")
 @acronym{PAW, Physics Analysis Workstation}.")
     (license license:gpl3+)))
 
+(define-public texlive-pax
+  (package
+    (name "texlive-pax")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pax/" "scripts/pax/"
+                   "source/latex/pax/" "tex/latex/pax/")
+             (base32
+              "0fnpf4rfv552ss5jw2a1k0irb503magvzlcbp2mwwpi5k3wdvkx2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "pdfannotextractor.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/pax")
+    (synopsis "Extract and reinsert PDF annotations with pdfTeX")
+    (description
+     "If PDF files are included using pdfTeX, PDF annotations are stripped.
+The Pax project offers a solution without altering pdfTeX.  A Java program
+(@file{pax.jar}) parses the PDF file that will later be included.  The program
+then writes the data of the annotations into a file that can be read by TeX.
+The LaTeX package @code{pax} extends the @code{graphics} package to support
+the scheme: if a PDF file is included, the package looks for the file with the
+annotation data, reads them and puts the annotations in the right place.")
+    (license (list license:lppl license:gpl3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
