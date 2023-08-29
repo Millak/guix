@@ -86155,6 +86155,32 @@ a per-command basis; these options also allow for the generation of date
 strings according to different eras of the Classical period.")
     (license license:lppl1.3c)))
 
+(define-public texlive-kerntest
+  (package
+    (name "texlive-kerntest")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kerntest/"
+                   "source/latex/kerntest/"
+                   "tex/latex/kerntest/")
+             (base32
+              "08g814zv8cq6q1174wdx4z2p5lpyyp1s5mpzk4dmzsz7rzr4gdhm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kerntest")
+    (synopsis "Print tables and generate control files to adjust kernings")
+    (description
+     "This class makes it easy to generate tables that show many different kerning
+pairs of an arbitrary font, usable by LaTeX.  It shows the kerning values that
+are used in the font by default.  In addition, this class enables the user to
+alter the kernings and to observe the results.  Kerning pairs can be defined
+for groups of similar glyphs at the same time.  An @file{.mtx} file is
+generated automatically.  The @file{.mtx} file may then be loaded by
+@code{fontinst} to introduce the user-made kernings into the virtual font for
+later use in LaTeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
