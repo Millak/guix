@@ -99387,6 +99387,31 @@ exercises are already implemented: plain exercise, ``complete the text'',
 ``true or false'', closed questions, open questions, and ``find the error''.")
     (license license:lppl1.3+)))
 
+(define-public texlive-version
+  (package
+    (name "texlive-version")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/version/" "tex/latex/version/")
+             (base32
+              "1m4w450kgv92r41cqsxxn697h59bdsmms6icvhbfg5wq819k917v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/version")
+    (synopsis "Conditionally include text")
+    (description
+     "This package defines macros @code{\\includeversion@{@var{NAME}@}} and
+@code{\\excludeversion@{@var{NAME}@}}, each of which defines an environment
+@var{NAME} whose text is to be included or excluded from compilation.
+
+Although the command syntax is very similar to that of @code{comment},
+@file{comment.sty} is to be preferred to @file{version.sty} for documents
+where significant chunks of text may be excluded.")
+    ;; These macros may be freely used, transmitted, reproduced, or modified
+    ;; provided that the copyright notice and this permission is retained.
+    (license (license:fsf-free "file://tex/latex/version/version.sty"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
