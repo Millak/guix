@@ -87899,6 +87899,28 @@ first element is numbered 1, the second element numbered 2, and so on.")
 expansion) of two macros by name.")
     (license license:lppl1.2+)))
 
+(define-public texlive-magaz
+  (package
+    (name "texlive-magaz")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/magaz/" "tex/latex/magaz/")
+             (base32
+              "142hclmrvja2pp7iks25mga099k9vp219m32b1b6vds5dzqnxc63")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/magaz")
+    (synopsis "Magazine layout")
+    (description
+     "The current version does special formatting for the first line of text in
+a paragraph.  The package is part of a larger body of tools which remain in
+preparation.")
+    ;; "This software may be freely used, transmitted, reproduced, or
+    ;; modified provided that the copyright notice and this permission
+    ;; is retained."
+    (license (license:fsf-free "file://tex/latex/magaz/magaz.sty"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
