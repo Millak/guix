@@ -95198,6 +95198,26 @@ the document.  It also provides tools to record and estimate the progress
 throughout the course.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sf298
+  (package
+    (name "texlive-sf298")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sf298/" "source/latex/sf298/"
+                   "tex/latex/sf298/")
+             (base32
+              "1mn1lhj2hqwpyb2q06sw15vgz5ykl7gx4n5iy3q1d3dj8nj3rr6v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sf298")
+    (synopsis "Standard form 298")
+    (description
+     "This LaTeX package generates a completed standard form 298 (Rev.@: 8-98) as
+prescribed by ANSI Std.@: Z39.18 for report documentation as part of
+a document delivered, for instance, on a U.S.  government contract.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
