@@ -74276,6 +74276,26 @@ depends on colorist.sty from the colorist package.  The package name \"beaulivre
 is taken from the French words \"beau\" (= \"beautiful\") and \"livre\" (= \"book\").")
     (license license:lppl1.3c)))
 
+(define-public texlive-beton
+  (package
+    (name "texlive-beton")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beton/" "source/latex/beton/"
+                   "tex/latex/beton/")
+             (base32
+              "0z5wz89s2jw6c4alkgaqbbr5rglh3m88nbay9ab732s991ln6b50")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/beton")
+    (synopsis "Use Concrete fonts")
+    (description
+     "This package typesets a LaTeX document with the Concrete fonts designed by
+Don Knuth and used in his book @emph{Concrete Mathematics}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
