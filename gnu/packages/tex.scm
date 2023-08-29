@@ -72947,6 +72947,27 @@ though they may possibly have a prefix, and a suffix (the
 sheets.")
     (license license:lppl)))
 
+(define-public texlive-appendixnumberbeamer
+  (package
+    (name "texlive-appendixnumberbeamer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/appendixnumberbeamer/"
+                   "tex/latex/appendixnumberbeamer/")
+             (base32
+              "11cv55lzk9s5nnkad41s793qfnin5fpz3gl2h43rsswnqhmisxls")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/appendixnumberbeamer")
+    (synopsis "Manage frame numbering in appendixes in beamer")
+    (description
+     "This package fixes the frame numbering in Beamer when using an appendix such
+that the slides from the appendix are not counted in the total frame number of
+the main part of the document.  The total frame number counter is reset to
+0 when entering the appendix.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
